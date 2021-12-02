@@ -2,4 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountManager.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\Core\js\" />
+  </ItemGroup>
 </Project>
