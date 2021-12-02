@@ -1,0 +1,209 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "userGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editRoleModal",
+                "url": "/CarThirdBaseData/ThirdPartyCarCreateDatePercent/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyCarCreateDatePercent/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/CarThirdBaseData/ThirdPartyCarCreateDatePercent/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "fromYear",
+              "caption": "از سال",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "toYear",
+              "caption": "تا سال",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "percent",
+              "caption": "درصد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "AddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fromYear",
+              "type": "text",
+              "label": "از سال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "toYear",
+              "type": "text",
+              "label": "تا سال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "percent",
+              "type": "text",
+              "label": "درصد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "editRoleModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fromYear",
+              "type": "text",
+              "label": "از سال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "toYear",
+              "type": "text",
+              "label": "تا سال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "percent",
+              "type": "text",
+              "label": "درصد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

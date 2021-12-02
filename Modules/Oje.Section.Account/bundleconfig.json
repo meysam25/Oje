@@ -1,0 +1,26 @@
+[
+  {
+    "outputFileName": "wwwroot/Account/js/Account.min.js",
+    "inputFiles": [
+      "wwwroot/js/sideMenue.js",
+      "wwwroot/js/main.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Account/css/Account.min.css",
+    "inputFiles": [
+      "wwwroot/css/main.css",
+      "wwwroot/css/mainRes.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  }
+]

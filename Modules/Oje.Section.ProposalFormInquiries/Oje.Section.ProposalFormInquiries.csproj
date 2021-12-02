@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <ItemGroup>
+    <Compile Remove="Interfaces\**" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="Services\**" />
+    <Content Remove="Interfaces\**" />
+    <Content Remove="Models\**" />
+    <Content Remove="Services\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Interfaces\**" />
+    <None Remove="Models\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountManager.csproj" />
+    <ProjectReference Include="..\..\Oje.FireInsuranceManager\Oje.FireInsuranceManager.csproj" />
+    <ProjectReference Include="..\..\Oje.ProposalFormManager\Oje.ProposalFormManager.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,311 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "mainGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/SalesNetworkBaseData/SalesNetwork/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/SalesNetworkBaseData/SalesNetwork/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editGridModal",
+                "url": "/SalesNetworkBaseData/SalesNetwork/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/SalesNetworkBaseData/SalesNetwork/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/SalesNetworkBaseData/SalesNetwork/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "cIds",
+              "caption": "شرکت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/SalesNetworkBaseData/SalesNetwork/GetCompanyList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "ppfIds",
+              "caption": "فرم پیشنهاد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createUser",
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "type",
+              "caption": "نوع",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/SalesNetworkType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "calceType",
+              "caption": "نحویه محاسبه",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/PersonType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "addGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SalesNetworkBaseData/SalesNetwork/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "ppfIds",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataS2": true,
+              "dataurl": "/SalesNetworkBaseData/SalesNetwork/GetProposalFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "userId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SalesNetworkBaseData/SalesNetwork/GetMarketerList",
+              "label": "بازاریاب",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/SalesNetworkType",
+              "label": "نوع",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "calceType",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/PersonType",
+              "label": "نحویه محاسبه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'mainGrid', '/SalesNetworkBaseData/SalesNetwork/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "editGridModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SalesNetworkBaseData/SalesNetwork/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "ppfIds",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataS2": true,
+              "dataurl": "/SalesNetworkBaseData/SalesNetwork/GetProposalFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "userId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SalesNetworkBaseData/SalesNetwork/GetMarketerList",
+              "label": "بازاریاب",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/SalesNetworkType",
+              "label": "نوع",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "calceType",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/PersonType",
+              "label": "نحویه محاسبه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'mainGrid', '/SalesNetworkBaseData/SalesNetwork/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

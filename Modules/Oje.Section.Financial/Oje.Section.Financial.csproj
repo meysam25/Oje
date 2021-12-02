@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <ItemGroup>
+    <Compile Remove="Areas\BaseData\**" />
+    <Content Remove="Areas\BaseData\**" />
+    <EmbeddedResource Remove="Areas\BaseData\**" />
+    <None Remove="Areas\BaseData\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountManager.csproj" />
+  </ItemGroup>
+  
+
+
+</Project>

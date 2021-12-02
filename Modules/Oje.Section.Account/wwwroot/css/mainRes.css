@@ -1,0 +1,19 @@
+
+
+@media  (max-width: 900px) {
+    main {
+        margin-left:0px;
+    }
+    .sideMenuHolder{
+        z-index:2;
+    }
+    .loginUserSecitonHeader {
+        display:none;
+    }
+    .headerTopMenuButton {
+        float:right;
+    }
+    .notificationMenuHolder {
+        width:255px;
+    }
+}

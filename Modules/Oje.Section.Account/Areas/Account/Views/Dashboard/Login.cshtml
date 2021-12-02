@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "_LayoutAdminNoHeaderFooter";
+    ViewBag.Title = "ورود";
+}
+
+<div tabindex="0" class="loginBox">
+    <h3 class="loginTitle">ورود</h3>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><span class="fa fa-user"></span></span>
+        </div>
+        <input id="usernameInput" type="text" class="form-control" name="username" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon2"><span class="fa fa-key"></span></span>
+        </div>
+        <input id="userPassword" autocomplete="off" type="password" class="form-control" name="password" aria-label="Password" aria-describedby="basic-addon2">
+    </div>
+    <div class="input-group mb-3">
+        <div class="captchaCTRL">
+        </div>
+
+    </div>
+    <div style="direction:rtl;text-align:right;" class=" mb-3">
+        <input type="checkbox"  name="rememberMe" value="True" id="remember">
+        <label  for="remember">مرا به خاطر بسپار</label>
+    </div>
+    <div class="input-group mb-3">
+        <button type="button" class="btn btn-primary btn-block loginButton">ورود</button>
+    </div>
+</div>
+
+<script>
+    $('.loginButton').click(function () {
+        var postData = getFormData($('.loginBox'));
+        showLoader($('.loginBox'), true);
+        postForm('/Account/Dashboard/Login', postData, function (res)
+        {
+            if (res && res.isSuccess == true) {
+                location.href = '/Account/Dashboard/Index';
+            }
+        }, null, function () { hideLoader($('.loginBox'), true); });
+    });
+    $('.captchaCTRL').initCaptcha();
+    $('.loginBox').keypress(function (e) { if (e.keyCode == 13) $('.loginButton').click(); });
+</script>

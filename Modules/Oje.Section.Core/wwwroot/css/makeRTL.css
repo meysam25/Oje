@@ -1,0 +1,170 @@
+﻿
+.makeRTL {
+    direction: rtl;
+    text-align: right;
+}
+
+    .makeRTL .loginUserSecitonHeader {
+        float: left;
+    }
+
+    .makeRTL .notificationHolder {
+        float: left;
+    }
+
+    .makeRTL .topMenuLangHolder {
+        float: left;
+    }
+
+    .makeRTL .sideMenuHolder {
+        left: auto;
+        right: 0px;
+    }
+
+    .makeRTL main {
+        margin-right: 270px;
+        margin-left: unset;
+    }
+
+    .makeRTL.closeSideMenu main {
+        margin-right: 0px;
+    }
+
+    .makeRTL.closeSideMenu .sideMenuHolder {
+        right: -100%;
+    }
+
+    .makeRTL .gridTopActionButtonHolder {
+        float: right;
+    }
+
+        .makeRTL .gridTopActionButtonHolder > button {
+            margin-left: 5px;
+        }
+
+    .makeRTL .topGridAction {
+        text-align: left;
+    }
+
+    .makeRTL .gridheaderButton {
+        margin-right: unset;
+    }
+
+    .makeRTL .myGridSearchButton {
+        margin-left: unset;
+        margin-right: 5px;
+    }
+
+    .makeRTL .columnMenu {
+        right: unset;
+        left: 0px;
+    }
+
+    .makeRTL .holderColumnConfig .columnMenuItem {
+        text-align: right;
+    }
+
+        .makeRTL .holderColumnConfig .columnMenuItem > input {
+            margin-right: unset;
+            margin-left: 5px;
+        }
+
+    .makeRTL .holderColumnConfig .holderSearchTextBox > label {
+        right: unset;
+        left: 5px;
+    }
+
+    .makeRTL .myGridPagaer {
+        text-align: right;
+    }
+
+    .makeRTL .myItemPerPage {
+        text-align: left;
+    }
+
+    .makeRTL .gridPageButtonHolder {
+        float: unset;
+    }
+
+    .makeRTL .loginUserMenu {
+        right: unset;
+        left: 0px;
+    }
+
+    .makeRTL .notificationMenuHolder {
+        right: unset;
+        left: 0px;
+    }
+
+    .makeRTL .langMenuItems {
+        right: unset;
+        left: 0px;
+    }
+
+    .makeRTL .sideMenuHeader {
+        padding-left: 0px;
+        padding-right: 5px;
+    }
+
+    .makeRTL .sideMenuItemInner {
+        padding-left: unset;
+        padding-right: 10px;
+    }
+
+    .makeRTL .sideSumMenuItem {
+        padding-left: unset;
+        padding-right: 10px;
+    }
+
+    .makeRTL .sideMenuSubIcon {
+        float: left;
+        margin-right: unset;
+        margin-left: 15px;
+    }
+
+    .makeRTL .fa-chevron-right::before {
+        content: ""
+    }
+
+    .makeRTL .modal-header .close {
+        margin: unset;
+        padding: unset;
+    }
+
+    .makeRTL .modal-footer > button {
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+
+    .makeRTL .treeView {
+        text-align: right;
+    }
+
+    .makeRTL .treeViewItems {
+        padding-left:unset;
+        padding-right:25px;
+    }
+    .makeRTL .treeViewItemTitle > label {
+        margin-left:unset;
+        margin-right:5px;
+    }
+
+@media (max-width: 650px) {
+    .makeRTL .myGrid, .makeRTL .myTableHeader, .makeRTL .myTableHeader > tr, .makeRTL .myTableHeader > tr > td, .makeRTL .myTableBody, .makeRTL .myTableBody > tr, .makeRTL .myTableBody > tr > td {
+        text-align: right !important;
+    }
+
+        .makeRTL .myTableBody > tr > td.actionTD {
+            text-align: center !important;
+        }
+}
+
+@media (max-width: 900px) {
+    .makeRTL main {
+        margin-right: 0px;
+    }
+
+    .makeRTL .headerTopMenuButton {
+        float: left;
+    }
+}

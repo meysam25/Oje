@@ -1,0 +1,465 @@
+
+html {
+    height: 100vh;
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    min-height: 100vh;
+    position: relative;
+    padding: 0px;
+    margin: 0px;
+    background-color: #f3f3f3;
+}
+
+.sideMenuHolder {
+    width: 270px;
+    min-height: 100%;
+    padding-bottom: 30px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: #1d2b36;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+header {
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    height: 50px;
+    padding-left: 10px;
+    background-color: white;
+}
+
+main {
+    margin-left: 270px;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+a:hover {
+    text-decoration: none !important;
+}
+
+.headerTopMenuButton {
+    font-size: 20px;
+    line-height: 47px;
+    display: inline-block;
+    cursor: pointer;
+    width: 47px;
+    text-align: center;
+}
+
+.sideMenuHeader {
+    height: 50px;
+    display: block;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    color: white;
+    line-height: 43px;
+    font-size: 25px;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-left: 5px;
+}
+
+.sideMenu {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sideMenuItem, .sideSumMenuItem {
+    line-height: 40px;
+    display: block;
+    cursor: pointer;
+    min-height: 44px;
+    color: #e6e6e6;
+}
+
+.sideMenuItemInner {
+    padding-left: 10px;
+}
+
+.sideMenuItem:hover, .sideSumMenuItemShow {
+    background-color: #162029;
+    color: white;
+}
+
+.sideSumMenuItems {
+    display: block;
+}
+
+.sideMenuSubIcon {
+    float: right;
+    margin-right: 15px;
+    margin-top: 15px;
+}
+
+.sideSumMenuItem {
+    padding-left: 10px;
+}
+
+    .sideSumMenuItem:hover {
+        background-color: #0b1115;
+    }
+
+.menuIcon {
+    display: inline-block;
+    width: 24px;
+}
+
+.closeSideMenu .sideMenuHolder {
+    left: -100%;
+}
+
+.closeSideMenu main {
+    margin-left: 0px;
+}
+
+.mainContent {
+    padding: 10px;
+}
+
+.loginBox {
+    width: 300px;
+    height: 400px;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    position: absolute;
+    left: 50vw;
+    margin-left: -150px;
+    top: 50vh;
+    margin-top: -200px;
+    padding: 10px;
+    background-color: white;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.loginTitle {
+    text-align: center;
+    border-bottom: 1px solid silver;
+    padding-bottom: 10px;
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.sideSumMenuItemActive {
+    color: orange !important;
+}
+
+.loginUserSecitonHeader {
+    float: right;
+    margin-top: 10px;
+    margin-right: 15px;
+    cursor: pointer;
+    position: relative;
+}
+
+    .loginUserSecitonHeader .loginUserName {
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .loginUserSecitonHeader .loginArrowMenu {
+        font-size: 16px;
+        margin-right:5px;
+    }
+
+.loginUserMenu {
+    display: none;
+    position: absolute;
+    right: 0px;
+    width: 200px;
+    background-color: white;
+    top: 43px;
+    padding: 10px;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    z-index: 2;
+    cursor: default;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.loginMenuItem {
+    color: black;
+    display: block;
+}
+
+.notificationHolder {
+    float: right;
+    margin-top: 13px;
+    margin-right: 15px;
+    cursor: pointer;
+    position: relative;
+}
+
+.notificationTopMenuIcon {
+    font-size: 18px;
+    position: relative;
+    display: inline-block;
+}
+
+.newNotifiaction {
+    font-size: 7pt;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    background-color: red;
+    position: absolute;
+    color: white;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    right: -12px;
+    top: -12px;
+}
+
+.notificationMenuHolder {
+    display: none;
+    position: absolute;
+    right: 0px;
+    top: 40px;
+    width: 320px;
+    background-color: white;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    z-index: 2;
+    cursor: default;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.notifiItemTopM {
+    display: block;
+    border-bottom: 1px solid silver;
+    padding: 10px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    color: #162029;
+}
+
+.notifyCD {
+    font-size: 8pt;
+    display: block;
+}
+
+.notifiItemTopM:last-child {
+    border-bottom: none;
+}
+
+.showLoginMenu .loginUserMenu {
+    display: block;
+}
+
+.showLoginMenu .notificationMenuHolder {
+    display: block;
+}
+
+.topMenuLangHolder {
+    float: right;
+    margin-top: 10px;
+    margin-right: 8px;
+    position: relative;
+}
+
+.selectedLang {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    border: 1px solid silver;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.langMenuItems {
+    position: absolute;
+    right: 0px;
+    top: 30px;
+    width: 150px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background-color: white;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
+    z-index: 2;
+    overflow: hidden;
+    display: none;
+}
+
+.langMenuItem {
+    padding: 5px;
+    border-bottom: 1px solid silver;
+    display: block;
+    cursor: pointer;
+}
+
+    .langMenuItem:last-child {
+        border-bottom: none;
+    }
+
+    .langMenuItem > img {
+        width: 32px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .langMenuItem:hover {
+        background-color: #fafafa;
+    }
+
+.langMenuTitle {
+    width: calc(100% - 40px);
+    display: inline-block;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.showLoginMenu .langMenuItems {
+    display: block;
+}
+
+.mainLoaderForAdminArea {
+    background-color: white;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 100vh;
+    width: 100vw;
+    overflow:hidden;
+    z-index: 11;
+    -moz-transition: 0.4s;
+    -o-transition: 0.4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+
+    .mainLoaderForAdminArea > div {
+        position: absolute;
+        top: 50%;
+        margin-top: -130px;
+        left: 50%;
+        margin-left: -100px;
+    }
+
+.mainLoaderForAdminAreaClose{
+    opacity:0;
+}
+
+.sMenuTitle, .subItemTitle {
+    width: 74%;
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: top;
+}
+.subItemTitle {
+    width:80%;
+}
+
+@keyframes ldio-sb2ixs780v {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    50% {
+        transform: rotate(22.5deg)
+    }
+
+    100% {
+        transform: rotate(45deg)
+    }
+}
+
+.ldio-sb2ixs780v > div {
+    transform-origin: 100px 100px;
+    animation: ldio-sb2ixs780v 0.2s infinite linear;
+}
+
+    .ldio-sb2ixs780v > div div {
+        position: absolute;
+        width: 22px;
+        height: 152px;
+        background: #e15b64;
+        left: 100px;
+        top: 100px;
+        transform: translate(-50%,-50%);
+    }
+
+        .ldio-sb2ixs780v > div div:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+        }
+
+        .ldio-sb2ixs780v > div div:nth-child(6) {
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+
+        .ldio-sb2ixs780v > div div:nth-child(3) {
+            transform: translate(-50%,-50%) rotate(45deg)
+        }
+
+        .ldio-sb2ixs780v > div div:nth-child(4) {
+            transform: translate(-50%,-50%) rotate(90deg)
+        }
+
+        .ldio-sb2ixs780v > div div:nth-child(5) {
+            transform: translate(-50%,-50%) rotate(135deg)
+        }
+
+.loadingio-spinner-gear-icpl4a09xuh {
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.ldio-sb2ixs780v {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: translateZ(0) scale(1);
+    backface-visibility: hidden;
+    transform-origin: 0 0; /* see note above */
+}
+
+    .ldio-sb2ixs780v div {
+        box-sizing: content-box;
+    }
+/* generated by https://loading.io/ */

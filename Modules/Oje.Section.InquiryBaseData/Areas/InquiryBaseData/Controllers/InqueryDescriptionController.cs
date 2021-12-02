@@ -1,0 +1,124 @@
+﻿using Oje.AccountManager.Filters;
+using Oje.Infrastructure;
+using Oje.Infrastructure.Filters;
+using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Services;
+using Oje.Section.InquiryBaseData.Interfaces;
+using Oje.Section.InquiryBaseData.Models.View;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+
+namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
+{
+    [Area("InquiryBaseData")]
+    [Route("[Area]/[Controller]/[Action]")]
+    [AreaConfig(ModualTitle = "تنظیمات استعلام", Icon = "fa-info", Title = "توضیحات استعلام")]
+    [CustomeAuthorizeFilter]
+    public class InqueryDescriptionController : Controller
+    {
+        readonly IInqueryDescriptionManager InqueryDescriptionManager = null;
+        readonly ISiteSettingManager SiteSettingManager = null;
+        readonly IProposalFormManager ProposalFormManager = null;
+        readonly ICompanyManager CompanyManager = null;
+        public InqueryDescriptionController(
+                IInqueryDescriptionManager InqueryDescriptionManager,
+                ISiteSettingManager SiteSettingManager,
+                IProposalFormManager ProposalFormManager,
+                ICompanyManager CompanyManager
+            )
+        {
+            this.InqueryDescriptionManager = InqueryDescriptionManager;
+            this.SiteSettingManager = SiteSettingManager;
+            this.ProposalFormManager = ProposalFormManager;
+            this.CompanyManager = CompanyManager;
+        }
+
+        [AreaConfig(Title = "توضیحات استعلام", Icon = "fa-book", IsMainMenuItem = true)]
+        [HttpGet]
+        public IActionResult Index()
+        {
+            ViewBag.Title = "توضیحات استعلام";
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "InqueryDescription", new { area = "InquiryBaseData" });
+            return View();
+        }
+
+        [AreaConfig(Title = "تنظیمات صفحه لیست توضیحات استعلام", Icon = "fa-cog")]
+        [HttpPost]
+        public IActionResult GetJsonConfig()
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InquiryBaseData", "InqueryDescription")));
+        }
+
+        [AreaConfig(Title = "افزودن توضیحات استعلام جدید", Icon = "fa-plus")]
+        [HttpPost]
+        public IActionResult Create([FromForm] CreateUpdateInqueryDescriptionVM input)
+        {
+            return Json(InqueryDescriptionManager.Create(input));
+        }
+
+        [AreaConfig(Title = "حذف توضیحات استعلام", Icon = "fa-trash-o")]
+        [HttpPost]
+        public IActionResult Delete([FromForm] GlobalIntId input)
+        {
+            return Json(InqueryDescriptionManager.Delete(input?.id));
+        }
+
+        [AreaConfig(Title = "مشاهده  یک توضیحات استعلام", Icon = "fa-eye")]
+        [HttpPost]
+        public IActionResult GetById([FromForm] GlobalIntId input)
+        {
+            return Json(InqueryDescriptionManager.GetById(input?.id));
+        }
+
+        [AreaConfig(Title = "به روز رسانی  توضیحات استعلام", Icon = "fa-pencil")]
+        [HttpPost]
+        public IActionResult Update([FromForm] CreateUpdateInqueryDescriptionVM input)
+        {
+            return Json(InqueryDescriptionManager.Update(input));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست توضیحات استعلام", Icon = "fa-list-alt ")]
+        [HttpPost]
+        public ActionResult GetList([FromForm] InqueryDescriptionMainGrid searchInput)
+        {
+            return Json(InqueryDescriptionManager.GetList(searchInput));
+        }
+
+        [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
+        [HttpPost]
+        public ActionResult Export([FromForm] InqueryDescriptionMainGrid searchInput)
+        {
+            var result = InqueryDescriptionManager.GetList(searchInput);
+            if (result == null || result.data == null || result.data.Count == 0)
+                return NotFound();
+            var byteResult = ExportToExcel.Export(result.data);
+            if (byteResult == null || byteResult.Length == 0)
+                return NotFound();
+
+            return Json(Convert.ToBase64String(byteResult));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست وب سایت", Icon = "fa-list-alt ")]
+        [HttpPost]
+        public ActionResult GetWebSiteList()
+        {
+            return Json(SiteSettingManager.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [HttpPost]
+        public ActionResult GetCompanyList()
+        {
+            return Json(CompanyManager.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [HttpGet]
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(ProposalFormManager.GetSelect2List(searchInput));
+        }
+    }
+}

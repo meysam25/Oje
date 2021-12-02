@@ -1,0 +1,175 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "userGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/InquiryBaseData/RoundInquery/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/InquiryBaseData/RoundInquery/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editRoleModal",
+                "url": "/InquiryBaseData/RoundInquery/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/RoundInquery/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/InquiryBaseData/RoundInquery/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "proposalFormTitle",
+              "caption": "فرم پیشنهاد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "format",
+              "caption": "فرمت",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "type",
+              "caption": "نوع",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/RoundInqueryType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "AddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "formId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/InquiryBaseData/RoundInquery/GetProposalFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "format",
+              "type": "text",
+              "label": "فرمت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/RoundInqueryType",
+              "label": "نوع",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/RoundInquery/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "editRoleModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "formId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/InquiryBaseData/RoundInquery/GetProposalFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "format",
+              "type": "text",
+              "label": "فرمت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/RoundInqueryType",
+              "label": "نوع",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/RoundInquery/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

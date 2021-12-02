@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Oje.Section.InsuranceContractBaseData.Models.View
+{
+    public class InsuranceContractCompanyMainGridResultVM
+    {
+        [Display(Name = "ردیف")]
+        public int row { get; set; }
+        [Display(Name = "شناسه")]
+        public int id { get; set; }
+        [Display(Name = "عنوان")]
+        public string title { get; set; }
+        [Display(Name = "کاربر")]
+        public string createUser { get; set; }
+        [Display(Name = "تاریخ ثبت")]
+        public string createDate { get; set; }
+        [Display(Name = "تلفن")]
+        public string phone { get; set; }
+        [Display(Name = "نام رابط سازمانی")]
+        public string rabeteSazmaniName { get; set; }
+        [Display(Name = "نام مدیر عامل")]
+        public string modirAmelName { get; set; }
+        [Display(Name = "وضعیت")]
+        public string isActive { get; set; }
+    }
+}

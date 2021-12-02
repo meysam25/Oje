@@ -1,0 +1,251 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "userGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/FireBaseData/FireInsuranceCoverage/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/FireBaseData/FireInsuranceCoverage/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editRoleModal",
+                "url": "/FireBaseData/FireInsuranceCoverage/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceCoverage/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/FireBaseData/FireInsuranceCoverage/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "company",
+              "caption": "شرکت بیمه",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/FireBaseData/FireInsuranceCoverage/GetCompanyList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "titleId",
+              "caption": "پوشش",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "ppfTitle",
+              "caption": "فرم پیشنهاد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "rate",
+              "caption": "نرخ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "AddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FireBaseData/FireInsuranceCoverage/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "titleId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/FireBaseData/FireInsuranceCoverage/GetCoverTitleList",
+              "label": "پوشش",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "pfId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/FireBaseData/FireInsuranceCoverage/GetProposalFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "rate",
+              "type": "text",
+              "label": "نرخ",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceCoverage/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "editRoleModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FireBaseData/FireInsuranceCoverage/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "titleId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/FireBaseData/FireInsuranceCoverage/GetCoverTitleList",
+              "label": "پوشش",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "pfId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/FireBaseData/FireInsuranceCoverage/GetProposalFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "rate",
+              "type": "text",
+              "label": "نرخ",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceCoverage/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

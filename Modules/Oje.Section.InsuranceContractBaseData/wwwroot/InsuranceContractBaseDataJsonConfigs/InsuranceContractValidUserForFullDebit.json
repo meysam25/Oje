@@ -1,0 +1,242 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "mainGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('addGridModal', this)",
+              "type": "add",
+              "modalId": "addGridModal"
+            },
+            {
+              "title": "دانلود فایل نمونه",
+              "onClick": "window.open('/Modules/InsuranceContractBaseDataExcelExample/InsuranceContractValidUserForDebit.xlsx');"
+            },
+            {
+              "title": "افزودن (فایل اکسل)",
+              "onClick": "uploadFile('excelFile','.xlsx', '/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/CreateFromXcel', this)"
+            }
+          ],
+          "exportToExcelUrl": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editGridModal",
+                "url": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "contract",
+              "caption": "تفاهم نامه",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetContractList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "createUser",
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "mobile",
+              "caption": "شماره همراه",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "nationalCode",
+              "caption": "کد ملی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "countUse",
+              "caption": "تعداد مورد استفاده",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "addGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "insuranceContractId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetContractList",
+              "label": "قرارداد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "mobile",
+              "type": "text",
+              "label": "شماره همراه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "nationalCode",
+              "type": "text",
+              "label": "کد ملی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "countUse",
+              "type": "text",
+              "label": "تعداد مورد استفاده",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "editGridModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "insuranceContractId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetContractList",
+              "label": "قرارداد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "mobile",
+              "type": "text",
+              "label": "شماره همراه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "nationalCode",
+              "type": "text",
+              "label": "کد ملی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "countUse",
+              "type": "text",
+              "label": "تعداد مورد استفاده",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

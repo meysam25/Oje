@@ -1,0 +1,101 @@
+﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Models.PageForms;
+using Oje.Infrastructure.Services;
+using Oje.ProposalFormManager.Interfaces;
+using Oje.ProposalFormManager.Models.DB;
+using Oje.ProposalFormManager.Services.EContext;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Oje.ProposalFormManager.Services
+{
+    internal class UserManager: IUserManager
+    {
+        readonly ProposalFormDBContext db = null;
+        readonly IRoleManager RoleManager = null;
+        public UserManager(ProposalFormDBContext db, IRoleManager RoleManager)
+        {
+            this.db = db;
+            this.RoleManager = RoleManager;
+        }
+
+        public long CreateUserForProposalFormIfNeeded(IFormCollection form, int? siteSettingId, long? loginUserId)
+        {
+            string mobileNumber = form.GetStringIfExist("mobile");
+            if (string.IsNullOrEmpty(mobileNumber))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
+            if (!mobileNumber.IsMobile())
+                throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
+
+            User newUser = db.Users.Where(t => t.Username == mobileNumber && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            if (newUser != null)
+                return newUser.Id;
+
+            newUser = new User() 
+            {
+                Username = mobileNumber,
+                SiteSettingId = siteSettingId.Value,
+                Address = form.GetStringIfExist("address"),
+                CreateByUserId = loginUserId,
+                CreateDate = DateTime.Now,
+                Email = form.GetStringIfExist("email"),
+                Firstname = form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("firstName") : form.GetStringIfExist("firstAgentName"),
+                IsActive = true,
+                Lastname = form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("lastName") : form.GetStringIfExist("lastAgentName"),
+                Mobile = mobileNumber,
+                Nationalcode = form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("nationalCode") : null,
+                PostalCode = form.GetStringIfExist("postalCode"),
+                ParentId = loginUserId,
+                Tell = form.GetStringIfExist("tell"),
+                Password = RandomService.GeneratePassword(9).Encrypt()
+            };
+
+
+            createForProposalFormValidation(newUser);
+
+            db.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            db.SaveChanges();
+
+            RoleManager.AddUserToUserRole(newUser.Id);
+
+            return newUser.Id;
+        }
+
+        private void createForProposalFormValidation(User newUser)
+        {
+            if (string.IsNullOrEmpty(newUser.Username))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Username);
+            if (newUser.Username.Length > 50)
+                throw BException.GenerateNewException(BMessages.Username_Can_Not_Be_More_Then_50_chars);
+            if (string.IsNullOrEmpty(newUser.Firstname))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Firstname);
+            if (newUser.Firstname.Length > 50)
+                throw BException.GenerateNewException(BMessages.FirstName_CanNot_Be_MoreThen_50_Char);
+            if (string.IsNullOrEmpty(newUser.Lastname))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Lastname);
+            if (newUser.Lastname.Length > 50)
+                throw BException.GenerateNewException(BMessages.Last_CanNot_Be_MoreThen_50_Char);
+            if (string.IsNullOrEmpty(newUser.Password))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Password);
+            if (newUser.Password.Length > 200)
+                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_200_Chars);
+            if (!string.IsNullOrEmpty(newUser.Nationalcode) && newUser.Nationalcode.Length > 12)
+                throw BException.GenerateNewException(BMessages.Invalid_NationaCode);
+            if (!string.IsNullOrEmpty(newUser.Mobile) && newUser.Mobile.Length > 14)
+                throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
+            if (!string.IsNullOrEmpty(newUser.Email) && newUser.Email.Length > 100)
+                throw BException.GenerateNewException(BMessages.Email_CanNot_Be_More_Then_100_Chars);
+            if (!string.IsNullOrEmpty(newUser.Tell) && newUser.Tell.Length > 50)
+                throw BException.GenerateNewException(BMessages.Tell_CanNot_Be_MoreThen_50_Chars);
+            if (!string.IsNullOrEmpty(newUser.PostalCode) && newUser.PostalCode.Length > 12)
+                throw BException.GenerateNewException(BMessages.PostalCode_Is_Not_Valid);
+            if (!string.IsNullOrEmpty(newUser.Address) && newUser.Address.Length > 1000)
+                throw BException.GenerateNewException(BMessages.Address_Length_Is_Not_Valid);
+
+        }
+    }
+}

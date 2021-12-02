@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ادمین</title>
+    <link rel="stylesheet" href="/Modules/Core/css/core.min.css.gz" />
+    <link rel="stylesheet" href="/Modules/Account/css/Account.min.css.gz" />
+
+    <script src="/Modules/Core/js/core.min.js.gz"></script>
+    <script src="/Modules/Account/js/Account.min.js.gz"></script>
+</head>
+<body class="closeSideMenu ">
+    
+    <main>
+        <div class="mainContent">
+            @RenderBody()
+        </div>
+    </main>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

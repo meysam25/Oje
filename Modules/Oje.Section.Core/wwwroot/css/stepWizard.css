@@ -1,0 +1,52 @@
+﻿
+.panelSWizard {
+    border:1px solid silver;
+    margin-bottom:10px;
+    padding-top:10px;
+}
+
+.panelSWizardHolderHeader {
+    padding-bottom: 10px;
+    overflow: hidden;
+}
+.panelSWizardHolderHeaderItem {
+    display:inline-block;
+    text-align: center;
+    opacity: 0;
+    width: 0px;
+    -moz-transition: 0.4s;
+    -o-transition: 0.4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    white-space:nowrap;
+    font-weight:bold;
+}
+.panelSWizardHolderHeaderItemActive {
+    opacity: 1;
+    width: 100%;
+}
+.panelSWizardHolderContent{
+    position:relative;
+    overflow:hidden;
+}
+.panelSWizardHolderContentItem {
+    -moz-transition: 0.4s;
+    -o-transition: 0.4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    position: absolute;
+    width: 100%;
+    left: -10000px;
+    top: 0px;
+    opacity: 0;
+    z-index: 1;
+    padding:10px;
+}
+.panelSWizardHolderContentItemActive{
+    position:static;
+    z-index:2;
+    opacity:1;
+}
+.stepButton {
+    margin-left:10px;
+}

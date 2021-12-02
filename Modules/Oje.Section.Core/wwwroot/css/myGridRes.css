@@ -1,0 +1,36 @@
+﻿
+@media (max-width: 650px) {
+    .myGrid, .myTableHeader, .myTableHeader > tr, .myTableHeader > tr > td,
+    .myTableBody, .myTableBody > tr, .myTableBody > tr > td {
+        display: block;
+        border:none;
+        text-align:left !important;
+    }
+
+        .myTableBody > tr > td, .myTableHeader > tr > td {
+            width: 100% !important;
+            border:none !important;
+        }
+        .myTableHeader > tr:first-child {
+            display: none;
+        }
+    .myTableBody > tr {
+        border:1px solid silver;
+        border-bottom:none;
+    }
+        .myTableBody > tr:last-child {
+            border-bottom:1px solid silver;
+        }
+    .myGridPagaer > div {
+        text-align:center;
+    }
+    .myItemPerPage {
+        text-align:center;
+    }
+    .myTableBody > tr > td.actionTD {
+        text-align: center !important;
+    }
+    .gridResTitle {
+        display:inline-block;
+    }
+}

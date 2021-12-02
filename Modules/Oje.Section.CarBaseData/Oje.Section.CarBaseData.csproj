@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <ItemGroup>
+    <Folder Include="Areas\CarBaseData\Views\Shared\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountManager.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,39 @@
+﻿@inject Oje.AccountManager.Interfaces.ISectionManager ModulManager
+@using Oje.Infrastructure.Services
+
+@{
+    var moduals = ModulManager.GetSideMenu(Context.GetLoginUserId()?.UserId);
+    if (moduals != null && moduals.Count > 0)
+    {
+        foreach (var item in moduals)
+        {
+            <span class="sideMenuItem ">
+                <span class="sideMenuItemInner">
+                    <span class="fa @(item.Icon) menuIcon"></span>
+                    <span title="@(item.Title)" class="sMenuTitle">@(item.Title)</span>
+                    <span class="fa fa-chevron-right sideMenuSubIcon"></span>
+                    <span class="sideSumMenuItems">
+                        @{
+                            foreach (var subItem in item.Controllers)
+                            {
+                                if (subItem.Actions != null && subItem.Actions.Count > 0)
+                                {
+                                    foreach (var action in subItem.Actions)
+                                    {
+                                        <a href="@(action.Name)" class="sideSumMenuItem">
+                                            <span class="sideMenuItemInner">
+                                                <span class="fa @(action.Icon) menuIcon"></span>
+                                                <span title="@(action.Title)" class="subItemTitle" >@(action.Title)</span>
+                                            </span>
+                                        </a>
+                                    }
+                                }
+
+                            }
+                        }
+                    </span>
+                </span>
+            </span>
+        }
+    }
+}

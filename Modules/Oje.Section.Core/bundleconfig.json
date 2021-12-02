@@ -1,0 +1,70 @@
+[
+  {
+    "outputFileName": "wwwroot/Core/js/core.min.js",
+    "inputFiles": [
+      "wwwroot/js/jquery-3.5.1.min.js",
+      "wwwroot/js/calendar.min.js",
+      "wwwroot/js/jquery.Bootstrap-PersianDateTimePicker.min.js",
+      "wwwroot/js/myGrid.js",
+      "wwwroot/js/jquery.toast.js",
+      "wwwroot/js/select2.min.js",
+      "wwwroot/js/seperatorPlugin.js",
+      "wwwroot/js/captchaPlugin.js",
+      "wwwroot/js/treeView.js",
+      "wwwroot/js/main.js",
+      "wwwroot/js/validation.js",
+      "wwwroot/js/formGenerator.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Core/js/ce.js",
+    "inputFiles": [
+      "wwwroot/js/ckeditor.js",
+      "wwwroot/js/fa.js",
+      "wwwroot/js/initCkEditor.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Core/js/bs.min.js",
+    "inputFiles": [
+      "wwwroot/js/bootstrap.bundle.min.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/core.min.css",
+    "inputFiles": [
+      "wwwroot/css/bootstrap.min.css",
+      "wwwroot/css/font.min.css",
+      "wwwroot/css/jquery.toast.css",
+      "wwwroot/css/select2.min.css",
+      "wwwroot/css/myGrid.css",
+      "wwwroot/css/myGridRes.css",
+      "wwwroot/css/treeView.css",
+      "wwwroot/css/main.css",
+      "wwwroot/css/makeRTL.css",
+      "wwwroot/css/jquery.Bootstrap-PersianDateTimePicker.css",
+      "wwwroot/css/stepWizard.css",
+      "wwwroot/css/validation.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  }
+]

@@ -1,0 +1,321 @@
+﻿
+
+.myGrid {
+    width: 100%;
+    background-color: white;
+}
+
+    .myGrid tr td {
+        padding: 5px;
+        border-right: 1px solid silver;
+        border-top: 1px solid silver;
+    }
+
+    .myGrid tr:last-child > td {
+        border-bottom: 1px solid silver;
+    }
+
+    .myGrid tr td:last-child {
+        border-left: 1px solid silver;
+    }
+
+    .myGrid .myGridPagaer {
+        text-align: left;
+        direction: ltr;
+    }
+
+        .myGrid .myGridPagaer > div > button, .myGrid .myGridPagaer > div > span {
+            vertical-align: top;
+            display: inline-block;
+            min-width: 32px;
+            height: 32px;
+            border: 1px solid silver;
+            text-align: center;
+            line-height: 31px;
+            margin: 1px;
+            cursor: pointer;
+            background-color: transparent;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+            .myGrid .myGridPagaer > div > button.normalCR {
+                cursor: auto;
+            }
+
+        .myGrid .myGridPagaer .pagaerDescription {
+            direction: rtl;
+            margin: 5px;
+            margin-left: 10px;
+        }
+
+        .myGrid .myGridPagaer .myActive, .myGrid .myGridPagaer > div > button:hover {
+            background-color: #d4d4d4;
+        }
+
+.myItemPerPage {
+    text-align:right;
+}
+.myGrid .myItemPerPage > span {
+    display: inline-block;
+    margin: 1px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    cursor: pointer;
+}
+
+        .myGrid .myItemPerPage > span.activeItemPerPage {
+            background-color: #d4d4d4;
+        }
+
+
+    .myGrid .myGridAction {
+        display: inline-block;
+        background-color: #005ad3;
+        border: 1px solid #014db3;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        cursor: pointer;
+        margin: 1px;
+        vertical-align: top;
+    }
+
+        .myGrid .myGridAction > i, .myGrid .myGridAction > a > i {
+            color: white;
+            font-size: 13pt;
+            line-height: 24px;
+        }
+
+    .myGrid .myGridActionDelete {
+        background-color: #e20000;
+        border-color: #cc0000;
+    }
+
+    .myGrid .myGridWarning {
+        background-color: #d5b500;
+        border-color: #c5a701;
+    }
+
+.myGridCTRL .holderColumnConfig {
+    text-align: left;
+    position: relative;
+    display: inline-block;
+}
+
+.myGridCTRL .columnConfigButton, .myGridCTRL .exportToExcel, .myGridCTRL .gridExteraFilterModal {
+    display: inline-block;
+    border: 1px solid silver;
+    text-align: center;
+    width: 32px;
+    height: 32px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    vertical-align: top;
+    margin-right: 10px;
+}
+
+    .myGridCTRL .exportToExcel > i {
+        font-size: 14pt;
+        line-height: 30px;
+    }
+    .myGridCTRL .gridExteraFilterModal > i {
+        font-size: 14pt;
+        line-height: 30px;
+    }
+
+    .myGridCTRL .columnConfigButton:hover, .myGridCTRL .exportToExcel:hover {
+        background-color: rgba(178, 178, 178, 0.35);
+    }
+
+    .myGridCTRL .columnConfigButton .columnConfigButtonIcon {
+        font-size: 14pt;
+        line-height: 30px;
+    }
+
+.holderColumnConfig .columnMenu {
+    display: none;
+    width: 300px;
+    position: absolute;
+    top: 36px;
+    right: 0px;
+    background-color: white;
+    text-align: right;
+    padding: 10px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    z-index: 4;
+}
+
+.holderColumnConfig .columnMenuItem {
+    display: block;
+    text-align:left;
+}
+
+    .holderColumnConfig .columnMenuItem > label {
+        vertical-align: 0px;
+        cursor: pointer;
+    }
+
+    .holderColumnConfig .columnMenuItem > input {
+        margin-right: 5px;
+        vertical-align: 0px;
+    }
+
+.holderColumnConfig .columnSearchBox {
+    margin-bottom: 10px;
+}
+
+.holderColumnConfig .holderSearchTextBox {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+    .holderColumnConfig .holderSearchTextBox > label {
+        position: absolute;
+        right: 5px;
+        top: 7px;
+        font-size: 18pt;
+        color: rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+    }
+
+.holderColumnConfig .holdercolumnItem {
+    display: block;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.openConfigMenu .columnMenu {
+    display: block;
+}
+
+.gridAddButton {
+    display: inline-block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    color: white;
+    font-size: 13pt;
+    background-color: #37BC9B;
+    line-height: 25px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.myGridSearchButton {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 30px;
+    border: 1px solid silver;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    text-align: center;
+    vertical-align: top;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+    .myGridSearchButton:hover {
+        background-color: rgba(178, 178, 178, 0.35);
+    }
+
+.hasSort {
+    cursor: pointer;
+}
+
+.rowBindItem > td {
+    -ms-word-break: break-word;
+    word-break: break-word;
+}
+
+.convertToImageGallery > table {
+    display: block;
+    border:1px solid silver;
+}
+
+    .convertToImageGallery > table > thead {
+        display: none;
+    }
+
+    .convertToImageGallery > table > tbody {
+        display: block;
+        text-align:center;
+    }
+
+        .convertToImageGallery > table > tbody > tr {
+            display: inline-block;
+            border: 1px solid silver;
+            margin: 10px;
+            position: relative;
+        }
+            .convertToImageGallery > table > tbody > tr:last-child {
+                display:block;
+            }
+            .convertToImageGallery > table > tbody > tr:last-child > td {
+                display:inline-block;
+                width:100%;
+            }
+
+            .convertToImageGallery > table > tbody > tr > td {
+                display: inline-block;
+                border: none !important;
+            }
+
+                .convertToImageGallery > table > tbody > tr > td.actionTD {
+                    position: absolute;
+                    top: 0px;
+                    left: 0px;
+                    width: 100%;
+                }
+
+.itemTitle {
+    display: block;
+    text-align: center;
+}
+.myGrid tr td:first-child {
+    border-left:1px solid silver;
+}
+.gridheaderButton{
+    margin-right:10px;
+}
+.gridTopActionButtonHolder{
+    float:left;
+    margin-bottom:10px;
+}
+.gridResTitle {
+    display:none;
+}
+.topGridAction{
+    text-align:right;
+}
+.gridPageButtonHolder {
+    display:inline-block;
+    float:left;
+}
+.gridExpandButton {
+    display: inline-block;
+    cursor:pointer;
+}

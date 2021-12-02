@@ -1,0 +1,14 @@
+﻿
+@{ 
+    Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="MainHolder"></div>
+<script>
+    @{
+        if(ViewBag.exteraParameters != null)
+        {
+            ViewContext.Writer.Write("var exteraModelParams = JSON.parse('" + Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.exteraParameters) + "');");
+        }
+    }
+    loadJsonConfig('@ViewBag.ConfigRoute');
+</script>
