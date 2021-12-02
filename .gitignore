@@ -365,3 +365,4 @@ FodyWeavers.xsd
 # For Temp Files
 *.gz
 UploadImages/
+Oje.Web/wwwroot
