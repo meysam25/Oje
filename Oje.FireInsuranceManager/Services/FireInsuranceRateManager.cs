@@ -38,6 +38,8 @@ namespace Oje.FireInsuranceManager.Services
         readonly IRoundInqueryManager RoundInqueryManager = null;
         readonly IGlobalInqueryManager GlobalInqueryManager = null;
         readonly IInqueryDescriptionManager InqueryDescriptionManager = null;
+        readonly IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager = null;
+        readonly IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager = null;
         public FireInsuranceRateManager(
                 FireInsuranceManagerDBContext db,
                 IProvinceManager ProvinceManager,
@@ -59,7 +61,9 @@ namespace Oje.FireInsuranceManager.Services
                 IGlobalInputInqueryManager GlobalInputInqueryManager,
                 IRoundInqueryManager RoundInqueryManager,
                 IGlobalInqueryManager GlobalInqueryManager,
-                IInqueryDescriptionManager InqueryDescriptionManager
+                IInqueryDescriptionManager InqueryDescriptionManager,
+                IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager,
+                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager
             )
         {
             this.db = db;
@@ -83,6 +87,8 @@ namespace Oje.FireInsuranceManager.Services
             this.RoundInqueryManager = RoundInqueryManager;
             this.GlobalInqueryManager = GlobalInqueryManager;
             this.InqueryDescriptionManager = InqueryDescriptionManager;
+            this.FireInsuranceTypeOfActivityManager = FireInsuranceTypeOfActivityManager;
+            this.FireInsuranceCoverageTitleManager = FireInsuranceCoverageTitleManager;
         }
 
         public object Inquiry(int? siteSettingId, FireInsuranceInquiryVM input)
@@ -527,9 +533,43 @@ namespace Oje.FireInsuranceManager.Services
             validateAndCaclulateSarmayeh(result, input);
             validateAndFillFireInsuranceRates(result, input);
             fillInqueryDescription(result, siteSettingId);
+            validateAndFillFireInsuranceCoverageTitle(result, input);
+            validateAndFillFireInsuranceTypeOfActivities(result, input);
 
 
             return result;
+        }
+
+        private void validateAndFillFireInsuranceTypeOfActivities(FireInsuranceInquiryFilledObj result, FireInsuranceInquiryVM input)
+        {
+            if (result.FireInsuranceCoverageTitles != null && result.FireInsuranceCoverageTitles.Count() > 0 && input.exteraQuestions != null)
+            {
+                List<int> allTitleIds = new List<int>();
+                foreach (var title in result.FireInsuranceCoverageTitles)
+                    if (title.FireInsuranceCoverageActivityDangerLevels != null && title.FireInsuranceCoverageActivityDangerLevels.Count > 0)
+                    {
+                        if (!allTitleIds.Contains(title.Id))
+                            allTitleIds.Add(title.Id);
+                    }
+                var foundAllActivityIds = input.exteraQuestions.Where(t => allTitleIds.Contains(t.id)).Select(t =>  t.value.ToIntReturnZiro()).Where(t => t > 0).ToList();
+                result.FireInsuranceTypeOfActivities = FireInsuranceTypeOfActivityManager.GetBy(foundAllActivityIds);
+                if (foundAllActivityIds.Count != result.FireInsuranceTypeOfActivities.Count)
+                    throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            }
+        }
+
+        private void validateAndFillFireInsuranceCoverageTitle(FireInsuranceInquiryFilledObj result, FireInsuranceInquiryVM input)
+        {
+            if (input.exteraQuestions != null && input.exteraQuestions.Count > 0)
+            {
+                var allIds = input.exteraQuestions.Where(t => t.id > 0).Select(t => t.id).ToList();
+                if (allIds.Count != input.exteraQuestions.Count)
+                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                result.FireInsuranceCoverageTitles = FireInsuranceCoverageTitleManager.GetBy(allIds);
+                if (result.FireInsuranceCoverageTitles.Count != allIds.Count)
+                    throw BException.GenerateNewException(BMessages.Validation_Error);
+            }
         }
 
         private void fillInqueryDescription(FireInsuranceInquiryFilledObj result, int? siteSettingId)

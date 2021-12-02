@@ -17,6 +17,8 @@ namespace Oje.FireInsuranceManager.Models.View
             FireInsuranceRates = new();
             InquiryMaxDiscounts = new();
             InqueryDescriptions = new();
+            FireInsuranceCoverageTitles = new();
+            FireInsuranceTypeOfActivities = new();
         }
 
         public long sarmaye { get; set; }
@@ -42,5 +44,7 @@ namespace Oje.FireInsuranceManager.Models.View
         public List<FireInsuranceRate> FireInsuranceRates { get; set; }
         public RoundInquery RoundInquery { get; set; }
         public List<InqueryDescription> InqueryDescriptions { get; set; }
+        public List<FireInsuranceCoverageTitle> FireInsuranceCoverageTitles { get; set; }
+        public List<FireInsuranceTypeOfActivity> FireInsuranceTypeOfActivities { get; set; }
     }
 }

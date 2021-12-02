@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Oje.FireInsuranceManager.Models.View
@@ -49,5 +50,7 @@ namespace Oje.FireInsuranceManager.Models.View
         public string buildingAge_Title { get; set; }
         [Display(Name = "شرکت")]
         public List<int> comIds { get; set; }
+        [Display(Name ="پوشش ها")]
+        public List<IntIdValue> exteraQuestions { get; set; }
     }
 }

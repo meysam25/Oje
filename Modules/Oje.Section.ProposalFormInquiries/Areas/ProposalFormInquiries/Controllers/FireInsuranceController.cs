@@ -5,6 +5,7 @@ using Oje.FireInsuranceManager.Models.View;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
+using Oje.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
         readonly IFireInsuranceRateManager FireInsuranceRateManager = null;
         readonly IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager = null;
+        readonly IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager = null;
 
         public FireInsuranceController(
                 IFireInsuranceBuildingUnitValueManager FireInsuranceBuildingUnitValueManager,
@@ -42,7 +44,8 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
                 IProposalFormManager ProposalFormManager,
                 IInsuranceContractDiscountManager InsuranceContractDiscountManager,
                 IFireInsuranceRateManager FireInsuranceRateManager,
-                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager
+                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager,
+                IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager
             )
         {
             this.FireInsuranceBuildingUnitValueManager = FireInsuranceBuildingUnitValueManager;
@@ -56,6 +59,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
             this.FireInsuranceRateManager = FireInsuranceRateManager;
             this.FireInsuranceCoverageTitleManager = FireInsuranceCoverageTitleManager;
+            this.FireInsuranceTypeOfActivityManager = FireInsuranceTypeOfActivityManager;
         }
 
         [AreaConfig(Title = "استعلام آتش سوزی", Icon = "fa-fire", IsMainMenuItem = true)]
@@ -136,6 +140,13 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         public ActionResult GetExteraFilters()
         {
             return Json(FireInsuranceCoverageTitleManager.GetInquiryExteraFilterCtrls());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست فعالیت ", Icon = "fa-list-alt")]
+        [HttpGet]
+        public ActionResult GetActivityList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(FireInsuranceTypeOfActivityManager.GetList(searchInput));
         }
     }
 }

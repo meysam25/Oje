@@ -165,7 +165,7 @@ function getInputTemplate(ctrl) {
             result += '<div class="' + ctrl.parentCL + '">';
         switch (ctrl.type) {
             case 'hidden':
-                result += '<input autocomplete="off" type="hidden" name="' + ctrl.name + '" />';
+                result += '<input autocomplete="off" type="hidden" name="' + ctrl.name + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue +'"' : '') +' />';
                 break;
             case 'text':
             case 'password':
@@ -520,7 +520,7 @@ function getDropdownCTRLTemplate(ctrl) {
                     exteraSelect2Parameters[prop] = exteraModelParams[prop];
 
             var select2Option = {
-                placeholder: "لطفا انتخاب کنید",
+                placeholder: ctrl.ph ? ctrl.ph : "لطفا انتخاب کنید",
                 ajax: {
                     url: this.dataurl,
                     data: function (params) {

@@ -1,5 +1,9 @@
-﻿using Oje.FireInsuranceManager.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Oje.FireInsuranceManager.Interfaces;
+using Oje.FireInsuranceManager.Models.DB;
 using Oje.FireInsuranceManager.Services.EContext;
+using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +18,15 @@ namespace Oje.FireInsuranceManager.Services
         public FireInsuranceCoverageTitleManager(FireInsuranceManagerDBContext db)
         {
             this.db = db;
+        }
+
+        public List<FireInsuranceCoverageTitle> GetBy(List<int> allIds)
+        {
+            return db.FireInsuranceCoverageTitles
+               .Include(t => t.FireInsuranceCoverageActivityDangerLevels)
+               .Where(t => t.IsActive == true && allIds.Contains(t.Id))
+               .AsNoTracking()
+               .ToList();
         }
 
         public object GetInquiryExteraFilterCtrls()
@@ -38,22 +51,35 @@ namespace Oje.FireInsuranceManager.Services
                     allCtrls.Add(new 
                     {
                         parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-                        name = "exteraQuestions[" + i + "]",
+                        name = "exteraQuestions[" + i + "].value",
                         type = "dropDown2",
                         textfield = "title",
                         valuefield = "id",
-                        dataurl = "/Core/BaseData/GetActivityList",
+                        dataurl = "/ProposalFormInquiries/FireInsurance/GetActivityList",
+                        ph  = BMessages.Please_Select_Your_Activity.GetEnumDisplayName(),
                         label = cover.title
+                    });
+                    allCtrls.Add(new
+                    {
+                        name = "exteraQuestions[" + i + "].id",
+                        type = "hidden",
+                        dfaultValue = cover.id
                     });
                 } else if (cover.type == Infrastructure.Enums.FireInsuranceCoverageEffectOn.InputByUser)
                 {
                     allCtrls.Add(new 
                     {
                         parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-                        name = "exteraQuestions[" + i + "]",
+                        name = "exteraQuestions[" + i + "].value",
                         type = "text",
                         ph = "لطفا سرمایه را وارد کنید",
                         label  = cover.title
+                    });
+                    allCtrls.Add(new
+                    {
+                        name = "exteraQuestions[" + i + "].id",
+                        type = "hidden",
+                        dfaultValue = cover.id
                     });
                 } else
                 {
@@ -66,6 +92,12 @@ namespace Oje.FireInsuranceManager.Services
                         valuefield = "id",
                         dataurl = "/Core/BaseData/Get/IsActive",
                         label = cover.title
+                    });
+                    allCtrls.Add(new
+                    {
+                        name = "exteraQuestions[" + i + "].id",
+                        type = "hidden",
+                        dfaultValue = cover.id
                     });
                 }
             }

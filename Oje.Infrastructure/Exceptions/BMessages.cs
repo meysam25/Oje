@@ -428,6 +428,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name ="لطفا شهر را انتخاب کنید")]
         Please_Select_City = 208,
         [Display(Name ="سن بنا ({0})")]
-        Building_Age = 209
+        Building_Age = 209,
+        [Display(Name ="لطفا فعالیت خود را انتخاب کنید")]
+        Please_Select_Your_Activity = 210
     }
 }
