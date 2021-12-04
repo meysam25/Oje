@@ -37,9 +37,9 @@ namespace Oje.FireInsuranceManager.Services.EContext
         public DbSet<InquiryCompanyLimit> InquiryCompanyLimits { get; set; }
         public DbSet<InquiryCompanyLimitCompany> InquiryCompanyLimitCompanies { get; set; }
         public DbSet<GlobalDiscount> GlobalDiscounts { get; set; }
-        public DbSet<GlobalInputInquery> GlobalInputInqueries { get; set;}
+        public DbSet<GlobalInputInquery> GlobalInputInqueries { get; set; }
         public DbSet<GlobalInquery> GlobalInqueries { get; set; }
-        public DbSet<CashPayDiscount> CashPayDiscounts { get; set;}
+        public DbSet<CashPayDiscount> CashPayDiscounts { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<RoundInquery> RoundInqueriess { get; set; }
         public DbSet<InqueryDescription> InqueryDescriptions { get; set; }

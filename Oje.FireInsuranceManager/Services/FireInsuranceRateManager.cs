@@ -40,6 +40,8 @@ namespace Oje.FireInsuranceManager.Services
         readonly IInqueryDescriptionManager InqueryDescriptionManager = null;
         readonly IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager = null;
         readonly IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager = null;
+        readonly IFireInsuranceCoverageManager FireInsuranceCoverageManager = null;
+        readonly IFireInsuranceCoverageCityDangerLevelManager FireInsuranceCoverageCityDangerLevelManager = null;
         public FireInsuranceRateManager(
                 FireInsuranceManagerDBContext db,
                 IProvinceManager ProvinceManager,
@@ -63,7 +65,9 @@ namespace Oje.FireInsuranceManager.Services
                 IGlobalInqueryManager GlobalInqueryManager,
                 IInqueryDescriptionManager InqueryDescriptionManager,
                 IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager,
-                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager
+                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager,
+                IFireInsuranceCoverageManager FireInsuranceCoverageManager,
+                IFireInsuranceCoverageCityDangerLevelManager FireInsuranceCoverageCityDangerLevelManager
             )
         {
             this.db = db;
@@ -89,6 +93,8 @@ namespace Oje.FireInsuranceManager.Services
             this.InqueryDescriptionManager = InqueryDescriptionManager;
             this.FireInsuranceTypeOfActivityManager = FireInsuranceTypeOfActivityManager;
             this.FireInsuranceCoverageTitleManager = FireInsuranceCoverageTitleManager;
+            this.FireInsuranceCoverageManager = FireInsuranceCoverageManager;
+            this.FireInsuranceCoverageCityDangerLevelManager = FireInsuranceCoverageCityDangerLevelManager;
         }
 
         public object Inquiry(int? siteSettingId, FireInsuranceInquiryVM input)
@@ -104,6 +110,7 @@ namespace Oje.FireInsuranceManager.Services
 
                     addBasePrice(filledObj, result, GlobalInputInqueryId, siteSettingId);
                     addCacleForBuildingAge(filledObj, result);
+                    addCalceForCoverages(filledObj, result, input);
                     addCacleDiscountContract(filledObj, result);
                     addCacleGlobalDiscountAuto(filledObj, result);
                     addCacleGlobalDiscount(filledObj, result, siteSettingId, input.discountCode);
@@ -119,6 +126,85 @@ namespace Oje.FireInsuranceManager.Services
             }
 
             return new { total = 0, data = new List<object>() };
+        }
+
+        private void addCalceForCoverages(FireInsuranceInquiryFilledObj filledObj, List<GlobalInquery> result, FireInsuranceInquiryVM input)
+        {
+            if (filledObj.FireInsuranceCoverageTitles != null && filledObj.FireInsuranceCoverageTitles.Count > 0 && input.exteraQuestions != null && input.exteraQuestions.Count > 0)
+            {
+                foreach (var r in result)
+                {
+                    foreach (var coverTitle in filledObj.FireInsuranceCoverageTitles)
+                    {
+                        if (coverTitle.FireInsuranceCoverageActivityDangerLevels != null && coverTitle.FireInsuranceCoverageActivityDangerLevels.Count > 0)
+                        {
+                            var currentUserInputValue = input.exteraQuestions.Where(t => t.id == coverTitle.Id).FirstOrDefault();
+
+                            if (filledObj.FireInsuranceTypeOfActivities != null && currentUserInputValue != null && currentUserInputValue.value.ToIntReturnZiro() > 0)
+                            {
+                                var foundCurrActivity = filledObj.FireInsuranceTypeOfActivities.Where(t => t.IsActive == true && t.Id == currentUserInputValue.value.ToIntReturnZiro()).FirstOrDefault();
+                                if (foundCurrActivity != null)
+                                {
+                                    var foundRateOfActivity = coverTitle.FireInsuranceCoverageActivityDangerLevels.Where(t => t.IsActive == true && t.DangerStep == foundCurrActivity.DangerStep).FirstOrDefault();
+                                    if (foundRateOfActivity != null)
+                                    {
+                                        createNewItemForInquery(r, foundRateOfActivity.Rate, coverTitle.EffectOn, null, filledObj, input.assetValue, coverTitle.Title);
+                                    }
+                                }
+                            }
+                        }
+                        else if (filledObj.FireInsuranceCoverageCityDangerLevels.Any(tt => tt.FireInsuranceCoverageTitleId == coverTitle.Id && tt.IsActive == true))
+                        {
+                            var currentUserInputValue = input.exteraQuestions.Where(t => t.id == coverTitle.Id).FirstOrDefault();
+                            var foundCityRate = filledObj.FireInsuranceCoverageCityDangerLevels.Where(tt => tt.FireInsuranceCoverageTitleId == coverTitle.Id).FirstOrDefault();
+                            if (currentUserInputValue != null && foundCityRate != null && !string.IsNullOrEmpty(currentUserInputValue.value) && currentUserInputValue.value.ToLower() == "true")
+                            {
+                                createNewItemForInquery(r, foundCityRate.Rate, coverTitle.EffectOn, null, filledObj, input.assetValue, coverTitle.Title);
+                            }
+                        }
+                        else if (filledObj.FireInsuranceCoverages != null && filledObj.FireInsuranceCoverages.Any(t => t.FireInsuranceCoverageTitleId == coverTitle.Id && t.IsActive == true && t.FireInsuranceCoverageCompanies.Any(tt => tt.CompanyId == r.CompanyId)))
+                        {
+                            var currentUserInputValue = input.exteraQuestions.Where(t => t.id == coverTitle.Id).FirstOrDefault();
+                            var foundCoverRate = filledObj.FireInsuranceCoverages.Where(t => t.FireInsuranceCoverageTitleId == coverTitle.Id && t.IsActive == true && t.FireInsuranceCoverageCompanies.Any(tt => tt.CompanyId == r.CompanyId)).FirstOrDefault();
+                            if (foundCoverRate != null && !string.IsNullOrEmpty(currentUserInputValue.value) && currentUserInputValue.value.ToLower() != "false")
+                            {
+                                createNewItemForInquery(r, foundCoverRate.Rate, coverTitle.EffectOn, currentUserInputValue.value.ToLongReturnZiro(), filledObj, input.assetValue, coverTitle.Title);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        private void createNewItemForInquery(GlobalInquery r, decimal? rate, FireInsuranceCoverageEffectOn effectOn, long? userInput, FireInsuranceInquiryFilledObj filledObj, long? assetValue, string coverTitle)
+        {
+            long targetPrice = 0;
+            if (effectOn == FireInsuranceCoverageEffectOn.InputByUser)
+                targetPrice = userInput.ToLongReturnZiro();
+            else if (effectOn == FireInsuranceCoverageEffectOn.Investment)
+                targetPrice = filledObj.sarmaye;
+            else if (effectOn == FireInsuranceCoverageEffectOn.AssetsValue)
+                targetPrice = assetValue.ToLongReturnZiro();
+            else if (effectOn == FireInsuranceCoverageEffectOn.ValueOfBuilding)
+                targetPrice = filledObj.arzeshSakhteman;
+
+            if (targetPrice > 0)
+            {
+                if (rate != null)
+                {
+                    var newRow = new GlobalInquiryItem()
+                    {
+                        CalcKey = "cover",
+                        GlobalInquiryId = r.Id,
+                        Title = coverTitle
+                    };
+                    newRow.Price = RouteThisNumberIfConfigExist((Convert.ToDecimal(targetPrice * rate)).ToLongReturnZiro(), filledObj.RoundInquery);
+                    r.GlobalInquiryItems.Add(newRow);
+                    return;
+                }
+            }
+            r.deleteMe = true;
         }
 
         private void addCacleForBuildingAge(FireInsuranceInquiryFilledObj filledObj, List<GlobalInquery> result)
@@ -535,9 +621,21 @@ namespace Oje.FireInsuranceManager.Services
             fillInqueryDescription(result, siteSettingId);
             validateAndFillFireInsuranceCoverageTitle(result, input);
             validateAndFillFireInsuranceTypeOfActivities(result, input);
+            fillFireInsuranceCoverage(result);
+            fillFireInsuranceCoverageCityDangerLevel(result);
 
 
             return result;
+        }
+
+        private void fillFireInsuranceCoverageCityDangerLevel(FireInsuranceInquiryFilledObj result)
+        {
+            result.FireInsuranceCoverageCityDangerLevels = FireInsuranceCoverageCityDangerLevelManager.GetList(result.City?.FireDangerGroupLevel);
+        }
+
+        private void fillFireInsuranceCoverage(FireInsuranceInquiryFilledObj result)
+        {
+            result.FireInsuranceCoverages = FireInsuranceCoverageManager.GetList(result.ProposalForm?.Id, result.Companies.Select(t => t.Id).ToList());
         }
 
         private void validateAndFillFireInsuranceTypeOfActivities(FireInsuranceInquiryFilledObj result, FireInsuranceInquiryVM input)
@@ -551,10 +649,10 @@ namespace Oje.FireInsuranceManager.Services
                         if (!allTitleIds.Contains(title.Id))
                             allTitleIds.Add(title.Id);
                     }
-                var foundAllActivityIds = input.exteraQuestions.Where(t => allTitleIds.Contains(t.id)).Select(t =>  t.value.ToIntReturnZiro()).Where(t => t > 0).ToList();
+                var foundAllActivityIds = input.exteraQuestions.Where(t => allTitleIds.Contains(t.id)).Select(t => t.value.ToIntReturnZiro()).Where(t => t > 0).ToList();
                 result.FireInsuranceTypeOfActivities = FireInsuranceTypeOfActivityManager.GetBy(foundAllActivityIds);
-                if (foundAllActivityIds.Count != result.FireInsuranceTypeOfActivities.Count)
-                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                //if (foundAllActivityIds.Count != result.FireInsuranceTypeOfActivities.Count)
+                //    throw BException.GenerateNewException(BMessages.Validation_Error);
 
             }
         }

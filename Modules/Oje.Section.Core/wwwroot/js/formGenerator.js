@@ -554,7 +554,7 @@ function bindExteraDropDown(res, ctrlCss, targetCtrlId) {
     if (res && res.length > 0) {
         var ctrlHtmls = '';
         for (var i = 0; i < res.length; i++) {
-            ctrlHtmls += '<div class="' + ctrlCss + '">';
+            ctrlHtmls += '<div class="' + ctrlCss + ' dynamicCtrlsHolder">';
             ctrlHtmls += getDropdownCTRLTemplate({
                 "id": "requiredDD" + res[i].id,
                 "type": "dropDown",
@@ -568,6 +568,7 @@ function bindExteraDropDown(res, ctrlCss, targetCtrlId) {
             ctrlHtmls += '</div>';
         }
         if (ctrlHtmls && $('#' + targetCtrlId).length > 0) {
+            $('#' + targetCtrlId).closest('.myPanel').find('.dynamicCtrlsHolder').remove();
             $('#' + targetCtrlId).closest('.myCtrl').parent().after(ctrlHtmls);
         }
     }

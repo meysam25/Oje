@@ -62,6 +62,8 @@ namespace Oje.ProposalFormManager.Services.EContext
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<ProposalFilledFormDocument> ProposalFilledFormDocuments { get; set; }
+        public DbSet<CarBodyCreateDatePercent> CarBodyCreateDatePercents { get; set; }
+        public DbSet<CarSpecificationAmount> CarSpecificationAmounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -72,6 +74,7 @@ namespace Oje.ProposalFormManager.Services.EContext
             modelBuilder.Entity<VehicleUsage>().Property(e => e.BodyPercent).HasPrecision(5, 3);
             modelBuilder.Entity<VehicleUsage>().Property(e => e.ThirdPartyPercent).HasPrecision(5, 3);
             modelBuilder.Entity<CarExteraDiscountRangeAmount>().Property(e => e.Percent).HasPrecision(5, 2);
+            modelBuilder.Entity<CarSpecificationAmount>().Property(e => e.Rate).HasPrecision(7, 5);
 
             modelBuilder.Entity<InquiryCompanyLimitCompany>().HasKey(t => new { t.CompanyId, t.InquiryCompanyLimitId });
             modelBuilder.Entity<ProposalFilledFormCompany>().HasKey(t => new { t.CompanyId, t.ProposalFilledFormId });

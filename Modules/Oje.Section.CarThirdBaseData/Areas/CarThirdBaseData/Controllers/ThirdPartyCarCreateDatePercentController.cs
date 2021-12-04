@@ -7,10 +7,6 @@ using Oje.Section.CarThirdBaseData.Interfaces;
 using Oje.Section.CarThirdBaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
 {

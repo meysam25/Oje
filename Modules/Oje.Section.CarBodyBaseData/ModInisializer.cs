@@ -24,6 +24,7 @@ namespace Oje.Section.CarBodyBaseData
             services.AddScoped<ICarSpecificationManager, CarSpecificationManager>();
             services.AddScoped<ICarSpecificationAmountManager, CarSpecificationAmountManager>();
             services.AddScoped<ICompanyManager, CompanyManager>();
+            services.AddScoped<ICarBodyCreateDatePercentManager, CarBodyCreateDatePercentManager>();
         }
     }
 }

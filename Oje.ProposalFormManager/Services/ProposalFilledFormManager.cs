@@ -293,6 +293,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (ctrl.isRequired == true)
                 if (!form.Keys.Contains(ctrl.name) || string.IsNullOrEmpty(form.GetStringIfExist(ctrl.name)))
+                    if(!needToBeIgnore(ctrl.name))
                     throw BException.GenerateNewException
                             (
                                 string.Format
@@ -302,6 +303,17 @@ namespace Oje.ProposalFormManager.Services
                                     )
                             );
 
+        }
+
+        private bool needToBeIgnore(string name)
+        {
+            switch(name)
+            {
+                case "payCondation":
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private void createValidation(int? siteSettingId, IFormCollection form)

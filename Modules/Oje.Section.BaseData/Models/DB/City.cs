@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,6 +20,7 @@ namespace Oje.Section.BaseData.Models.DB
         [InverseProperty("Cities")]
         public Province Province { get; set; }
         public bool IsActive { get; set; }
+        public FireDangerGroupLevelType? FireDangerGroupLevel { get; set; }
 
     }
 }

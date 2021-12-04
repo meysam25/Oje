@@ -37,6 +37,8 @@ namespace Oje.FireInsuranceManager
             services.AddScoped<IInqueryDescriptionManager, InqueryDescriptionManager>();
             services.AddScoped<IFireInsuranceCoverageTitleManager, FireInsuranceCoverageTitleManager>();
             services.AddScoped<IFireInsuranceTypeOfActivityManager, FireInsuranceTypeOfActivityManager>();
+            services.AddScoped<IFireInsuranceCoverageManager, FireInsuranceCoverageManager>();
+            services.AddScoped<IFireInsuranceCoverageCityDangerLevelManager, FireInsuranceCoverageCityDangerLevelManager>();
         }
     }
 }

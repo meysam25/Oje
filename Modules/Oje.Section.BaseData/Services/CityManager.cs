@@ -32,7 +32,8 @@ namespace Oje.Section.BaseData.Services
             {
                 Title = input.title,
                 ProvinceId = input.provinceId.Value,
-                IsActive = input.isActive.ToBooleanReturnFalse()
+                IsActive = input.isActive.ToBooleanReturnFalse(),
+                FireDangerGroupLevel = input.fireLevel
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -65,14 +66,15 @@ namespace Oje.Section.BaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public CreateUpdateCityVM GetById(int? id)
+        public object GetById(int? id)
         {
-            return db.Cities.Where(t => t.Id == id).AsNoTracking().Select(t => new CreateUpdateCityVM
+            return db.Cities.Where(t => t.Id == id).AsNoTracking().Select(t => new 
             {
                 id = t.Id,
                 title = t.Title,
                 provinceId = t.ProvinceId,
-                isActive = t.IsActive
+                isActive = t.IsActive,
+                fireLevel =(int?) t.FireDangerGroupLevel 
             }).FirstOrDefault();
         }
 
@@ -127,6 +129,7 @@ namespace Oje.Section.BaseData.Services
             foundItem.Title = input.title;
             foundItem.ProvinceId = input.provinceId.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.FireDangerGroupLevel = input.fireLevel;
 
             db.SaveChanges();
 

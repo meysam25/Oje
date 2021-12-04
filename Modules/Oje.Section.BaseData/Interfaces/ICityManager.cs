@@ -12,7 +12,7 @@ namespace Oje.Section.BaseData.Interfaces
     {
         ApiResult Create(CreateUpdateCityVM input);
         ApiResult Delete(int? id);
-        CreateUpdateCityVM GetById(int? id);
+        object GetById(int? id);
         ApiResult Update(CreateUpdateCityVM input);
         GridResultVM<CityMainGriResultVM> GetList(CityMainGrid searchInput);
     }

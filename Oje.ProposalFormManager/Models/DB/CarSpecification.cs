@@ -16,6 +16,7 @@ namespace Oje.ProposalFormManager.Models.DB
             VehicleTypes = new ();
             ThirdPartyPassengerRates = new ();
             ThirdPartyExteraFinancialCommitments = new();
+            CarSpecificationAmounts = new();
         }
 
         [Key]
@@ -32,5 +33,7 @@ namespace Oje.ProposalFormManager.Models.DB
         public List<ThirdPartyPassengerRate> ThirdPartyPassengerRates { get; set; }
         [InverseProperty("CarSpecification")]
         public List<ThirdPartyExteraFinancialCommitment> ThirdPartyExteraFinancialCommitments { get; set; }
+        [InverseProperty("CarSpecification")]
+        public List<CarSpecificationAmount> CarSpecificationAmounts { get; set; }
     }
 }

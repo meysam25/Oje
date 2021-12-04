@@ -86,7 +86,7 @@ namespace Oje.FireInsuranceManager.Services
                     allCtrls.Add(new
                     {
                         parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-                        name = "exteraQuestions[" + i + "]",
+                        name = "exteraQuestions[" + i + "].value",
                         type = "dropDown",
                         textfield = "title",
                         valuefield = "id",

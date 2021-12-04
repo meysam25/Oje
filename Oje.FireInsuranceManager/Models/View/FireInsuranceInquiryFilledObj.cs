@@ -19,6 +19,7 @@ namespace Oje.FireInsuranceManager.Models.View
             InqueryDescriptions = new();
             FireInsuranceCoverageTitles = new();
             FireInsuranceTypeOfActivities = new();
+            FireInsuranceCoverageCityDangerLevels = new();
         }
 
         public long sarmaye { get; set; }
@@ -46,5 +47,7 @@ namespace Oje.FireInsuranceManager.Models.View
         public List<InqueryDescription> InqueryDescriptions { get; set; }
         public List<FireInsuranceCoverageTitle> FireInsuranceCoverageTitles { get; set; }
         public List<FireInsuranceTypeOfActivity> FireInsuranceTypeOfActivities { get; set; }
+        public List<FireInsuranceCoverage> FireInsuranceCoverages { get; set; }
+        public List<FireInsuranceCoverageCityDangerLevel> FireInsuranceCoverageCityDangerLevels { get; set; }
     }
 }

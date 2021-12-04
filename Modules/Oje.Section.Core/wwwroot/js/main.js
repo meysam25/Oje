@@ -94,7 +94,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
             $(this).html('').attr('href', '');
     });
 
-    $(selector).find('.tokenBox[name=' + key + ']').each(function () {
+    $(selector).find('.tokenBox[name="' + key + '"]').each(function () {
 
         if (value && value.constructor == Array) {
             var curName = $(this).attr('name');

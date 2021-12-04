@@ -430,6 +430,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name ="سن بنا ({0})")]
         Building_Age = 209,
         [Display(Name ="لطفا فعالیت خود را انتخاب کنید")]
-        Please_Select_Your_Activity = 210
+        Please_Select_Your_Activity = 210,
+        [Display(Name ="لطفا درصد عدم خسارت را انتخاب کنید")]
+        Please_Enter_NoDamage_Discount_Percent = 211
     }
 }

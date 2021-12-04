@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,6 @@ namespace Oje.Section.BaseData.Models.View
         public string title { get; set; }
         public int? provinceId { get; set; }
         public bool? isActive { get; set; }
+        public FireDangerGroupLevelType? fireLevel { get; set; }
     }
 }
