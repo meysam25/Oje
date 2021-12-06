@@ -12,6 +12,7 @@ namespace Oje.ProposalFormManager.Models.View
         public CarBodyInquiryVM()
         {
             comIds = new();
+            exteraQuestions = new();
         }
 
         [Display(Name = "بیمه نامه سال قبل")]
@@ -63,7 +64,7 @@ namespace Oje.ProposalFormManager.Models.View
 
         public List<int> dynamicCTRLs { get; set; }
         public List<string> dynamicCTRLs_Title { get; set; }
-        public List<RightFilterInqueryVM> rightOptionFilters { get; set; }
+        public List<RightFilterInqueryVM> exteraQuestions { get; set; }
         public List<int> comIds { get; set; }
     }
 }

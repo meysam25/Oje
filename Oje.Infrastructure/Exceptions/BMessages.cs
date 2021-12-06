@@ -432,6 +432,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name ="لطفا فعالیت خود را انتخاب کنید")]
         Please_Select_Your_Activity = 210,
         [Display(Name ="لطفا درصد عدم خسارت را انتخاب کنید")]
-        Please_Enter_NoDamage_Discount_Percent = 211
+        Please_Enter_NoDamage_Discount_Percent = 211,
+        [Display(Name = "حق بیمه سال ساخت")]
+        CreateDate_Price = 212
     }
 }

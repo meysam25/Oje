@@ -58,6 +58,8 @@ namespace Oje.ProposalFormManager
             services.AddScoped<IProposalFilledFormKeyManager, ProposalFilledFormKeyManager>();
             services.AddScoped<ICarSpecificationAmountManager, CarSpecificationAmountManager>();
             services.AddScoped<ICarBodyCreateDatePercentManager, CarBodyCreateDatePercentManager>();
+            services.AddScoped<IProposalFilledFormAdminManager, ProposalFilledFormAdminManager>();
+            services.AddScoped<IProposalFormCategoryManager, ProposalFormCategoryManager>();
         }
     }
 }

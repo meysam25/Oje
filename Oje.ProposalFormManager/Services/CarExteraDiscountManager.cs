@@ -67,11 +67,89 @@ namespace Oje.ProposalFormManager.Services
             return result;
         }
 
-        public List<CarExteraDiscount> GetRequredValidCTRLs(int? proposalFormId, int vehicleSystemId, List<int> validCompanyIds)
+        public object GetRequiredQuestionsJsonCtrls(RequiredQuestionVM input, int? proposalFormId)
         {
-            if (validCompanyIds == null)
-                validCompanyIds = new List<int>();
+            var allPanels = new List<object>();
+            bool hasPrevInsurance = input.havePrevInsurance.ToIntReturnZiro() > 0;
+            var allExteraDiscounts = db.CarExteraDiscounts
+                .Include(t => t.CarExteraDiscountValues)
+                .Include(t => t.CarExteraDiscountCategory)
+                .OrderBy(t => t.Order)
+                .Where(t =>
+                            t.IsActive == true && t.IsOption == true && t.ProposalFormId == proposalFormId &&
+                             (t.CarTypeId == null || t.CarType.VehicleSystems.Any(tt => tt.Id == input.brandId)) &&
+                             (t.HasPrevInsurance == null || t.HasPrevInsurance == hasPrevInsurance)
+                        )
+                .AsNoTracking()
+                .ToList();
 
+            var allGroupCategoryItems = allExteraDiscounts.GroupBy(t => t.CarExteraDiscountCategory).ToList();
+
+            foreach (var cat in allGroupCategoryItems)
+            {
+                var curCategoryCtrl = cat.ToList();
+                var allCtrls = new List<object>();
+                for (var i = 0; i < curCategoryCtrl.Count; i++)
+                {
+                    if (curCategoryCtrl[i].CarExteraDiscountValues.Count > 0)
+                    {
+                        allCtrls.Add(new
+                        {
+                            parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+                            name = "exteraQuestions[" + i + "].value",
+                            type = "dropDown",
+                            textfield = "title",
+                            valuefield = "id",
+                            dataurl = "/ProposalFormInquiries/CarBodyInquiry/GetExteraFilterValuess?id=" + curCategoryCtrl[i].Id,
+                            label = curCategoryCtrl[i].Title
+                        });
+                        allCtrls.Add(new
+                        {
+                            name = "exteraQuestions[" + i + "].id",
+                            type = "hidden",
+                            dfaultValue = curCategoryCtrl[i].Id
+                        });
+                    }
+                    else
+                    {
+                        allCtrls.Add(new
+                        {
+                            parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+                            name = "exteraQuestions[" + i + "].value",
+                            type = "dropDown",
+                            textfield = "title",
+                            valuefield = "id",
+                            dataurl = "/Core/BaseData/Get/IsActive",
+                            label = curCategoryCtrl[i].Title
+                        });
+                        allCtrls.Add(new
+                        {
+                            name = "exteraQuestions[" + i + "].id",
+                            type = "hidden",
+                            dfaultValue = curCategoryCtrl[i].Id
+                        });
+                    }
+                }
+                if (allCtrls.Count > 0)
+                    allPanels.Add(new
+                    {
+                        id = "exteraCoverPanel" + cat.Key?.Id,
+                        title = (string.IsNullOrEmpty(cat.Key?.Title) ? "پوشش اضافی" : cat.Key.Title),
+                        @class = "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                        ctrls = allCtrls
+                    });
+            }
+
+
+
+            return new
+            {
+                panels = allPanels
+            };
+        }
+
+        public List<CarExteraDiscount> GetRequredValidCTRLs(int? proposalFormId, int vehicleSystemId, bool hasPrevInsurance)
+        {
             return db.CarExteraDiscounts
                     .Include(t => t.CarExteraDiscountCategory)
                     .Include(t => t.CarExteraDiscountValues).ThenInclude(t => t.CarExteraDiscountRangeAmounts).ThenInclude(t => t.CarExteraDiscountRangeAmountCompanies)
@@ -79,12 +157,19 @@ namespace Oje.ProposalFormManager.Services
                     .Include(t => t.CarType.VehicleSystems)
                     .Where(t => t.IsActive == true)
                     .AsNoTracking()
-                    .Where(t => t.ProposalFormId == proposalFormId && t.IsOption == false &&
-                            (validCompanyIds.Count == 0 || t.CarExteraDiscountRangeAmounts.Any(tt => tt.CarExteraDiscountRangeAmountCompanies.Any(ttt => validCompanyIds.Contains(ttt.CompanyId)))) &&
-                            (t.CarTypeId == null || t.CarType.VehicleSystems.Any(tt => tt.Id == vehicleSystemId))
+                    .Where(t => t.ProposalFormId == proposalFormId && t.IsOption == false && t.IsActive == true &&
+                            (t.CarTypeId == null || t.CarType.VehicleSystems.Any(tt => tt.Id == vehicleSystemId)) &&
+                            (t.HasPrevInsurance == null || t.HasPrevInsurance == hasPrevInsurance)
                            )
                      .ToList()
                     ;
+        }
+
+        public object GetValuesForDD(int id)
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+            result.AddRange(db.CarExteraDiscounts.Where(t => t.Id == id).SelectMany(t => t.CarExteraDiscountValues).Select(t => new { id = t.Id, title = t.Title }).ToList());
+            return result;
         }
     }
 }

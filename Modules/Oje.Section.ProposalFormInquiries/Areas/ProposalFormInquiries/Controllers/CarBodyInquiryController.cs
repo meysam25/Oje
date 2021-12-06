@@ -152,5 +152,20 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         {
             return Json(CarExteraDiscountManager.GetRequiredQuestions(input, ProposalFormManager.GetByType(ProposalFormType.CarBody, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
         }
+
+
+        [AreaConfig(Title = "سوالات اختیاری استعلام بدنه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetExteraFilters([FromForm] RequiredQuestionVM input)
+        {
+            return Json(CarExteraDiscountManager.GetRequiredQuestionsJsonCtrls(input, ProposalFormManager.GetByType(ProposalFormType.CarBody, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+        }
+
+        [AreaConfig(Title = "مقادیر سوالات اختیاری استعلام بدنه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetExteraFilterValuess([FromQuery] int? id)
+        {
+            return Json(CarExteraDiscountManager.GetValuesForDD(id.ToIntReturnZiro()));
+        }
     }
 }

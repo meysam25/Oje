@@ -11,8 +11,10 @@ namespace Oje.ProposalFormManager.Interfaces
 {
     public interface ICarExteraDiscountManager
     {
-        List<CarExteraDiscount> GetRequredValidCTRLs(int? proposalFormId, int vehicleSystemId, List<int> validCompanyIds);
+        List<CarExteraDiscount> GetRequredValidCTRLs(int? proposalFormId, int vehicleSystemId, bool hasPrevInsurance);
         List<CarExteraDiscount> GetOptionSelectedCtrls(List<int> Ids , int? proposalFormId);
         object GetRequiredQuestions(RequiredQuestionVM input, int? proposalFormId);
+        object GetRequiredQuestionsJsonCtrls(RequiredQuestionVM input, int? proposalFormId);
+        object GetValuesForDD(int id);
     }
 }

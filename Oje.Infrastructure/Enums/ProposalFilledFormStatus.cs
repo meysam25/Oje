@@ -10,7 +10,7 @@ namespace Oje.Infrastructure.Enums
     public enum ProposalFilledFormStatus
     {
         [Display(Name = "جدید")]
-        NewForm = 1,
+        New = 1,
         [Display(Name = "در انتظار تایید")]
         W8ForConfirm = 2,
         [Display(Name = "نیاز به کارشناس")]

@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models;
 using Oje.ProposalFormManager.Interfaces;
 using Oje.ProposalFormManager.Models.DB;
 using Oje.ProposalFormManager.Services.EContext;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Oje.ProposalFormManager.Services
@@ -33,6 +35,32 @@ namespace Oje.ProposalFormManager.Services
         public string GetJSonConfigFile(int proposalFormId, int? siteSettingId)
         {
             return db.ProposalForms.Where(t => t.Id == proposalFormId && (t.SiteSettingId == null || t.SiteSettingId == siteSettingId)).Select(t => t.JsonConfig).FirstOrDefault();
+        }
+
+        public object GetSelect2List(Select2SearchVM searchInput, int? proposalFormCategoryId)
+        {
+            List<object> result = new List<object>();
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.ProposalForms.AsQueryable();
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
+            if (proposalFormCategoryId != null)
+                qureResult = qureResult.Where(t => t.ProposalFormCategoryId == proposalFormCategoryId);
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Title }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
         }
     }
 }

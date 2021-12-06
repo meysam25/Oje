@@ -25,7 +25,7 @@ function getPanelTemplate(panel) {
     if (panel) {
         if (!panel.id)
             panel.id = uuidv4RemoveDash();
-        result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel '+ (panel.class ? panel.class : '') +'" >';
+        result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel ' + (panel.class ? panel.class : '') + '" >';
         if (panel.title)
             result += '<h4 style="padding:10px;padding-right:0px;">' + panel.title + '</h3>';
         if (panel.charts) {
@@ -165,7 +165,7 @@ function getInputTemplate(ctrl) {
             result += '<div class="' + ctrl.parentCL + '">';
         switch (ctrl.type) {
             case 'hidden':
-                result += '<input autocomplete="off" type="hidden" name="' + ctrl.name + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue +'"' : '') +' />';
+                result += '<input autocomplete="off" type="hidden" name="' + ctrl.name + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' />';
                 break;
             case 'text':
             case 'password':
@@ -220,28 +220,52 @@ function getDynamicCtrlsTemplate(ctrl) {
 
     functionsList.push(function () {
         if (this.ctrl.dataurl) {
-            postForm(this.ctrl.dataurl, new FormData(), function (res) {
-                if ($('#' + this.ctrl.id).length > 0) {
-                    var htmlResult = '';
+            var allTargetCtrl = this.ctrl.otherCtrls
+            if (allTargetCtrl && allTargetCtrl.length > 0) {
 
-                    if (res && res.panels && res.panels.length > 0) {
-                        var startIndexForFunctions = functionsList.length;
-                        for (var i = 0; i < res.panels.length; i++) {
-                            htmlResult += getPanelTemplate(res.panels[i]);
-                        }
-                    }
-
-                    $('#' + this.ctrl.id).html(htmlResult);
-                    for (var i = startIndexForFunctions; i < functionsList.length; i++) {
-                        functionsList[i]();
-                    }
+                for (var i = 0; i < allTargetCtrl.length; i++) {
+                    $('#' + allTargetCtrl[i])[0].ctrlObj = this;
+                    $('#' + allTargetCtrl[i]).change(function () {
+                        updateDynamicCtrls($(this)[0].ctrlObj);
+                    });
                 }
-                
-            }.bind({ ctrl: this.ctrl }));
+            }
+            else {
+                updateDynamicCtrls(this);
+            }
+
         }
     }.bind({ ctrl: ctrl }));
 
     return result;
+}
+
+function updateDynamicCtrls(curThis) {
+    var formData = new FormData();
+    if (curThis.ctrl.otherCtrls) {
+        for (var i = 0; i < curThis.ctrl.otherCtrls.length; i++) {
+            var qure = $('#' + curThis.ctrl.otherCtrls[i]);
+            formData.append(qure.attr('name'), qure.val());
+        }
+    }
+    postForm(curThis.ctrl.dataurl, formData, function (res) {
+        if ($('#' + this.ctrl.id).length > 0) {
+            var htmlResult = '';
+
+            if (res && res.panels && res.panels.length > 0) {
+                var startIndexForFunctions = functionsList.length;
+                for (var i = 0; i < res.panels.length; i++) {
+                    htmlResult += getPanelTemplate(res.panels[i]);
+                }
+            }
+
+            $('#' + this.ctrl.id).html(htmlResult);
+            for (var i = startIndexForFunctions; i < functionsList.length; i++) {
+                functionsList[i]();
+            }
+        }
+
+    }.bind({ ctrl: curThis.ctrl }));
 }
 
 function getDynamicFileUploadDependCtrlTemplate(ctrl) {

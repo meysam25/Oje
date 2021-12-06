@@ -41,6 +41,9 @@ namespace Oje.ProposalFormManager.Models.DB
         [MaxLength(100)]
         public string RulesFile { get; set; }
         public ProposalFormType? Type { get; set; }
+        public int ProposalFormCategoryId { get; set; }
+        [ForeignKey("ProposalFormCategoryId"), InverseProperty("ProposalForms")]
+        public ProposalFormCategory ProposalFormCategory { get; set; }
         public int? SiteSettingId { get; set; }
 
         [InverseProperty("ProposalForm")]

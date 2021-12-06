@@ -125,7 +125,7 @@ namespace Oje.ProposalFormManager.Services
             {
                 ProposalFormId = proposalFormId,
                 Price = inquiryId > 0 ? GlobalInqueryManager.GetSumPriceLong(inquiryId, proposalFormId, siteSettingId) : 0,
-                Status = ProposalFilledFormStatus.NewForm,
+                Status = ProposalFilledFormStatus.New,
                 GlobalInqueryId = inquiryId > 0 ? inquiryId : 0,
                 CreateDate = DateTime.Now,
                 SiteSettingId = siteSettingId.Value

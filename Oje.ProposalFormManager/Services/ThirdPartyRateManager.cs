@@ -466,15 +466,15 @@ namespace Oje.ProposalFormManager.Services
 
         void addCacleRightOptionFilter(CarThirdPartyInquiryObjects objPack, GlobalInquery newQueryItem, CarThirdPartyInquiryVM input)
         {
-            if (input.rightOptionFilters != null && input.rightOptionFilters.Count > 0)
+            if (input.exteraQuestions != null && input.exteraQuestions.Count > 0)
             {
                 foreach (var dItemValue in objPack.rightOptionDynamicFilterCTRLs)
                 {
-                    var selectValueId = input.rightOptionFilters.Where(tt => tt.id == dItemValue.Id).Select(tt => tt.valueId).FirstOrDefault().ToIntReturnZiro();
+                    var selectValueId = input.exteraQuestions.Where(tt => tt.id == dItemValue.Id).Select(tt => tt.value).FirstOrDefault();
                     List<CarExteraDiscountRangeAmount> CarExteraDiscountRangeAmounts =
-                         selectValueId > 0 ?
-                            dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId).SelectMany(tt => tt.CarExteraDiscountRangeAmounts).ToList() :
-                            dItemValue.CarExteraDiscountRangeAmounts.ToList();
+                         selectValueId.ToIntReturnZiro() > 0 ?
+                            dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId.ToIntReturnZiro()).SelectMany(tt => tt.CarExteraDiscountRangeAmounts).ToList() :
+                            (!string.IsNullOrEmpty(selectValueId) && selectValueId.ToLower() == "true") ? dItemValue.CarExteraDiscountRangeAmounts.ToList() : new List<CarExteraDiscountRangeAmount>();
 
                     if (dItemValue.IsActive == true &&
                         CarExteraDiscountRangeAmounts.Any(t => t.IsActive == true && t.CarExteraDiscountRangeAmountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId)))
@@ -484,7 +484,7 @@ namespace Oje.ProposalFormManager.Services
                         {
                             GlobalInquiryItem newItem = new GlobalInquiryItem();
                             newItem.GlobalInquiryId = newQueryItem.Id;
-                            newItem.Title = dItemValue.Title + dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId).Select(tt => "/" + tt.Title).FirstOrDefault();
+                            newItem.Title = dItemValue.Title + (selectValueId.ToIntReturnZiro() > 0 ? dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId.ToIntReturnZiro()).Select(tt => "/" + tt.Title).FirstOrDefault() : "");
                             newItem.CalcKey = "DRO";
 
                             var s1Price = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").Select(t => t.Price).FirstOrDefault();
@@ -1197,6 +1197,9 @@ namespace Oje.ProposalFormManager.Services
         {
             CarThirdPartyInquiryObjects result = new CarThirdPartyInquiryObjects();
 
+            if (input.exteraQuestions != null)
+                input.exteraQuestions = input.exteraQuestions.Where(t => t.id.ToIntReturnZiro() > 0 && !string.IsNullOrEmpty(t.value)).ToList();
+
             result.currentProposalForm = ProposalFormManager.GetByType(ProposalFormType.ThirdParty, siteSettingId);
             if (result.currentProposalForm == null)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
@@ -1301,19 +1304,19 @@ namespace Oje.ProposalFormManager.Services
 
         void initExteraDiscountRightFilterObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            if (input.rightOptionFilters != null && input.rightOptionFilters.Count > 0)
+            if (input.exteraQuestions != null && input.exteraQuestions.Count > 0)
             {
-                var allExtraDiscountCoverIDs = input.rightOptionFilters.Select(t => t.id).ToList();
+                var allExtraDiscountCoverIDs = input.exteraQuestions.Select(t => t.id).ToList();
                 result.rightOptionDynamicFilterCTRLs = CarExteraDiscountManager.GetOptionSelectedCtrls(allExtraDiscountCoverIDs, result.currentProposalForm?.Id);
 
 
                 if (result.rightOptionDynamicFilterCTRLs == null || result.rightOptionDynamicFilterCTRLs.Count == 0)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
-                if (result.rightOptionDynamicFilterCTRLs.Count != input.rightOptionFilters.Count)
+                if (result.rightOptionDynamicFilterCTRLs.Count != input.exteraQuestions.Count)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
             }
             else
-                input.rightOptionFilters = null;
+                input.exteraQuestions = null;
         }
 
         void initThirdPartyRequiredFinancialCommitment(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
@@ -1507,7 +1510,7 @@ namespace Oje.ProposalFormManager.Services
 
         void initRequiredCtrlsObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            result.requiredValidDynamicCTRLs = CarExteraDiscountManager.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), result?.validCompanies.Select(t => t.Id).ToList());
+            result.requiredValidDynamicCTRLs = CarExteraDiscountManager.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), input.havePrevInsurance > 0 ? true : false);
             if (input.dynamicCTRLs != null && input.dynamicCTRLs.Count > 0)
             {
                 result.requiredSelectedDynamicCTRLs = result.requiredValidDynamicCTRLs.Where(t => t.CarExteraDiscountValues.Any(tt => input.dynamicCTRLs.Contains(tt.Id))).ToList();

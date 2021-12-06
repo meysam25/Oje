@@ -102,13 +102,13 @@ namespace Oje.ProposalFormManager.Services
                 CarBodyInquiryObjects objPack = fillRequiredObjectsAndValidate(input, siteSettingId);
 
                 long GlobalInputInqueryId = GlobalInputInqueryManager.Create(input, null, siteSettingId);
-                if (GlobalInputInqueryId > 0 && objPack.CarSpecificationAmounts != null && objPack.CarSpecificationAmounts.Count > 0  && objPack.VehicleUsage != null)
+                if (GlobalInputInqueryId > 0 && objPack.CarSpecificationAmounts != null && objPack.CarSpecificationAmounts.Count > 0 && objPack.VehicleUsage != null)
                 {
                     CreateGlobalInqueryObjectForEachCompanyS1(objPack, siteSettingId, GlobalInputInqueryId, result, input);
 
                     foreach (var newQueryItem in result)
                     {
-                        InquiryCalceS5(objPack, newQueryItem, input);
+                        InquiryCalceCreateDatePercen(objPack, newQueryItem, input);
                         addDynamicControlCalce(objPack, newQueryItem, input);
                         addCacleRightOptionFilter(objPack, newQueryItem, input);
                         addCacleForNoDamageDiscount(objPack, newQueryItem);
@@ -137,13 +137,13 @@ namespace Oje.ProposalFormManager.Services
                 {
                     GlobalInquiryItem newItem = new GlobalInquiryItem();
                     newItem.GlobalInquiryId = newQueryItem.Id;
-                    newItem.Title = objPack.InsuranceContractDiscount.Title;
+                    newItem.Title = objPack.NoDamageDiscount.Title;
                     newItem.CalcKey = "nodD";
                     var sumItemPrice = newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true && t.CalcKey == "s1").Select(t => t.Price).Sum();
-                    if (objPack.InsuranceContractDiscount.Percent > 0)
+                    if (objPack.NoDamageDiscount.Percent > 0)
                     {
-                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling((Convert.ToDecimal((sumItemPrice)) * objPack.InsuranceContractDiscount.Percent) / objPack.v100)) * -1, objPack.RoundInquery);
-                        newQueryItem.maxDiscount += objPack.InsuranceContractDiscount.Percent;
+                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling((Convert.ToDecimal((sumItemPrice)) * objPack.NoDamageDiscount.Percent) / objPack.v100)) * -1, objPack.RoundInquery);
+                        newQueryItem.maxDiscount += objPack.NoDamageDiscount.Percent;
                         if (objPack.InquiryMaxDiscounts.Any(t => t.Percent < newQueryItem.maxDiscount && t.InquiryMaxDiscountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId)))
                         {
                             newItem.Title = string.Format(BMessages.Expired_Discount.GetEnumDisplayName(), newItem.Title);
@@ -160,6 +160,9 @@ namespace Oje.ProposalFormManager.Services
         CarBodyInquiryObjects fillRequiredObjectsAndValidate(CarBodyInquiryVM input, int? siteSettingId)
         {
             CarBodyInquiryObjects result = new CarBodyInquiryObjects();
+
+            if (input.exteraQuestions != null)
+                input.exteraQuestions = input.exteraQuestions.Where(t => t.id.ToIntReturnZiro() > 0 && !string.IsNullOrEmpty(t.value)).ToList();
 
             fillAndValidateProposalForm(result, siteSettingId);
             fillAndValidateValidCompany(result, input, siteSettingId);
@@ -205,9 +208,9 @@ namespace Oje.ProposalFormManager.Services
                 .ToList();
         }
 
-        void InquiryCalceS5(CarBodyInquiryObjects objPack, GlobalInquery newQueryItem, CarBodyInquiryVM input)
+        void InquiryCalceCreateDatePercen(CarBodyInquiryObjects objPack, GlobalInquery newQueryItem, CarBodyInquiryVM input)
         {
-            var foundS2 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s2").FirstOrDefault();
+            var foundS2 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").FirstOrDefault();
             if (foundS2 != null && objPack.CarBodyCreateDatePercents != null && objPack.CarBodyCreateDatePercents.Count > 0)
             {
                 var defYear = DateTime.Now.Year - input.createYear.ToIntReturnZiro();
@@ -218,9 +221,9 @@ namespace Oje.ProposalFormManager.Services
                     {
                         GlobalInquiryItem newITem = new GlobalInquiryItem()
                         {
-                            CalcKey = "s5",
+                            CalcKey = "crdOl",
                             GlobalInquiryId = newQueryItem.Id,
-                            Title = BMessages.Extera_CreateDate_Price.GetEnumDisplayName(),
+                            Title = BMessages.CreateDate_Price.GetEnumDisplayName(),
                             Price = RouteThisNumberIfConfigExist(Math.Ceiling((foundTargetRate.Percent * Convert.ToDecimal(foundS2.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery)
                         };
                         if (newITem.Price > 0)
@@ -311,18 +314,18 @@ namespace Oje.ProposalFormManager.Services
 
         void fillAndValidateExteraDiscountRightFilterObject(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            if (input.rightOptionFilters != null && input.rightOptionFilters.Count > 0)
+            if (input.exteraQuestions != null && input.exteraQuestions.Count > 0)
             {
-                var allExtraDiscountCoverIDs = input.rightOptionFilters.Select(t => t.id).ToList();
+                var allExtraDiscountCoverIDs = input.exteraQuestions.Select(t => t.id).ToList();
                 result.rightOptionDynamicFilterCTRLs = CarExteraDiscountManager.GetOptionSelectedCtrls(allExtraDiscountCoverIDs, result.currentProposalForm?.Id);
 
                 if (result.rightOptionDynamicFilterCTRLs == null || result.rightOptionDynamicFilterCTRLs.Count == 0)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
-                if (result.rightOptionDynamicFilterCTRLs.Count != input.rightOptionFilters.Count)
+                if (result.rightOptionDynamicFilterCTRLs.Count != input.exteraQuestions.Count)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
             }
             else
-                input.rightOptionFilters = null;
+                input.exteraQuestions = null;
         }
 
         private void fillAndValidatePriceDiscountStatus(CarBodyInquiryObjects result, CarBodyInquiryVM input, int? siteSettingId)
@@ -361,7 +364,7 @@ namespace Oje.ProposalFormManager.Services
 
         private void fillAndValidateCarExteraDiscountRequired(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            result.requiredValidDynamicCTRLs = CarExteraDiscountManager.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), result?.validCompanies.Select(t => t.Id).ToList());
+            result.requiredValidDynamicCTRLs = CarExteraDiscountManager.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), input.havePrevInsurance > 0 ? true : false);
             if (input.dynamicCTRLs != null && input.dynamicCTRLs.Count > 0)
             {
                 result.requiredSelectedDynamicCTRLs = result.requiredValidDynamicCTRLs.Where(t => t.CarExteraDiscountValues.Any(tt => input.dynamicCTRLs.Contains(tt.Id))).ToList();
@@ -463,15 +466,15 @@ namespace Oje.ProposalFormManager.Services
 
         void addCacleRightOptionFilter(CarBodyInquiryObjects objPack, GlobalInquery newQueryItem, CarBodyInquiryVM input)
         {
-            if (input.rightOptionFilters != null && input.rightOptionFilters.Count > 0)
+            if (input.exteraQuestions != null && input.exteraQuestions.Count > 0)
             {
                 foreach (var dItemValue in objPack.rightOptionDynamicFilterCTRLs)
                 {
-                    var selectValueId = input.rightOptionFilters.Where(tt => tt.id == dItemValue.Id).Select(tt => tt.valueId).FirstOrDefault().ToIntReturnZiro();
+                    var selectValueId = input.exteraQuestions.Where(tt => tt.id == dItemValue.Id).Select(tt => tt.value).FirstOrDefault();
                     List<CarExteraDiscountRangeAmount> CarExteraDiscountRangeAmounts =
-                         selectValueId > 0 ?
-                            dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId).SelectMany(tt => tt.CarExteraDiscountRangeAmounts).ToList() :
-                            dItemValue.CarExteraDiscountRangeAmounts.ToList();
+                         selectValueId.ToIntReturnZiro() > 0 ?
+                            dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId.ToIntReturnZiro()).SelectMany(tt => tt.CarExteraDiscountRangeAmounts).ToList() :
+                            (!string.IsNullOrEmpty(selectValueId) && selectValueId.ToLower() == "true") ? dItemValue.CarExteraDiscountRangeAmounts.ToList() : new List<CarExteraDiscountRangeAmount>();
 
                     if (dItemValue.IsActive == true &&
                         CarExteraDiscountRangeAmounts.Any(t => t.IsActive == true && t.CarExteraDiscountRangeAmountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId)))
@@ -481,7 +484,7 @@ namespace Oje.ProposalFormManager.Services
                         {
                             GlobalInquiryItem newItem = new GlobalInquiryItem();
                             newItem.GlobalInquiryId = newQueryItem.Id;
-                            newItem.Title = dItemValue.Title + dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId).Select(tt => "/" + tt.Title).FirstOrDefault();
+                            newItem.Title = dItemValue.Title + (selectValueId.ToIntReturnZiro() > 0 ? dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId.ToIntReturnZiro()).Select(tt => "/" + tt.Title).FirstOrDefault() : "") ;
                             newItem.CalcKey = "DRO";
 
                             var s1Price = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").Select(t => t.Price).FirstOrDefault();
@@ -812,7 +815,7 @@ namespace Oje.ProposalFormManager.Services
                 newITem.Title = BMessages.BasePrice.GetEnumDisplayName();
                 newITem.Price = RouteThisNumberIfConfigExist
                     (
-                        cacleBodyInsurance(foundRates, input.carValue), 
+                        cacleBodyInsurance(foundRates, input.carValue),
                         CarBodyInquiryObjects.RoundInquery
                     );
                 if (newITem.Price > 0)

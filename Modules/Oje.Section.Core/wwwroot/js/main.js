@@ -560,3 +560,18 @@ function convertFormDataToJsonOject(formData) {
 
     return result;
 }
+
+function openNewLink(holderParametersId, link) {
+    if (link && holderParametersId && $('#' + holderParametersId).length > 0) {
+        var formData = getFormData($('#' + holderParametersId));
+        var qureString = '';
+        for (var pair of formData.entries()) {
+            if (qureString == '' && link.indexOf('?') == -1) {
+                qureString = '?' + pair[0] + '=' + pair[1];
+            } else {
+                qureString = qureString  + '&' + pair[0] + '=' + pair[1];
+            }
+        }
+        location.href = link + qureString;
+    }
+}

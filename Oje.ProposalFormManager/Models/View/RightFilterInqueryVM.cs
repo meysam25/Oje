@@ -9,6 +9,6 @@ namespace Oje.ProposalFormManager.Models.View
     public class RightFilterInqueryVM
     {
         public int id { get; set; }
-        public int valueId { get; set; }
+        public string value { get; set; }
     }
 }

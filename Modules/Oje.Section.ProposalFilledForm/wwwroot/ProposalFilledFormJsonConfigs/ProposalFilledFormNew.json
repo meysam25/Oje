@@ -1,0 +1,177 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "userGrid",
+          "exteraSearchIds": [ "gridSearchModal" ],
+          "exteraFilterModalId": "gridSearchModal",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('addNewPPF', this)",
+              "type": "add",
+              "modalId": "addNewPPF"
+            }
+          ],
+          "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNew/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/ProposalFilledForm/ProposalFilledFormNew/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editRoleModal",
+                "url": "/ProposalFilledForm/ProposalFilledFormNew/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNew/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/ProposalFilledForm/ProposalFilledFormNew/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "cId",
+              "caption": "شرکت بیمه",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "ppfTitle",
+              "caption": "فرم پیشنهاد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "agentFullname",
+              "caption": "نماینده",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "targetUserfullname",
+              "caption": "بیمه گذار",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createUserfullname",
+              "caption": "ثبت کننده",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "gridSearchModal",
+          "title": "جستجو",
+          "ctrls": [
+
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fromCreateDate",
+              "type": "persianDateTime",
+              "label": "از تاریخ ایجاد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "toCreateDate",
+              "type": "persianDateTime",
+              "label": "تا تاریخ ایجاد"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "جستجو",
+              "onClick": "refreshGrid('userGrid', this)",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "addNewPPF",
+          "title": "افزودن فرم پیشنهاد جدید",
+          "ctrls": [
+            {
+              "id": "ppfCatId",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "ppfCatId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetProposalFormCategoryList",
+              "label": "گروه بندی فرم پیشنهاد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fid",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetProposalFormList",
+              "exteraParameterIds": [ "ppfCatId" ],
+              "label": "فرم پیشنهاد"
+            }
+           
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "افزودن",
+              "onClick": "openNewLink('addNewPPF', '/ProposalFilledForm/Proposal/Form')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

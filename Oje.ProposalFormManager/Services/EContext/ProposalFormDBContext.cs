@@ -64,6 +64,7 @@ namespace Oje.ProposalFormManager.Services.EContext
         public DbSet<ProposalFilledFormDocument> ProposalFilledFormDocuments { get; set; }
         public DbSet<CarBodyCreateDatePercent> CarBodyCreateDatePercents { get; set; }
         public DbSet<CarSpecificationAmount> CarSpecificationAmounts { get; set; }
+        public DbSet<ProposalFormCategory> ProposalFormCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
