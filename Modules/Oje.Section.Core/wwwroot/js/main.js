@@ -81,8 +81,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
 
     });
 
-    $(selector).find('[data-spec-name="' + key + '"]').each(function ()
-    {
+    $(selector).find('[data-spec-name="' + key + '"]').each(function () {
         if ($(this)[0].addNewRow)
             $(this)[0].addNewRow(value);
     });
@@ -154,6 +153,8 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
                     if (value == 'True' || value == true) {
                         valueBool = true;
                     }
+                    if (value == $(this).val())
+                        valueBool = true;
                     $(this).prop('checked', valueBool);
                 } else if (value.constructor == Array) {
                     for (var i = 0; i < value.length; i++) {
@@ -162,14 +163,14 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
                         }
                     }
                 }
-
-
                 break;
             case 'radio':
                 var valueBool = false;
                 if (value == 'True' || value == true) {
                     valueBool = true;
                 }
+                if (value == $(this).val())
+                    valueBool = true;
                 if ($(this).val() == value)
                     $(this).prop('checked', true);
                 else
@@ -286,6 +287,13 @@ function getFormData(selector) {
             } else {
                 postData.append(curName, $(this).val());
             }
+        }
+    });
+
+    $(selector).find('input[type=radio],input[type=checkbox]').each(function () {
+        var curName = $(this).attr('name');
+        if (curName && $(this).is(':checked')) {
+            postData.append(curName, $(this).val());
         }
     });
 
@@ -569,7 +577,7 @@ function openNewLink(holderParametersId, link) {
             if (qureString == '' && link.indexOf('?') == -1) {
                 qureString = '?' + pair[0] + '=' + pair[1];
             } else {
-                qureString = qureString  + '&' + pair[0] + '=' + pair[1];
+                qureString = qureString + '&' + pair[0] + '=' + pair[1];
             }
         }
         location.href = link + qureString;

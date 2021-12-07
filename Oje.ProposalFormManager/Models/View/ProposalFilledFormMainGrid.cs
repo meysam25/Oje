@@ -15,6 +15,7 @@ namespace Oje.ProposalFormManager.Models.View
         public long? price { get; set; }
         public string agentFullname { get; set; }
         public string targetUserfullname { get; set; }
+        public string targetUserMobileNumber { get; set; }
         public string createUserfullname { get; set; }
         public string fromCreateDate { get; set; }
         public string toCreateDate { get; set; }

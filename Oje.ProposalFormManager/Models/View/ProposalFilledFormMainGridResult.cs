@@ -25,6 +25,8 @@ namespace Oje.ProposalFormManager.Models.View
         public string agentFullname { get; set; }
         [Display(Name = "بیمه گذار")]
         public string targetUserfullname { get; set; }
+        [Display(Name = "نام کاربری بیمه گذار")]
+        public string targetUserMobileNumber { get; set; }
         [Display(Name = "ثبت کننده")]
         public string createUserfullname { get; set; }
         [Display(Name = "تاریخ صدور")]

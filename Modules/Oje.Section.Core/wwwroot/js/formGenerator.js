@@ -160,7 +160,7 @@ function getInputTemplate(ctrl) {
 
     if (ctrl) {
         if (!ctrl.id)
-            ctrl.id = 'id_' + uuidv4RemoveDash();
+            ctrl.id = uuidv4RemoveDash();
         if (ctrl.type != 'hidden')
             result += '<div class="' + ctrl.parentCL + '">';
         switch (ctrl.type) {
@@ -179,6 +179,12 @@ function getInputTemplate(ctrl) {
             case 'tokenBox':
             case 'tokenBox2':
                 result += getTokennCTRLTemplate(ctrl);
+                break;
+            case 'radio':
+                result += getRadioButtonTemplate(ctrl);
+                break;
+            case 'checkBox':
+                result += getCheckboxButtonTemplate(ctrl);
                 break;
             case 'file':
                 result += getFileCTRLTemplate(ctrl);
@@ -201,6 +207,10 @@ function getInputTemplate(ctrl) {
             case 'chkCtrlBox':
                 result += getChkCtrlBoxTemplateCtrl(ctrl);
                 break;
+            case 'multiRowInput':
+                result += getMultiRowInputTemplate(ctrl);
+                break;
+            case 'empty':
             default:
                 break;
         }
@@ -208,6 +218,131 @@ function getInputTemplate(ctrl) {
             result += '</div>';
     }
 
+    return result;
+}
+
+function getMultiRowInputTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl) {
+        result += '<div id="' + ctrl.id + '" class="myCtrl row ' + (ctrl.class ? ctrl.class : '') + '">';
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+        if (ctrl.ctrls) {
+            result += '<div class="MultiRowInputRow row">';
+            for (var i = 0; i < ctrl.ctrls.length; i++) {
+                var prevName = ctrl.ctrls[i].name;
+                ctrl.ctrls[i].name = ctrl.name + '[0].' + ctrl.ctrls[i].name;
+                result += getInputTemplate(ctrl.ctrls[i]);
+                ctrl.ctrls[i].name = prevName;
+            }
+            result += '</div>';
+        }
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" ><button style="margin:3px;" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">افزودن</button><button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">حذف اخرین سطر</button></div>';
+        result += '</div>';
+        result += '</div>';
+
+        functionsList.push(function () {
+            initMoultiRowInputButton(this.ctrl);
+        }.bind({ ctrl: ctrl }));
+    }
+
+    return result;
+}
+
+function initMoultiRowInputButton(ctrl) {
+    var addNewButtonQuery = $('#' + ctrl.id).find('button.addNewRowForMultiRowCtrl');
+    if (addNewButtonQuery.length > 0) {
+        addNewButtonQuery[0].ctrl = ctrl;
+        addNewButtonQuery.click(function () {
+            var startIndexFunction = functionsList.length;
+            var ctrlObj = $(this)[0].ctrl;
+            if (ctrlObj.ctrls) {
+                var countExist = $(this).closest('.myCtrl').find('.MultiRowInputRow').length;
+                var newRowHtml = '<div class="MultiRowInputRow row">';
+                for (var i = 0; i < ctrlObj.ctrls.length; i++) {
+                    ctrlObj.ctrls[i].id = uuidv4RemoveDash();
+                    var prevName = ctrlObj.ctrls[i].name;
+                    ctrlObj.ctrls[i].name = ctrlObj.name + '[' + (countExist) + '].' + ctrlObj.ctrls[i].name;
+                    newRowHtml += getInputTemplate(ctrlObj.ctrls[i]);
+                    ctrlObj.ctrls[i].name = prevName;
+                }
+                newRowHtml += '</div>';
+                $(this).closest('.myCtrl').find('.MultiRowInputRow:last').after(newRowHtml);
+            }
+            for (var i = startIndexFunction; i < functionsList.length; i++) {
+                functionsList[i]();
+            }
+        });
+    }
+
+    var deleteNewButtonQuery = $('#' + ctrl.id).find('button.deleteNewRowForMultiRowCtrl');
+    if (deleteNewButtonQuery.length > 0) {
+        deleteNewButtonQuery[0].ctrl = ctrl;
+        deleteNewButtonQuery.click(function () {
+            var ctrlObj = $(this)[0].ctrl;
+            if (ctrlObj.ctrls) {
+                var countExist = $(this).closest('.myCtrl').find('.MultiRowInputRow').length;
+                if (countExist <= 1) {
+                    alert('امکان حذف وجود ندارد');
+                    return;
+                }
+                $(this).closest('.myCtrl').find('.MultiRowInputRow:last').remove();
+            }
+        });
+    }
+}
+
+function getCheckboxButtonTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl) {
+        result += '<div class="form-check form-switch myCtrl">';
+        result += '<input class="form-check-input" name="' + ctrl.name + '" type="checkbox" value="' + (ctrl.defValue ? ctrl.defValue : 'true') + '" id="' + ctrl.id + '" />';
+        result += '<label style="padding-right:20px;" class="form-check-label" for="' + ctrl.id + '">' + ctrl.label + '</label>';
+        result += '</div>';
+    }
+
+    return result;
+}
+
+function getRadioButtonTemplate(ctrl) {
+    var result = '';
+    if (ctrl) {
+        result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '"' + '>';
+        if (ctrl.label)
+            result += '<label style="display:block" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        if (ctrl.values && ctrl.values.length > 0) {
+            var idList = [];
+            for (var i = 0; i < ctrl.values.length; i++) {
+                var id = ctrl.values[i].oId ? ctrl.values[i].oId : uuidv4RemoveDash();
+                idList.push(id);
+                result += '<div class="form-check form-check-inline">';
+                result += '<input ' + (i == 0 ? 'checked="checked"' : '') + ' class="form-check-input" name="' + ctrl.name + '" id="' + id + '" type="radio" value="' + ctrl.values[i][ctrl.valuefield] + '" />';
+                result += '<label class="form-check-label" for="' + id + '" >' + ctrl.values[i][ctrl.textfield] + '</label>';
+                result += '</div>';
+            }
+            ctrl.idList = idList;
+        }
+        result += '</div>';
+        if (ctrl.showHideCondation) {
+            functionsList.push(function () {
+                var idList = this.idList;
+                if (idList) {
+                    for (var i = 0; i < idList.length; i++) {
+                        $('#' + idList[i])[0].showHideCondation = this.showHideCondation;
+                        $('#' + idList[i]).change(function () {
+                            var showHideCondation = $(this)[0].showHideCondation;
+                            var isChecked = $(this).is(':checked');
+                            var curValue = isChecked == true ? $(this).val() : '';
+                            showAndHideCtrl(curValue, showHideCondation, $(this).attr('id'));
+                        });
+                        showAndHideCtrl('', this.showHideCondation, this.id);
+                    }
+                }
+
+            }.bind({ id: ctrl.id, showHideCondation: ctrl.showHideCondation, idList: ctrl.idList }));
+        }
+    }
     return result;
 }
 
@@ -379,6 +514,13 @@ function getChkCtrlBoxTemplateCtrl(ctrl) {
     return result;
 }
 
+function appendAllQueryStringToForm(formData) {
+    var allParams = new URLSearchParams(window.location.search);
+    for (var pair of allParams.entries()) {
+        formData.append(pair[0], pair[1]);
+    }
+}
+
 function getDynamicFileUploadCtrlTemplate(ctrl) {
     var result = '';
 
@@ -386,7 +528,9 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
         result += '<div class="row" id="' + ctrl.id + '" ></div>';
         functionsList.push(function () {
             if (this.ctrl.url) {
-                postForm(this.ctrl.url, new FormData(), function (res) {
+                var formData = new FormData();
+                appendAllQueryStringToForm(formData);
+                postForm(this.ctrl.url, formData, function (res) {
                     if (res && res.length > 0) {
                         if (this.ctrl.schema) {
                             var template = '';
@@ -439,12 +583,43 @@ function getTextBoxTemplate(ctrl) {
     }
     if (ctrl.type == "persianDateTime") {
         functionsList.push(function () {
-            $(document).ready(function () {
+            setTimeout(function () {
                 $('#' + this.id).MdPersianDateTimePicker();
-            }.bind({ id: ctrl.id }))
+            }.bind({ id: this.id }), 100);
         }.bind({ id: ctrl.id }));
     }
+    if (ctrl.multiPlay) {
+        functionsList.push(function () {
+            for (var i = 0; i < this.ctrl.multiPlay.length; i++) {
+                if ($('#' + this.ctrl.multiPlay[i]).length > 0) {
+                    $('#' + this.ctrl.multiPlay[i])[0].multiPlayObj = this.ctrl;
+                    $('#' + this.ctrl.multiPlay[i]).change(function () {
+                        doCalceForMultiplay($(this)[0].multiPlayObj);
+                    });
+                }
+            }
+        }.bind({ ctrl: ctrl }));
+    }
     return result;
+}
+function doCalceForMultiplay(multiPlayObj) {
+    if (multiPlayObj && multiPlayObj.multiPlay) {
+        var result = 0;
+        for (var i = 0; i < multiPlayObj.multiPlay.length; i++) {
+            try {
+                if (result == 0)
+                    result = Number.parseInt($('#' + multiPlayObj.multiPlay[i]).val().replace(/,/,''));
+                else
+                    result = result * Number.parseInt($('#' + multiPlayObj.multiPlay[i]).val().replace(/,/, ''));
+            }
+            catch (e) {
+
+            }
+        }
+        if (isNaN(result))
+            result = 0;
+        $('#' + multiPlayObj.id).val(postCommanInNumberPlugin(result));
+    }
 }
 var isLoadCkEditorTrying = false;
 function getCkEditorTemplate(ctrl) {
@@ -524,7 +699,7 @@ function getDropdownCTRLTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<select ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + ctrl.dataurl + '" data-url="' + ctrl.dataurl + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
+    result += '<select ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
         for (var i = 0; i < ctrl.values.length; i++) {
             result += '<option value="' + ctrl.values[i][ctrl.valuefield] + '" >' + ctrl.values[i][ctrl.textfield] + '</option>';

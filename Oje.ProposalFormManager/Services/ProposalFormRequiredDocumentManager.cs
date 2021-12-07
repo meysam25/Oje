@@ -20,11 +20,11 @@ namespace Oje.ProposalFormManager.Services
             this.db = db;
         }
 
-        public object GetLightList(int? siteSettingID, ProposalFormType type)
+        public object GetLightList(int? siteSettingID, int? proposalFormId)
         {
             return db.ProposalFormRequiredDocuments
                 .Where(t =>
-                        t.ProposalFormRequiredDocumentType.ProposalForm.Type == type && t.IsActive == true && t.ProposalFormRequiredDocumentType.IsActive == true &&
+                        t.ProposalFormRequiredDocumentType.ProposalForm.Id == proposalFormId && t.IsActive == true && t.ProposalFormRequiredDocumentType.IsActive == true &&
                         (t.ProposalFormRequiredDocumentType.ProposalForm.SiteSettingId == null || t.ProposalFormRequiredDocumentType.ProposalForm.SiteSettingId == siteSettingID) &&
                         (t.ProposalFormRequiredDocumentType.SiteSettingId == null || t.ProposalFormRequiredDocumentType.SiteSettingId == siteSettingID)
                       )

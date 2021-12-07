@@ -72,9 +72,9 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "لیست مدارم مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetProposalFormRequiredDocument([FromQuery] ProposalFormType ProposalFormType)
+        public ActionResult GetProposalFormRequiredDocument([FromForm] int? fid)
         {
-            return Json(ProposalFormRequiredDocumentManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, ProposalFormType));
+            return Json(ProposalFormRequiredDocumentManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, fid));
         }
 
         [AreaConfig(Title = "آیا حالت اقساطی فعال می باشد", Icon = "fa-list-alt")]

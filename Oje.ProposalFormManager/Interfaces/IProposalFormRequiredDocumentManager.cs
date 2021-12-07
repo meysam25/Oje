@@ -10,7 +10,7 @@ namespace Oje.ProposalFormManager.Interfaces
 {
     public interface IProposalFormRequiredDocumentManager
     {
-        object GetLightList(int? siteSettingID, ProposalFormType type);
+        object GetLightList(int? siteSettingID, int? proposalFormId);
         List<ProposalFormRequiredDocument> GetProposalFormRequiredDocuments(int? proposalFormId, int? siteSettingId);
     }
 }

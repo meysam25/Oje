@@ -91,6 +91,13 @@
               }
             },
             {
+              "field": "targetUserMobileNumber",
+              "caption": "نام کاربری بیمه گذار",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "createUserfullname",
               "caption": "ثبت کننده",
               "search": {

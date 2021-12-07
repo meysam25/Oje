@@ -247,3 +247,21 @@ select[size] {
     select[size].makeBigger {
         height: 300px !important;
     }
+input[type=radio]:checked + label::after {
+    left:auto;
+    right:7px;
+    top:15px;
+}
+input[type=radio] + label {
+    margin-right:3px;
+}
+input[type=radio] + label, input[type=radio] {
+    cursor: pointer;
+}
+.form-check {
+    padding-top:8px;
+    padding-bottom:3px;
+}
+input[type=checkbox] + label, input[type=checkbox] {
+    cursor: pointer;
+}

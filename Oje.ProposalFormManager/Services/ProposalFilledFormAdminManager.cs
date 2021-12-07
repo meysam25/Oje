@@ -90,6 +90,8 @@ namespace Oje.ProposalFormManager.Services
                 var targetDT = searchInput.toIssueDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
                 qureResult = qureResult.Where(t => t.IssueDate != null && t.IssueDate <= targetDT);
             }
+            if(!string.IsNullOrEmpty(searchInput.targetUserMobileNumber))
+                qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.CreateUser && tt.User.Username.Contains(searchInput.createUserfullname)));
 
             int row = searchInput.skip;
 
@@ -106,6 +108,7 @@ namespace Oje.ProposalFormManager.Services
                     price = t.Price,
                     agentFullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.Agent).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
                     targetUserfullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.OwnerUser).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
+                    targetUserMobileNumber = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.OwnerUser).Select(tt => tt.User.Username).FirstOrDefault(),
                     createUserfullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.CreateUser).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
                     issueDate = t.IssueDate,
                     startDate = t.InsuranceStartDate,
@@ -123,6 +126,7 @@ namespace Oje.ProposalFormManager.Services
                     agentFullname = t.agentFullname,
                     targetUserfullname = t.targetUserfullname,
                     createUserfullname = t.createUserfullname,
+                    targetUserMobileNumber = t.targetUserMobileNumber,
                     issueDate = t.issueDate != null?  t.issueDate.ToFaDate() : "",
                     startDate = t.startDate != null ? t.startDate.ToFaDate() : "",
                     endDate = t.endDate != null ? t.endDate.ToFaDate() : ""

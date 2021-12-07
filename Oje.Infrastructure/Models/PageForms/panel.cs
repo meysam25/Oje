@@ -15,6 +15,8 @@ namespace Oje.Infrastructure.Models.PageForms
         }
 
         public bool? hasInquiry { get; set; }
+        public bool? isAgentRequired { get; set; }
+        public bool? isCompanyListRequired { get; set; }
         public string id { get; set; }
         public string title { get; set; }
         public List<stepWizard> stepWizards { get; set; }

@@ -141,6 +141,8 @@ namespace Oje.ProposalFormManager.Services
         {
             if (ppfObj == null)
                 throw BException.GenerateNewException(BMessages.Json_Convert_Error);
+            
+
 
             validateIfInquiryRequired(form, ppfObj, siteSettingId);
 
@@ -324,10 +326,6 @@ namespace Oje.ProposalFormManager.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (!form.ContainsKey("fid"))
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
-            if (!form.ContainsKey("agentId"))
-                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
-            if (string.IsNullOrEmpty(form.GetStringIfExist("agentId")) || form.GetStringIfExist("agentId").ToLongReturnZiro() <= 0)
-                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
 
             int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
             if (proposalFormId <= 0)

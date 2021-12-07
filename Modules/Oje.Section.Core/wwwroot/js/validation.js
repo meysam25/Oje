@@ -118,7 +118,10 @@ function checkRequiredValidation(selectQuery, result) {
     if (result == true) {
         $(selectQuery).find('input[data-validation-required="true"], select[data-validation-required="true"]').each(function () {
             if ($(this).is(':visible') || $(this).attr('data-select2-id')) {
-                if (!$(this).val()) {
+                var curValue = $(this).val();
+                if ($(this).parent().hasClass('tokenBox'))
+                    curValue = $(this).parent().find('input[type="hidden"]').val();
+                if (!curValue) {
                     result = false;
                     if (!$(this).closest('.myCtrl').hasClass('inValidInput'))
                         showValidationMessage(this, $(this).attr('data-validation-required-msg'));
