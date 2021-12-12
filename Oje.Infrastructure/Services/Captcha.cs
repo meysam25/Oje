@@ -63,10 +63,10 @@ namespace Oje.Infrastructure.Services
 
         public static string GenerateCaptchaCode()
         {
-            Random rand = new Random();
+            Random rand = new();
             int maxRand = Letters.Length - 1;
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             for (int i = 0; i < 4; i++)
             {
@@ -79,172 +79,176 @@ namespace Oje.Infrastructure.Services
 
         public static CaptchaResult GenerateCaptchaImage(int width, int height, string captchaCode)
         {
-            using (Bitmap baseMap = new Bitmap(width, height))
-            using (Graphics graph = Graphics.FromImage(baseMap))
+            if (OperatingSystem.IsWindows())
             {
-                Random rand = new Random();
-
-                graph.Clear(GetRandomLightColor());
-
-                DrawCaptchaCode();
-                DrawDisorderLine();
-                AdjustRippleEffect();
-
-                MemoryStream ms = new MemoryStream();
-
-                baseMap.Save(ms, ImageFormat.Jpeg);
-
-                return new CaptchaResult { CaptchaCode = captchaCode, CaptchaByteData = ms.ToArray(), Timestamp = DateTime.Now };
-
-                static int GetFontSize(int imageWidth, int captchCodeCount)
+                using (Bitmap baseMap = new(width, height))
+                using (Graphics graph = Graphics.FromImage(baseMap))
                 {
-                    var averageSize = imageWidth / captchCodeCount;
+                    Random rand = new();
 
-                    averageSize -= 30;
+                    graph.Clear(GetRandomLightColor());
 
-                    return Convert.ToInt32(averageSize);
-                }
+                    DrawCaptchaCode();
+                    DrawDisorderLine();
+                    AdjustRippleEffect();
 
-                Color GetRandomDeepColor()
-                {
-                    int redlow = 160, greenLow = 100, blueLow = 160;
-                    return Color.FromArgb(rand.Next(redlow), rand.Next(greenLow), rand.Next(blueLow));
-                }
-
-                Color GetRandomLightColor()
-                {
-                    int low = 180, high = 255;
-
-                    int nRend = rand.Next(high) % (high - low) + low;
-                    int nGreen = rand.Next(high) % (high - low) + low;
-                    int nBlue = rand.Next(high) % (high - low) + low;
-
-                    return Color.FromArgb(nRend, nGreen, nBlue);
-                }
-
-                void DrawCaptchaCode()
-                {
-                    SolidBrush fontBrush = new SolidBrush(Color.Black);
-                    int fontSize = GetFontSize(width, captchaCode.Length);
-
-                    Font font = new Font(FontFamily.GenericSerif, fontSize, FontStyle.Bold, GraphicsUnit.Pixel);
-                    for (int i = 0; i < captchaCode.Length; i++)
+                    using (MemoryStream ms = new())
                     {
-                        fontBrush.Color = GetRandomDeepColor();
+                        baseMap.Save(ms, ImageFormat.Jpeg);
 
-                        int shiftPx = fontSize / 6;
-
-                        float x = (i + 2) * fontSize + rand.Next(-shiftPx, shiftPx) + rand.Next(-shiftPx, shiftPx);
-                        int maxY = height - fontSize;
-                        if (maxY < 0) maxY = 0;
-                        float y = rand.Next(0, maxY);
-
-                        graph.DrawString(captchaCode[i].ToString(), font, fontBrush, x, y);
+                        return new CaptchaResult { CaptchaCode = captchaCode, CaptchaByteData = ms.ToArray(), Timestamp = DateTime.Now };
                     }
-                }
 
-                void DrawDisorderLine()
-                {
-                    Pen linePen = new Pen(new SolidBrush(Color.Black), 3);
-                    for (int i = 0; i < rand.Next(3, 5); i++)
+
+
+                    static int GetFontSize(int imageWidth, int captchCodeCount)
                     {
-                        linePen.Color = GetRandomDeepColor();
+                        var averageSize = imageWidth / captchCodeCount;
 
-                        Point startPoint = new Point(rand.Next(0, width), rand.Next(0, height));
-                        Point endPoint = new Point(rand.Next(0, width), rand.Next(0, height));
-                        graph.DrawLine(linePen, startPoint, endPoint);
+                        averageSize -= 30;
 
-                        //Point bezierPoint1 = new Point(rand.Next(0, width), rand.Next(0, height));
-                        //Point bezierPoint2 = new Point(rand.Next(0, width), rand.Next(0, height));
-
-                        //graph.DrawBezier(linePen, startPoint, bezierPoint1, bezierPoint2, endPoint);
+                        return Convert.ToInt32(averageSize);
                     }
-                }
 
-                void AdjustRippleEffect()
-                {
-                    short nWave = 6;
-                    int nWidth = baseMap.Width;
-                    int nHeight = baseMap.Height;
-
-                    Point[,] pt = new Point[nWidth, nHeight];
-
-                    for (int x = 0; x < nWidth; ++x)
+                    Color GetRandomDeepColor()
                     {
-                        for (int y = 0; y < nHeight; ++y)
+                        int redlow = 160, greenLow = 100, blueLow = 160;
+                        return Color.FromArgb(rand.Next(redlow), rand.Next(greenLow), rand.Next(blueLow));
+                    }
+
+                    Color GetRandomLightColor()
+                    {
+                        int low = 180, high = 255;
+
+                        int nRend = rand.Next(high) % (high - low) + low;
+                        int nGreen = rand.Next(high) % (high - low) + low;
+                        int nBlue = rand.Next(high) % (high - low) + low;
+
+                        return Color.FromArgb(nRend, nGreen, nBlue);
+                    }
+
+                    void DrawCaptchaCode()
+                    {
+                        SolidBrush fontBrush = new(Color.Black);
+                        int fontSize = GetFontSize(width, captchaCode.Length);
+
+                        Font font = new(FontFamily.GenericSerif, fontSize, FontStyle.Bold, GraphicsUnit.Pixel);
+                        for (int i = 0; i < captchaCode.Length; i++)
                         {
-                            var xo = nWave * Math.Sin(2.0 * 3.1415 * y / 128.0);
-                            var yo = nWave * Math.Cos(2.0 * 3.1415 * x / 128.0);
+                            fontBrush.Color = GetRandomDeepColor();
 
-                            var newX = x + xo;
-                            var newY = y + yo;
+                            int shiftPx = fontSize / 6;
 
-                            if (newX > 0 && newX < nWidth)
-                            {
-                                pt[x, y].X = (int)newX;
-                            }
-                            else
-                            {
-                                pt[x, y].X = 0;
-                            }
+                            float x = (i + 2) * fontSize + rand.Next(-shiftPx, shiftPx) + rand.Next(-shiftPx, shiftPx);
+                            int maxY = height - fontSize;
+                            if (maxY < 0) maxY = 0;
+                            float y = rand.Next(0, maxY);
 
-
-                            if (newY > 0 && newY < nHeight)
-                            {
-                                pt[x, y].Y = (int)newY;
-                            }
-                            else
-                            {
-                                pt[x, y].Y = 0;
-                            }
+                            graph.DrawString(captchaCode[i].ToString(), font, fontBrush, x, y);
                         }
                     }
 
-                    Bitmap bSrc = (Bitmap)baseMap.Clone();
-
-                    BitmapData bitmapData = baseMap.LockBits(new Rectangle(0, 0, baseMap.Width, baseMap.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-                    BitmapData bmSrc = bSrc.LockBits(new Rectangle(0, 0, bSrc.Width, bSrc.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-
-                    int scanline = bitmapData.Stride;
-
-                    IntPtr scan0 = bitmapData.Scan0;
-                    IntPtr srcScan0 = bmSrc.Scan0;
-
-                    unsafe
+                    void DrawDisorderLine()
                     {
-                        byte* p = (byte*)(void*)scan0;
-                        byte* pSrc = (byte*)(void*)srcScan0;
-
-                        int nOffset = bitmapData.Stride - baseMap.Width * 3;
-
-                        for (int y = 0; y < nHeight; ++y)
+                        Pen linePen = new(new SolidBrush(Color.Black), 3);
+                        for (int i = 0; i < rand.Next(3, 5); i++)
                         {
-                            for (int x = 0; x < nWidth; ++x)
-                            {
-                                var xOffset = pt[x, y].X;
-                                var yOffset = pt[x, y].Y;
+                            linePen.Color = GetRandomDeepColor();
 
-                                if (yOffset >= 0 && yOffset < nHeight && xOffset >= 0 && xOffset < nWidth)
+                            Point startPoint = new(rand.Next(0, width), rand.Next(0, height));
+                            Point endPoint = new(rand.Next(0, width), rand.Next(0, height));
+                            graph.DrawLine(linePen, startPoint, endPoint);
+                        }
+                    }
+
+                    void AdjustRippleEffect()
+                    {
+                        short nWave = 6;
+                        int nWidth = baseMap.Width;
+                        int nHeight = baseMap.Height;
+
+                        Point[,] pt = new Point[nWidth, nHeight];
+
+                        for (int x = 0; x < nWidth; ++x)
+                        {
+                            for (int y = 0; y < nHeight; ++y)
+                            {
+                                var xo = nWave * Math.Sin(2.0 * 3.1415 * y / 128.0);
+                                var yo = nWave * Math.Cos(2.0 * 3.1415 * x / 128.0);
+
+                                var newX = x + xo;
+                                var newY = y + yo;
+
+                                if (newX > 0 && newX < nWidth)
                                 {
-                                    if (pSrc != null)
-                                    {
-                                        p[0] = pSrc[yOffset * scanline + xOffset * 3];
-                                        p[1] = pSrc[yOffset * scanline + xOffset * 3 + 1];
-                                        p[2] = pSrc[yOffset * scanline + xOffset * 3 + 2];
-                                    }
+                                    pt[x, y].X = (int)newX;
+                                }
+                                else
+                                {
+                                    pt[x, y].X = 0;
                                 }
 
-                                p += 3;
-                            }
-                            p += nOffset;
-                        }
-                    }
 
-                    baseMap.UnlockBits(bitmapData);
-                    bSrc.UnlockBits(bmSrc);
-                    bSrc.Dispose();
+                                if (newY > 0 && newY < nHeight)
+                                {
+                                    pt[x, y].Y = (int)newY;
+                                }
+                                else
+                                {
+                                    pt[x, y].Y = 0;
+                                }
+                            }
+                        }
+
+                        Bitmap bSrc = (Bitmap)baseMap.Clone();
+
+                        BitmapData bitmapData = baseMap.LockBits(new Rectangle(0, 0, baseMap.Width, baseMap.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                        BitmapData bmSrc = bSrc.LockBits(new Rectangle(0, 0, bSrc.Width, bSrc.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+                        int scanline = bitmapData.Stride;
+
+                        IntPtr scan0 = bitmapData.Scan0;
+                        IntPtr srcScan0 = bmSrc.Scan0;
+
+                        unsafe
+                        {
+                            byte* p = (byte*)(void*)scan0;
+                            byte* pSrc = (byte*)(void*)srcScan0;
+
+                            int nOffset = bitmapData.Stride - baseMap.Width * 3;
+
+                            for (int y = 0; y < nHeight; ++y)
+                            {
+                                for (int x = 0; x < nWidth; ++x)
+                                {
+                                    var xOffset = pt[x, y].X;
+                                    var yOffset = pt[x, y].Y;
+
+                                    if (yOffset >= 0 && yOffset < nHeight && xOffset >= 0 && xOffset < nWidth)
+                                    {
+                                        if (pSrc != null)
+                                        {
+                                            p[0] = pSrc[yOffset * scanline + xOffset * 3];
+                                            p[1] = pSrc[yOffset * scanline + xOffset * 3 + 1];
+                                            p[2] = pSrc[yOffset * scanline + xOffset * 3 + 2];
+                                        }
+                                    }
+
+                                    p += 3;
+                                }
+                                p += nOffset;
+                            }
+                        }
+
+                        baseMap.UnlockBits(bitmapData);
+                        bSrc.UnlockBits(bmSrc);
+                        bSrc.Dispose();
+                    }
                 }
             }
+            else
+                throw new NotImplementedException("GenerateCaptchaImage");
+
         }
     }
 }

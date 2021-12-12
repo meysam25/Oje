@@ -68,6 +68,15 @@ function initTokenBox(curObj) {
 }
 
 function bindingForm(selector, key, value, ignoreChanges, res) {
+
+    if (key && key.indexOf('[') > 0 && key.indexOf(']') > 0) {
+        var newKey = key.split('[')[0];
+        var foundIndex = Number.parseInt(key.split('[')[1].split(']')[0]);
+        $(selector).find('div[data-name="' + newKey + '"]').each(function () {
+            $(this)[0].addNewRowIfNeeded(foundIndex + 1);
+        })
+    }
+
     $(selector).find('video[name="' + key + '"]').each(function () {
         $(this).find('source').attr('src', value);
         $(this).load();
@@ -117,6 +126,16 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
     $(selector).find('select[name="' + key + '"]').each(function () {
         $(this)[0].bindValue = value;
         $(this).val(value + '');
+        if (!$(this).val()) {
+            var foundItemByTextValue = '';
+
+            $(this).find('option').each(function () {
+                if (value && $(this).text() && $(this).text().trim() == (value + '').trim()) {
+                    foundItemByTextValue = $(this).attr('value');
+                }
+            });
+            $(this).val(foundItemByTextValue);
+        }
         if ($(this).data('select2')) {
             $(this).append(new Option(res[key + '_Title'], value, true, true)).trigger('change');
         }
@@ -153,8 +172,6 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
                     if (value == 'True' || value == true) {
                         valueBool = true;
                     }
-                    if (value == $(this).val())
-                        valueBool = true;
                     $(this).prop('checked', valueBool);
                 } else if (value.constructor == Array) {
                     for (var i = 0; i < value.length; i++) {
@@ -162,19 +179,21 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
                             $(this).prop('checked', true);
                         }
                     }
+                } else {
+                    if (value == $(this).val())
+                        $(this).prop('checked', true);
                 }
                 break;
             case 'radio':
-                var valueBool = false;
-                if (value == 'True' || value == true) {
-                    valueBool = true;
-                }
-                if (value == $(this).val())
-                    valueBool = true;
                 if ($(this).val() == value)
                     $(this).prop('checked', true);
                 else
                     $(this).prop('checked', false);
+                if (!ignoreChanges) {
+                    setTimeout(function () {
+                        $(this).change();
+                    }.bind(this), 100);
+                }
                 break;
         }
     });
@@ -188,7 +207,7 @@ function bindDropdown(curObj, data, textField, valueField) {
     var select2Closing = $(curObj).attr('data-s2-on-closeing');
     for (var i = 0; i < data.length; i++) {
         var isSelected = '';
-        if (data[i][valueField] + '' == bValue) {
+        if (data[i][valueField] + '' == bValue || data[i][textField] + '' == bValue) {
             isSelected = 'selected=selected';
         }
         $(curObj).append('<option ' + isSelected + ' value="' + data[i][valueField] + '" >' + data[i][textField] + '</option>');
@@ -279,6 +298,11 @@ function initDropdown(curObj, dontUseCache, parentValue) {
 function getFormData(selector) {
     var postData = new FormData();
 
+    if ($(selector).closest('.modal').length > 0) {
+        var pKey = $(selector).closest('.modal')[0].pKey;
+        postData.append('pKey', pKey);
+    }
+
     $(selector).find('textarea').each(function () {
         var curName = $(this).attr('name');
         if (curName) {
@@ -287,13 +311,6 @@ function getFormData(selector) {
             } else {
                 postData.append(curName, $(this).val());
             }
-        }
-    });
-
-    $(selector).find('input[type=radio],input[type=checkbox]').each(function () {
-        var curName = $(this).attr('name');
-        if (curName && $(this).is(':checked')) {
-            postData.append(curName, $(this).val());
         }
     });
 

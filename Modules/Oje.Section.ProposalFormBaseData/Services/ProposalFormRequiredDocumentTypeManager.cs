@@ -46,7 +46,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title, ApiResultErrorCode.ValidationError);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Type, ApiResultErrorCode.ValidationError);
-            if (db.ProposalFormRequiredDocumentTypes.Any(t => t.Id != input.id && t.Title == input.title && t.SiteSettingId == input.siteId))
+            if (db.ProposalFormRequiredDocumentTypes.Any(t => t.Id != input.id && t.ProposalFormId == input.formId && t.Title == input.title && t.SiteSettingId == input.siteId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Title, ApiResultErrorCode.ValidationError);
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.ProposalFormManager.Models.DB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace Oje.ProposalFormManager.Interfaces
     public interface IProposalFilledFormJsonManager
     {
         void Create(long proposalFilledFormId, string jsonConfig);
+        ProposalFilledFormJson GetBy(long proposalFilledFormId);
     }
 }

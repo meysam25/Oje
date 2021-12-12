@@ -60,6 +60,7 @@ namespace Oje.ProposalFormManager
             services.AddScoped<ICarBodyCreateDatePercentManager, CarBodyCreateDatePercentManager>();
             services.AddScoped<IProposalFilledFormAdminManager, ProposalFilledFormAdminManager>();
             services.AddScoped<IProposalFormCategoryManager, ProposalFormCategoryManager>();
+            services.AddScoped<IProposalFilledFormAdminBaseQueryManager, ProposalFilledFormAdminBaseQueryManager>();
         }
     }
 }

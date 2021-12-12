@@ -1,4 +1,5 @@
-﻿using Oje.ProposalFormManager.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Oje.ProposalFormManager.Interfaces;
 using Oje.ProposalFormManager.Models.DB;
 using Oje.ProposalFormManager.Services.EContext;
 using System;
@@ -27,6 +28,11 @@ namespace Oje.ProposalFormManager.Services
                 JsonConfig = jsonConfig
             }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
             db.SaveChanges();
+        }
+
+        public ProposalFilledFormJson GetBy(long proposalFilledFormId)
+        {
+            return db.ProposalFilledFormJsons.Where(t => t.ProposalFilledFormId == proposalFilledFormId).AsNoTracking().FirstOrDefault();
         }
     }
 }

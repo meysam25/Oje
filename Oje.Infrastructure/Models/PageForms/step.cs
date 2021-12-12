@@ -10,12 +10,12 @@ namespace Oje.Infrastructure.Models.PageForms
     {
         public step()
         {
-            panels = new List<panel>();
         }
 
-        public int? order { get; set; }
+        public decimal? order { get; set; }
         public string id { get; set; }
         public string title { get; set; }
+        public string showUrl { get; set; }
         public List<panel> panels { get; set; }
     }
 }

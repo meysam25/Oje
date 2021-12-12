@@ -34,5 +34,16 @@ namespace Oje.ProposalFormManager.Services
                 db.SaveChanges();
             }
         }
+
+        public void Update(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId)
+        {
+            var foundItem = db.ProposalFilledFormUsers.Where(t => t.ProposalFilledFormId == proposalFilledFormId && t.Type == type).FirstOrDefault();
+            if(foundItem != null)
+            {
+                foundItem.FromUserId = fromUserId;
+                foundItem.UserId = userId.ToLongReturnZiro();
+                db.SaveChanges();
+            }
+        }
     }
 }

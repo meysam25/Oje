@@ -10,8 +10,6 @@ namespace Oje.Infrastructure.Models.PageForms
     {
         public ctrlShowHideCondation()
         {
-            classShow = new List<string>();
-            classHide = new List<string>();
         }
 
         public string value { get; set; }

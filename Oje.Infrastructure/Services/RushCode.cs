@@ -39,7 +39,9 @@ namespace Oje.Infrastructure.Services
             var allCtrlExceptCurrentCTRL = allCtrls.Where(t => t != ctrl).ToList();
             var currentClass = ctrl.@class;
             var currentClassArr = string.IsNullOrEmpty(currentClass) ? new List<string>() : currentClass.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var foundCtrlsThatHaveThisClass = allCtrlExceptCurrentCTRL.Where(t => t.showHideCondation != null && t.showHideCondation.Any(tt => tt.classShow.Any(ttt => currentClassArr.Contains(ttt)) || tt.classHide.Any(ttt => currentClassArr.Contains(ttt)))).ToList();
+            var foundCtrlsThatHaveThisClass = allCtrlExceptCurrentCTRL
+                .Where(t => t.showHideCondation != null && t.showHideCondation.Any(tt => (tt.classShow != null && tt.classShow.Any(ttt => currentClassArr.Contains(ttt))) || (tt.classHide != null && tt.classHide.Any(ttt => currentClassArr.Contains(ttt)))))
+                .ToList();
 
             foreach (var actorCtrl in foundCtrlsThatHaveThisClass)
             {
@@ -48,9 +50,9 @@ namespace Oje.Infrastructure.Services
                 var selectedValue = actorCtrl.showHideCondation.Where(t => t.value == ctrlSelectValue).FirstOrDefault();
                 var notSelectedValue = actorCtrl.showHideCondation.Where(t => !string.IsNullOrEmpty(t.value) && t.value.Substring(0, 1) == "!" && t.value.Replace("!", "") != ctrlSelectValue).FirstOrDefault();
 
-                if (selectedValue != null && currentClassArr.Any(t => selectedValue.classHide.Contains(t)))
+                if (selectedValue != null && currentClassArr.Any(t => selectedValue.classHide != null && selectedValue.classHide.Contains(t)))
                     result = false;
-                else if (selectedValue != null && currentClassArr.Any(t => selectedValue.classShow.Contains(t)))
+                else if (selectedValue != null && currentClassArr.Any(t => selectedValue.classShow != null && selectedValue.classShow.Contains(t)))
                 {
 
                 }
@@ -80,7 +82,7 @@ namespace Oje.Infrastructure.Services
                 var allProps = input.GetType().GetProperties();
                 foreach (var prop in allProps)
                 {
-                    if (prop.PropertyType == result.GetType())
+                    if (prop.PropertyType == result.GetType() && prop.GetValue(input) != null)
                         result.AddRange(prop.GetValue(input) as List<T>);
                     else
                     {
@@ -457,6 +459,32 @@ namespace Oje.Infrastructure.Services
                 if (monthStr.Length == 1)
                     monthStr = "0" + monthStr;
                 result = string.Format("{0}/{1}/{2}", pc.GetYear(d), monthStr, dayStr);
+            }
+            catch
+            {
+
+            }
+
+
+            return result;
+        }
+
+        public static string ToFaDate(this object input, string seperator = "/")
+        {
+            string result = "";
+            try
+            {
+                if (input == null)
+                    return "";
+                DateTime d = Convert.ToDateTime(input);
+                PersianCalendar pc = new PersianCalendar();
+                string dayStr = pc.GetDayOfMonth(d) + "";
+                if (dayStr.Length == 1)
+                    dayStr = "0" + dayStr;
+                string monthStr = pc.GetMonth(d) + "";
+                if (monthStr.Length == 1)
+                    monthStr = "0" + monthStr;
+                result = string.Format("{0}{3}{1}{3}{2}", pc.GetYear(d), monthStr, dayStr, seperator);
             }
             catch
             {

@@ -10,12 +10,12 @@ namespace Oje.Infrastructure.Models.PageForms
     {
         public stepWizard()
         {
-            actionOnLastSteps = new List<actionOnLastStep>();
-            steps = new List<step>();
         }
 
+        public bool? isEdit { get; set; }
         public string lastStepButtonTitle { get; set; }
-        public List<actionOnLastStep> actionOnLastSteps { get; set; }
+        public string lastStepButtonSubbmitUrl { get; set; }
+        public List<actionOnLastStep> actionOnLastStep { get; set; }
         public List<step> steps { get; set; }
     }
 }

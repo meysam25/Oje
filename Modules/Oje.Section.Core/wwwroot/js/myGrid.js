@@ -46,7 +46,7 @@ $.fn.initMyGrid = function (option) {
                         else if (option.sortFieldStatus == false && option.columns[i].field == option.sortField)
                             sortCL += ' icon-sort-alpha-desc2';
                         result += '<td class="' + sortCL + '" ' + (option.columns[i].sort ? 'data-field-name="' + option.columns[i].field + '"' : '') +
-                            ' style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span style="display:inline-block;padding-right:5px;" data-lc="' + option.columns[i].lc + '" >' + option.columns[i].caption + '</span></td>';
+                            ' style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span style="display:inline-block;padding-right:5px;" >' + option.columns[i].caption + '</span></td>';
                     }
 
                 }
@@ -174,10 +174,16 @@ $.fn.initMyGrid = function (option) {
             if (option && option.actions.cActions && option.actions.cActions.length > 0) {
                 for (var i = 0; i < option.actions.cActions.length; i++) {
                     if (option.actions.cActions[i].template && typeof (option.actions.cActions[i].template) == 'function') {
-                        result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + option.actions.cActions[i].template(data) + '</span>';
+                        if (option.actions.cActions[i].ignoreParentButton == true)
+                            result += '<span style="display:inline-block" data-index="' + i + '" >' + option.actions.cActions[i].template(data) + '</span>';
+                        else
+                            result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + option.actions.cActions[i].template(data) + '</span>';
                     } else if (option.actions.cActions[i].template && typeof (option.actions.cActions[i].template) == 'string') {
                         var compileStr = 'var data =' + JSON.stringify(data) + ';' + option.actions.cActions[i].template;
-                        result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + eval(compileStr) + '</span>';
+                        if (option.actions.cActions[i].ignoreParentButton == true)
+                            result += '<span style="display:inline-block" data-index="' + i + '" >' + eval(compileStr) + '</span>';
+                        else
+                            result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + eval(compileStr) + '</span>';
                     }
                 }
             }
@@ -196,9 +202,14 @@ $.fn.initMyGrid = function (option) {
                 if (!option.columns[i].hide) {
                     var curCellData = data[option.columns[i].field];
                     if (option.columns[i].formatter && option.formatters[option.columns[i].formatter]) {
-                        curCellData = option.formatters[option.columns[i].formatter](null, data);
+                        if (typeof (option.formatters[option.columns[i].formatter]) == 'string') {
+                            var compileStr = 'var data =' + JSON.stringify(data) + ';' + (option.formatters[option.columns[i].formatter]);
+                            curCellData = eval(compileStr);
+                        }
+                        else
+                            curCellData = option.formatters[option.columns[i].formatter](null, data);
                     }
-                    result += '<td style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span data-lc="' + option.columns[i].lc + '" class="gridResTitle">' + option.columns[i].caption + ': </span>' + curCellData + '</td>';
+                    result += '<td style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span  class="gridResTitle">' + option.columns[i].caption + ': </span>' + curCellData + '</td>';
                 }
             }
             if (this.hasAction(option)) {
@@ -373,8 +384,7 @@ $.fn.initMyGrid = function (option) {
             e.stopPropagation();
             $(this).closest('.holderColumnConfig').toggleClass('openConfigMenu');
         });
-        $(this).find('.gridExteraFilterModal').click(function ()
-        {
+        $(this).find('.gridExteraFilterModal').click(function () {
             var modalId = $(this).attr('data-modal-filter-id');
             $('#' + modalId).modal('show');
         });
@@ -542,7 +552,7 @@ $.fn.initMyGrid = function (option) {
                         var url = $(this).attr('data-url');
                         var id = $(this).attr('data-id');
                         if (url && id) {
-                            confirmDialog('حذف', 'آیا اطمینان دارید ؟', function () {
+                            confirmDialog(($(this).attr('title') ? $(this).attr('title') : 'حذف'), 'آیا اطمینان دارید ؟', function () {
                                 var postData = new FormData();
                                 postData.append('id', this.id);
                                 showLoader($(this.curThis).closest('.myGridCTRL'))
@@ -584,8 +594,8 @@ $.fn.initMyGrid = function (option) {
             var tHead = $(this).find('thead');
             var totalSchema = option.schema.total;
             var dataSchema = option.schema.data;
-            var totalItems = res[totalSchema];// eval('res.' + totalSchema);
-            var data = res[dataSchema];// eval('res.' + dataSchema);
+            var totalItems = res[totalSchema];
+            var data = res[dataSchema];
             var holderItems = $(this).find('.myTableBody');
             var resultRows = '';
             var cElement = $(this)[0];
@@ -778,7 +788,7 @@ $.fn.initMyGrid = function (option) {
                     postData.append('sortField', option.sortField);
                     postData.append('sortFieldIsAsc', option.sortFieldStatus);
                 }
-                
+
                 $(this)[0].filtersValue = postData;
                 if (option.exteraSearchIds) {
                     for (var i = 0; i < option.exteraSearchIds.length; i++) {
@@ -786,6 +796,12 @@ $.fn.initMyGrid = function (option) {
                         for (var pair of exteraPostData.entries()) {
                             postData.append(pair[0], pair[1]);
                         }
+                    }
+                }
+                if ($(this).closest('.modal').length > 0) {
+                    var pkey = $(this).closest('.modal')[0].pKey
+                    if (pkey) {
+                        postData.append('pKey', pkey);
                     }
                 }
                 if (option.exteraParameters) {

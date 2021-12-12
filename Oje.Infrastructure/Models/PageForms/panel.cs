@@ -10,8 +10,6 @@ namespace Oje.Infrastructure.Models.PageForms
     {
         public panel()
         {
-            stepWizards = new List<stepWizard>();
-            ctrls = new List<ctrl>();
         }
 
         public bool? hasInquiry { get; set; }
@@ -19,6 +17,7 @@ namespace Oje.Infrastructure.Models.PageForms
         public bool? isCompanyListRequired { get; set; }
         public string id { get; set; }
         public string title { get; set; }
+        public string loadUrl { get; set; }
         public List<stepWizard> stepWizards { get; set; }
         public List<ctrl> ctrls { get; set; }
     }

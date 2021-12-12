@@ -10,7 +10,6 @@ namespace Oje.Infrastructure.Models.PageForms
     {
         public PageForm()
         {
-            panels = new List<panel>();
         }
 
         public List<panel> panels { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormManager.Interfaces;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Oje.ProposalFormManager.Services
 {
-    internal class UserManager: IUserManager
+    internal class UserManager : IUserManager
     {
         readonly ProposalFormDBContext db = null;
         readonly IRoleManager RoleManager = null;
@@ -35,7 +36,7 @@ namespace Oje.ProposalFormManager.Services
             if (newUser != null)
                 return newUser.Id;
 
-            newUser = new User() 
+            newUser = new User()
             {
                 Username = mobileNumber,
                 SiteSettingId = siteSettingId.Value,
@@ -63,6 +64,43 @@ namespace Oje.ProposalFormManager.Services
             RoleManager.AddUserToUserRole(newUser.Id);
 
             return newUser.Id;
+        }
+
+        public object GetSelect2List(Select2SearchVM searchInput, int? roleId, int? companyId, int? provinceId, int? cityId)
+        {
+            List<object> result = new List<object>();
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.Users.AsQueryable();
+            if (roleId > 0)
+                qureResult = qureResult.Where(t => t.UserRoles.Any(tt => tt.RoleId == roleId));
+            if (companyId > 0)
+                qureResult = qureResult.Where(t => t.UserCompanies.Any(tt => tt.CompanyId == companyId));
+            if (provinceId > 0)
+                qureResult = qureResult.Where(t => t.ProvinceId == provinceId);
+            if(cityId > 0)
+                qureResult = qureResult.Where(t => t.CityId == cityId);
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => (t.Firstname + " " + t.Lastname + "(" + t.Username + ")").Contains(searchInput.search));
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Firstname + " " + t.Lastname + "(" + t.Username + ")" }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
+        }
+
+        public List<int> GetUserCompanies(long? userId)
+        {
+            return db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserCompanies).Select(t => t.CompanyId).ToList();
         }
 
         private void createForProposalFormValidation(User newUser)

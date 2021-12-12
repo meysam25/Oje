@@ -26,6 +26,7 @@ namespace Oje.ProposalFormManager.Models.DB
             InquiryMaxDiscountCompanies = new();
             PaymentMethodCompanies = new();
             CarSpecificationAmountCompanies = new();
+            UserCompanies = new();
         }
 
         [Key]
@@ -68,6 +69,8 @@ namespace Oje.ProposalFormManager.Models.DB
         public List<InquiryCompanyLimitCompany> InquiryCompanyLimitCompanies { get; set; }
         [InverseProperty("Company")]
         public List<CarSpecificationAmountCompany> CarSpecificationAmountCompanies { get; set; }
+        [InverseProperty("Company")]
+        public List<UserCompany> UserCompanies { get; set; }
 
     }
 }

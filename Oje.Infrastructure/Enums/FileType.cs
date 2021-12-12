@@ -29,5 +29,7 @@ namespace Oje.Infrastructure.Enums
         BankLogo = 9,
         [Display(Name = "مدارک فرم پیشنهاد", Prompt = "ProposalFilledForm", Description = "~1000*1000")]
         ProposalFilledForm = 10,
+        [Display(Name ="مدارک تایین قیمت شرکت", Prompt = "ProposalFilledFormCompanies")]
+        CompanyPrice = 11,
     }
 }

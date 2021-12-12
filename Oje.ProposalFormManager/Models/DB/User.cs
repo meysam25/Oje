@@ -16,6 +16,9 @@ namespace Oje.ProposalFormManager.Models.DB
             ProposalFilledFormUsers = new();
             FromUserProposalFilledFormUsers = new();
             UserRoles = new();
+            UserCompanies = new();
+            CreateUserProposalFilledFormCompanies = new();
+            UpdateUserProposalFilledFormCompanies = new();
         }
 
         [Key]
@@ -47,6 +50,8 @@ namespace Oje.ProposalFormManager.Models.DB
         [MaxLength(1000)]
         public string Address { get; set; }
         public long? CreateByUserId { get; set; }
+        public int? ProvinceId { get; set; }
+        public int? CityId { get; set; }
         public int? SiteSettingId { get; set; }
 
 
@@ -56,5 +61,11 @@ namespace Oje.ProposalFormManager.Models.DB
         public List<ProposalFilledFormUser> FromUserProposalFilledFormUsers { get; set; }
         [InverseProperty("User")]
         public List<UserRole> UserRoles { get; set; }
+        [InverseProperty("User")]
+        public List<UserCompany> UserCompanies { get; set; }
+        [InverseProperty("CreateUser")]
+        public List<ProposalFilledFormCompany> CreateUserProposalFilledFormCompanies { get; set; }
+        [InverseProperty("UpdateUser")]
+        public List<ProposalFilledFormCompany> UpdateUserProposalFilledFormCompanies { get; set; }
     }
 }

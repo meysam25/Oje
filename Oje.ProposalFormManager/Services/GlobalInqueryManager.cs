@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.ProposalFormManager.Interfaces;
 using Oje.ProposalFormManager.Models.DB;
 using Oje.ProposalFormManager.Services.EContext;
@@ -20,6 +21,52 @@ namespace Oje.ProposalFormManager.Services
             this.db = db;
             this.PaymentMethodManager = PaymentMethodManager;
         }
+
+        public void AppendInquiryData(long id, List<ProposalFilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs)
+        {
+            if (id > 0)
+            {
+                var foundItem = db.GlobalInqueries
+                    .Where(t => t.Id == id)
+                    .Select(t => new
+                    {
+                        inquiryItems = t.GlobalInquiryItems.OrderBy(t => t.Order).Select(tt => new
+                        {
+                            title = tt.Title,
+                            value = tt.Price
+                        }).ToList(),
+                        inputItems = t.GlobalInputInquery.GlobalInqueryInputParameters.Select(tt => new
+                        {
+                            title = tt.Title,
+                            value = tt.Value,
+                            key = tt.Key,
+                        }).ToList()
+                    }).FirstOrDefault();
+                if (foundItem != null && foundItem.inquiryItems.Count > 0)
+                {
+                    if (proposalFilledFormPdfGroupVMs == null)
+                        proposalFilledFormPdfGroupVMs = new();
+                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جییات استعلام", ProposalFilledFormPdfGroupItems = new() };
+                    foreach (var item in foundItem.inquiryItems)
+                        newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value.ToString("###,###"), cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12" });
+                    proposalFilledFormPdfGroupVMs.Add(newGroupItem);
+                }
+                if (foundItem != null && foundItem.inputItems.Count > 0)
+                {
+                    if (proposalFilledFormPdfGroupVMs == null)
+                        proposalFilledFormPdfGroupVMs = new();
+                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "مقادیر استعلام", ProposalFilledFormPdfGroupItems = new() };
+                    foreach (var item in foundItem.inputItems)
+                    {
+                        if (!foundItem.inputItems.Any(t => !string.IsNullOrEmpty(t.key) && t.key != item.key && t.key.StartsWith(item.key)) && item.value.IndexOf("tem.Collections.Generic.Lis") == -1)
+                            newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12" });
+
+                    }
+                    proposalFilledFormPdfGroupVMs.Add(newGroupItem);
+                }
+            }
+        }
+
         public void Create(List<GlobalInquery> inputs)
         {
             if (inputs.Count > 0)

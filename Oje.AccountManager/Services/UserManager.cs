@@ -40,17 +40,17 @@ namespace Oje.AccountManager.Services
             this.SiteSettingManager = SiteSettingManager;
         }
 
-        private void LoginValidation(LoginVM input)
-        {
-            if (input == null)
-                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters, ApiResultErrorCode.ValidationError);
-            if (string.IsNullOrEmpty(input.username))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Username, ApiResultErrorCode.ValidationError);
-            if (string.IsNullOrEmpty(input.password))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Password, ApiResultErrorCode.ValidationError);
-            if (Captcha.ValidateCaptchaCode(input.sCode, input.sCodeGuid) == false)
-                throw BException.GenerateNewException(BMessages.Invalid_Captcha, ApiResultErrorCode.InvalidCaptcha);
-        }
+        //private void LoginValidation(LoginVM input)
+        //{
+        //    if (input == null)
+        //        throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters, ApiResultErrorCode.ValidationError);
+        //    if (string.IsNullOrEmpty(input.username))
+        //        throw BException.GenerateNewException(BMessages.Please_Enter_Username, ApiResultErrorCode.ValidationError);
+        //    if (string.IsNullOrEmpty(input.password))
+        //        throw BException.GenerateNewException(BMessages.Please_Enter_Password, ApiResultErrorCode.ValidationError);
+        //    if (Captcha.ValidateCaptchaCode(input.sCode, input.sCodeGuid) == false)
+        //        throw BException.GenerateNewException(BMessages.Invalid_Captcha, ApiResultErrorCode.InvalidCaptcha);
+        //}
 
         public ApiResult Login(LoginVM input, int? siteSettingId)
         {

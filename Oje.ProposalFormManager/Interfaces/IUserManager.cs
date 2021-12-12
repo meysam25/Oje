@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,7 @@ namespace Oje.ProposalFormManager.Interfaces
     public interface IUserManager
     {
         long CreateUserForProposalFormIfNeeded(IFormCollection form, int? siteSettingId, long? loginUserId);
+        object GetSelect2List(Select2SearchVM searchInput, int? roleId, int? companyId, int? provinceId, int? cityId);
+        List<int> GetUserCompanies(long? userId);
     }
 }

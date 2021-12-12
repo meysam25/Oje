@@ -77,11 +77,13 @@ namespace Oje.ProposalFormManager.Services
             int payCondationId = form.GetStringIfExist("payCondation").ToIntReturnZiro();
             var allRequiredFileUpload = ProposalFormRequiredDocumentManager.GetProposalFormRequiredDocuments(foundProposalForm?.Id, siteSettingId);
             PageForm ppfObj = null;
-            try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch { }
-            createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId);
-            int companyId = GlobalInqueryManager.GetCompanyId(inquiryId, siteSettingId);
+            try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch { };// catch (Exception) { throw; }
+            int companyId = 0;
 
+            if (ppfObj?.panels?.FirstOrDefault()?.isAgentRequired == true && ppfObj?.panels?.FirstOrDefault()?.isCompanyListRequired == true)
+                companyId = GlobalInqueryManager.GetCompanyId(inquiryId, siteSettingId);
 
+            createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId);
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -89,10 +91,15 @@ namespace Oje.ProposalFormManager.Services
                 {
                     ProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, inquiryId, proposalFormId);
                     ProposalFilledFormJsonManager.Create(newForm.Id, foundProposalForm.JsonConfig);
-                    ProposalFilledFormCompanyManager.Create(inquiryId, siteSettingId, newForm.Id, newForm.Price, companyId);
+                    if (ppfObj.panels?.FirstOrDefault()?.hasInquiry == true && companyId > 0)
+                        ProposalFilledFormCompanyManager.Create(inquiryId, siteSettingId, newForm.Id, newForm.Price, companyId, true, loginUserId);
+                    else if (ppfObj.panels?.FirstOrDefault()?.isCompanyListRequired == true)
+                        ProposalFilledFormCompanyManager.Create(form.GetStringIfExist("cIds"), newForm.Id, loginUserId);
+
                     long ownerUserId = InternalUserManager.CreateUserForProposalFormIfNeeded(form, siteSettingId, loginUserId);
                     ProposalFilledFormUseManager.Create(loginUserId, ProposalFilledFormUserType.CreateUser, loginUserId, newForm.Id);
-                    ProposalFilledFormUseManager.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id);
+                    if (ppfObj.panels?.FirstOrDefault().isAgentRequired == true)
+                        ProposalFilledFormUseManager.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id);
                     ProposalFilledFormUseManager.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id);
                     if (PaymentMethodManager.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryManager.HasAnyCashDiscount(inquiryId))
                         ProposalFilledFormDocumentManager.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodManager.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
@@ -113,7 +120,7 @@ namespace Oje.ProposalFormManager.Services
 
         private void createUploadedFiles(int? siteSettingId, IFormCollection form, long? loginUserId, long proposalFilledFormId)
         {
-            foreach(var file in form.Files)
+            foreach (var file in form.Files)
             {
                 UploadedFileManager.UploadNewFile(FileType.ProposalFilledForm, file, loginUserId, siteSettingId, proposalFilledFormId, ".jpg,.png,.pdf,.doc,.docx,.xls", true);
             }
@@ -126,7 +133,7 @@ namespace Oje.ProposalFormManager.Services
                 ProposalFormId = proposalFormId,
                 Price = inquiryId > 0 ? GlobalInqueryManager.GetSumPriceLong(inquiryId, proposalFormId, siteSettingId) : 0,
                 Status = ProposalFilledFormStatus.New,
-                GlobalInqueryId = inquiryId > 0 ? inquiryId : 0,
+                GlobalInqueryId = inquiryId > 0 ? inquiryId : null,
                 CreateDate = DateTime.Now,
                 SiteSettingId = siteSettingId.Value
             };
@@ -137,13 +144,12 @@ namespace Oje.ProposalFormManager.Services
             return newItem;
         }
 
-        private void createCtrlValidation(IFormCollection form, PageForm ppfObj, List<Models.DB.ProposalFormRequiredDocument> allRequiredFileUpload, int? siteSettingId)
+        private void createCtrlValidation(IFormCollection form, PageForm ppfObj, List<ProposalFormRequiredDocument> allRequiredFileUpload, int? siteSettingId, int companyId)
         {
-            if (ppfObj == null)
+            if (ppfObj == null || ppfObj.panels == null || ppfObj.panels.Count == 0)
                 throw BException.GenerateNewException(BMessages.Json_Convert_Error);
-            
 
-
+            validateCompanyAndAgent(ppfObj, form, siteSettingId, companyId);
             validateIfInquiryRequired(form, ppfObj, siteSettingId);
 
             var allCtrls = ppfObj.GetAllListOf<ctrl>();
@@ -152,62 +158,43 @@ namespace Oje.ProposalFormManager.Services
             {
                 if (ctrl.isCtrlVisible(form, allCtrls) == true)
                 {
-                    requiredValidationForCtrl(ctrl, form);
-                    reqularExperssionValidationCtrl(ctrl, form);
-                    validateBaseDataEnums(ctrl, form);
-                    navionalCodeValidation(ctrl, form);
+                    ctrl.requiredValidationForCtrl(ctrl, form);
+                    ctrl.reqularExperssionValidationCtrl(ctrl, form);
+                    ctrl.validateBaseDataEnums(ctrl, form);
+                    ctrl.validateAndUpdateValuesOfDS(ctrl, form);
+                    ctrl.navionalCodeValidation(ctrl, form);
+                    ctrl.validateAndUpdateCtrl(ctrl, form, allCtrls);
+                    ctrl.validateAndUpdateMultiRowInputCtrl(ctrl, form, ppfObj);
                 }
                 validateFileUpload(ctrl, allRequiredFileUpload, form);
 
             }
         }
 
-        private void navionalCodeValidation(ctrl ctrl, IFormCollection form)
+       
+
+       
+
+        private void validateCompanyAndAgent(PageForm ppfObj, IFormCollection form, int? siteSettingId, int companyId)
         {
-            if (ctrl.nationalCodeValidation == true && !form.GetStringIfExist(ctrl.name).IsCodeMeli())
-                throw BException.GenerateNewException(BMessages.Invalid_NationaCode);
+            if (ppfObj.panels.FirstOrDefault().isAgentRequired == true && !form.ContainsKey("agentId"))
+                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
+            if (ppfObj.panels.FirstOrDefault().isAgentRequired == true && (string.IsNullOrEmpty(form.GetStringIfExist("agentId")) || form.GetStringIfExist("agentId").ToLongReturnZiro() <= 0))
+                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
+            if (ppfObj.panels.FirstOrDefault().hasInquiry == true && ppfObj.panels.FirstOrDefault().isAgentRequired == true && !UserManager.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId))
+                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
+            else if (ppfObj.panels.FirstOrDefault().isAgentRequired == true && !UserManager.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro()))
+                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
+            if (ppfObj.panels.FirstOrDefault().hasInquiry == true && companyId <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_Company);
+
+            if (ppfObj.panels.FirstOrDefault().isCompanyListRequired == true && !form.ContainsKey("cIds"))
+                throw BException.GenerateNewException(BMessages.Please_Select_Company);
+            if (ppfObj.panels.FirstOrDefault().isCompanyListRequired == true && string.IsNullOrEmpty(form.GetStringIfExist("cIds")))
+                throw BException.GenerateNewException(BMessages.Please_Select_Company);
         }
 
-        private void validateBaseDataEnums(ctrl ctrl, IFormCollection form)
-        {
-            if (ctrl.type == ctrlType.dropDown && !string.IsNullOrEmpty(ctrl.dataurl))
-            {
-                if (ctrl.dataurl.StartsWith("/Core/BaseData/Get/"))
-                {
-                    string selectValue = form.GetStringIfExist(ctrl.name);
-                    if (!string.IsNullOrEmpty(selectValue))
-                    {
-                        string enumName = ctrl.dataurl.Replace("/Core/BaseData/Get/", "");
-                        var foundEnum = EnumManager.GetEnum(enumName);
-
-                        if (foundEnum == null || foundEnum.Count == 0)
-                            throw BException.GenerateNewException(String.Format(BMessages.Invalid_BaseData.GetEnumDisplayName(), ctrl.dataurl));
-
-                        if (!foundEnum.Any(tt => tt.id == selectValue || tt.title == selectValue))
-                            throw BException.GenerateNewException(String.Format(BMessages.Invalid_BaseData.GetEnumDisplayName(), ctrl.dataurl));
-                        ctrl.defV = foundEnum.Where(tt => tt.id == selectValue || tt.title == selectValue).Select(tt => tt.title).FirstOrDefault();
-                    }
-                }
-            }
-        }
-
-        private void reqularExperssionValidationCtrl(ctrl ctrl, IFormCollection form)
-        {
-
-            if (ctrl.validations != null && ctrl.validations.Count > 0)
-            {
-                var curCTRLValue = form.Keys.Any(t => t == ctrl.name) ? form.GetStringIfExist(ctrl.name) : "";
-                if (!string.IsNullOrEmpty(curCTRLValue))
-                {
-                    foreach (var validation in ctrl.validations)
-                    {
-                        Regex rx = new Regex(validation.reg, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                        if (!rx.IsMatch(curCTRLValue))
-                            throw BException.GenerateNewException(ctrl.label + ": " + validation.msg);
-                    }
-                }
-            }
-        }
+       
 
         private void validateIfInquiryRequired(IFormCollection form, PageForm ppfObj, int? siteSettingId)
         {
@@ -224,13 +211,6 @@ namespace Oje.ProposalFormManager.Services
                     throw BException.GenerateNewException(BMessages.Invalid_Inquiry);
                 int companyId = GlobalInqueryManager.GetCompanyId(inQuiryId, siteSettingId);
                 validateDebitPayment(form, siteSettingId, inQuiryId, companyId);
-                if (!UserManager.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId))
-                    throw BException.GenerateNewException(BMessages.Please_Select_Agent);
-            }
-            else
-            {
-                if (!UserManager.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro()))
-                    throw BException.GenerateNewException(BMessages.Please_Select_Agent);
             }
         }
 
@@ -279,7 +259,7 @@ namespace Oje.ProposalFormManager.Services
 
         private void validateFileUpload(ctrl ctrl, List<Models.DB.ProposalFormRequiredDocument> allRequiredFileUpload, IFormCollection form)
         {
-            if (ctrl.type == Infrastructure.Enums.ctrlType.dynamicFileUpload)
+            if (ctrl.type == ctrlType.dynamicFileUpload)
             {
                 if (allRequiredFileUpload != null && allRequiredFileUpload.Count > 0)
                 {
@@ -291,32 +271,9 @@ namespace Oje.ProposalFormManager.Services
             }
         }
 
-        private void requiredValidationForCtrl(ctrl ctrl, IFormCollection form)
-        {
-            if (ctrl.isRequired == true)
-                if (!form.Keys.Contains(ctrl.name) || string.IsNullOrEmpty(form.GetStringIfExist(ctrl.name)))
-                    if(!needToBeIgnore(ctrl.name))
-                    throw BException.GenerateNewException
-                            (
-                                string.Format
-                                    (
-                                        ctrl.type == Infrastructure.Enums.ctrlType.text ? BMessages.Please_Enter_X.GetEnumDisplayName() : BMessages.Please_Select_X.GetEnumDisplayName()
-                                        , ctrl.label
-                                    )
-                            );
+       
 
-        }
-
-        private bool needToBeIgnore(string name)
-        {
-            switch(name)
-            {
-                case "payCondation":
-                    return true;
-                default:
-                    return false;
-            }
-        }
+       
 
         private void createValidation(int? siteSettingId, IFormCollection form)
         {

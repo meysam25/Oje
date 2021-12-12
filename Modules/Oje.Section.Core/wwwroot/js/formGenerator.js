@@ -70,9 +70,7 @@ function getPanelTemplate(panel) {
             result += '</div>';
         }
         functionsList.push(function () {
-            setTimeout(function () {
-                bindPanelByUrl($('#' + this.panelId));
-            }.bind(this), 500);
+            bindPanelByUrl($('#' + this.panelId));
         }.bind({ panelId: panel.id }));
         result += '</div>';
     }
@@ -151,13 +149,16 @@ function getModualTemplateCTRL(modual) {
             result += getInputTemplate(modual.ctrls[i]);
         }
         result += '</div>';
+    } else if (modual && modual.panels) {
+        for (var i = 0; i < modual.panels.length; i++) {
+            result += getPanelTemplate(modual.panels[i]);
+        }
     }
 
     return result;
 }
 function getInputTemplate(ctrl) {
     var result = '';
-
     if (ctrl) {
         if (!ctrl.id)
             ctrl.id = uuidv4RemoveDash();
@@ -225,7 +226,7 @@ function getMultiRowInputTemplate(ctrl) {
     var result = '';
 
     if (ctrl) {
-        result += '<div id="' + ctrl.id + '" class="myCtrl row ' + (ctrl.class ? ctrl.class : '') + '">';
+        result += '<div id="' + ctrl.id + '" class="myCtrl row ' + (ctrl.class ? ctrl.class : '') + '" data-name="' + ctrl.name + '" >';
         result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
         if (ctrl.ctrls) {
             result += '<div class="MultiRowInputRow row">';
@@ -243,10 +244,22 @@ function getMultiRowInputTemplate(ctrl) {
 
         functionsList.push(function () {
             initMoultiRowInputButton(this.ctrl);
+            initInternalFunctions(this.ctrl);
         }.bind({ ctrl: ctrl }));
     }
 
     return result;
+}
+
+function initInternalFunctions(ctrl) {
+    var qureSelector = $('#' + ctrl.id);
+    if (qureSelector.length > 0) {
+        qureSelector[0].addNewRowIfNeeded = function (index) {
+            var currWo = $(this).find('.MultiRowInputRow').length;
+            if (currWo < index)
+                $(this).find('.addNewRowForMultiRowCtrl').click();
+        }
+    }
 }
 
 function initMoultiRowInputButton(ctrl) {
@@ -559,7 +572,6 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
 
 function getTextBoxTemplate(ctrl) {
     var result = '';
-
     result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '">';
     if (ctrl.label) {
         result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
@@ -608,7 +620,7 @@ function doCalceForMultiplay(multiPlayObj) {
         for (var i = 0; i < multiPlayObj.multiPlay.length; i++) {
             try {
                 if (result == 0)
-                    result = Number.parseInt($('#' + multiPlayObj.multiPlay[i]).val().replace(/,/,''));
+                    result = Number.parseInt($('#' + multiPlayObj.multiPlay[i]).val().replace(/,/, ''));
                 else
                     result = result * Number.parseInt($('#' + multiPlayObj.multiPlay[i]).val().replace(/,/, ''));
             }
@@ -699,7 +711,7 @@ function getDropdownCTRLTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<select ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
+    result += '<select ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
         for (var i = 0; i < ctrl.values.length; i++) {
             result += '<option value="' + ctrl.values[i][ctrl.valuefield] + '" >' + ctrl.values[i][ctrl.textfield] + '</option>';
@@ -1114,6 +1126,7 @@ function lastButtonActionSW(actionOnLastStep) {
 }
 
 function doPageActions(actionOnLastStep) {
+
     if (actionOnLastStep && actionOnLastStep.actionName) {
         if (actionOnLastStep.actionName == 'refreshGrid' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
             $('#' + actionOnLastStep.objectId)[0].refreshData()
@@ -1149,9 +1162,12 @@ function getGridTemplate(grid) {
 function showModal(targetModal, curElement) {
     clearForm($('#' + targetModal));
     $('#' + targetModal).modal('show');
-    $('#' + targetModal)[0].grid = $(curElement).closest('.myGridCTRL')[0]
-
-
+    $('#' + targetModal)[0].grid = $(curElement).closest('.myGridCTRL')[0];
+    if ($(curElement).closest('.modal').length > 0) {
+        var pKey = $(curElement).closest('.modal')[0].pKey;
+        if (pKey)
+            $('#' + targetModal)[0].pKey = pKey;
+    }
 }
 
 function showEditModal(key, url, modalId, curElement) {
@@ -1166,10 +1182,24 @@ function showEditModal(key, url, modalId, curElement) {
                 clearForm(holderForm);
                 bindForm(res, holderForm);
                 holderForm.modal('show');
+                $('#' + modalId)[0].pKey = key;
+                if ($('#' + modalId).find('.myGridCTRL').length > 0) {
+                    $('#' + modalId).find('.myGridCTRL').each(function () {
+                        $(this)[0].refreshData();
+                    })
+                }
             }
         }.bind({ modalId }), null, function () { hideLoader(gridSelector); });
     } else if (modalId) {
-        $('#' + modalId).modal('show');
+        if ($('#' + modalId).length > 0) {
+            $('#' + modalId)[0].pKey = key;
+            $('#' + modalId).modal('show');
+            if ($('#' + modalId).find('.myGridCTRL').length > 0) {
+                $('#' + modalId).find('.myGridCTRL').each(function () {
+                    $(this)[0].refreshData();
+                })
+            }
+        }
     }
 }
 
@@ -1293,7 +1323,6 @@ function bindTranslation() {
 
 function uploadFile(fileName, accepts, url, curButton) {
     if (fileName && accepts, url) {
-        console.log(this);
         var id = 'id_' + uuidv4RemoveDash();
         $('body').append('<div class="holderFUTemp"><input style="display:none" type="file" name="' + fileName + '" id="' + id + '" accept="' + accepts + '" /></div>');
         $('#' + id).change(function () {

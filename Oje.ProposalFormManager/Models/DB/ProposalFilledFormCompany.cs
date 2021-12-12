@@ -23,5 +23,13 @@ namespace Oje.ProposalFormManager.Models.DB
         public bool IsSelected { get; set; }
         [MaxLength(200)]
         public string MainFileUrl { get; set; }
+        public long? CreateUserId { get; set; }
+        [ForeignKey("CreateUserId"), InverseProperty("CreateUserProposalFilledFormCompanies")]
+        public User CreateUser { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public long? UpdateUserId { get; set; }
+        [ForeignKey("UpdateUserId"), InverseProperty("UpdateUserProposalFilledFormCompanies")]
+        public User UpdateUser { get; set; }
+        public DateTime? UpdateDate { get; set; }
     }
 }

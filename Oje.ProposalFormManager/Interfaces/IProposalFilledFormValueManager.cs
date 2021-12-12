@@ -10,6 +10,7 @@ namespace Oje.ProposalFormManager.Interfaces
 {
     public interface IProposalFilledFormValueManager
     {
-        void CreateByJsonConfig(PageForm ppfObj, long proposalFilledFormId, IFormCollection form);
+        void CreateByJsonConfig(PageForm ppfObj, long proposalFilledFormId, IFormCollection form, bool? isEdit = false);
+        void UpdateBy(long id, IFormCollection form, PageForm jsonObj);
     }
 }

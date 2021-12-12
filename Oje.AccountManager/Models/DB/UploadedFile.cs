@@ -27,6 +27,8 @@ namespace Oje.AccountManager.Models.DB
         public User CreateByUser { get; set; }
         public bool? IsFileAccessRequired { get; set; }
         public long? ObjectId { get; set; }
+        [MaxLength(50)]
+        public string ObjectIdStr { get; set; }
         public int? SiteSettingId { get; set; }
 
         [NotMapped]

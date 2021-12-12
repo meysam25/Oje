@@ -23,7 +23,7 @@ namespace Oje.AccountManager.Services
         {
             this.db = db;
         }
-        public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired)
+        public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null)
         {
             if (userPic == null || userPic.Length == 0)
                 return "";
@@ -37,7 +37,8 @@ namespace Oje.AccountManager.Services
                 IsFileAccessRequired = isAccessRequired,
                 ObjectId = objectId,
                 SiteSettingId = siteSettingId,
-                FileName = "empty"
+                FileName = "empty",
+                ObjectIdStr = objectIdStr
             };
             db.Entry(newFile).State = EntityState.Added;
             db.SaveChanges();
@@ -60,23 +61,27 @@ namespace Oje.AccountManager.Services
             {
                 if (isImage(fi.Extension) == true)
                 {
-                    using (Bitmap bmp = new Bitmap(userPic.OpenReadStream()))
+                    if (OperatingSystem.IsWindows())
                     {
-                        var bmpSize = GetBmpSize(fileType.GetAttribute<DisplayAttribute>()?.Description, bmp);
-                        using (var resultBmp = C_Image.ResizeBitmap(bmp, bmpSize))
+                        using (Bitmap bmp = new Bitmap(userPic.OpenReadStream()))
                         {
-                            saveImage(resultBmp, fs, fi.Extension);
+                            var bmpSize = GetBmpSize(fileType.GetAttribute<DisplayAttribute>()?.Description, bmp);
+                            using (var resultBmp = C_Image.ResizeBitmap(bmp, bmpSize))
+                            {
+                                saveImage(resultBmp, fs, fi.Extension);
+                            }
                         }
                     }
+                    else
+                        throw new NotImplementedException("UploadNewFile");
                 }
                 else
                     userPic.CopyTo(fs);
             }
 
-            newFile.FileName = GlobalConfig.GetUploadImageDirecotryRoot(subFolder) + "/" + fn;
+            newFile.FileName = GlobalConfig.GetUploadImageDirecotryRoot(subFolder) + (objectId != null ? "/" + objectId : "") + "/" + fn;
 
             db.SaveChanges();
-
 
             return "?fn=" + fn;
 
@@ -84,68 +89,84 @@ namespace Oje.AccountManager.Services
 
         void saveImage(Bitmap resultBmp, FileStream fs, string FileNameExtension)
         {
-            ImageCodecInfo jpgEncoder = null;
-            if (!string.IsNullOrEmpty(FileNameExtension) && FileNameExtension.ToLower() == ".png")
-                jpgEncoder = GetEncoder(ImageFormat.Png);
-            else
-                jpgEncoder = GetEncoder(ImageFormat.Jpeg);
-            Encoder myEncoder = Encoder.Quality;
-            EncoderParameters myEncoderParameters = new EncoderParameters(1);
-            EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 70L);
-            myEncoderParameters.Param[0] = myEncoderParameter;
-            resultBmp.Save(fs, jpgEncoder, myEncoderParameters);
-        }
-
-        ImageCodecInfo GetEncoder(ImageFormat format)
-        {
-
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-
-            foreach (ImageCodecInfo codec in codecs)
+            if (OperatingSystem.IsWindows())
             {
-                if (codec.FormatID == format.Guid)
-                {
-                    return codec;
-                }
+                ImageCodecInfo jpgEncoder = null;
+                if (!string.IsNullOrEmpty(FileNameExtension) && FileNameExtension.ToLower() == ".png")
+                    jpgEncoder = GetEncoder(ImageFormat.Png);
+                else
+                    jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                Encoder myEncoder = Encoder.Quality;
+                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 70L);
+                myEncoderParameters.Param[0] = myEncoderParameter;
+                resultBmp.Save(fs, jpgEncoder, myEncoderParameters);
             }
-            return null;
+            else
+                throw new NotImplementedException("saveImage");
         }
 
-        Size GetBmpSize(string bmpSize, Bitmap bmp)
+        static ImageCodecInfo GetEncoder(ImageFormat format)
         {
-            Size result = new Size(300, 300);
-
-
-            if (!string.IsNullOrEmpty(bmpSize) && bmpSize.IndexOf("*") > 0)
+            if (OperatingSystem.IsWindows())
             {
-                if (bmpSize.StartsWith("~"))
+                ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+
+                foreach (ImageCodecInfo codec in codecs)
                 {
-                    bmpSize = bmpSize.Replace("~", "");
-                    result = new Size(bmpSize.Split('*')[0].ToIntReturnZiro(), bmpSize.Split('*')[1].ToIntReturnZiro());
-                    if (bmp.Width > result.Width)
+                    if (codec.FormatID == format.Guid)
                     {
-                        var resultTemp = Convert.ToInt32(Convert.ToDecimal(bmp.Height * result.Width) / Convert.ToDecimal(bmp.Width));
-                        result.Height = resultTemp;
+                        return codec;
                     }
-                    else if (bmp.Height > result.Height)
+                }
+                return null;
+            }
+            else
+                throw new NotImplementedException("GetEncoder");
+
+        }
+
+        static Size GetBmpSize(string bmpSize, Bitmap bmp)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                Size result = new Size(300, 300);
+
+
+                if (!string.IsNullOrEmpty(bmpSize) && bmpSize.IndexOf("*") > 0)
+                {
+                    if (bmpSize.StartsWith("~"))
                     {
-                        var resultTemp = Convert.ToInt32(Convert.ToDecimal(bmp.Width * result.Height) / Convert.ToDecimal(bmp.Height));
-                        result.Width = resultTemp;
+                        bmpSize = bmpSize.Replace("~", "");
+                        result = new Size(bmpSize.Split('*')[0].ToIntReturnZiro(), bmpSize.Split('*')[1].ToIntReturnZiro());
+                        if (bmp.Width > result.Width)
+                        {
+                            var resultTemp = Convert.ToInt32(Convert.ToDecimal(bmp.Height * result.Width) / Convert.ToDecimal(bmp.Width));
+                            result.Height = resultTemp;
+                        }
+                        else if (bmp.Height > result.Height)
+                        {
+                            var resultTemp = Convert.ToInt32(Convert.ToDecimal(bmp.Width * result.Height) / Convert.ToDecimal(bmp.Height));
+                            result.Width = resultTemp;
+                        }
+                        else
+                        {
+                            result.Height = bmp.Height;
+                            result.Width = bmp.Width;
+                        }
                     }
                     else
-                    {
-                        result.Height = bmp.Height;
-                        result.Width = bmp.Width;
-                    }
+                        result = new Size(bmpSize.Split('*')[0].ToIntReturnZiro(), bmpSize.Split('*')[1].ToIntReturnZiro());
                 }
-                else
-                    result = new Size(bmpSize.Split('*')[0].ToIntReturnZiro(), bmpSize.Split('*')[1].ToIntReturnZiro());
-            }
 
-            return result;
+                return result;
+            }
+            else
+                throw new NotImplementedException("GetBmpSize");
+
         }
 
-        bool isImage(string extension)
+        static bool isImage(string extension)
         {
             return extension.IndexOf(".png") > -1 || extension.IndexOf(".jpg") > -1 || extension.IndexOf(".jpeg") > -1;
         }
@@ -183,6 +204,31 @@ namespace Oje.AccountManager.Services
             }
 
             return result;
+        }
+
+        public int GetCountBy(long objectId, FileType fileType)
+        {
+            return db.UploadedFiles.Count(t => t.ObjectId == objectId && t.FileType == fileType);
+        }
+
+        public object GetListBy(long objectId, FileType fileType, int skip, int take)
+        {
+            return db.UploadedFiles.OrderByDescending(t => t.Id)
+                .Where(t => t.ObjectId == objectId && t.FileType == fileType)
+                .Skip(skip).Take(take)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    src = t.FileName
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    t.id,
+                    src = GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src)
+                })
+                .ToList()
+                ;
         }
     }
 }

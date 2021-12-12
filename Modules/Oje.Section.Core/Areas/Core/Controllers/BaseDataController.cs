@@ -44,7 +44,7 @@ namespace Oje.Section.Core.Areas.Controllers
                 return Content("File Not Found");
 
             var foundFile = UploadedFileManager.GetFile(fn, HttpContext.GetLoginUserId()?.UserId);
-            if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false && !string.IsNullOrEmpty(foundFile.FileContentType))
+            if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || string.IsNullOrEmpty(foundFile.FileContentType))
                 return Content("File Not Found");
 
             return File(System.IO.File.ReadAllBytes(foundFile.FileNameOnServer), foundFile.FileContentType, new FileInfo(foundFile.FileName).Name);

@@ -9,5 +9,6 @@ namespace Oje.ProposalFormManager.Interfaces
     public interface IRoleManager
     {
         void AddUserToUserRole(long userId);
+        object GetLightList();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Oje.ProposalFormManager.Models.DB;
+﻿using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
+using Oje.ProposalFormManager.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace Oje.ProposalFormManager.Interfaces
         long GetSumPriceLong(long id, int proposalFormId, int? siteSettingId);
         bool IsValid(long id, int? siteSettingId, int proposalFormId);
         bool HasAnyCashDiscount(long inQuiryId);
+        void AppendInquiryData(long id, List<ProposalFilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs);
     }
 }

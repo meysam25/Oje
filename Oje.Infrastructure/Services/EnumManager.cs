@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Exceptions;
+﻿using Newtonsoft.Json;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,17 @@ namespace Oje.Infrastructure.Services
 
             return result;
         }
+
+        public static JsonSerializerSettings EnumConverterSetting {  get
+            {
+                var jsonSetting = new JsonSerializerSettings()
+                {
+                    DefaultValueHandling = DefaultValueHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+                jsonSetting.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                return jsonSetting;
+            } }
 
     }
 }

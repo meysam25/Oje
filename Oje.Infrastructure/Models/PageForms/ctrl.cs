@@ -1,9 +1,15 @@
-﻿using Oje.Infrastructure.Enums;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Models.PageForms
@@ -12,17 +18,17 @@ namespace Oje.Infrastructure.Models.PageForms
     {
         public ctrl()
         {
-            showHideCondation = new List<ctrlShowHideCondation>();
-            validations = new List<validation>();
         }
 
         public string id { get; set; }
         public string @class { get; set; }
         public string parentCL { get; set; }
+        public string css { get; set; }
         public ctrlType? type { get; set; }
         public string textfield { get; set; }
         public string valuefield { get; set; }
         public string dataurl { get; set; }
+        public string url { get; set; }
         public string label { get; set; }
         public string name { get; set; }
         public List<ctrlShowHideCondation> showHideCondation { get; set; }
@@ -31,10 +37,195 @@ namespace Oje.Infrastructure.Models.PageForms
         public ctrlSchema schema { get; set; }
         public bool? nationalCodeValidation { get; set; }
         public bool? disabled { get; set; }
+        public bool? seperator { get; set; }
+        public string defValue { get; set; }
+        public string ph { get; set; }
+        public string bankUrl { get; set; }
+        public string bindFormUrl { get; set; }
+        public List<ctrl> ctrls { get; set; }
+        public List<IdTitle> values { get; set; }
         public List<validation> validations { get; set; }
+        public List<string> exteraParameterIds { get; set; }
+        public string childId { get; set; }
+        public List<string> callChangeEvents { get; set; }
+        public List<string> multiPlay { get; set; }
 
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public string defV { get; set; }
+
+
+        public static void requiredValidationForCtrl(ctrl ctrl, IFormCollection form)
+        {
+            if (ctrl.isRequired == true)
+                if (!form.Keys.Contains(ctrl.name) || string.IsNullOrEmpty(form.GetStringIfExist(ctrl.name)))
+                    if (!needToBeIgnore(ctrl.name))
+                        throw BException.GenerateNewException
+                                (
+                                    string.Format
+                                        (
+                                            ctrl.type == ctrlType.text ? BMessages.Please_Enter_X.GetEnumDisplayName() : BMessages.Please_Select_X.GetEnumDisplayName()
+                                            , ctrl.label
+                                        )
+                                );
+
+        }
+
+        public static void validateAndUpdateCtrl(ctrl ctrl, IFormCollection form, List<ctrl> ctrls)
+        {
+            if (ctrl.type == ctrlType.checkBox)
+            {
+                string currValue = form.GetStringIfExist(ctrl.name);
+                if (!string.IsNullOrEmpty(currValue) && currValue != ctrl.defValue)
+                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                else if (!string.IsNullOrEmpty(currValue) && currValue == ctrl.defValue)
+                    ctrl.defV = ctrl.defValue;
+            }
+            else if (ctrl.type == ctrlType.radio)
+            {
+                string currValue = form.GetStringIfExist(ctrl.name);
+                if (!string.IsNullOrEmpty(currValue))
+                {
+                    if (ctrl.values != null)
+                    {
+                        if (!ctrl.values.Any(tt => tt.id == currValue))
+                            throw BException.GenerateNewException(BMessages.Validation_Error);
+                        else
+                            ctrl.defV = currValue;
+                    }
+                }
+            } else if (ctrl.disabled == true && ctrl.multiPlay != null && ctrl.multiPlay.Count > 0)
+            {
+                long resultM = 0;
+                for(var i = 0; i < ctrl.multiPlay.Count; i++)
+                {
+                    var foundCtrl = ctrls.Where(t => t.id == ctrl.multiPlay[i]).FirstOrDefault();
+                    if(foundCtrl != null)
+                    {
+                        var currValue = form.GetStringIfExist(foundCtrl.name).ToLongReturnZiro();
+                        if (resultM == 0)
+                            resultM = 1;
+                        resultM = resultM * currValue;
+                    }
+                }
+                ctrl.defV = resultM.ToString("###,###");
+            }
+        }
+
+        public static void navionalCodeValidation(ctrl ctrl, IFormCollection form)
+        {
+            if (ctrl.nationalCodeValidation == true && !form.GetStringIfExist(ctrl.name).IsCodeMeli())
+                throw BException.GenerateNewException(BMessages.Invalid_NationaCode);
+        }
+
+        public static void validateAndUpdateValuesOfDS(ctrl ctrl, IFormCollection form)
+        {
+            if (ctrl.type == ctrlType.dropDown || ctrl.type == ctrlType.dropDown2 || ctrl.type == ctrlType.radio)
+            {
+                if (ctrl.values != null && ctrl.values.Count > 0)
+                {
+                    var inputValue = form.GetStringIfExist(ctrl.name);
+                    if (!string.IsNullOrEmpty(inputValue))
+                    {
+                        var foundDs = ctrl.values.Where(t => t.id == inputValue).FirstOrDefault();
+                        if (foundDs == null)
+                            throw BException.GenerateNewException(BMessages.Validation_Error);
+                        ctrl.defV = foundDs.title;
+                    }
+                }
+            }
+        }
+
+        public static void validateBaseDataEnums(ctrl ctrl, IFormCollection form)
+        {
+            if (ctrl.type == ctrlType.dropDown && !string.IsNullOrEmpty(ctrl.dataurl))
+            {
+                if (ctrl.dataurl.StartsWith("/Core/BaseData/Get/"))
+                {
+                    string selectValue = form.GetStringIfExist(ctrl.name);
+                    if (!string.IsNullOrEmpty(selectValue))
+                    {
+                        string enumName = ctrl.dataurl.Replace("/Core/BaseData/Get/", "");
+                        var foundEnum = EnumManager.GetEnum(enumName);
+
+                        if (foundEnum == null || foundEnum.Count == 0)
+                            throw BException.GenerateNewException(String.Format(BMessages.Invalid_BaseData.GetEnumDisplayName(), ctrl.dataurl));
+
+                        if (!foundEnum.Any(tt => tt.id == selectValue || tt.title == selectValue))
+                            throw BException.GenerateNewException(String.Format(BMessages.Invalid_BaseData.GetEnumDisplayName(), ctrl.dataurl));
+                        ctrl.defV = foundEnum.Where(tt => tt.id == selectValue || tt.title == selectValue).Select(tt => tt.title).FirstOrDefault();
+                    }
+                }
+            }
+        }
+
+        public static void reqularExperssionValidationCtrl(ctrl ctrl, IFormCollection form)
+        {
+            if (ctrl.validations != null && ctrl.validations.Count > 0)
+            {
+                var curCTRLValue = form.Keys.Any(t => t == ctrl.name) ? form.GetStringIfExist(ctrl.name) : "";
+                if (!string.IsNullOrEmpty(curCTRLValue))
+                {
+                    foreach (var validation in ctrl.validations)
+                    {
+                        Regex rx = new Regex(validation.reg, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                        if (!rx.IsMatch(curCTRLValue))
+                            throw BException.GenerateNewException(ctrl.label + ": " + validation.msg);
+                    }
+                }
+            }
+        }
+
+        public static void validateAndUpdateMultiRowInputCtrl(ctrl ctrl, IFormCollection form, PageForm ppfObj)
+        {
+            if (ctrl.type == ctrlType.multiRowInput && ctrl.ctrls != null && ctrl.ctrls.Count > 0)
+            {
+                string baseName = ctrl.name;
+                var allBaseCTRLs = ctrl.ctrls.ToList();
+                int maxIndex = getMaxIndexByForm(baseName, form);
+                if (maxIndex > 0)
+                {
+                    for (var startIndex = maxIndex; startIndex > 0; startIndex--)
+                    {
+                        var newClones = allBaseCTRLs.Select(t => JsonConvert.DeserializeObject<ctrl>(JsonConvert.SerializeObject(t))).ToList();
+                        for (var i = 0; i < newClones.Count; i++)
+                        {
+                            var curChildCTrl = newClones[i];
+                            curChildCTrl.name = baseName + "[" + (startIndex - 1) + "]." + curChildCTrl.name;
+                            curChildCTrl.defV = form.GetStringIfExist(curChildCTrl.name);
+                            if (ppfObj.panels.FirstOrDefault().ctrls == null)
+                                ppfObj.panels.FirstOrDefault().ctrls = new List<ctrl>();
+                            ppfObj.panels.FirstOrDefault().ctrls.Add(curChildCTrl);
+                            ctrl.requiredValidationForCtrl(curChildCTrl, form);
+                            ctrl.navionalCodeValidation(ctrl, form);
+                        }
+                    }
+                }
+            }
+        }
+
+        static int getMaxIndexByForm(string baseName, IFormCollection form)
+        {
+            int result = 0;
+            for (var i = 0; i < 20; i++)
+            {
+                if (form.Keys.Any(t => t.Contains(baseName + "[" + i + "]")))
+                    result = i + 1;
+                else
+                    break;
+            }
+            return result;
+        }
+
+        static bool needToBeIgnore(string name)
+        {
+            switch (name)
+            {
+                case "payCondation":
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
     }
 }

@@ -20,6 +20,19 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "بارگزاری فایل اقساط")]
         dynamicFileUploadDepend = 5,
         [Display(Name ="دراپ دان جستجو")]
-        dropDown2 = 6
+        dropDown2 = 6,
+        [Display(Name = "چک باکس")]
+        checkBox = 7,
+        [Display(Name = "توکن باکس 1")]
+        tokenBox = 8,
+        [Display(Name = "خالی")]
+        empty = 9,
+        [Display(Name = "تاریخ فارسی")]
+        persianDateTime = 10,
+        [Display(Name = "ردیو باکس")]
+        radio = 11,
+        [Display(Name = "چند انتخابی")]
+        multiRowInput = 12
+
     }
 }

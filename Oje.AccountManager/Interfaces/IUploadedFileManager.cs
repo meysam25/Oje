@@ -11,7 +11,9 @@ namespace Oje.AccountManager.Interfaces
 {
     public interface IUploadedFileManager
     {
-        string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired);
+        string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null);
         UploadedFile GetFile(string fn, long? userId);
+        int GetCountBy(long objectId, FileType fileType);
+        object GetListBy(long objectId, FileType fileType, int skip, int take);
     }
 }
