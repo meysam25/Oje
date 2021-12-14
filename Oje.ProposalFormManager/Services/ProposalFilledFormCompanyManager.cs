@@ -321,15 +321,14 @@ namespace Oje.ProposalFormManager.Services
             if (foundItem == null || foundItem.ProposalFilledFormCompanies == null || foundItem.ProposalFilledFormCompanies.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            if (foundItem.Price.ToLongReturnZiro() <= 0)
-                throw BException.GenerateNewException(BMessages.Invalid_Price);
-
             foreach (var item in foundItem.ProposalFilledFormCompanies)
                 item.IsSelected = false;
 
             var foundCompanny = foundItem.ProposalFilledFormCompanies.Where(t => t.CompanyId == cId).FirstOrDefault();
             if (foundCompanny == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+            if (foundCompanny.Price.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Invalid_Price);
             foundCompanny.IsSelected = true;
             foundItem.Price = foundCompanny.Price;
 
@@ -343,6 +342,9 @@ namespace Oje.ProposalFormManager.Services
             return db.ProposalFilledFormCompanies.Where(t => t.ProposalFilledFormId == proposalFilledFormId && t.IsSelected == true).Select(t => t.Company).FirstOrDefault();
         }
 
-       
+        public bool IsSelectedBy(long proposalFilledFormId)
+        {
+            return db.ProposalFilledFormCompanies.Any(t => t.IsSelected == true);
+        }
     }
 }

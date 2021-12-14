@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Oje.Web
 {
@@ -31,6 +32,10 @@ namespace Oje.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.Configure<FormOptions>(options =>
+            //{
+            //    options.ValueLengthLimit = 1024 * 1024 * 5; // 100MB max len form data
+            //});
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(CustomExceptionFilter));

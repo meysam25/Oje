@@ -30,5 +30,7 @@ namespace Oje.ProposalFormManager.Interfaces
         ApiResult UploadImage(long? proposalFilledFormId, IFormFile mainFile, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         object GetStatus(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         ApiResult UpdateStatus(ProposalFilledFormChangeStatusVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        object GetDefaultValuesForIssue(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ApiResult IssuePPF(ProposalFilledFormIssueVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
     }
 }

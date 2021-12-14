@@ -448,6 +448,16 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "کد نمی تواند بیشتر از 50 کاکتر باشد")]
         Code_Can_Not_Be_More_Then_50_chars = 218,
         [Display(Name = "لطفا وضعیت را انتخاب کنید")]
-        Please_Select_Status = 219
+        Please_Select_Status = 219,
+        [Display(Name = "تغییر وضعیت به این مرحله امکان ندارد")]
+        Change_Status_Can_Not_Be_Done = 220,
+        [Display(Name = "لطفا تاریخ شروع را انتخاب کنید")]
+        Please_Enter_Start_Date = 221,
+        [Display(Name = "لطفا تاریخ پایان را انتخاب کنید")]
+        Please_Enter_EndDate = 222,
+        [Display(Name = "لطفا شماره بیمه نامه را وارد کنید")]
+        Please_Enter_InsuranceNumber = 223,
+        [Display(Name ="شماره بیمه نامه نمی تواند بیشتر از 50 کارکتر باشد")]
+        InsuranceNumber_Can_Not_Be_More_Then_50 = 224
     }
 }

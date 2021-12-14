@@ -119,6 +119,9 @@ a:hover {
 .closeSideMenu .sideMenuHolder {
     left: -100%;
 }
+.sideMenuHolder *{
+    font-size:0.8rem !important;
+}
 
 .closeSideMenu main {
     margin-left: 0px;

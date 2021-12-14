@@ -53,6 +53,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
 
         [AreaConfig(Title = "ویرایش دسترسی نقش ها")]
         [HttpPost]
+        [RequestFormLimits(ValueCountLimit = 20000)]
         public IActionResult Update([FromForm]CreateUpdateRoleAccessVM input)
         {
             return Json(SectionManager.UpdateAccess(input));

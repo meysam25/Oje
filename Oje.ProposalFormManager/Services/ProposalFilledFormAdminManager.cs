@@ -568,6 +568,13 @@ namespace Oje.ProposalFormManager.Services
             .Where(t => t.Id == input.id)
             .FirstOrDefault();
 
+            if (input.status == ProposalFilledFormStatus.Issuing && (foundItem.InsuranceStartDate == null || foundItem.InsuranceEndDate == null || string.IsNullOrEmpty(foundItem.InsuranceNumber)))
+                throw BException.GenerateNewException(BMessages.Change_Status_Can_Not_Be_Done);
+            if (input.status == ProposalFilledFormStatus.Issuing && !ProposalFilledFormCompanyManager.IsSelectedBy(foundItem.Id))
+                throw BException.GenerateNewException(BMessages.Please_Select_Company);
+            if (input.status == ProposalFilledFormStatus.Issuing && !ProposalFilledFormUseManager.HasAny(foundItem.Id, ProposalFilledFormUserType.Agent))
+                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -577,6 +584,85 @@ namespace Oje.ProposalFormManager.Services
             ProposalFilledFormStatusLogManager.Create(input.id, input.status, DateTime.Now, userId, input.description);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetDefaultValuesForIssue(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        {
+            var foundItem =
+           ProposalFilledFormAdminBaseQueryManager
+           .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+           .Where(t => t.Id == id)
+           .Select(t => new
+           {
+               id = t.Id,
+               ssId = t.SiteSettingId,
+               ppId = t.ProposalFormId,
+               cid = t.ProposalFilledFormCompanies.Where(tt => tt.IsSelected == true).Select(tt => tt.CompanyId).FirstOrDefault(),
+               uid = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.Agent).Select(tt => tt.UserId).FirstOrDefault()
+           })
+           .FirstOrDefault();
+
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (foundItem.cid.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_Company);
+            if (foundItem.uid.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_Agent);
+
+            string sDate = DateTime.Now.ToFaDate();
+            string eDate = (sDate.Split('/')[0].ToIntReturnZiro() + 1) + "/" + sDate.Split('/')[1]  + "/" + sDate.Split('/')[2];
+
+            return new { id = id, startDate = sDate, endDate = eDate, insuranceNumber = DateTime.Now.ToFaDate() + "/" + foundItem.ssId + "/" + foundItem.ppId + "/" + foundItem.cid + "/" + foundItem.uid + "/" + foundItem.id };
+        }
+
+        public ApiResult IssuePPF(ProposalFilledFormIssueVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        {
+            IssuePPFValidation(input);
+
+            var foundItem =
+                   ProposalFilledFormAdminBaseQueryManager
+                  .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                  .Where(t => t.Id == input.id)
+                  .FirstOrDefault();
+
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            foundItem.InsuranceStartDate = input.startDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
+            foundItem.InsuranceEndDate = input.endDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
+            foundItem.InsuranceNumber = input.insuranceNumber;
+            foundItem.Status = ProposalFilledFormStatus.Issuing;
+            db.SaveChanges();
+
+            ProposalFilledFormStatusLogManager.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        private void IssuePPFValidation(ProposalFilledFormIssueVM input)
+        {
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (string.IsNullOrEmpty(input.startDate))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Start_Date);
+            if (input.startDate.ConvertPersianNumberToEnglishNumber().ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            if (string.IsNullOrEmpty(input.endDate))
+                throw BException.GenerateNewException(BMessages.Please_Enter_EndDate);
+            if (input.endDate.ConvertPersianNumberToEnglishNumber().ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            if (input.startDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value >= input.endDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value)
+                throw BException.GenerateNewException(BMessages.StartDate_Should_Be_Less_Then_EndDate);
+            if (string.IsNullOrEmpty(input.insuranceNumber))
+                throw BException.GenerateNewException(BMessages.Please_Enter_InsuranceNumber);
+            if (input.insuranceNumber.Length > 50)
+                throw BException.GenerateNewException(BMessages.InsuranceNumber_Can_Not_Be_More_Then_50);
+            if (!string.IsNullOrEmpty(input.description) && input.description.Length > 4000)
+                throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
+            if (input.id.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
         }
     }
 }

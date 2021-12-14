@@ -14,40 +14,40 @@
               "modalId": "addNewPPF"
             }
           ],
-          "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNew/Export",
+          "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormConfirm/Export",
           "showColumnConfigButton": true,
           "actions": {
             "delete": {
-              "url": "/ProposalFilledForm/ProposalFilledFormNew/Delete"
+              "url": "/ProposalFilledForm/ProposalFilledFormConfirm/Delete"
             },
             "cActions": [
               {
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "url": "/ProposalFilledForm/ProposalFilledFormNew/GetById",
-                "template": "function bindRow (curRow) { return '<a title=\"ویرایش\" href=\"/ProposalFilledForm/ProposalFilledFormNew/Edit?fid='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></a>' };bindRow(data)"
+                "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetById",
+                "template": "function bindRow (curRow) { return '<a title=\"ویرایش\" href=\"/ProposalFilledForm/ProposalFilledFormConfirm/Edit?fid='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-share",
                 "prop": "id",
                 "modalId": "refferToModal",
-                "template": "function bindRow (curRow) { return '<span title=\"ارجاع\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNew/GetRefferUsers\\', \\'refferToModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-share\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span title=\"ارجاع\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetRefferUsers\\', \\'refferToModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-share\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-building",
                 "prop": "id",
                 "modalId": "changeCompanyModal",
-                "template": "function bindRow (curRow) { return '<span title=\"شرکت ها\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNew/GetPPFCompanies\\', \\'changeCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span title=\"شرکت ها\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetPPFCompanies\\', \\'changeCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-user ",
                 "prop": "id",
                 "modalId": "changeAgentModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تغییر نماینده\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNew/GetAgent\\', \\'changeAgentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-user\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span title=\"تغییر نماینده\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetAgent\\', \\'changeAgentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-user\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -61,14 +61,14 @@
                 "icon": "fa-usd",
                 "prop": "id",
                 "modalId": "changeAgentModal",
-                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/ProposalFilledForm/ProposalFilledFormNew/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/ProposalFilledForm/ProposalFilledFormConfirm/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-file-powerpoint",
                 "prop": "id",
                 "modalId": "changeAgentModal",
-                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/ProposalFilledFormNew/PdfDetailesForAdmin?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/ProposalFilledFormConfirm/PdfDetailesForAdmin?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -89,7 +89,7 @@
                 "icon": "fa-thumbs-up",
                 "prop": "id",
                 "modalId": "changeStatusModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNew/GetStatus\\', \\'changeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetStatus\\', \\'changeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -97,11 +97,18 @@
                 "prop": "id",
                 "modalId": "viewPPFStatusHistory",
                 "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'viewPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-check",
+                "prop": "id",
+                "modalId": "issuePPFModal",
+                "template": "function bindRow (curRow) { return '<span title=\"صدور\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetDefaultValuesForIssue\\', \\'issuePPFModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-check\" ></i></span>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/ProposalFilledForm/ProposalFilledFormNew/GetList",
+          "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -119,7 +126,7 @@
               "caption": "شرکت بیمه",
               "search": {
                 "searchType": "dropdown",
-                "url": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+                "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetCompanyList",
                 "textField": "title",
                 "valueField": "id"
               }
@@ -244,7 +251,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetRoleList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetRoleList",
               "label": "نقش"
             },
             {
@@ -254,7 +261,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetCompanyList",
               "label": "شرکت"
             },
             {
@@ -263,7 +270,7 @@
               "type": "tokenBox2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetUsers",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetUsers",
               "label": "کاربران",
               "isRequired": true,
               "exteraParameterIds": [ "roleId", "companyId", "provinceId", "cityId" ]
@@ -277,7 +284,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/CreateUserRefer')",
+              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/CreateUserRefer')",
               "class": "btn-primary"
             }
           ]
@@ -296,7 +303,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetCompanyList",
               "label": "شرکت ها",
               "isRequired": true
             }
@@ -309,7 +316,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateCompanies')",
+              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/UpdateCompanies')",
               "class": "btn-primary"
             }
           ]
@@ -351,7 +358,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetRoleList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetRoleList",
               "label": "نقش"
             },
             {
@@ -361,7 +368,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetCompanyList",
               "label": "شرکت"
             },
             {
@@ -370,7 +377,7 @@
               "type": "dropDown2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetUsers",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetUsers",
               "label": "نماینده",
               "isRequired": true,
               "exteraParameterIds": [ "roleIdAgent", "companyIdAgent", "provinceIdAgent", "cityIdAgent" ]
@@ -384,7 +391,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateAgent')",
+              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/UpdateAgent')",
               "class": "btn-primary"
             }
           ]
@@ -398,7 +405,7 @@
               "grids": [
                 {
                   "id": "priceGrid",
-                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNew/PricingCompanyExport",
+                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormConfirm/PricingCompanyExport",
                   "topActions": [
                     {
                       "title": "افزودن",
@@ -410,7 +417,7 @@
                   "showColumnConfigButton": true,
                   "actions": {
                     "delete": {
-                      "url": "/ProposalFilledForm/ProposalFilledFormNew/DeleteCompany"
+                      "url": "/ProposalFilledForm/ProposalFilledFormConfirm/DeleteCompany"
                     },
                     "cActions": [
                       {
@@ -418,19 +425,19 @@
                         "icon": "fa-usd",
                         "prop": "id",
                         "modalId": "changeAgentModal",
-                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormNew/GetPricingCompany\\', \\'editCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetPricingCompany\\', \\'editCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
                       },
                       {
                         "type": "edit",
                         "icon": "fa-usd",
                         "prop": "id",
                         "ignoreParentButton": true,
-                        "template": "function bindRow (curRow) { return '<span data-url=\"/ProposalFilledForm/ProposalFilledFormNew/SelectCompany\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.isSelectedBool== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+                        "template": "function bindRow (curRow) { return '<span data-url=\"/ProposalFilledForm/ProposalFilledFormConfirm/SelectCompany\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.isSelectedBool== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
                       }
                     ]
                   },
                   "key": "id",
-                  "url": "/ProposalFilledForm/ProposalFilledFormNew/GetPricingCompanyList",
+                  "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetPricingCompanyList",
                   "itemPerPage": 10,
                   "schema": {
                     "data": "data",
@@ -448,7 +455,7 @@
                       "caption": "شرکت بیمه",
                       "search": {
                         "searchType": "dropdown",
-                        "url": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+                        "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetCompanyList",
                         "textField": "title",
                         "valueField": "id"
                       }
@@ -518,7 +525,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetCompanyList",
               "label": "شرکت",
               "isRequired": true
             },
@@ -546,7 +553,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'priceGrid', '/ProposalFilledForm/ProposalFilledFormNew/CreatePricingCompany')",
+              "onClick": "postModalData(this, 'priceGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/CreatePricingCompany')",
               "class": "btn-primary"
             }
           ]
@@ -565,7 +572,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetCompanyList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetCompanyList",
               "label": "شرکت",
               "isRequired": true,
               "disabled": true
@@ -594,7 +601,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'priceGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdatePricingCompany')",
+              "onClick": "postModalData(this, 'priceGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/UpdatePricingCompany')",
               "class": "btn-primary"
             }
           ]
@@ -610,7 +617,7 @@
                   "id": "imageGrid",
                   "class": "imageGallery",
                   "formatters": {
-                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/ProposalFilledForm/ProposalFilledFormNew/DeletePPFImage\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/ProposalFilledForm/ProposalFilledFormConfirm/DeletePPFImage\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
                   },
                   "topActions": [
                     {
@@ -621,7 +628,7 @@
                     }
                   ],
                   "key": "id",
-                  "url": "/ProposalFilledForm/ProposalFilledFormNew/GetPPFImageList",
+                  "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetPPFImageList",
                   "itemPerPage": 10,
                   "schema": {
                     "data": "data",
@@ -660,7 +667,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'imageGrid', '/ProposalFilledForm/ProposalFilledFormNew/UploadNewFile')",
+              "onClick": "postModalData(this, 'imageGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/UploadNewFile')",
               "class": "btn-primary"
             }
           ]
@@ -674,7 +681,7 @@
               "grids": [
                 {
                   "id": "documentGrid",
-                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNew/GetDocumentListExport",
+                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetDocumentListExport",
                   "topActions": [
                     {
                       "title": "افزودن",
@@ -686,7 +693,7 @@
                   "showColumnConfigButton": true,
                   "actions": {
                     "delete": {
-                      "url": "/ProposalFilledForm/ProposalFilledFormNew/DeleteDocument"
+                      "url": "/ProposalFilledForm/ProposalFilledFormConfirm/DeleteDocument"
                     },
                     "cActions": [
                       {
@@ -694,12 +701,12 @@
                         "icon": "fa-usd",
                         "prop": "id",
                         "modalId": "changeAgentModal",
-                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormNew/GetDocument\\', \\'editDocumentModal\\' , this, '+ curRow.ppfId +')\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetDocument\\', \\'editDocumentModal\\' , this, '+ curRow.ppfId +')\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
                       }
                     ]
                   },
                   "key": "id",
-                  "url": "/ProposalFilledForm/ProposalFilledFormNew/GetDocumentList",
+                  "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetDocumentList",
                   "itemPerPage": 10,
                   "schema": {
                     "data": "data",
@@ -727,7 +734,7 @@
                       "caption": "بانک",
                       "search": {
                         "searchType": "dropdown",
-                        "url": "/ProposalFilledForm/ProposalFilledFormNew/GetBankList",
+                        "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetBankList",
                         "textField": "title",
                         "valueField": "id"
                       }
@@ -824,7 +831,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetBankList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetBankList",
               "label": "بانک"
             },
             {
@@ -849,7 +856,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'documentGrid', '/ProposalFilledForm/ProposalFilledFormNew/CreateDocument')",
+              "onClick": "postModalData(this, 'documentGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/CreateDocument')",
               "class": "btn-primary"
             }
           ]
@@ -906,7 +913,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetBankList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetBankList",
               "label": "بانک"
             },
             {
@@ -931,7 +938,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'documentGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateDocument')",
+              "onClick": "postModalData(this, 'documentGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/UpdateDocument')",
               "class": "btn-primary"
             }
           ]
@@ -969,7 +976,56 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateStatus')",
+              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/UpdateStatus')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "issuePPFModal",
+          "title": "صدور بیمه نامه",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "startDate",
+              "type": "persianDateTime",
+              "label": "تاریخ شروع",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "endDate",
+              "type": "persianDateTime",
+              "label": "تاریخ پایان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "insuranceNumber",
+              "type": "text",
+              "label": "شماره بیمه نامه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "text",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormConfirm/IssuePPF')",
               "class": "btn-primary"
             }
           ]
@@ -985,7 +1041,7 @@
                   "id": "statusHistoryGrid",
                   "showColumnConfigButton": true,
                   "key": "id",
-                  "url": "/ProposalFilledForm/ProposalFilledFormNew/GetStatusLogList",
+                  "url": "/ProposalFilledForm/ProposalFilledFormConfirm/GetStatusLogList",
                   "itemPerPage": 10,
                   "schema": {
                     "data": "data",
@@ -1043,7 +1099,7 @@
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetProposalFormCategoryList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormCategoryList",
               "label": "گروه بندی فرم پیشنهاد"
             },
             {
@@ -1052,7 +1108,7 @@
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNew/GetProposalFormList",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormList",
               "exteraParameterIds": [ "ppfCatId" ],
               "label": "فرم پیشنهاد"
             }

@@ -300,7 +300,8 @@ function getFormData(selector) {
 
     if ($(selector).closest('.modal').length > 0) {
         var pKey = $(selector).closest('.modal')[0].pKey;
-        postData.append('pKey', pKey);
+        if (pKey)
+            postData.append('pKey', pKey);
     }
 
     $(selector).find('textarea').each(function () {

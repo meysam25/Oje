@@ -11,5 +11,6 @@ namespace Oje.ProposalFormManager.Interfaces
     {
         void Create(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId);
         void Update(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId);
+        bool HasAny(long proposalFilledFormId, ProposalFilledFormUserType type);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormManager.Interfaces;
 using Oje.ProposalFormManager.Models.DB;
@@ -24,14 +25,18 @@ namespace Oje.ProposalFormManager.Services
 
         public void Create(long? proposalFilledFormId, ProposalFilledFormStatus? status, DateTime now, long? userId, string description)
         {
+
             if (proposalFilledFormId.ToLongReturnZiro() > 0 && status != null && userId.ToLongReturnZiro() > 0)
             {
+                if (!string.IsNullOrEmpty(description) && description.Length > 4000)
+                    throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
                 db.Entry(new ProposalFilledFormStatusLog()
                 {
                     CreateDate = now,
                     ProposalFilledFormId = proposalFilledFormId.Value,
                     Type = status.Value,
-                    UserId = userId.Value
+                    UserId = userId.Value,
+                    Description = description
                 }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 db.SaveChanges();
             }
@@ -67,7 +72,8 @@ namespace Oje.ProposalFormManager.Services
                     ppfId = t.ProposalFilledFormId,
                     status = t.Type,
                     createDate = t.CreateDate,
-                    userFullname = t.User.Firstname + " " + t.User.Lastname
+                    userFullname = t.User.Firstname + " " + t.User.Lastname,
+                    desc = t.Description
                 })
                 .ToList()
                 .Select(t => new
@@ -76,7 +82,8 @@ namespace Oje.ProposalFormManager.Services
                     id = t.ppfId + "_" + ((int)t.status) + "_" + t.createDate.Ticks.ToString(),
                     status = t.status.GetEnumDisplayName(),
                     createDate = t.createDate.ToFaDate() + " " + t.createDate.ToString("hh:mm"),
-                    t.userFullname
+                    t.userFullname,
+                    t.desc
                 })
                 .ToList()
             };

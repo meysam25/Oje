@@ -23,5 +23,7 @@ namespace Oje.ProposalFormManager.Models.DB
         [ForeignKey("UserId")]
         [InverseProperty("ProposalFilledFormStatusLogs")]
         public User User { get; set; }
+        [MaxLength(4000)]
+        public string Description { get; set; }
     }
 }

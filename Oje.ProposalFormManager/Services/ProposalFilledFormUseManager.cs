@@ -35,14 +35,22 @@ namespace Oje.ProposalFormManager.Services
             }
         }
 
+        public bool HasAny(long proposalFilledFormId, ProposalFilledFormUserType type)
+        {
+            return db.ProposalFilledFormUsers.Any(t => t.ProposalFilledFormId == proposalFilledFormId && t.Type == type);
+        }
+
         public void Update(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId)
         {
-            var foundItem = db.ProposalFilledFormUsers.Where(t => t.ProposalFilledFormId == proposalFilledFormId && t.Type == type).FirstOrDefault();
-            if(foundItem != null)
+            if(userId.ToLongReturnZiro() > 0 && fromUserId.ToLongReturnZiro() > 0 && proposalFilledFormId > 0)
             {
-                foundItem.FromUserId = fromUserId;
-                foundItem.UserId = userId.ToLongReturnZiro();
-                db.SaveChanges();
+                var foundItem = db.ProposalFilledFormUsers.Where(t => t.ProposalFilledFormId == proposalFilledFormId && t.Type == type).FirstOrDefault();
+                if (foundItem != null)
+                {
+                    db.Entry(foundItem).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
+                    db.SaveChanges();
+                    Create(userId, type, fromUserId, proposalFilledFormId);
+                }
             }
         }
     }
