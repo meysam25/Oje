@@ -17,6 +17,7 @@ namespace Oje.ProposalFormManager.Models.DB
             GlobalDiscountUseds = new();
             ProposalFilledFormJsons = new();
             ProposalFilledFormDocuments = new();
+            ProposalFilledFormStatusLogs = new();
         }
 
         [Key]
@@ -52,5 +53,7 @@ namespace Oje.ProposalFormManager.Models.DB
         public List<ProposalFilledFormJson> ProposalFilledFormJsons { get; set; }
         [InverseProperty("ProposalFilledForm")]
         public List<ProposalFilledFormDocument> ProposalFilledFormDocuments { get; set; }
+        [InverseProperty("ProposalFilledForm")]
+        public List<ProposalFilledFormStatusLog> ProposalFilledFormStatusLogs { get; set; }
     }
 }

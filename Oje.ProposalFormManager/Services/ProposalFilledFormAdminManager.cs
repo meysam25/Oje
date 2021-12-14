@@ -29,7 +29,9 @@ namespace Oje.ProposalFormManager.Services
         readonly IProposalFilledFormUseManager ProposalFilledFormUseManager = null;
         readonly IProposalFilledFormCompanyManager ProposalFilledFormCompanyManager = null;
         readonly IGlobalInqueryManager GlobalInqueryManager = null;
-        
+        readonly AccountManager.Interfaces.IUploadedFileManager UploadedFileManager = null;
+        readonly IProposalFilledFormStatusLogManager ProposalFilledFormStatusLogManager = null;
+
         public ProposalFilledFormAdminManager(
                 ProposalFormDBContext db,
                 AccountManager.Interfaces.IUserManager UserManager,
@@ -39,7 +41,8 @@ namespace Oje.ProposalFormManager.Services
                 IProposalFilledFormCompanyManager ProposalFilledFormCompanyManager,
                 IProposalFilledFormAdminBaseQueryManager ProposalFilledFormAdminBaseQueryManager,
                 IGlobalInqueryManager GlobalInqueryManager,
-                ICompanyManager CompanyManager
+                AccountManager.Interfaces.IUploadedFileManager UploadedFileManager,
+                IProposalFilledFormStatusLogManager ProposalFilledFormStatusLogManager
             )
         {
             this.db = db;
@@ -49,10 +52,28 @@ namespace Oje.ProposalFormManager.Services
             this.ProposalFilledFormUseManager = ProposalFilledFormUseManager;
             this.ProposalFilledFormCompanyManager = ProposalFilledFormCompanyManager;
             this.GlobalInqueryManager = GlobalInqueryManager;
+            this.UploadedFileManager = UploadedFileManager;
+            this.ProposalFilledFormStatusLogManager = ProposalFilledFormStatusLogManager;
         }
 
 
+        public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        {
+            if (input == null)
+                input = new GlobalGridParentLong();
+            var foundItemId =
+                ProposalFilledFormAdminBaseQueryManager
+                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                .Where(t => t.Id == input.pKey)
+               .Select(t => t.Id)
+                .FirstOrDefault();
 
+            return new
+            {
+                total = UploadedFileManager.GetCountBy(foundItemId, FileType.ProposalFilledForm),
+                data = UploadedFileManager.GetListBy(foundItemId, FileType.ProposalFilledForm, input.skip, input.take)
+            };
+        }
 
         public object Update(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status, IFormCollection form)
         {
@@ -464,7 +485,7 @@ namespace Oje.ProposalFormManager.Services
                 }
             }
 
-            
+
             result.ProposalFilledFormPdfGroupVMs = listGroup;
             result.createUserFullname = foundItem.createUserFullname;
             result.ppfTitle = foundItem.ppfTitle;
@@ -473,13 +494,89 @@ namespace Oje.ProposalFormManager.Services
             if (foundItem.GlobalInqueryId > 0)
                 GlobalInqueryManager.AppendInquiryData(foundItem.GlobalInqueryId.ToLongReturnZiro(), result.ProposalFilledFormPdfGroupVMs);
             Company foundCompany = ProposalFilledFormCompanyManager.GetSelectedBy(foundItem.Id);
-            if(foundCompany != null)
+            if (foundCompany != null)
             {
                 result.companyTitle = foundCompany.Title;
                 result.companyImage = GlobalConfig.FileAccessHandlerUrl + foundCompany.Pic;
             }
 
             return result;
+        }
+
+        public ApiResult DeleteUploadImage(long? uploadFileId, long? proposalFilledFormId, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        {
+            var foundItemId =
+               ProposalFilledFormAdminBaseQueryManager
+               .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+               .Where(t => t.Id == proposalFilledFormId)
+              .Select(t => t.Id)
+               .FirstOrDefault();
+            if (foundItemId <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            UploadedFileManager.Delete(uploadFileId, siteSettingId, proposalFilledFormId, FileType.ProposalFilledForm);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public ApiResult UploadImage(long? proposalFilledFormId, IFormFile mainFile, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        {
+            if (mainFile == null)
+                throw BException.GenerateNewException(BMessages.Please_Select_File);
+            var foundItemId =
+             ProposalFilledFormAdminBaseQueryManager
+             .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+             .Where(t => t.Id == proposalFilledFormId)
+            .Select(t => t.Id)
+             .FirstOrDefault();
+            if (foundItemId <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            UploadedFileManager.UploadNewFile(FileType.ProposalFilledForm, mainFile, userId, siteSettingId, proposalFilledFormId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetStatus(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        {
+            var foundItemId =
+            ProposalFilledFormAdminBaseQueryManager
+            .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            .Where(t => t.Id == id)
+           .Select(t => t.Id)
+            .FirstOrDefault();
+            if (id <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            return new { status = status, id = id };
+        }
+
+        public ApiResult UpdateStatus(ProposalFilledFormChangeStatusVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        {
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (input.id.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+            if (input.status == null)
+                throw BException.GenerateNewException(BMessages.Please_Select_Status);
+            if (input.status == status)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            var foundItem =
+            ProposalFilledFormAdminBaseQueryManager
+            .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            .Where(t => t.Id == input.id)
+            .FirstOrDefault();
+
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            foundItem.Status = input.status.Value;
+            db.SaveChanges();
+
+            ProposalFilledFormStatusLogManager.Create(input.id, input.status, DateTime.Now, userId, input.description);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
     }
 }

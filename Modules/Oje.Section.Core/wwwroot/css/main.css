@@ -39,12 +39,12 @@
     top: 0px;
     height: 100vh;
     width: 100vw;
-    z-index:999;
+    z-index: 999;
 }
 
     .confirmDialogBG .dialogBox {
         margin-top: 25vh;
-        position:fixed;
+        position: fixed;
         width: 300px;
         text-align: right;
         direction: rtl;
@@ -54,14 +54,14 @@
         -webkit-border-radius: 4px;
         border-radius: 4px;
         border: 1px solid #727171;
-        right:50vw;
-        margin-right:-150px;
+        right: 50vw;
+        margin-right: -150px;
     }
 
         .confirmDialogBG .dialogBox .dialogBoxTitle {
             font-weight: bold;
             font-size: 14pt;
-            border-bottom:1px solid black;
+            border-bottom: 1px solid black;
         }
 
         .confirmDialogBG .dialogBox .confirmDialogAction {
@@ -73,9 +73,10 @@ textarea {
     min-height: 150px;
     resize: none;
 }
+
 .dialogBoxBody > p {
     margin-top: 0.5rem !important;
-    margin-right:3px;
+    margin-right: 3px;
 }
 
 .radioButtonNew > label {
@@ -151,11 +152,12 @@ input[type=radio]:checked + label::after {
     max-width: 1000px;
     max-height: 1000px;
 }
+
 .ziroHeight {
     padding: 0px;
-    border:1px solid white;
-    max-width:0px;
-    max-height:0px;
+    border: 1px solid white;
+    max-width: 0px;
+    max-height: 0px;
 }
 
 .tokenBoxItemRemoveIcon {
@@ -178,7 +180,7 @@ input[type=radio]:checked + label::after {
     border-radius: 4px;
     overflow: hidden;
     position: relative;
-    width:100%;
+    width: 100%;
 }
 
     .captchaCTRL input {
@@ -187,7 +189,7 @@ input[type=radio]:checked + label::after {
         text-align: center;
         width: calc( 100% - 39px);
         border-top: 1px solid #ced4da;
-        outline:none !important;
+        outline: none !important;
     }
 
     .captchaCTRL span {
@@ -213,32 +215,41 @@ input[type=radio]:checked + label::after {
     -moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.45);
     box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.45);
 }
-.icon-arrow-right::after{
+
+.icon-arrow-right::after {
     content: '>';
 }
+
 .icon-arrow-left::after {
     content: '<';
 }
-.select2-selection__rendered{
-    line-height:36px !important;
+
+.select2-selection__rendered {
+    line-height: 36px !important;
 }
+
 .select2-selection {
     height: 38px !important;
     border: 1px solid #ced4da !important;
 }
+
 .select2-selection__arrow {
-    height:36px !important;
+    height: 36px !important;
 }
+
 .ck-editor__editable_inline {
     height: 40vh;
     overflow-y: scroll;
 }
+
 .modal {
-    z-index:999 !important;
+    z-index: 999 !important;
 }
+
 .modal-backdrop {
-    z-index:998 !important;
+    z-index: 998 !important;
 }
+
 select[size] {
     height: 36px !important;
     -moz-transition: height 0.2s,border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
@@ -246,24 +257,55 @@ select[size] {
     -webkit-transition: height 0.2s,border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
     transition: height 0.2s,border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
 }
+
     select[size].makeBigger {
         height: 300px !important;
     }
+
 input[type=radio]:checked + label::after {
-    left:auto;
-    right:7px;
-    top:15px;
+    left: auto;
+    right: 7px;
+    top: 15px;
 }
+
 input[type=radio] + label {
-    margin-right:3px;
+    margin-right: 3px;
 }
+
 input[type=radio] + label, input[type=radio] {
     cursor: pointer;
 }
+
 .form-check {
-    padding-top:8px;
-    padding-bottom:3px;
+    padding-top: 8px;
+    padding-bottom: 3px;
 }
+
 input[type=checkbox] + label, input[type=checkbox] {
     cursor: pointer;
 }
+
+.holderImageGalleryItem {
+    display: inline-block;
+    margin: 2px;
+    padding: 5px;
+    border: 1px solid silver;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    text-align: center;
+}
+    .holderImageGalleryItem > div.hidderImage {
+        display: inline-block;
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+    }
+
+    .holderImageGalleryItem img {
+        display: block;
+        width: 100%;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+    }

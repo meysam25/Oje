@@ -440,6 +440,14 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "امکان ویرایش فرم پیشنهادی که دارای استعلام می باشد وجود ندارد")]
         You_Can_Not_Edit_Company_Of_ProposalFilledForm_With_Inquiry = 214,
         [Display(Name = "لطفا از دکمه ویرایش استفاده کنید")]
-        Please_Use_Edit_Button = 215
+        Please_Use_Edit_Button = 215,
+        [Display(Name = "تاریخ رسید مجاز نمی باشد")]
+        Invalid_ArriveDate = 216,
+        [Display(Name = "تاریخ وصول صحیح نمی باشد")]
+        Invalid_CashDate = 217,
+        [Display(Name = "کد نمی تواند بیشتر از 50 کاکتر باشد")]
+        Code_Can_Not_Be_More_Then_50_chars = 218,
+        [Display(Name = "لطفا وضعیت را انتخاب کنید")]
+        Please_Select_Status = 219
     }
 }

@@ -319,3 +319,17 @@
     display: inline-block;
     cursor:pointer;
 }
+.imageGallery .myTableHeader {
+    display:none;
+}
+.imageGallery .myTableBody > tr, .imageGallery .myTableBody > tr > td {
+    display: inline-block;
+    border:none;
+}
+.imageGallery .myGrid {
+    display: block;
+    text-align:center;
+}
+.imageGallery .myTableBody > tr:last-child, .imageGallery .myTableBody > tr:last-child > td, .imageGallery .myTableBody {
+    display: block;
+}

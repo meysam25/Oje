@@ -19,6 +19,7 @@ namespace Oje.ProposalFormManager.Models.DB
             UserCompanies = new();
             CreateUserProposalFilledFormCompanies = new();
             UpdateUserProposalFilledFormCompanies = new();
+            ProposalFilledFormStatusLogs = new();
         }
 
         [Key]
@@ -67,5 +68,7 @@ namespace Oje.ProposalFormManager.Models.DB
         public List<ProposalFilledFormCompany> CreateUserProposalFilledFormCompanies { get; set; }
         [InverseProperty("UpdateUser")]
         public List<ProposalFilledFormCompany> UpdateUserProposalFilledFormCompanies { get; set; }
+        [InverseProperty("User")]
+        public List<ProposalFilledFormStatusLog> ProposalFilledFormStatusLogs { get; set; }
     }
 }

@@ -265,15 +265,16 @@ $.fn.initMyGrid = function (option) {
             return result;
         },
         getGridTemplate: function (option) {
+            var doseHaveAnyHeaderAction = false;
             var columnConfigButton = '<div class="topGridAction">';
             if (option.topActions && option.topActions.length > 0) {
+                doseHaveAnyHeaderAction = true;
                 columnConfigButton += '<div class="gridTopActionButtonHolder">';
                 for (var i = 0; i < option.topActions.length; i++) {
                     columnConfigButton += '<button  onclick="' + option.topActions[i].onClick + '" class="gridheaderButton btn btn-primary btn-sm" >' + option.topActions[i].title + '</button>';
                 }
                 columnConfigButton += '</div>';
             }
-            var doseHaveAnyHeaderAction = false;
             if (option.showColumnConfigButton) {
                 columnConfigButton += this.getColumnConfigButtonTemplate(option);
                 doseHaveAnyHeaderAction = true;
@@ -290,7 +291,7 @@ $.fn.initMyGrid = function (option) {
                 columnConfigButton += '<span class="myGridSearchButton"><i class="fa fa-search" ></i></span>';
                 doseHaveAnyHeaderAction = true;
             }
-            columnConfigButton += '</div>';
+            columnConfigButton += '<div style="clear:both;" ></div></div>';
             if (doseHaveAnyHeaderAction == false) {
                 columnConfigButton = '';
             }
@@ -551,13 +552,16 @@ $.fn.initMyGrid = function (option) {
                     $(this).click(function () {
                         var url = $(this).attr('data-url');
                         var id = $(this).attr('data-id');
+                        var pKey = $(this).closest('.modal').length > 0 ? $(this).closest('.modal')[0].pKey : '';
                         if (url && id) {
                             confirmDialog(($(this).attr('title') ? $(this).attr('title') : 'حذف'), 'آیا اطمینان دارید ؟', function () {
                                 var postData = new FormData();
                                 postData.append('id', this.id);
+                                if (this.pKey)
+                                    postData.append('pKey', this.pKey);
                                 showLoader($(this.curThis).closest('.myGridCTRL'))
                                 postForm(this.url, postData, function () { $(this).closest('.myGridCTRL')[0].refreshData(); }.bind(this.curThis), null, function () { hideLoader($(this).closest('.myGridCTRL')) }.bind(this.curThis));
-                            }.bind({ url, id, curThis: this }));
+                            }.bind({ url, id, curThis: this, pKey: pKey }));
                         }
                     });
                 } else if ($(this).hasClass('showEditStyle')) {

@@ -25,5 +25,10 @@ namespace Oje.ProposalFormManager.Interfaces
         object GetAgent(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         object UpdateAgent(long? id, long? userId, int? siteSettingId, long? longUserId, ProposalFilledFormStatus status);
         ProposalFilledFormPdfVM PdfDetailes(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        object GetUploadImages(GlobalGridParentLong id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ApiResult DeleteUploadImage(long? uploadFileId, long? proposalFilledFormId, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ApiResult UploadImage(long? proposalFilledFormId, IFormFile mainFile, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        object GetStatus(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ApiResult UpdateStatus(ProposalFilledFormChangeStatusVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
     }
 }

@@ -61,6 +61,7 @@ namespace Oje.ProposalFormManager
             services.AddScoped<IProposalFilledFormAdminManager, ProposalFilledFormAdminManager>();
             services.AddScoped<IProposalFormCategoryManager, ProposalFormCategoryManager>();
             services.AddScoped<IProposalFilledFormAdminBaseQueryManager, ProposalFilledFormAdminBaseQueryManager>();
+            services.AddScoped<IProposalFilledFormStatusLogManager, ProposalFilledFormStatusLogManager>();
         }
     }
 }

@@ -65,6 +65,7 @@ namespace Oje.ProposalFormManager.Services.EContext
         public DbSet<CarBodyCreateDatePercent> CarBodyCreateDatePercents { get; set; }
         public DbSet<CarSpecificationAmount> CarSpecificationAmounts { get; set; }
         public DbSet<ProposalFormCategory> ProposalFormCategories { get; set; }
+        public DbSet<ProposalFilledFormStatusLog> ProposalFilledFormStatusLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,7 +79,8 @@ namespace Oje.ProposalFormManager.Services.EContext
             modelBuilder.Entity<CarSpecificationAmount>().Property(e => e.Rate).HasPrecision(7, 5);
 
             modelBuilder.Entity<InquiryCompanyLimitCompany>().HasKey(t => new { t.CompanyId, t.InquiryCompanyLimitId });
-            modelBuilder.Entity<UserCompany>().HasKey(t => new { t.CompanyId, t.UserId});
+            modelBuilder.Entity<ProposalFilledFormStatusLog>().HasKey(t => new { t.ProposalFilledFormId, t.Type, t.CreateDate });
+            modelBuilder.Entity<UserCompany>().HasKey(t => new { t.CompanyId, t.UserId });
             modelBuilder.Entity<ProposalFilledFormCompany>().HasKey(t => new { t.CompanyId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormUser>().HasKey(t => new { t.ProposalFilledFormId, t.UserId, t.Type });
             modelBuilder.Entity<PaymentMethodCompany>().HasKey(t => new { t.CompanyId, t.PaymentMethodId });

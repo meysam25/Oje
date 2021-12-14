@@ -47,7 +47,7 @@ namespace Oje.ProposalFormManager.Services
                     IsSelected = isSelected,
                     CreateDate = DateTime.Now,
                     CreateUserId = loginUserId
-                }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                }).State = EntityState.Added;
                 db.SaveChanges();
 
             }
@@ -288,8 +288,6 @@ namespace Oje.ProposalFormManager.Services
             if (foundPPFId.GlobalInqueryId.ToLongReturnZiro() > 0)
                 throw BException.GenerateNewException(BMessages.You_Can_Not_Edit_Company_Of_ProposalFilledForm_With_Inquiry);
 
-
-
             var editItem = db.ProposalFilledFormCompanies.Where(t => t.ProposalFilledFormId == ppfId && t.CompanyId == cId).FirstOrDefault();
             if (editItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -345,22 +343,6 @@ namespace Oje.ProposalFormManager.Services
             return db.ProposalFilledFormCompanies.Where(t => t.ProposalFilledFormId == proposalFilledFormId && t.IsSelected == true).Select(t => t.Company).FirstOrDefault();
         }
 
-        public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
-        {
-            if (input == null)
-                input = new GlobalGridParentLong();
-            var foundItemId =
-                ProposalFilledFormAdminBaseQueryManager
-                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
-                .Where(t => t.Id == input.pKey)
-               .Select(t => t.Id)
-                .FirstOrDefault();
-
-            return new
-            {
-                total = UploadedFileManager.GetCountBy(foundItemId, FileType.ProposalFilledForm),
-                data = UploadedFileManager.GetListBy(foundItemId, FileType.ProposalFilledForm, input.skip, input.take)
-            };
-        }
+       
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models;
 using Oje.ProposalFormManager.Models.View;
 using System;
 using System.Collections.Generic;
@@ -11,5 +13,10 @@ namespace Oje.ProposalFormManager.Interfaces
     public interface IProposalFilledFormDocumentManager
     {
         void CreateChequeArr(long proposalFilledFormId, long proposalFilledFormPrice, int? siteSettingId, List<PaymentMethodDetailesCheckVM> checkArr, IFormCollection form);
+        GridResultVM<ProposalFilledFormDocumentMainGridResultVM> GetList(ProposalFilledFormDocumentMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ApiResult Delete(long? id, long? proposalFilledFormId, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        object GetBy(long? id, long? proposalFilledFormId, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ApiResult Create(ProposalFilledFormDocumentCreateUpdateVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ApiResult Update(ProposalFilledFormDocumentCreateUpdateVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
     }
 }

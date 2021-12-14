@@ -22,6 +22,5 @@ namespace Oje.ProposalFormManager.Interfaces
         object Update(CreateUpdateProposalFilledFormCompanyPrice input, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         object Select(string id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         Company GetSelectedBy(long proposalFilledFormId);
-        object GetUploadImages(GlobalGridParentLong id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
     }
 }

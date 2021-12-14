@@ -15,5 +15,6 @@ namespace Oje.AccountManager.Interfaces
         UploadedFile GetFile(string fn, long? userId);
         int GetCountBy(long objectId, FileType fileType);
         object GetListBy(long objectId, FileType fileType, int skip, int take);
+        void Delete(long? uploadFileId, int? siteSettingId, long? objectId, FileType fileType);
     }
 }

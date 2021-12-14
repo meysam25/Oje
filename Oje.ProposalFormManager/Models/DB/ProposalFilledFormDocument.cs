@@ -21,8 +21,13 @@ namespace Oje.ProposalFormManager.Models.DB
         public int? BankId { get; set; }
         [ForeignKey("BankId"), InverseProperty("ProposalFilledFormDocuments")]
         public Bank Bank { get; set; }
+        [MaxLength(50)]
         public string Code { get; set; }
         public DateTime? CashDate { get; set; }
+        [MaxLength(4000)]
+        public string Description { get; set; }
+        [MaxLength(200)]
+        public string MainFileSrc { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

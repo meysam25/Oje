@@ -1150,7 +1150,7 @@ function getGridTemplate(grid) {
 
     if (grid) {
         var gridId = (!grid.id ? uuidv4RemoveDash() : grid.id);
-        result += '<div id="' + gridId + '" class="myGridCTRL"></div>';
+        result += '<div id="' + gridId + '" class="myGridCTRL ' + (grid.class ? grid.class : '') + '"></div>';
         functionsList.push(function () {
             $('#' + gridId).initMyGrid(grid);
         });
@@ -1170,19 +1170,25 @@ function showModal(targetModal, curElement) {
     }
 }
 
-function showEditModal(key, url, modalId, curElement) {
+function showEditModal(key, url, modalId, curElement, parentKey) {
     if (url && modalId) {
         var gridSelector = $(curElement).closest('.myGridCTRL');
         showLoader(gridSelector);
         var postData = new FormData();
         postData.append('id', key);
+        if (parentKey)
+            postData.append('pKey', parentKey);
+
         postForm(url, postData, function (res) {
             if (res) {
                 var holderForm = $('#' + this.modalId);
                 clearForm(holderForm);
                 bindForm(res, holderForm);
                 holderForm.modal('show');
-                $('#' + modalId)[0].pKey = key;
+                if (parentKey)
+                    $('#' + modalId)[0].pKey = parentKey;
+                else
+                    $('#' + modalId)[0].pKey = key;
                 if ($('#' + modalId).find('.myGridCTRL').length > 0) {
                     $('#' + modalId).find('.myGridCTRL').each(function () {
                         $(this)[0].refreshData();

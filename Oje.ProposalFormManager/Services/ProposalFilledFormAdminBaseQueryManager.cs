@@ -3,11 +3,7 @@ using Oje.Infrastructure.Services;
 using Oje.ProposalFormManager.Interfaces;
 using Oje.ProposalFormManager.Models.DB;
 using Oje.ProposalFormManager.Services.EContext;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormManager.Services
 {
@@ -23,9 +19,15 @@ namespace Oje.ProposalFormManager.Services
 
         public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
+            return getProposalFilledFormBaseQuery(siteSettingId, userId)
+                .Where(t => t.Status == status);
+        }
+
+        public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId)
+        {
             var allChildUserId = UserManager.GetChildsUserId(userId.ToLongReturnZiro());
             return db.ProposalFilledForms
-                .Where(t => t.IsDelete != true && t.Status == status && t.SiteSettingId == siteSettingId && (allChildUserId == null || t.ProposalFilledFormUsers.Any(tt => allChildUserId.Contains(tt.UserId))));
+                .Where(t => t.IsDelete != true && t.SiteSettingId == siteSettingId && (allChildUserId == null || t.ProposalFilledFormUsers.Any(tt => allChildUserId.Contains(tt.UserId))));
         }
     }
 }

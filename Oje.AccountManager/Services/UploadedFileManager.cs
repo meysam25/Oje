@@ -225,10 +225,20 @@ namespace Oje.AccountManager.Services
                 .Select(t => new
                 {
                     t.id,
-                    src = GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src)
+                    src = isImage(Path.GetFileName(t.src)) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg"
                 })
                 .ToList()
                 ;
+        }
+
+        public void Delete(long? uploadFileId, int? siteSettingId, long? objectId, FileType fileType)
+        {
+            var foundItem = db.UploadedFiles.Where(t => t.SiteSettingId == siteSettingId && t.Id == uploadFileId && t.FileType == fileType && t.ObjectId == objectId).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            db.Entry(foundItem).State = EntityState.Deleted;
+            db.SaveChanges();
         }
     }
 }
