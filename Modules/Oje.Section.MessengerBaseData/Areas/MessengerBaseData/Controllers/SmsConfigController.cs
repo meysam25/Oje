@@ -30,7 +30,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
-        [AreaConfig(Title = "تنظیمات پیامک", Icon = "fa-eye", IsMainMenuItem = true)]
+        [AreaConfig(Title = "تنظیمات پیامک", Icon = "fa-paper-plane", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

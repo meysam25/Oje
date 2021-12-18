@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Oje.AccountService.Models.DB
+namespace Oje.Sms.Models.DB
 {
     [Table("UserRoles")]
     public class UserRole

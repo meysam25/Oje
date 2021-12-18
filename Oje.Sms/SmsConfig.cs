@@ -15,6 +15,11 @@ namespace Oje.Sms
 
 
             services.AddScoped<ISmsConfigService, SmsConfigService>();
+            services.AddScoped<ISmsTrigerService, SmsTrigerService>();
+            services.AddScoped<ISmsTemplateService, SmsTemplateService>();
+            services.AddScoped<ISmsSendingQueueService, SmsSendingQueueService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
         }
     }
 }

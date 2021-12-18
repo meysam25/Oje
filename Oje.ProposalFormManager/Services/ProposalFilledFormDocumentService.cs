@@ -5,6 +5,7 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
+using Oje.JoinServices.Interfaces;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Models.View;
@@ -21,20 +22,20 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
-        readonly AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService = null;
+        readonly IUserNotifierService UserNotifierService = null;
         public ProposalFilledFormDocumentService(
             ProposalFormDBContext db,
             IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
             AccountService.Interfaces.IUploadedFileService UploadedFileService,
             IProposalFilledFormUseService ProposalFilledFormUseService,
-            AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService
+            IUserNotifierService UserNotifierService
             )
         {
             this.db = db;
             this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
             this.UploadedFileService = UploadedFileService;
             this.ProposalFilledFormUseService = ProposalFilledFormUseService;
-            this.UserNotificationTrigerService = UserNotificationTrigerService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public ApiResult Create(ProposalFilledFormDocumentCreateUpdateVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
@@ -69,7 +70,7 @@ namespace Oje.ProposalFormService.Services
                 db.SaveChanges();
             }
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormNewFinancialDocuemnt, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.pKey.ToLongReturnZiro()), input.pKey, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.pKey);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormNewFinancialDocuemnt, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.pKey.ToLongReturnZiro()), input.pKey, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.pKey);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -98,7 +99,7 @@ namespace Oje.ProposalFormService.Services
                 foundItem.MainFileSrc = UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, input.mainFile, userId, siteSettingId, foundId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true, foundId + "_" + foundItem.Id);
             db.SaveChanges();
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormFinancialDocumentEdited, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.pKey.ToLongReturnZiro()), input.pKey, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.pKey);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormFinancialDocumentEdited, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.pKey.ToLongReturnZiro()), input.pKey, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.pKey);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -175,7 +176,7 @@ namespace Oje.ProposalFormService.Services
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormFinancialDocuemntDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormFinancialDocuemntDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

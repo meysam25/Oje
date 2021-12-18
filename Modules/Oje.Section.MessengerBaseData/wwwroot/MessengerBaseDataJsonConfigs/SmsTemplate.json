@@ -7,16 +7,14 @@
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)",
-              "type": "add",
-              "modalId": "addGridModal"
+              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
             }
           ],
-          "exportToExcelUrl": "/MessengerBaseData/UserNotificationTriger/Export",
+          "exportToExcelUrl": "/MessengerBaseData/SmsTemplate/Export",
           "showColumnConfigButton": true,
           "actions": {
             "delete": {
-              "url": "/MessengerBaseData/UserNotificationTriger/Delete"
+              "url": "/MessengerBaseData/SmsTemplate/Delete"
             },
             "cActions": [
               {
@@ -24,13 +22,13 @@
                 "icon": "fa-pen",
                 "prop": "id",
                 "modalId": "editGridModal",
-                "url": "/MessengerBaseData/UserNotificationTriger/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/UserNotificationTriger/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "url": "/MessengerBaseData/SmsTemplate/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/SmsTemplate/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/MessengerBaseData/UserNotificationTriger/GetList",
+          "url": "/MessengerBaseData/SmsTemplate/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -54,15 +52,8 @@
               }
             },
             {
-              "field": "roleName",
-              "caption": "نام نقش",
-              "search": {
-                "searchType": "text"
-              }
-            },
-            {
-              "field": "userName",
-              "caption": "کاربر",
+              "field": "subject",
+              "caption": "عنوان",
               "search": {
                 "searchType": "text"
               }
@@ -73,6 +64,7 @@
       "moduals": [
         {
           "id": "addGridModal",
+          "class": "modal-xl",
           "title": "افزودن",
           "ctrls": [
             {
@@ -80,7 +72,7 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
@@ -90,22 +82,18 @@
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "userId",
-              "type": "dropDown2",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetUserList",
-              "label": "کاربر"
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "subject",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "roleId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetRoleList",
-              "label": "نقش"
+              "name": "description",
+              "type": "text",
+              "label": "توضیحات {{datetime}},{{fromUser}},{{toUser}},{{objectId}},{{title}}",
+              "isRequired": true
             }
           ],
           "actions": [
@@ -116,13 +104,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/UserNotificationTriger/Create')",
+              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTemplate/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "id": "editGridModal",
+          "class": "modal-xl",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -130,33 +119,28 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/UserNotificationType",
               "label": "نوع",
-              "isRequired": true,
-              "disabled": true
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "subject",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "userId",
-              "type": "dropDown2",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetUserList",
-              "label": "کاربر"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "roleId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetRoleList",
-              "label": "نقش"
+              "name": "description",
+              "type": "text",
+              "label": "توضیحات {{datetime}},{{fromUser}},{{toUser}},{{objectId}},{{title}}",
+              "isRequired": true
             }
           ],
           "actions": [
@@ -167,7 +151,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/UserNotificationTriger/Update')",
+              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTemplate/Update')",
               "class": "btn-primary"
             }
           ]

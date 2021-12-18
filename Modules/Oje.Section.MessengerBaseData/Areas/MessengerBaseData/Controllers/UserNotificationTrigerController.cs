@@ -12,7 +12,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
 {
     [Area("MessengerBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "تنظیمات پیام رسان", Icon = "fa-flag", Title = "تنظیمات نوتیفیکیشن")]
+    [AreaConfig(ModualTitle = "تنظیمات پیام رسان", Icon = "fa-flag", Title = "تنظیمات ارسال نوتیفیکیشن")]
     [CustomeAuthorizeFilter]
     public class UserNotificationTrigerController : Controller
     {
@@ -33,16 +33,16 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
-        [AreaConfig(Title = "تنظیمات نوتیفیکیشن", Icon = "fa-comment", IsMainMenuItem = true)]
+        [AreaConfig(Title = "تنظیمات ارسال نوتیفیکیشن", Icon = "fa-comment", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "تنظیمات نوتیفیکیشن";
+            ViewBag.Title = "تنظیمات ارسال نوتیفیکیشن";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserNotificationTriger", new { area = "MessengerBaseData" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست تنظیمات نوتیفیکیشن", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست تنظیمات ارسال نوتیفیکیشن", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -50,35 +50,35 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("MessengerBaseData", "UserNotificationTriger")));
         }
 
-        [AreaConfig(Title = "افزودن تنظیمات نوتیفیکیشن جدید", Icon = "fa-plus")]
+        [AreaConfig(Title = "افزودن تنظیمات ارسال نوتیفیکیشن جدید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateUserNotificationTrigerVM input)
         {
             return Json(UserNotificationTrigerService.Create(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "حذف تنظیمات نوتیفیکیشن", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "حذف تنظیمات ارسال نوتیفیکیشن", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
             return Json(UserNotificationTrigerService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده  یک تنظیمات نوتیفیکیشن", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده  یک تنظیمات ارسال نوتیفیکیشن", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
             return Json(UserNotificationTrigerService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "به روز رسانی  تنظیمات نوتیفیکیشن", Icon = "fa-pencil")]
+        [AreaConfig(Title = "به روز رسانی  تنظیمات ارسال نوتیفیکیشن", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateUserNotificationTrigerVM input)
         {
             return Json(UserNotificationTrigerService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تنظیمات نوتیفیکیشن", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تنظیمات ارسال نوتیفیکیشن", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserNotificationTrigerMainGrid searchInput)
         {

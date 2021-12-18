@@ -1,11 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
     <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Oje.JoinServices\Oje.JoinServices.csproj" />
     <ProjectReference Include="..\..\Oje.ProposalFormManager\Oje.ProposalFormService.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Models\DB\" />
-    <Folder Include="Services\EContext\" />
   </ItemGroup>
 </Project>

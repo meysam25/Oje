@@ -5,6 +5,7 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
+using Oje.JoinServices.Interfaces;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
@@ -33,8 +34,8 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormValueService ProposalFilledFormValueService = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
         readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
-        readonly AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
+        readonly IUserNotifierService UserNotifierService = null;
 
         public ProposalFilledFormService(
                 ProposalFormDBContext db,
@@ -51,7 +52,7 @@ namespace Oje.ProposalFormService.Services
                 IProposalFilledFormDocumentService ProposalFilledFormDocumentService,
                 IProposalFilledFormValueService ProposalFilledFormValueService,
                 AccountService.Interfaces.IUploadedFileService UploadedFileService,
-                AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService,
+                IUserNotifierService UserNotifierService,
                 IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService
             )
         {
@@ -69,8 +70,8 @@ namespace Oje.ProposalFormService.Services
             this.ProposalFilledFormDocumentService = ProposalFilledFormDocumentService;
             this.ProposalFilledFormValueService = ProposalFilledFormValueService;
             this.UploadedFileService = UploadedFileService;
-            this.UserNotificationTrigerService = UserNotificationTrigerService;
             this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId)
@@ -114,7 +115,7 @@ namespace Oje.ProposalFormService.Services
 
                     tr.Commit();
 
-                    UserNotificationTrigerService.CreateNotificationForUser(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
+                    UserNotifierService.Notify(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
                 }
                 catch (Exception)
                 {

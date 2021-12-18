@@ -7,7 +7,9 @@
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+              "onClick": "showModal('addGridModal', this)",
+              "type": "add",
+              "modalId": "addGridModal"
             }
           ],
           "exportToExcelUrl": "/MessengerBaseData/SmsConfig/Export",
@@ -147,7 +149,8 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/SmsConfigType",
               "label": "نوع",
-              "isRequired": true
+              "isRequired": true,
+              "disabled": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

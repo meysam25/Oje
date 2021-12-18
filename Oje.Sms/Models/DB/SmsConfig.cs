@@ -12,6 +12,11 @@ namespace Oje.Sms.Models.DB
     [Table("SmsConfigs")]
     public class SmsConfig
     {
+        public SmsConfig()
+        {
+            SmsSendingQueueErrors = new();
+        }
+
         [Key]
         public int Id { get; set; }
         [MaxLength(50)]
@@ -22,5 +27,8 @@ namespace Oje.Sms.Models.DB
         public SmsConfigType Type { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+
+        [InverseProperty("SmsConfig")]
+        public List<SmsSendingQueueError> SmsSendingQueueErrors { get; set; }
     }
 }

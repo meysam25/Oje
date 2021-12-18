@@ -15,6 +15,7 @@ using Oje.Infrastructure.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Collections;
 using Oje.Infrastructure.Models.PageForms;
+using System.Net;
 
 namespace Oje.Infrastructure.Services
 {
@@ -237,6 +238,23 @@ namespace Oje.Infrastructure.Services
                 }
 
                 return Encoding.UTF8.GetString(mso.ToArray());
+            }
+        }
+
+        public static IpSections GetIpAddress(this IHttpContextAccessor input)
+        {
+            try
+            {
+                var apAddress = input?.HttpContext?.Request?.HttpContext?.Connection?.RemoteIpAddress.ToString();
+                if (!string.IsNullOrEmpty(apAddress))
+                {
+                    return apAddress.GetIpSections();
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -801,6 +819,29 @@ namespace Oje.Infrastructure.Services
             }
 
             return result;
+        }
+
+        public static IpSections GetIpSections(this string input)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(input) && input.IndexOf(".") > 0)
+                {
+                    return new IpSections()
+                    {
+                        Ip1 = input.Split('.')[0].ToByteReturnZiro(),
+                        Ip2 = input.Split('.')[1].ToByteReturnZiro(),
+                        Ip3 = input.Split('.')[2].ToByteReturnZiro(),
+                        Ip4 = input.Split('.')[3].ToByteReturnZiro()
+                    };
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static LoginUserVM GetLoginUserId(this HttpContext input)

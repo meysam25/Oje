@@ -8,6 +8,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.Infrastructure.Services;
+using Oje.JoinServices.Interfaces;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Models.View;
@@ -31,7 +32,7 @@ namespace Oje.ProposalFormService.Services
         readonly IGlobalInqueryService GlobalInqueryService = null;
         readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService = null;
-        readonly AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService = null;
+        readonly IUserNotifierService UserNotifierService = null;
 
         public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
@@ -44,7 +45,7 @@ namespace Oje.ProposalFormService.Services
                 IGlobalInqueryService GlobalInqueryService,
                 AccountService.Interfaces.IUploadedFileService UploadedFileService,
                 IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService,
-                AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService
+                IUserNotifierService UserNotifierService
             )
         {
             this.db = db;
@@ -56,7 +57,7 @@ namespace Oje.ProposalFormService.Services
             this.GlobalInqueryService = GlobalInqueryService;
             this.UploadedFileService = UploadedFileService;
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
-            this.UserNotificationTrigerService = UserNotificationTrigerService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
@@ -110,7 +111,7 @@ namespace Oje.ProposalFormService.Services
                 }
             }
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormEdited, ProposalFilledFormUseService.GetProposalFilledFormUserIds(item.id), item.id, item.title, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + item.id);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormEdited, ProposalFilledFormUseService.GetProposalFilledFormUserIds(item.id), item.id, item.title, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + item.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -128,7 +129,7 @@ namespace Oje.ProposalFormService.Services
 
             db.SaveChanges();
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(foundItem.Id), foundItem.Id, "", siteSettingId, "");
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(foundItem.Id), foundItem.Id, "", siteSettingId, "");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -311,7 +312,7 @@ namespace Oje.ProposalFormService.Services
             foreach (var newUserId in input.userIds)
                 ProposalFilledFormUseService.Create(newUserId, ProposalFilledFormUserType.Refer, userId, input.id.ToLongReturnZiro());
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ReferToUser, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id.ToLongReturnZiro(), "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id.ToLongReturnZiro());
+            UserNotifierService.Notify(userId, UserNotificationType.ReferToUser, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id.ToLongReturnZiro(), "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id.ToLongReturnZiro());
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -355,7 +356,7 @@ namespace Oje.ProposalFormService.Services
 
             ProposalFilledFormCompanyService.CreateUpdate(input, userId);
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -408,7 +409,7 @@ namespace Oje.ProposalFormService.Services
             else
                 ProposalFilledFormUseService.Update(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro());
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(id.ToLongReturnZiro()), id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + id);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(id.ToLongReturnZiro()), id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -528,7 +529,7 @@ namespace Oje.ProposalFormService.Services
 
             UploadedFileService.Delete(uploadFileId, siteSettingId, proposalFilledFormId, FileType.ProposalFilledForm);
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormDocumentDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormDocumentDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -548,7 +549,7 @@ namespace Oje.ProposalFormService.Services
 
             UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, mainFile, userId, siteSettingId, proposalFilledFormId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true);
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormNewDocument, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormNewDocument, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -599,7 +600,7 @@ namespace Oje.ProposalFormService.Services
 
             ProposalFilledFormStatusLogService.Create(input.id, input.status, DateTime.Now, userId, input.description);
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationTrigerService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
+            UserNotifierService.Notify(userId, UserNotifierService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -655,7 +656,7 @@ namespace Oje.ProposalFormService.Services
 
             ProposalFilledFormStatusLogService.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description);
 
-            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationTrigerService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
+            UserNotifierService.Notify(userId, UserNotifierService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

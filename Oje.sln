@@ -47,7 +47,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.FireInsuranceService", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.MessengerBaseData", "Modules\Oje.Section.MessengerBaseData\Oje.Section.MessengerBaseData.csproj", "{30B858F7-A486-4AC4-BDF7-1B8CAC9193C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oje.Sms", "Oje.Sms\Oje.Sms.csproj", "{31BDC4A6-C4E7-4192-8B3F-89C08BE1F6D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Sms", "Oje.Sms\Oje.Sms.csproj", "{31BDC4A6-C4E7-4192-8B3F-89C08BE1F6D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oje.JoinServices", "Oje.JoinServices\Oje.JoinServices.csproj", "{63053277-A074-4406-90D0-222E982DB2F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,6 +145,10 @@ Global
 		{31BDC4A6-C4E7-4192-8B3F-89C08BE1F6D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31BDC4A6-C4E7-4192-8B3F-89C08BE1F6D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31BDC4A6-C4E7-4192-8B3F-89C08BE1F6D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63053277-A074-4406-90D0-222E982DB2F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63053277-A074-4406-90D0-222E982DB2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63053277-A074-4406-90D0-222E982DB2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63053277-A074-4406-90D0-222E982DB2F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

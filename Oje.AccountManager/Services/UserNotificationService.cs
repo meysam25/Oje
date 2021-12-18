@@ -5,7 +5,6 @@ using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.View;
 using Oje.AccountService.Services.EContext;
-using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -13,8 +12,6 @@ using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {

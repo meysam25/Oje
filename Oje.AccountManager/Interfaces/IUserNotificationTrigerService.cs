@@ -17,6 +17,5 @@ namespace Oje.AccountService.Interfaces
         ApiResult Update(CreateUpdateUserNotificationTrigerVM input, int? siteSettingId);
         GridResultVM<UserNotificationTrigerMainGridResultVM> GetList(UserNotificationTrigerMainGrid searchInput, int? siteSettingId);
         void CreateNotificationForUser(long? userId, UserNotificationType type, List<long> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink);
-        UserNotificationType ConvertProposalFilledFormStatusToUserNotifiactionType(ProposalFilledFormStatus status);
     }
 }

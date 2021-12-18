@@ -7,16 +7,14 @@
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)",
-              "type": "add",
-              "modalId": "addGridModal"
+              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
             }
           ],
-          "exportToExcelUrl": "/MessengerBaseData/UserNotificationTriger/Export",
+          "exportToExcelUrl": "/MessengerBaseData/SmsTriger/Export",
           "showColumnConfigButton": true,
           "actions": {
             "delete": {
-              "url": "/MessengerBaseData/UserNotificationTriger/Delete"
+              "url": "/MessengerBaseData/SmsTriger/Delete"
             },
             "cActions": [
               {
@@ -24,13 +22,13 @@
                 "icon": "fa-pen",
                 "prop": "id",
                 "modalId": "editGridModal",
-                "url": "/MessengerBaseData/UserNotificationTriger/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/UserNotificationTriger/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "url": "/MessengerBaseData/SmsTriger/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/SmsTriger/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/MessengerBaseData/UserNotificationTriger/GetList",
+          "url": "/MessengerBaseData/SmsTriger/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -66,6 +64,16 @@
               "search": {
                 "searchType": "text"
               }
+            },
+            {
+              "field": "sendForOwner",
+              "caption": "ارسال برای مالکین",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
             }
           ]
         }
@@ -95,7 +103,7 @@
               "type": "dropDown2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetUserList",
+              "dataurl": "/MessengerBaseData/SmsTriger/GetUserList",
               "label": "کاربر"
             },
             {
@@ -104,8 +112,17 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetRoleList",
+              "dataurl": "/MessengerBaseData/SmsTriger/GetRoleList",
               "label": "نقش"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "sendForOwner",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "ارسال برای مالکین"
             }
           ],
           "actions": [
@@ -116,7 +133,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/UserNotificationTriger/Create')",
+              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTriger/Create')",
               "class": "btn-primary"
             }
           ]
@@ -146,7 +163,7 @@
               "type": "dropDown2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetUserList",
+              "dataurl": "/MessengerBaseData/SmsTriger/GetUserList",
               "label": "کاربر"
             },
             {
@@ -155,8 +172,17 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/MessengerBaseData/UserNotificationTriger/GetRoleList",
+              "dataurl": "/MessengerBaseData/SmsTriger/GetRoleList",
               "label": "نقش"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "sendForOwner",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "ارسال برای مالکین"
             }
           ],
           "actions": [
@@ -167,7 +193,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/UserNotificationTriger/Update')",
+              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTriger/Update')",
               "class": "btn-primary"
             }
           ]

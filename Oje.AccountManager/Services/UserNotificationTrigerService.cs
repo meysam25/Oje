@@ -63,13 +63,15 @@ namespace Oje.AccountService.Services
                 if (foundTrigers != null && foundTrigers.Count > 0)
                 {
                     string userFullname = UserService.GetUserFullName(siteSettingId, userId);
-                    string subject = replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
-                    string description = replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                    string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
+                    string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
                     if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(description))
                     {
                         List<int> roleIds = foundTrigers.Where(t => t.RoleId.ToIntReturnZiro() > 0).Select(t => t.RoleId.Value).ToList();
                         List<long> userIds = foundTrigers.Where(t => t.UserId.ToLongReturnZiro() > 0).Select(t => t.UserId.Value).ToList();
-                        var roleUsers = RoleService.GetUsersBy(roleIds, siteSettingId, 1000);
+                        userIds.AddRange(exteraUserList);
+                        userIds = userIds.GroupBy(t => t).Select(t => t.Key).ToList();
+                        var roleUsers = RoleService.GetUsersBy(roleIds, siteSettingId, GlobalServices.MaxForNotify);
                         roleUsers = roleUsers.Where(t => !userIds.Contains(t.userId)).ToList();
                         foreach (var fUserId in userIds)
                         {
@@ -128,11 +130,6 @@ namespace Oje.AccountService.Services
                 })
                 .ToList()
                 ;
-        }
-
-        string replaceKeyword(string input, long? objectId, string title, string userFullname)
-        {
-            return (input + "").Replace("{{datetime}}", DateTime.Now.ToFaDate()).Replace("{{objectId}}", objectId + "").Replace("{{fromUser}}", userFullname).Replace("{{title}}", title);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -242,25 +239,6 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
         }
 
-        public UserNotificationType ConvertProposalFilledFormStatusToUserNotifiactionType(ProposalFilledFormStatus status)
-        {
-            switch (status)
-            {
-                case ProposalFilledFormStatus.New:
-                    return UserNotificationType.ProposalFilledFormStatusChangedNew;
-                case ProposalFilledFormStatus.W8ForConfirm:
-                    return UserNotificationType.ProposalFilledFormStatusChangeW8ForConfirm;
-                case ProposalFilledFormStatus.NeedSpecialist:
-                    return UserNotificationType.ProposalFilledFormStatusChangeNeedSpecialist;
-                case ProposalFilledFormStatus.Confirm:
-                    return UserNotificationType.ProposalFilledFormStatusChangeConfirm;
-                case ProposalFilledFormStatus.Issuing:
-                    return UserNotificationType.ProposalFilledFormStatusChangeIssue;
-                case ProposalFilledFormStatus.NotIssue:
-                    return UserNotificationType.ProposalFilledFormStatusChangeNotIssue;
-                default:
-                    return UserNotificationType.ProposalFilledFormStatusChangedNew;
-            }
-        }
+        
     }
 }
