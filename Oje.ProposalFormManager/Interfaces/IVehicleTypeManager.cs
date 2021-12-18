@@ -1,8 +1,8 @@
-﻿using Oje.ProposalFormManager.Models.DB;
+﻿using Oje.ProposalFormService.Models.DB;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IVehicleTypeManager
+    public interface IVehicleTypeService
     {
         VehicleType GetById(int? id);
         object GetLightList(int? vehicleSystemId);

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,21 +20,21 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CarExteraDiscountRangeAmountController : Controller
     {
-        readonly ICarExteraDiscountRangeAmountManager CarExteraDiscountRangeAmountManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly ICarExteraDiscountManager CarExteraDiscountManager = null;
-        readonly ICarExteraDiscountValueManager CarExteraDiscountValueManager = null;
+        readonly ICarExteraDiscountRangeAmountService CarExteraDiscountRangeAmountService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly ICarExteraDiscountService CarExteraDiscountService = null;
+        readonly ICarExteraDiscountValueService CarExteraDiscountValueService = null;
         public CarExteraDiscountRangeAmountController(
-            ICarExteraDiscountRangeAmountManager CarExteraDiscountRangeAmountManager,
-            ICompanyManager CompanyManager,
-            ICarExteraDiscountManager CarExteraDiscountManager,
-            ICarExteraDiscountValueManager CarExteraDiscountValueManager
+            ICarExteraDiscountRangeAmountService CarExteraDiscountRangeAmountService,
+            ICompanyService CompanyService,
+            ICarExteraDiscountService CarExteraDiscountService,
+            ICarExteraDiscountValueService CarExteraDiscountValueService
             )
         {
-            this.CarExteraDiscountRangeAmountManager = CarExteraDiscountRangeAmountManager;
-            this.CompanyManager = CompanyManager;
-            this.CarExteraDiscountManager = CarExteraDiscountManager;
-            this.CarExteraDiscountValueManager = CarExteraDiscountValueManager;
+            this.CarExteraDiscountRangeAmountService = CarExteraDiscountRangeAmountService;
+            this.CompanyService = CompanyService;
+            this.CarExteraDiscountService = CarExteraDiscountService;
+            this.CarExteraDiscountValueService = CarExteraDiscountValueService;
         }
 
         [AreaConfig(Title = "نرخ تخفیف اضافه", Icon = "fa-money-bill-wave", IsMainMenuItem = true)]
@@ -58,42 +58,42 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCarExteraDiscountRangeAmountVM input)
         {
-            return Json(CarExteraDiscountRangeAmountManager.Create(input));
+            return Json(CarExteraDiscountRangeAmountService.Create(input));
         }
 
         [AreaConfig(Title = "حذف نرخ تخفیف اضافه", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CarExteraDiscountRangeAmountManager.Delete(input?.id));
+            return Json(CarExteraDiscountRangeAmountService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نرخ تخفیف اضافه", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CarExteraDiscountRangeAmountManager.GetById(input?.id));
+            return Json(CarExteraDiscountRangeAmountService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نرخ تخفیف اضافه", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCarExteraDiscountRangeAmountVM input)
         {
-            return Json(CarExteraDiscountRangeAmountManager.Update(input));
+            return Json(CarExteraDiscountRangeAmountService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نرخ تخفیف اضافه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarExteraDiscountRangeAmountMainGrid searchInput)
         {
-            return Json(CarExteraDiscountRangeAmountManager.GetList(searchInput));
+            return Json(CarExteraDiscountRangeAmountService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CarExteraDiscountRangeAmountMainGrid searchInput)
         {
-            var result = CarExteraDiscountRangeAmountManager.GetList(searchInput);
+            var result = CarExteraDiscountRangeAmountService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -107,21 +107,21 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست تخفیف اظافه", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCarExteraDiscountList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(CarExteraDiscountManager.GetSelect2List(searchInput));
+            return Json(CarExteraDiscountService.GetSelect2List(searchInput));
         }
 
         [AreaConfig(Title = "مشاهده لیست مقادیر تخفیف اظافه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarExteraDisocuntValueList([FromQuery]int id)
         {
-            return Json(CarExteraDiscountValueManager.GetLightListByCarExteraDiscountId(id));
+            return Json(CarExteraDiscountValueService.GetLightListByCarExteraDiscountId(id));
         }
     }
 }

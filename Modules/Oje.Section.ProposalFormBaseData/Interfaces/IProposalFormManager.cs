@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
-    public interface IProposalFormManager
+    public interface IProposalFormService
     {
         ApiResult Create(CreateUpdateProposalFormVM input, long? userId);
         ApiResult Delete(int? id);

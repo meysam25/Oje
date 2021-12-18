@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,18 +20,18 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CashPayDiscountController : Controller
     {
-        readonly ICashPayDiscountManager CashPayDiscountManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
+        readonly ICashPayDiscountService CashPayDiscountService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IProposalFormService ProposalFormService = null;
         public CashPayDiscountController(
-                ICashPayDiscountManager CashPayDiscountManager,
-                ICompanyManager CompanyManager,
-                IProposalFormManager ProposalFormManager
+                ICashPayDiscountService CashPayDiscountService,
+                ICompanyService CompanyService,
+                IProposalFormService ProposalFormService
             )
         {
-            this.CashPayDiscountManager = CashPayDiscountManager;
-            this.CompanyManager = CompanyManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.CashPayDiscountService = CashPayDiscountService;
+            this.CompanyService = CompanyService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [AreaConfig(Title = "تخفیف نقدی خرید", Icon = "fa-percent", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCashPayDiscountVM input)
         {
-            return Json(CashPayDiscountManager.Create(input));
+            return Json(CashPayDiscountService.Create(input));
         }
 
         [AreaConfig(Title = "حذف تخفیف نقدی خرید", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CashPayDiscountManager.Delete(input?.id));
+            return Json(CashPayDiscountService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تخفیف نقدی خرید", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CashPayDiscountManager.GetById(input?.id));
+            return Json(CashPayDiscountService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تخفیف نقدی خرید", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCashPayDiscountVM input)
         {
-            return Json(CashPayDiscountManager.Update(input));
+            return Json(CashPayDiscountService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست تخفیف نقدی خرید", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] CashPayDiscountMainGrid searchInput)
         {
-            return Json(CashPayDiscountManager.GetList(searchInput));
+            return Json(CashPayDiscountService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CashPayDiscountMainGrid searchInput)
         {
-            var result = CashPayDiscountManager.GetList(searchInput);
+            var result = CashPayDiscountService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -104,14 +104,14 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

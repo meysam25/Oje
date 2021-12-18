@@ -12,10 +12,10 @@ using Oje.Section.CarThirdBaseData.Services.EContext;
 
 namespace Oje.Section.CarThirdBaseData.Services
 {
-    public class ThirdPartyPassengerRateManager: IThirdPartyPassengerRateManager
+    public class ThirdPartyPassengerRateService: IThirdPartyPassengerRateService
     {
         readonly CarThirdBaseDataDBContext db = null;
-        public ThirdPartyPassengerRateManager(CarThirdBaseDataDBContext db)
+        public ThirdPartyPassengerRateService(CarThirdBaseDataDBContext db)
         {
             this.db = db;
         }

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -15,26 +15,26 @@ using Oje.Section.InsuranceContractBaseData.Services.EContext;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
-    public class InsuranceContractTypeManager : IInsuranceContractTypeManager
+    public class InsuranceContractTypeService : IInsuranceContractTypeService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        public InsuranceContractTypeManager(
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        public InsuranceContractTypeService(
                 InsuranceContractBaseDataDBContext db,
-                IUserManager UserManager,
-                ISiteSettingManager SiteSettingManager
+                IUserService UserService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractTypeVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             CreateValidation(input, loginUserId, siteSettingId);
 
@@ -71,9 +71,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            List<long> childUserIds = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             var foundItem = db.InsuranceContractTypes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
@@ -87,9 +87,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public CreateUpdateInsuranceContractTypeVM GetById(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            List<long> childUserIds = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             return db.InsuranceContractTypes
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)))
@@ -105,9 +105,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             if (searchInput == null)
                 searchInput = new InsuranceContractTypeMainGrid();
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            List<long> childUserIds = UserManager.GetChildsUserId(loginUserId.Value);
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.Value);
 
             var qureResult = db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
 
@@ -153,11 +153,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(CreateUpdateInsuranceContractTypeVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, loginUserId, siteSettingId);
 
-            List<long> childUserIds = UserManager.GetChildsUserId(loginUserId.Value);
+            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.Value);
 
             var foundItem = db.InsuranceContractTypes.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
@@ -176,9 +176,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
 
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUsers = UserManager.GetChildsUserId(loginUserId.Value);
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUsers = UserService.GetChildsUserId(loginUserId.Value);
 
             result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId && (childUsers == null || childUsers.Contains(t.CreateUserId))).Select(t => new
             {

@@ -12,25 +12,25 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class InsuranceContractDiscountManager : IInsuranceContractDiscountManager
+    public class InsuranceContractDiscountService : IInsuranceContractDiscountService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IInsuranceContractManager InsuranceContractManager = null;
-        public InsuranceContractDiscountManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IInsuranceContractService InsuranceContractService = null;
+        public InsuranceContractDiscountService(
                 InquiryBaseDataDBContext db,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                IInsuranceContractManager InsuranceContractManager
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IInsuranceContractService InsuranceContractService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
-            this.InsuranceContractManager = InsuranceContractManager;
+            this.SiteSettingService = SiteSettingService;
+            this.InsuranceContractService = InsuranceContractService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractDiscountVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, siteSettingId);
 
             InsuranceContractDiscount newItem = new InsuranceContractDiscount() 
@@ -67,7 +67,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
             if (input.contractId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
-            if (!InsuranceContractManager.Exist(input.contractId.ToIntReturnZiro()))
+            if (!InsuranceContractService.Exist(input.contractId.ToIntReturnZiro()))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (input.percent.ToIntReturnZiro() <= 0 || input.percent >= 100)
                 throw BException.GenerateNewException(BMessages.Invalid_Percent);
@@ -75,7 +75,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             InsuranceContractDiscount foundItem = db.InsuranceContractDiscounts.Include(t => t.InsuranceContractDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundItem == null)
@@ -92,7 +92,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public CreateUpdateInsuranceContractDiscountVM GetById(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.InsuranceContractDiscounts
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
@@ -112,7 +112,7 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             if (searchInput == null)
                 searchInput = new InsuranceContractDiscountMainGrid();
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.InsuranceContractDiscounts.Where(t => t.SiteSettingId == siteSettingId);
             if (searchInput.company.ToIntReturnZiro() > 0)
@@ -158,7 +158,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Update(CreateUpdateInsuranceContractDiscountVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, siteSettingId);
 
             InsuranceContractDiscount foundItem = db.InsuranceContractDiscounts.Include(t => t.InsuranceContractDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();

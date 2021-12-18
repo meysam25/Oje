@@ -12,25 +12,25 @@ using Oje.Section.ProposalFormBaseData.Models.View;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class ProposalFormPostPriceManager : IProposalFormPostPriceManager
+    public class ProposalFormPostPriceService : IProposalFormPostPriceService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        public ProposalFormPostPriceManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        public ProposalFormPostPriceService(
                 ProposalFormBaseDataDBContext db,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                IProposalFormManager ProposalFormManager
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         public ApiResult Create(CreateUpdateProposalFormPostPriceVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, siteSettingId);
 
             db.Entry(new ProposalFormPostPrice()
@@ -54,7 +54,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.ppfId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormManager.Exist(input.ppfId.ToIntReturnZiro(), siteSettingId))
+            if (!ProposalFormService.Exist(input.ppfId.ToIntReturnZiro(), siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
@@ -68,7 +68,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var foundItem = db.ProposalFormPostPrices.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
@@ -81,7 +81,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public CreateUpdateProposalFormPostPriceVM GetById(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.ProposalFormPostPrices
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
@@ -101,7 +101,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             if (searchInput == null)
                 searchInput = new ProposalFormPostPriceMainGrid();
 
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.ProposalFormPostPrices.Where(t => t.SiteSettingId == siteSettingId);
 
@@ -144,7 +144,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Update(CreateUpdateProposalFormPostPriceVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, siteSettingId);
 
             var foundItem = db.ProposalFormPostPrices.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarThirdBaseData.Interfaces
 {
-    public interface ICarSpecificationManager
+    public interface ICarSpecificationService
     {
         object GetSelect2List(Select2SearchVM searchInput);
     }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
-using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.View;
+using Oje.AccountService.Filters;
+using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.View;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
@@ -20,46 +20,46 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
     [CustomeAuthorizeFilter]
     public class FireInsuranceController: Controller
     {
-        readonly IFireInsuranceBuildingUnitValueManager FireInsuranceBuildingUnitValueManager = null;
-        readonly IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager = null;
-        readonly IFireInsuranceBuildingBodyManager FireInsuranceBuildingBodyManager = null;
-        readonly IFireInsuranceBuildingAgeManager FireInsuranceBuildingAgeManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IInquiryDurationManager InquiryDurationManager = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
-        readonly IFireInsuranceRateManager FireInsuranceRateManager = null;
-        readonly IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager = null;
-        readonly IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager = null;
+        readonly IFireInsuranceBuildingUnitValueService FireInsuranceBuildingUnitValueService = null;
+        readonly IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService = null;
+        readonly IFireInsuranceBuildingBodyService FireInsuranceBuildingBodyService = null;
+        readonly IFireInsuranceBuildingAgeService FireInsuranceBuildingAgeService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IInquiryDurationService InquiryDurationService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
+        readonly IFireInsuranceRateService FireInsuranceRateService = null;
+        readonly IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService = null;
+        readonly IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService = null;
 
         public FireInsuranceController(
-                IFireInsuranceBuildingUnitValueManager FireInsuranceBuildingUnitValueManager,
-                IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager,
-                IFireInsuranceBuildingBodyManager FireInsuranceBuildingBodyManager,
-                IFireInsuranceBuildingAgeManager FireInsuranceBuildingAgeManager,
-                ICompanyManager CompanyManager,
-                IInquiryDurationManager InquiryDurationManager,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                IProposalFormManager ProposalFormManager,
-                IInsuranceContractDiscountManager InsuranceContractDiscountManager,
-                IFireInsuranceRateManager FireInsuranceRateManager,
-                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager,
-                IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager
+                IFireInsuranceBuildingUnitValueService FireInsuranceBuildingUnitValueService,
+                IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService,
+                IFireInsuranceBuildingBodyService FireInsuranceBuildingBodyService,
+                IFireInsuranceBuildingAgeService FireInsuranceBuildingAgeService,
+                ICompanyService CompanyService,
+                IInquiryDurationService InquiryDurationService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService,
+                IInsuranceContractDiscountService InsuranceContractDiscountService,
+                IFireInsuranceRateService FireInsuranceRateService,
+                IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService,
+                IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService
             )
         {
-            this.FireInsuranceBuildingUnitValueManager = FireInsuranceBuildingUnitValueManager;
-            this.FireInsuranceBuildingTypeManager = FireInsuranceBuildingTypeManager;
-            this.FireInsuranceBuildingBodyManager = FireInsuranceBuildingBodyManager;
-            this.FireInsuranceBuildingAgeManager = FireInsuranceBuildingAgeManager;
-            this.CompanyManager = CompanyManager;
-            this.InquiryDurationManager = InquiryDurationManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
-            this.FireInsuranceRateManager = FireInsuranceRateManager;
-            this.FireInsuranceCoverageTitleManager = FireInsuranceCoverageTitleManager;
-            this.FireInsuranceTypeOfActivityManager = FireInsuranceTypeOfActivityManager;
+            this.FireInsuranceBuildingUnitValueService = FireInsuranceBuildingUnitValueService;
+            this.FireInsuranceBuildingTypeService = FireInsuranceBuildingTypeService;
+            this.FireInsuranceBuildingBodyService = FireInsuranceBuildingBodyService;
+            this.FireInsuranceBuildingAgeService = FireInsuranceBuildingAgeService;
+            this.CompanyService = CompanyService;
+            this.InquiryDurationService = InquiryDurationService;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
+            this.InsuranceContractDiscountService = InsuranceContractDiscountService;
+            this.FireInsuranceRateService = FireInsuranceRateService;
+            this.FireInsuranceCoverageTitleService = FireInsuranceCoverageTitleService;
+            this.FireInsuranceTypeOfActivityService = FireInsuranceTypeOfActivityService;
         }
 
         [AreaConfig(Title = "استعلام آتش سوزی", Icon = "fa-fire", IsMainMenuItem = true)]
@@ -83,70 +83,70 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] FireInsuranceInquiryVM input)
         {
-            return Json(FireInsuranceRateManager.Inquiry(SiteSettingManager.GetSiteSetting()?.Id, input));
+            return Json(FireInsuranceRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input));
         }
 
         [AreaConfig(Title = "مشاهده لیست ارزش هر متر مربع", Icon = "fa-list-alt")]
         [HttpPost]
         public IActionResult GetBuildingUnitList()
         {
-            return Json(FireInsuranceBuildingUnitValueManager.GetLightList());
+            return Json(FireInsuranceBuildingUnitValueService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست نوع ساختمان", Icon = "fa-list-alt")]
         [HttpPost]
         public IActionResult GetBuildingTypeList()
         {
-            return Json(FireInsuranceBuildingTypeManager.GetLightList());
+            return Json(FireInsuranceBuildingTypeService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست نوع اسکلت", Icon = "fa-list-alt")]
         [HttpPost]
         public IActionResult GetBuildingBodyTypeList()
         {
-            return Json(FireInsuranceBuildingBodyManager.GetLightList());
+            return Json(FireInsuranceBuildingBodyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست سن ساختمان", Icon = "fa-list-alt")]
         [HttpPost]
         public IActionResult GetBuildingAgeList()
         {
-            return Json(FireInsuranceBuildingAgeManager.GetLightList());
+            return Json(FireInsuranceBuildingAgeService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت فیلتر گرید", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyListGridFilter()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه روزانه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetValidDayForGridFilter()
         {
-            return Json(InquiryDurationManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, ProposalFormManager.GetByType(ProposalFormType.FireInsurance, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(InquiryDurationService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, ProposalFormService.GetByType(ProposalFormType.FireInsurance, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست تفاهم نامه ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetValidContractForGrid()
         {
-            return Json(InsuranceContractDiscountManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, ProposalFormType.FireInsurance));
+            return Json(InsuranceContractDiscountService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, ProposalFormType.FireInsurance));
         }
 
         [AreaConfig(Title = "مشاهده فیلتر اظافی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetExteraFilters()
         {
-            return Json(FireInsuranceCoverageTitleManager.GetInquiryExteraFilterCtrls());
+            return Json(FireInsuranceCoverageTitleService.GetInquiryExteraFilterCtrls());
         }
 
         [AreaConfig(Title = "مشاهده لیست فعالیت ", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetActivityList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(FireInsuranceTypeOfActivityManager.GetList(searchInput));
+            return Json(FireInsuranceTypeOfActivityService.GetList(searchInput));
         }
     }
 }

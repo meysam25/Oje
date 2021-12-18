@@ -1,14 +1,14 @@
-﻿using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+﻿using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class DutyManager: IDutyManager
+    public class DutyService: IDutyService
     {
         readonly ProposalFormDBContext db = null;
-        public DutyManager(ProposalFormDBContext db)
+        public DutyService(ProposalFormDBContext db)
         {
             this.db = db;
         }

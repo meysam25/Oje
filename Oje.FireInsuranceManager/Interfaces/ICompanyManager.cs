@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Interfaces
+namespace Oje.FireInsuranceService.Interfaces
 {
-    public interface ICompanyManager
+    public interface ICompanyService
     {
         object GetLightList();
     }

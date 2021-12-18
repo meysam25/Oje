@@ -10,11 +10,11 @@
               "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
             }
           ],
-          "exportToExcelUrl": "/Account/UserManager/Export",
+          "exportToExcelUrl": "/Account/UserService/Export",
           "showColumnConfigButton": true,
           "actions": {
             "delete": {
-              "url": "/Account/UserManager/Delete"
+              "url": "/Account/UserService/Delete"
             },
             "cActions": [
               {
@@ -22,13 +22,13 @@
                 "icon": "fa-pen",
                 "prop": "id",
                 "modalId": "editRoleModal",
-                "url": "/Account/UserManager/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/UserManager/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "url": "/Account/UserService/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/UserService/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/Account/UserManager/GetList",
+          "url": "/Account/UserService/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -84,7 +84,7 @@
               "caption": "نقش",
               "search": {
                 "searchType": "dropdown",
-                "url": "/Account/UserManager/GetRoleList",
+                "url": "/Account/UserService/GetRoleList",
                 "textField": "title",
                 "valueField": "id"
               }
@@ -230,7 +230,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetSettingList",
+              "dataurl": "/Account/UserService/GetSettingList",
               "label": "تنظیمات"
             },
             {
@@ -290,7 +290,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetCompanyList",
+              "dataurl": "/Account/UserService/GetCompanyList",
               "label": "شرکت",
               "isRequired": true
             },
@@ -300,7 +300,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetRoleList",
+              "dataurl": "/Account/UserService/GetRoleList",
               "label": "نقش",
               "isRequired": true
             }
@@ -313,7 +313,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/Account/UserManager/Create')",
+              "onClick": "postModalData(this, 'userGrid', '/Account/UserService/Create')",
               "class": "btn-primary"
             }
           ]
@@ -454,7 +454,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetSettingList",
+              "dataurl": "/Account/UserService/GetSettingList",
               "label": "تنظیمات"
             },
             {
@@ -514,7 +514,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetCompanyList",
+              "dataurl": "/Account/UserService/GetCompanyList",
               "label": "شرکت",
               "isRequired": true
             },
@@ -524,7 +524,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetRoleList",
+              "dataurl": "/Account/UserService/GetRoleList",
               "label": "نقش",
               "isRequired": true
             }
@@ -537,7 +537,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/Account/UserManager/Update')",
+              "onClick": "postModalData(this, 'userGrid', '/Account/UserService/Update')",
               "class": "btn-primary"
             }
           ]

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Models.DB
+namespace Oje.AccountService.Models.DB
 {
     [Table("Roles")]
     public class Role
@@ -18,6 +18,7 @@ namespace Oje.AccountManager.Models.DB
             RoleActions = new();
             FileAccessRoles = new();
             RoleProposalForms = new();
+            UserNotificationTrigers = new();
         }
 
         [Key]
@@ -44,5 +45,7 @@ namespace Oje.AccountManager.Models.DB
         public List<FileAccessRole> FileAccessRoles { get; set; }
         [InverseProperty("Role")]
         public List<RoleProposalForm> RoleProposalForms { get; set; }
+        [InverseProperty("Role")]
+        public List<UserNotificationTriger> UserNotificationTrigers { get; set; }
     }
 }

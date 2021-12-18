@@ -13,13 +13,23 @@
       "wwwroot/js/treeView.js",
       "wwwroot/js/main.js",
       "wwwroot/js/validation.js",
-      "wwwroot/js/formGenerator.js"
+      "wwwroot/js/formGenerator.js",
+      "wwwroot/js/notificationHob.js"
     ],
     "minify": {
       "enabled": true,
       "renameLocals": true
-    },
-    "sourceMap": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/js/sr.js",
+    "inputFiles": [
+      "wwwroot/js/signalr.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    }
   },
   {
     "outputFileName": "wwwroot/Core/js/ce.js",
@@ -30,9 +40,8 @@
     ],
     "minify": {
       "enabled": false,
-      "renameLocals": false
-    },
-    "sourceMap": false
+      "renameLocals": true
+    }
   },
   {
     "outputFileName": "wwwroot/Core/js/bs.min.js",
@@ -41,9 +50,8 @@
     ],
     "minify": {
       "enabled": true,
-      "renameLocals": false
-    },
-    "sourceMap": false
+      "renameLocals": true
+    }
   },
   {
     "outputFileName": "wwwroot/Core/css/core.min.css",
@@ -63,8 +71,7 @@
     ],
     "minify": {
       "enabled": true,
-      "renameLocals": false
-    },
-    "sourceMap": false
+      "renameLocals": true
+    }
   }
 ]

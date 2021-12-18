@@ -12,10 +12,10 @@ using Oje.Section.CarThirdBaseData.Services.EContext;
 
 namespace Oje.Section.CarThirdBaseData.Services
 {
-    public class ThirdPartyDriverFinancialCommitmentManager : IThirdPartyDriverFinancialCommitmentManager
+    public class ThirdPartyDriverFinancialCommitmentService : IThirdPartyDriverFinancialCommitmentService
     {
         readonly CarThirdBaseDataDBContext db = null;
-        public ThirdPartyDriverFinancialCommitmentManager(CarThirdBaseDataDBContext db)
+        public ThirdPartyDriverFinancialCommitmentService(CarThirdBaseDataDBContext db)
         {
             this.db = db;
         }

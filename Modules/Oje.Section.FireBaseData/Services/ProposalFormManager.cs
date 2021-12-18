@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace Oje.Section.FireBaseData.Services
 {
-    public class ProposalFormManager: IProposalFormManager
+    public class ProposalFormService: IProposalFormService
     {
         readonly FireBaseDataDBContext db = null;
-        public ProposalFormManager(FireBaseDataDBContext db)
+        public ProposalFormService(FireBaseDataDBContext db)
         {
             this.db = db;
         }

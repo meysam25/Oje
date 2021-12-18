@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,18 +20,18 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyPassengerRateController : Controller
     {
-        readonly IThirdPartyPassengerRateManager ThirdPartyPassengerRateManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly ICarSpecificationManager CarSpecificationManager = null;
+        readonly IThirdPartyPassengerRateService ThirdPartyPassengerRateService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly ICarSpecificationService CarSpecificationService = null;
         public ThirdPartyPassengerRateController(
-            IThirdPartyPassengerRateManager ThirdPartyPassengerRateManager,
-            ICompanyManager CompanyManager,
-            ICarSpecificationManager CarSpecificationManager
+            IThirdPartyPassengerRateService ThirdPartyPassengerRateService,
+            ICompanyService CompanyService,
+            ICarSpecificationService CarSpecificationService
             )
         {
-            this.ThirdPartyPassengerRateManager = ThirdPartyPassengerRateManager;
-            this.CompanyManager = CompanyManager;
-            this.CarSpecificationManager = CarSpecificationManager;
+            this.ThirdPartyPassengerRateService = ThirdPartyPassengerRateService;
+            this.CompanyService = CompanyService;
+            this.CarSpecificationService = CarSpecificationService;
         }
 
         [AreaConfig(Title = "نرخ سرنشین ثالث", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyPassengerRateVM input)
         {
-            return Json(ThirdPartyPassengerRateManager.Create(input));
+            return Json(ThirdPartyPassengerRateService.Create(input));
         }
 
         [AreaConfig(Title = "حذف نرخ سرنشین ثالث", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyPassengerRateManager.Delete(input?.id));
+            return Json(ThirdPartyPassengerRateService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نرخ سرنشین ثالث", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyPassengerRateManager.GetById(input?.id));
+            return Json(ThirdPartyPassengerRateService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نرخ سرنشین ثالث", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyPassengerRateVM input)
         {
-            return Json(ThirdPartyPassengerRateManager.Update(input));
+            return Json(ThirdPartyPassengerRateService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نرخ سرنشین ثالث", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyPassengerRateMainGrid searchInput)
         {
-            return Json(ThirdPartyPassengerRateManager.GetList(searchInput));
+            return Json(ThirdPartyPassengerRateService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyPassengerRateMainGrid searchInput)
         {
-            var result = ThirdPartyPassengerRateManager.GetList(searchInput);
+            var result = ThirdPartyPassengerRateService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -104,14 +104,14 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCarSepecificationList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(CarSpecificationManager.GetSelect2List(searchInput));
+            return Json(CarSpecificationService.GetSelect2List(searchInput));
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.Security.Interfaces
 {
-    public interface IRoleManager
+    public interface IRoleService
     {
         object GetLightList();
     }

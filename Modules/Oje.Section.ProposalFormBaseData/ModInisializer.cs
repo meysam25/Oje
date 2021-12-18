@@ -22,15 +22,15 @@ namespace Oje.Section.ProposalFormBaseData
                options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
            );
 
-            services.AddScoped<IProposalFormPostPriceManager, ProposalFormPostPriceManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
-            services.AddScoped<ISiteSettingManager, SiteSettingManager>();
-            services.AddScoped<IProposalFormCategoryManager, ProposalFormCategoryManager>();
-            services.AddScoped<IProposalFormRequiredDocumentManager, ProposalFormRequiredDocumentManager>();
-            services.AddScoped<IProposalFormRequiredDocumentTypeManager, ProposalFormRequiredDocumentTypeManager>();
-            services.AddScoped<IPaymentMethodManager, PaymentMethodManager>();
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<IPaymentMethodFileManager, PaymentMethodFileManager>();
+            services.AddScoped<IProposalFormPostPriceService, ProposalFormPostPriceService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
+            services.AddScoped<ISiteSettingService, SiteSettingService>();
+            services.AddScoped<IProposalFormCategoryService, ProposalFormCategoryService>();
+            services.AddScoped<IProposalFormRequiredDocumentService, ProposalFormRequiredDocumentService>();
+            services.AddScoped<IProposalFormRequiredDocumentTypeService, ProposalFormRequiredDocumentTypeService>();
+            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IPaymentMethodFileService, PaymentMethodFileService>();
         }
     }
 }

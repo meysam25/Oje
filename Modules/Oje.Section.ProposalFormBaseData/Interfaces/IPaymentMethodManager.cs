@@ -3,7 +3,7 @@ using Oje.Section.ProposalFormBaseData.Models.View;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
-    public interface IPaymentMethodManager
+    public interface IPaymentMethodService
     {
         ApiResult Create(CreateUpdatePaymentMethodVM input);
         ApiResult Delete(int? id);

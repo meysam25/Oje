@@ -23,10 +23,10 @@ namespace Oje.Section.Security
                     b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
             );
 
-            services.AddScoped<IIpLimitationWhiteListManager, IpLimitationWhiteListManager>();
-            services.AddScoped<IIpLimitationBlackListManager, IpLimitationBlackListManager>();
-            services.AddScoped<IFileAccessRoleManager, FileAccessRoleManager>();
-            services.AddScoped<IRoleManager, RoleManager>();
+            services.AddScoped<IIpLimitationWhiteListService, IpLimitationWhiteListService>();
+            services.AddScoped<IIpLimitationBlackListService, IpLimitationBlackListService>();
+            services.AddScoped<IFileAccessRoleService, FileAccessRoleService>();
+            services.AddScoped<IRoleService, RoleService>();
 
         }
     }

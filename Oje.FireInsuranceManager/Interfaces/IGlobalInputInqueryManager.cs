@@ -1,13 +1,13 @@
-﻿using Oje.FireInsuranceManager.Models.View;
+﻿using Oje.FireInsuranceService.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Interfaces
+namespace Oje.FireInsuranceService.Interfaces
 {
-    public interface IGlobalInputInqueryManager
+    public interface IGlobalInputInqueryService
     {
         long Create(FireInsuranceInquiryVM input, int? siteSettingId);
     }

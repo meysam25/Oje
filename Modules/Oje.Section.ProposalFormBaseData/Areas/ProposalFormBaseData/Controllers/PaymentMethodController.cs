@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,14 +16,14 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class PaymentMethodController: Controller
     {
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        public PaymentMethodController(IPaymentMethodManager PaymentMethodManager, IProposalFormManager ProposalFormManager, ICompanyManager CompanyManager)
+        readonly IPaymentMethodService PaymentMethodService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly ICompanyService CompanyService = null;
+        public PaymentMethodController(IPaymentMethodService PaymentMethodService, IProposalFormService ProposalFormService, ICompanyService CompanyService)
         {
-            this.PaymentMethodManager = PaymentMethodManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.CompanyManager = CompanyManager;
+            this.PaymentMethodService = PaymentMethodService;
+            this.ProposalFormService = ProposalFormService;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "شرایط پرداخت", Icon = "fa-dollar-sign", IsMainMenuItem = true)]
@@ -47,42 +47,42 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdatePaymentMethodVM input)
         {
-            return Json(PaymentMethodManager.Create(input));
+            return Json(PaymentMethodService.Create(input));
         }
 
         [AreaConfig(Title = "حذف شرایط پرداخت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(PaymentMethodManager.Delete(input?.id));
+            return Json(PaymentMethodService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک شرایط پرداخت", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(PaymentMethodManager.GetById(input?.id));
+            return Json(PaymentMethodService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  شرایط پرداخت", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdatePaymentMethodVM input)
         {
-            return Json(PaymentMethodManager.Update(input));
+            return Json(PaymentMethodService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرایط پرداخت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] PaymentMethodMainGrid searchInput)
         {
-            return Json(PaymentMethodManager.GetList(searchInput));
+            return Json(PaymentMethodService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] PaymentMethodMainGrid searchInput)
         {
-            var result = PaymentMethodManager.GetList(searchInput);
+            var result = PaymentMethodService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -96,14 +96,14 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

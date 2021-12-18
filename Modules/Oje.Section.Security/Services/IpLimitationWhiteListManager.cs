@@ -13,10 +13,10 @@ using Oje.Section.Security.Models.View;
 
 namespace Oje.Section.Security.Services
 {
-    public class IpLimitationWhiteListManager: IIpLimitationWhiteListManager
+    public class IpLimitationWhiteListService: IIpLimitationWhiteListService
     {
         readonly SecurityDBContext db = null;
-        public IpLimitationWhiteListManager(SecurityDBContext db)
+        public IpLimitationWhiteListService(SecurityDBContext db)
         {
             this.db = db;
         }

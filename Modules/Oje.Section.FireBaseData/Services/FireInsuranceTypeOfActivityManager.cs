@@ -12,10 +12,10 @@ using Oje.Section.FireBaseData.Services.EContext;
 
 namespace Oje.Section.FireBaseData.Services
 {
-    public class FireInsuranceTypeOfActivityManager: IFireInsuranceTypeOfActivityManager
+    public class FireInsuranceTypeOfActivityService: IFireInsuranceTypeOfActivityService
     {
         readonly FireBaseDataDBContext db = null;
-        public FireInsuranceTypeOfActivityManager(FireBaseDataDBContext db)
+        public FireInsuranceTypeOfActivityService(FireBaseDataDBContext db)
         {
             this.db = db;
         }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
-    public interface IProposalFormRequiredDocumentTypeManager
+    public interface IProposalFormRequiredDocumentTypeService
     {
         ApiResult Create(CreateUpdateProposalFormRequiredDocumentTypeVM input);
         ApiResult Delete(int? id);

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
@@ -21,15 +21,15 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     [CustomeAuthorizeFilter]
     public class InsuranceContractUserTemproryController: Controller
     {
-        readonly IInsuranceContractUserManager InsuranceContractUserManager = null;
-        readonly IInsuranceContractManager InsuranceContractManager = null;
+        readonly IInsuranceContractUserService InsuranceContractUserService = null;
+        readonly IInsuranceContractService InsuranceContractService = null;
         public InsuranceContractUserTemproryController(
-                IInsuranceContractUserManager InsuranceContractUserManager,
-                IInsuranceContractManager InsuranceContractManager
+                IInsuranceContractUserService InsuranceContractUserService,
+                IInsuranceContractService InsuranceContractService
             )
         {
-            this.InsuranceContractUserManager = InsuranceContractUserManager;
-            this.InsuranceContractManager = InsuranceContractManager;
+            this.InsuranceContractUserService = InsuranceContractUserService;
+            this.InsuranceContractService = InsuranceContractService;
         }
 
         [AreaConfig(Title = "لیست بیمه شدگان موقت", Icon = "fa-user-alt", IsMainMenuItem = true)]
@@ -53,56 +53,56 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public IActionResult Confirm([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractUserManager.ChangeStatus(input?.id, InsuranceContractUserStatus.Temprory, InsuranceContractUserStatus.Premanent));
+            return Json(InsuranceContractUserService.ChangeStatus(input?.id, InsuranceContractUserStatus.Temprory, InsuranceContractUserStatus.Premanent));
         }
 
         [AreaConfig(Title = "افزودن لیست بیمه شدگان موقت جدید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInsuranceContractUserVM input)
         {
-            return Json(InsuranceContractUserManager.Create(input, InsuranceContractUserStatus.Temprory));
+            return Json(InsuranceContractUserService.Create(input, InsuranceContractUserStatus.Temprory));
         }
 
         [AreaConfig(Title = "افزودن بیمه شدگان موقت از روی فایل اکسل", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult CreateFromXcel([FromForm] GlobalExcelFile input)
         {
-            return Json(InsuranceContractUserManager.CreateFromExcel(input, InsuranceContractUserStatus.Temprory));
+            return Json(InsuranceContractUserService.CreateFromExcel(input, InsuranceContractUserStatus.Temprory));
         }
 
         [AreaConfig(Title = "حذف بیمه شدگان موقت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractUserManager.Delete(input?.id, InsuranceContractUserStatus.Temprory));
+            return Json(InsuranceContractUserService.Delete(input?.id, InsuranceContractUserStatus.Temprory));
         }
 
         [AreaConfig(Title = "مشاهده یک  بیمه شدگان موقت", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractUserManager.GetById(input?.id, InsuranceContractUserStatus.Temprory));
+            return Json(InsuranceContractUserService.GetById(input?.id, InsuranceContractUserStatus.Temprory));
         }
 
         [AreaConfig(Title = "به روز رسانی بیمه شدگان موقت", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInsuranceContractUserVM input)
         {
-            return Json(InsuranceContractUserManager.Update(input, InsuranceContractUserStatus.Temprory));
+            return Json(InsuranceContractUserService.Update(input, InsuranceContractUserStatus.Temprory));
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه شدگان موقت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractUserMainGrid searchInput)
         {
-            return Json(InsuranceContractUserManager.GetList(searchInput, InsuranceContractUserStatus.Temprory));
+            return Json(InsuranceContractUserService.GetList(searchInput, InsuranceContractUserStatus.Temprory));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InsuranceContractUserMainGrid searchInput)
         {
-            var result = InsuranceContractUserManager.GetList(searchInput, InsuranceContractUserStatus.Temprory);
+            var result = InsuranceContractUserService.GetList(searchInput, InsuranceContractUserStatus.Temprory);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -116,7 +116,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public ActionResult GetContractList()
         {
-            return Json(InsuranceContractManager.GetLightList());
+            return Json(InsuranceContractService.GetLightList());
         }
     }
 }

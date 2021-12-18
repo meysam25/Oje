@@ -13,10 +13,10 @@ using Oje.Section.ProposalFormBaseData.Models.View;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class ProposalFormCategoryManager : IProposalFormCategoryManager
+    public class ProposalFormCategoryService : IProposalFormCategoryService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        public ProposalFormCategoryManager(ProposalFormBaseDataDBContext db)
+        public ProposalFormCategoryService(ProposalFormBaseDataDBContext db)
         {
             this.db = db;
         }

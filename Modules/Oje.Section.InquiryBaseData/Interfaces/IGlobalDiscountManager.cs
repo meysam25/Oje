@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IGlobalDiscountManager
+    public interface IGlobalDiscountService
     {
         ApiResult Create(CreateUpdateGlobalDiscountVM input);
         ApiResult Delete(int? id);

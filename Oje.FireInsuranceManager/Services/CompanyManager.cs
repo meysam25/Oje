@@ -1,5 +1,5 @@
-﻿using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Services.EContext;
+﻿using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using System;
@@ -8,12 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class CompanyManager : ICompanyManager
+    public class CompanyService : ICompanyService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        public CompanyManager(FireInsuranceManagerDBContext db)
+        readonly FireInsuranceServiceDBContext db = null;
+        public CompanyService(FireInsuranceServiceDBContext db)
         {
             this.db = db;
         }

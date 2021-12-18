@@ -5,9 +5,9 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,56 +15,62 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFilledFormManager : IProposalFilledFormManager
+    public class ProposalFilledFormService : IProposalFilledFormService
     {
         readonly ProposalFormDBContext db = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IProposalFormRequiredDocumentManager ProposalFormRequiredDocumentManager = null;
-        readonly IGlobalInqueryManager GlobalInqueryManager = null;
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        readonly IBankManager BankManager = null;
-        readonly IUserManager InternalUserManager = null;
-        readonly IProposalFilledFormJsonManager ProposalFilledFormJsonManager = null;
-        readonly IProposalFilledFormCompanyManager ProposalFilledFormCompanyManager = null;
-        readonly IProposalFilledFormUseManager ProposalFilledFormUseManager = null;
-        readonly IProposalFilledFormDocumentManager ProposalFilledFormDocumentManager = null;
-        readonly IProposalFilledFormValueManager ProposalFilledFormValueManager = null;
-        readonly AccountManager.Interfaces.IUserManager UserManager = null;
-        readonly AccountManager.Interfaces.IUploadedFileManager UploadedFileManager = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService = null;
+        readonly IGlobalInqueryService GlobalInqueryService = null;
+        readonly IPaymentMethodService PaymentMethodService = null;
+        readonly IBankService BankService = null;
+        readonly IUserService InternalUserService = null;
+        readonly IProposalFilledFormJsonService ProposalFilledFormJsonService = null;
+        readonly IProposalFilledFormCompanyService ProposalFilledFormCompanyService = null;
+        readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
+        readonly IProposalFilledFormDocumentService ProposalFilledFormDocumentService = null;
+        readonly IProposalFilledFormValueService ProposalFilledFormValueService = null;
+        readonly AccountService.Interfaces.IUserService UserService = null;
+        readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
+        readonly AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService = null;
+        readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
 
-        public ProposalFilledFormManager(
+        public ProposalFilledFormService(
                 ProposalFormDBContext db,
-                IProposalFormManager ProposalFormManager,
-                IProposalFormRequiredDocumentManager ProposalFormRequiredDocumentManager,
-                IGlobalInqueryManager GlobalInqueryManager,
-                IPaymentMethodManager PaymentMethodManager,
-                IBankManager BankManager,
-                AccountManager.Interfaces.IUserManager UserManager,
-                IProposalFilledFormJsonManager ProposalFilledFormJsonManager,
-                IProposalFilledFormCompanyManager ProposalFilledFormCompanyManager,
-                IUserManager InternalUserManager,
-                IProposalFilledFormUseManager ProposalFilledFormUseManager,
-                IProposalFilledFormDocumentManager ProposalFilledFormDocumentManager,
-                IProposalFilledFormValueManager ProposalFilledFormValueManager,
-                AccountManager.Interfaces.IUploadedFileManager UploadedFileManager
+                IProposalFormService ProposalFormService,
+                IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService,
+                IGlobalInqueryService GlobalInqueryService,
+                IPaymentMethodService PaymentMethodService,
+                IBankService BankService,
+                AccountService.Interfaces.IUserService UserService,
+                IProposalFilledFormJsonService ProposalFilledFormJsonService,
+                IProposalFilledFormCompanyService ProposalFilledFormCompanyService,
+                IUserService InternalUserService,
+                IProposalFilledFormUseService ProposalFilledFormUseService,
+                IProposalFilledFormDocumentService ProposalFilledFormDocumentService,
+                IProposalFilledFormValueService ProposalFilledFormValueService,
+                AccountService.Interfaces.IUploadedFileService UploadedFileService,
+                AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService,
+                IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService
             )
         {
             this.db = db;
-            this.ProposalFormManager = ProposalFormManager;
-            this.ProposalFormRequiredDocumentManager = ProposalFormRequiredDocumentManager;
-            this.GlobalInqueryManager = GlobalInqueryManager;
-            this.PaymentMethodManager = PaymentMethodManager;
-            this.BankManager = BankManager;
-            this.UserManager = UserManager;
-            this.ProposalFilledFormJsonManager = ProposalFilledFormJsonManager;
-            this.ProposalFilledFormCompanyManager = ProposalFilledFormCompanyManager;
-            this.InternalUserManager = InternalUserManager;
-            this.ProposalFilledFormUseManager = ProposalFilledFormUseManager;
-            this.ProposalFilledFormDocumentManager = ProposalFilledFormDocumentManager;
-            this.ProposalFilledFormValueManager = ProposalFilledFormValueManager;
-            this.UploadedFileManager = UploadedFileManager;
+            this.ProposalFormService = ProposalFormService;
+            this.ProposalFormRequiredDocumentService = ProposalFormRequiredDocumentService;
+            this.GlobalInqueryService = GlobalInqueryService;
+            this.PaymentMethodService = PaymentMethodService;
+            this.BankService = BankService;
+            this.UserService = UserService;
+            this.ProposalFilledFormJsonService = ProposalFilledFormJsonService;
+            this.ProposalFilledFormCompanyService = ProposalFilledFormCompanyService;
+            this.InternalUserService = InternalUserService;
+            this.ProposalFilledFormUseService = ProposalFilledFormUseService;
+            this.ProposalFilledFormDocumentService = ProposalFilledFormDocumentService;
+            this.ProposalFilledFormValueService = ProposalFilledFormValueService;
+            this.UploadedFileService = UploadedFileService;
+            this.UserNotificationTrigerService = UserNotificationTrigerService;
+            this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId)
@@ -73,15 +79,15 @@ namespace Oje.ProposalFormManager.Services
 
             long inquiryId = form.GetStringIfExist("inquiryId").ToLongReturnZiro();
             int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
-            var foundProposalForm = ProposalFormManager.GetById(proposalFormId, siteSettingId);
+            var foundProposalForm = ProposalFormService.GetById(proposalFormId, siteSettingId);
             int payCondationId = form.GetStringIfExist("payCondation").ToIntReturnZiro();
-            var allRequiredFileUpload = ProposalFormRequiredDocumentManager.GetProposalFormRequiredDocuments(foundProposalForm?.Id, siteSettingId);
+            var allRequiredFileUpload = ProposalFormRequiredDocumentService.GetProposalFormRequiredDocuments(foundProposalForm?.Id, siteSettingId);
             PageForm ppfObj = null;
             try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch { };// catch (Exception) { throw; }
             int companyId = 0;
 
             if (ppfObj?.panels?.FirstOrDefault()?.isAgentRequired == true && ppfObj?.panels?.FirstOrDefault()?.isCompanyListRequired == true)
-                companyId = GlobalInqueryManager.GetCompanyId(inquiryId, siteSettingId);
+                companyId = GlobalInqueryService.GetCompanyId(inquiryId, siteSettingId);
 
             createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId);
 
@@ -90,23 +96,25 @@ namespace Oje.ProposalFormManager.Services
                 try
                 {
                     ProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, inquiryId, proposalFormId);
-                    ProposalFilledFormJsonManager.Create(newForm.Id, foundProposalForm.JsonConfig);
+                    ProposalFilledFormJsonService.Create(newForm.Id, foundProposalForm.JsonConfig);
                     if (ppfObj.panels?.FirstOrDefault()?.hasInquiry == true && companyId > 0)
-                        ProposalFilledFormCompanyManager.Create(inquiryId, siteSettingId, newForm.Id, newForm.Price, companyId, true, loginUserId);
+                        ProposalFilledFormCompanyService.Create(inquiryId, siteSettingId, newForm.Id, newForm.Price, companyId, true, loginUserId);
                     else if (ppfObj.panels?.FirstOrDefault()?.isCompanyListRequired == true)
-                        ProposalFilledFormCompanyManager.Create(form.GetStringIfExist("cIds"), newForm.Id, loginUserId);
+                        ProposalFilledFormCompanyService.Create(form.GetStringIfExist("cIds"), newForm.Id, loginUserId);
 
-                    long ownerUserId = InternalUserManager.CreateUserForProposalFormIfNeeded(form, siteSettingId, loginUserId);
-                    ProposalFilledFormUseManager.Create(loginUserId, ProposalFilledFormUserType.CreateUser, loginUserId, newForm.Id);
+                    long ownerUserId = InternalUserService.CreateUserForProposalFormIfNeeded(form, siteSettingId, loginUserId);
+                    ProposalFilledFormUseService.Create(loginUserId, ProposalFilledFormUserType.CreateUser, loginUserId, newForm.Id);
                     if (ppfObj.panels?.FirstOrDefault().isAgentRequired == true)
-                        ProposalFilledFormUseManager.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id);
-                    ProposalFilledFormUseManager.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id);
-                    if (PaymentMethodManager.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryManager.HasAnyCashDiscount(inquiryId))
-                        ProposalFilledFormDocumentManager.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodManager.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
-                    ProposalFilledFormValueManager.CreateByJsonConfig(ppfObj, newForm.Id, form);
+                        ProposalFilledFormUseService.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id);
+                    ProposalFilledFormUseService.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id);
+                    if (PaymentMethodService.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryService.HasAnyCashDiscount(inquiryId))
+                        ProposalFilledFormDocumentService.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
+                    ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form);
                     createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
 
                     tr.Commit();
+
+                    UserNotificationTrigerService.CreateNotificationForUser(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
                 }
                 catch (Exception)
                 {
@@ -122,7 +130,7 @@ namespace Oje.ProposalFormManager.Services
         {
             foreach (var file in form.Files)
             {
-                UploadedFileManager.UploadNewFile(FileType.ProposalFilledForm, file, loginUserId, siteSettingId, proposalFilledFormId, ".jpg,.png,.pdf,.doc,.docx,.xls", true);
+                UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, file, loginUserId, siteSettingId, proposalFilledFormId, ".jpg,.png,.pdf,.doc,.docx,.xls", true);
             }
         }
 
@@ -131,7 +139,7 @@ namespace Oje.ProposalFormManager.Services
             ProposalFilledForm newItem = new ProposalFilledForm()
             {
                 ProposalFormId = proposalFormId,
-                Price = inquiryId > 0 ? GlobalInqueryManager.GetSumPriceLong(inquiryId, proposalFormId, siteSettingId) : 0,
+                Price = inquiryId > 0 ? GlobalInqueryService.GetSumPriceLong(inquiryId, proposalFormId, siteSettingId) : 0,
                 Status = ProposalFilledFormStatus.New,
                 GlobalInqueryId = inquiryId > 0 ? inquiryId : null,
                 CreateDate = DateTime.Now,
@@ -181,9 +189,9 @@ namespace Oje.ProposalFormManager.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Agent);
             if (ppfObj.panels.FirstOrDefault().isAgentRequired == true && (string.IsNullOrEmpty(form.GetStringIfExist("agentId")) || form.GetStringIfExist("agentId").ToLongReturnZiro() <= 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_Agent);
-            if (ppfObj.panels.FirstOrDefault().hasInquiry == true && ppfObj.panels.FirstOrDefault().isAgentRequired == true && !UserManager.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId))
+            if (ppfObj.panels.FirstOrDefault().hasInquiry == true && ppfObj.panels.FirstOrDefault().isAgentRequired == true && !UserService.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Agent);
-            else if (ppfObj.panels.FirstOrDefault().isAgentRequired == true && !UserManager.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro()))
+            else if (ppfObj.panels.FirstOrDefault().isAgentRequired == true && !UserService.IsValidAgent(form.GetStringIfExist("agentId").ToLongReturnZiro(), siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro()))
                 throw BException.GenerateNewException(BMessages.Please_Select_Agent);
             if (ppfObj.panels.FirstOrDefault().hasInquiry == true && companyId <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
@@ -207,29 +215,29 @@ namespace Oje.ProposalFormManager.Services
                     throw BException.GenerateNewException(BMessages.Invalid_Inquiry);
                 if (db.ProposalFilledForms.Any(t => t.GlobalInqueryId == inQuiryId))
                     throw BException.GenerateNewException(BMessages.Invalid_Inquiry);
-                if (!GlobalInqueryManager.IsValid(inQuiryId, siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro()))
+                if (!GlobalInqueryService.IsValid(inQuiryId, siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro()))
                     throw BException.GenerateNewException(BMessages.Invalid_Inquiry);
-                int companyId = GlobalInqueryManager.GetCompanyId(inQuiryId, siteSettingId);
+                int companyId = GlobalInqueryService.GetCompanyId(inQuiryId, siteSettingId);
                 validateDebitPayment(form, siteSettingId, inQuiryId, companyId);
             }
         }
 
         private void validateDebitPayment(IFormCollection form, int? siteSettingId, long inQuiryId, int companyId)
         {
-            if (PaymentMethodManager.Exist(siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId) && !GlobalInqueryManager.HasAnyCashDiscount(inQuiryId))
+            if (PaymentMethodService.Exist(siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId) && !GlobalInqueryService.HasAnyCashDiscount(inQuiryId))
             {
                 if (!form.Keys.Any(t => t == "payCondation"))
                     throw BException.GenerateNewException(BMessages.Please_Select_PayCondation);
                 int payCondationId = form.GetStringIfExist("payCondation").ToIntReturnZiro();
                 if (payCondationId <= 0)
                     throw BException.GenerateNewException(BMessages.Invalid_PayCondation);
-                if (!PaymentMethodManager.IsValid(payCondationId, siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId))
+                if (!PaymentMethodService.IsValid(payCondationId, siteSettingId, form.GetStringIfExist("fid").ToIntReturnZiro(), companyId))
                     throw BException.GenerateNewException(BMessages.Invalid_PayCondation);
-                var allPaymentMethods = PaymentMethodManager.GetLightList(form.GetStringIfExist("fid").ToIntReturnZiro(), siteSettingId, companyId);
+                var allPaymentMethods = PaymentMethodService.GetLightList(form.GetStringIfExist("fid").ToIntReturnZiro(), siteSettingId, companyId);
                 var foundCurrentPayementMethod = allPaymentMethods.Where(t => t.id == payCondationId.ToString()).FirstOrDefault();
                 if (foundCurrentPayementMethod == null)
                     throw BException.GenerateNewException(BMessages.Invalid_PayCondation);
-                var paymentMetodDetailes = PaymentMethodManager.GetItemDetailes(payCondationId, siteSettingId, inQuiryId, form.GetStringIfExist("fid").ToIntReturnZiro());
+                var paymentMetodDetailes = PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, inQuiryId, form.GetStringIfExist("fid").ToIntReturnZiro());
                 if (paymentMetodDetailes != null && paymentMetodDetailes.checkArr != null && paymentMetodDetailes.checkArr.Count > 0)
                 {
                     List<int> bankIds = new List<int>();
@@ -242,7 +250,7 @@ namespace Oje.ProposalFormManager.Services
                         if (!bankIds.Any(t => t == form.GetStringIfExist(("check[" + i + "].bankId")).ToIntReturnZiro()))
                             bankIds.Add(form.GetStringIfExist(("check[" + i + "].bankId")).ToIntReturnZiro());
                     }
-                    if (!BankManager.IsValid(bankIds))
+                    if (!BankService.IsValid(bankIds))
                         throw BException.GenerateNewException(BMessages.Invalid_Bank);
                 }
                 if (paymentMetodDetailes != null && paymentMetodDetailes.paymentRequreFiles != null && paymentMetodDetailes.paymentRequreFiles.Count > 0)
@@ -287,7 +295,7 @@ namespace Oje.ProposalFormManager.Services
             int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
             if (proposalFormId <= 0)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
-            if (!ProposalFormManager.Exist(proposalFormId, siteSettingId))
+            if (!ProposalFormService.Exist(proposalFormId, siteSettingId))
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
     }

@@ -1,5 +1,5 @@
-﻿using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models.DB;
+﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models.DB;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -12,14 +12,14 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using Oje.AccountManager.Services.EContext;
+using Oje.AccountService.Services.EContext;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class UploadedFileManager : IUploadedFileManager
+    public class UploadedFileService : IUploadedFileService
     {
         readonly AccountDBContext db = null;
-        public UploadedFileManager(AccountDBContext db)
+        public UploadedFileService(AccountDBContext db)
         {
             this.db = db;
         }

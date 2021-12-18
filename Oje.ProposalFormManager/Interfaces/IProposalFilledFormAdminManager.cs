@@ -2,16 +2,16 @@
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
-using Oje.ProposalFormManager.Models.View;
+using Oje.ProposalFormService.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFilledFormAdminManager
+    public interface IProposalFilledFormAdminService
     {
         ApiResult Delete(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         GridResultVM<ProposalFilledFormMainGridResult> GetList(ProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status);

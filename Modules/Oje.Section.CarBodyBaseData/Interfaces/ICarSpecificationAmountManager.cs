@@ -3,7 +3,7 @@ using Oje.Section.CarBodyBaseData.Models.View;
 
 namespace Oje.Section.CarBodyBaseData.Interfaces
 {
-    public interface ICarSpecificationAmountManager
+    public interface ICarSpecificationAmountService
     {
         ApiResult Create(CreateUpdateCarSpecificationAmountVM input);
         ApiResult Delete(int? id);

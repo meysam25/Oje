@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.DB;
-using Oje.FireInsuranceManager.Services.EContext;
+using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.DB;
+using Oje.FireInsuranceService.Services.EContext;
 using Oje.Infrastructure.Enums;
 using System;
 using System.Collections.Generic;
@@ -9,12 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class FireInsuranceCoverageCityDangerLevelManager: IFireInsuranceCoverageCityDangerLevelManager
+    public class FireInsuranceCoverageCityDangerLevelService: IFireInsuranceCoverageCityDangerLevelService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        public FireInsuranceCoverageCityDangerLevelManager(FireInsuranceManagerDBContext db)
+        readonly FireInsuranceServiceDBContext db = null;
+        public FireInsuranceCoverageCityDangerLevelService(FireInsuranceServiceDBContext db)
         {
             this.db = db;
         }

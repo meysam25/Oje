@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class SiteSettingManager: ISiteSettingManager
+    public class SiteSettingService: ISiteSettingService
     {
         readonly InquiryBaseDataDBContext db = null;
-        public SiteSettingManager(InquiryBaseDataDBContext db)
+        public SiteSettingService(InquiryBaseDataDBContext db)
         {
             this.db = db;
         }

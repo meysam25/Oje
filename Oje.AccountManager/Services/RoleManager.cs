@@ -1,6 +1,6 @@
-﻿using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models;
-using Oje.AccountManager.Models.DB;
+﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models;
+using Oje.AccountService.Models.DB;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -9,20 +9,20 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Oje.AccountManager.Services.EContext;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Services.EContext;
+using Oje.AccountService.Models.View;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class RoleManager : IRoleManager
+    public class RoleService : IRoleService
     {
         readonly AccountDBContext db = null;
-        readonly IProposalFormManager proposalFormManager = null;
+        readonly IProposalFormService proposalFormService = null;
         const int minusRoleValue = 100;
-        public RoleManager(AccountDBContext db, IProposalFormManager proposalFormManager)
+        public RoleService(AccountDBContext db, IProposalFormService proposalFormService)
         {
             this.db = db;
-            this.proposalFormManager = proposalFormManager;
+            this.proposalFormService = proposalFormService;
         }
 
         public ApiResult Create(CreateUpdateRoleVM input)
@@ -69,7 +69,7 @@ namespace Oje.AccountManager.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Value, ApiResultErrorCode.ValidationError);
             if (input.formIds != null && input.formIds.Count > 0)
                 foreach (var formId in input.formIds)
-                    if (!proposalFormManager.Exist(input.sitesettingId, formId))
+                    if (!proposalFormService.Exist(input.sitesettingId, formId))
                         throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
 
@@ -249,7 +249,7 @@ namespace Oje.AccountManager.Services
                 throw BException.GenerateNewException(BMessages.Dublicate_Title, ApiResultErrorCode.ValidationError);
             if (input.formIds != null && input.formIds.Count > 0)
                 foreach (var formId in input.formIds)
-                    if (!proposalFormManager.Exist(siteSettingId, formId))
+                    if (!proposalFormService.Exist(siteSettingId, formId))
                         throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
 
         }
@@ -285,7 +285,7 @@ namespace Oje.AccountManager.Services
 
             return db.Roles
                 .Where(t => t.Id == id && (t.SiteSettingId == loginUserVM.siteSettingId || t.SiteSettingId == null) && t.Value <= roleValue)
-                .Select(t => new 
+                .Select(t => new
                 {
                     id = t.Id,
                     name = t.Name,
@@ -437,6 +437,19 @@ namespace Oje.AccountManager.Services
             db.SaveChanges();
 
             return foundItem.Id;
+        }
+
+        public List<RoleUsersVM> GetUsersBy(List<int> roleIds, int? siteSettingId, int count)
+        {
+            return db.UserRoles
+                .Where(t => roleIds.Contains(t.RoleId))
+                .Select(t => t.User)
+                .Where(t => t.SiteSettingId == siteSettingId)
+                .Select(t => new RoleUsersVM
+                {
+                    userId = t.Id,
+                    userFullname = t.Firstname + " " + t.Lastname
+                }).Take(count).ToList();
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Oje.FireInsuranceManager.Models.View
+namespace Oje.FireInsuranceService.Models.View
 {
     public class FireInsuranceInquiryVM
     {

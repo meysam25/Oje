@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,10 +20,10 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CarExteraDiscountCategoryController: Controller
     {
-        readonly ICarExteraDiscountCategoryManager CarExteraDiscountCategoryManager = null;
-        public CarExteraDiscountCategoryController(ICarExteraDiscountCategoryManager CarExteraDiscountCategoryManager)
+        readonly ICarExteraDiscountCategoryService CarExteraDiscountCategoryService = null;
+        public CarExteraDiscountCategoryController(ICarExteraDiscountCategoryService CarExteraDiscountCategoryService)
         {
-            this.CarExteraDiscountCategoryManager = CarExteraDiscountCategoryManager;
+            this.CarExteraDiscountCategoryService = CarExteraDiscountCategoryService;
         }
 
         [AreaConfig(Title = "گروه بندی تخفیف اضافه", Icon = "fa-object-group", IsMainMenuItem = true)]
@@ -47,42 +47,42 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCarExteraDiscountCategoryVM input)
         {
-            return Json(CarExteraDiscountCategoryManager.Create(input));
+            return Json(CarExteraDiscountCategoryService.Create(input));
         }
 
         [AreaConfig(Title = "حذف گروه بندی تخفیف اضافه", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CarExteraDiscountCategoryManager.Delete(input?.id));
+            return Json(CarExteraDiscountCategoryService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک گروه بندی تخفیف اضافه", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CarExteraDiscountCategoryManager.GetById(input?.id));
+            return Json(CarExteraDiscountCategoryService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  گروه بندی تخفیف اضافه", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCarExteraDiscountCategoryVM input)
         {
-            return Json(CarExteraDiscountCategoryManager.Update(input));
+            return Json(CarExteraDiscountCategoryService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست گروه بندی تخفیف اضافه", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarExteraDiscountCategoryMainGrid searchInput)
         {
-            return Json(CarExteraDiscountCategoryManager.GetList(searchInput));
+            return Json(CarExteraDiscountCategoryService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CarExteraDiscountCategoryMainGrid searchInput)
         {
-            var result = CarExteraDiscountCategoryManager.GetList(searchInput);
+            var result = CarExteraDiscountCategoryService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

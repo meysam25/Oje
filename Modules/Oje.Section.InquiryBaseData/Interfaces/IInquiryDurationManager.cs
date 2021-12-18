@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IInquiryDurationManager
+    public interface IInquiryDurationService
     {
         ApiResult Create(CreateUpdateInquiryDurationVM input);
         ApiResult Delete(int? id);

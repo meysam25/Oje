@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,16 +20,16 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     [CustomeAuthorizeFilter]
     public class InsuranceContractValidUserForFullDebitController: Controller
     {
-        readonly IInsuranceContractValidUserForFullDebitManager InsuranceContractValidUserForFullDebitManager = null;
-        readonly IInsuranceContractManager InsuranceContractManager = null;
+        readonly IInsuranceContractValidUserForFullDebitService InsuranceContractValidUserForFullDebitService = null;
+        readonly IInsuranceContractService InsuranceContractService = null;
         public InsuranceContractValidUserForFullDebitController
             (
-                IInsuranceContractValidUserForFullDebitManager InsuranceContractValidUserForFullDebitManager,
-                IInsuranceContractManager InsuranceContractManager
+                IInsuranceContractValidUserForFullDebitService InsuranceContractValidUserForFullDebitService,
+                IInsuranceContractService InsuranceContractService
             )
         {
-            this.InsuranceContractValidUserForFullDebitManager = InsuranceContractValidUserForFullDebitManager;
-            this.InsuranceContractManager = InsuranceContractManager;
+            this.InsuranceContractValidUserForFullDebitService = InsuranceContractValidUserForFullDebitService;
+            this.InsuranceContractService = InsuranceContractService;
         }
 
         [AreaConfig(Title = "فروش از دم قسط", Icon = "fa-credit-card", IsMainMenuItem = true)]
@@ -53,49 +53,49 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInsuranceContractValidUserForFullDebitVM input)
         {
-            return Json(InsuranceContractValidUserForFullDebitManager.Create(input));
+            return Json(InsuranceContractValidUserForFullDebitService.Create(input));
         }
 
         [AreaConfig(Title = "افزودن فروش از دم قسط از روی فایل اکسل", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult CreateFromXcel([FromForm] GlobalExcelFile input)
         {
-            return Json(InsuranceContractValidUserForFullDebitManager.CreateFromExcel(input));
+            return Json(InsuranceContractValidUserForFullDebitService.CreateFromExcel(input));
         }
 
         [AreaConfig(Title = "حذف فروش از دم قسط", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractValidUserForFullDebitManager.Delete(input?.id));
+            return Json(InsuranceContractValidUserForFullDebitService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک فروش از دم قسط", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractValidUserForFullDebitManager.GetById(input?.id));
+            return Json(InsuranceContractValidUserForFullDebitService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  فروش از دم قسط", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInsuranceContractValidUserForFullDebitVM input)
         {
-            return Json(InsuranceContractValidUserForFullDebitManager.Update(input));
+            return Json(InsuranceContractValidUserForFullDebitService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست فروش از دم قسط", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractValidUserForFullDebitMainGrid searchInput)
         {
-            return Json(InsuranceContractValidUserForFullDebitManager.GetList(searchInput));
+            return Json(InsuranceContractValidUserForFullDebitService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InsuranceContractValidUserForFullDebitMainGrid searchInput)
         {
-            var result = InsuranceContractValidUserForFullDebitManager.GetList(searchInput);
+            var result = InsuranceContractValidUserForFullDebitService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -110,7 +110,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public ActionResult GetContractList()
         {
-            return Json(InsuranceContractManager.GetLightList());
+            return Json(InsuranceContractService.GetLightList());
         }
     }
 }

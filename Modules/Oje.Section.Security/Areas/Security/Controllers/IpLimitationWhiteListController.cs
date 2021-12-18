@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,12 +16,12 @@ namespace Oje.Section.Security.Areas.Security.Controllers
     [CustomeAuthorizeFilter]
     public class IpLimitationWhiteListController: Controller
     {
-        readonly IIpLimitationWhiteListManager IpLimitationWhiteListManager = null;
+        readonly IIpLimitationWhiteListService IpLimitationWhiteListService = null;
         public IpLimitationWhiteListController(
-                IIpLimitationWhiteListManager IpLimitationWhiteListManager
+                IIpLimitationWhiteListService IpLimitationWhiteListService
             )
         {
-            this.IpLimitationWhiteListManager = IpLimitationWhiteListManager;
+            this.IpLimitationWhiteListService = IpLimitationWhiteListService;
         }
 
         [AreaConfig(Title = "ای پی مجاز", Icon = "fa-network-wired", IsMainMenuItem = true)]
@@ -45,42 +45,42 @@ namespace Oje.Section.Security.Areas.Security.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateIpLimitationWhiteListVM input)
         {
-            return Json(IpLimitationWhiteListManager.Create(input));
+            return Json(IpLimitationWhiteListService.Create(input));
         }
 
         [AreaConfig(Title = "حذف ای پی مجاز", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(IpLimitationWhiteListManager.Delete(input?.id));
+            return Json(IpLimitationWhiteListService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک ای پی مجاز", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(IpLimitationWhiteListManager.GetById(input?.id));
+            return Json(IpLimitationWhiteListService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  ای پی مجاز", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateIpLimitationWhiteListVM input)
         {
-            return Json(IpLimitationWhiteListManager.Update(input));
+            return Json(IpLimitationWhiteListService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست ای پی مجاز", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] IpLimitationWhiteListMainGrid searchInput)
         {
-            return Json(IpLimitationWhiteListManager.GetList(searchInput));
+            return Json(IpLimitationWhiteListService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] IpLimitationWhiteListMainGrid searchInput)
         {
-            var result = IpLimitationWhiteListManager.GetList(searchInput);
+            var result = IpLimitationWhiteListService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

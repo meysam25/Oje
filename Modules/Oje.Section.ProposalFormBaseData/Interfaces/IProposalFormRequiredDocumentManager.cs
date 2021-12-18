@@ -3,7 +3,7 @@ using Oje.Section.ProposalFormBaseData.Models.View;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
-    public interface IProposalFormRequiredDocumentManager
+    public interface IProposalFormRequiredDocumentService
     {
         ApiResult Create(CreateUpdateProposalFormRequiredDocumentVM input, long? userId);
         ApiResult Delete(int? id);

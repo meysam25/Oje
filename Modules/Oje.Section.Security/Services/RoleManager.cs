@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Oje.Section.Security.Services
 {
-    public class RoleManager : IRoleManager
+    public class RoleService : IRoleService
     {
         readonly SecurityDBContext db = null;
-        public RoleManager(SecurityDBContext db)
+        public RoleService(SecurityDBContext db)
         {
             this.db = db;
         }

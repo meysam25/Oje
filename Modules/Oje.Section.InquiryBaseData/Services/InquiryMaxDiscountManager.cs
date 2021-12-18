@@ -12,25 +12,25 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class InquiryMaxDiscountManager : IInquiryMaxDiscountManager
+    public class InquiryMaxDiscountService : IInquiryMaxDiscountService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        public InquiryMaxDiscountManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        public InquiryMaxDiscountService(
                 InquiryBaseDataDBContext db,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                IProposalFormManager ProposalFormManager
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService
             )
         {
-            this.SiteSettingManager = SiteSettingManager;
+            this.SiteSettingService = SiteSettingService;
             this.db = db;
-            this.ProposalFormManager = ProposalFormManager;
+            this.ProposalFormService = ProposalFormService;
         }
 
         public ApiResult Create(CreateUpdateInquiryMaxDiscountVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createValidation(input, siteSettingId);
 
             var newItem = new InquiryMaxDiscount()
@@ -68,7 +68,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Percent);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormManager.Exist(input.formId.ToIntReturnZiro(), siteSettingId))
+            if (!ProposalFormService.Exist(input.formId.ToIntReturnZiro(), siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.cIds == null || input.cIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
@@ -78,7 +78,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var foundItem = db.InquiryMaxDiscounts.Include(t => t.InquiryMaxDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundItem == null)
@@ -96,7 +96,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public CreateUpdateInquiryMaxDiscountVM GetById(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             return db.InquiryMaxDiscounts
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
                 .Select(t => new CreateUpdateInquiryMaxDiscountVM
@@ -114,7 +114,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public GridResultVM<InquiryMaxDiscountMainGridResultVM> GetList(InquiryMaxDiscountMainGrid searchInput)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             if (searchInput == null)
                 searchInput = new InquiryMaxDiscountMainGrid();
 
@@ -163,7 +163,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Update(CreateUpdateInquiryMaxDiscountVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createValidation(input, siteSettingId);
 
             var foundItem = db.InquiryMaxDiscounts.Include(t => t.InquiryMaxDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();

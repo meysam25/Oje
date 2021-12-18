@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,10 +20,10 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class FireInsuranceBuildingAgeController: Controller
     {
-        readonly IFireInsuranceBuildingAgeManager FireInsuranceBuildingAgeManager = null;
-        public FireInsuranceBuildingAgeController(IFireInsuranceBuildingAgeManager FireInsuranceBuildingAgeManager)
+        readonly IFireInsuranceBuildingAgeService FireInsuranceBuildingAgeService = null;
+        public FireInsuranceBuildingAgeController(IFireInsuranceBuildingAgeService FireInsuranceBuildingAgeService)
         {
-            this.FireInsuranceBuildingAgeManager = FireInsuranceBuildingAgeManager;
+            this.FireInsuranceBuildingAgeService = FireInsuranceBuildingAgeService;
         }
 
         [AreaConfig(Title = "سن بنا", Icon = "fa-building", IsMainMenuItem = true)]
@@ -47,42 +47,42 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateFireInsuranceBuildingAgeVM input)
         {
-            return Json(FireInsuranceBuildingAgeManager.Create(input));
+            return Json(FireInsuranceBuildingAgeService.Create(input));
         }
 
         [AreaConfig(Title = "حذف سن بنا", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceBuildingAgeManager.Delete(input?.id));
+            return Json(FireInsuranceBuildingAgeService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده یک سن بنا", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceBuildingAgeManager.GetById(input?.id));
+            return Json(FireInsuranceBuildingAgeService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  سن بنا", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateFireInsuranceBuildingAgeVM input)
         {
-            return Json(FireInsuranceBuildingAgeManager.Update(input));
+            return Json(FireInsuranceBuildingAgeService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست سن بنا", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceBuildingAgeMainGrid searchInput)
         {
-            return Json(FireInsuranceBuildingAgeManager.GetList(searchInput));
+            return Json(FireInsuranceBuildingAgeService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] FireInsuranceBuildingAgeMainGrid searchInput)
         {
-            var result = FireInsuranceBuildingAgeManager.GetList(searchInput);
+            var result = FireInsuranceBuildingAgeService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

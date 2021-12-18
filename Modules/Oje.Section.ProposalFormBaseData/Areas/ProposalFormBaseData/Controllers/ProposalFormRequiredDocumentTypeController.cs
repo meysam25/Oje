@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,18 +16,18 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class ProposalFormRequiredDocumentTypeController: Controller
     {
-        readonly IProposalFormRequiredDocumentTypeManager ProposalFormRequiredDocumentTypeManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
+        readonly IProposalFormRequiredDocumentTypeService ProposalFormRequiredDocumentTypeService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly ISiteSettingService SiteSettingService = null;
         public ProposalFormRequiredDocumentTypeController(
-            IProposalFormRequiredDocumentTypeManager ProposalFormRequiredDocumentTypeManager, 
-            IProposalFormManager ProposalFormManager, 
-            ISiteSettingManager SiteSettingManager
+            IProposalFormRequiredDocumentTypeService ProposalFormRequiredDocumentTypeService, 
+            IProposalFormService ProposalFormService, 
+            ISiteSettingService SiteSettingService
             )
         {
-            this.ProposalFormRequiredDocumentTypeManager = ProposalFormRequiredDocumentTypeManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.SiteSettingManager = SiteSettingManager;
+            this.ProposalFormRequiredDocumentTypeService = ProposalFormRequiredDocumentTypeService;
+            this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "نوع مدارک مورد نیاز", Icon = "fa-object-group", IsMainMenuItem = true)]
@@ -51,42 +51,42 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProposalFormRequiredDocumentTypeVM input)
         {
-            return Json(ProposalFormRequiredDocumentTypeManager.Create(input));
+            return Json(ProposalFormRequiredDocumentTypeService.Create(input));
         }
 
         [AreaConfig(Title = "حذف نوع مدارک مورد نیاز", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormRequiredDocumentTypeManager.Delete(input?.id));
+            return Json(ProposalFormRequiredDocumentTypeService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نوع مدارک مورد نیاز", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormRequiredDocumentTypeManager.GetById(input?.id));
+            return Json(ProposalFormRequiredDocumentTypeService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نوع مدارک مورد نیاز", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormRequiredDocumentTypeVM input)
         {
-            return Json(ProposalFormRequiredDocumentTypeManager.Update(input));
+            return Json(ProposalFormRequiredDocumentTypeService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نوع مدارک مورد نیاز", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormRequiredDocumentTypeMainGrid searchInput)
         {
-            return Json(ProposalFormRequiredDocumentTypeManager.GetList(searchInput));
+            return Json(ProposalFormRequiredDocumentTypeService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ProposalFormRequiredDocumentTypeMainGrid searchInput)
         {
-            var result = ProposalFormRequiredDocumentTypeManager.GetList(searchInput);
+            var result = ProposalFormRequiredDocumentTypeService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -100,14 +100,14 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public ActionResult GetSiteList()
         {
-            return Json(SiteSettingManager.GetLightList());
+            return Json(SiteSettingService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Oje.Section.Financial
                     b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
             );
 
-            services.AddScoped<IBankManager, BankManager>();
+            services.AddScoped<IBankService, BankService>();
         }
     }
 }

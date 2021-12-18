@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.DB;
-using Oje.FireInsuranceManager.Services.EContext;
+using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.DB;
+using Oje.FireInsuranceService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -11,12 +11,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class FireInsuranceTypeOfActivityManager: IFireInsuranceTypeOfActivityManager
+    public class FireInsuranceTypeOfActivityService: IFireInsuranceTypeOfActivityService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        public FireInsuranceTypeOfActivityManager(FireInsuranceManagerDBContext db)
+        readonly FireInsuranceServiceDBContext db = null;
+        public FireInsuranceTypeOfActivityService(FireInsuranceServiceDBContext db)
         {
             this.db = db;
         }

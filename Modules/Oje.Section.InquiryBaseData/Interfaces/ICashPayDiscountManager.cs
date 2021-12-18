@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface ICashPayDiscountManager
+    public interface ICashPayDiscountService
     {
         ApiResult Create(CreateUpdateCashPayDiscountVM input);
         ApiResult Delete(int? id);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarThirdBaseData.Interfaces
 {
-    public interface IThirdPartyDriverNoDamageDiscountHistoryManager
+    public interface IThirdPartyDriverNoDamageDiscountHistoryService
     {
         ApiResult Create(CreateUpdateThirdPartyDriverNoDamageDiscountHistoryVM input);
         ApiResult Delete(int? id);

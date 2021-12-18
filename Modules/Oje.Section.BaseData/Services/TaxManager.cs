@@ -12,10 +12,10 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class TaxManager : ITaxManager
+    public class TaxService : ITaxService
     {
         readonly BaseDataDBContext db = null;
-        public TaxManager(
+        public TaxService(
                 BaseDataDBContext db
             )
         {

@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class CompanyManager: ICompanyManager
+    public class CompanyService: ICompanyService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        public CompanyManager(ProposalFormBaseDataDBContext db)
+        public CompanyService(ProposalFormBaseDataDBContext db)
         {
             this.db = db;
         }

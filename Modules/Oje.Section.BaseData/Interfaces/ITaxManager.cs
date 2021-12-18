@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface ITaxManager
+    public interface ITaxService
     {
         ApiResult Create(CreateUpdateTaxVM input);
         ApiResult Delete(int? id);

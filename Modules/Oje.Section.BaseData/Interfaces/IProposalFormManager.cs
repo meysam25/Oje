@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface IProposalFormManager
+    public interface IProposalFormService
     {
         object GetSelect2List(Select2SearchVM searchInput);
     }

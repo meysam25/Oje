@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Oje.Section.FireBaseData.Services
 {
-    public class CompanyManager : ICompanyManager
+    public class CompanyService : ICompanyService
     {
         readonly FireBaseDataDBContext db = null;
-        public CompanyManager(FireBaseDataDBContext db)
+        public CompanyService(FireBaseDataDBContext db)
         {
             this.db = db;
         }

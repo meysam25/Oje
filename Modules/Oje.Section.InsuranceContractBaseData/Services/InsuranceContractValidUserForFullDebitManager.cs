@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -15,31 +15,31 @@ using Oje.Section.InsuranceContractBaseData.Services.EContext;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
-    public class InsuranceContractValidUserForFullDebitManager : IInsuranceContractValidUserForFullDebitManager
+    public class InsuranceContractValidUserForFullDebitService : IInsuranceContractValidUserForFullDebitService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
-        readonly IInsuranceContractManager InsuranceContractManager = null;
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        public InsuranceContractValidUserForFullDebitManager
+        readonly IInsuranceContractService InsuranceContractService = null;
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        public InsuranceContractValidUserForFullDebitService
             (
                 InsuranceContractBaseDataDBContext db,
-                IInsuranceContractManager InsuranceContractManager,
-                IUserManager UserManager,
-                ISiteSettingManager SiteSettingManager
+                IInsuranceContractService InsuranceContractService,
+                IUserService UserService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.UserManager = UserManager;
-            this.InsuranceContractManager = InsuranceContractManager;
-            this.SiteSettingManager = SiteSettingManager;
+            this.UserService = UserService;
+            this.InsuranceContractService = InsuranceContractService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractValidUserForFullDebitVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            List<long> userChilds = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             CreateValidation(input, siteSettingId, loginUserId, userChilds);
 
@@ -69,7 +69,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (input.insuranceContractId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
-            if (!InsuranceContractManager.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, userChilds))
+            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, userChilds))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (string.IsNullOrEmpty(input.mobile))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
@@ -99,9 +99,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(long? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            List<long> userChilds = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             var foundItem = db.InsuranceContractValidUserForFullDebits.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (userChilds == null || userChilds.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
@@ -115,9 +115,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public CreateUpdateInsuranceContractValidUserForFullDebitVM GetById(long? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            List<long> userChilds = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             return db.InsuranceContractValidUserForFullDebits
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (userChilds == null || userChilds.Contains(t.CreateUserId)))
@@ -137,9 +137,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             if (searchInput == null)
                 searchInput = new InsuranceContractValidUserForFullDebitMainGrid();
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            List<long> userChilds = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             var qureResult = db.InsuranceContractValidUserForFullDebits.Where(t => t.SiteSettingId == siteSettingId && (userChilds == null || userChilds.Contains(t.CreateUserId)));
 
@@ -197,9 +197,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(CreateUpdateInsuranceContractValidUserForFullDebitVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            List<long> userChilds = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             CreateValidation(input, siteSettingId, loginUserId, userChilds);
 

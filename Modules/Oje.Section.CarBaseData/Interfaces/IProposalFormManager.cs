@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarBaseData.Interfaces
 {
-    public interface IProposalFormManager
+    public interface IProposalFormService
     {
         object GetSelect2List(Select2SearchVM searchInput);
     }

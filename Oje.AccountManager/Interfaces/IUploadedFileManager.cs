@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Models.DB;
+﻿using Oje.AccountService.Models.DB;
 using Oje.Infrastructure.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Interfaces
+namespace Oje.AccountService.Interfaces
 {
-    public interface IUploadedFileManager
+    public interface IUploadedFileService
     {
         string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null);
         UploadedFile GetFile(string fn, long? userId);

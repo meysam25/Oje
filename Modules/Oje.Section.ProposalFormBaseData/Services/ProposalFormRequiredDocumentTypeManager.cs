@@ -14,10 +14,10 @@ using Oje.Section.ProposalFormBaseData.Models.View;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class ProposalFormRequiredDocumentTypeManager : IProposalFormRequiredDocumentTypeManager
+    public class ProposalFormRequiredDocumentTypeService : IProposalFormRequiredDocumentTypeService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        public ProposalFormRequiredDocumentTypeManager(ProposalFormBaseDataDBContext db)
+        public ProposalFormRequiredDocumentTypeService(ProposalFormBaseDataDBContext db)
         {
             this.db = db;
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarBodyBaseData.Interfaces
 {
-    public interface ICarBodyCreateDatePercentManager
+    public interface ICarBodyCreateDatePercentService
     {
         ApiResult Create(CreateUpdateCarBodyCreateDatePercentVM input);
         ApiResult Delete(int? id);

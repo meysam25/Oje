@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,10 +20,10 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CarTypeController: Controller
     {
-        readonly ICarTypeManager CarTypeManager = null;
-        public CarTypeController(ICarTypeManager CarTypeManager)
+        readonly ICarTypeService CarTypeService = null;
+        public CarTypeController(ICarTypeService CarTypeService)
         {
-            this.CarTypeManager = CarTypeManager;
+            this.CarTypeService = CarTypeService;
         }
 
         [AreaConfig(Title = "کاربری خودرو", Icon = "fa-truck-moving", IsMainMenuItem = true)]
@@ -47,42 +47,42 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCarTypeVM input)
         {
-            return Json(CarTypeManager.Create(input));
+            return Json(CarTypeService.Create(input));
         }
 
         [AreaConfig(Title = "حذف کاربری خودرو", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CarTypeManager.Delete(input?.id));
+            return Json(CarTypeService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک کاربری خودرو", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CarTypeManager.GetById(input?.id));
+            return Json(CarTypeService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  کاربری خودرو", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCarTypeVM input)
         {
-            return Json(CarTypeManager.Update(input));
+            return Json(CarTypeService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarTypeMainGrid searchInput)
         {
-            return Json(CarTypeManager.GetList(searchInput));
+            return Json(CarTypeService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CarTypeMainGrid searchInput)
         {
-            var result = CarTypeManager.GetList(searchInput);
+            var result = CarTypeService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

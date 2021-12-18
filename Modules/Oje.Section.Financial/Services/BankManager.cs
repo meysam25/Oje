@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -15,16 +15,16 @@ using Oje.Section.Financial.Interfaces;
 
 namespace Oje.Section.Financial.Services
 {
-    public class BankManager : IBankManager
+    public class BankService : IBankService
     {
-        readonly IUploadedFileManager uploadedFileManager = null;
+        readonly IUploadedFileService uploadedFileService = null;
         readonly FinancialDBContext db = null;
-        public BankManager(
-                IUploadedFileManager uploadedFileManager,
+        public BankService(
+                IUploadedFileService uploadedFileService,
                 FinancialDBContext db
             )
         {
-            this.uploadedFileManager = uploadedFileManager;
+            this.uploadedFileService = uploadedFileService;
             this.db = db;
         }
 
@@ -44,7 +44,7 @@ namespace Oje.Section.Financial.Services
 
             if (input.minPic != null && input.minPic.Length > 0)
             {
-                newItem.Pic = uploadedFileManager.UploadNewFile(FileType.BankLogo, input.minPic, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.Pic = uploadedFileService.UploadNewFile(FileType.BankLogo, input.minPic, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 
@@ -142,7 +142,7 @@ namespace Oje.Section.Financial.Services
 
             if (input.minPic != null && input.minPic.Length > 0)
             {
-                foundItem.Pic = uploadedFileManager.UploadNewFile(FileType.BankLogo, input.minPic, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.Pic = uploadedFileService.UploadNewFile(FileType.BankLogo, input.minPic, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 

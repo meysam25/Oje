@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -15,16 +15,16 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class SiteSettingController : Controller
     {
-        readonly Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly Interfaces.IUserManager UserManager = null;
+        readonly Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly Interfaces.IUserService UserService = null;
 
         public SiteSettingController(
-                Interfaces.ISiteSettingManager SiteSettingManager,
-                Interfaces.IUserManager UserManager
+                Interfaces.ISiteSettingService SiteSettingService,
+                Interfaces.IUserService UserService
             )
         {
-            this.SiteSettingManager = SiteSettingManager;
-            this.UserManager = UserManager;
+            this.SiteSettingService = SiteSettingService;
+            this.UserService = UserService;
         }
 
         [AreaConfig(Title = "تنظیمات", Icon = "fa-wrench", IsMainMenuItem = true)]
@@ -48,42 +48,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateSiteSettingVM input)
         {
-            return Json(SiteSettingManager.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(SiteSettingService.Create(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "حذف تنظیمات", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(SiteSettingManager.Delete(input?.id));
+            return Json(SiteSettingService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تنظیمات", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(SiteSettingManager.GetById(input?.id));
+            return Json(SiteSettingService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تنظیمات", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateSiteSettingVM input)
         {
-            return Json(SiteSettingManager.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(SiteSettingService.Update(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست تنظیمات", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] SiteSettingMainGrid searchInput)
         {
-            return Json(SiteSettingManager.GetList(searchInput));
+            return Json(SiteSettingService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] SiteSettingMainGrid searchInput)
         {
-            var result = SiteSettingManager.GetList(searchInput);
+            var result = SiteSettingService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -97,7 +97,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpGet]
         public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(UserManager.GetSelect2List(searchInput));
+            return Json(UserService.GetSelect2List(searchInput));
         }
     }
 }

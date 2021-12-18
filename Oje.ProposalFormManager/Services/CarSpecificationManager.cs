@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class CarSpecificationManager: ICarSpecificationManager
+    public class CarSpecificationService: ICarSpecificationService
     {
         readonly ProposalFormDBContext db = null;
-        public CarSpecificationManager(ProposalFormDBContext db)
+        public CarSpecificationService(ProposalFormDBContext db)
         {
             this.db = db;
         }

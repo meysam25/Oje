@@ -1,0 +1,80 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models.View;
+using Oje.Infrastructure;
+using Oje.Infrastructure.Filters;
+using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Oje.Section.Account.Areas.UserAccount.Controllers
+{
+    [Area("UserAccount")]
+    [Route("[Area]/[Controller]/[Action]")]
+    [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "نوتیفیکیشن")]
+    [CustomeAuthorizeFilter]
+    public class UserNotificationController: Controller
+    {
+        readonly IUserNotificationService UserNotificationService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+
+        public UserNotificationController(
+                IUserNotificationService UserNotificationService,
+                ISiteSettingService SiteSettingService
+            )
+        {
+            this.UserNotificationService = UserNotificationService;
+            this.SiteSettingService = SiteSettingService;
+        }
+
+        [AreaConfig(Title = "نوتیفیکیشن", Icon = "fa-info", IsMainMenuItem = true)]
+        [HttpGet]
+        public IActionResult Index()
+        {
+            ViewBag.Title = "نوتیفیکیشن";
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserNotification", new { area = "UserAccount" });
+            return View();
+        }
+
+        [AreaConfig(Title = "تنظیمات صفحه لیست نوتیفیکیشن", Icon = "fa-cog")]
+        [HttpPost]
+        public IActionResult GetJsonConfig()
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "UserNotification")));
+        }
+
+        [AreaConfig(Title = "مشاهده نوتیفیکیشن", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetById([FromForm] string id)
+        {
+            return Json(UserNotificationService.GetBy(id, HttpContext.GetLoginUserId()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست نوتیفیکیشن", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetList([FromForm] UserNotificationMainGrid searchInput)
+        {
+            return Json(UserNotificationService.GetList(searchInput, HttpContext.GetLoginUserId()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
+        [HttpPost]
+        public ActionResult Export([FromForm] UserNotificationMainGrid searchInput)
+        {
+            var result = UserNotificationService.GetList(searchInput, HttpContext.GetLoginUserId()?.UserId, SiteSettingService.GetSiteSetting()?.Id);
+            if (result == null || result.data == null || result.data.Count == 0)
+                return NotFound();
+            var byteResult = ExportToExcel.Export(result.data);
+            if (byteResult == null || byteResult.Length == 0)
+                return NotFound();
+
+            return Json(Convert.ToBase64String(byteResult));
+        }
+    }
+}

@@ -1,6 +1,6 @@
-﻿using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models.DB;
-using Oje.AccountManager.Models.SP;
+﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models.DB;
+using Oje.AccountService.Models.SP;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -12,32 +12,32 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Oje.AccountManager.Services.EContext;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Services.EContext;
+using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Models.PageForms;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class UserManager : IUserManager
+    public class UserService : IUserService
     {
         readonly AccountDBContext db = null;
         readonly IHttpContextAccessor httpContextAccessor = null;
-        readonly IUploadedFileManager uploadedFileManager = null;
-        readonly IRoleManager RoleManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        public UserManager(
+        readonly IUploadedFileService uploadedFileService = null;
+        readonly IRoleService RoleService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        public UserService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor,
-                IUploadedFileManager uploadedFileManager,
-                IRoleManager RoleManager,
-                ISiteSettingManager SiteSettingManager
+                IUploadedFileService uploadedFileService,
+                IRoleService RoleService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
             this.httpContextAccessor = httpContextAccessor;
-            this.uploadedFileManager = uploadedFileManager;
-            this.RoleManager = RoleManager;
-            this.SiteSettingManager = SiteSettingManager;
+            this.uploadedFileService = uploadedFileService;
+            this.RoleService = RoleService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         //private void LoginValidation(LoginVM input)
@@ -244,7 +244,7 @@ namespace Oje.AccountManager.Services
                     db.SaveChanges();
 
                     if (input.userPic != null && input.userPic.Length > 0)
-                        newUser.UserPic = uploadedFileManager.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, newUser.Id, ".png,.jpg,.jpeg", true);
+                        newUser.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, newUser.Id, ".png,.jpg,.jpeg", true);
 
                     foreach (var roleId in input.roleIds)
                         db.Entry(new UserRole() { RoleId = roleId, UserId = newUser.Id }).State = EntityState.Added;
@@ -400,7 +400,7 @@ namespace Oje.AccountManager.Services
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.Encrypt();
                     if (input.userPic != null && input.userPic.Length > 0)
-                        foundItem.UserPic = uploadedFileManager.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, foundItem.Id, ".png,.jpg,.jpeg", true);
+                        foundItem.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, foundItem.Id, ".png,.jpg,.jpeg", true);
 
                     foreach (var ur in foundItem.UserRoles)
                         db.Entry(ur).State = EntityState.Deleted;
@@ -425,10 +425,10 @@ namespace Oje.AccountManager.Services
             }
         }
 
-        public GridResultVM<AdminUserGridResult> GetList(UserManagerMainGrid searchInput)
+        public GridResultVM<AdminUserGridResult> GetList(UserServiceMainGrid searchInput)
         {
             if (searchInput == null)
-                searchInput = new UserManagerMainGrid();
+                searchInput = new UserServiceMainGrid();
 
             var qureResult = db.Users.AsQueryable();
 
@@ -563,7 +563,7 @@ namespace Oje.AccountManager.Services
                     db.SaveChanges();
 
                     if (input.userPic != null && input.userPic.Length > 0)
-                        newUser.UserPic = uploadedFileManager.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, newUser.Id, ".png,.jpg,.jpeg", true);
+                        newUser.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, newUser.Id, ".png,.jpg,.jpeg", true);
 
                     foreach (var roleId in input.roleIds)
                         db.Entry(new UserRole() { RoleId = roleId, UserId = newUser.Id }).State = EntityState.Added;
@@ -647,10 +647,10 @@ namespace Oje.AccountManager.Services
             if (!string.IsNullOrEmpty(input.nationalCode) && db.Users.Any(t => t.Nationalcode == input.nationalCode && t.Id != input.id && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_NationalCode);
 
-            var loginUserMaxRoleValue = RoleManager.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
+            var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
             foreach (var rid in input.roleIds)
             {
-                var roleValue = RoleManager.GetRoleValueByRoleId(rid, siteSettingId);
+                var roleValue = RoleService.GetRoleValueByRoleId(rid, siteSettingId);
                 if (roleValue >= loginUserMaxRoleValue)
                     throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
             }
@@ -798,7 +798,7 @@ namespace Oje.AccountManager.Services
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.Encrypt();
                     if (input.userPic != null && input.userPic.Length > 0)
-                        foundItem.UserPic = uploadedFileManager.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, foundItem.Id, ".png,.jpg,.jpeg", true);
+                        foundItem.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, foundItem.Id, ".png,.jpg,.jpeg", true);
 
                     foreach (var ur in foundItem.UserRoles)
                         db.Entry(ur).State = EntityState.Deleted;
@@ -823,10 +823,10 @@ namespace Oje.AccountManager.Services
             }
         }
 
-        public GridResultVM<UserManagerForUserMainGridResultVM> GetListForUser(UserManagerForUserMainGrid searchInput, LoginUserVM loginUserVM, int? siteSettingId)
+        public GridResultVM<UserServiceForUserMainGridResultVM> GetListForUser(UserServiceForUserMainGrid searchInput, LoginUserVM loginUserVM, int? siteSettingId)
         {
             if (searchInput == null)
-                searchInput = new UserManagerForUserMainGrid();
+                searchInput = new UserServiceForUserMainGrid();
 
             MyValidations.SiteSettingValidation(loginUserVM?.siteSettingId, siteSettingId);
             var childIds = GetChildsUserId(loginUserVM.UserId);
@@ -848,7 +848,7 @@ namespace Oje.AccountManager.Services
 
             int row = searchInput.skip;
 
-            return new GridResultVM<UserManagerForUserMainGridResultVM>
+            return new GridResultVM<UserServiceForUserMainGridResultVM>
             {
                 total = qureResult.Count(),
                 data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take).Select(t => new
@@ -861,7 +861,7 @@ namespace Oje.AccountManager.Services
                     isActive = t.IsActive,
                     roleIds = t.UserRoles.Select(tt => tt.Role.Title).ToList()
                 }).ToList()
-                .Select(t => new UserManagerForUserMainGridResultVM
+                .Select(t => new UserServiceForUserMainGridResultVM
                 {
                     row = ++row,
                     id = t.id,
@@ -925,7 +925,7 @@ namespace Oje.AccountManager.Services
             var si = new
             {
                 childUserIds = GetChildsUserId(loginUserId.ToLongReturnZiro()),
-                siteSettingId = SiteSettingManager.GetSiteSetting()?.Id
+                siteSettingId = SiteSettingService.GetSiteSetting()?.Id
             };
 
             var hasPagination = false;
@@ -991,9 +991,9 @@ namespace Oje.AccountManager.Services
 
         public bool IsValidAgent(long id, int? siteSettingId, int proposalFormId, int companyId)
         {
-            return 
+            return
                 db.Users
-                .Any(t => 
+                .Any(t =>
                         t.SiteSettingId == siteSettingId && !t.UserRoles.Any(tt => tt.Role.Name == "user") && t.Id == id &&
                         t.IsActive == true && t.IsDelete != true && t.UserCompanies.Any(tt => tt.CompanyId == companyId) &&
                         t.UserRoles.Any(tt => tt.Role.RoleProposalForms.Any(ttt => ttt.ProposalFormId == proposalFormId))
@@ -1005,10 +1005,39 @@ namespace Oje.AccountManager.Services
             return
                db.Users
                .Any(t =>
-                       t.SiteSettingId == siteSettingId && !t.UserRoles.Any(tt => tt.Role.Name == "user") && 
-                       t.IsActive == true && t.IsDelete != true  && t.Id == id &&
+                       t.SiteSettingId == siteSettingId && !t.UserRoles.Any(tt => tt.Role.Name == "user") &&
+                       t.IsActive == true && t.IsDelete != true && t.Id == id &&
                        t.UserRoles.Any(tt => tt.Role.RoleProposalForms.Any(ttt => ttt.ProposalFormId == proposalFormId))
                    );
+        }
+
+        public object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId)
+        {
+            List<object> result = new List<object>();
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.Users.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId);
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => (t.Username + "(" + t.Firstname + " " + t.Lastname + ")").Contains(searchInput.search));
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Username + "(" + t.Firstname + " " + t.Lastname + ")" }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
+        }
+
+        public string GetUserFullName(int? siteSettingId, long? userId)
+        {
+            return db.Users.Where(t => t.SiteSettingId == siteSettingId && t.Id == userId).Select(t => t.Firstname + " " + t.Lastname).FirstOrDefault();
         }
     }
 }

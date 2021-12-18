@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Models.View
+namespace Oje.AccountService.Models.View
 {
-    public class UserManagerForUserMainGrid: GlobalGrid
+    public class UserServiceForUserMainGrid: GlobalGrid
     {
         public string username { get; set; }
         public string fistname { get; set; }

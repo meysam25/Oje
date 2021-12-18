@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.SalesNetworkBaseData.Interfaces
 {
-    public interface ISalesNetworkManager
+    public interface ISalesNetworkService
     {
         ApiResult Create(CreateUpdateSalesNetworkVM input);
         ApiResult Delete(int? id);

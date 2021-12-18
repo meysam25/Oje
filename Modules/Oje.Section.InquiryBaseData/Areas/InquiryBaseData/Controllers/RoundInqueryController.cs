@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class RoundInqueryController: Controller
     {
-        readonly IRoundInqueryManager RoundInqueryManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        public RoundInqueryController(IRoundInqueryManager RoundInqueryManager, IProposalFormManager ProposalFormManager)
+        readonly IRoundInqueryService RoundInqueryService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        public RoundInqueryController(IRoundInqueryService RoundInqueryService, IProposalFormService ProposalFormService)
         {
-            this.RoundInqueryManager = RoundInqueryManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.RoundInqueryService = RoundInqueryService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [AreaConfig(Title = "روند کردن جزییات استعلام", Icon = "fa-balance-scale", IsMainMenuItem = true)]
@@ -50,42 +50,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         public IActionResult Create([FromForm] CreateUpdateRoundInqueryVM input)
         {
 
-            return Json(RoundInqueryManager.Create(input));
+            return Json(RoundInqueryService.Create(input));
         }
 
         [AreaConfig(Title = "حذف روند کردن جزییات استعلام", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(RoundInqueryManager.Delete(input?.id));
+            return Json(RoundInqueryService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک روند کردن جزییات استعلام", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(RoundInqueryManager.GetById(input?.id));
+            return Json(RoundInqueryService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  روند کردن جزییات استعلام", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateRoundInqueryVM input)
         {
-            return Json(RoundInqueryManager.Update(input));
+            return Json(RoundInqueryService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست روند کردن جزییات استعلام", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] RoundInqueryMainGrid searchInput)
         {
-            return Json(RoundInqueryManager.GetList(searchInput));
+            return Json(RoundInqueryService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] RoundInqueryMainGrid searchInput)
         {
-            var result = RoundInqueryManager.GetList(searchInput);
+            var result = RoundInqueryService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -99,7 +99,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

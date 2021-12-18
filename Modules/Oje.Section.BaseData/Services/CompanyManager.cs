@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -14,16 +14,16 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class CompanyManager : Interfaces.ICompanyManager
+    public class CompanyService : Interfaces.ICompanyService
     {
-        readonly IUploadedFileManager uploadedFileManager = null;
+        readonly IUploadedFileService uploadedFileService = null;
         readonly BaseDataDBContext db = null;
-        public CompanyManager(
-                IUploadedFileManager uploadedFileManager,
+        public CompanyService(
+                IUploadedFileService uploadedFileService,
                 BaseDataDBContext db
             )
         {
-            this.uploadedFileManager = uploadedFileManager;
+            this.uploadedFileService = uploadedFileService;
             this.db = db;
         }
 
@@ -44,7 +44,7 @@ namespace Oje.Section.BaseData.Services
 
             if (input.minPic != null && input.minPic.Length > 0)
             {
-                newItem.Pic = uploadedFileManager.UploadNewFile(FileType.CompanyLogo, input.minPic, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.Pic = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.minPic, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 
@@ -152,7 +152,7 @@ namespace Oje.Section.BaseData.Services
 
             if (input.minPic != null && input.minPic.Length > 0)
             {
-                foundItem.Pic = uploadedFileManager.UploadNewFile(FileType.CompanyLogo, input.minPic, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.Pic = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.minPic, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 

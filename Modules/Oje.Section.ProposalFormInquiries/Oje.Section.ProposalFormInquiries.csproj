@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
     <Compile Remove="Interfaces\**" />
     <Compile Remove="Models\**" />
@@ -14,8 +14,8 @@
     <None Remove="Services\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountManager.csproj" />
-    <ProjectReference Include="..\..\Oje.FireInsuranceManager\Oje.FireInsuranceManager.csproj" />
-    <ProjectReference Include="..\..\Oje.ProposalFormManager\Oje.ProposalFormManager.csproj" />
+    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Oje.FireInsuranceManager\Oje.FireInsuranceService.csproj" />
+    <ProjectReference Include="..\..\Oje.ProposalFormManager\Oje.ProposalFormService.csproj" />
   </ItemGroup>
 </Project>

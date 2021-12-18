@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.Section.InquiryBaseData.Interfaces;
@@ -9,27 +9,27 @@ using System.Linq;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class InsuranceContractManager: IInsuranceContractManager
+    public class InsuranceContractService: IInsuranceContractService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly IUserManager UserManager = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        public InsuranceContractManager(
+        readonly IUserService UserService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        public InsuranceContractService(
                 InquiryBaseDataDBContext db,
-                IUserManager UserManager,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager
+                IUserService UserService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public bool Exist(int id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             return db.InsuranceContracts.Any(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
         }
@@ -37,9 +37,9 @@ namespace Oje.Section.InquiryBaseData.Services
         public object GetLightList()
         {
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             result.AddRange(db.InsuranceContracts
                 .Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)))

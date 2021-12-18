@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,10 +20,10 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CarSpecificationController: Controller
     {
-        readonly ICarSpecificationManager CarSpecificationManager = null;
-        public CarSpecificationController(ICarSpecificationManager CarSpecificationManager)
+        readonly ICarSpecificationService CarSpecificationService = null;
+        public CarSpecificationController(ICarSpecificationService CarSpecificationService)
         {
-            this.CarSpecificationManager = CarSpecificationManager;
+            this.CarSpecificationService = CarSpecificationService;
         }
 
         [AreaConfig(Title = "خصوصیات خودرو", Icon = "fa-truck-loading", IsMainMenuItem = true)]
@@ -47,42 +47,42 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCarSpecificationVM input)
         {
-            return Json(CarSpecificationManager.Create(input));
+            return Json(CarSpecificationService.Create(input));
         }
 
         [AreaConfig(Title = "حذف خصوصیات خودرو", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CarSpecificationManager.Delete(input?.id));
+            return Json(CarSpecificationService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک خصوصیات خودرو", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CarSpecificationManager.GetById(input?.id));
+            return Json(CarSpecificationService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  خصوصیات خودرو", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCarSpecificationVM input)
         {
-            return Json(CarSpecificationManager.Update(input));
+            return Json(CarSpecificationService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarSpecificationMainGrid searchInput)
         {
-            return Json(CarSpecificationManager.GetList(searchInput));
+            return Json(CarSpecificationService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CarSpecificationMainGrid searchInput)
         {
-            var result = CarSpecificationManager.GetList(searchInput);
+            var result = CarSpecificationService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

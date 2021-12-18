@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,11 +20,11 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class JobDangerLevelController : Controller
     {
-        readonly IJobDangerLevelManager JobDangerLevelManager = null;
+        readonly IJobDangerLevelService JobDangerLevelService = null;
 
-        public JobDangerLevelController(IJobDangerLevelManager JobDangerLevelManager)
+        public JobDangerLevelController(IJobDangerLevelService JobDangerLevelService)
         {
-            this.JobDangerLevelManager = JobDangerLevelManager;
+            this.JobDangerLevelService = JobDangerLevelService;
         }
 
         [AreaConfig(Title = "گروه خطر مشاغل", Icon = "fa-biohazard", IsMainMenuItem = true)]
@@ -48,42 +48,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateJobDangerLevelVM input)
         {
-            return Json(JobDangerLevelManager.Create(input));
+            return Json(JobDangerLevelService.Create(input));
         }
 
         [AreaConfig(Title = "حذف گروه خطر مشاغل", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(JobDangerLevelManager.Delete(input?.id));
+            return Json(JobDangerLevelService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک گروه خطر مشاغل", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(JobDangerLevelManager.GetById(input?.id));
+            return Json(JobDangerLevelService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  گروه خطر مشاغل", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateJobDangerLevelVM input)
         {
-            return Json(JobDangerLevelManager.Update(input));
+            return Json(JobDangerLevelService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست گروه خطر مشاغل", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] JobDangerLevelMainGrid searchInput)
         {
-            return Json(JobDangerLevelManager.GetList(searchInput));
+            return Json(JobDangerLevelService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] JobDangerLevelMainGrid searchInput)
         {
-            var result = JobDangerLevelManager.GetList(searchInput);
+            var result = JobDangerLevelService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

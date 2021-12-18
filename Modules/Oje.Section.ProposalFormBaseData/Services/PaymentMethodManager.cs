@@ -14,22 +14,22 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class PaymentMethodManager : IPaymentMethodManager
+    public class PaymentMethodService : IPaymentMethodService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        public PaymentMethodManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        public PaymentMethodService(
             ProposalFormBaseDataDBContext db,
-            AccountManager.Interfaces.ISiteSettingManager SiteSettingManager
+            AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public ApiResult Create(CreateUpdatePaymentMethodVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
             PaymentMethod newItem = new PaymentMethod()
@@ -99,7 +99,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var deleteItem = db.PaymentMethods.Include(t => t.PaymentMethodCompanies).Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
             if (deleteItem == null)
@@ -116,7 +116,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public object GetById(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.PaymentMethods
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
@@ -158,7 +158,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public GridResultVM<PaymentMethodMainGridResult> GetList(PaymentMethodMainGrid searchInput)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             if (searchInput == null)
                 searchInput = new PaymentMethodMainGrid();
 
@@ -211,7 +211,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Update(CreateUpdatePaymentMethodVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
             PaymentMethod editItem = db.PaymentMethods.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).Include(t => t.PaymentMethodCompanies).FirstOrDefault();

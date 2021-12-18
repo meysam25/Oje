@@ -12,25 +12,25 @@ using System.Linq;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class PaymentMethodFileManager : IPaymentMethodFileManager
+    public class PaymentMethodFileService : IPaymentMethodFileService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly AccountManager.Interfaces.IUploadedFileManager uploadedFileManager = null;
-        public PaymentMethodFileManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly AccountService.Interfaces.IUploadedFileService uploadedFileService = null;
+        public PaymentMethodFileService(
             ProposalFormBaseDataDBContext db,
-            AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-            AccountManager.Interfaces.IUploadedFileManager uploadedFileManager
+            AccountService.Interfaces.ISiteSettingService SiteSettingService,
+            AccountService.Interfaces.IUploadedFileService uploadedFileService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
-            this.uploadedFileManager = uploadedFileManager;
+            this.SiteSettingService = SiteSettingService;
+            this.uploadedFileService = uploadedFileService;
         }
 
         public ApiResult Create(CreateUpdatePaymentMethodFileVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
             var newItem = new PaymentMethodFile()
@@ -44,7 +44,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             db.SaveChanges();
 
             if (input.minPic != null && input.minPic.Length > 0)
-                newItem.DownloadImageUrl = uploadedFileManager.UploadNewFile(FileType.DebitSellRequredDocument, input.minPic, null, siteSettingId, newItem.Id, ".png,.jpg,.jpeg,.pdf,.doc", false);
+                newItem.DownloadImageUrl = uploadedFileService.UploadNewFile(FileType.DebitSellRequredDocument, input.minPic, null, siteSettingId, newItem.Id, ".png,.jpg,.jpeg,.pdf,.doc", false);
 
             db.SaveChanges();
 
@@ -69,7 +69,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var deleteItem = db.PaymentMethodFiles.Where(t => t.Id == id && t.PaymentMethod.SiteSettingId == siteSettingId).FirstOrDefault();
             if (deleteItem == null)
@@ -83,7 +83,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public object GetById(int? id)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.PaymentMethodFiles
                 .Where(t => t.Id == id && t.PaymentMethod.SiteSettingId == siteSettingId)
@@ -111,7 +111,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public GridResultVM<PaymentMethodFileMainGridResult> GetList(PaymentMethodFileMainGrid searchInput)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             if (searchInput == null)
                 searchInput = new PaymentMethodFileMainGrid();
 
@@ -152,7 +152,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Update(CreateUpdatePaymentMethodFileVM input)
         {
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
             var editItem = db.PaymentMethodFiles.Where(t => t.Id == input.id && t.PaymentMethod.SiteSettingId == siteSettingId).FirstOrDefault();
@@ -163,7 +163,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             editItem.PaymentMethodId = input.payId.ToIntReturnZiro();
             editItem.Title = input.title;
             if (input.minPic != null && input.minPic.Length > 0)
-                editItem.DownloadImageUrl = uploadedFileManager.UploadNewFile(FileType.DebitSellRequredDocument, input.minPic, null, siteSettingId, editItem.Id, ".png,.jpg,.jpeg,.pdf,.doc", false);
+                editItem.DownloadImageUrl = uploadedFileService.UploadNewFile(FileType.DebitSellRequredDocument, input.minPic, null, siteSettingId, editItem.Id, ".png,.jpg,.jpeg,.pdf,.doc", false);
 
             db.SaveChanges();
 

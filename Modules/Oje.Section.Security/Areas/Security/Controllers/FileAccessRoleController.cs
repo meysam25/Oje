@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,15 +16,15 @@ namespace Oje.Section.Security.Areas.Security.Controllers
     [CustomeAuthorizeFilter]
     public class FileAccessRoleController: Controller
     {
-        readonly IFileAccessRoleManager FileAccessRoleManager = null;
-        readonly IRoleManager RoleManager = null;
+        readonly IFileAccessRoleService FileAccessRoleService = null;
+        readonly IRoleService RoleService = null;
         public FileAccessRoleController(
-            IFileAccessRoleManager FileAccessRoleManager,
-            IRoleManager RoleManager
+            IFileAccessRoleService FileAccessRoleService,
+            IRoleService RoleService
             )
         {
-            this.FileAccessRoleManager = FileAccessRoleManager;
-            this.RoleManager = RoleManager;
+            this.FileAccessRoleService = FileAccessRoleService;
+            this.RoleService = RoleService;
         }
 
         [AreaConfig(Title = "دسترسی فایل", Icon = "fa-photo-video", IsMainMenuItem = true)]
@@ -48,42 +48,42 @@ namespace Oje.Section.Security.Areas.Security.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateFileAccessRoleVM input)
         {
-            return Json(FileAccessRoleManager.Create(input));
+            return Json(FileAccessRoleService.Create(input));
         }
 
         [AreaConfig(Title = "حذف دسترسی فایل", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(FileAccessRoleManager.Delete(input?.id));
+            return Json(FileAccessRoleService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک دسترسی فایل", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(FileAccessRoleManager.GetById(input?.id));
+            return Json(FileAccessRoleService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  دسترسی فایل", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateFileAccessRoleVM input)
         {
-            return Json(FileAccessRoleManager.Update(input));
+            return Json(FileAccessRoleService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست دسترسی فایل", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] FileAccessRoleMainGrid searchInput)
         {
-            return Json(FileAccessRoleManager.GetList(searchInput));
+            return Json(FileAccessRoleService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] FileAccessRoleMainGrid searchInput)
         {
-            var result = FileAccessRoleManager.GetList(searchInput);
+            var result = FileAccessRoleService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -97,7 +97,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
         [HttpPost]
         public ActionResult GetRoleList()
         {
-            return Json(RoleManager.GetLightList());
+            return Json(RoleService.GetLightList());
         }
     }
 }

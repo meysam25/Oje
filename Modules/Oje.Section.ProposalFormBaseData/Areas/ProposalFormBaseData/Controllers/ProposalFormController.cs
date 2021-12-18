@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -17,14 +17,14 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class ProposalFormController: Controller
     {
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormCategoryManager ProposalFormCategoryManager = null;
-        public ProposalFormController(IProposalFormManager ProposalFormManager, ISiteSettingManager SiteSettingManager, IProposalFormCategoryManager ProposalFormCategoryManager)
+        readonly IProposalFormService ProposalFormService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormCategoryService ProposalFormCategoryService = null;
+        public ProposalFormController(IProposalFormService ProposalFormService, ISiteSettingService SiteSettingService, IProposalFormCategoryService ProposalFormCategoryService)
         {
-            this.ProposalFormManager = ProposalFormManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormCategoryManager = ProposalFormCategoryManager;
+            this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormCategoryService = ProposalFormCategoryService;
         }
 
         [AreaConfig(Title = "فرم های پیشنهاد", Icon = "fa-file-alt", IsMainMenuItem = true)]
@@ -48,42 +48,42 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProposalFormVM input)
         {
-            return Json(ProposalFormManager.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormService.Create(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "حذف فرم های پیشنهاد", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormManager.Delete(input?.id));
+            return Json(ProposalFormService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک فرم های پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormManager.GetById(input?.id));
+            return Json(ProposalFormService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  فرم های پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormVM input)
         {
-            return Json(ProposalFormManager.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormService.Update(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormMainGrid searchInput)
         {
-            return Json(ProposalFormManager.GetList(searchInput));
+            return Json(ProposalFormService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ProposalFormMainGrid searchInput)
         {
-            var result = ProposalFormManager.GetList(searchInput);
+            var result = ProposalFormService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -97,14 +97,14 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public ActionResult GetSiteList()
         {
-            return Json(SiteSettingManager.GetLightList());
+            return Json(SiteSettingService.GetLightList());
         }
 
         [AreaConfig(Title = "لیست گروه بندی", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetCategoryList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormCategoryManager.GetSelect2List(searchInput));
+            return Json(ProposalFormCategoryService.GetSelect2List(searchInput));
         }
     }
 }

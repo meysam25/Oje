@@ -1,8 +1,8 @@
-﻿using Oje.ProposalFormManager.Models.View;
+﻿using Oje.ProposalFormService.Models.View;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IThirdPartyRateManager
+    public interface IThirdPartyRateService
     {
         object Inquiry(int? siteSettingId, CarThirdPartyInquiryVM input);
     }

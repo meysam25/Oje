@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface IProvinceManager
+    public interface IProvinceService
     {
         ApiResult Create(CreateUpdateProvinceVM input);
         ApiResult Delete(int? id);

@@ -16,10 +16,10 @@ using Oje.Section.Security.Models.DB;
 
 namespace Oje.Section.Security.Services
 {
-    public class IpLimitationBlackListManager: IIpLimitationBlackListManager
+    public class IpLimitationBlackListService: IIpLimitationBlackListService
     {
         readonly SecurityDBContext db = null;
-        public IpLimitationBlackListManager(SecurityDBContext db)
+        public IpLimitationBlackListService(SecurityDBContext db)
         {
             this.db = db;
         }

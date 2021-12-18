@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.DB;
-using Oje.FireInsuranceManager.Services.EContext;
+using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.DB;
+using Oje.FireInsuranceService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class InquiryMaxDiscountManager : IInquiryMaxDiscountManager
+    public class InquiryMaxDiscountService : IInquiryMaxDiscountService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        public InquiryMaxDiscountManager(FireInsuranceManagerDBContext db)
+        readonly FireInsuranceServiceDBContext db = null;
+        public InquiryMaxDiscountService(FireInsuranceServiceDBContext db)
         {
             this.db = db;
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.FireBaseData.Interfaces
 {
-    public interface IFireInsuranceRateManager
+    public interface IFireInsuranceRateService
     {
         ApiResult Create(CreateUpdateFireInsuranceRateVM input);
         ApiResult Delete(int? id);

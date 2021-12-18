@@ -12,10 +12,10 @@ using Oje.Section.CarBodyBaseData.Models.View;
 
 namespace Oje.Section.CarBodyBaseData.Services
 {
-    public class CarSpecificationAmountManager : ICarSpecificationAmountManager
+    public class CarSpecificationAmountService : ICarSpecificationAmountService
     {
         readonly CarBodyDBContext db = null;
-        public CarSpecificationAmountManager(CarBodyDBContext db)
+        public CarSpecificationAmountService(CarBodyDBContext db)
         {
             this.db = db;
         }

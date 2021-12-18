@@ -1,6 +1,6 @@
-﻿using Oje.AccountManager.Filters;
-using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models;
+﻿using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.UserAccount.Controllers
 {
@@ -18,20 +18,20 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "دسترسی نقش ها")]
     [CustomeAuthorizeFilter]
-    public class RoleManagerAccessController: Controller
+    public class RoleServiceAccessController: Controller
     {
-        readonly ISectionManager SectionManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly IUserManager UserManager = null;
-        public RoleManagerAccessController(
-                ISectionManager SectionManager, 
-                ISiteSettingManager SiteSettingManager,
-                IUserManager UserManager
+        readonly ISectionService SectionService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly IUserService UserService = null;
+        public RoleServiceAccessController(
+                ISectionService SectionService, 
+                ISiteSettingService SiteSettingService,
+                IUserService UserService
             )
         {
-            this.SectionManager = SectionManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.UserManager = UserManager;
+            this.SectionService = SectionService;
+            this.SiteSettingService = SiteSettingService;
+            this.UserService = UserService;
         }
 
         [AreaConfig(Title = "صفحه دسترسی نقش")]
@@ -39,7 +39,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "ویرایش دسترسی نقش";
-            ViewBag.ConfigRoute = Url.Action("GetAccessJsonConfig", "RoleManagerAccess", new { area = "UserAccount" });
+            ViewBag.ConfigRoute = Url.Action("GetAccessJsonConfig", "RoleServiceAccess", new { area = "UserAccount" });
             return View("Index");
         }
 
@@ -48,21 +48,21 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult GetAccessJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "RoleManagerAccess")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "RoleServiceAccess")));
         }
 
         [AreaConfig(Title = "مشاهده دسترسی نقش ها")]
         [HttpPost]
         public IActionResult GetModaulsList([FromForm]GlobalIntId input)
         {
-            return Json(SectionManager.GetListForTreeViewForUser(input?.id, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(SectionService.GetListForTreeViewForUser(input?.id, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "ویرایش دسترسی نقش ها")]
         [HttpPost]
         public IActionResult Update([FromForm]CreateUpdateRoleAccessVM input)
         {
-            return Json(SectionManager.UpdateAccessForUser(input, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(SectionService.UpdateAccessForUser(input, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
        

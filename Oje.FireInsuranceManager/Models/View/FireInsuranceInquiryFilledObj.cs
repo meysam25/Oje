@@ -1,11 +1,11 @@
-﻿using Oje.FireInsuranceManager.Models.DB;
+﻿using Oje.FireInsuranceService.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Models.View
+namespace Oje.FireInsuranceService.Models.View
 {
     public class FireInsuranceInquiryFilledObj
     {

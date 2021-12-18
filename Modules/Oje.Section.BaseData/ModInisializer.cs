@@ -23,16 +23,16 @@ namespace Oje.Section.BaseData
                     b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
             );
 
-            services.AddScoped<ISiteSettingManager, SiteSettingManager>();
-            services.AddScoped<IUserManager, UserManager>();
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
-            services.AddScoped<IProvinceManager, ProvinceManager>();
-            services.AddScoped<ICityManager, CityManager>();
-            services.AddScoped<IJobDangerLevelManager, JobDangerLevelManager>();
-            services.AddScoped<IJobManager, JobManager>();
-            services.AddScoped<ITaxManager, TaxManager>();
-            services.AddScoped<IDutyManager, DutyManager>();
+            services.AddScoped<ISiteSettingService, SiteSettingService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
+            services.AddScoped<IProvinceService, ProvinceService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<IJobDangerLevelService, JobDangerLevelService>();
+            services.AddScoped<IJobService, JobService>();
+            services.AddScoped<ITaxService, TaxService>();
+            services.AddScoped<IDutyService, DutyService>();
         }
     }
 }

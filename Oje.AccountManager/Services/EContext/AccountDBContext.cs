@@ -1,8 +1,8 @@
-﻿using Oje.AccountManager.Models.DB;
-using Oje.AccountManager.Models.SP;
+﻿using Oje.AccountService.Models.DB;
+using Oje.AccountService.Models.SP;
 using Microsoft.EntityFrameworkCore;
 
-namespace Oje.AccountManager.Services.EContext
+namespace Oje.AccountService.Services.EContext
 {
     public class AccountDBContext : DbContext
     {
@@ -28,11 +28,15 @@ namespace Oje.AccountManager.Services.EContext
         public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<Province> Provinces { get; set; }
         public DbSet<City> Cities { get; set; }
+        public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<UserNotificationTriger> UserNotificationTrigers { get; set; }
+        public DbSet<UserNotificationTemplate> UserNotificationTemplates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoleProposalForm>().HasKey(t => new { t.RoleId, t.ProposalFormId });
             modelBuilder.Entity<UserCompany>().HasKey(t => new { t.UserId, t.CompanyId });
+            modelBuilder.Entity<UserNotification>().HasKey(t => new { t.UserId, t.CreateDate, t.Type });
 
             base.OnModelCreating(modelBuilder);
         }

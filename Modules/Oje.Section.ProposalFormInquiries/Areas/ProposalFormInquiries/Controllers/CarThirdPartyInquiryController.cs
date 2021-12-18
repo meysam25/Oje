@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.View;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,55 +21,55 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
     [CustomeAuthorizeFilter]
     public class CarThirdPartyInquiryController : Controller
     {
-        readonly ICompanyManager CompanyManager = null;
-        readonly IVehicleSystemManager VehicleSystemManager = null;
-        readonly IVehicleTypeManager VehicleTypeManager = null;
-        readonly IVehicleUsageManager VehicleUsageManager = null;
-        readonly IThirdPartyFinancialAndBodyHistoryDamagePenaltyManager ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager = null;
-        readonly IThirdPartyDriverHistoryDamagePenaltyManager ThirdPartyDriverHistoryDamagePenaltyManager = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IThirdPartyDriverNoDamageDiscountHistoryManager ThirdPartyDriverNoDamageDiscountHistoryManager = null;
-        readonly IThirdPartyRateManager ThirdPartyRateManager = null;
-        readonly IThirdPartyBodyNoDamageDiscountHistoryManager ThirdPartyBodyNoDamageDiscountHistoryManager = null;
-        readonly ICarExteraDiscountManager CarExteraDiscountManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager = null;
-        readonly IInquiryDurationManager InquiryDurationManager = null;
-        readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IVehicleSystemService VehicleSystemService = null;
+        readonly IVehicleTypeService VehicleTypeService = null;
+        readonly IVehicleUsageService VehicleUsageService = null;
+        readonly IThirdPartyFinancialAndBodyHistoryDamagePenaltyService ThirdPartyFinancialAndBodyHistoryDamagePenaltyService = null;
+        readonly IThirdPartyDriverHistoryDamagePenaltyService ThirdPartyDriverHistoryDamagePenaltyService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IThirdPartyDriverNoDamageDiscountHistoryService ThirdPartyDriverNoDamageDiscountHistoryService = null;
+        readonly IThirdPartyRateService ThirdPartyRateService = null;
+        readonly IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService = null;
+        readonly ICarExteraDiscountService CarExteraDiscountService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService = null;
+        readonly IInquiryDurationService InquiryDurationService = null;
+        readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
 
         public CarThirdPartyInquiryController(
-            ICompanyManager CompanyManager,
-            IVehicleSystemManager VehicleSystemManager,
-            IVehicleTypeManager VehicleTypeManager,
-            IVehicleUsageManager VehicleUsageManager,
-            IThirdPartyDriverHistoryDamagePenaltyManager ThirdPartyDriverHistoryDamagePenaltyManager,
-            AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-            IThirdPartyDriverNoDamageDiscountHistoryManager ThirdPartyDriverNoDamageDiscountHistoryManager,
-            IThirdPartyRateManager ThirdPartyRateManager,
-            IThirdPartyFinancialAndBodyHistoryDamagePenaltyManager ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager,
-            IThirdPartyBodyNoDamageDiscountHistoryManager ThirdPartyBodyNoDamageDiscountHistoryManager,
-            ICarExteraDiscountManager CarExteraDiscountManager,
-            IProposalFormManager ProposalFormManager,
-            IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager,
-            IInquiryDurationManager InquiryDurationManager,
-            IInsuranceContractDiscountManager InsuranceContractDiscountManager
+            ICompanyService CompanyService,
+            IVehicleSystemService VehicleSystemService,
+            IVehicleTypeService VehicleTypeService,
+            IVehicleUsageService VehicleUsageService,
+            IThirdPartyDriverHistoryDamagePenaltyService ThirdPartyDriverHistoryDamagePenaltyService,
+            AccountService.Interfaces.ISiteSettingService SiteSettingService,
+            IThirdPartyDriverNoDamageDiscountHistoryService ThirdPartyDriverNoDamageDiscountHistoryService,
+            IThirdPartyRateService ThirdPartyRateService,
+            IThirdPartyFinancialAndBodyHistoryDamagePenaltyService ThirdPartyFinancialAndBodyHistoryDamagePenaltyService,
+            IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService,
+            ICarExteraDiscountService CarExteraDiscountService,
+            IProposalFormService ProposalFormService,
+            IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService,
+            IInquiryDurationService InquiryDurationService,
+            IInsuranceContractDiscountService InsuranceContractDiscountService
             )
         {
-            this.CompanyManager = CompanyManager;
-            this.VehicleSystemManager = VehicleSystemManager;
-            this.VehicleTypeManager = VehicleTypeManager;
-            this.VehicleUsageManager = VehicleUsageManager;
-            this.ThirdPartyDriverHistoryDamagePenaltyManager = ThirdPartyDriverHistoryDamagePenaltyManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ThirdPartyDriverNoDamageDiscountHistoryManager = ThirdPartyDriverNoDamageDiscountHistoryManager;
-            this.ThirdPartyRateManager = ThirdPartyRateManager;
-            this.ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager = ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager;
-            this.ThirdPartyBodyNoDamageDiscountHistoryManager = ThirdPartyBodyNoDamageDiscountHistoryManager;
-            this.CarExteraDiscountManager = CarExteraDiscountManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.ThirdPartyRequiredFinancialCommitmentManager = ThirdPartyRequiredFinancialCommitmentManager;
-            this.InquiryDurationManager = InquiryDurationManager;
-            this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
+            this.CompanyService = CompanyService;
+            this.VehicleSystemService = VehicleSystemService;
+            this.VehicleTypeService = VehicleTypeService;
+            this.VehicleUsageService = VehicleUsageService;
+            this.ThirdPartyDriverHistoryDamagePenaltyService = ThirdPartyDriverHistoryDamagePenaltyService;
+            this.SiteSettingService = SiteSettingService;
+            this.ThirdPartyDriverNoDamageDiscountHistoryService = ThirdPartyDriverNoDamageDiscountHistoryService;
+            this.ThirdPartyRateService = ThirdPartyRateService;
+            this.ThirdPartyFinancialAndBodyHistoryDamagePenaltyService = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService;
+            this.ThirdPartyBodyNoDamageDiscountHistoryService = ThirdPartyBodyNoDamageDiscountHistoryService;
+            this.CarExteraDiscountService = CarExteraDiscountService;
+            this.ProposalFormService = ProposalFormService;
+            this.ThirdPartyRequiredFinancialCommitmentService = ThirdPartyRequiredFinancialCommitmentService;
+            this.InquiryDurationService = InquiryDurationService;
+            this.InsuranceContractDiscountService = InsuranceContractDiscountService;
         }
 
         [AreaConfig(Title = "استعلام ثالث", Icon = "fa-car", IsMainMenuItem = true)]
@@ -93,63 +93,63 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] CarThirdPartyInquiryVM input)
         {
-            return Json(ThirdPartyRateManager.Inquiry(SiteSettingManager.GetSiteSetting()?.Id, input));
+            return Json(ThirdPartyRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightListForInquiryDD());
+            return Json(CompanyService.GetLightListForInquiryDD());
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت فیلتر گرید", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyListGridFilter()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست تعهد های مالی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCommitmentGridFilter()
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentManager.GetLightList());
+            return Json(ThirdPartyRequiredFinancialCommitmentService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه روزانه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetValidDayForGridFilter()
         {
-            return Json(InquiryDurationManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, ProposalFormManager.GetByType(ProposalFormType.ThirdParty, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(InquiryDurationService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, ProposalFormService.GetByType(ProposalFormType.ThirdParty, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست تفاهم نامه ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetValidContractForGrid()
         {
-            return Json(InsuranceContractDiscountManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, ProposalFormType.ThirdParty));
+            return Json(InsuranceContractDiscountService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, ProposalFormType.ThirdParty));
         }
 
         [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCarBrandList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(VehicleSystemManager.GetSelect2List(searchInput));
+            return Json(VehicleSystemService.GetSelect2List(searchInput));
         }
 
         [AreaConfig(Title = "مشاهده لیست تیپ خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarTypeList([FromForm] int? id)
         {
-            return Json(VehicleTypeManager.GetLightList(id));
+            return Json(VehicleTypeService.GetLightList(id));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarUsageList([FromForm] int? id)
         {
-            return Json(VehicleUsageManager.GetLightList(id));
+            return Json(VehicleUsageService.GetLightList(id));
         }
 
         [AreaConfig(Title = "مشاهده لیست سال ساخت خودرو", Icon = "fa-list-alt")]
@@ -163,56 +163,56 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult GetThirdPartyBodyHistoryDamagePenaltyList()
         {
-            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.GetLightListForBody());
+            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetLightListForBody());
         }
 
         [AreaConfig(Title = "مشاهده لیست سابقه خسارت مالی خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetThirdPartyFinancialHistoryDamagePenaltyList()
         {
-            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.GetLightListForFinancial());
+            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetLightListForFinancial());
         }
 
         [AreaConfig(Title = "مشاهده لیست سابقه خسارت راننده خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetDriverDamageHistoryList()
         {
-            return Json(ThirdPartyDriverHistoryDamagePenaltyManager.GetLightList());
+            return Json(ThirdPartyDriverHistoryDamagePenaltyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست درصد عدم خسارت جانی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetBodyNoDamageDiscountList()
         {
-            return Json(ThirdPartyBodyNoDamageDiscountHistoryManager.GetLightList());
+            return Json(ThirdPartyBodyNoDamageDiscountHistoryService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست درصد عدم خسارت راننده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetDriverNoDamageDiscountHistoryList()
         {
-            return Json(ThirdPartyDriverNoDamageDiscountHistoryManager.GetLightList());
+            return Json(ThirdPartyDriverNoDamageDiscountHistoryService.GetLightList());
         }
 
         [AreaConfig(Title = "سوالات اجباری استعلام ثالث", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetRequiredQuestions([FromForm] RequiredQuestionVM input)
         {
-            return Json(CarExteraDiscountManager.GetRequiredQuestions(input, ProposalFormManager.GetByType(ProposalFormType.ThirdParty, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(CarExteraDiscountService.GetRequiredQuestions(input, ProposalFormService.GetByType(ProposalFormType.ThirdParty, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
         [AreaConfig(Title = "سوالات اختیاری استعلام ثالث", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetExteraFilters([FromForm] RequiredQuestionVM input)
         {
-            return Json(CarExteraDiscountManager.GetRequiredQuestionsJsonCtrls(input, ProposalFormManager.GetByType(ProposalFormType.ThirdParty, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(CarExteraDiscountService.GetRequiredQuestionsJsonCtrls(input, ProposalFormService.GetByType(ProposalFormType.ThirdParty, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
         [AreaConfig(Title = "مقادیر سوالات اختیاری استعلام ثالث", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetExteraFilterValuess([FromQuery] int? id)
         {
-            return Json(CarExteraDiscountManager.GetValuesForDD(id.ToIntReturnZiro()));
+            return Json(CarExteraDiscountService.GetValuesForDD(id.ToIntReturnZiro()));
         }
     }
 }

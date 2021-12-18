@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,10 +20,10 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class FireInsuranceTypeOfActivityController: Controller
     {
-        readonly IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager = null;
-        public FireInsuranceTypeOfActivityController(IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager)
+        readonly IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService = null;
+        public FireInsuranceTypeOfActivityController(IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService)
         {
-            this.FireInsuranceTypeOfActivityManager = FireInsuranceTypeOfActivityManager;
+            this.FireInsuranceTypeOfActivityService = FireInsuranceTypeOfActivityService;
         }
 
         [AreaConfig(Title = "نوع فعالیت", Icon = "fa-user-md", IsMainMenuItem = true)]
@@ -47,42 +47,42 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateFireInsuranceTypeOfActivityVM input)
         {
-            return Json(FireInsuranceTypeOfActivityManager.Create(input));
+            return Json(FireInsuranceTypeOfActivityService.Create(input));
         }
 
         [AreaConfig(Title = "حذف نوع فعالیت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceTypeOfActivityManager.Delete(input?.id));
+            return Json(FireInsuranceTypeOfActivityService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نوع فعالیت", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceTypeOfActivityManager.GetById(input?.id));
+            return Json(FireInsuranceTypeOfActivityService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نوع فعالیت", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateFireInsuranceTypeOfActivityVM input)
         {
-            return Json(FireInsuranceTypeOfActivityManager.Update(input));
+            return Json(FireInsuranceTypeOfActivityService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نوع فعالیت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceTypeOfActivityMainGrid searchInput)
         {
-            return Json(FireInsuranceTypeOfActivityManager.GetList(searchInput));
+            return Json(FireInsuranceTypeOfActivityService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] FireInsuranceTypeOfActivityMainGrid searchInput)
         {
-            var result = FireInsuranceTypeOfActivityManager.GetList(searchInput);
+            var result = FireInsuranceTypeOfActivityService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

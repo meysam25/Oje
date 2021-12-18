@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
+using Oje.ProposalFormService.Services.EContext;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class CarExteraDiscountManager : ICarExteraDiscountManager
+    public class CarExteraDiscountService : ICarExteraDiscountService
     {
         readonly ProposalFormDBContext db = null;
-        public CarExteraDiscountManager(ProposalFormDBContext db)
+        public CarExteraDiscountService(ProposalFormDBContext db)
         {
             this.db = db;
         }

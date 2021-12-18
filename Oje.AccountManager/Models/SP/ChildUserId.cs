@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Models.SP
+namespace Oje.AccountService.Models.SP
 {
     public class ChildUserId
     {

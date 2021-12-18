@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,10 +20,10 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CompanyController: Controller
     {
-        readonly ICompanyManager CompanyManager = null;
-        public CompanyController(ICompanyManager CompanyManager)
+        readonly ICompanyService CompanyService = null;
+        public CompanyController(ICompanyService CompanyService)
         {
-            this.CompanyManager = CompanyManager;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "شرکت بیمه", Icon = "fa-building", IsMainMenuItem = true)]
@@ -47,42 +47,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCompanyVM input)
         {
-            return Json(CompanyManager.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(CompanyService.Create(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "حذف شرکت بیمه", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CompanyManager.Delete(input?.id));
+            return Json(CompanyService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک شرکت بیمه", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CompanyManager.GetById(input?.id));
+            return Json(CompanyService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  شرکت بیمه", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCompanyVM input)
         {
-            return Json(CompanyManager.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(CompanyService.Update(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت بیمه", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] CompanyMainGrid searchInput)
         {
-            return Json(CompanyManager.GetList(searchInput));
+            return Json(CompanyService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CompanyMainGrid searchInput)
         {
-            var result = CompanyManager.GetList(searchInput);
+            var result = CompanyService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

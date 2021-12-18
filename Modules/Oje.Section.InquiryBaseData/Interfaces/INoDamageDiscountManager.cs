@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface INoDamageDiscountManager
+    public interface INoDamageDiscountService
     {
         ApiResult Create(CreateUpdateNoDamageDiscountVM input);
         ApiResult Delete(int? id);

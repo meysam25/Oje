@@ -8,61 +8,63 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFilledFormAdminManager : IProposalFilledFormAdminManager
+    public class ProposalFilledFormAdminService : IProposalFilledFormAdminService
     {
         readonly ProposalFormDBContext db = null;
-        readonly IProposalFilledFormAdminBaseQueryManager ProposalFilledFormAdminBaseQueryManager = null;
-        readonly IProposalFilledFormJsonManager ProposalFilledFormJsonManager = null;
-        readonly IProposalFilledFormValueManager ProposalFilledFormValueManager = null;
-        readonly IProposalFilledFormUseManager ProposalFilledFormUseManager = null;
-        readonly IProposalFilledFormCompanyManager ProposalFilledFormCompanyManager = null;
-        readonly IGlobalInqueryManager GlobalInqueryManager = null;
-        readonly AccountManager.Interfaces.IUploadedFileManager UploadedFileManager = null;
-        readonly IProposalFilledFormStatusLogManager ProposalFilledFormStatusLogManager = null;
+        readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
+        readonly IProposalFilledFormJsonService ProposalFilledFormJsonService = null;
+        readonly IProposalFilledFormValueService ProposalFilledFormValueService = null;
+        readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
+        readonly IProposalFilledFormCompanyService ProposalFilledFormCompanyService = null;
+        readonly IGlobalInqueryService GlobalInqueryService = null;
+        readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
+        readonly IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService = null;
+        readonly AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService = null;
 
-        public ProposalFilledFormAdminManager(
+        public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
-                AccountManager.Interfaces.IUserManager UserManager,
-                IProposalFilledFormJsonManager ProposalFilledFormJsonManager,
-                IProposalFilledFormValueManager ProposalFilledFormValueManager,
-                IProposalFilledFormUseManager ProposalFilledFormUseManager,
-                IProposalFilledFormCompanyManager ProposalFilledFormCompanyManager,
-                IProposalFilledFormAdminBaseQueryManager ProposalFilledFormAdminBaseQueryManager,
-                IGlobalInqueryManager GlobalInqueryManager,
-                AccountManager.Interfaces.IUploadedFileManager UploadedFileManager,
-                IProposalFilledFormStatusLogManager ProposalFilledFormStatusLogManager
+                AccountService.Interfaces.IUserService UserService,
+                IProposalFilledFormJsonService ProposalFilledFormJsonService,
+                IProposalFilledFormValueService ProposalFilledFormValueService,
+                IProposalFilledFormUseService ProposalFilledFormUseService,
+                IProposalFilledFormCompanyService ProposalFilledFormCompanyService,
+                IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
+                IGlobalInqueryService GlobalInqueryService,
+                AccountService.Interfaces.IUploadedFileService UploadedFileService,
+                IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService,
+                AccountService.Interfaces.IUserNotificationTrigerService UserNotificationTrigerService
             )
         {
             this.db = db;
-            this.ProposalFilledFormAdminBaseQueryManager = ProposalFilledFormAdminBaseQueryManager;
-            this.ProposalFilledFormJsonManager = ProposalFilledFormJsonManager;
-            this.ProposalFilledFormValueManager = ProposalFilledFormValueManager;
-            this.ProposalFilledFormUseManager = ProposalFilledFormUseManager;
-            this.ProposalFilledFormCompanyManager = ProposalFilledFormCompanyManager;
-            this.GlobalInqueryManager = GlobalInqueryManager;
-            this.UploadedFileManager = UploadedFileManager;
-            this.ProposalFilledFormStatusLogManager = ProposalFilledFormStatusLogManager;
+            this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
+            this.ProposalFilledFormJsonService = ProposalFilledFormJsonService;
+            this.ProposalFilledFormValueService = ProposalFilledFormValueService;
+            this.ProposalFilledFormUseService = ProposalFilledFormUseService;
+            this.ProposalFilledFormCompanyService = ProposalFilledFormCompanyService;
+            this.GlobalInqueryService = GlobalInqueryService;
+            this.UploadedFileService = UploadedFileService;
+            this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
+            this.UserNotificationTrigerService = UserNotificationTrigerService;
         }
-
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             if (input == null)
                 input = new GlobalGridParentLong();
             var foundItemId =
-                ProposalFilledFormAdminBaseQueryManager
+                ProposalFilledFormAdminBaseQueryService
                 .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == input.pKey)
                .Select(t => t.Id)
@@ -70,20 +72,20 @@ namespace Oje.ProposalFormManager.Services
 
             return new
             {
-                total = UploadedFileManager.GetCountBy(foundItemId, FileType.ProposalFilledForm),
-                data = UploadedFileManager.GetListBy(foundItemId, FileType.ProposalFilledForm, input.skip, input.take)
+                total = UploadedFileService.GetCountBy(foundItemId, FileType.ProposalFilledForm),
+                data = UploadedFileService.GetListBy(foundItemId, FileType.ProposalFilledForm, input.skip, input.take)
             };
         }
 
         public object Update(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status, IFormCollection form)
         {
-            var foundId = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var item = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == id)
-                .Select(t => t.Id)
+                .Select(t => new { id = t.Id, title = t.ProposalForm.Title })
                 .FirstOrDefault();
-            if (foundId <= 0)
+            if (item == null || item.id <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundJson = ProposalFilledFormJsonManager.GetBy(foundId);
+            var foundJson = ProposalFilledFormJsonService.GetBy(item.id);
             if (foundJson == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
             var jsonObj = JsonConvert.DeserializeObject<PageForm>(foundJson.JsonConfig);
@@ -98,7 +100,7 @@ namespace Oje.ProposalFormManager.Services
             {
                 try
                 {
-                    ProposalFilledFormValueManager.UpdateBy(foundId, form, jsonObj);
+                    ProposalFilledFormValueService.UpdateBy(item.id, form, jsonObj);
                     tr.Commit();
                 }
                 catch (Exception)
@@ -108,12 +110,14 @@ namespace Oje.ProposalFormManager.Services
                 }
             }
 
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormEdited, ProposalFilledFormUseService.GetProposalFilledFormUserIds(item.id), item.id, item.title, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + item.id);
+
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
         public ApiResult Delete(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var foundItem = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == id)
                 .FirstOrDefault();
 
@@ -124,12 +128,14 @@ namespace Oje.ProposalFormManager.Services
 
             db.SaveChanges();
 
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(foundItem.Id), foundItem.Id, "", siteSettingId, "");
+
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
         public object GetById(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var values = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var values = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormValues)
                 .Include(t => t.ProposalFilledFormKey)
@@ -143,13 +149,13 @@ namespace Oje.ProposalFormManager.Services
 
         public string GetJsonConfir(int id, int? siteSettingId, long? userId, ProposalFilledFormStatus status, string loadUrl, string saveUrl)
         {
-            var foundId = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == id)
                 .Select(t => t.Id)
                 .FirstOrDefault();
             if (foundId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundJson = ProposalFilledFormJsonManager.GetBy(foundId);
+            var foundJson = ProposalFilledFormJsonService.GetBy(foundId);
             if (foundJson == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
             var jsonObj = JsonConvert.DeserializeObject<PageForm>(foundJson.JsonConfig);
@@ -167,7 +173,7 @@ namespace Oje.ProposalFormManager.Services
                 foundSw.FirstOrDefault().actionOnLastStep.FirstOrDefault().url = saveUrl;
 
 
-            return JsonConvert.SerializeObject(jsonObj, EnumManager.EnumConverterSetting);
+            return JsonConvert.SerializeObject(jsonObj, EnumService.EnumConverterSetting);
         }
 
         private List<step> ignoreSteps(List<step> allSteps)
@@ -183,7 +189,7 @@ namespace Oje.ProposalFormManager.Services
             if (searchInput == null)
                 searchInput = new ProposalFilledFormMainGrid();
 
-            var qureResult = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status);
+            var qureResult = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status);
 
             if (searchInput.cId.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.ProposalFilledFormCompanies.Any(tt => tt.CompanyId == searchInput.cId));
@@ -269,7 +275,7 @@ namespace Oje.ProposalFormManager.Services
 
         public object GetRefferUsers(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var result = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var result = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Refer)
@@ -289,7 +295,7 @@ namespace Oje.ProposalFormManager.Services
         public ApiResult CreateUserRefer(CreateUpdateProposalFilledFormUserReffer input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             CreateUserReferValidation(input, siteSettingId);
-            var foundItem = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == input.id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Refer)
@@ -303,7 +309,9 @@ namespace Oje.ProposalFormManager.Services
                 throw BException.GenerateNewException(BMessages.No_New_User_Added);
 
             foreach (var newUserId in input.userIds)
-                ProposalFilledFormUseManager.Create(newUserId, ProposalFilledFormUserType.Refer, userId, input.id.ToLongReturnZiro());
+                ProposalFilledFormUseService.Create(newUserId, ProposalFilledFormUserType.Refer, userId, input.id.ToLongReturnZiro());
+
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ReferToUser, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id.ToLongReturnZiro(), "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id.ToLongReturnZiro());
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -322,7 +330,7 @@ namespace Oje.ProposalFormManager.Services
 
         public object GetCompanies(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var foundItem = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormCompanies)
                 .Select(t => t.CompanyId)
@@ -335,7 +343,7 @@ namespace Oje.ProposalFormManager.Services
         {
             UpdateCompaniesValidation(input, siteSettingId);
 
-            var foundItem = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
 
@@ -345,7 +353,9 @@ namespace Oje.ProposalFormManager.Services
             if (foundItem.GlobalInqueryId > 0)
                 throw BException.GenerateNewException(BMessages.You_Can_Not_Edit_Company_Of_ProposalFilledForm_With_Inquiry);
 
-            ProposalFilledFormCompanyManager.CreateUpdate(input, userId);
+            ProposalFilledFormCompanyService.CreateUpdate(input, userId);
+
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -364,7 +374,7 @@ namespace Oje.ProposalFormManager.Services
 
         public object GetAgent(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var result = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var result = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                .Where(t => t.Id == id)
                .SelectMany(t => t.ProposalFilledFormUsers)
                .Where(t => t.Type == ProposalFilledFormUserType.Agent)
@@ -385,7 +395,7 @@ namespace Oje.ProposalFormManager.Services
         public object UpdateAgent(long? id, long? userId, int? siteSettingId, long? longUserId, ProposalFilledFormStatus status)
         {
             UpdateAgentValidation(id, userId, siteSettingId);
-            var foundUserId = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, longUserId, status)
+            var foundUserId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, longUserId, status)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Agent)
@@ -394,9 +404,11 @@ namespace Oje.ProposalFormManager.Services
                 .FirstOrDefault();
 
             if (foundUserId <= 0)
-                ProposalFilledFormUseManager.Create(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro());
+                ProposalFilledFormUseService.Create(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro());
             else
-                ProposalFilledFormUseManager.Update(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro());
+                ProposalFilledFormUseService.Update(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro());
+
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(id.ToLongReturnZiro()), id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -414,7 +426,7 @@ namespace Oje.ProposalFormManager.Services
         public ProposalFilledFormPdfVM PdfDetailes(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             var result = new ProposalFilledFormPdfVM();
-            var foundItem = ProposalFilledFormAdminBaseQueryManager.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                .Where(t => t.Id == id)
                .Select(t => new
                {
@@ -434,7 +446,7 @@ namespace Oje.ProposalFormManager.Services
                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundJson = ProposalFilledFormJsonManager.GetBy(foundItem.Id);
+            var foundJson = ProposalFilledFormJsonService.GetBy(foundItem.Id);
             if (foundJson == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
             var jsonObj = JsonConvert.DeserializeObject<PageForm>(foundJson.JsonConfig);
@@ -492,8 +504,8 @@ namespace Oje.ProposalFormManager.Services
             result.id = foundItem.SiteSettingId + "/" + foundItem.ProposalFormId + "/" + foundItem.Id;
             result.ppfCreateDate = foundItem.CreateDate.ToFaDate();
             if (foundItem.GlobalInqueryId > 0)
-                GlobalInqueryManager.AppendInquiryData(foundItem.GlobalInqueryId.ToLongReturnZiro(), result.ProposalFilledFormPdfGroupVMs);
-            Company foundCompany = ProposalFilledFormCompanyManager.GetSelectedBy(foundItem.Id);
+                GlobalInqueryService.AppendInquiryData(foundItem.GlobalInqueryId.ToLongReturnZiro(), result.ProposalFilledFormPdfGroupVMs);
+            Company foundCompany = ProposalFilledFormCompanyService.GetSelectedBy(foundItem.Id);
             if (foundCompany != null)
             {
                 result.companyTitle = foundCompany.Title;
@@ -506,7 +518,7 @@ namespace Oje.ProposalFormManager.Services
         public ApiResult DeleteUploadImage(long? uploadFileId, long? proposalFilledFormId, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             var foundItemId =
-               ProposalFilledFormAdminBaseQueryManager
+               ProposalFilledFormAdminBaseQueryService
                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                .Where(t => t.Id == proposalFilledFormId)
               .Select(t => t.Id)
@@ -514,7 +526,9 @@ namespace Oje.ProposalFormManager.Services
             if (foundItemId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            UploadedFileManager.Delete(uploadFileId, siteSettingId, proposalFilledFormId, FileType.ProposalFilledForm);
+            UploadedFileService.Delete(uploadFileId, siteSettingId, proposalFilledFormId, FileType.ProposalFilledForm);
+
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormDocumentDeleted, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -524,7 +538,7 @@ namespace Oje.ProposalFormManager.Services
             if (mainFile == null)
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             var foundItemId =
-             ProposalFilledFormAdminBaseQueryManager
+             ProposalFilledFormAdminBaseQueryService
              .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
              .Where(t => t.Id == proposalFilledFormId)
             .Select(t => t.Id)
@@ -532,7 +546,9 @@ namespace Oje.ProposalFormManager.Services
             if (foundItemId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            UploadedFileManager.UploadNewFile(FileType.ProposalFilledForm, mainFile, userId, siteSettingId, proposalFilledFormId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true);
+            UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, mainFile, userId, siteSettingId, proposalFilledFormId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true);
+
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationType.ProposalFilledFormNewDocument, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -540,7 +556,7 @@ namespace Oje.ProposalFormManager.Services
         public object GetStatus(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             var foundItemId =
-            ProposalFilledFormAdminBaseQueryManager
+            ProposalFilledFormAdminBaseQueryService
             .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
             .Where(t => t.Id == id)
            .Select(t => t.Id)
@@ -563,16 +579,16 @@ namespace Oje.ProposalFormManager.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
             var foundItem =
-            ProposalFilledFormAdminBaseQueryManager
+            ProposalFilledFormAdminBaseQueryService
             .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
             .Where(t => t.Id == input.id)
             .FirstOrDefault();
 
             if (input.status == ProposalFilledFormStatus.Issuing && (foundItem.InsuranceStartDate == null || foundItem.InsuranceEndDate == null || string.IsNullOrEmpty(foundItem.InsuranceNumber)))
                 throw BException.GenerateNewException(BMessages.Change_Status_Can_Not_Be_Done);
-            if (input.status == ProposalFilledFormStatus.Issuing && !ProposalFilledFormCompanyManager.IsSelectedBy(foundItem.Id))
+            if (input.status == ProposalFilledFormStatus.Issuing && !ProposalFilledFormCompanyService.IsSelectedBy(foundItem.Id))
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
-            if (input.status == ProposalFilledFormStatus.Issuing && !ProposalFilledFormUseManager.HasAny(foundItem.Id, ProposalFilledFormUserType.Agent))
+            if (input.status == ProposalFilledFormStatus.Issuing && !ProposalFilledFormUseService.HasAny(foundItem.Id, ProposalFilledFormUserType.Agent))
                 throw BException.GenerateNewException(BMessages.Please_Select_Agent);
 
             if (foundItem == null)
@@ -581,7 +597,9 @@ namespace Oje.ProposalFormManager.Services
             foundItem.Status = input.status.Value;
             db.SaveChanges();
 
-            ProposalFilledFormStatusLogManager.Create(input.id, input.status, DateTime.Now, userId, input.description);
+            ProposalFilledFormStatusLogService.Create(input.id, input.status, DateTime.Now, userId, input.description);
+
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationTrigerService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -589,7 +607,7 @@ namespace Oje.ProposalFormManager.Services
         public object GetDefaultValuesForIssue(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             var foundItem =
-           ProposalFilledFormAdminBaseQueryManager
+           ProposalFilledFormAdminBaseQueryService
            .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
            .Where(t => t.Id == id)
            .Select(t => new
@@ -611,17 +629,17 @@ namespace Oje.ProposalFormManager.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Agent);
 
             string sDate = DateTime.Now.ToFaDate();
-            string eDate = (sDate.Split('/')[0].ToIntReturnZiro() + 1) + "/" + sDate.Split('/')[1]  + "/" + sDate.Split('/')[2];
+            string eDate = (sDate.Split('/')[0].ToIntReturnZiro() + 1) + "/" + sDate.Split('/')[1] + "/" + sDate.Split('/')[2];
 
             return new { id = id, startDate = sDate, endDate = eDate, insuranceNumber = DateTime.Now.ToFaDate() + "/" + foundItem.ssId + "/" + foundItem.ppId + "/" + foundItem.cid + "/" + foundItem.uid + "/" + foundItem.id };
         }
 
         public ApiResult IssuePPF(ProposalFilledFormIssueVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            IssuePPFValidation(input);
+            IssuePPFValidation(input, siteSettingId);
 
             var foundItem =
-                   ProposalFilledFormAdminBaseQueryManager
+                   ProposalFilledFormAdminBaseQueryService
                   .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
                   .Where(t => t.Id == input.id)
                   .FirstOrDefault();
@@ -635,12 +653,14 @@ namespace Oje.ProposalFormManager.Services
             foundItem.Status = ProposalFilledFormStatus.Issuing;
             db.SaveChanges();
 
-            ProposalFilledFormStatusLogManager.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description);
+            ProposalFilledFormStatusLogService.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description);
+
+            UserNotificationTrigerService.CreateNotificationForUser(userId, UserNotificationTrigerService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void IssuePPFValidation(ProposalFilledFormIssueVM input)
+        private void IssuePPFValidation(ProposalFilledFormIssueVM input, int? siteSettingId)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -662,6 +682,8 @@ namespace Oje.ProposalFormManager.Services
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
             if (input.id.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+            if (db.ProposalFilledForms.Any(t => t.SiteSettingId == siteSettingId && t.InsuranceNumber == input.insuranceNumber && t.Id != input.id))
+                throw BException.GenerateNewException(BMessages.Dublicate_Item);
 
         }
     }

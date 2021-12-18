@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ProvinceController: Controller
     {
-        readonly IProvinceManager ProvinceManager = null;
+        readonly IProvinceService ProvinceService = null;
         public ProvinceController(
-                IProvinceManager ProvinceManager
+                IProvinceService ProvinceService
             )
         {
-            this.ProvinceManager = ProvinceManager;
+            this.ProvinceService = ProvinceService;
         }
 
         [AreaConfig(Title = "استان", Icon = "fa-university", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProvinceVM input)
         {
-            return Json(ProvinceManager.Create(input));
+            return Json(ProvinceService.Create(input));
         }
 
         [AreaConfig(Title = "حذف استان", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ProvinceManager.Delete(input?.id));
+            return Json(ProvinceService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک استان", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ProvinceManager.GetById(input?.id));
+            return Json(ProvinceService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  استان", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProvinceVM input)
         {
-            return Json(ProvinceManager.Update(input));
+            return Json(ProvinceService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست استان", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProvinceMainGrid searchInput)
         {
-            return Json(ProvinceManager.GetList(searchInput));
+            return Json(ProvinceService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ProvinceMainGrid searchInput)
         {
-            var result = ProvinceManager.GetList(searchInput);
+            var result = ProvinceService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

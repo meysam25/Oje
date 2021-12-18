@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface ICompanyManager
+    public interface ICompanyService
     {
         ApiResult Create(CreateUpdateCompanyVM input, long? userId);
         ApiResult Delete(int? id);

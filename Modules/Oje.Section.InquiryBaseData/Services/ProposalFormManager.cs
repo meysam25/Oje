@@ -6,17 +6,17 @@ using System.Linq;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class ProposalFormManager: IProposalFormManager
+    public class ProposalFormService: IProposalFormService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        public ProposalFormManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        public ProposalFormService(
                 InquiryBaseDataDBContext db,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public bool Exist(int id, int? siteSettingId)
@@ -36,7 +36,7 @@ namespace Oje.Section.InquiryBaseData.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId || t.SiteSettingId == null);
             if (!string.IsNullOrEmpty(searchInput.search))

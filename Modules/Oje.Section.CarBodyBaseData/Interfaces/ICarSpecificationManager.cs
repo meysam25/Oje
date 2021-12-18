@@ -2,7 +2,7 @@
 
 namespace Oje.Section.CarBodyBaseData.Interfaces
 {
-    public interface ICarSpecificationManager
+    public interface ICarSpecificationService
     {
         object GetSelect2List(Select2SearchVM searchInput);
     }

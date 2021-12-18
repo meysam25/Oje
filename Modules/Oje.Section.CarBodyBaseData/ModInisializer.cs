@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager;
+﻿using Oje.AccountService;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
 using Oje.Section.CarBodyBaseData.Interfaces;
@@ -21,10 +21,10 @@ namespace Oje.Section.CarBodyBaseData
         {
             services.AddDbContextPool<CarBodyDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
-            services.AddScoped<ICarSpecificationManager, CarSpecificationManager>();
-            services.AddScoped<ICarSpecificationAmountManager, CarSpecificationAmountManager>();
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<ICarBodyCreateDatePercentManager, CarBodyCreateDatePercentManager>();
+            services.AddScoped<ICarSpecificationService, CarSpecificationService>();
+            services.AddScoped<ICarSpecificationAmountService, CarSpecificationAmountService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ICarBodyCreateDatePercentService, CarBodyCreateDatePercentService>();
         }
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Interfaces
+namespace Oje.AccountService.Interfaces
 {
-    public interface ICityManager
+    public interface ICityService
     {
         object GetLightList(int? provinceId);
     }

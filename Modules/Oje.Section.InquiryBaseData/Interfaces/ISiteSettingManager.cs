@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface ISiteSettingManager
+    public interface ISiteSettingService
     {
         object GetLightList();
     }

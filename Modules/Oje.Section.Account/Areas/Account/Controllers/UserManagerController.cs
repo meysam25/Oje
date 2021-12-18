@@ -1,6 +1,6 @@
-﻿using Oje.AccountManager.Filters;
-using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models;
+﻿using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -19,24 +19,24 @@ namespace Oje.Section.Account.Areas.Account.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = " هویتی (ادمین)", Icon = "fa-users", Title = "کاربران")]
     [CustomeAuthorizeFilter]
-    public class UserManagerController: Controller
+    public class UserServiceController: Controller
     {
-        readonly IUserManager UserManager = null;
-        readonly IRoleManager RoleManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly ICompanyManager CompanyManager = null;
+        readonly IUserService UserService = null;
+        readonly IRoleService RoleService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly ICompanyService CompanyService = null;
 
-        public UserManagerController(
-                IUserManager UserManager, 
-                IRoleManager RoleManager, 
-                ISiteSettingManager SiteSettingManager, 
-                ICompanyManager CompanyManager
+        public UserServiceController(
+                IUserService UserService, 
+                IRoleService RoleService, 
+                ISiteSettingService SiteSettingService, 
+                ICompanyService CompanyService
             )
         {
-            this.UserManager = UserManager;
-            this.RoleManager = RoleManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.CompanyManager = CompanyManager;
+            this.UserService = UserService;
+            this.RoleService = RoleService;
+            this.SiteSettingService = SiteSettingService;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "کاربران", Icon = "fa-user", IsMainMenuItem = true)]
@@ -44,7 +44,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "کاربران";
-            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserManager", new { area = "Account" });
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserService", new { area = "Account" });
             return View();
         }
 
@@ -53,49 +53,49 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Account", "UserManager")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Account", "UserService")));
         }
 
         [AreaConfig(Title = "افزودن کاربر جدید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult Create([FromForm]CreateUpdateUserVM input)
         {
-            return Json(UserManager.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(UserService.Create(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "حذف کاربر", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
-            return Json(UserManager.Delete(input?.id));
+            return Json(UserService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک کاربر", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input)
         {
-            return Json(UserManager.GetById(input?.id));
+            return Json(UserService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  کاربر", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateUserVM input)
         {
-            return Json(UserManager.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(UserService.Update(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]
         [HttpPost]
-        public ActionResult GetList([FromForm] UserManagerMainGrid searchInput)
+        public ActionResult GetList([FromForm] UserServiceMainGrid searchInput)
         {
-            return Json(UserManager.GetList(searchInput));
+            return Json(UserService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
-        public ActionResult Export([FromForm] UserManagerMainGrid searchInput)
+        public ActionResult Export([FromForm] UserServiceMainGrid searchInput)
         {
-            var result = UserManager.GetList(searchInput);
+            var result = UserService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -109,21 +109,21 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult GetRoleList()
         {
-            return Json(RoleManager.GetRoleLightList());
+            return Json(RoleService.GetRoleLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست تنظیمات")]
         [HttpPost]
         public IActionResult GetSettingList()
         {
-            return Json(SiteSettingManager.GetightList());
+            return Json(SiteSettingService.GetightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت های بیمه")]
         [HttpPost]
         public IActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetightList());
+            return Json(CompanyService.GetightList());
         }
     }
 }

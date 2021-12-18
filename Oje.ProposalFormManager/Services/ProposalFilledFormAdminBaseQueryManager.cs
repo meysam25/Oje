@@ -1,20 +1,20 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFilledFormAdminBaseQueryManager : IProposalFilledFormAdminBaseQueryManager
+    public class ProposalFilledFormAdminBaseQueryService : IProposalFilledFormAdminBaseQueryService
     {
         readonly ProposalFormDBContext db = null;
-        readonly AccountManager.Interfaces.IUserManager UserManager = null;
-        public ProposalFilledFormAdminBaseQueryManager(ProposalFormDBContext db, AccountManager.Interfaces.IUserManager UserManager)
+        readonly AccountService.Interfaces.IUserService UserService = null;
+        public ProposalFilledFormAdminBaseQueryService(ProposalFormDBContext db, AccountService.Interfaces.IUserService UserService)
         {
             this.db = db;
-            this.UserManager = UserManager;
+            this.UserService = UserService;
         }
 
         public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId, ProposalFilledFormStatus status)
@@ -25,9 +25,30 @@ namespace Oje.ProposalFormManager.Services
 
         public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId)
         {
-            var allChildUserId = UserManager.GetChildsUserId(userId.ToLongReturnZiro());
+            var allChildUserId = UserService.GetChildsUserId(userId.ToLongReturnZiro());
             return db.ProposalFilledForms
                 .Where(t => t.IsDelete != true && t.SiteSettingId == siteSettingId && (allChildUserId == null || t.ProposalFilledFormUsers.Any(tt => allChildUserId.Contains(tt.UserId))));
+        }
+
+        public string getControllerNameByStatus(ProposalFilledFormStatus status)
+        {
+            switch (status)
+            {
+                case ProposalFilledFormStatus.New:
+                    return "/ProposalFilledFormNew";
+                case ProposalFilledFormStatus.W8ForConfirm:
+                    return "/ProposalFilledFormW8ForConfirm";
+                case ProposalFilledFormStatus.NeedSpecialist:
+                    return "/ProposalFilledFormNeedSpecialist";
+                case ProposalFilledFormStatus.Confirm:
+                    return "/ProposalFilledFormConfirm";
+                case ProposalFilledFormStatus.Issuing:
+                    return "/ProposalFilledFormIssue";
+                case ProposalFilledFormStatus.NotIssue:
+                    return "/ProposalFilledFormNotIssue";
+                default:
+                    return "";
+            }
         }
     }
 }

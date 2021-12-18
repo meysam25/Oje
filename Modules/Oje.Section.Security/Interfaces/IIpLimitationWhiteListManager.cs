@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.Security.Interfaces
 {
-    public interface IIpLimitationWhiteListManager
+    public interface IIpLimitationWhiteListService
     {
         ApiResult Create(CreateUpdateIpLimitationWhiteListVM input);
         ApiResult Delete(int? id);

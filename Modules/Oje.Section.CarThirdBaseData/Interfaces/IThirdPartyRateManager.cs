@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarThirdBaseData.Interfaces
 {
-    public interface IThirdPartyRateManager
+    public interface IThirdPartyRateService
     {
         ApiResult Create(CreateUpdateThirdPartyRateVM input);
         ApiResult Delete(int? id);

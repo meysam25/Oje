@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Models.View;
 
-namespace Oje.AccountManager.Filters
+namespace Oje.AccountService.Filters
 {
     public class CustomeAuthorizeFilter : Attribute, IAuthorizationFilter
     {
@@ -28,9 +28,9 @@ namespace Oje.AccountManager.Filters
                 (context.HttpContext.Request.RouteValues.ContainsKey("area") ? "/" + context.HttpContext.Request.RouteValues["area"] : "") +
                 (context.HttpContext.Request.RouteValues.ContainsKey("controller") ? "/" + context.HttpContext.Request.RouteValues["controller"] : "") +
                 (context.HttpContext.Request.RouteValues.ContainsKey("action") ? "/" + context.HttpContext.Request.RouteValues["action"] : "");
-            IUserManager UserManager = context.HttpContext.RequestServices.GetService(typeof(IUserManager)) as IUserManager;
-            ISiteSettingManager SiteSettingManager = context.HttpContext.RequestServices.GetService(typeof(ISiteSettingManager)) as ISiteSettingManager;
-            var foundSetting = SiteSettingManager.GetSiteSetting();
+            IUserService UserService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
+            ISiteSettingService SiteSettingService = context.HttpContext.RequestServices.GetService(typeof(ISiteSettingService)) as ISiteSettingService;
+            var foundSetting = SiteSettingService.GetSiteSetting();
             if (foundSetting != null && context.HttpContext.Request.Cookies.ContainsKey("login"))
             {
                 loginCValue = context.HttpContext.Request.Cookies["login"];
@@ -42,7 +42,7 @@ namespace Oje.AccountManager.Filters
                         if (!UserAccessCaches.Any(t => t.UserId == loginUser.UserId) ||
                             UserAccessCaches.Where(t => t.UserId == loginUser.UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)
                         {
-                            var userAccess = UserManager.GetUserSections(loginUser.UserId);
+                            var userAccess = UserService.GetUserSections(loginUser.UserId);
                             var foundItem = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
                             if (foundItem == null)
                                 UserAccessCaches.Add(new UserAccessCache() { UserId = loginUser.UserId, Actions = userAccess });

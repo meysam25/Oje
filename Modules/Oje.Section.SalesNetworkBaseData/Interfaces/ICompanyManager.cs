@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.SalesNetworkBaseData.Interfaces
 {
-    public interface ICompanyManager
+    public interface ICompanyService
     {
         object GetLightList();
     }

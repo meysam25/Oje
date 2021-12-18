@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface IJobManager
+    public interface IJobService
     {
         ApiResult Create(CreateUpdateJobVM input);
         ApiResult Delete(int? id);

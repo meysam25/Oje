@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IInquiryCompanyLimitManager
+    public interface IInquiryCompanyLimitService
     {
         ApiResult Create(CreateUpdateInquiryCompanyLimitVM input);
         ApiResult Delete(int? id);

@@ -1,30 +1,30 @@
-﻿using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models.View;
+﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Services;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class SiteInfoManager: ISiteInfoManager
+    public class SiteInfoService: ISiteInfoService
     {
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        public SiteInfoManager(
-                IUserManager UserManager,
-                ISiteSettingManager SiteSettingManager
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        public SiteInfoService(
+                IUserService UserService,
+                ISiteSettingService SiteSettingService
             )
         {
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public SiteInfoVM GetInfo()
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
             return new()
             {
-                siteSettingId = SiteSettingManager.GetSiteSetting()?.Id,
+                siteSettingId = SiteSettingService.GetSiteSetting()?.Id,
                 loginUserId = loginUserId,
-                childUserIds = loginUserId != null && loginUserId > 0 ? UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro()) : null 
+                childUserIds = loginUserId != null && loginUserId > 0 ? UserService.GetChildsUserId(loginUserId.ToLongReturnZiro()) : null 
             };
         }
     }

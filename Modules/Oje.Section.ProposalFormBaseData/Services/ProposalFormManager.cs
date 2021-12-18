@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.AccountManager.Interfaces;
+using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -17,21 +17,21 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class ProposalFormManager : Interfaces.IProposalFormManager
+    public class ProposalFormService : Interfaces.IProposalFormService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly IUploadedFileManager UploadedFileManager = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly IUploadedFileService UploadedFileService = null;
 
-        public ProposalFormManager(
+        public ProposalFormService(
                 ProposalFormBaseDataDBContext db,
-                ISiteSettingManager SiteSettingManager,
-                IUploadedFileManager UploadedFileManager
+                ISiteSettingService SiteSettingService,
+                IUploadedFileService UploadedFileService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
-            this.UploadedFileManager = UploadedFileManager;
+            this.SiteSettingService = SiteSettingService;
+            this.UploadedFileService = UploadedFileService;
         }
 
         public ApiResult Create(CreateUpdateProposalFormVM input, long? userId)
@@ -56,7 +56,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
             if (input.rules != null && input.rules.Length > 0)
             {
-                newItem.RulesFile = UploadedFileManager.UploadNewFile(FileType.ProposalFormRules, input.rules, userId, null, newItem.Id, ".pdf,.doc,.docx", false);
+                newItem.RulesFile = UploadedFileService.UploadNewFile(FileType.ProposalFormRules, input.rules, userId, null, newItem.Id, ".pdf,.doc,.docx", false);
             }
             db.SaveChanges();
 
@@ -203,7 +203,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
             if (input.rules != null && input.rules.Length > 0)
             {
-                foundItem.RulesFile = UploadedFileManager.UploadNewFile(FileType.ProposalFormRules, input.rules, userId, null, foundItem.Id, ".pdf,.doc,.docx", false);
+                foundItem.RulesFile = UploadedFileService.UploadNewFile(FileType.ProposalFormRules, input.rules, userId, null, foundItem.Id, ".pdf,.doc,.docx", false);
             }
 
             db.SaveChanges();
@@ -228,7 +228,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId || t.SiteSettingId == null);
             if (!string.IsNullOrEmpty(searchInput.search))

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface ISiteSettingManager
+    public interface ISiteSettingService
     {
         ApiResult Create(CreateUpdateSiteSettingVM input, long? userId);
         ApiResult Delete(int? id);

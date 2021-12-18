@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,18 +20,18 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class InquiryDurationController: Controller
     {
-        readonly IInquiryDurationManager InquiryDurationManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
+        readonly IInquiryDurationService InquiryDurationService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IProposalFormService ProposalFormService = null;
         public InquiryDurationController(
-                IInquiryDurationManager InquiryDurationManager,
-                ICompanyManager CompanyManager,
-                IProposalFormManager ProposalFormManager
+                IInquiryDurationService InquiryDurationService,
+                ICompanyService CompanyService,
+                IProposalFormService ProposalFormService
             )
         {
-            this.InquiryDurationManager = InquiryDurationManager;
-            this.CompanyManager = CompanyManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.InquiryDurationService = InquiryDurationService;
+            this.CompanyService = CompanyService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [AreaConfig(Title = "مدت زمان بیمه نامه", Icon = "fa-calendar-day", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInquiryDurationVM input)
         {
-            return Json(InquiryDurationManager.Create(input));
+            return Json(InquiryDurationService.Create(input));
         }
 
         [AreaConfig(Title = "حذف مدت زمان بیمه نامه", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(InquiryDurationManager.Delete(input?.id));
+            return Json(InquiryDurationService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک مدت زمان بیمه نامه", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(InquiryDurationManager.GetById(input?.id));
+            return Json(InquiryDurationService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  مدت زمان بیمه نامه", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInquiryDurationVM input)
         {
-            return Json(InquiryDurationManager.Update(input));
+            return Json(InquiryDurationService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست مدت زمان بیمه نامه", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InquiryDurationMainGrid searchInput)
         {
-            return Json(InquiryDurationManager.GetList(searchInput));
+            return Json(InquiryDurationService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InquiryDurationMainGrid searchInput)
         {
-            var result = InquiryDurationManager.GetList(searchInput);
+            var result = InquiryDurationService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -104,14 +104,14 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

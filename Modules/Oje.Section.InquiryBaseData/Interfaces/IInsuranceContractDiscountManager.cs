@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IInsuranceContractDiscountManager
+    public interface IInsuranceContractDiscountService
     {
         ApiResult Create(CreateUpdateInsuranceContractDiscountVM input);
         ApiResult Delete(int? id);

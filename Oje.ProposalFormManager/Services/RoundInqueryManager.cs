@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class RoundInqueryManager: IRoundInqueryManager
+    public class RoundInqueryService: IRoundInqueryService
     {
         readonly ProposalFormDBContext db = null;
-        public RoundInqueryManager(ProposalFormDBContext db)
+        public RoundInqueryService(ProposalFormDBContext db)
         {
             this.db = db;
         }

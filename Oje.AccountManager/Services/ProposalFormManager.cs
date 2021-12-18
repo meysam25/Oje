@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Services.EContext;
+using Oje.AccountService.Interfaces;
+using Oje.AccountService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using System;
@@ -9,12 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class ProposalFormManager : IProposalFormManager
+    public class ProposalFormService : IProposalFormService
     {
         readonly AccountDBContext db = null;
-        public ProposalFormManager(AccountDBContext db)
+        public ProposalFormService(AccountDBContext db)
         {
             this.db = db;
         }

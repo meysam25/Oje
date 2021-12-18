@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.DB;
-using Oje.FireInsuranceManager.Models.View;
-using Oje.FireInsuranceManager.Services.EContext;
+using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.DB;
+using Oje.FireInsuranceService.Models.View;
+using Oje.FireInsuranceService.Services.EContext;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -13,88 +13,88 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class FireInsuranceRateManager : IFireInsuranceRateManager
+    public class FireInsuranceRateService : IFireInsuranceRateService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        readonly IProvinceManager ProvinceManager = null;
-        readonly ICityManager CityManager = null;
-        readonly IFireInsuranceBuildingUnitValueManager FireInsuranceBuildingUnitValueManager = null;
-        readonly IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager = null;
-        readonly IFireInsuranceBuildingBodyManager FireInsuranceBuildingBodyManager = null;
-        readonly IFireInsuranceBuildingAgeManager FireInsuranceBuildingAgeManager = null;
-        readonly ITaxManager TaxManager = null;
-        readonly IDutyManager DutyManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IInquiryMaxDiscountManager InquiryMaxDiscountManager = null;
-        readonly IInquiryCompanyLimitManager InquiryCompanyLimitManager = null;
-        readonly IInquiryDurationManager InquiryDurationManager = null;
-        readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
-        readonly IGlobalDiscountManager GlobalDiscountManager = null;
-        readonly ICashPayDiscountManager CashPayDiscountManager = null;
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        readonly IGlobalInputInqueryManager GlobalInputInqueryManager = null;
-        readonly IRoundInqueryManager RoundInqueryManager = null;
-        readonly IGlobalInqueryManager GlobalInqueryManager = null;
-        readonly IInqueryDescriptionManager InqueryDescriptionManager = null;
-        readonly IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager = null;
-        readonly IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager = null;
-        readonly IFireInsuranceCoverageManager FireInsuranceCoverageManager = null;
-        readonly IFireInsuranceCoverageCityDangerLevelManager FireInsuranceCoverageCityDangerLevelManager = null;
-        public FireInsuranceRateManager(
-                FireInsuranceManagerDBContext db,
-                IProvinceManager ProvinceManager,
-                ICityManager CityManager,
-                IFireInsuranceBuildingUnitValueManager FireInsuranceBuildingUnitValueManager,
-                IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager,
-                IFireInsuranceBuildingBodyManager FireInsuranceBuildingBodyManager,
-                IFireInsuranceBuildingAgeManager FireInsuranceBuildingAgeManager,
-                ITaxManager TaxManager,
-                IDutyManager DutyManager,
-                IProposalFormManager ProposalFormManager,
-                IInquiryMaxDiscountManager InquiryMaxDiscountManager,
-                IInquiryCompanyLimitManager InquiryCompanyLimitManager,
-                IInquiryDurationManager InquiryDurationManager,
-                IInsuranceContractDiscountManager InsuranceContractDiscountManager,
-                IGlobalDiscountManager GlobalDiscountManager,
-                ICashPayDiscountManager CashPayDiscountManager,
-                IPaymentMethodManager PaymentMethodManager,
-                IGlobalInputInqueryManager GlobalInputInqueryManager,
-                IRoundInqueryManager RoundInqueryManager,
-                IGlobalInqueryManager GlobalInqueryManager,
-                IInqueryDescriptionManager InqueryDescriptionManager,
-                IFireInsuranceTypeOfActivityManager FireInsuranceTypeOfActivityManager,
-                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager,
-                IFireInsuranceCoverageManager FireInsuranceCoverageManager,
-                IFireInsuranceCoverageCityDangerLevelManager FireInsuranceCoverageCityDangerLevelManager
+        readonly FireInsuranceServiceDBContext db = null;
+        readonly IProvinceService ProvinceService = null;
+        readonly ICityService CityService = null;
+        readonly IFireInsuranceBuildingUnitValueService FireInsuranceBuildingUnitValueService = null;
+        readonly IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService = null;
+        readonly IFireInsuranceBuildingBodyService FireInsuranceBuildingBodyService = null;
+        readonly IFireInsuranceBuildingAgeService FireInsuranceBuildingAgeService = null;
+        readonly ITaxService TaxService = null;
+        readonly IDutyService DutyService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IInquiryMaxDiscountService InquiryMaxDiscountService = null;
+        readonly IInquiryCompanyLimitService InquiryCompanyLimitService = null;
+        readonly IInquiryDurationService InquiryDurationService = null;
+        readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
+        readonly IGlobalDiscountService GlobalDiscountService = null;
+        readonly ICashPayDiscountService CashPayDiscountService = null;
+        readonly IPaymentMethodService PaymentMethodService = null;
+        readonly IGlobalInputInqueryService GlobalInputInqueryService = null;
+        readonly IRoundInqueryService RoundInqueryService = null;
+        readonly IGlobalInqueryService GlobalInqueryService = null;
+        readonly IInqueryDescriptionService InqueryDescriptionService = null;
+        readonly IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService = null;
+        readonly IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService = null;
+        readonly IFireInsuranceCoverageService FireInsuranceCoverageService = null;
+        readonly IFireInsuranceCoverageCityDangerLevelService FireInsuranceCoverageCityDangerLevelService = null;
+        public FireInsuranceRateService(
+                FireInsuranceServiceDBContext db,
+                IProvinceService ProvinceService,
+                ICityService CityService,
+                IFireInsuranceBuildingUnitValueService FireInsuranceBuildingUnitValueService,
+                IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService,
+                IFireInsuranceBuildingBodyService FireInsuranceBuildingBodyService,
+                IFireInsuranceBuildingAgeService FireInsuranceBuildingAgeService,
+                ITaxService TaxService,
+                IDutyService DutyService,
+                IProposalFormService ProposalFormService,
+                IInquiryMaxDiscountService InquiryMaxDiscountService,
+                IInquiryCompanyLimitService InquiryCompanyLimitService,
+                IInquiryDurationService InquiryDurationService,
+                IInsuranceContractDiscountService InsuranceContractDiscountService,
+                IGlobalDiscountService GlobalDiscountService,
+                ICashPayDiscountService CashPayDiscountService,
+                IPaymentMethodService PaymentMethodService,
+                IGlobalInputInqueryService GlobalInputInqueryService,
+                IRoundInqueryService RoundInqueryService,
+                IGlobalInqueryService GlobalInqueryService,
+                IInqueryDescriptionService InqueryDescriptionService,
+                IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService,
+                IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService,
+                IFireInsuranceCoverageService FireInsuranceCoverageService,
+                IFireInsuranceCoverageCityDangerLevelService FireInsuranceCoverageCityDangerLevelService
             )
         {
             this.db = db;
-            this.ProvinceManager = ProvinceManager;
-            this.CityManager = CityManager;
-            this.FireInsuranceBuildingUnitValueManager = FireInsuranceBuildingUnitValueManager;
-            this.FireInsuranceBuildingTypeManager = FireInsuranceBuildingTypeManager;
-            this.FireInsuranceBuildingBodyManager = FireInsuranceBuildingBodyManager;
-            this.FireInsuranceBuildingAgeManager = FireInsuranceBuildingAgeManager;
-            this.TaxManager = TaxManager;
-            this.DutyManager = DutyManager;
-            this.InquiryMaxDiscountManager = InquiryMaxDiscountManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.InquiryCompanyLimitManager = InquiryCompanyLimitManager;
-            this.InquiryDurationManager = InquiryDurationManager;
-            this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
-            this.GlobalDiscountManager = GlobalDiscountManager;
-            this.CashPayDiscountManager = CashPayDiscountManager;
-            this.PaymentMethodManager = PaymentMethodManager;
-            this.GlobalInputInqueryManager = GlobalInputInqueryManager;
-            this.RoundInqueryManager = RoundInqueryManager;
-            this.GlobalInqueryManager = GlobalInqueryManager;
-            this.InqueryDescriptionManager = InqueryDescriptionManager;
-            this.FireInsuranceTypeOfActivityManager = FireInsuranceTypeOfActivityManager;
-            this.FireInsuranceCoverageTitleManager = FireInsuranceCoverageTitleManager;
-            this.FireInsuranceCoverageManager = FireInsuranceCoverageManager;
-            this.FireInsuranceCoverageCityDangerLevelManager = FireInsuranceCoverageCityDangerLevelManager;
+            this.ProvinceService = ProvinceService;
+            this.CityService = CityService;
+            this.FireInsuranceBuildingUnitValueService = FireInsuranceBuildingUnitValueService;
+            this.FireInsuranceBuildingTypeService = FireInsuranceBuildingTypeService;
+            this.FireInsuranceBuildingBodyService = FireInsuranceBuildingBodyService;
+            this.FireInsuranceBuildingAgeService = FireInsuranceBuildingAgeService;
+            this.TaxService = TaxService;
+            this.DutyService = DutyService;
+            this.InquiryMaxDiscountService = InquiryMaxDiscountService;
+            this.ProposalFormService = ProposalFormService;
+            this.InquiryCompanyLimitService = InquiryCompanyLimitService;
+            this.InquiryDurationService = InquiryDurationService;
+            this.InsuranceContractDiscountService = InsuranceContractDiscountService;
+            this.GlobalDiscountService = GlobalDiscountService;
+            this.CashPayDiscountService = CashPayDiscountService;
+            this.PaymentMethodService = PaymentMethodService;
+            this.GlobalInputInqueryService = GlobalInputInqueryService;
+            this.RoundInqueryService = RoundInqueryService;
+            this.GlobalInqueryService = GlobalInqueryService;
+            this.InqueryDescriptionService = InqueryDescriptionService;
+            this.FireInsuranceTypeOfActivityService = FireInsuranceTypeOfActivityService;
+            this.FireInsuranceCoverageTitleService = FireInsuranceCoverageTitleService;
+            this.FireInsuranceCoverageService = FireInsuranceCoverageService;
+            this.FireInsuranceCoverageCityDangerLevelService = FireInsuranceCoverageCityDangerLevelService;
         }
 
         public object Inquiry(int? siteSettingId, FireInsuranceInquiryVM input)
@@ -106,7 +106,7 @@ namespace Oje.FireInsuranceManager.Services
                 if (filledObj.Companies != null && filledObj.Companies.Count > 0)
                 {
                     List<GlobalInquery> result = new List<GlobalInquery>();
-                    long GlobalInputInqueryId = GlobalInputInqueryManager.Create(input, siteSettingId);
+                    long GlobalInputInqueryId = GlobalInputInqueryService.Create(input, siteSettingId);
 
                     addBasePrice(filledObj, result, GlobalInputInqueryId, siteSettingId);
                     addCacleForBuildingAge(filledObj, result);
@@ -118,7 +118,7 @@ namespace Oje.FireInsuranceManager.Services
                     addCacleAddCashDiscount(result, filledObj);
                     InquiryCalceTaxAndDuty(result, filledObj);
 
-                    GlobalInqueryManager.Create(result);
+                    GlobalInqueryService.Create(result);
 
                     return calceResponeForInquiry(result, filledObj, input);
                 }
@@ -421,7 +421,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (!string.IsNullOrEmpty(discountCode))
             {
-                GlobalDiscount foundDiscountCode = GlobalDiscountManager.GetByCode(discountCode, siteSettingId, objPack.ProposalForm?.Id);
+                GlobalDiscount foundDiscountCode = GlobalDiscountService.GetByCode(discountCode, siteSettingId, objPack.ProposalForm?.Id);
                 if (foundDiscountCode != null)
                 {
                     foreach (var newQueryItem in result)
@@ -630,12 +630,12 @@ namespace Oje.FireInsuranceManager.Services
 
         private void fillFireInsuranceCoverageCityDangerLevel(FireInsuranceInquiryFilledObj result)
         {
-            result.FireInsuranceCoverageCityDangerLevels = FireInsuranceCoverageCityDangerLevelManager.GetList(result.City?.FireDangerGroupLevel);
+            result.FireInsuranceCoverageCityDangerLevels = FireInsuranceCoverageCityDangerLevelService.GetList(result.City?.FireDangerGroupLevel);
         }
 
         private void fillFireInsuranceCoverage(FireInsuranceInquiryFilledObj result)
         {
-            result.FireInsuranceCoverages = FireInsuranceCoverageManager.GetList(result.ProposalForm?.Id, result.Companies.Select(t => t.Id).ToList());
+            result.FireInsuranceCoverages = FireInsuranceCoverageService.GetList(result.ProposalForm?.Id, result.Companies.Select(t => t.Id).ToList());
         }
 
         private void validateAndFillFireInsuranceTypeOfActivities(FireInsuranceInquiryFilledObj result, FireInsuranceInquiryVM input)
@@ -650,7 +650,7 @@ namespace Oje.FireInsuranceManager.Services
                             allTitleIds.Add(title.Id);
                     }
                 var foundAllActivityIds = input.exteraQuestions.Where(t => allTitleIds.Contains(t.id)).Select(t => t.value.ToIntReturnZiro()).Where(t => t > 0).ToList();
-                result.FireInsuranceTypeOfActivities = FireInsuranceTypeOfActivityManager.GetBy(foundAllActivityIds);
+                result.FireInsuranceTypeOfActivities = FireInsuranceTypeOfActivityService.GetBy(foundAllActivityIds);
                 //if (foundAllActivityIds.Count != result.FireInsuranceTypeOfActivities.Count)
                 //    throw BException.GenerateNewException(BMessages.Validation_Error);
 
@@ -664,7 +664,7 @@ namespace Oje.FireInsuranceManager.Services
                 var allIds = input.exteraQuestions.Where(t => t.id > 0).Select(t => t.id).ToList();
                 if (allIds.Count != input.exteraQuestions.Count)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
-                result.FireInsuranceCoverageTitles = FireInsuranceCoverageTitleManager.GetBy(allIds);
+                result.FireInsuranceCoverageTitles = FireInsuranceCoverageTitleService.GetBy(allIds);
                 if (result.FireInsuranceCoverageTitles.Count != allIds.Count)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
             }
@@ -672,12 +672,12 @@ namespace Oje.FireInsuranceManager.Services
 
         private void fillInqueryDescription(FireInsuranceInquiryFilledObj result, int? siteSettingId)
         {
-            result.InqueryDescriptions = InqueryDescriptionManager.GetBy(result.ProposalForm?.Id, siteSettingId);
+            result.InqueryDescriptions = InqueryDescriptionService.GetBy(result.ProposalForm?.Id, siteSettingId);
         }
 
         private void fillRoundInquey(FireInsuranceInquiryFilledObj result, int? siteSettingId)
         {
-            result.RoundInquery = RoundInqueryManager.GetBy(result.ProposalForm?.Id, siteSettingId);
+            result.RoundInquery = RoundInqueryService.GetBy(result.ProposalForm?.Id, siteSettingId);
         }
 
         private void validateAndCaclulateSarmayeh(FireInsuranceInquiryFilledObj result, FireInsuranceInquiryVM input)
@@ -710,24 +710,24 @@ namespace Oje.FireInsuranceManager.Services
 
         private void validateAndFillPayemntMethod(FireInsuranceInquiryFilledObj result, int? siteSettingId)
         {
-            result.PaymentMethods = PaymentMethodManager.GetBy(result.ProposalForm?.Id, siteSettingId);
+            result.PaymentMethods = PaymentMethodService.GetBy(result.ProposalForm?.Id, siteSettingId);
         }
 
         private void validateAndFillCashPayDiscount(FireInsuranceInquiryFilledObj result, int? siteSettingId)
         {
-            result.CashPayDiscounts = CashPayDiscountManager.GetBy(result.ProposalForm?.Id, siteSettingId);
+            result.CashPayDiscounts = CashPayDiscountService.GetBy(result.ProposalForm?.Id, siteSettingId);
         }
 
         private void validateAndFillGlobalDiscount(FireInsuranceInquiryFilledObj result, int? siteSettingId)
         {
-            result.GlobalDiscounts = GlobalDiscountManager.GetAutoDiscountList(result.ProposalForm?.Id, siteSettingId);
+            result.GlobalDiscounts = GlobalDiscountService.GetAutoDiscountList(result.ProposalForm?.Id, siteSettingId);
         }
 
         private void validateAndFillInsuranceContractDiscount(FireInsuranceInquiryFilledObj result, int? siteSettingId, FireInsuranceInquiryVM input)
         {
             if (input.discountContractId.ToIntReturnZiro() > 0)
             {
-                result.InsuranceContractDiscount = InsuranceContractDiscountManager.GetBy(siteSettingId, input.discountContractId, ProposalFormType.FireInsurance);
+                result.InsuranceContractDiscount = InsuranceContractDiscountService.GetBy(siteSettingId, input.discountContractId, ProposalFormType.FireInsurance);
                 if (result.InsuranceContractDiscount == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
                 input.discountContractId_Title = result.InsuranceContractDiscount.Title;
@@ -743,7 +743,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (input.dayLimitation.ToIntReturnZiro() > 0)
             {
-                result.InquiryDuration = InquiryDurationManager.GetBy(siteSettingId, result.ProposalForm?.Id, input.dayLimitation);
+                result.InquiryDuration = InquiryDurationService.GetBy(siteSettingId, result.ProposalForm?.Id, input.dayLimitation);
                 if (result.InquiryDuration == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
                 input.dayLimitation_Title = result.InquiryDuration.Title;
@@ -757,7 +757,7 @@ namespace Oje.FireInsuranceManager.Services
 
         private void validateAndFillValidCompanies(FireInsuranceInquiryFilledObj result, int? siteSettingId, FireInsuranceInquiryVM input)
         {
-            result.Companies = InquiryCompanyLimitManager.GetCompanies(siteSettingId, InquiryCompanyLimitType.Fire);
+            result.Companies = InquiryCompanyLimitService.GetCompanies(siteSettingId, InquiryCompanyLimitType.Fire);
             if (result.Companies != null && input.comIds != null && input.comIds.Count > 0)
                 result.Companies = result.Companies.Where(t => input.comIds.Contains(t.Id)).ToList();
             if (result.Companies.Count == 0)
@@ -766,31 +766,31 @@ namespace Oje.FireInsuranceManager.Services
 
         private void validateAndFillInquiryMaxDiscount(FireInsuranceInquiryFilledObj result, int? siteSettingId)
         {
-            result.InquiryMaxDiscounts = InquiryMaxDiscountManager.GetByFormId(result?.ProposalForm?.Id, siteSettingId);
+            result.InquiryMaxDiscounts = InquiryMaxDiscountService.GetByFormId(result?.ProposalForm?.Id, siteSettingId);
         }
 
         private void validateAndFillProposalForm(FireInsuranceInquiryFilledObj result, int? siteSettingId)
         {
-            result.ProposalForm = ProposalFormManager.GetByType(ProposalFormType.FireInsurance, siteSettingId);
+            result.ProposalForm = ProposalFormService.GetByType(ProposalFormType.FireInsurance, siteSettingId);
             if (result.ProposalForm == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
         private void validateAndFillDuty(FireInsuranceInquiryFilledObj result)
         {
-            result.Duty = DutyManager.GetLastActiveItem();
+            result.Duty = DutyService.GetLastActiveItem();
         }
 
         private void validateAndFillTax(FireInsuranceInquiryFilledObj result)
         {
-            result.Tax = TaxManager.GetLastActiveItem();
+            result.Tax = TaxService.GetLastActiveItem();
         }
 
         private void validateAndFillShowStatus(FireInsuranceInquiryVM input, FireInsuranceInquiryFilledObj result)
         {
             if (input.showStatus.ToIntReturnZiro() > 0)
             {
-                var allValidStatus = EnumManager.GetEnum("PriceDiscountStatus");
+                var allValidStatus = EnumService.GetEnum("PriceDiscountStatus");
                 if (!allValidStatus.Any(t => t.id == input.showStatus + ""))
                     throw BException.GenerateNewException(BMessages.Payment_Method_Is_Not_Valid);
                 input.showStatus_Title = allValidStatus.Where(t => t.id == input.showStatus + "").Select(t => t.title).FirstOrDefault();
@@ -803,7 +803,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (input.buildingAge.ToIntReturnZiro() > 0)
             {
-                result.FireInsuranceBuildingAge = FireInsuranceBuildingAgeManager.GetById(input.buildingAge);
+                result.FireInsuranceBuildingAge = FireInsuranceBuildingAgeService.GetById(input.buildingAge);
                 if (result.FireInsuranceBuildingAge == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
                 input.buildingAge_Title = result.FireInsuranceBuildingAge.Title;
@@ -816,7 +816,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (input.bodyId.ToIntReturnZiro() > 0)
             {
-                result.FireInsuranceBuildingBody = FireInsuranceBuildingBodyManager.GetById(input.bodyId);
+                result.FireInsuranceBuildingBody = FireInsuranceBuildingBodyService.GetById(input.bodyId);
                 if (result.FireInsuranceBuildingBody == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
                 input.bodyId_Title = result.FireInsuranceBuildingBody.Title;
@@ -829,7 +829,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (input.typeId.ToIntReturnZiro() > 0)
             {
-                result.FireInsuranceBuildingType = FireInsuranceBuildingTypeManager.GetById(input.typeId);
+                result.FireInsuranceBuildingType = FireInsuranceBuildingTypeService.GetById(input.typeId);
                 if (result.FireInsuranceBuildingType == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
                 input.typeId_Title = result.FireInsuranceBuildingType.Title;
@@ -842,7 +842,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (input.value.ToIntReturnZiro() > 0)
             {
-                result.FireInsuranceBuildingUnitValue = FireInsuranceBuildingUnitValueManager.GetById(input.value);
+                result.FireInsuranceBuildingUnitValue = FireInsuranceBuildingUnitValueService.GetById(input.value);
                 if (result.FireInsuranceBuildingUnitValue == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
                 input.value_Title = result.FireInsuranceBuildingUnitValue.Title;
@@ -855,7 +855,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (input.cityId.ToIntReturnZiro() > 0)
             {
-                result.City = CityManager.GetById(input.cityId);
+                result.City = CityService.GetById(input.cityId);
                 if (result.City == null)
                     throw BException.GenerateNewException(BMessages.Please_Select_City);
                 input.cityId_Title = result.City.Title;
@@ -868,7 +868,7 @@ namespace Oje.FireInsuranceManager.Services
         {
             if (input.provinceId.ToIntReturnZiro() > 0)
             {
-                result.Province = ProvinceManager.GetProvinceById(input.provinceId);
+                result.Province = ProvinceService.GetProvinceById(input.provinceId);
                 if (result.Province == null)
                     throw BException.GenerateNewException(BMessages.Please_Select_Province);
                 input.provinceId_Title = result.Province.Title;

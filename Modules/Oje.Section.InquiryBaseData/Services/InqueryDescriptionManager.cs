@@ -12,10 +12,10 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class InqueryDescriptionManager : IInqueryDescriptionManager
+    public class InqueryDescriptionService : IInqueryDescriptionService
     {
         readonly InquiryBaseDataDBContext db = null;
-        public InqueryDescriptionManager(
+        public InqueryDescriptionService(
                 InquiryBaseDataDBContext db
             )
         {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.DB;
-using Oje.FireInsuranceManager.Services.EContext;
+using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.DB;
+using Oje.FireInsuranceService.Services.EContext;
 using Oje.Infrastructure.Enums;
 using System;
 using System.Collections.Generic;
@@ -9,12 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class InquiryCompanyLimitManager: IInquiryCompanyLimitManager
+    public class InquiryCompanyLimitService: IInquiryCompanyLimitService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        public InquiryCompanyLimitManager(FireInsuranceManagerDBContext db)
+        readonly FireInsuranceServiceDBContext db = null;
+        public InquiryCompanyLimitService(FireInsuranceServiceDBContext db)
         {
             this.db = db;
         }

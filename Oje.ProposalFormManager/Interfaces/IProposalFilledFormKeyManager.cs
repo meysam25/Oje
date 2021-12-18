@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFilledFormKeyManager
+    public interface IProposalFilledFormKeyService
     {
         int CreateIfNeeded(string name);
     }

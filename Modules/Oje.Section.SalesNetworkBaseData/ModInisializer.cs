@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager;
+﻿using Oje.AccountService;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
 using Oje.Section.SalesNetworkBaseData.Interfaces;
@@ -23,9 +23,9 @@ namespace Oje.Section.SalesNetworkBaseData
                options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
            );
 
-            services.AddScoped<ISalesNetworkManager, SalesNetworkManager>();
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
+            services.AddScoped<ISalesNetworkService, SalesNetworkService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
         }
     }
 }

@@ -13,10 +13,10 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class JobDangerLevelManager : IJobDangerLevelManager
+    public class JobDangerLevelService : IJobDangerLevelService
     {
         readonly BaseDataDBContext db = null;
-        public JobDangerLevelManager(BaseDataDBContext db)
+        public JobDangerLevelService(BaseDataDBContext db)
         {
             this.db = db;
         }

@@ -1,16 +1,16 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFilledFormCompanyManager
+    public interface IProposalFilledFormCompanyService
     {
         void Create(long inquiryId, int? siteSettingId, long proposalFilledFormId, long proposalFilledFormPrice, int companyId, bool isSelected, long? loginUserId);
         void Create(string companyIds, long proposalFilledFormId, long? loginUserId);

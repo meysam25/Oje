@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager;
+﻿using Oje.AccountService;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
 using Oje.Section.FireBaseData.Interfaces;
@@ -23,18 +23,18 @@ namespace Oje.Section.FireBaseData
                 options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
             );
 
-            services.AddScoped<IFireInsuranceCoverageTitleManager, FireInsuranceCoverageTitleManager>();
-            services.AddScoped<IFireInsuranceCoverageManager, FireInsuranceCoverageManager>();
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
-            services.AddScoped<IFireInsuranceBuildingBodyManager, FireInsuranceBuildingBodyManager>();
-            services.AddScoped<IFireInsuranceBuildingTypeManager, FireInsuranceBuildingTypeManager>();
-            services.AddScoped<IFireInsuranceRateManager, FireInsuranceRateManager>();
-            services.AddScoped<IFireInsuranceBuildingUnitValueManager, FireInsuranceBuildingUnitValueManager>();
-            services.AddScoped<IFireInsuranceTypeOfActivityManager, FireInsuranceTypeOfActivityManager>();
-            services.AddScoped<IFireInsuranceCoverageActivityDangerLevelManager, FireInsuranceCoverageActivityDangerLevelManager>();
-            services.AddScoped<IFireInsuranceCoverageCityDangerLevelManager, FireInsuranceCoverageCityDangerLevelManager>();
-            services.AddScoped<IFireInsuranceBuildingAgeManager, FireInsuranceBuildingAgeManager>();
+            services.AddScoped<IFireInsuranceCoverageTitleService, FireInsuranceCoverageTitleService>();
+            services.AddScoped<IFireInsuranceCoverageService, FireInsuranceCoverageService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
+            services.AddScoped<IFireInsuranceBuildingBodyService, FireInsuranceBuildingBodyService>();
+            services.AddScoped<IFireInsuranceBuildingTypeService, FireInsuranceBuildingTypeService>();
+            services.AddScoped<IFireInsuranceRateService, FireInsuranceRateService>();
+            services.AddScoped<IFireInsuranceBuildingUnitValueService, FireInsuranceBuildingUnitValueService>();
+            services.AddScoped<IFireInsuranceTypeOfActivityService, FireInsuranceTypeOfActivityService>();
+            services.AddScoped<IFireInsuranceCoverageActivityDangerLevelService, FireInsuranceCoverageActivityDangerLevelService>();
+            services.AddScoped<IFireInsuranceCoverageCityDangerLevelService, FireInsuranceCoverageCityDangerLevelService>();
+            services.AddScoped<IFireInsuranceBuildingAgeService, FireInsuranceBuildingAgeService>();
         }
     }
 }

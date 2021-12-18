@@ -16,10 +16,10 @@ using Oje.Section.Security.Models.DB;
 
 namespace Oje.Section.Security.Services
 {
-    public class FileAccessRoleManager : IFileAccessRoleManager
+    public class FileAccessRoleService : IFileAccessRoleService
     {
         readonly SecurityDBContext db = null;
-        public FileAccessRoleManager(SecurityDBContext db)
+        public FileAccessRoleService(SecurityDBContext db)
         {
             this.db = db;
         }

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
@@ -17,21 +17,21 @@ namespace Oje.Section.SalesNetworkBaseData.Areas.SalesNetworkBaseData.Controller
     [CustomeAuthorizeFilter]
     public class SalesNetworkController: Controller
     {
-        readonly ISalesNetworkManager SalesNetworkManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly AccountManager.Interfaces.IUserManager UserManager = null;
+        readonly ISalesNetworkService SalesNetworkService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly AccountService.Interfaces.IUserService UserService = null;
         public SalesNetworkController(
-                ISalesNetworkManager SalesNetworkManager,
-                IProposalFormManager ProposalFormManager,
-                ICompanyManager CompanyManager,
-                AccountManager.Interfaces.IUserManager UserManager
+                ISalesNetworkService SalesNetworkService,
+                IProposalFormService ProposalFormService,
+                ICompanyService CompanyService,
+                AccountService.Interfaces.IUserService UserService
             )
         {
-            this.SalesNetworkManager = SalesNetworkManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.CompanyManager = CompanyManager;
-            this.UserManager = UserManager;
+            this.SalesNetworkService = SalesNetworkService;
+            this.ProposalFormService = ProposalFormService;
+            this.CompanyService = CompanyService;
+            this.UserService = UserService;
         }
 
         [AreaConfig(Title = "شبکه فروش", Icon = "fa-project-diagram", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.SalesNetworkBaseData.Areas.SalesNetworkBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateSalesNetworkVM input)
         {
-            return Json(SalesNetworkManager.Create(input));
+            return Json(SalesNetworkService.Create(input));
         }
 
         [AreaConfig(Title = "حذف شبکه فروش", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(SalesNetworkManager.Delete(input?.id));
+            return Json(SalesNetworkService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک شبکه فروش", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(SalesNetworkManager.GetById(input?.id));
+            return Json(SalesNetworkService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  شبکه فروش", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateSalesNetworkVM input)
         {
-            return Json(SalesNetworkManager.Update(input));
+            return Json(SalesNetworkService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست شبکه فروش", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] SalesNetworkMainGrid searchInput)
         {
-            return Json(SalesNetworkManager.GetList(searchInput));
+            return Json(SalesNetworkService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] SalesNetworkMainGrid searchInput)
         {
-            var result = SalesNetworkManager.GetList(searchInput);
+            var result = SalesNetworkService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -104,21 +104,21 @@ namespace Oje.Section.SalesNetworkBaseData.Areas.SalesNetworkBaseData.Controller
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
 
         [AreaConfig(Title = "مشاهده لیست بازاریاب", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetMarketerList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(UserManager.GetSelect2ListByType(searchInput, RoleType.Marketer));
+            return Json(UserService.GetSelect2ListByType(searchInput, RoleType.Marketer));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
     }
 }

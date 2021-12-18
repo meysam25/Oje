@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Interfaces
+namespace Oje.AccountService.Interfaces
 {
-    public interface IProposalFormManager
+    public interface IProposalFormService
     {
         object GetightListForSelect2(Select2SearchVM searchInput, int? siteSettingId);
         bool Exist(int? sitesettingId, int formId);

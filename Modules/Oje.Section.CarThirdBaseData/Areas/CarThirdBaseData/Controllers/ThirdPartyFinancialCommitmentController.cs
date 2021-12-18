@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyFinancialCommitmentController: Controller
     {
-        readonly IThirdPartyFinancialCommitmentManager ThirdPartyFinancialCommitmentManager = null;
+        readonly IThirdPartyFinancialCommitmentService ThirdPartyFinancialCommitmentService = null;
         public ThirdPartyFinancialCommitmentController(
-                IThirdPartyFinancialCommitmentManager ThirdPartyFinancialCommitmentManager
+                IThirdPartyFinancialCommitmentService ThirdPartyFinancialCommitmentService
             )
         {
-            this.ThirdPartyFinancialCommitmentManager = ThirdPartyFinancialCommitmentManager;
+            this.ThirdPartyFinancialCommitmentService = ThirdPartyFinancialCommitmentService;
         }
 
         [AreaConfig(Title = "تعهد مالی سال جاری", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyFinancialCommitmentVM input)
         {
-            return Json(ThirdPartyFinancialCommitmentManager.Create(input));
+            return Json(ThirdPartyFinancialCommitmentService.Create(input));
         }
 
         [AreaConfig(Title = "حذف تعهد مالی سال جاری", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyFinancialCommitmentManager.Delete(input?.id));
+            return Json(ThirdPartyFinancialCommitmentService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تعهد مالی سال جاری", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyFinancialCommitmentManager.GetById(input?.id));
+            return Json(ThirdPartyFinancialCommitmentService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تعهد مالی سال جاری", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyFinancialCommitmentVM input)
         {
-            return Json(ThirdPartyFinancialCommitmentManager.Update(input));
+            return Json(ThirdPartyFinancialCommitmentService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست تعهد مالی سال جاری", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyFinancialCommitmentMainGrid searchInput)
         {
-            return Json(ThirdPartyFinancialCommitmentManager.GetList(searchInput));
+            return Json(ThirdPartyFinancialCommitmentService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyFinancialCommitmentMainGrid searchInput)
         {
-            var result = ThirdPartyFinancialCommitmentManager.GetList(searchInput);
+            var result = ThirdPartyFinancialCommitmentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

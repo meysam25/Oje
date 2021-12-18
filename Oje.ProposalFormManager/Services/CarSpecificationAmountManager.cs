@@ -4,93 +4,93 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class CarSpecificationAmountManager : ICarSpecificationAmountManager
+    public class CarSpecificationAmountService : ICarSpecificationAmountService
     {
         readonly ProposalFormDBContext db = null;
-        readonly IGlobalInqueryManager GlobalInqueryManager = null;
-        readonly IGlobalInputInqueryManager GlobalInputInqueryManager = null;
-        readonly IGlobalDiscountManager GlobalDiscountManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IInquiryCompanyLimitManager InquiryCompanyLimitManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IVehicleTypeManager VehicleTypeManager = null;
-        readonly IVehicleSystemManager VehicleSystemManager = null;
-        readonly IVehicleUsageManager VehicleUsageManager = null;
-        readonly ICarExteraDiscountManager CarExteraDiscountManager = null;
-        readonly INoDamageDiscountManager NoDamageDiscountManager = null;
-        readonly ICashPayDiscountManager CashPayDiscountManager = null;
-        readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
-        readonly IInquiryDurationManager InquiryDurationManager = null;
-        readonly IRoundInqueryManager RoundInqueryManager = null;
-        readonly ICarSpecificationManager CarSpecificationManager = null;
-        readonly IInqueryDescriptionManager InqueryDescriptionManager = null;
-        readonly ITaxManager TaxManager = null;
-        readonly IDutyManager DutyManager = null;
-        readonly IInquiryMaxDiscountManager InquiryMaxDiscountManager = null;
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        readonly ICarBodyCreateDatePercentManager CarBodyCreateDatePercentManager = null;
+        readonly IGlobalInqueryService GlobalInqueryService = null;
+        readonly IGlobalInputInqueryService GlobalInputInqueryService = null;
+        readonly IGlobalDiscountService GlobalDiscountService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IInquiryCompanyLimitService InquiryCompanyLimitService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IVehicleTypeService VehicleTypeService = null;
+        readonly IVehicleSystemService VehicleSystemService = null;
+        readonly IVehicleUsageService VehicleUsageService = null;
+        readonly ICarExteraDiscountService CarExteraDiscountService = null;
+        readonly INoDamageDiscountService NoDamageDiscountService = null;
+        readonly ICashPayDiscountService CashPayDiscountService = null;
+        readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
+        readonly IInquiryDurationService InquiryDurationService = null;
+        readonly IRoundInqueryService RoundInqueryService = null;
+        readonly ICarSpecificationService CarSpecificationService = null;
+        readonly IInqueryDescriptionService InqueryDescriptionService = null;
+        readonly ITaxService TaxService = null;
+        readonly IDutyService DutyService = null;
+        readonly IInquiryMaxDiscountService InquiryMaxDiscountService = null;
+        readonly IPaymentMethodService PaymentMethodService = null;
+        readonly ICarBodyCreateDatePercentService CarBodyCreateDatePercentService = null;
 
-        public CarSpecificationAmountManager(
+        public CarSpecificationAmountService(
             ProposalFormDBContext db,
-            IGlobalInqueryManager GlobalInqueryManager,
-            IGlobalInputInqueryManager GlobalInputInqueryManager,
-            IGlobalDiscountManager GlobalDiscountManager,
-            IProposalFormManager ProposalFormManager,
-            IInquiryCompanyLimitManager InquiryCompanyLimitManager,
-            ICompanyManager CompanyManager,
-            IVehicleTypeManager VehicleTypeManager,
-            IVehicleSystemManager VehicleSystemManager,
-            IVehicleUsageManager VehicleUsageManager,
-            ICarExteraDiscountManager CarExteraDiscountManager,
-            INoDamageDiscountManager NoDamageDiscountManager,
-            ICashPayDiscountManager CashPayDiscountManager,
-            IInsuranceContractDiscountManager InsuranceContractDiscountManager,
-            IInquiryDurationManager InquiryDurationManager,
-            IRoundInqueryManager RoundInqueryManager,
-            ICarSpecificationManager CarSpecificationManager,
-            IInqueryDescriptionManager InqueryDescriptionManager,
-            ITaxManager TaxManager,
-            IDutyManager DutyManager,
-            IInquiryMaxDiscountManager InquiryMaxDiscountManager,
-            IPaymentMethodManager PaymentMethodManager,
-            ICarBodyCreateDatePercentManager CarBodyCreateDatePercentManager
+            IGlobalInqueryService GlobalInqueryService,
+            IGlobalInputInqueryService GlobalInputInqueryService,
+            IGlobalDiscountService GlobalDiscountService,
+            IProposalFormService ProposalFormService,
+            IInquiryCompanyLimitService InquiryCompanyLimitService,
+            ICompanyService CompanyService,
+            IVehicleTypeService VehicleTypeService,
+            IVehicleSystemService VehicleSystemService,
+            IVehicleUsageService VehicleUsageService,
+            ICarExteraDiscountService CarExteraDiscountService,
+            INoDamageDiscountService NoDamageDiscountService,
+            ICashPayDiscountService CashPayDiscountService,
+            IInsuranceContractDiscountService InsuranceContractDiscountService,
+            IInquiryDurationService InquiryDurationService,
+            IRoundInqueryService RoundInqueryService,
+            ICarSpecificationService CarSpecificationService,
+            IInqueryDescriptionService InqueryDescriptionService,
+            ITaxService TaxService,
+            IDutyService DutyService,
+            IInquiryMaxDiscountService InquiryMaxDiscountService,
+            IPaymentMethodService PaymentMethodService,
+            ICarBodyCreateDatePercentService CarBodyCreateDatePercentService
             )
         {
             this.db = db;
-            this.GlobalInqueryManager = GlobalInqueryManager;
-            this.GlobalInputInqueryManager = GlobalInputInqueryManager;
-            this.GlobalDiscountManager = GlobalDiscountManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.InquiryCompanyLimitManager = InquiryCompanyLimitManager;
-            this.CompanyManager = CompanyManager;
-            this.VehicleTypeManager = VehicleTypeManager;
-            this.VehicleSystemManager = VehicleSystemManager;
-            this.VehicleUsageManager = VehicleUsageManager;
-            this.CarExteraDiscountManager = CarExteraDiscountManager;
-            this.NoDamageDiscountManager = NoDamageDiscountManager;
-            this.CashPayDiscountManager = CashPayDiscountManager;
-            this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
-            this.InquiryDurationManager = InquiryDurationManager;
-            this.RoundInqueryManager = RoundInqueryManager;
-            this.CarSpecificationManager = CarSpecificationManager;
-            this.InqueryDescriptionManager = InqueryDescriptionManager;
-            this.TaxManager = TaxManager;
-            this.DutyManager = DutyManager;
-            this.InquiryMaxDiscountManager = InquiryMaxDiscountManager;
-            this.PaymentMethodManager = PaymentMethodManager;
-            this.CarBodyCreateDatePercentManager = CarBodyCreateDatePercentManager;
+            this.GlobalInqueryService = GlobalInqueryService;
+            this.GlobalInputInqueryService = GlobalInputInqueryService;
+            this.GlobalDiscountService = GlobalDiscountService;
+            this.ProposalFormService = ProposalFormService;
+            this.InquiryCompanyLimitService = InquiryCompanyLimitService;
+            this.CompanyService = CompanyService;
+            this.VehicleTypeService = VehicleTypeService;
+            this.VehicleSystemService = VehicleSystemService;
+            this.VehicleUsageService = VehicleUsageService;
+            this.CarExteraDiscountService = CarExteraDiscountService;
+            this.NoDamageDiscountService = NoDamageDiscountService;
+            this.CashPayDiscountService = CashPayDiscountService;
+            this.InsuranceContractDiscountService = InsuranceContractDiscountService;
+            this.InquiryDurationService = InquiryDurationService;
+            this.RoundInqueryService = RoundInqueryService;
+            this.CarSpecificationService = CarSpecificationService;
+            this.InqueryDescriptionService = InqueryDescriptionService;
+            this.TaxService = TaxService;
+            this.DutyService = DutyService;
+            this.InquiryMaxDiscountService = InquiryMaxDiscountService;
+            this.PaymentMethodService = PaymentMethodService;
+            this.CarBodyCreateDatePercentService = CarBodyCreateDatePercentService;
         }
 
         public object Inquiry(int? siteSettingId, CarBodyInquiryVM input)
@@ -101,7 +101,7 @@ namespace Oje.ProposalFormManager.Services
             {
                 CarBodyInquiryObjects objPack = fillRequiredObjectsAndValidate(input, siteSettingId);
 
-                long GlobalInputInqueryId = GlobalInputInqueryManager.Create(input, null, siteSettingId);
+                long GlobalInputInqueryId = GlobalInputInqueryService.Create(input, null, siteSettingId);
                 if (GlobalInputInqueryId > 0 && objPack.CarSpecificationAmounts != null && objPack.CarSpecificationAmounts.Count > 0 && objPack.VehicleUsage != null)
                 {
                     CreateGlobalInqueryObjectForEachCompanyS1(objPack, siteSettingId, GlobalInputInqueryId, result, input);
@@ -121,7 +121,7 @@ namespace Oje.ProposalFormManager.Services
                     addCacleAddCashDiscount(result, objPack);
                     InquiryCalceTaxAndDuty(result, objPack);
                 }
-                GlobalInqueryManager.Create(result);
+                GlobalInqueryService.Create(result);
 
                 return calceResponeForInquiry(result, objPack, input);
             }
@@ -235,55 +235,55 @@ namespace Oje.ProposalFormManager.Services
 
         private void fillAndValidateCarBodyCreateDatePercent(CarBodyInquiryObjects result)
         {
-            result.CarBodyCreateDatePercents = CarBodyCreateDatePercentManager.GetByList();
+            result.CarBodyCreateDatePercents = CarBodyCreateDatePercentService.GetByList();
         }
 
         private void filPaymentMethods(CarBodyInquiryObjects result, int? siteSettingId)
         {
-            result.PaymentMethods = PaymentMethodManager.GetList(siteSettingId, result.currentProposalForm?.Id);
+            result.PaymentMethods = PaymentMethodService.GetList(siteSettingId, result.currentProposalForm?.Id);
         }
 
         private void fillCashPayDiscounts(CarBodyInquiryObjects result, int? siteSettingId)
         {
-            result.CashPayDiscounts = CashPayDiscountManager.GetBySiteSettingAndProposalFormId(siteSettingId, result.currentProposalForm?.Id);
+            result.CashPayDiscounts = CashPayDiscountService.GetBySiteSettingAndProposalFormId(siteSettingId, result.currentProposalForm?.Id);
         }
 
         private void fillGlobalDiscounts(CarBodyInquiryObjects result, int? siteSettingId)
         {
-            result.GlobalDiscounts = GlobalDiscountManager.GetAutoDiscounts(result.currentProposalForm?.Id, siteSettingId);
+            result.GlobalDiscounts = GlobalDiscountService.GetAutoDiscounts(result.currentProposalForm?.Id, siteSettingId);
         }
 
         private void fillInquiryMaxDiscounts(CarBodyInquiryObjects result, int? siteSettingId)
         {
-            result.InquiryMaxDiscounts = InquiryMaxDiscountManager.GetByFormAndSiteSettingId(result.currentProposalForm?.Id, siteSettingId);
+            result.InquiryMaxDiscounts = InquiryMaxDiscountService.GetByFormAndSiteSettingId(result.currentProposalForm?.Id, siteSettingId);
         }
 
         private void fillTaxAndDuty(CarBodyInquiryObjects result)
         {
-            result.Tax = TaxManager.GetLastItem();
-            result.Duty = DutyManager.GetLastItem();
+            result.Tax = TaxService.GetLastItem();
+            result.Duty = DutyService.GetLastItem();
         }
 
         private void fillInqueryDescriptions(CarBodyInquiryObjects result, int? siteSettingId)
         {
-            result.InqueryDescriptions = InqueryDescriptionManager.GetByProposalFormId(result.currentProposalForm?.Id, siteSettingId);
+            result.InqueryDescriptions = InqueryDescriptionService.GetByProposalFormId(result.currentProposalForm?.Id, siteSettingId);
         }
 
         private void fillCarSpecification(CarBodyInquiryObjects result)
         {
-            result.CarSpecification = CarSpecificationManager.GetById(result.VehicleType?.CarSpecificationId);
+            result.CarSpecification = CarSpecificationService.GetById(result.VehicleType?.CarSpecificationId);
         }
 
         private void fillRoundInquery(CarBodyInquiryObjects result, int? siteSettingId)
         {
-            result.RoundInquery = RoundInqueryManager.GetBySiteSettingAndProposalForm(siteSettingId, result.currentProposalForm?.Id);
+            result.RoundInquery = RoundInqueryService.GetBySiteSettingAndProposalForm(siteSettingId, result.currentProposalForm?.Id);
         }
 
         private void fillAndValidateInquiryDuration(CarBodyInquiryObjects result, CarBodyInquiryVM input, int? siteSettingId)
         {
             if (input.dayLimitation.ToIntReturnZiro() > 0)
             {
-                result.InquiryDuration = InquiryDurationManager.GetById(siteSettingId, result?.currentProposalForm?.Id, input.dayLimitation);
+                result.InquiryDuration = InquiryDurationService.GetById(siteSettingId, result?.currentProposalForm?.Id, input.dayLimitation);
 
                 if (result.InquiryDuration == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -300,7 +300,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.discountContractId.ToIntReturnZiro() > 0)
             {
-                result.InsuranceContractDiscount = InsuranceContractDiscountManager.GetById(siteSettingId, result.currentProposalForm?.Id, input.discountContractId);
+                result.InsuranceContractDiscount = InsuranceContractDiscountService.GetById(siteSettingId, result.currentProposalForm?.Id, input.discountContractId);
                 if (result.InsuranceContractDiscount == null)
                     throw BException.GenerateNewException(BMessages.Insurance_Conteract_Not_Found);
                 input.discountContractId_Title = result.InsuranceContractDiscount.Title;
@@ -317,7 +317,7 @@ namespace Oje.ProposalFormManager.Services
             if (input.exteraQuestions != null && input.exteraQuestions.Count > 0)
             {
                 var allExtraDiscountCoverIDs = input.exteraQuestions.Select(t => t.id).ToList();
-                result.rightOptionDynamicFilterCTRLs = CarExteraDiscountManager.GetOptionSelectedCtrls(allExtraDiscountCoverIDs, result.currentProposalForm?.Id);
+                result.rightOptionDynamicFilterCTRLs = CarExteraDiscountService.GetOptionSelectedCtrls(allExtraDiscountCoverIDs, result.currentProposalForm?.Id);
 
                 if (result.rightOptionDynamicFilterCTRLs == null || result.rightOptionDynamicFilterCTRLs.Count == 0)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -332,7 +332,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.showStatus.ToIntReturnZiro() > 0)
             {
-                var allValidStatus = EnumManager.GetEnum("PriceDiscountStatus");
+                var allValidStatus = EnumService.GetEnum("PriceDiscountStatus");
                 if (!allValidStatus.Any(t => t.id == input.showStatus + ""))
                     throw BException.GenerateNewException(BMessages.Payment_Method_Is_Not_Valid);
                 input.showStatus_Title = allValidStatus.Where(t => t.id == input.showStatus + "").Select(t => t.title).FirstOrDefault();
@@ -341,7 +341,7 @@ namespace Oje.ProposalFormManager.Services
             {
                 input.showStatus_Title = null;
                 input.showStatus = null;
-                if (CashPayDiscountManager.HasAnyDebitPayment(siteSettingId, result.currentProposalForm?.Id))
+                if (CashPayDiscountService.HasAnyDebitPayment(siteSettingId, result.currentProposalForm?.Id))
                     throw BException.GenerateNewException(BMessages.Please_Select_Payment_Method);
             }
         }
@@ -350,7 +350,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.noDamageDiscountBody.ToIntReturnZiro() > 0)
             {
-                result.NoDamageDiscount = NoDamageDiscountManager.GetByFormId(result.currentProposalForm?.Id, input.noDamageDiscountBody);
+                result.NoDamageDiscount = NoDamageDiscountService.GetByFormId(result.currentProposalForm?.Id, input.noDamageDiscountBody);
                 if (result.NoDamageDiscount == null)
                     throw BException.GenerateNewException(BMessages.Please_Enter_NoDamage_Discount_Percent);
                 input.noDamageDiscountBody_Title = result.NoDamageDiscount.Title;
@@ -364,7 +364,7 @@ namespace Oje.ProposalFormManager.Services
 
         private void fillAndValidateCarExteraDiscountRequired(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            result.requiredValidDynamicCTRLs = CarExteraDiscountManager.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), input.havePrevInsurance > 0 ? true : false);
+            result.requiredValidDynamicCTRLs = CarExteraDiscountService.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), input.havePrevInsurance > 0 ? true : false);
             if (input.dynamicCTRLs != null && input.dynamicCTRLs.Count > 0)
             {
                 result.requiredSelectedDynamicCTRLs = result.requiredValidDynamicCTRLs.Where(t => t.CarExteraDiscountValues.Any(tt => input.dynamicCTRLs.Contains(tt.Id))).ToList();
@@ -387,7 +387,7 @@ namespace Oje.ProposalFormManager.Services
 
         private void fillAndValidateVehicleUsage(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            result.VehicleUsage = VehicleUsageManager.GetById(input.cUsage);
+            result.VehicleUsage = VehicleUsageService.GetById(input.cUsage);
             if (result.VehicleUsage == null)
                 throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
             input.cUsage_Title = result.VehicleUsage.Title;
@@ -395,7 +395,7 @@ namespace Oje.ProposalFormManager.Services
 
         void fillAndValidateVehicleSystem(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            string brandTitle = VehicleSystemManager.GetTitleById(input.brandId);
+            string brandTitle = VehicleSystemService.GetTitleById(input.brandId);
             if (string.IsNullOrEmpty(brandTitle))
                 throw BException.GenerateNewException(BMessages.Please_Select_VehicleBrand);
             input.brandId_Title = brandTitle;
@@ -403,7 +403,7 @@ namespace Oje.ProposalFormManager.Services
 
         void fillAndValidateVehicleType(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            result.VehicleType = VehicleTypeManager.GetById(input.vType);
+            result.VehicleType = VehicleTypeService.GetById(input.vType);
             if (result.VehicleType == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             input.vType_Title = result.VehicleType.Title;
@@ -436,7 +436,7 @@ namespace Oje.ProposalFormManager.Services
 
         void initIfHavePrevInsurance(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            result.prevInsuranceCompany = CompanyManager.GetById(input.havePrevInsurance);
+            result.prevInsuranceCompany = CompanyService.GetById(input.havePrevInsurance);
             if (result.prevInsuranceCompany == null)
                 throw BException.GenerateNewException(BMessages.Selected_Company_Is_Not_Valid);
             input.havePrevInsurance_Title = result.prevInsuranceCompany.Title;
@@ -450,7 +450,7 @@ namespace Oje.ProposalFormManager.Services
 
         void fillAndValidateValidCompany(CarBodyInquiryObjects result, CarBodyInquiryVM input, int? siteSettingId)
         {
-            result.validCompanies = InquiryCompanyLimitManager.GetCompanies(siteSettingId, InquiryCompanyLimitType.CarBody);
+            result.validCompanies = InquiryCompanyLimitService.GetCompanies(siteSettingId, InquiryCompanyLimitType.CarBody);
             if (result.validCompanies != null && result.validCompanies.Count > 0 && input.comIds != null && input.comIds.Count > 0)
                 result.validCompanies = result.validCompanies.Where(t => input.comIds.Contains(t.Id)).ToList();
             if (result.validCompanies.Count == 0)
@@ -459,7 +459,7 @@ namespace Oje.ProposalFormManager.Services
 
         void fillAndValidateProposalForm(CarBodyInquiryObjects result, int? siteSettingId)
         {
-            result.currentProposalForm = ProposalFormManager.GetByType(ProposalFormType.CarBody, siteSettingId);
+            result.currentProposalForm = ProposalFormService.GetByType(ProposalFormType.CarBody, siteSettingId);
             if (result.currentProposalForm == null)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
@@ -717,7 +717,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (!string.IsNullOrEmpty(discountCode))
             {
-                GlobalDiscount foundDiscountCode = GlobalDiscountManager.GetByCode(discountCode, siteSettingId, objPack.currentProposalForm?.Id);
+                GlobalDiscount foundDiscountCode = GlobalDiscountService.GetByCode(discountCode, siteSettingId, objPack.currentProposalForm?.Id);
                 if (foundDiscountCode != null)
                 {
                     if (foundDiscountCode.GlobalDiscountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId))

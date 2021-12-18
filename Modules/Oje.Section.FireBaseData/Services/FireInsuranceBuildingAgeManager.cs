@@ -9,10 +9,10 @@ using System.Linq;
 
 namespace Oje.Section.FireBaseData.Services
 {
-    public class FireInsuranceBuildingAgeManager: IFireInsuranceBuildingAgeManager
+    public class FireInsuranceBuildingAgeService: IFireInsuranceBuildingAgeService
     {
         readonly FireBaseDataDBContext db = null;
-        public FireInsuranceBuildingAgeManager(FireBaseDataDBContext db)
+        public FireInsuranceBuildingAgeService(FireBaseDataDBContext db)
         {
             this.db = db;
         }

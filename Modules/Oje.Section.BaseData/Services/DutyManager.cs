@@ -12,10 +12,10 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class DutyManager : IDutyManager
+    public class DutyService : IDutyService
     {
         readonly BaseDataDBContext db = null;
-        public DutyManager(
+        public DutyService(
                 BaseDataDBContext db
             )
         {

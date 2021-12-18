@@ -1,11 +1,11 @@
-﻿using Oje.AccountManager.Services;
+﻿using Oje.AccountService.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
-using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Services.EContext;
+using Oje.AccountService.Interfaces;
+using Oje.AccountService.Services.EContext;
 
-namespace Oje.AccountManager
+namespace Oje.AccountService
 {
     public static class AccountConfig
     {
@@ -16,16 +16,19 @@ namespace Oje.AccountManager
                     b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
             );
 
-            services.AddScoped<IUserManager, UserManager>();
-            services.AddScoped<ISectionManager, SectionManager>();
-            services.AddScoped<IRoleManager, RoleManager>();
-            services.AddScoped<IUploadedFileManager, UploadedFileManager>();
-            services.AddScoped<ISiteSettingManager, SiteSettingManager>();
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<ISiteInfoManager, SiteInfoManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISectionService, SectionService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IUploadedFileService, UploadedFileService>();
+            services.AddScoped<ISiteSettingService, SiteSettingService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ISiteInfoService, SiteInfoService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
             services.AddScoped<IProvinceService, ProvinceService>();
-            services.AddScoped<ICityManager, CityManager>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<IUserNotificationService, UserNotificationService>();
+            services.AddScoped<IUserNotificationTrigerService, UserNotificationTrigerService>();
+            services.AddScoped<IUserNotificationTemplateService, UserNotificationTemplateService>();
         }
     }
 }

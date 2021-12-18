@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyLifeCommitmentController: Controller
     {
-        readonly IThirdPartyLifeCommitmentManager ThirdPartyLifeCommitmentManager = null;
+        readonly IThirdPartyLifeCommitmentService ThirdPartyLifeCommitmentService = null;
         public ThirdPartyLifeCommitmentController(
-                IThirdPartyLifeCommitmentManager ThirdPartyLifeCommitmentManager
+                IThirdPartyLifeCommitmentService ThirdPartyLifeCommitmentService
             )
         {
-            this.ThirdPartyLifeCommitmentManager = ThirdPartyLifeCommitmentManager;
+            this.ThirdPartyLifeCommitmentService = ThirdPartyLifeCommitmentService;
         }
 
         [AreaConfig(Title = "تعهد جانی سال جاری", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyLifeCommitmentVM input)
         {
-            return Json(ThirdPartyLifeCommitmentManager.Create(input));
+            return Json(ThirdPartyLifeCommitmentService.Create(input));
         }
 
         [AreaConfig(Title = "حذف تعهد جانی سال جاری", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyLifeCommitmentManager.Delete(input?.id));
+            return Json(ThirdPartyLifeCommitmentService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تعهد جانی سال جاری", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyLifeCommitmentManager.GetById(input?.id));
+            return Json(ThirdPartyLifeCommitmentService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تعهد جانی سال جاری", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyLifeCommitmentVM input)
         {
-            return Json(ThirdPartyLifeCommitmentManager.Update(input));
+            return Json(ThirdPartyLifeCommitmentService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست تعهد جانی سال جاری", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyLifeCommitmentMainGrid searchInput)
         {
-            return Json(ThirdPartyLifeCommitmentManager.GetList(searchInput));
+            return Json(ThirdPartyLifeCommitmentService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyLifeCommitmentMainGrid searchInput)
         {
-            var result = ThirdPartyLifeCommitmentManager.GetList(searchInput);
+            var result = ThirdPartyLifeCommitmentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

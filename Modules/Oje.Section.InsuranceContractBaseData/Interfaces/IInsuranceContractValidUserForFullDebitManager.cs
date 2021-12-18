@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Interfaces
 {
-    public interface IInsuranceContractValidUserForFullDebitManager
+    public interface IInsuranceContractValidUserForFullDebitService
     {
         ApiResult Create(CreateUpdateInsuranceContractValidUserForFullDebitVM input);
         ApiResult Delete(long? id);

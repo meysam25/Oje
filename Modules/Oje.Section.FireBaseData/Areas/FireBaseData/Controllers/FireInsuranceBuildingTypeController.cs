@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class FireInsuranceBuildingTypeController: Controller
     {
-        readonly IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager = null;
+        readonly IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService = null;
         public FireInsuranceBuildingTypeController(
-                IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager
+                IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService
             )
         {
-            this.FireInsuranceBuildingTypeManager = FireInsuranceBuildingTypeManager;
+            this.FireInsuranceBuildingTypeService = FireInsuranceBuildingTypeService;
         }
 
         [AreaConfig(Title = "نوع ساختمان", Icon = "fa-building", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateFireInsuranceBuildingTypeVM input)
         {
-            return Json(FireInsuranceBuildingTypeManager.Create(input));
+            return Json(FireInsuranceBuildingTypeService.Create(input));
         }
 
         [AreaConfig(Title = "حذف نوع ساختمان", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceBuildingTypeManager.Delete(input?.id));
+            return Json(FireInsuranceBuildingTypeService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نوع ساختمان", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceBuildingTypeManager.GetById(input?.id));
+            return Json(FireInsuranceBuildingTypeService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نوع ساختمان", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateFireInsuranceBuildingTypeVM input)
         {
-            return Json(FireInsuranceBuildingTypeManager.Update(input));
+            return Json(FireInsuranceBuildingTypeService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نوع ساختمان", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceBuildingTypeMainGrid searchInput)
         {
-            return Json(FireInsuranceBuildingTypeManager.GetList(searchInput));
+            return Json(FireInsuranceBuildingTypeService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] FireInsuranceBuildingTypeMainGrid searchInput)
         {
-            var result = FireInsuranceBuildingTypeManager.GetList(searchInput);
+            var result = FireInsuranceBuildingTypeService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

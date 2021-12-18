@@ -1,13 +1,13 @@
-﻿using Oje.ProposalFormManager.Models.DB;
+﻿using Oje.ProposalFormService.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IInqueryDescriptionManager
+    public interface IInqueryDescriptionService
     {
         List<InqueryDescription> GetByProposalFormId(int? proposalFormId, int? siteSettingId);
     }

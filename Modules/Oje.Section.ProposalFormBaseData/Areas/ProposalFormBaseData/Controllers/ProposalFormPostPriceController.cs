@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,15 +16,15 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class ProposalFormPostPriceController : Controller
     {
-        readonly IProposalFormPostPriceManager ProposalFormPostPriceManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
+        readonly IProposalFormPostPriceService ProposalFormPostPriceService = null;
+        readonly IProposalFormService ProposalFormService = null;
         public ProposalFormPostPriceController(
-                IProposalFormPostPriceManager ProposalFormPostPriceManager,
-                IProposalFormManager ProposalFormManager
+                IProposalFormPostPriceService ProposalFormPostPriceService,
+                IProposalFormService ProposalFormService
             )
         {
-            this.ProposalFormPostPriceManager = ProposalFormPostPriceManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.ProposalFormPostPriceService = ProposalFormPostPriceService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [AreaConfig(Title = "هزینه پست", Icon = "fa-mail-bulk", IsMainMenuItem = true)]
@@ -48,42 +48,42 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProposalFormPostPriceVM input)
         {
-            return Json(ProposalFormPostPriceManager.Create(input));
+            return Json(ProposalFormPostPriceService.Create(input));
         }
 
         [AreaConfig(Title = "حذف هزینه پست", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormPostPriceManager.Delete(input?.id));
+            return Json(ProposalFormPostPriceService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک هزینه پست", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormPostPriceManager.GetById(input?.id));
+            return Json(ProposalFormPostPriceService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  هزینه پست", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormPostPriceVM input)
         {
-            return Json(ProposalFormPostPriceManager.Update(input));
+            return Json(ProposalFormPostPriceService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست هزینه پست", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormPostPriceMainGrid searchInput)
         {
-            return Json(ProposalFormPostPriceManager.GetList(searchInput));
+            return Json(ProposalFormPostPriceService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ProposalFormPostPriceMainGrid searchInput)
         {
-            var result = ProposalFormPostPriceManager.GetList(searchInput);
+            var result = ProposalFormPostPriceService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -97,7 +97,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

@@ -3,7 +3,7 @@ using Oje.Section.ProposalFormBaseData.Models.View;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
-    public interface IProposalFormPostPriceManager
+    public interface IProposalFormPostPriceService
     {
         ApiResult Create(CreateUpdateProposalFormPostPriceVM input);
         ApiResult Delete(int? id);

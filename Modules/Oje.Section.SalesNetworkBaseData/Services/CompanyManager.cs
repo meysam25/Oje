@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Oje.Section.SalesNetworkBaseData.Services
 {
-    public class CompanyManager: ICompanyManager
+    public class CompanyService: ICompanyService
     {
         readonly SalesNetworkBaseDataDBContext db = null;
-        public CompanyManager(
+        public CompanyService(
                 SalesNetworkBaseDataDBContext db
             )
         {

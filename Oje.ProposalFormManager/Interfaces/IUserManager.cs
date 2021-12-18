@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IUserManager
+    public interface IUserService
     {
         long CreateUserForProposalFormIfNeeded(IFormCollection form, int? siteSettingId, long? loginUserId);
         object GetSelect2List(Select2SearchVM searchInput, int? roleId, int? companyId, int? provinceId, int? cityId);

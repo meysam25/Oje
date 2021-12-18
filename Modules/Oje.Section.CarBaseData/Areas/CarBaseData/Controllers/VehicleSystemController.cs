@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class VehicleSystemController: Controller
     {
-        readonly IVehicleSystemManager VehicleSystemManager = null;
-        readonly ICarTypeManager CarTypeManager = null;
-        public VehicleSystemController(IVehicleSystemManager VehicleSystemManager, ICarTypeManager CarTypeManager)
+        readonly IVehicleSystemService VehicleSystemService = null;
+        readonly ICarTypeService CarTypeService = null;
+        public VehicleSystemController(IVehicleSystemService VehicleSystemService, ICarTypeService CarTypeService)
         {
-            this.VehicleSystemManager = VehicleSystemManager;
-            this.CarTypeManager = CarTypeManager;
+            this.VehicleSystemService = VehicleSystemService;
+            this.CarTypeService = CarTypeService;
         }
 
         [AreaConfig(Title = "برند خودرو", Icon = "fa-copyright", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateVehicleSystemVM input)
         {
-            return Json(VehicleSystemManager.Create(input));
+            return Json(VehicleSystemService.Create(input));
         }
 
         [AreaConfig(Title = "حذف برند خودرو", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(VehicleSystemManager.Delete(input?.id));
+            return Json(VehicleSystemService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک برند خودرو", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(VehicleSystemManager.GetById(input?.id));
+            return Json(VehicleSystemService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  برند خودرو", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateVehicleSystemVM input)
         {
-            return Json(VehicleSystemManager.Update(input));
+            return Json(VehicleSystemService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] VehicleSystemMainGrid searchInput)
         {
-            return Json(VehicleSystemManager.GetList(searchInput));
+            return Json(VehicleSystemService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] VehicleSystemMainGrid searchInput)
         {
-            var result = VehicleSystemManager.GetList(searchInput);
+            var result = VehicleSystemService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -98,7 +98,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public ActionResult GetCarTypeList()
         {
-            return Json(CarTypeManager.GetLightList());
+            return Json(CarTypeService.GetLightList());
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.Financial.Interfaces
 {
-    public interface IBankManager
+    public interface IBankService
     {
         ApiResult Create(CreateUpdateBankVM input, long? userId);
         ApiResult Delete(int? id);

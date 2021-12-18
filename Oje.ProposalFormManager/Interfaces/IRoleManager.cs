@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IRoleManager
+    public interface IRoleService
     {
         void AddUserToUserRole(long userId);
         object GetLightList();

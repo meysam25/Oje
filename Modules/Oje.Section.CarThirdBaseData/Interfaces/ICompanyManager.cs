@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarThirdBaseData.Interfaces
 {
-    public interface ICompanyManager
+    public interface ICompanyService
     {
         object GetLightList();
     }

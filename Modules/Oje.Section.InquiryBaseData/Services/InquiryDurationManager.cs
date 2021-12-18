@@ -12,25 +12,25 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class InquiryDurationManager : IInquiryDurationManager
+    public class InquiryDurationService : IInquiryDurationService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        public InquiryDurationManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        public InquiryDurationService(
                 InquiryBaseDataDBContext db,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                IProposalFormManager ProposalFormManager
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         public ApiResult Create(CreateUpdateInquiryDurationVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createValidation(input, siteSettingId);
 
             var newItem = new InquiryDuration()
@@ -73,7 +73,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Day);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormManager.Exist( input.formId.ToIntReturnZiro(),siteSettingId))
+            if (!ProposalFormService.Exist( input.formId.ToIntReturnZiro(),siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.cIds == null || input.cIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
@@ -83,7 +83,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var foundItem = db.InquiryDurations.Include(t => t.InquiryDurationCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundItem == null)
@@ -101,7 +101,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public CreateUpdateInquiryDurationVM GetById(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             return db.InquiryDurations
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
                 .Select(t => new CreateUpdateInquiryDurationVM
@@ -120,7 +120,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public GridResultVM<InquiryDurationMainGridResultVM> GetList(InquiryDurationMainGrid searchInput)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             if (searchInput == null)
                 searchInput = new InquiryDurationMainGrid();
 
@@ -173,7 +173,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Update(CreateUpdateInquiryDurationVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createValidation(input, siteSettingId);
 
             var foundItem = db.InquiryDurations.Include(t => t.InquiryDurationCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();

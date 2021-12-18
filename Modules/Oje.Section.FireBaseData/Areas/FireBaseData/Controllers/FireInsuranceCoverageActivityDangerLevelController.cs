@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,15 +20,15 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class FireInsuranceCoverageActivityDangerLevelController: Controller
     {
-        readonly IFireInsuranceCoverageActivityDangerLevelManager FireInsuranceCoverageActivityDangerLevelManager = null;
-        readonly IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager = null;
+        readonly IFireInsuranceCoverageActivityDangerLevelService FireInsuranceCoverageActivityDangerLevelService = null;
+        readonly IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService = null;
         public FireInsuranceCoverageActivityDangerLevelController(
-            IFireInsuranceCoverageActivityDangerLevelManager FireInsuranceCoverageActivityDangerLevelManager,
-            IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager
+            IFireInsuranceCoverageActivityDangerLevelService FireInsuranceCoverageActivityDangerLevelService,
+            IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService
             )
         {
-            this.FireInsuranceCoverageActivityDangerLevelManager = FireInsuranceCoverageActivityDangerLevelManager;
-            this.FireInsuranceCoverageTitleManager = FireInsuranceCoverageTitleManager;
+            this.FireInsuranceCoverageActivityDangerLevelService = FireInsuranceCoverageActivityDangerLevelService;
+            this.FireInsuranceCoverageTitleService = FireInsuranceCoverageTitleService;
         }
 
         [AreaConfig(Title = "نرخ پوشش های فعالیت", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -52,42 +52,42 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateFireInsuranceCoverageActivityDangerLevelVM input)
         {
-            return Json(FireInsuranceCoverageActivityDangerLevelManager.Create(input));
+            return Json(FireInsuranceCoverageActivityDangerLevelService.Create(input));
         }
 
         [AreaConfig(Title = "حذف نرخ پوشش های فعالیت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceCoverageActivityDangerLevelManager.Delete(input?.id));
+            return Json(FireInsuranceCoverageActivityDangerLevelService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نرخ پوشش های فعالیت", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceCoverageActivityDangerLevelManager.GetById(input?.id));
+            return Json(FireInsuranceCoverageActivityDangerLevelService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نرخ پوشش های فعالیت", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateFireInsuranceCoverageActivityDangerLevelVM input)
         {
-            return Json(FireInsuranceCoverageActivityDangerLevelManager.Update(input));
+            return Json(FireInsuranceCoverageActivityDangerLevelService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نرخ پوشش های فعالیت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceCoverageActivityDangerLevelMainGrid searchInput)
         {
-            return Json(FireInsuranceCoverageActivityDangerLevelManager.GetList(searchInput));
+            return Json(FireInsuranceCoverageActivityDangerLevelService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] FireInsuranceCoverageActivityDangerLevelMainGrid searchInput)
         {
-            var result = FireInsuranceCoverageActivityDangerLevelManager.GetList(searchInput);
+            var result = FireInsuranceCoverageActivityDangerLevelService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -101,7 +101,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpGet]
         public ActionResult GetCoverTitleList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(FireInsuranceCoverageTitleManager.GetSelect2List(searchInput));
+            return Json(FireInsuranceCoverageTitleService.GetSelect2List(searchInput));
         }
     }
 }

@@ -180,10 +180,11 @@ $.fn.initMyGrid = function (option) {
                             result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + option.actions.cActions[i].template(data) + '</span>';
                     } else if (option.actions.cActions[i].template && typeof (option.actions.cActions[i].template) == 'string') {
                         var compileStr = 'var data =' + JSON.stringify(data) + ';' + option.actions.cActions[i].template;
-                        if (option.actions.cActions[i].ignoreParentButton == true)
-                            result += '<span style="display:inline-block" data-index="' + i + '" >' + eval(compileStr) + '</span>';
-                        else
-                            result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + eval(compileStr) + '</span>';
+                        var compileStrResult = eval(compileStr)
+                        if (compileStrResult && option.actions.cActions[i].ignoreParentButton == true)
+                            result += '<span style="display:inline-block" data-index="' + i + '" >' + compileStrResult + '</span>';
+                        else if (compileStrResult)
+                            result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + compileStrResult + '</span>';
                     }
                 }
             }

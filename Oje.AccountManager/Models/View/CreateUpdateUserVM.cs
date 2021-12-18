@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 
-namespace Oje.AccountManager.Models.View
+namespace Oje.AccountService.Models.View
 {
     public class CreateUpdateUserVM
     {

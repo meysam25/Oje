@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Services\fere4vht.kqf~" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\Oje.Infrastructure\Oje.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

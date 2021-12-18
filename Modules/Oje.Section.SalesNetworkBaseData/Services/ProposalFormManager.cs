@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Models;
 using Oje.Section.SalesNetworkBaseData.Services.EContext;
 using System.Collections.Generic;
@@ -6,17 +6,17 @@ using System.Linq;
 
 namespace Oje.Section.SalesNetworkBaseData.Services
 {
-    public class ProposalFormManager : Interfaces.IProposalFormManager
+    public class ProposalFormService : Interfaces.IProposalFormService
     {
         readonly SalesNetworkBaseDataDBContext db = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        public ProposalFormManager(
+        readonly ISiteSettingService SiteSettingService = null;
+        public ProposalFormService(
                 SalesNetworkBaseDataDBContext db,
-                ISiteSettingManager SiteSettingManager
+                ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public bool Exist(int id, int? siteSettingId)
@@ -36,7 +36,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId || t.SiteSettingId == null);
             if (!string.IsNullOrEmpty(searchInput.search))

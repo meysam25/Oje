@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarThirdBaseData.Interfaces
 {
-    public interface IThirdPartyExteraFinancialCommitmentManager
+    public interface IThirdPartyExteraFinancialCommitmentService
     {
         ApiResult Create(CreateUpdateThirdPartyExteraFinancialCommitmentVM input);
         ApiResult Delete(int? id);

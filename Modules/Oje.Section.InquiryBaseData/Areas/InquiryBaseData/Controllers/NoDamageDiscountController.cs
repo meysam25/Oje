@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,16 +20,16 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class NoDamageDiscountController: Controller
     {
-        readonly INoDamageDiscountManager NoDamageDiscountManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
+        readonly INoDamageDiscountService NoDamageDiscountService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IProposalFormService ProposalFormService = null;
         public NoDamageDiscountController(
-                INoDamageDiscountManager NoDamageDiscountManager, ICompanyManager CompanyManager, IProposalFormManager ProposalFormManager
+                INoDamageDiscountService NoDamageDiscountService, ICompanyService CompanyService, IProposalFormService ProposalFormService
             )
         {
-            this.NoDamageDiscountManager = NoDamageDiscountManager;
-            this.CompanyManager = CompanyManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.NoDamageDiscountService = NoDamageDiscountService;
+            this.CompanyService = CompanyService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [AreaConfig(Title = "تخفیف عدم خسارت", Icon = "fa-percent", IsMainMenuItem = true)]
@@ -53,42 +53,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateNoDamageDiscountVM input)
         {
-            return Json(NoDamageDiscountManager.Create(input));
+            return Json(NoDamageDiscountService.Create(input));
         }
 
         [AreaConfig(Title = "حذف تخفیف عدم خسارت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(NoDamageDiscountManager.Delete(input?.id));
+            return Json(NoDamageDiscountService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تخفیف عدم خسارت", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(NoDamageDiscountManager.GetById(input?.id));
+            return Json(NoDamageDiscountService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تخفیف عدم خسارت", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateNoDamageDiscountVM input)
         {
-            return Json(NoDamageDiscountManager.Update(input));
+            return Json(NoDamageDiscountService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست تخفیف عدم خسارت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] NoDamageDiscountMainGrid searchInput)
         {
-            return Json(NoDamageDiscountManager.GetList(searchInput));
+            return Json(NoDamageDiscountService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] NoDamageDiscountMainGrid searchInput)
         {
-            var result = NoDamageDiscountManager.GetList(searchInput);
+            var result = NoDamageDiscountService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -102,14 +102,14 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت های بیمه", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetPPFList(Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models.DB;
+﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models.DB;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
@@ -9,16 +9,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Oje.AccountManager.Services.EContext;
+using Oje.AccountService.Services.EContext;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class SiteSettingManager : ISiteSettingManager
+    public class SiteSettingService : ISiteSettingService
     {
         readonly AccountDBContext db = null;
         readonly IHttpContextAccessor httpContextAccessor = null;
         static List<SiteSetting> SS { get; set; }
-        public SiteSettingManager(
+        public SiteSettingService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor
             )

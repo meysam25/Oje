@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CarExteraDiscountValueController: Controller
     {
-        readonly ICarExteraDiscountValueManager CarExteraDiscountValueManager = null;
-        readonly ICarExteraDiscountManager CarExteraDiscountManager = null;
-        public CarExteraDiscountValueController(ICarExteraDiscountValueManager CarExteraDiscountValueManager, ICarExteraDiscountManager CarExteraDiscountManager)
+        readonly ICarExteraDiscountValueService CarExteraDiscountValueService = null;
+        readonly ICarExteraDiscountService CarExteraDiscountService = null;
+        public CarExteraDiscountValueController(ICarExteraDiscountValueService CarExteraDiscountValueService, ICarExteraDiscountService CarExteraDiscountService)
         {
-            this.CarExteraDiscountValueManager = CarExteraDiscountValueManager;
-            this.CarExteraDiscountManager = CarExteraDiscountManager;
+            this.CarExteraDiscountValueService = CarExteraDiscountValueService;
+            this.CarExteraDiscountService = CarExteraDiscountService;
         }
 
         [AreaConfig(Title = "مقادیر تخفیف اضافه", Icon = "fa-check-circle", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCarExteraDiscountValueVM input)
         {
-            return Json(CarExteraDiscountValueManager.Create(input));
+            return Json(CarExteraDiscountValueService.Create(input));
         }
 
         [AreaConfig(Title = "حذف مقادیر تخفیف اضافه", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CarExteraDiscountValueManager.Delete(input?.id));
+            return Json(CarExteraDiscountValueService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک مقادیر تخفیف اضافه", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CarExteraDiscountValueManager.GetById(input?.id));
+            return Json(CarExteraDiscountValueService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  مقادیر تخفیف اضافه", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCarExteraDiscountValueVM input)
         {
-            return Json(CarExteraDiscountValueManager.Update(input));
+            return Json(CarExteraDiscountValueService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست مقادیر تخفیف اضافه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarExteraDiscountValueMainGrid searchInput)
         {
-            return Json(CarExteraDiscountValueManager.GetList(searchInput));
+            return Json(CarExteraDiscountValueService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CarExteraDiscountValueMainGrid searchInput)
         {
-            var result = CarExteraDiscountValueManager.GetList(searchInput);
+            var result = CarExteraDiscountValueService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -99,7 +99,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         [HttpGet]
         public ActionResult GetCarExteraDiscountList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(CarExteraDiscountManager.GetSelect2List(searchInput));
+            return Json(CarExteraDiscountService.GetSelect2List(searchInput));
         }
     }
 }

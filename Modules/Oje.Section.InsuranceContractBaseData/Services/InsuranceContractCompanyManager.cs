@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -15,27 +15,27 @@ using Oje.Section.InsuranceContractBaseData.Services.EContext;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
-    public class InsuranceContractCompanyManager : IInsuranceContractCompanyManager
+    public class InsuranceContractCompanyService : IInsuranceContractCompanyService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        public InsuranceContractCompanyManager
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        public InsuranceContractCompanyService
             (
                 InsuranceContractBaseDataDBContext db,
-                IUserManager UserManager,
-                ISiteSettingManager SiteSettingManager
+                IUserService UserService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractCompanyVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             CreateValidation(input, loginUserId, siteSettingId);
 
@@ -84,14 +84,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (!string.IsNullOrEmpty(input.rabeteSazmaniName) && input.rabeteSazmaniName.Length > 100)
                 throw BException.GenerateNewException(BMessages.Company_Connector_Person_Name_Can_Not_Be_More_Then_100_chars);
             if (!string.IsNullOrEmpty(input.modirAmelName) && input.modirAmelName.Length > 100)
-                throw BException.GenerateNewException(BMessages.Manager_Name_Can_Not_Be_More_Then_100_chars);
+                throw BException.GenerateNewException(BMessages.Service_Name_Can_Not_Be_More_Then_100_chars);
         }
 
         public ApiResult Delete(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUsers = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUsers = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             var foundItem = db.InsuranceContractCompanies.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUsers == null || childUsers.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
@@ -105,9 +105,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public CreateUpdateInsuranceContractCompanyVM GetById(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUsers = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUsers = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
 
             return db.InsuranceContractCompanies
@@ -132,9 +132,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             if (searchInput == null)
                 searchInput = new InsuranceContractCompanyMainGrid();
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUsers = UserManager.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUsers = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
             var qureResult = db.InsuranceContractCompanies.Where(t => t.SiteSettingId == siteSettingId && (childUsers == null || childUsers.Contains(t.CreateUserId)));
 
@@ -192,12 +192,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(CreateUpdateInsuranceContractCompanyVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             CreateValidation(input, loginUserId, siteSettingId);
 
-            var childUsers = UserManager.GetChildsUserId(loginUserId.Value);
+            var childUsers = UserService.GetChildsUserId(loginUserId.Value);
 
             var foundItem = db.InsuranceContractCompanies.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && (childUsers == null || childUsers.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
@@ -229,9 +229,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
 
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUsers = UserManager.GetChildsUserId(loginUserId.Value);
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUsers = UserService.GetChildsUserId(loginUserId.Value);
 
             result.AddRange(db.InsuranceContractCompanies.Where(t => t.SiteSettingId == siteSettingId && (childUsers == null || childUsers.Contains(t.CreateUserId)))
                 .Select(t => new

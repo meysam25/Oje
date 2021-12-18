@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
-    public interface IProposalFormCategoryManager
+    public interface IProposalFormCategoryService
     {
         ApiResult Create(CreateUpdateProposalFormCategoryVM input);
         ApiResult Delete(int? id);

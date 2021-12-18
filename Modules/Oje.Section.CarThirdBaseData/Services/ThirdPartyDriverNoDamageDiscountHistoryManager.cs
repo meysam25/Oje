@@ -12,10 +12,10 @@ using Oje.Section.CarThirdBaseData.Services.EContext;
 
 namespace Oje.Section.CarThirdBaseData.Services
 {
-    public class ThirdPartyDriverNoDamageDiscountHistoryManager : IThirdPartyDriverNoDamageDiscountHistoryManager
+    public class ThirdPartyDriverNoDamageDiscountHistoryService : IThirdPartyDriverNoDamageDiscountHistoryService
     {
         readonly CarThirdBaseDataDBContext db = null;
-        public ThirdPartyDriverNoDamageDiscountHistoryManager(
+        public ThirdPartyDriverNoDamageDiscountHistoryService(
                 CarThirdBaseDataDBContext db
             )
         {

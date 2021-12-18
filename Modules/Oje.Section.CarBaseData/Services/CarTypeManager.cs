@@ -13,10 +13,10 @@ using Oje.Section.CarBaseData.Services.EContext;
 
 namespace Oje.Section.CarBaseData.Services
 {
-    public class CarTypeManager : ICarTypeManager
+    public class CarTypeService : ICarTypeService
     {
         readonly CarDBContext db = null;
-        public CarTypeManager(CarDBContext db)
+        public CarTypeService(CarDBContext db)
         {
             this.db = db;
         }

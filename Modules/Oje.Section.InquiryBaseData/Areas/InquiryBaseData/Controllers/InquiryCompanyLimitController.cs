@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class InquiryCompanyLimitController: Controller
     {
-        readonly IInquiryCompanyLimitManager InquiryCompanyLimitManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        public InquiryCompanyLimitController(ICompanyManager CompanyManager, IInquiryCompanyLimitManager InquiryCompanyLimitManager)
+        readonly IInquiryCompanyLimitService InquiryCompanyLimitService = null;
+        readonly ICompanyService CompanyService = null;
+        public InquiryCompanyLimitController(ICompanyService CompanyService, IInquiryCompanyLimitService InquiryCompanyLimitService)
         {
-            this.InquiryCompanyLimitManager = InquiryCompanyLimitManager;
-            this.CompanyManager = CompanyManager;
+            this.InquiryCompanyLimitService = InquiryCompanyLimitService;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "شرکت های استعلام", Icon = "fa-building", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInquiryCompanyLimitVM input)
         {
-            return Json(InquiryCompanyLimitManager.Create(input));
+            return Json(InquiryCompanyLimitService.Create(input));
         }
 
         [AreaConfig(Title = "حذف شرکت های استعلام", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(InquiryCompanyLimitManager.Delete(input?.id));
+            return Json(InquiryCompanyLimitService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک شرکت های استعلام", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(InquiryCompanyLimitManager.GetById(input?.id));
+            return Json(InquiryCompanyLimitService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  شرکت های استعلام", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInquiryCompanyLimitVM input)
         {
-            return Json(InquiryCompanyLimitManager.Update(input));
+            return Json(InquiryCompanyLimitService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت های استعلام", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InquiryCompanyLimitMainGrid searchInput)
         {
-            return Json(InquiryCompanyLimitManager.GetList(searchInput));
+            return Json(InquiryCompanyLimitService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InquiryCompanyLimitMainGrid searchInput)
         {
-            var result = InquiryCompanyLimitManager.GetList(searchInput);
+            var result = InquiryCompanyLimitService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -98,7 +98,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
     }
 }

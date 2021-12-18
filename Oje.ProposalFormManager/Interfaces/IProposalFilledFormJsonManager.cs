@@ -1,13 +1,13 @@
-﻿using Oje.ProposalFormManager.Models.DB;
+﻿using Oje.ProposalFormService.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFilledFormJsonManager
+    public interface IProposalFilledFormJsonService
     {
         void Create(long proposalFilledFormId, string jsonConfig);
         ProposalFilledFormJson GetBy(long proposalFilledFormId);

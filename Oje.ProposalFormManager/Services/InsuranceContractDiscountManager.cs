@@ -2,18 +2,18 @@
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class InsuranceContractDiscountManager: IInsuranceContractDiscountManager
+    public class InsuranceContractDiscountService: IInsuranceContractDiscountService
     {
         readonly ProposalFormDBContext db = null;
-        public InsuranceContractDiscountManager(ProposalFormDBContext db)
+        public InsuranceContractDiscountService(ProposalFormDBContext db)
         {
             this.db = db;
         }

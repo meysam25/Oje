@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -17,21 +17,21 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class InqueryDescriptionController : Controller
     {
-        readonly IInqueryDescriptionManager InqueryDescriptionManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly ICompanyManager CompanyManager = null;
+        readonly IInqueryDescriptionService InqueryDescriptionService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly ICompanyService CompanyService = null;
         public InqueryDescriptionController(
-                IInqueryDescriptionManager InqueryDescriptionManager,
-                ISiteSettingManager SiteSettingManager,
-                IProposalFormManager ProposalFormManager,
-                ICompanyManager CompanyManager
+                IInqueryDescriptionService InqueryDescriptionService,
+                ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService,
+                ICompanyService CompanyService
             )
         {
-            this.InqueryDescriptionManager = InqueryDescriptionManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.CompanyManager = CompanyManager;
+            this.InqueryDescriptionService = InqueryDescriptionService;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "توضیحات استعلام", Icon = "fa-book", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInqueryDescriptionVM input)
         {
-            return Json(InqueryDescriptionManager.Create(input));
+            return Json(InqueryDescriptionService.Create(input));
         }
 
         [AreaConfig(Title = "حذف توضیحات استعلام", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(InqueryDescriptionManager.Delete(input?.id));
+            return Json(InqueryDescriptionService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک توضیحات استعلام", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(InqueryDescriptionManager.GetById(input?.id));
+            return Json(InqueryDescriptionService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  توضیحات استعلام", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInqueryDescriptionVM input)
         {
-            return Json(InqueryDescriptionManager.Update(input));
+            return Json(InqueryDescriptionService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست توضیحات استعلام", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InqueryDescriptionMainGrid searchInput)
         {
-            return Json(InqueryDescriptionManager.GetList(searchInput));
+            return Json(InqueryDescriptionService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InqueryDescriptionMainGrid searchInput)
         {
-            var result = InqueryDescriptionManager.GetList(searchInput);
+            var result = InqueryDescriptionService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -104,21 +104,21 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetWebSiteList()
         {
-            return Json(SiteSettingManager.GetLightList());
+            return Json(SiteSettingService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

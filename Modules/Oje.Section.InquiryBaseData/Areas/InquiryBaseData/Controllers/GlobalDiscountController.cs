@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,18 +20,18 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class GlobalDiscountController: Controller
     {
-        readonly IGlobalDiscountManager GlobalDiscountManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
+        readonly IGlobalDiscountService GlobalDiscountService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IProposalFormService ProposalFormService = null;
         public GlobalDiscountController(
-                IGlobalDiscountManager GlobalDiscountManager,
-                ICompanyManager CompanyManager,
-                IProposalFormManager ProposalFormManager
+                IGlobalDiscountService GlobalDiscountService,
+                ICompanyService CompanyService,
+                IProposalFormService ProposalFormService
             )
         {
-            this.GlobalDiscountManager = GlobalDiscountManager;
-            this.CompanyManager = CompanyManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.GlobalDiscountService = GlobalDiscountService;
+            this.CompanyService = CompanyService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [AreaConfig(Title = "تخفیفات (کمپین)", Icon = "fa-percent", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateGlobalDiscountVM input)
         {
-            return Json(GlobalDiscountManager.Create(input));
+            return Json(GlobalDiscountService.Create(input));
         }
 
         [AreaConfig(Title = "حذف تخفیفات (کمپین)", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(GlobalDiscountManager.Delete(input?.id));
+            return Json(GlobalDiscountService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تخفیفات (کمپین)", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(GlobalDiscountManager.GetById(input?.id));
+            return Json(GlobalDiscountService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تخفیفات (کمپین)", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateGlobalDiscountVM input)
         {
-            return Json(GlobalDiscountManager.Update(input));
+            return Json(GlobalDiscountService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست تخفیفات (کمپین)", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] GlobalDiscountMainGrid searchInput)
         {
-            return Json(GlobalDiscountManager.GetList(searchInput));
+            return Json(GlobalDiscountService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] GlobalDiscountMainGrid searchInput)
         {
-            var result = GlobalDiscountManager.GetList(searchInput);
+            var result = GlobalDiscountService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -106,14 +106,14 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
 
 

@@ -1,0 +1,121 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "userGrid",
+          "exportToExcelUrl": "/UserAccount/UserNotification/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editRoleModal",
+                "url": "/UserAccount/UserNotification/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/UserAccount/UserNotification/GetById\\', \\'viewDescriptionModel\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-link",
+                "prop": "id",
+                "modalId": "editRoleModal",
+                "template": "function bindRow (curRow) { return curRow.link ? '<a href=\"'+ curRow.link +'\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-link\" ></i></a>' : '' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/UserAccount/UserNotification/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "type",
+              "caption": "نوع",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/UserNotificationType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "fromUser",
+              "caption": "از طرف",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "subject",
+              "caption": "موضوع",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "toUser",
+              "caption": "برای کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "justMyNotification",
+              "caption": "فقط خودم",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "notSeen",
+              "caption": "دیده نشده",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "viewDescriptionModel",
+          "title": "توضیحات",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "text",
+              "label": "توضیحات",
+              "disabled": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

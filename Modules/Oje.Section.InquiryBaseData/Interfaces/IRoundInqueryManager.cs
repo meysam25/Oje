@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IRoundInqueryManager
+    public interface IRoundInqueryService
     {
         ApiResult Create(CreateUpdateRoundInqueryVM input);
         ApiResult Delete(int? id);

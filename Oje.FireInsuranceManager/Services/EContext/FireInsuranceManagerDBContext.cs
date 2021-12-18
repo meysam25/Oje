@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.FireInsuranceManager.Models.DB;
+using Oje.FireInsuranceService.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services.EContext
+namespace Oje.FireInsuranceService.Services.EContext
 {
-    public class FireInsuranceManagerDBContext : DbContext
+    public class FireInsuranceServiceDBContext : DbContext
     {
-        public FireInsuranceManagerDBContext(DbContextOptions<FireInsuranceManagerDBContext> options) : base(options)
+        public FireInsuranceServiceDBContext(DbContextOptions<FireInsuranceServiceDBContext> options) : base(options)
         {
 
         }

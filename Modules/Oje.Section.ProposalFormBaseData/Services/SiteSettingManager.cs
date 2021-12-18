@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class SiteSettingManager: ISiteSettingManager
+    public class SiteSettingService: ISiteSettingService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        public SiteSettingManager(ProposalFormBaseDataDBContext db)
+        public SiteSettingService(ProposalFormBaseDataDBContext db)
         {
             this.db = db;
         }

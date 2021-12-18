@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace Oje.Section.CarBodyBaseData.Services
 {
-    public class CarSpecificationManager: ICarSpecificationManager
+    public class CarSpecificationService: ICarSpecificationService
     {
         readonly CarBodyDBContext db = null;
-        public CarSpecificationManager(CarBodyDBContext db)
+        public CarSpecificationService(CarBodyDBContext db)
         {
             this.db = db;
         }

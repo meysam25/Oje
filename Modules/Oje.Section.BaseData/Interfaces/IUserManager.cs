@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface IUserManager
+    public interface IUserService
     {
         object GetSelect2List(Select2SearchVM searchInput);
     }

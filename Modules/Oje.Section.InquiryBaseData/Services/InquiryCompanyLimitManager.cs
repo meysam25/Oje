@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.AccountManager.Interfaces;
+using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -14,22 +14,22 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class InquiryCompanyLimitManager : IInquiryCompanyLimitManager
+    public class InquiryCompanyLimitService : IInquiryCompanyLimitService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly IUserManager UserManager = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        public InquiryCompanyLimitManager(InquiryBaseDataDBContext db, AccountManager.Interfaces.ISiteSettingManager SiteSettingManager, IUserManager UserManager)
+        readonly IUserService UserService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        public InquiryCompanyLimitService(InquiryBaseDataDBContext db, AccountService.Interfaces.ISiteSettingService SiteSettingService, IUserService UserService)
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
-            this.UserManager = UserManager;
+            this.SiteSettingService = SiteSettingService;
+            this.UserService = UserService;
         }
 
         public ApiResult Create(CreateUpdateInquiryCompanyLimitVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var loginUserId = UserManager.GetLoginUser()?.UserId;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var loginUserId = UserService.GetLoginUser()?.UserId;
             createValidation(input, siteSettingId, loginUserId);
 
             InquiryCompanyLimit addItem = new InquiryCompanyLimit()
@@ -73,7 +73,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var foundItem = db.InquiryCompanyLimits.Include(t => t.InquiryCompanyLimitCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundItem == null)
@@ -91,7 +91,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public object GetById(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.InquiryCompanyLimits
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
@@ -117,7 +117,7 @@ namespace Oje.Section.InquiryBaseData.Services
             if (searchInput == null)
                 searchInput = new InquiryCompanyLimitMainGrid();
 
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var quaryResult = db.InquiryCompanyLimits.Where(t => t.SiteSettingId == siteSettingId);
 
@@ -163,8 +163,8 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Update(CreateUpdateInquiryCompanyLimitVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var loginUserId = UserManager.GetLoginUser()?.UserId;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var loginUserId = UserService.GetLoginUser()?.UserId;
             createValidation(input, siteSettingId, loginUserId);
 
             var editeItem = db.InquiryCompanyLimits.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).Include(t => t.InquiryCompanyLimitCompanies).FirstOrDefault();

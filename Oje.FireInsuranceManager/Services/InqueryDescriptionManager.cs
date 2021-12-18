@@ -1,18 +1,18 @@
-﻿using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.DB;
-using Oje.FireInsuranceManager.Services.EContext;
+﻿using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.DB;
+using Oje.FireInsuranceService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class InqueryDescriptionManager: IInqueryDescriptionManager
+    public class InqueryDescriptionService: IInqueryDescriptionService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        public InqueryDescriptionManager(FireInsuranceManagerDBContext db)
+        readonly FireInsuranceServiceDBContext db = null;
+        public InqueryDescriptionService(FireInsuranceServiceDBContext db)
         {
             this.db = db;
         }

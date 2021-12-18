@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,12 +16,12 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyDriverHistoryDamagePenaltyController: Controller
     {
-        readonly IThirdPartyDriverHistoryDamagePenaltyManager ThirdPartyDriverHistoryDamagePenaltyManager = null;
+        readonly IThirdPartyDriverHistoryDamagePenaltyService ThirdPartyDriverHistoryDamagePenaltyService = null;
         public ThirdPartyDriverHistoryDamagePenaltyController(
-                IThirdPartyDriverHistoryDamagePenaltyManager ThirdPartyDriverHistoryDamagePenaltyManager
+                IThirdPartyDriverHistoryDamagePenaltyService ThirdPartyDriverHistoryDamagePenaltyService
             )
         {
-            this.ThirdPartyDriverHistoryDamagePenaltyManager = ThirdPartyDriverHistoryDamagePenaltyManager;
+            this.ThirdPartyDriverHistoryDamagePenaltyService = ThirdPartyDriverHistoryDamagePenaltyService;
         }
 
         [AreaConfig(Title = "سابقه خسارت راننده", Icon = "fa-history", IsMainMenuItem = true)]
@@ -45,42 +45,42 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyDriverHistoryDamagePenaltyVM input)
         {
-            return Json(ThirdPartyDriverHistoryDamagePenaltyManager.Create(input));
+            return Json(ThirdPartyDriverHistoryDamagePenaltyService.Create(input));
         }
 
         [AreaConfig(Title = "حذف سابقه خسارت راننده", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyDriverHistoryDamagePenaltyManager.Delete(input?.id));
+            return Json(ThirdPartyDriverHistoryDamagePenaltyService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک سابقه خسارت راننده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyDriverHistoryDamagePenaltyManager.GetById(input?.id));
+            return Json(ThirdPartyDriverHistoryDamagePenaltyService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  سابقه خسارت راننده", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyDriverHistoryDamagePenaltyVM input)
         {
-            return Json(ThirdPartyDriverHistoryDamagePenaltyManager.Update(input));
+            return Json(ThirdPartyDriverHistoryDamagePenaltyService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست سابقه خسارت راننده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyDriverHistoryDamagePenaltyMainGrid searchInput)
         {
-            return Json(ThirdPartyDriverHistoryDamagePenaltyManager.GetList(searchInput));
+            return Json(ThirdPartyDriverHistoryDamagePenaltyService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyDriverHistoryDamagePenaltyMainGrid searchInput)
         {
-            var result = ThirdPartyDriverHistoryDamagePenaltyManager.GetList(searchInput);
+            var result = ThirdPartyDriverHistoryDamagePenaltyService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Oje.ProposalFormManager;
-using Oje.FireInsuranceManager;
+using Oje.ProposalFormService;
+using Oje.FireInsuranceService;
 
 namespace Oje.Section.ProposalFormInquiries
 {
@@ -16,7 +16,7 @@ namespace Oje.Section.ProposalFormInquiries
         public void ConfigureServices(IServiceCollection services)
         {
             ProposalFormConfig.Config(services);
-            FireInsuranceManagerConfig.Config(services);
+            FireInsuranceServiceConfig.Config(services);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,21 +20,21 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyExteraFinancialCommitmentController: Controller
     {
-        readonly ICompanyManager CompanyManager = null;
-        readonly IThirdPartyExteraFinancialCommitmentManager ThirdPartyExteraFinancialCommitmentManager = null;
-        readonly IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager = null;
-        readonly ICarSpecificationManager CarSpecificationManager = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IThirdPartyExteraFinancialCommitmentService ThirdPartyExteraFinancialCommitmentService = null;
+        readonly IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService = null;
+        readonly ICarSpecificationService CarSpecificationService = null;
         public ThirdPartyExteraFinancialCommitmentController(
-            ICompanyManager CompanyManager,
-            IThirdPartyExteraFinancialCommitmentManager ThirdPartyExteraFinancialCommitmentManager,
-            ICarSpecificationManager CarSpecificationManager,
-            IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager
+            ICompanyService CompanyService,
+            IThirdPartyExteraFinancialCommitmentService ThirdPartyExteraFinancialCommitmentService,
+            ICarSpecificationService CarSpecificationService,
+            IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService
             )
         {
-            this.CompanyManager = CompanyManager;
-            this.ThirdPartyExteraFinancialCommitmentManager = ThirdPartyExteraFinancialCommitmentManager;
-            this.CarSpecificationManager = CarSpecificationManager;
-            this.ThirdPartyRequiredFinancialCommitmentManager = ThirdPartyRequiredFinancialCommitmentManager;
+            this.CompanyService = CompanyService;
+            this.ThirdPartyExteraFinancialCommitmentService = ThirdPartyExteraFinancialCommitmentService;
+            this.CarSpecificationService = CarSpecificationService;
+            this.ThirdPartyRequiredFinancialCommitmentService = ThirdPartyRequiredFinancialCommitmentService;
         }
 
         [AreaConfig(Title = "نرخ تعهدات مازاد مالی", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -58,49 +58,49 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyExteraFinancialCommitmentVM input)
         {
-            return Json(ThirdPartyExteraFinancialCommitmentManager.Create(input));
+            return Json(ThirdPartyExteraFinancialCommitmentService.Create(input));
         }
 
         [AreaConfig(Title = "افزودن نرخ تعهدات مازاد مالی جدید از روی فایل اکسل", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult CreateFromXcel([FromForm] GlobalExcelFile input)
         {
-            return Json(ThirdPartyExteraFinancialCommitmentManager.CreateFromExcel(input));
+            return Json(ThirdPartyExteraFinancialCommitmentService.CreateFromExcel(input));
         }
 
         [AreaConfig(Title = "حذف نرخ تعهدات مازاد مالی", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyExteraFinancialCommitmentManager.Delete(input?.id));
+            return Json(ThirdPartyExteraFinancialCommitmentService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نرخ تعهدات مازاد مالی", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyExteraFinancialCommitmentManager.GetById(input?.id));
+            return Json(ThirdPartyExteraFinancialCommitmentService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نرخ تعهدات مازاد مالی", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyExteraFinancialCommitmentVM input)
         {
-            return Json(ThirdPartyExteraFinancialCommitmentManager.Update(input));
+            return Json(ThirdPartyExteraFinancialCommitmentService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نرخ تعهدات مازاد مالی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyExteraFinancialCommitmentMainGrid searchInput)
         {
-            return Json(ThirdPartyExteraFinancialCommitmentManager.GetList(searchInput));
+            return Json(ThirdPartyExteraFinancialCommitmentService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyExteraFinancialCommitmentMainGrid searchInput)
         {
-            var result = ThirdPartyExteraFinancialCommitmentManager.GetList(searchInput);
+            var result = ThirdPartyExteraFinancialCommitmentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -114,21 +114,21 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCarSepecificationList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(CarSpecificationManager.GetSelect2List(searchInput));
+            return Json(CarSpecificationService.GetSelect2List(searchInput));
         }
 
         [AreaConfig(Title = "مشاهده لیست تعهد مالی درخواستی (پوشش مالی)", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetThirdPartyRequiredFinancialCommitmentList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentManager.GetSelect2List(searchInput));
+            return Json(ThirdPartyRequiredFinancialCommitmentService.GetSelect2List(searchInput));
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Interfaces
 {
-    public interface IDutyManager
+    public interface IDutyService
     {
         ApiResult Create(CreateUpdateDutyVM input);
         ApiResult Delete(int? id);

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.FireInsuranceManager.Interfaces;
-using Oje.FireInsuranceManager.Models.DB;
-using Oje.FireInsuranceManager.Models.View;
-using Oje.FireInsuranceManager.Services.EContext;
+using Oje.FireInsuranceService.Interfaces;
+using Oje.FireInsuranceService.Models.DB;
+using Oje.FireInsuranceService.Models.View;
+using Oje.FireInsuranceService.Services.EContext;
 using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Services
+namespace Oje.FireInsuranceService.Services
 {
-    public class GlobalInputInqueryManager: IGlobalInputInqueryManager
+    public class GlobalInputInqueryService: IGlobalInputInqueryService
     {
-        readonly FireInsuranceManagerDBContext db = null;
-        public GlobalInputInqueryManager(FireInsuranceManagerDBContext db)
+        readonly FireInsuranceServiceDBContext db = null;
+        public GlobalInputInqueryService(FireInsuranceServiceDBContext db)
         {
             this.db = db;
         }

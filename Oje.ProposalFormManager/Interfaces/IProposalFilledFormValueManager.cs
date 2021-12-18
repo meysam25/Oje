@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFilledFormValueManager
+    public interface IProposalFilledFormValueService
     {
         void CreateByJsonConfig(PageForm ppfObj, long proposalFilledFormId, IFormCollection form, bool? isEdit = false);
         void UpdateBy(long id, IFormCollection form, PageForm jsonObj);

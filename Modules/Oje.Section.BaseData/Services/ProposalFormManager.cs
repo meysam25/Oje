@@ -6,10 +6,10 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class ProposalFormManager : IProposalFormManager
+    public class ProposalFormService : IProposalFormService
     {
         readonly BaseDataDBContext db = null;
-        public ProposalFormManager(BaseDataDBContext db)
+        public ProposalFormService(BaseDataDBContext db)
         {
             this.db = db;
         }

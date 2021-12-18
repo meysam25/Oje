@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class UserManager : IUserManager
+    public class UserService : IUserService
     {
         readonly BaseDataDBContext db = null;
-        public UserManager(BaseDataDBContext db)
+        public UserService(BaseDataDBContext db)
         {
             this.db = db;
         }

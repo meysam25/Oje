@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -16,38 +16,38 @@ using Oje.Section.InsuranceContractBaseData.Services.EContext;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
-    public class InsuranceContractUserManager : IInsuranceContractUserManager
+    public class InsuranceContractUserService : IInsuranceContractUserService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly IInsuranceContractManager InsuranceContractManager = null;
-        readonly IRoleManager RoleManager = null;
-        readonly IUploadedFileManager uploadedFileManager = null;
-        public InsuranceContractUserManager
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly IInsuranceContractService InsuranceContractService = null;
+        readonly IRoleService RoleService = null;
+        readonly IUploadedFileService uploadedFileService = null;
+        public InsuranceContractUserService
             (
                 InsuranceContractBaseDataDBContext db,
-                IUserManager UserManager,
-                ISiteSettingManager SiteSettingManager,
-                IInsuranceContractManager InsuranceContractManager,
-                IRoleManager RoleManager,
-                IUploadedFileManager uploadedFileManager
+                IUserService UserService,
+                ISiteSettingService SiteSettingService,
+                IInsuranceContractService InsuranceContractService,
+                IRoleService RoleService,
+                IUploadedFileService uploadedFileService
             )
         {
             this.db = db;
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.InsuranceContractManager = InsuranceContractManager;
-            this.RoleManager = RoleManager;
-            this.uploadedFileManager = uploadedFileManager;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
+            this.InsuranceContractService = InsuranceContractService;
+            this.RoleService = RoleService;
+            this.uploadedFileService = uploadedFileService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractUserVM input, InsuranceContractUserStatus status)
         {
-            var loginUserId = UserManager.GetLoginUser();
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
-            int roleId = RoleManager.CreateOrGetRole("بیمه شدگان گروهی", "InsuranceContractUsers", 1);
+            var loginUserId = UserService.GetLoginUser();
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            int roleId = RoleService.CreateOrGetRole("بیمه شدگان گروهی", "InsuranceContractUsers", 1);
             long? parentId = null;
 
             CreateValidation(input, status, siteSettingId, loginUserId?.UserId, childUserIds);
@@ -61,7 +61,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             long foundUserId = 0;
             try
             {
-                foundUserId = UserManager.CreateForUser(new AccountManager.Models.View.CreateUpdateUserForUserVM()
+                foundUserId = UserService.CreateForUser(new AccountService.Models.View.CreateUpdateUserForUserVM()
                 {
                     firstname = input.firstName,
                     lastname = input.lastName,
@@ -81,7 +81,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             }
             catch (Exception)
             {
-                foundUserId = UserManager.GetUserIdByNationalEmailMobleEcode(input.nationalCode, input.mobile, input.email, input.eCode,
+                foundUserId = UserService.GetUserIdByNationalEmailMobleEcode(input.nationalCode, input.mobile, input.email, input.eCode,
                     childUserIds.Select(t => t as long?).ToList(), siteSettingId);
                 if (foundUserId <= 0)
                     throw;
@@ -107,19 +107,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             if (input.nationalcodeImage != null && input.nationalcodeImage.Length > 0)
             {
-                newItem.KartMeliFileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.nationalcodeImage, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
+                newItem.KartMeliFileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.nationalcodeImage, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
             }
             if (input.shenasnamePage1Image != null && input.shenasnamePage1Image.Length > 0)
             {
-                newItem.ShenasnamePage1FileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage1Image, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
+                newItem.ShenasnamePage1FileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage1Image, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
             }
             if (input.shenasnamePage2Image != null && input.shenasnamePage2Image.Length > 0)
             {
-                newItem.ShenasnamePage2FileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage2Image, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
+                newItem.ShenasnamePage2FileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage2Image, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
             }
             if (input.bimeImage != null && input.bimeImage.Length > 0)
             {
-                newItem.BimeFileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.bimeImage, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
+                newItem.BimeFileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.bimeImage, loginUserId?.UserId, null, newItem.Id, ".jpg,.png,jpeg", true);
             }
 
             db.SaveChanges();
@@ -160,7 +160,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);
             if (!input.nationalCode.IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (!InsuranceContractManager.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, childUserIds))
+            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, childUserIds))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (input.familyRelation == null)
                 throw BException.GenerateNewException(BMessages.Please_Select_FamilyRelation);
@@ -195,14 +195,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(long? id, InsuranceContractUserStatus status)
         {
-            var loginUserId = UserManager.GetLoginUser();
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            var loginUserId = UserService.GetLoginUser();
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
             var foundItem = db.InsuranceContractUsers.Include(t => t.Childs).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == status && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
-            UserManager.DeleteFlag(foundItem.UserId, siteSettingId, childUserIds);
+            UserService.DeleteFlag(foundItem.UserId, siteSettingId, childUserIds);
 
             if (foundItem.Childs != null)
                 foreach (var item in foundItem.Childs)
@@ -215,9 +215,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public CreateUpdateInsuranceContractUserVM GetById(long? id, InsuranceContractUserStatus status)
         {
-            var loginUserId = UserManager.GetLoginUser();
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            var loginUserId = UserService.GetLoginUser();
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
             return
                 db.InsuranceContractUsers
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == status && (childUserIds == null || childUserIds.Contains(t.CreateUserId)) && t.UserId > 0)
@@ -277,9 +277,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (searchInput == null)
                 searchInput = new InsuranceContractUserMainGrid();
 
-            var loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            var loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             var qureResult = db.InsuranceContractUsers.Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)) && t.Status == status);
 
@@ -351,9 +351,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(CreateUpdateInsuranceContractUserVM input, InsuranceContractUserStatus status)
         {
-            var loginUserId = UserManager.GetLoginUser();
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            var loginUserId = UserService.GetLoginUser();
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
             long? parentId = null;
 
             CreateValidation(input, status, siteSettingId, loginUserId?.UserId, childUserIds);
@@ -369,7 +369,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     throw BException.GenerateNewException(BMessages.Invalid_NationalCode_Or_InsuranceECode);
             }
 
-            var foundUser = UserManager.GetByIdForUser(foundItem.UserId, loginUserId, siteSettingId);
+            var foundUser = UserService.GetByIdForUser(foundItem.UserId, loginUserId, siteSettingId);
             if (foundUser == null)
                 throw BException.GenerateNewException(BMessages.User_Not_Found);
 
@@ -384,7 +384,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundUser.email = input.email;
             foundUser.isActive = input.isActive.ToBooleanReturnFalse();
 
-            if (UserManager.UpdateForUser(foundUser, loginUserId?.UserId, loginUserId, siteSettingId).isSuccess == false)
+            if (UserService.UpdateForUser(foundUser, loginUserId?.UserId, loginUserId, siteSettingId).isSuccess == false)
                 throw BException.GenerateNewException(BMessages.UnknownError);
 
 
@@ -396,19 +396,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             if (input.nationalcodeImage != null && input.nationalcodeImage.Length > 0)
             {
-                foundItem.KartMeliFileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.nationalcodeImage, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
+                foundItem.KartMeliFileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.nationalcodeImage, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
             }
             if (input.shenasnamePage1Image != null && input.shenasnamePage1Image.Length > 0)
             {
-                foundItem.ShenasnamePage1FileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage1Image, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
+                foundItem.ShenasnamePage1FileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage1Image, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
             }
             if (input.shenasnamePage2Image != null && input.shenasnamePage2Image.Length > 0)
             {
-                foundItem.ShenasnamePage2FileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage2Image, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
+                foundItem.ShenasnamePage2FileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.shenasnamePage2Image, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
             }
             if (input.bimeImage != null && input.bimeImage.Length > 0)
             {
-                foundItem.BimeFileUrl = uploadedFileManager.UploadNewFile(FileType.ContractUserDocuemnt, input.bimeImage, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
+                foundItem.BimeFileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.bimeImage, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
             }
 
             db.SaveChanges();
@@ -418,9 +418,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult ChangeStatus(long? id, InsuranceContractUserStatus fromStatus, InsuranceContractUserStatus toStatus)
         {
-            var loginUserId = UserManager.GetLoginUser();
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            var loginUserId = UserService.GetLoginUser();
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
             var foundItem = db.InsuranceContractUsers.Include(t => t.Childs).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == fromStatus && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);

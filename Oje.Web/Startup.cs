@@ -1,4 +1,4 @@
-using Oje.AccountManager.Interfaces;
+using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Interfac;
@@ -51,6 +51,7 @@ namespace Oje.Web
             {
                 options.MimeTypes = new[] { "text/plain", "application/json", "text/json" };
             });
+            services.AddSignalR();
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("Oje") && !a.Location.EndsWith(".Views.dll")).ToList();
             GlobalConfig.Moduals = assemblies;
             foreach (var module in assemblies)
@@ -60,14 +61,14 @@ namespace Oje.Web
                 if ((moduleInitializerType != null) && (moduleInitializerType != typeof(IModInisializer)))
                 {
                     var moduleInitializer = (IModInisializer)Activator.CreateInstance(moduleInitializerType);
-                    //services.AddSingleton(typeof(IModInisializer), moduleInitializer);
+                    services.AddSingleton(typeof(IModInisializer), moduleInitializer);
                     moduleInitializer.ConfigureServices(services);
                 }
             }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISectionManager ModulManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISectionService ModulService)
         {
             app.UseResponseCompression();
             app.UseStaticFiles(new StaticFileOptions
@@ -123,7 +124,7 @@ namespace Oje.Web
                 moduleInitializer.Configure(app, env);
             }
 
-            ModulManager.UpdateModuals();
+            ModulService.UpdateModuals();
         }
     }
 }

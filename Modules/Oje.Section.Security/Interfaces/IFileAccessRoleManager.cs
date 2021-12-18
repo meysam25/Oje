@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.Security.Interfaces
 {
-    public interface IFileAccessRoleManager
+    public interface IFileAccessRoleService
     {
         ApiResult Create(CreateUpdateFileAccessRoleVM input);
         ApiResult Delete(int? id);

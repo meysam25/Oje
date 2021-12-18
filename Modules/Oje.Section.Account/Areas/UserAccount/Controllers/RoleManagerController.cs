@@ -1,13 +1,13 @@
-﻿using Oje.AccountManager.Filters;
-using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models;
+﻿using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.UserAccount.Controllers
 {
@@ -15,23 +15,23 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "نقش ها")]
     [CustomeAuthorizeFilter]
-    public class RoleManagerController : Controller
+    public class RoleServiceController : Controller
     {
-        readonly IRoleManager RoleManager = null;
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        public RoleManagerController(
-                IRoleManager RoleManager, 
-                IUserManager UserManager,
-                ISiteSettingManager SiteSettingManager,
-                IProposalFormManager ProposalFormManager
+        readonly IRoleService RoleService = null;
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        public RoleServiceController(
+                IRoleService RoleService, 
+                IUserService UserService,
+                ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService
             )
         {
-            this.RoleManager = RoleManager;
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.RoleService = RoleService;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
         }
 
 
@@ -40,7 +40,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "نقش";
-            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "RoleManager", new { area = "UserAccount" });
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "RoleService", new { area = "UserAccount" });
             return View();
         }
 
@@ -49,49 +49,49 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "RoleManager")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "RoleService")));
         }
 
         [AreaConfig(Title = "افزودن نقش جدید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateUserRoleVM input)
         {
-            return Json(RoleManager.CreateUser(input, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(RoleService.CreateUser(input, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "حذف نقش", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(RoleManager.DeleteUser(input?.id, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(RoleService.DeleteUser(input?.id, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نقش", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(RoleManager.GetByIdUser(input?.id, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(RoleService.GetByIdUser(input?.id, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نقش", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateUserRoleVM input)
         {
-            return Json(RoleManager.UpdateUser(input, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(RoleService.UpdateUser(input, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست نقش", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] RoleUserGridFilters searchInput)
         {
-            return Json(RoleManager.GetListUser(searchInput, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(RoleService.GetListUser(searchInput, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] RoleUserGridFilters searchInput)
         {
-            var result = RoleManager.GetListUser(searchInput, UserManager.GetLoginUser(), SiteSettingManager.GetSiteSetting()?.Id);
+            var result = RoleService.GetListUser(searchInput, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -105,7 +105,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         [HttpGet]
         public IActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetightListForSelect2(searchInput, SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(ProposalFormService.GetightListForSelect2(searchInput, SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Oje.Section.CarThirdBaseData.Services
 {
-    public class CompanyManager : ICompanyManager
+    public class CompanyService : ICompanyService
     {
         readonly CarThirdBaseDataDBContext db = null;
-        public CompanyManager(CarThirdBaseDataDBContext db)
+        public CompanyService(CarThirdBaseDataDBContext db)
         {
             this.db = db;
         }

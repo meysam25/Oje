@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,16 +20,16 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyRequiredFinancialCommitmentController: Controller
     {
-        readonly IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager = null;
-        readonly ICompanyManager CompanyManager = null;
+        readonly IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService = null;
+        readonly ICompanyService CompanyService = null;
         public ThirdPartyRequiredFinancialCommitmentController
             (
-                IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager,
-                ICompanyManager CompanyManager
+                IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService,
+                ICompanyService CompanyService
             )
         {
-            this.ThirdPartyRequiredFinancialCommitmentManager = ThirdPartyRequiredFinancialCommitmentManager;
-            this.CompanyManager = CompanyManager;
+            this.ThirdPartyRequiredFinancialCommitmentService = ThirdPartyRequiredFinancialCommitmentService;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "تعهد مالی درخواستی (پوشش های مالی)", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -53,42 +53,42 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyRequiredFinancialCommitmentVM input)
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentManager.Create(input));
+            return Json(ThirdPartyRequiredFinancialCommitmentService.Create(input));
         }
 
         [AreaConfig(Title = "حذف تعهد مالی درخواستی (پوشش های مالی)", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentManager.Delete(input?.id));
+            return Json(ThirdPartyRequiredFinancialCommitmentService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تعهد مالی درخواستی (پوشش های مالی)", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentManager.GetById(input?.id));
+            return Json(ThirdPartyRequiredFinancialCommitmentService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تعهد مالی درخواستی (پوشش های مالی)", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyRequiredFinancialCommitmentVM input)
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentManager.Update(input));
+            return Json(ThirdPartyRequiredFinancialCommitmentService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست تعهد مالی درخواستی (پوشش های مالی)", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyRequiredFinancialCommitmentMainGrid searchInput)
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentManager.GetList(searchInput));
+            return Json(ThirdPartyRequiredFinancialCommitmentService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyRequiredFinancialCommitmentMainGrid searchInput)
         {
-            var result = ThirdPartyRequiredFinancialCommitmentManager.GetList(searchInput);
+            var result = ThirdPartyRequiredFinancialCommitmentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -102,7 +102,7 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
     }
 }

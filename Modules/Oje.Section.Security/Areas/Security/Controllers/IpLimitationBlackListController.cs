@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,12 +16,12 @@ namespace Oje.Section.Security.Areas.Security.Controllers
     [CustomeAuthorizeFilter]
     public class IpLimitationBlackListController: Controller
     {
-        readonly IIpLimitationBlackListManager IpLimitationBlackListManager = null;
+        readonly IIpLimitationBlackListService IpLimitationBlackListService = null;
         public IpLimitationBlackListController(
-                IIpLimitationBlackListManager IpLimitationBlackListManager
+                IIpLimitationBlackListService IpLimitationBlackListService
             )
         {
-            this.IpLimitationBlackListManager = IpLimitationBlackListManager;
+            this.IpLimitationBlackListService = IpLimitationBlackListService;
         }
 
         [AreaConfig(Title = "ای پی غیر مجاز", Icon = "fa-network-wired", IsMainMenuItem = true)]
@@ -45,42 +45,42 @@ namespace Oje.Section.Security.Areas.Security.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateIpLimitationBlackListVM input)
         {
-            return Json(IpLimitationBlackListManager.Create(input));
+            return Json(IpLimitationBlackListService.Create(input));
         }
 
         [AreaConfig(Title = "حذف ای پی غیر مجاز", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(IpLimitationBlackListManager.Delete(input?.id));
+            return Json(IpLimitationBlackListService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک ای پی غیر مجاز", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(IpLimitationBlackListManager.GetById(input?.id));
+            return Json(IpLimitationBlackListService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  ای پی غیر مجاز", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateIpLimitationBlackListVM input)
         {
-            return Json(IpLimitationBlackListManager.Update(input));
+            return Json(IpLimitationBlackListService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست ای پی غیر مجاز", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] IpLimitationBlackListMainGrid searchInput)
         {
-            return Json(IpLimitationBlackListManager.GetList(searchInput));
+            return Json(IpLimitationBlackListService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] IpLimitationBlackListMainGrid searchInput)
         {
-            var result = IpLimitationBlackListManager.GetList(searchInput);
+            var result = IpLimitationBlackListService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

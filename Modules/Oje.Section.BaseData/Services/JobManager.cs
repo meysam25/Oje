@@ -12,10 +12,10 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class JobManager: IJobManager
+    public class JobService: IJobService
     {
         readonly BaseDataDBContext db = null;
-        public JobManager(BaseDataDBContext db)
+        public JobService(BaseDataDBContext db)
         {
             this.db = db;
         }

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Models.DB;
+﻿using Oje.AccountService.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace Oje.Section.CarBaseData.Services
 {
-    public class ProposalFormManager: IProposalFormManager
+    public class ProposalFormService: IProposalFormService
     {
         readonly CarDBContext db = null;
-        public ProposalFormManager(CarDBContext db)
+        public ProposalFormService(CarDBContext db)
         {
             this.db = db;
         }

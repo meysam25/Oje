@@ -145,7 +145,7 @@ namespace Oje.Infrastructure.Models.PageForms
                     if (!string.IsNullOrEmpty(selectValue))
                     {
                         string enumName = ctrl.dataurl.Replace("/Core/BaseData/Get/", "");
-                        var foundEnum = EnumManager.GetEnum(enumName);
+                        var foundEnum = EnumService.GetEnum(enumName);
 
                         if (foundEnum == null || foundEnum.Count == 0)
                             throw BException.GenerateNewException(String.Format(BMessages.Invalid_BaseData.GetEnumDisplayName(), ctrl.dataurl));

@@ -1,7 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
-  <ItemGroup>
-    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountManager.csproj" />
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
     <Folder Include="wwwroot\Account\" />
@@ -9,6 +6,10 @@
 
   <ItemGroup>
     <None Include="wwwroot\js\sideMenue.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountService.csproj" />
   </ItemGroup>
   
 

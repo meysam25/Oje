@@ -1,12 +1,12 @@
 ﻿using Oje.Infrastructure.Models;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
 using System;
 using System.Collections.Generic;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IPaymentMethodManager
+    public interface IPaymentMethodService
     {
         List<PaymentMethod> GetList(int? siteSettingId, int? proposalFormId);
         bool Exist(int? siteSettingId, int proposalFormId, int companyId);

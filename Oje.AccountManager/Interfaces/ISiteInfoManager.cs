@@ -1,8 +1,8 @@
-﻿using Oje.AccountManager.Models.View;
+﻿using Oje.AccountService.Models.View;
 
-namespace Oje.AccountManager.Interfaces
+namespace Oje.AccountService.Interfaces
 {
-    public interface ISiteInfoManager
+    public interface ISiteInfoService
     {
         SiteInfoVM GetInfo();
     }

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,10 +16,10 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class ProposalFormCategoryController: Controller
     {
-        readonly IProposalFormCategoryManager ProposalFormCategoryManager = null;
-        public ProposalFormCategoryController(IProposalFormCategoryManager ProposalFormCategoryManager)
+        readonly IProposalFormCategoryService ProposalFormCategoryService = null;
+        public ProposalFormCategoryController(IProposalFormCategoryService ProposalFormCategoryService)
         {
-            this.ProposalFormCategoryManager = ProposalFormCategoryManager;
+            this.ProposalFormCategoryService = ProposalFormCategoryService;
         }
 
         [AreaConfig(Title = "گروه بندی فرم پیشنهاد", Icon = "fa-object-group", IsMainMenuItem = true)]
@@ -43,42 +43,42 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProposalFormCategoryVM input)
         {
-            return Json(ProposalFormCategoryManager.Create(input));
+            return Json(ProposalFormCategoryService.Create(input));
         }
 
         [AreaConfig(Title = "حذف گروه بندی فرم پیشنهاد", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormCategoryManager.Delete(input?.id));
+            return Json(ProposalFormCategoryService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک گروه بندی فرم پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormCategoryManager.GetById(input?.id));
+            return Json(ProposalFormCategoryService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  گروه بندی فرم پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormCategoryVM input)
         {
-            return Json(ProposalFormCategoryManager.Update(input));
+            return Json(ProposalFormCategoryService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست گروه بندی فرم پیشنهاد", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormCategoryMainGrid searchInput)
         {
-            return Json(ProposalFormCategoryManager.GetList(searchInput));
+            return Json(ProposalFormCategoryService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ProposalFormCategoryMainGrid searchInput)
         {
-            var result = ProposalFormCategoryManager.GetList(searchInput);
+            var result = ProposalFormCategoryService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

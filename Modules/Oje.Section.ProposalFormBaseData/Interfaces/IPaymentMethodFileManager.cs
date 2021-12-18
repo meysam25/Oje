@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
-    public interface IPaymentMethodFileManager
+    public interface IPaymentMethodFileService
     {
         ApiResult Create(CreateUpdatePaymentMethodFileVM input);
         ApiResult Delete(int? id);

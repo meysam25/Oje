@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Filters;
+using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
+using Oje.ProposalFormService.Interfaces;
 using Oje.Section.ProposalFilledForm.Models.View;
 
 namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
@@ -16,33 +16,33 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
     [CustomeAuthorizeFilter]
     public class ProposalController : Controller
     {
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormRequiredDocumentManager ProposalFormRequiredDocumentManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IProposalFilledFormManager ProposalFilledFormManager = null;
-        readonly IGlobalInqueryManager GlobalInqueryManager = null;
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        readonly IBankManager BankManager = null;
-        readonly AccountManager.Interfaces.IUserManager UserManager = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IProposalFilledFormService ProposalFilledFormService = null;
+        readonly IGlobalInqueryService GlobalInqueryService = null;
+        readonly IPaymentMethodService PaymentMethodService = null;
+        readonly IBankService BankService = null;
+        readonly AccountService.Interfaces.IUserService UserService = null;
         public ProposalController(
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                IProposalFormRequiredDocumentManager ProposalFormRequiredDocumentManager,
-                IProposalFormManager ProposalFormManager,
-                IProposalFilledFormManager ProposalFilledFormManager,
-                IGlobalInqueryManager GlobalInqueryManager,
-                IPaymentMethodManager PaymentMethodManager,
-                IBankManager BankManager,
-                AccountManager.Interfaces.IUserManager UserManager
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService,
+                IProposalFormService ProposalFormService,
+                IProposalFilledFormService ProposalFilledFormService,
+                IGlobalInqueryService GlobalInqueryService,
+                IPaymentMethodService PaymentMethodService,
+                IBankService BankService,
+                AccountService.Interfaces.IUserService UserService
             )
         {
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormRequiredDocumentManager = ProposalFormRequiredDocumentManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.ProposalFilledFormManager = ProposalFilledFormManager;
-            this.GlobalInqueryManager = GlobalInqueryManager;
-            this.PaymentMethodManager = PaymentMethodManager;
-            this.BankManager = BankManager;
-            this.UserManager = UserManager;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormRequiredDocumentService = ProposalFormRequiredDocumentService;
+            this.ProposalFormService = ProposalFormService;
+            this.ProposalFilledFormService = ProposalFilledFormService;
+            this.GlobalInqueryService = GlobalInqueryService;
+            this.PaymentMethodService = PaymentMethodService;
+            this.BankService = BankService;
+            this.UserService = UserService;
         }
 
         [AreaConfig(Title = "ثبت فرم", Icon = "fa-file-powerpoint")]
@@ -60,28 +60,28 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         public IActionResult GetJsonConfig([FromForm] ProposalFormVM input)
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(ProposalFormManager.GetJSonConfigFile(input.fid.ToIntReturnZiro(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Content(ProposalFormService.GetJSonConfigFile(input.fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "ذخیره فرم پیشنهاد جدید", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult Create()
         {
-            return Json(ProposalFilledFormManager.Create(SiteSettingManager.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "لیست مدارم مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetProposalFormRequiredDocument([FromForm] int? fid)
         {
-            return Json(ProposalFormRequiredDocumentManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, fid));
+            return Json(ProposalFormRequiredDocumentService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, fid));
         }
 
         [AreaConfig(Title = "آیا حالت اقساطی فعال می باشد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult CanShowDebitPaymentStep([FromForm] ProposalFormVM input)
         {
-            return Json(GlobalInqueryManager.GetSumPrice(input.inquiryId.ToLongReturnZiro(), input.fid.ToIntReturnZiro(), SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(GlobalInqueryService.GetSumPrice(input.inquiryId.ToLongReturnZiro(), input.fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرایط پرداخت", Icon = "fa-list-alt")]
@@ -89,8 +89,8 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         public ActionResult GetDebitPaymentCondationList([FromForm] ProposalFormVM input)
         {
             return Json(
-                        PaymentMethodManager.GetLightList(input.fid.ToIntReturnZiro(), SiteSettingManager.GetSiteSetting()?.Id,
-                            GlobalInqueryManager.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingManager.GetSiteSetting()?.Id))
+                        PaymentMethodService.GetLightList(input.fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id,
+                            GlobalInqueryService.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id))
                     );
         }
 
@@ -99,8 +99,8 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         public ActionResult GetDebitPaymentCondationDetailes([FromForm] ProposalFormVM input, [FromForm] int id)
         {
             return Json(
-                    PaymentMethodManager.GetItemDetailes(id, SiteSettingManager.GetSiteSetting()?.Id,
-                        GlobalInqueryManager.GetSumPriceLong(input.inquiryId.ToLongReturnZiro(), input.fid.ToIntReturnZiro(), SiteSettingManager.GetSiteSetting()?.Id), input.fid.ToIntReturnZiro())
+                    PaymentMethodService.GetItemDetailes(id, SiteSettingService.GetSiteSetting()?.Id,
+                        GlobalInqueryService.GetSumPriceLong(input.inquiryId.ToLongReturnZiro(), input.fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id), input.fid.ToIntReturnZiro())
                     );
         }
 
@@ -108,7 +108,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult GetBankList()
         {
-            return Json(BankManager.GetLightList());
+            return Json(BankService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست نماینده", Icon = "fa-list-alt")]
@@ -116,8 +116,8 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         public ActionResult GetAgentList([FromQuery] Select2SearchVM searchInput, [FromQuery] ProposalFormVM input, [FromQuery] ProvinceAndCityVM provinceAndCityInput)
         {
             return Json(
-                    UserManager.GetSelect2ListByPPFAndCompanyId(searchInput, SiteSettingManager.GetSiteSetting()?.Id, input.fid.ToIntReturnZiro(),
-                            GlobalInqueryManager.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingManager.GetSiteSetting()?.Id), provinceAndCityInput)
+                    UserService.GetSelect2ListByPPFAndCompanyId(searchInput, SiteSettingService.GetSiteSetting()?.Id, input.fid.ToIntReturnZiro(),
+                            GlobalInqueryService.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id), provinceAndCityInput)
                     );
         }
     }

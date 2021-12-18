@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,15 +16,15 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class ProposalFormRequiredDocumentController: Controller
     {
-        readonly IProposalFormRequiredDocumentManager ProposalFormRequiredDocumentManager = null;
-        readonly IProposalFormRequiredDocumentTypeManager ProposalFormRequiredDocumentTypeManager = null;
+        readonly IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService = null;
+        readonly IProposalFormRequiredDocumentTypeService ProposalFormRequiredDocumentTypeService = null;
         public ProposalFormRequiredDocumentController(
-                IProposalFormRequiredDocumentManager ProposalFormRequiredDocumentManager,
-                IProposalFormRequiredDocumentTypeManager ProposalFormRequiredDocumentTypeManager
+                IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService,
+                IProposalFormRequiredDocumentTypeService ProposalFormRequiredDocumentTypeService
             )
         {
-            this.ProposalFormRequiredDocumentManager = ProposalFormRequiredDocumentManager;
-            this.ProposalFormRequiredDocumentTypeManager = ProposalFormRequiredDocumentTypeManager;
+            this.ProposalFormRequiredDocumentService = ProposalFormRequiredDocumentService;
+            this.ProposalFormRequiredDocumentTypeService = ProposalFormRequiredDocumentTypeService;
         }
 
         [AreaConfig(Title = "مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-file-image", IsMainMenuItem = true)]
@@ -48,42 +48,42 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProposalFormRequiredDocumentVM input)
         {
-            return Json(ProposalFormRequiredDocumentManager.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormRequiredDocumentService.Create(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "حذف مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormRequiredDocumentManager.Delete(input?.id));
+            return Json(ProposalFormRequiredDocumentService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ProposalFormRequiredDocumentManager.GetById(input?.id));
+            return Json(ProposalFormRequiredDocumentService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormRequiredDocumentVM input)
         {
-            return Json(ProposalFormRequiredDocumentManager.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormRequiredDocumentService.Update(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormRequiredDocumentMainGrid searchInput)
         {
-            return Json(ProposalFormRequiredDocumentManager.GetList(searchInput));
+            return Json(ProposalFormRequiredDocumentService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ProposalFormRequiredDocumentMainGrid searchInput)
         {
-            var result = ProposalFormRequiredDocumentManager.GetList(searchInput);
+            var result = ProposalFormRequiredDocumentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -97,7 +97,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpGet]
         public ActionResult GetTypeList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormRequiredDocumentTypeManager.GetSellect2List(searchInput));
+            return Json(ProposalFormRequiredDocumentTypeService.GetSellect2List(searchInput));
         }
     }
 }

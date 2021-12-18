@@ -1,17 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class InquiryCompanyLimitManager : IInquiryCompanyLimitManager
+    public class InquiryCompanyLimitService : IInquiryCompanyLimitService
     {
         readonly ProposalFormDBContext db = null;
-        public InquiryCompanyLimitManager(ProposalFormDBContext db)
+        public InquiryCompanyLimitService(ProposalFormDBContext db)
         {
             this.db = db;
         }

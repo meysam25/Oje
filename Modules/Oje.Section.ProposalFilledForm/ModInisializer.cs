@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Oje.ProposalFormManager;
+using Oje.ProposalFormService;
 
 namespace Oje.Section.ProposalFilledForm
 {

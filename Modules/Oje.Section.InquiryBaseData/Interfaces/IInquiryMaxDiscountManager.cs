@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IInquiryMaxDiscountManager
+    public interface IInquiryMaxDiscountService
     {
         ApiResult Create(CreateUpdateInquiryMaxDiscountVM input);
         ApiResult Delete(int? id);

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -15,14 +15,14 @@ using Oje.Section.ProposalFormBaseData.Models.View;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
-    public class ProposalFormRequiredDocumentManager : IProposalFormRequiredDocumentManager
+    public class ProposalFormRequiredDocumentService : IProposalFormRequiredDocumentService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        readonly IUploadedFileManager UploadedFileManager = null;
-        public ProposalFormRequiredDocumentManager(ProposalFormBaseDataDBContext db, IUploadedFileManager UploadedFileManager)
+        readonly IUploadedFileService UploadedFileService = null;
+        public ProposalFormRequiredDocumentService(ProposalFormBaseDataDBContext db, IUploadedFileService UploadedFileService)
         {
             this.db = db;
-            this.UploadedFileManager = UploadedFileManager;
+            this.UploadedFileService = UploadedFileService;
         }
 
         public ApiResult Create(CreateUpdateProposalFormRequiredDocumentVM input, long? userId)
@@ -44,7 +44,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
             if (input.downloadFile != null && input.downloadFile.Length > 0)
             {
-                newItem.DownloadFile = UploadedFileManager.UploadNewFile(FileType.RequiredDocument, input.downloadFile, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.DownloadFile = UploadedFileService.UploadNewFile(FileType.RequiredDocument, input.downloadFile, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 
@@ -154,7 +154,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
             if (input.downloadFile != null && input.downloadFile.Length > 0)
             {
-                foundItem.DownloadFile = UploadedFileManager.UploadNewFile(FileType.RequiredDocument, input.downloadFile, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.DownloadFile = UploadedFileService.UploadNewFile(FileType.RequiredDocument, input.downloadFile, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 

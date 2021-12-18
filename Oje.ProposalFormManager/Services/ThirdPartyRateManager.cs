@@ -4,116 +4,116 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ThirdPartyRateManager : IThirdPartyRateManager
+    public class ThirdPartyRateService : IThirdPartyRateService
     {
 
         readonly ProposalFormDBContext db = null;
-        readonly IGlobalInputInqueryManager GlobalInputInqueryManager = null;
-        readonly IGlobalInqueryManager GlobalInqueryManager = null;
-        readonly ICarExteraDiscountManager CarExteraDiscountManager = null;
-        readonly IInquiryCompanyLimitManager InquiryCompanyLimitManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IThirdPartyDriverNoDamageDiscountHistoryManager ThirdPartyDriverNoDamageDiscountHistoryManager = null;
-        readonly IVehicleTypeManager VehicleTypeManager = null;
-        readonly IVehicleSystemManager VehicleSystemManager = null;
-        readonly IVehicleUsageManager VehicleUsageManager = null;
-        readonly IThirdPartyFinancialAndBodyHistoryDamagePenaltyManager ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager = null;
-        readonly IThirdPartyDriverHistoryDamagePenaltyManager ThirdPartyDriverHistoryDamagePenaltyManager = null;
-        readonly ICashPayDiscountManager CashPayDiscountManager = null;
-        readonly IThirdPartyFinancialCommitmentManager ThirdPartyFinancialCommitmentManager = null;
-        readonly IThirdPartyLifeCommitmentManager ThirdPartyLifeCommitmentManager = null;
-        readonly IThirdPartyDriverFinancialCommitmentManager ThirdPartyDriverFinancialCommitmentManager = null;
-        readonly IThirdPartyPassengerRateManager ThirdPartyPassengerRateManager = null;
-        readonly IRoundInqueryManager RoundInqueryManager = null;
-        readonly ICarSpecificationManager CarSpecificationManager = null;
-        readonly ITaxManager TaxManager = null;
-        readonly IDutyManager DutyManager = null;
-        readonly IThirdPartyCarCreateDatePercentManager ThirdPartyCarCreateDatePercentManager = null;
-        readonly IInquiryMaxDiscountManager InquiryMaxDiscountManager = null;
-        readonly IGlobalDiscountManager GlobalDiscountManager = null;
-        readonly IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager = null;
-        readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
-        readonly IInquiryDurationManager InquiryDurationManager = null;
-        readonly IInqueryDescriptionManager InqueryDescriptionManager = null;
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        readonly IThirdPartyBodyNoDamageDiscountHistoryManager ThirdPartyBodyNoDamageDiscountHistoryManager = null;
+        readonly IGlobalInputInqueryService GlobalInputInqueryService = null;
+        readonly IGlobalInqueryService GlobalInqueryService = null;
+        readonly ICarExteraDiscountService CarExteraDiscountService = null;
+        readonly IInquiryCompanyLimitService InquiryCompanyLimitService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IThirdPartyDriverNoDamageDiscountHistoryService ThirdPartyDriverNoDamageDiscountHistoryService = null;
+        readonly IVehicleTypeService VehicleTypeService = null;
+        readonly IVehicleSystemService VehicleSystemService = null;
+        readonly IVehicleUsageService VehicleUsageService = null;
+        readonly IThirdPartyFinancialAndBodyHistoryDamagePenaltyService ThirdPartyFinancialAndBodyHistoryDamagePenaltyService = null;
+        readonly IThirdPartyDriverHistoryDamagePenaltyService ThirdPartyDriverHistoryDamagePenaltyService = null;
+        readonly ICashPayDiscountService CashPayDiscountService = null;
+        readonly IThirdPartyFinancialCommitmentService ThirdPartyFinancialCommitmentService = null;
+        readonly IThirdPartyLifeCommitmentService ThirdPartyLifeCommitmentService = null;
+        readonly IThirdPartyDriverFinancialCommitmentService ThirdPartyDriverFinancialCommitmentService = null;
+        readonly IThirdPartyPassengerRateService ThirdPartyPassengerRateService = null;
+        readonly IRoundInqueryService RoundInqueryService = null;
+        readonly ICarSpecificationService CarSpecificationService = null;
+        readonly ITaxService TaxService = null;
+        readonly IDutyService DutyService = null;
+        readonly IThirdPartyCarCreateDatePercentService ThirdPartyCarCreateDatePercentService = null;
+        readonly IInquiryMaxDiscountService InquiryMaxDiscountService = null;
+        readonly IGlobalDiscountService GlobalDiscountService = null;
+        readonly IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService = null;
+        readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
+        readonly IInquiryDurationService InquiryDurationService = null;
+        readonly IInqueryDescriptionService InqueryDescriptionService = null;
+        readonly IPaymentMethodService PaymentMethodService = null;
+        readonly IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService = null;
 
-        public ThirdPartyRateManager(
+        public ThirdPartyRateService(
             ProposalFormDBContext db,
-            IGlobalInputInqueryManager GlobalInputInqueryManager,
-            IGlobalInqueryManager GlobalInqueryManager,
-            ICarExteraDiscountManager CarExteraDiscountManager,
-            IInquiryCompanyLimitManager InquiryCompanyLimitManager,
-            ICompanyManager CompanyManager,
-            IProposalFormManager ProposalFormManager,
-            IThirdPartyDriverNoDamageDiscountHistoryManager ThirdPartyDriverNoDamageDiscountHistoryManager,
-            IVehicleTypeManager VehicleTypeManager,
-            IVehicleSystemManager VehicleSystemManager,
-            IVehicleUsageManager VehicleUsageManager,
-            IThirdPartyFinancialAndBodyHistoryDamagePenaltyManager ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager,
-            IThirdPartyDriverHistoryDamagePenaltyManager ThirdPartyDriverHistoryDamagePenaltyManager,
-            ICashPayDiscountManager CashPayDiscountManager,
-            IThirdPartyFinancialCommitmentManager ThirdPartyFinancialCommitmentManager,
-            IThirdPartyLifeCommitmentManager ThirdPartyLifeCommitmentManager,
-            IThirdPartyDriverFinancialCommitmentManager ThirdPartyDriverFinancialCommitmentManager,
-            IThirdPartyPassengerRateManager ThirdPartyPassengerRateManager,
-            IRoundInqueryManager RoundInqueryManager,
-            ICarSpecificationManager CarSpecificationManager,
-            ITaxManager TaxManager,
-            IDutyManager DutyManager,
-            IThirdPartyCarCreateDatePercentManager ThirdPartyCarCreateDatePercentManager,
-            IInquiryMaxDiscountManager InquiryMaxDiscountManager,
-            IGlobalDiscountManager GlobalDiscountManager,
-            IThirdPartyRequiredFinancialCommitmentManager ThirdPartyRequiredFinancialCommitmentManager,
-            IInsuranceContractDiscountManager InsuranceContractDiscountManager,
-            IInquiryDurationManager InquiryDurationManager,
-            IInqueryDescriptionManager InqueryDescriptionManager,
-            IPaymentMethodManager PaymentMethodManager,
-            IThirdPartyBodyNoDamageDiscountHistoryManager ThirdPartyBodyNoDamageDiscountHistoryManager
+            IGlobalInputInqueryService GlobalInputInqueryService,
+            IGlobalInqueryService GlobalInqueryService,
+            ICarExteraDiscountService CarExteraDiscountService,
+            IInquiryCompanyLimitService InquiryCompanyLimitService,
+            ICompanyService CompanyService,
+            IProposalFormService ProposalFormService,
+            IThirdPartyDriverNoDamageDiscountHistoryService ThirdPartyDriverNoDamageDiscountHistoryService,
+            IVehicleTypeService VehicleTypeService,
+            IVehicleSystemService VehicleSystemService,
+            IVehicleUsageService VehicleUsageService,
+            IThirdPartyFinancialAndBodyHistoryDamagePenaltyService ThirdPartyFinancialAndBodyHistoryDamagePenaltyService,
+            IThirdPartyDriverHistoryDamagePenaltyService ThirdPartyDriverHistoryDamagePenaltyService,
+            ICashPayDiscountService CashPayDiscountService,
+            IThirdPartyFinancialCommitmentService ThirdPartyFinancialCommitmentService,
+            IThirdPartyLifeCommitmentService ThirdPartyLifeCommitmentService,
+            IThirdPartyDriverFinancialCommitmentService ThirdPartyDriverFinancialCommitmentService,
+            IThirdPartyPassengerRateService ThirdPartyPassengerRateService,
+            IRoundInqueryService RoundInqueryService,
+            ICarSpecificationService CarSpecificationService,
+            ITaxService TaxService,
+            IDutyService DutyService,
+            IThirdPartyCarCreateDatePercentService ThirdPartyCarCreateDatePercentService,
+            IInquiryMaxDiscountService InquiryMaxDiscountService,
+            IGlobalDiscountService GlobalDiscountService,
+            IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService,
+            IInsuranceContractDiscountService InsuranceContractDiscountService,
+            IInquiryDurationService InquiryDurationService,
+            IInqueryDescriptionService InqueryDescriptionService,
+            IPaymentMethodService PaymentMethodService,
+            IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService
             )
         {
             this.db = db;
-            this.GlobalInputInqueryManager = GlobalInputInqueryManager;
-            this.GlobalInqueryManager = GlobalInqueryManager;
-            this.CarExteraDiscountManager = CarExteraDiscountManager;
-            this.InquiryCompanyLimitManager = InquiryCompanyLimitManager;
-            this.CompanyManager = CompanyManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.ThirdPartyDriverNoDamageDiscountHistoryManager = ThirdPartyDriverNoDamageDiscountHistoryManager;
-            this.VehicleTypeManager = VehicleTypeManager;
-            this.VehicleSystemManager = VehicleSystemManager;
-            this.VehicleUsageManager = VehicleUsageManager;
-            this.ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager = ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager;
-            this.ThirdPartyDriverHistoryDamagePenaltyManager = ThirdPartyDriverHistoryDamagePenaltyManager;
-            this.CashPayDiscountManager = CashPayDiscountManager;
-            this.ThirdPartyFinancialCommitmentManager = ThirdPartyFinancialCommitmentManager;
-            this.ThirdPartyLifeCommitmentManager = ThirdPartyLifeCommitmentManager;
-            this.ThirdPartyDriverFinancialCommitmentManager = ThirdPartyDriverFinancialCommitmentManager;
-            this.ThirdPartyPassengerRateManager = ThirdPartyPassengerRateManager;
-            this.RoundInqueryManager = RoundInqueryManager;
-            this.CarSpecificationManager = CarSpecificationManager;
-            this.TaxManager = TaxManager;
-            this.DutyManager = DutyManager;
-            this.ThirdPartyCarCreateDatePercentManager = ThirdPartyCarCreateDatePercentManager;
-            this.InquiryMaxDiscountManager = InquiryMaxDiscountManager;
-            this.GlobalDiscountManager = GlobalDiscountManager;
-            this.ThirdPartyRequiredFinancialCommitmentManager = ThirdPartyRequiredFinancialCommitmentManager;
-            this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
-            this.InquiryDurationManager = InquiryDurationManager;
-            this.InqueryDescriptionManager = InqueryDescriptionManager;
-            this.PaymentMethodManager = PaymentMethodManager;
-            this.ThirdPartyBodyNoDamageDiscountHistoryManager = ThirdPartyBodyNoDamageDiscountHistoryManager;
+            this.GlobalInputInqueryService = GlobalInputInqueryService;
+            this.GlobalInqueryService = GlobalInqueryService;
+            this.CarExteraDiscountService = CarExteraDiscountService;
+            this.InquiryCompanyLimitService = InquiryCompanyLimitService;
+            this.CompanyService = CompanyService;
+            this.ProposalFormService = ProposalFormService;
+            this.ThirdPartyDriverNoDamageDiscountHistoryService = ThirdPartyDriverNoDamageDiscountHistoryService;
+            this.VehicleTypeService = VehicleTypeService;
+            this.VehicleSystemService = VehicleSystemService;
+            this.VehicleUsageService = VehicleUsageService;
+            this.ThirdPartyFinancialAndBodyHistoryDamagePenaltyService = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService;
+            this.ThirdPartyDriverHistoryDamagePenaltyService = ThirdPartyDriverHistoryDamagePenaltyService;
+            this.CashPayDiscountService = CashPayDiscountService;
+            this.ThirdPartyFinancialCommitmentService = ThirdPartyFinancialCommitmentService;
+            this.ThirdPartyLifeCommitmentService = ThirdPartyLifeCommitmentService;
+            this.ThirdPartyDriverFinancialCommitmentService = ThirdPartyDriverFinancialCommitmentService;
+            this.ThirdPartyPassengerRateService = ThirdPartyPassengerRateService;
+            this.RoundInqueryService = RoundInqueryService;
+            this.CarSpecificationService = CarSpecificationService;
+            this.TaxService = TaxService;
+            this.DutyService = DutyService;
+            this.ThirdPartyCarCreateDatePercentService = ThirdPartyCarCreateDatePercentService;
+            this.InquiryMaxDiscountService = InquiryMaxDiscountService;
+            this.GlobalDiscountService = GlobalDiscountService;
+            this.ThirdPartyRequiredFinancialCommitmentService = ThirdPartyRequiredFinancialCommitmentService;
+            this.InsuranceContractDiscountService = InsuranceContractDiscountService;
+            this.InquiryDurationService = InquiryDurationService;
+            this.InqueryDescriptionService = InqueryDescriptionService;
+            this.PaymentMethodService = PaymentMethodService;
+            this.ThirdPartyBodyNoDamageDiscountHistoryService = ThirdPartyBodyNoDamageDiscountHistoryService;
         }
 
         public object Inquiry(int? siteSettingId, CarThirdPartyInquiryVM input)
@@ -125,7 +125,7 @@ namespace Oje.ProposalFormManager.Services
                 CarThirdPartyInquiryObjects objPack = fillRequiredObjectsAndValidate(input, siteSettingId);
                 List<InqeryExteraParameter> InqeryExteraParameters = fillExteraParamters(objPack);
 
-                long GlobalInputInqueryId = GlobalInputInqueryManager.Create(input, InqeryExteraParameters, siteSettingId);
+                long GlobalInputInqueryId = GlobalInputInqueryService.Create(input, InqeryExteraParameters, siteSettingId);
                 if (GlobalInputInqueryId > 0 && objPack.ThirdPartyDriverFinancialCommitment != null && objPack.ThirdPartyRates != null &&
                     objPack.ThirdPartyRates.Count > 0 && objPack.ThirdPartyLifeCommitment != null && objPack.VehicleUsage != null)
                 {
@@ -162,7 +162,7 @@ namespace Oje.ProposalFormManager.Services
                     addCacleAddCashDiscount(result, objPack);
                     InquiryCalceTaxAndDuty(result, objPack);
                 }
-                GlobalInqueryManager.Create(result);
+                GlobalInqueryService.Create(result);
 
                 return calceResponeForInquiry(result, objPack, input);
             }
@@ -357,7 +357,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (!string.IsNullOrEmpty(discountCode))
             {
-                GlobalDiscount foundDiscountCode = GlobalDiscountManager.GetByCode(discountCode, siteSettingId, objPack.currentProposalForm?.Id);
+                GlobalDiscount foundDiscountCode = GlobalDiscountService.GetByCode(discountCode, siteSettingId, objPack.currentProposalForm?.Id);
                 if (foundDiscountCode != null)
                 {
                     if (foundDiscountCode.GlobalDiscountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId))
@@ -1200,11 +1200,11 @@ namespace Oje.ProposalFormManager.Services
             if (input.exteraQuestions != null)
                 input.exteraQuestions = input.exteraQuestions.Where(t => t.id.ToIntReturnZiro() > 0 && !string.IsNullOrEmpty(t.value)).ToList();
 
-            result.currentProposalForm = ProposalFormManager.GetByType(ProposalFormType.ThirdParty, siteSettingId);
+            result.currentProposalForm = ProposalFormService.GetByType(ProposalFormType.ThirdParty, siteSettingId);
             if (result.currentProposalForm == null)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
 
-            result.validCompanies = InquiryCompanyLimitManager.GetCompanies(siteSettingId, InquiryCompanyLimitType.ThirdParty);
+            result.validCompanies = InquiryCompanyLimitService.GetCompanies(siteSettingId, InquiryCompanyLimitType.ThirdParty);
             if (result.validCompanies != null && result.validCompanies.Count > 0 && input.comIds != null && input.comIds.Count > 0)
                 result.validCompanies = result.validCompanies.Where(t => input.comIds.Contains(t.Id)).ToList();
 
@@ -1241,20 +1241,20 @@ namespace Oje.ProposalFormManager.Services
                 initExteraDiscountRightFilterObjectAndValidation(result, input);
                 initInsuranceContractDiscountObjectAndValidation(result, input, siteSettingId);
                 initInquiryDurationObjectAndValidation(result, input, siteSettingId);
-                result.ThirdPartyFinancialCommitment = ThirdPartyFinancialCommitmentManager.GetLastActiveItem();
-                result.ThirdPartyLifeCommitment = ThirdPartyLifeCommitmentManager.GetLastActiveItem();
-                result.ThirdPartyDriverFinancialCommitment = ThirdPartyDriverFinancialCommitmentManager.GetLastActiveItem();
-                result.ThirdPartyPassengerRates = ThirdPartyPassengerRateManager.GetActiveItems();
-                result.RoundInquery = RoundInqueryManager.GetBySiteSettingAndProposalForm(siteSettingId, result.currentProposalForm?.Id);
-                result.CarSpecification = CarSpecificationManager.GetById(result.VehicleType?.CarSpecificationId);
-                result.InqueryDescriptions = InqueryDescriptionManager.GetByProposalFormId(result.currentProposalForm?.Id, siteSettingId);
-                result.Tax = TaxManager.GetLastItem();
-                result.Duty = DutyManager.GetLastItem();
-                result.ThirdPartyCarCreateDatePercents = ThirdPartyCarCreateDatePercentManager.GetActiveList();
-                result.InquiryMaxDiscounts = InquiryMaxDiscountManager.GetByFormAndSiteSettingId(result.currentProposalForm?.Id, siteSettingId);
-                result.GlobalDiscounts = GlobalDiscountManager.GetAutoDiscounts(result.currentProposalForm?.Id, siteSettingId);
-                result.CashPayDiscounts = CashPayDiscountManager.GetBySiteSettingAndProposalFormId(siteSettingId, result.currentProposalForm?.Id);
-                result.PaymentMethods = PaymentMethodManager.GetList(siteSettingId, result.currentProposalForm?.Id);
+                result.ThirdPartyFinancialCommitment = ThirdPartyFinancialCommitmentService.GetLastActiveItem();
+                result.ThirdPartyLifeCommitment = ThirdPartyLifeCommitmentService.GetLastActiveItem();
+                result.ThirdPartyDriverFinancialCommitment = ThirdPartyDriverFinancialCommitmentService.GetLastActiveItem();
+                result.ThirdPartyPassengerRates = ThirdPartyPassengerRateService.GetActiveItems();
+                result.RoundInquery = RoundInqueryService.GetBySiteSettingAndProposalForm(siteSettingId, result.currentProposalForm?.Id);
+                result.CarSpecification = CarSpecificationService.GetById(result.VehicleType?.CarSpecificationId);
+                result.InqueryDescriptions = InqueryDescriptionService.GetByProposalFormId(result.currentProposalForm?.Id, siteSettingId);
+                result.Tax = TaxService.GetLastItem();
+                result.Duty = DutyService.GetLastItem();
+                result.ThirdPartyCarCreateDatePercents = ThirdPartyCarCreateDatePercentService.GetActiveList();
+                result.InquiryMaxDiscounts = InquiryMaxDiscountService.GetByFormAndSiteSettingId(result.currentProposalForm?.Id, siteSettingId);
+                result.GlobalDiscounts = GlobalDiscountService.GetAutoDiscounts(result.currentProposalForm?.Id, siteSettingId);
+                result.CashPayDiscounts = CashPayDiscountService.GetBySiteSettingAndProposalFormId(siteSettingId, result.currentProposalForm?.Id);
+                result.PaymentMethods = PaymentMethodService.GetList(siteSettingId, result.currentProposalForm?.Id);
                 if (result.ThirdPartyDriverFinancialCommitment != null)
                     result.ThirdPartyDriverFinancialCommitmentLong = result.ThirdPartyDriverFinancialCommitment.Price;
                 if (result.ThirdPartyLifeCommitment != null)
@@ -1273,7 +1273,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.dayLimitation.ToIntReturnZiro() > 0)
             {
-                result.InquiryDuration = InquiryDurationManager.GetById(siteSettingId, result?.currentProposalForm?.Id, input.dayLimitation);
+                result.InquiryDuration = InquiryDurationService.GetById(siteSettingId, result?.currentProposalForm?.Id, input.dayLimitation);
 
                 if (result.InquiryDuration == null)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -1290,7 +1290,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.discountContractId.ToIntReturnZiro() > 0)
             {
-                result.InsuranceContractDiscount = InsuranceContractDiscountManager.GetById(siteSettingId, result.currentProposalForm?.Id, input.discountContractId);
+                result.InsuranceContractDiscount = InsuranceContractDiscountService.GetById(siteSettingId, result.currentProposalForm?.Id, input.discountContractId);
                 if (result.InsuranceContractDiscount == null)
                     throw BException.GenerateNewException(BMessages.Insurance_Conteract_Not_Found);
                 input.discountContractId_Title = result.InsuranceContractDiscount.Title;
@@ -1307,7 +1307,7 @@ namespace Oje.ProposalFormManager.Services
             if (input.exteraQuestions != null && input.exteraQuestions.Count > 0)
             {
                 var allExtraDiscountCoverIDs = input.exteraQuestions.Select(t => t.id).ToList();
-                result.rightOptionDynamicFilterCTRLs = CarExteraDiscountManager.GetOptionSelectedCtrls(allExtraDiscountCoverIDs, result.currentProposalForm?.Id);
+                result.rightOptionDynamicFilterCTRLs = CarExteraDiscountService.GetOptionSelectedCtrls(allExtraDiscountCoverIDs, result.currentProposalForm?.Id);
 
 
                 if (result.rightOptionDynamicFilterCTRLs == null || result.rightOptionDynamicFilterCTRLs.Count == 0)
@@ -1323,7 +1323,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.coverIds != null && input.coverIds.Count > 0)
             {
-                result.ThirdPartyRequiredFinancialCommitments = ThirdPartyRequiredFinancialCommitmentManager.GetByIds(input.coverIds);
+                result.ThirdPartyRequiredFinancialCommitments = ThirdPartyRequiredFinancialCommitmentService.GetByIds(input.coverIds);
 
                 if (result.ThirdPartyRequiredFinancialCommitments == null || result.ThirdPartyRequiredFinancialCommitments.Count == 0)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -1349,7 +1349,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.showStatus.ToIntReturnZiro() > 0)
             {
-                var allValidStatus = EnumManager.GetEnum("PriceDiscountStatus");
+                var allValidStatus = EnumService.GetEnum("PriceDiscountStatus");
                 if (!allValidStatus.Any(t => t.id == input.showStatus + ""))
                     throw BException.GenerateNewException(BMessages.Payment_Method_Is_Not_Valid);
                 input.showStatus_Title = allValidStatus.Where(t => t.id == input.showStatus + "").Select(t => t.title).FirstOrDefault();
@@ -1358,7 +1358,7 @@ namespace Oje.ProposalFormManager.Services
             {
                 input.showStatus_Title = null;
                 input.showStatus = null;
-                if (CashPayDiscountManager.HasAnyDebitPayment(siteSettingId, result.currentProposalForm?.Id))
+                if (CashPayDiscountService.HasAnyDebitPayment(siteSettingId, result.currentProposalForm?.Id))
                     throw BException.GenerateNewException(BMessages.Please_Select_Payment_Method);
             }
         }
@@ -1367,7 +1367,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.driverDamageHistoryId.ToIntReturnZiro() > 0)
             {
-                result.ThirdPartyDriverHistoryDamagePenalty = ThirdPartyDriverHistoryDamagePenaltyManager.GetById(input.driverDamageHistoryId);
+                result.ThirdPartyDriverHistoryDamagePenalty = ThirdPartyDriverHistoryDamagePenaltyService.GetById(input.driverDamageHistoryId);
                 if (result.ThirdPartyDriverHistoryDamagePenalty == null)
                     throw BException.GenerateNewException(BMessages.Driver_DamageHistory_Is_Not_Valid);
                 input.driverDamageHistoryId_Title = result.ThirdPartyDriverHistoryDamagePenalty.Title;
@@ -1384,7 +1384,7 @@ namespace Oje.ProposalFormManager.Services
 
             if (input.bodyDamageHistoryId.ToIntReturnZiro() > 0)
             {
-                result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial = ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.GetById(input.bodyDamageHistoryId, false);
+                result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetById(input.bodyDamageHistoryId, false);
                 if (result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial == null)
                     throw BException.GenerateNewException(BMessages.BodyDamageHistory_Not_Valid);
                 input.bodyDamageHistoryId_Title = result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial.Title;
@@ -1397,7 +1397,7 @@ namespace Oje.ProposalFormManager.Services
 
             if (input.financialDamageHistoryId.ToIntReturnZiro() > 0)
             {
-                result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial = ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.GetById(input.financialDamageHistoryId, true);
+                result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetById(input.financialDamageHistoryId, true);
                 if (result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial == null)
                     throw BException.GenerateNewException(BMessages.FinancialDamageHistory_Not_Valid);
                 input.financialDamageHistoryId_Title = result.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial.Title;
@@ -1428,7 +1428,7 @@ namespace Oje.ProposalFormManager.Services
 
         void initVehicleUsageObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            result.VehicleUsage = VehicleUsageManager.GetById(input.cUsage);
+            result.VehicleUsage = VehicleUsageService.GetById(input.cUsage);
             if (result.VehicleUsage == null)
                 throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
             input.cUsage_Title = result.VehicleUsage.Title;
@@ -1436,7 +1436,7 @@ namespace Oje.ProposalFormManager.Services
 
         void initVeicleBrandObjectAndValidation(CarThirdPartyInquiryVM input)
         {
-            string brandTitle = VehicleSystemManager.GetTitleById(input.brandId);
+            string brandTitle = VehicleSystemService.GetTitleById(input.brandId);
             if (string.IsNullOrEmpty(brandTitle))
                 throw BException.GenerateNewException(BMessages.Please_Select_VehicleBrand);
             input.brandId_Title = brandTitle;
@@ -1444,7 +1444,7 @@ namespace Oje.ProposalFormManager.Services
 
         void initVicleTypeObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            result.VehicleType = VehicleTypeManager.GetById(input.vType);
+            result.VehicleType = VehicleTypeService.GetById(input.vType);
             if (result.VehicleType == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             input.vType_Title = result.VehicleType.Title;
@@ -1454,7 +1454,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.driverNoDamageDiscountHistory.ToIntReturnZiro() > 0)
             {
-                result.ThirdPartyDriverNoDamageDiscountHistory = ThirdPartyDriverNoDamageDiscountHistoryManager.GetById(input.driverNoDamageDiscountHistory);
+                result.ThirdPartyDriverNoDamageDiscountHistory = ThirdPartyDriverNoDamageDiscountHistoryService.GetById(input.driverNoDamageDiscountHistory);
                 if (result.ThirdPartyDriverNoDamageDiscountHistory == null)
                     throw BException.GenerateNewException(BMessages.Driver_NoDamage_Discount_IsNotValid);
                 input.driverNoDamageDiscountHistory_Title = result.ThirdPartyDriverNoDamageDiscountHistory.Title;
@@ -1470,7 +1470,7 @@ namespace Oje.ProposalFormManager.Services
         {
             if (input.bodyNoDamagePercentId.ToIntReturnZiro() > 0)
             {
-                result.bodyNoDamagePercent = ThirdPartyBodyNoDamageDiscountHistoryManager.GetByIdActived(input.bodyNoDamagePercentId);
+                result.bodyNoDamagePercent = ThirdPartyBodyNoDamageDiscountHistoryService.GetByIdActived(input.bodyNoDamagePercentId);
                 if (result.bodyNoDamagePercent == null)
                     throw BException.GenerateNewException(BMessages.Body_NoDamage_Discount_IsNotValid);
                 input.bodyNoDamagePercentId_Title = result.bodyNoDamagePercent.Title;
@@ -1484,7 +1484,7 @@ namespace Oje.ProposalFormManager.Services
 
         void initIfHavePrevInsurance(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            result.prevInsuranceCompany = CompanyManager.GetById(input.havePrevInsurance);
+            result.prevInsuranceCompany = CompanyService.GetById(input.havePrevInsurance);
             if (result.prevInsuranceCompany == null)
                 throw BException.GenerateNewException(BMessages.Selected_Company_Is_Not_Valid);
             input.havePrevInsurance_Title = result.prevInsuranceCompany.Title;
@@ -1510,7 +1510,7 @@ namespace Oje.ProposalFormManager.Services
 
         void initRequiredCtrlsObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            result.requiredValidDynamicCTRLs = CarExteraDiscountManager.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), input.havePrevInsurance > 0 ? true : false);
+            result.requiredValidDynamicCTRLs = CarExteraDiscountService.GetRequredValidCTRLs(result?.currentProposalForm?.Id, input.brandId.ToIntReturnZiro(), input.havePrevInsurance > 0 ? true : false);
             if (input.dynamicCTRLs != null && input.dynamicCTRLs.Count > 0)
             {
                 result.requiredSelectedDynamicCTRLs = result.requiredValidDynamicCTRLs.Where(t => t.CarExteraDiscountValues.Any(tt => input.dynamicCTRLs.Contains(tt.Id))).ToList();

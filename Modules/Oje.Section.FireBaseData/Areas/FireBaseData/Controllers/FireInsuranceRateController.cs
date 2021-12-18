@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,22 +20,22 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class FireInsuranceRateController: Controller
     {
-        readonly IFireInsuranceRateManager FireInsuranceRateManager = null;
-        readonly IFireInsuranceBuildingBodyManager FireInsuranceBuildingBodyManager = null;
-        readonly IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager = null;
-        readonly ICompanyManager CompanyManager = null;
+        readonly IFireInsuranceRateService FireInsuranceRateService = null;
+        readonly IFireInsuranceBuildingBodyService FireInsuranceBuildingBodyService = null;
+        readonly IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService = null;
+        readonly ICompanyService CompanyService = null;
 
         public FireInsuranceRateController(
-                IFireInsuranceRateManager FireInsuranceRateManager,
-                IFireInsuranceBuildingBodyManager FireInsuranceBuildingBodyManager,
-                IFireInsuranceBuildingTypeManager FireInsuranceBuildingTypeManager,
-                ICompanyManager CompanyManager
+                IFireInsuranceRateService FireInsuranceRateService,
+                IFireInsuranceBuildingBodyService FireInsuranceBuildingBodyService,
+                IFireInsuranceBuildingTypeService FireInsuranceBuildingTypeService,
+                ICompanyService CompanyService
             )
         {
-            this.FireInsuranceRateManager = FireInsuranceRateManager;
-            this.FireInsuranceBuildingBodyManager = FireInsuranceBuildingBodyManager;
-            this.FireInsuranceBuildingTypeManager = FireInsuranceBuildingTypeManager;
-            this.CompanyManager = CompanyManager;
+            this.FireInsuranceRateService = FireInsuranceRateService;
+            this.FireInsuranceBuildingBodyService = FireInsuranceBuildingBodyService;
+            this.FireInsuranceBuildingTypeService = FireInsuranceBuildingTypeService;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "نرخ", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -59,42 +59,42 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateFireInsuranceRateVM input)
         {
-            return Json(FireInsuranceRateManager.Create(input));
+            return Json(FireInsuranceRateService.Create(input));
         }
 
         [AreaConfig(Title = "حذف نرخ", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceRateManager.Delete(input?.id));
+            return Json(FireInsuranceRateService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک نرخ", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceRateManager.GetById(input?.id));
+            return Json(FireInsuranceRateService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  نرخ", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateFireInsuranceRateVM input)
         {
-            return Json(FireInsuranceRateManager.Update(input));
+            return Json(FireInsuranceRateService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست نرخ", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceRateMainGrid searchInput)
         {
-            return Json(FireInsuranceRateManager.GetList(searchInput));
+            return Json(FireInsuranceRateService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] FireInsuranceRateMainGrid searchInput)
         {
-            var result = FireInsuranceRateManager.GetList(searchInput);
+            var result = FireInsuranceRateService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -108,21 +108,21 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده نوع ساختمان", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetBuildingTypeList()
         {
-            return Json(FireInsuranceBuildingTypeManager.GetLightList());
+            return Json(FireInsuranceBuildingTypeService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست اسکلت ساختمان", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetBuildingBodyList()
         {
-            return Json(FireInsuranceBuildingBodyManager.GetLightList());
+            return Json(FireInsuranceBuildingBodyService.GetLightList());
         }
     }
 }

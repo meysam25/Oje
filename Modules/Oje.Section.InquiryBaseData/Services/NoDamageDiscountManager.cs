@@ -12,10 +12,10 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class NoDamageDiscountManager : INoDamageDiscountManager
+    public class NoDamageDiscountService : INoDamageDiscountService
     {
         readonly InquiryBaseDataDBContext db = null;
-        public NoDamageDiscountManager(
+        public NoDamageDiscountService(
                 InquiryBaseDataDBContext db
             )
         {

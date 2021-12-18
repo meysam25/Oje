@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,18 +20,18 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class InsuranceContractDiscountController: Controller
     {
-        readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IInsuranceContractManager InsuranceContractManager = null;
+        readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IInsuranceContractService InsuranceContractService = null;
         public InsuranceContractDiscountController(
-                IInsuranceContractDiscountManager InsuranceContractDiscountManager,
-                ICompanyManager CompanyManager,
-                IInsuranceContractManager InsuranceContractManager
+                IInsuranceContractDiscountService InsuranceContractDiscountService,
+                ICompanyService CompanyService,
+                IInsuranceContractService InsuranceContractService
             )
         {
-            this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
-            this.CompanyManager = CompanyManager;
-            this.InsuranceContractManager = InsuranceContractManager;
+            this.InsuranceContractDiscountService = InsuranceContractDiscountService;
+            this.CompanyService = CompanyService;
+            this.InsuranceContractService = InsuranceContractService;
         }
 
         [AreaConfig(Title = "تخفیفات تفاهم نامه", Icon = "fa-balance-scale", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInsuranceContractDiscountVM input)
         {
-            return Json(InsuranceContractDiscountManager.Create(input));
+            return Json(InsuranceContractDiscountService.Create(input));
         }
 
         [AreaConfig(Title = "حذف تخفیفات تفاهم نامه", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(InsuranceContractDiscountManager.Delete(input?.id));
+            return Json(InsuranceContractDiscountService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک تخفیفات تفاهم نامه", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(InsuranceContractDiscountManager.GetById(input?.id));
+            return Json(InsuranceContractDiscountService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  تخفیفات تفاهم نامه", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInsuranceContractDiscountVM input)
         {
-            return Json(InsuranceContractDiscountManager.Update(input));
+            return Json(InsuranceContractDiscountService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست تخفیفات تفاهم نامه", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractDiscountMainGrid searchInput)
         {
-            return Json(InsuranceContractDiscountManager.GetList(searchInput));
+            return Json(InsuranceContractDiscountService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InsuranceContractDiscountMainGrid searchInput)
         {
-            var result = InsuranceContractDiscountManager.GetList(searchInput);
+            var result = InsuranceContractDiscountService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -104,14 +104,14 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست قرارداد ", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetContractList()
         {
-            return Json(InsuranceContractManager.GetLightList());
+            return Json(InsuranceContractService.GetLightList());
         }
     }
 }

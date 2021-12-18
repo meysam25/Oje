@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,18 +20,18 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class InquiryMaxDiscountController : Controller
     {
-        readonly IInquiryMaxDiscountManager InquiryMaxDiscountManager = null;
-        readonly ICompanyManager CompanyManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
+        readonly IInquiryMaxDiscountService InquiryMaxDiscountService = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IProposalFormService ProposalFormService = null;
         public InquiryMaxDiscountController(
-                IInquiryMaxDiscountManager InquiryMaxDiscountManager,
-                ICompanyManager CompanyManager,
-                IProposalFormManager ProposalFormManager
+                IInquiryMaxDiscountService InquiryMaxDiscountService,
+                ICompanyService CompanyService,
+                IProposalFormService ProposalFormService
             )
         {
-            this.InquiryMaxDiscountManager = InquiryMaxDiscountManager;
-            this.CompanyManager = CompanyManager;
-            this.ProposalFormManager = ProposalFormManager;
+            this.InquiryMaxDiscountService = InquiryMaxDiscountService;
+            this.CompanyService = CompanyService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [AreaConfig(Title = "حداکثر تخفیف", Icon = "fa-tags", IsMainMenuItem = true)]
@@ -55,42 +55,42 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInquiryMaxDiscountVM input)
         {
-            return Json(InquiryMaxDiscountManager.Create(input));
+            return Json(InquiryMaxDiscountService.Create(input));
         }
 
         [AreaConfig(Title = "حذف حداکثر تخفیف", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(InquiryMaxDiscountManager.Delete(input?.id));
+            return Json(InquiryMaxDiscountService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک حداکثر تخفیف", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(InquiryMaxDiscountManager.GetById(input?.id));
+            return Json(InquiryMaxDiscountService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  حداکثر تخفیف", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInquiryMaxDiscountVM input)
         {
-            return Json(InquiryMaxDiscountManager.Update(input));
+            return Json(InquiryMaxDiscountService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست حداکثر تخفیف", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InquiryMaxDiscountMainGrid searchInput)
         {
-            return Json(InquiryMaxDiscountManager.GetList(searchInput));
+            return Json(InquiryMaxDiscountService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InquiryMaxDiscountMainGrid searchInput)
         {
-            var result = InquiryMaxDiscountManager.GetList(searchInput);
+            var result = InquiryMaxDiscountService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -104,14 +104,14 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormManager.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput));
         }
     }
 }

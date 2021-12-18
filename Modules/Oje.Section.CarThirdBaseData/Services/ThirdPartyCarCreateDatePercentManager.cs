@@ -15,10 +15,10 @@ using Oje.Section.CarThirdBaseData.Services.EContext;
 
 namespace Oje.Section.CarThirdBaseData.Services
 {
-    public class ThirdPartyCarCreateDatePercentManager : IThirdPartyCarCreateDatePercentManager
+    public class ThirdPartyCarCreateDatePercentService : IThirdPartyCarCreateDatePercentService
     {
         readonly CarThirdBaseDataDBContext db = null;
-        public ThirdPartyCarCreateDatePercentManager(CarThirdBaseDataDBContext db)
+        public ThirdPartyCarCreateDatePercentService(CarThirdBaseDataDBContext db)
         {
             this.db = db;
         }

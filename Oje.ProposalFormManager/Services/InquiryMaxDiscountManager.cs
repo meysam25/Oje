@@ -1,18 +1,18 @@
-﻿using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+﻿using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class InquiryMaxDiscountManager: IInquiryMaxDiscountManager
+    public class InquiryMaxDiscountService: IInquiryMaxDiscountService
     {
         readonly ProposalFormDBContext db = null;
-        public InquiryMaxDiscountManager(ProposalFormDBContext db)
+        public InquiryMaxDiscountService(ProposalFormDBContext db)
         {
             this.db = db;
         }

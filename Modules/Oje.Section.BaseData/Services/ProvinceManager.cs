@@ -13,10 +13,10 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class ProvinceManager: IProvinceManager
+    public class ProvinceService: IProvinceService
     {
         readonly BaseDataDBContext db = null;
-        public ProvinceManager(BaseDataDBContext db)
+        public ProvinceService(BaseDataDBContext db)
         {
             this.db = db;
         }

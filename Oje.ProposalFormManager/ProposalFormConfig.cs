@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Oje.Infrastructure;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Services;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Services;
+using Oje.ProposalFormService.Services.EContext;
 
-namespace Oje.ProposalFormManager
+namespace Oje.ProposalFormService
 {
     public static class ProposalFormConfig
     {
@@ -13,55 +13,55 @@ namespace Oje.ProposalFormManager
         {
             services.AddDbContext<ProposalFormDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<IGlobalInputInqueryManager, GlobalInputInqueryManager>();
-            services.AddScoped<IThirdPartyRateManager, ThirdPartyRateManager>();
-            services.AddScoped<IGlobalInqueryManager, GlobalInqueryManager>();
-            services.AddScoped<IInquiryCompanyLimitManager, InquiryCompanyLimitManager>();
-            services.AddScoped<ICarExteraDiscountManager, CarExteraDiscountManager>();
-            services.AddScoped<IProposalFormManager, Services.ProposalFormManager>();
-            services.AddScoped<INoDamageDiscountManager, NoDamageDiscountManager>();
-            services.AddScoped<IThirdPartyDriverNoDamageDiscountHistoryManager, ThirdPartyDriverNoDamageDiscountHistoryManager>();
-            services.AddScoped<IVehicleTypeManager, VehicleTypeManager>();
-            services.AddScoped<IVehicleSystemManager, VehicleSystemManager>();
-            services.AddScoped<IVehicleUsageManager, VehicleUsageManager>();
-            services.AddScoped<IThirdPartyFinancialAndBodyHistoryDamagePenaltyManager, ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager>();
-            services.AddScoped<IThirdPartyDriverHistoryDamagePenaltyManager, ThirdPartyDriverHistoryDamagePenaltyManager>();
-            services.AddScoped<ICashPayDiscountManager, CashPayDiscountManager>();
-            services.AddScoped<IThirdPartyFinancialCommitmentManager, ThirdPartyFinancialCommitmentManager>();
-            services.AddScoped<IThirdPartyLifeCommitmentManager, ThirdPartyLifeCommitmentManager>();
-            services.AddScoped<IThirdPartyDriverFinancialCommitmentManager, ThirdPartyDriverFinancialCommitmentManager>();
-            services.AddScoped<IRoundInqueryManager, RoundInqueryManager>();
-            services.AddScoped<ICarSpecificationManager, CarSpecificationManager>();
-            services.AddScoped<ITaxManager, TaxManager>();
-            services.AddScoped<IDutyManager, DutyManager>();
-            services.AddScoped<IThirdPartyCarCreateDatePercentManager, ThirdPartyCarCreateDatePercentManager>();
-            services.AddScoped<IInquiryMaxDiscountManager, InquiryMaxDiscountManager>();
-            services.AddScoped<IGlobalDiscountManager, GlobalDiscountManager>();
-            services.AddScoped<IThirdPartyRequiredFinancialCommitmentManager, ThirdPartyRequiredFinancialCommitmentManager>();
-            services.AddScoped<IInsuranceContractDiscountManager, InsuranceContractDiscountManager>();
-            services.AddScoped<IInquiryDurationManager, InquiryDurationManager>();
-            services.AddScoped<IInqueryDescriptionManager, InqueryDescriptionManager>();
-            services.AddScoped<IPaymentMethodManager, PaymentMethodManager>();
-            services.AddScoped<IThirdPartyPassengerRateManager, ThirdPartyPassengerRateManager>();
-            services.AddScoped<IThirdPartyBodyNoDamageDiscountHistoryManager, ThirdPartyBodyNoDamageDiscountHistoryManager>();
-            services.AddScoped<IProposalFormRequiredDocumentManager, ProposalFormRequiredDocumentManager>();
-            services.AddScoped<IProposalFilledFormManager, ProposalFilledFormManager>();
-            services.AddScoped<IBankManager, BankManager>();
-            services.AddScoped<IProposalFilledFormJsonManager, ProposalFilledFormJsonManager>();
-            services.AddScoped<IProposalFilledFormCompanyManager, ProposalFilledFormCompanyManager>();
-            services.AddScoped<IUserManager, UserManager>();
-            services.AddScoped<IRoleManager, RoleManager>();
-            services.AddScoped<IProposalFilledFormUseManager, ProposalFilledFormUseManager>();
-            services.AddScoped<IProposalFilledFormDocumentManager, ProposalFilledFormDocumentManager>();
-            services.AddScoped<IProposalFilledFormValueManager, ProposalFilledFormValueManager>();
-            services.AddScoped<IProposalFilledFormKeyManager, ProposalFilledFormKeyManager>();
-            services.AddScoped<ICarSpecificationAmountManager, CarSpecificationAmountManager>();
-            services.AddScoped<ICarBodyCreateDatePercentManager, CarBodyCreateDatePercentManager>();
-            services.AddScoped<IProposalFilledFormAdminManager, ProposalFilledFormAdminManager>();
-            services.AddScoped<IProposalFormCategoryManager, ProposalFormCategoryManager>();
-            services.AddScoped<IProposalFilledFormAdminBaseQueryManager, ProposalFilledFormAdminBaseQueryManager>();
-            services.AddScoped<IProposalFilledFormStatusLogManager, ProposalFilledFormStatusLogManager>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IGlobalInputInqueryService, GlobalInputInqueryService>();
+            services.AddScoped<IThirdPartyRateService, ThirdPartyRateService>();
+            services.AddScoped<IGlobalInqueryService, GlobalInqueryService>();
+            services.AddScoped<IInquiryCompanyLimitService, InquiryCompanyLimitService>();
+            services.AddScoped<ICarExteraDiscountService, CarExteraDiscountService>();
+            services.AddScoped<IProposalFormService, Services.ProposalFormService>();
+            services.AddScoped<INoDamageDiscountService, NoDamageDiscountService>();
+            services.AddScoped<IThirdPartyDriverNoDamageDiscountHistoryService, ThirdPartyDriverNoDamageDiscountHistoryService>();
+            services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+            services.AddScoped<IVehicleSystemService, VehicleSystemService>();
+            services.AddScoped<IVehicleUsageService, VehicleUsageService>();
+            services.AddScoped<IThirdPartyFinancialAndBodyHistoryDamagePenaltyService, ThirdPartyFinancialAndBodyHistoryDamagePenaltyService>();
+            services.AddScoped<IThirdPartyDriverHistoryDamagePenaltyService, ThirdPartyDriverHistoryDamagePenaltyService>();
+            services.AddScoped<ICashPayDiscountService, CashPayDiscountService>();
+            services.AddScoped<IThirdPartyFinancialCommitmentService, ThirdPartyFinancialCommitmentService>();
+            services.AddScoped<IThirdPartyLifeCommitmentService, ThirdPartyLifeCommitmentService>();
+            services.AddScoped<IThirdPartyDriverFinancialCommitmentService, ThirdPartyDriverFinancialCommitmentService>();
+            services.AddScoped<IRoundInqueryService, RoundInqueryService>();
+            services.AddScoped<ICarSpecificationService, CarSpecificationService>();
+            services.AddScoped<ITaxService, TaxService>();
+            services.AddScoped<IDutyService, DutyService>();
+            services.AddScoped<IThirdPartyCarCreateDatePercentService, ThirdPartyCarCreateDatePercentService>();
+            services.AddScoped<IInquiryMaxDiscountService, InquiryMaxDiscountService>();
+            services.AddScoped<IGlobalDiscountService, GlobalDiscountService>();
+            services.AddScoped<IThirdPartyRequiredFinancialCommitmentService, ThirdPartyRequiredFinancialCommitmentService>();
+            services.AddScoped<IInsuranceContractDiscountService, InsuranceContractDiscountService>();
+            services.AddScoped<IInquiryDurationService, InquiryDurationService>();
+            services.AddScoped<IInqueryDescriptionService, InqueryDescriptionService>();
+            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<IThirdPartyPassengerRateService, ThirdPartyPassengerRateService>();
+            services.AddScoped<IThirdPartyBodyNoDamageDiscountHistoryService, ThirdPartyBodyNoDamageDiscountHistoryService>();
+            services.AddScoped<IProposalFormRequiredDocumentService, ProposalFormRequiredDocumentService>();
+            services.AddScoped<IProposalFilledFormService, ProposalFilledFormService>();
+            services.AddScoped<IBankService, BankService>();
+            services.AddScoped<IProposalFilledFormJsonService, ProposalFilledFormJsonService>();
+            services.AddScoped<IProposalFilledFormCompanyService, ProposalFilledFormCompanyService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IProposalFilledFormUseService, ProposalFilledFormUseService>();
+            services.AddScoped<IProposalFilledFormDocumentService, ProposalFilledFormDocumentService>();
+            services.AddScoped<IProposalFilledFormValueService, ProposalFilledFormValueService>();
+            services.AddScoped<IProposalFilledFormKeyService, ProposalFilledFormKeyService>();
+            services.AddScoped<ICarSpecificationAmountService, CarSpecificationAmountService>();
+            services.AddScoped<ICarBodyCreateDatePercentService, CarBodyCreateDatePercentService>();
+            services.AddScoped<IProposalFilledFormAdminService, ProposalFilledFormAdminService>();
+            services.AddScoped<IProposalFormCategoryService, ProposalFormCategoryService>();
+            services.AddScoped<IProposalFilledFormAdminBaseQueryService, ProposalFilledFormAdminBaseQueryService>();
+            services.AddScoped<IProposalFilledFormStatusLogService, ProposalFilledFormStatusLogService>();
         }
     }
 }

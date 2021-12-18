@@ -1,6 +1,6 @@
-﻿using Oje.AccountManager.Models;
-using Oje.AccountManager.Models.DB;
-using Oje.AccountManager.Models.View;
+﻿using Oje.AccountService.Models;
+using Oje.AccountService.Models.DB;
+using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Interfaces
+namespace Oje.AccountService.Interfaces
 {
-    public interface ISectionManager
+    public interface ISectionService
     {
         void UpdateModuals();
         List<Section> GetSideMenu(long? userId);

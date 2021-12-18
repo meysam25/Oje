@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class TaxController: Controller
     {
-        readonly ITaxManager TaxManager = null;
+        readonly ITaxService TaxService = null;
         public TaxController(
-                ITaxManager TaxManager
+                ITaxService TaxService
             )
         {
-            this.TaxManager = TaxManager;
+            this.TaxService = TaxService;
         }
 
         [AreaConfig(Title = "مالیات", Icon = "fa-percentage", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateTaxVM input)
         {
-            return Json(TaxManager.Create(input));
+            return Json(TaxService.Create(input));
         }
 
         [AreaConfig(Title = "حذف مالیات", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(TaxManager.Delete(input?.id));
+            return Json(TaxService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک مالیات", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(TaxManager.GetById(input?.id));
+            return Json(TaxService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  مالیات", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateTaxVM input)
         {
-            return Json(TaxManager.Update(input));
+            return Json(TaxService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست مالیات", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] TaxMainGrid searchInput)
         {
-            return Json(TaxManager.GetList(searchInput));
+            return Json(TaxService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] TaxMainGrid searchInput)
         {
-            var result = TaxManager.GetList(searchInput);
+            var result = TaxService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

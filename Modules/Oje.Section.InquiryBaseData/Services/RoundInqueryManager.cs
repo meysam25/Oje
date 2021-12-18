@@ -11,19 +11,19 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class RoundInqueryManager : IRoundInqueryManager
+    public class RoundInqueryService : IRoundInqueryService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        public RoundInqueryManager(InquiryBaseDataDBContext db, AccountManager.Interfaces.ISiteSettingManager SiteSettingManager)
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        public RoundInqueryService(InquiryBaseDataDBContext db, AccountService.Interfaces.ISiteSettingService SiteSettingService)
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public ApiResult Create(CreateUpdateRoundInqueryVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new RoundInquery()
@@ -61,7 +61,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var deleteItem = db.RoundInqueries.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
             if (deleteItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, Infrastructure.Enums.ApiResultErrorCode.NotFound);
@@ -74,7 +74,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public object GetById(int? id)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             return
                 db.RoundInqueries
                 .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
@@ -105,7 +105,7 @@ namespace Oje.Section.InquiryBaseData.Services
             if (searchInput == null)
                 searchInput = new RoundInqueryMainGrid();
 
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var qureResult = db.RoundInqueries.Where(t => t.SiteSettingId == siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.proposalFormTitle))
@@ -143,7 +143,7 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Update(CreateUpdateRoundInqueryVM input)
         {
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
             var editItem = db.RoundInqueries.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();

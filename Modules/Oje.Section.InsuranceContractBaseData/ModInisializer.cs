@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager;
+﻿using Oje.AccountService;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
@@ -23,12 +23,12 @@ namespace Oje.Section.InsuranceContractBaseData
                options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
            );
 
-            services.AddScoped<IInsuranceContractTypeManager, InsuranceContractTypeManager>();
-            services.AddScoped<IInsuranceContractCompanyManager, InsuranceContractCompanyManager>();
-            services.AddScoped<IInsuranceContractManager, InsuranceContractManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
-            services.AddScoped<IInsuranceContractValidUserForFullDebitManager, InsuranceContractValidUserForFullDebitManager>();
-            services.AddScoped<IInsuranceContractUserManager, InsuranceContractUserManager>();
+            services.AddScoped<IInsuranceContractTypeService, InsuranceContractTypeService>();
+            services.AddScoped<IInsuranceContractCompanyService, InsuranceContractCompanyService>();
+            services.AddScoped<IInsuranceContractService, InsuranceContractService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
+            services.AddScoped<IInsuranceContractValidUserForFullDebitService, InsuranceContractValidUserForFullDebitService>();
+            services.AddScoped<IInsuranceContractUserService, InsuranceContractUserService>();
         }
     }
 }

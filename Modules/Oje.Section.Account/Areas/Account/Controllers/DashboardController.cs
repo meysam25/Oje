@@ -1,9 +1,9 @@
-﻿using Oje.AccountManager.Filters;
-using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -12,18 +12,18 @@ namespace Oje.Section.Account.Areas.Account.Controllers
     [AreaConfig(ModualTitle = " هویتی (ادمین)", Icon = "fa-users", Title = "داشبرد")]
     public class DashboardController : Controller
     {
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly ISectionManager SectionManager = null;
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly ISectionService SectionService = null;
         public DashboardController(
-            IUserManager UserManager,
-            ISiteSettingManager SiteSettingManager,
-            ISectionManager SectionManager
+            IUserService UserService,
+            ISiteSettingService SiteSettingService,
+            ISectionService SectionService
             )
         {
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.SectionManager = SectionManager;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
+            this.SectionService = SectionService;
         }
 
         [CustomeAuthorizeFilter]
@@ -43,12 +43,12 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult Login([FromForm]LoginVM input)
         {
-            return Json(UserManager.Login(input, SiteSettingManager.GetSiteSetting()?.Id));
+            return Json(UserService.Login(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         public IActionResult Logout()
         {
-            UserManager.Logout();
+            UserService.Logout();
             return RedirectToAction("Login");
         }
 
@@ -57,7 +57,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult GetLoginUserInfo()
         {
-            return Json(UserManager.GetUserInfoByUserId(HttpContext.GetLoginUserId()?.UserId));
+            return Json(UserService.GetUserInfoByUserId(HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده منو های کاربر")]
@@ -65,7 +65,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult GetLoginUserSideMenu()
         {
-            return Json(SectionManager.GetSideMenuAjax(HttpContext.GetLoginUserId()?.UserId));
+            return Json(SectionService.GetSideMenuAjax(HttpContext.GetLoginUserId()?.UserId));
         }
     }
 }

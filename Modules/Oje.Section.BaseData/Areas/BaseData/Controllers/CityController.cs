@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CityController: Controller
     {
-        readonly ICityManager CityManager = null;
-        readonly IProvinceManager ProvinceManager = null;
-        public CityController(ICityManager CityManager, IProvinceManager ProvinceManager)
+        readonly ICityService CityService = null;
+        readonly IProvinceService ProvinceService = null;
+        public CityController(ICityService CityService, IProvinceService ProvinceService)
         {
-            this.CityManager = CityManager;
-            this.ProvinceManager = ProvinceManager;
+            this.CityService = CityService;
+            this.ProvinceService = ProvinceService;
         }
 
         [AreaConfig(Title = "شهر", Icon = "fa-city", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCityVM input)
         {
-            return Json(CityManager.Create(input));
+            return Json(CityService.Create(input));
         }
 
         [AreaConfig(Title = "حذف شهر", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CityManager.Delete(input?.id));
+            return Json(CityService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک شهر", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CityManager.GetById(input?.id));
+            return Json(CityService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  شهر", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCityVM input)
         {
-            return Json(CityManager.Update(input));
+            return Json(CityService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست شهر", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] CityMainGrid searchInput)
         {
-            return Json(CityManager.GetList(searchInput));
+            return Json(CityService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CityMainGrid searchInput)
         {
-            var result = CityManager.GetList(searchInput);
+            var result = CityService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -98,7 +98,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public ActionResult GetProvinceList()
         {
-            return Json(ProvinceManager.GetLightList());
+            return Json(ProvinceService.GetLightList());
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class JobController: Controller
     {
-        readonly IJobManager JobManager = null;
-        readonly IJobDangerLevelManager JobDangerLevelManager = null;
-        public JobController(IJobManager JobManager, IJobDangerLevelManager JobDangerLevelManager)
+        readonly IJobService JobService = null;
+        readonly IJobDangerLevelService JobDangerLevelService = null;
+        public JobController(IJobService JobService, IJobDangerLevelService JobDangerLevelService)
         {
-            this.JobManager = JobManager;
-            this.JobDangerLevelManager = JobDangerLevelManager;
+            this.JobService = JobService;
+            this.JobDangerLevelService = JobDangerLevelService;
         }
 
         [AreaConfig(Title = "مشاغل", Icon = "fa-user-md", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateJobVM input)
         {
-            return Json(JobManager.Create(input));
+            return Json(JobService.Create(input));
         }
 
         [AreaConfig(Title = "حذف مشاغل", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(JobManager.Delete(input?.id));
+            return Json(JobService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک مشاغل", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(JobManager.GetById(input?.id));
+            return Json(JobService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  مشاغل", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateJobVM input)
         {
-            return Json(JobManager.Update(input));
+            return Json(JobService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست مشاغل", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] JobMainGrid searchInput)
         {
-            return Json(JobManager.GetList(searchInput));
+            return Json(JobService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] JobMainGrid searchInput)
         {
-            var result = JobManager.GetList(searchInput);
+            var result = JobService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -98,7 +98,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public ActionResult GetDangerLevel()
         {
-            return Json(JobDangerLevelManager.GetLightList());
+            return Json(JobDangerLevelService.GetLightList());
         }
     }
 }

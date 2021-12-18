@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
@@ -16,18 +16,18 @@ namespace Oje.Section.Core.Areas.Controllers
     [Route("[Area]/[Controller]/[Action]/{id}")]
     public class BaseDataController : Controller
     {
-        readonly IUploadedFileManager UploadedFileManager = null;
+        readonly IUploadedFileService UploadedFileService = null;
         readonly IProvinceService ProvinceService = null;
-        readonly ICityManager CityManager = null;
+        readonly ICityService CityService = null;
         public BaseDataController(
-                IUploadedFileManager UploadedFileManager,
+                IUploadedFileService UploadedFileService,
                 IProvinceService ProvinceService,
-                ICityManager CityManager
+                ICityService CityService
             )
         {
-            this.UploadedFileManager = UploadedFileManager;
+            this.UploadedFileService = UploadedFileService;
             this.ProvinceService = ProvinceService;
-            this.CityManager = CityManager;
+            this.CityService = CityService;
         }
 
         [HttpGet]
@@ -43,7 +43,7 @@ namespace Oje.Section.Core.Areas.Controllers
             if (string.IsNullOrEmpty(fn))
                 return Content("File Not Found");
 
-            var foundFile = UploadedFileManager.GetFile(fn, HttpContext.GetLoginUserId()?.UserId);
+            var foundFile = UploadedFileService.GetFile(fn, HttpContext.GetLoginUserId()?.UserId);
             if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || string.IsNullOrEmpty(foundFile.FileContentType))
                 return Content("File Not Found");
 
@@ -53,7 +53,7 @@ namespace Oje.Section.Core.Areas.Controllers
         [HttpPost]
         public IActionResult Get(string id)
         {
-            return Json(EnumManager.GetEnum(id));
+            return Json(EnumService.GetEnum(id));
         }
 
         [HttpPost]
@@ -71,7 +71,7 @@ namespace Oje.Section.Core.Areas.Controllers
         [HttpPost]
         public IActionResult GetCityList([FromQuery] int? id)
         {
-            return Json(CityManager.GetLightList(id));
+            return Json(CityService.GetLightList(id));
         }
 
         [HttpGet]
@@ -101,7 +101,7 @@ namespace Oje.Section.Core.Areas.Controllers
                 var pFile = Request.Form.Files[0];
                 if (pFile != null && pFile.Length > 0)
                 {
-                    var tempResult = UploadedFileManager.UploadNewFile(FileType.CKEditor, pFile, null, null, null, ".png,.jpg,.jpeg", false);
+                    var tempResult = UploadedFileService.UploadNewFile(FileType.CKEditor, pFile, null, null, null, ".png,.jpg,.jpeg", false);
                     result = new { @default = GlobalConfig.FileAccessHandlerUrl + tempResult };
                 }
             }

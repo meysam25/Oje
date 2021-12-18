@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Models.DB
+namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalForms")]
     public class ProposalForm

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Services
 {
-    public static class EnumManager
+    public static class EnumService
     {
         public static List<IdTitle> GetEnum(string enumName)
         {

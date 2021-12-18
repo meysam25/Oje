@@ -3,25 +3,25 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    internal class UserManager : IUserManager
+    internal class UserService : IUserService
     {
         readonly ProposalFormDBContext db = null;
-        readonly IRoleManager RoleManager = null;
-        public UserManager(ProposalFormDBContext db, IRoleManager RoleManager)
+        readonly IRoleService RoleService = null;
+        public UserService(ProposalFormDBContext db, IRoleService RoleService)
         {
             this.db = db;
-            this.RoleManager = RoleManager;
+            this.RoleService = RoleService;
         }
 
         public long CreateUserForProposalFormIfNeeded(IFormCollection form, int? siteSettingId, long? loginUserId)
@@ -61,7 +61,7 @@ namespace Oje.ProposalFormManager.Services
             db.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
             db.SaveChanges();
 
-            RoleManager.AddUserToUserRole(newUser.Id);
+            RoleService.AddUserToUserRole(newUser.Id);
 
             return newUser.Id;
         }

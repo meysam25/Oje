@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,13 +20,13 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class FireInsuranceCoverageTitleController: Controller
     {
-        readonly IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager = null;
+        readonly IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService = null;
         public FireInsuranceCoverageTitleController
             (
-                IFireInsuranceCoverageTitleManager FireInsuranceCoverageTitleManager
+                IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService
             )
         {
-            this.FireInsuranceCoverageTitleManager = FireInsuranceCoverageTitleManager;
+            this.FireInsuranceCoverageTitleService = FireInsuranceCoverageTitleService;
         }
 
         [AreaConfig(Title = "پوشش", Icon = "fa-heading", IsMainMenuItem = true)]
@@ -50,42 +50,42 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateFireInsuranceCoverageTitleVM input)
         {
-            return Json(FireInsuranceCoverageTitleManager.Create(input));
+            return Json(FireInsuranceCoverageTitleService.Create(input));
         }
 
         [AreaConfig(Title = "حذف پوشش", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceCoverageTitleManager.Delete(input?.id));
+            return Json(FireInsuranceCoverageTitleService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک پوشش", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(FireInsuranceCoverageTitleManager.GetById(input?.id));
+            return Json(FireInsuranceCoverageTitleService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  پوشش", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateFireInsuranceCoverageTitleVM input)
         {
-            return Json(FireInsuranceCoverageTitleManager.Update(input));
+            return Json(FireInsuranceCoverageTitleService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست پوشش", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceCoverageTitleMainGrid searchInput)
         {
-            return Json(FireInsuranceCoverageTitleManager.GetList(searchInput));
+            return Json(FireInsuranceCoverageTitleService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] FireInsuranceCoverageTitleMainGrid searchInput)
         {
-            var result = FireInsuranceCoverageTitleManager.GetList(searchInput);
+            var result = FireInsuranceCoverageTitleService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

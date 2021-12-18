@@ -11,10 +11,10 @@ using System.Linq;
 
 namespace Oje.Section.CarBodyBaseData.Services
 {
-    public class CarBodyCreateDatePercentManager: ICarBodyCreateDatePercentManager
+    public class CarBodyCreateDatePercentService: ICarBodyCreateDatePercentService
     {
         readonly CarBodyDBContext db = null;
-        public CarBodyCreateDatePercentManager(CarBodyDBContext db)
+        public CarBodyCreateDatePercentService(CarBodyDBContext db)
         {
             this.db = db;
         }

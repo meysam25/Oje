@@ -1,10 +1,10 @@
-﻿using Oje.AccountManager.Models.View;
+﻿using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Models;
 using System.Collections.Generic;
 
-namespace Oje.AccountManager.Interfaces
+namespace Oje.AccountService.Interfaces
 {
-    public interface IRoleManager
+    public interface IRoleService
     {
         ApiResult Create(CreateUpdateRoleVM input);
         ApiResult Delete(int? id);
@@ -25,5 +25,6 @@ namespace Oje.AccountManager.Interfaces
         int? GetRoleSiteSettignId(int? id);
         object GetRoleLightListForUser(LoginUserVM loginUserVM, int? siteSettingId);
         int CreateOrGetRole(string title, string name, int value);
+        List<RoleUsersVM> GetUsersBy(List<int> roleIds, int? siteSettingId, int count);
     }
 }

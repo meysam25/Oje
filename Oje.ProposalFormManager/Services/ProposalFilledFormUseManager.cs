@@ -1,20 +1,20 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFilledFormUseManager: IProposalFilledFormUseManager
+    public class ProposalFilledFormUseService: IProposalFilledFormUseService
     {
         readonly ProposalFormDBContext db = null;
-        public ProposalFilledFormUseManager(ProposalFormDBContext db)
+        public ProposalFilledFormUseService(ProposalFormDBContext db)
         {
             this.db = db;
         }
@@ -33,6 +33,11 @@ namespace Oje.ProposalFormManager.Services
                 }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 db.SaveChanges();
             }
+        }
+
+        public List<long> GetProposalFilledFormUserIds(long proposalFilledFormId)
+        {
+            return db.ProposalFilledFormUsers.Where(t => t.ProposalFilledFormId == proposalFilledFormId).Select(t => t.UserId).ToList();
         }
 
         public bool HasAny(long proposalFilledFormId, ProposalFilledFormUserType type)

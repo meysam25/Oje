@@ -12,10 +12,10 @@ using Oje.Section.CarBaseData.Services.EContext;
 
 namespace Oje.Section.CarBaseData.Services
 {
-    public class CarExteraDiscountRangeAmountManager : ICarExteraDiscountRangeAmountManager
+    public class CarExteraDiscountRangeAmountService : ICarExteraDiscountRangeAmountService
     {
         readonly CarDBContext db = null;
-        public CarExteraDiscountRangeAmountManager(CarDBContext db)
+        public CarExteraDiscountRangeAmountService(CarDBContext db)
         {
             this.db = db;
         }

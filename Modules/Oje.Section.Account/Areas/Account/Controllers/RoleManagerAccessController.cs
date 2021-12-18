@@ -1,6 +1,6 @@
-﻿using Oje.AccountManager.Filters;
-using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models;
+﻿using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Oje.AccountManager.Models.View;
+using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -19,12 +19,12 @@ namespace Oje.Section.Account.Areas.Account.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = " هویتی (ادمین)", Icon = "fa-users", Title = "دسترسی ها")]
     [CustomeAuthorizeFilter]
-    public class RoleManagerAccessController: Controller
+    public class RoleServiceAccessController: Controller
     {
-        readonly ISectionManager SectionManager = null;
-        public RoleManagerAccessController(ISectionManager SectionManager)
+        readonly ISectionService SectionService = null;
+        public RoleServiceAccessController(ISectionService SectionService)
         {
-            this.SectionManager = SectionManager;
+            this.SectionService = SectionService;
         }
 
         [AreaConfig(Title = "صفحه دسترسی نقش")]
@@ -32,7 +32,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "ویرایش دسترسی نقش";
-            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "RoleManagerAccess", new { area = "Account" });
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "RoleServiceAccess", new { area = "Account" });
             return View("Index");
         }
 
@@ -41,14 +41,14 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Account", "RoleManagerAccess")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Account", "RoleServiceAccess")));
         }
 
         [AreaConfig(Title = "مشاهده دسترسی نقش ها")]
         [HttpPost]
         public IActionResult GetModaulsList([FromForm]GlobalIntId input)
         {
-            return Json(SectionManager.GetListForTreeView(input?.id));
+            return Json(SectionService.GetListForTreeView(input?.id));
         }
 
         [AreaConfig(Title = "ویرایش دسترسی نقش ها")]
@@ -56,7 +56,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [RequestFormLimits(ValueCountLimit = 20000)]
         public IActionResult Update([FromForm]CreateUpdateRoleAccessVM input)
         {
-            return Json(SectionManager.UpdateAccess(input));
+            return Json(SectionService.UpdateAccess(input));
         }
 
     }

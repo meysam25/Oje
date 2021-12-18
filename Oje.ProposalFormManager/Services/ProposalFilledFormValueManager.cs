@@ -4,22 +4,22 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFilledFormValueManager : IProposalFilledFormValueManager
+    public class ProposalFilledFormValueService : IProposalFilledFormValueService
     {
         readonly ProposalFormDBContext db = null;
-        readonly IProposalFilledFormKeyManager ProposalFilledFormKeyManager = null;
-        public ProposalFilledFormValueManager(ProposalFormDBContext db, IProposalFilledFormKeyManager ProposalFilledFormKeyManager)
+        readonly IProposalFilledFormKeyService ProposalFilledFormKeyService = null;
+        public ProposalFilledFormValueService(ProposalFormDBContext db, IProposalFilledFormKeyService ProposalFilledFormKeyService)
         {
             this.db = db;
-            this.ProposalFilledFormKeyManager = ProposalFilledFormKeyManager;
+            this.ProposalFilledFormKeyService = ProposalFilledFormKeyService;
         }
 
         void addNewRow(long proposalFilledFormId, int keyId, string currValue)
@@ -67,7 +67,7 @@ namespace Oje.ProposalFormManager.Services
                             {
                                 if (currValue.Length > 4000)
                                     throw BException.GenerateNewException(String.Format(BMessages.X_Length_Can_Not_Be_More_Then_4000.GetEnumDisplayName(), ctrl.label));
-                                int keyId = ProposalFilledFormKeyManager.CreateIfNeeded(ctrl.name);
+                                int keyId = ProposalFilledFormKeyService.CreateIfNeeded(ctrl.name);
                                 if (keyId > 0)
                                 {
                                     if (isEdit == false)

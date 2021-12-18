@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.View;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,42 +21,42 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
     [CustomeAuthorizeFilter]
     public class CarBodyInquiryController: Controller
     {
-        readonly ICompanyManager CompanyManager = null;
-        readonly IInquiryDurationManager InquiryDurationManager = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly IProposalFormManager ProposalFormManager = null;
-        readonly IInsuranceContractDiscountManager InsuranceContractDiscountManager = null;
-        readonly IVehicleSystemManager VehicleSystemManager = null;
-        readonly IVehicleTypeManager VehicleTypeManager = null;
-        readonly IVehicleUsageManager VehicleUsageManager = null;
-        readonly ICarExteraDiscountManager CarExteraDiscountManager = null;
-        readonly ICarSpecificationAmountManager CarSpecificationAmountManager = null;
-        readonly INoDamageDiscountManager NoDamageDiscountManager = null;
+        readonly ICompanyService CompanyService = null;
+        readonly IInquiryDurationService InquiryDurationService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IProposalFormService ProposalFormService = null;
+        readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
+        readonly IVehicleSystemService VehicleSystemService = null;
+        readonly IVehicleTypeService VehicleTypeService = null;
+        readonly IVehicleUsageService VehicleUsageService = null;
+        readonly ICarExteraDiscountService CarExteraDiscountService = null;
+        readonly ICarSpecificationAmountService CarSpecificationAmountService = null;
+        readonly INoDamageDiscountService NoDamageDiscountService = null;
         public CarBodyInquiryController(
-                ICompanyManager CompanyManager,
-                IInquiryDurationManager InquiryDurationManager,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                IProposalFormManager ProposalFormManager,
-                IInsuranceContractDiscountManager InsuranceContractDiscountManager,
-                IVehicleSystemManager VehicleSystemManager,
-                IVehicleTypeManager VehicleTypeManager,
-                IVehicleUsageManager VehicleUsageManager,
-                ICarExteraDiscountManager CarExteraDiscountManager,
-                ICarSpecificationAmountManager CarSpecificationAmountManager,
-                INoDamageDiscountManager NoDamageDiscountManager
+                ICompanyService CompanyService,
+                IInquiryDurationService InquiryDurationService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService,
+                IInsuranceContractDiscountService InsuranceContractDiscountService,
+                IVehicleSystemService VehicleSystemService,
+                IVehicleTypeService VehicleTypeService,
+                IVehicleUsageService VehicleUsageService,
+                ICarExteraDiscountService CarExteraDiscountService,
+                ICarSpecificationAmountService CarSpecificationAmountService,
+                INoDamageDiscountService NoDamageDiscountService
             )
         {
-            this.CompanyManager = CompanyManager;
-            this.InquiryDurationManager = InquiryDurationManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.InsuranceContractDiscountManager = InsuranceContractDiscountManager;
-            this.VehicleSystemManager = VehicleSystemManager;
-            this.VehicleTypeManager = VehicleTypeManager;
-            this.VehicleUsageManager = VehicleUsageManager;
-            this.CarExteraDiscountManager = CarExteraDiscountManager;
-            this.CarSpecificationAmountManager = CarSpecificationAmountManager;
-            this.NoDamageDiscountManager = NoDamageDiscountManager;
+            this.CompanyService = CompanyService;
+            this.InquiryDurationService = InquiryDurationService;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
+            this.InsuranceContractDiscountService = InsuranceContractDiscountService;
+            this.VehicleSystemService = VehicleSystemService;
+            this.VehicleTypeService = VehicleTypeService;
+            this.VehicleUsageService = VehicleUsageService;
+            this.CarExteraDiscountService = CarExteraDiscountService;
+            this.CarSpecificationAmountService = CarSpecificationAmountService;
+            this.NoDamageDiscountService = NoDamageDiscountService;
         }
 
         [AreaConfig(Title = "استعلام بدنه", Icon = "fa-car-crash", IsMainMenuItem = true)]
@@ -80,63 +80,63 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] CarBodyInquiryVM input)
         {
-            return Json(CarSpecificationAmountManager.Inquiry(SiteSettingManager.GetSiteSetting()?.Id, input));
+            return Json(CarSpecificationAmountService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyManager.GetLightListForInquiryDD());
+            return Json(CompanyService.GetLightListForInquiryDD());
         }
 
         [AreaConfig(Title = "مشاهده لیست تخفیف عدم خسارت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetNoDamageDiscount()
         {
-            return Json(NoDamageDiscountManager.GetLightList(ProposalFormManager.GetByType(ProposalFormType.CarBody, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(NoDamageDiscountService.GetLightList(ProposalFormService.GetByType(ProposalFormType.CarBody, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت فیلتر گرید", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyListGridFilter()
         {
-            return Json(CompanyManager.GetLightList());
+            return Json(CompanyService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه روزانه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetValidDayForGridFilter()
         {
-            return Json(InquiryDurationManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, ProposalFormManager.GetByType(ProposalFormType.CarBody, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(InquiryDurationService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, ProposalFormService.GetByType(ProposalFormType.CarBody, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست تفاهم نامه ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetValidContractForGrid()
         {
-            return Json(InsuranceContractDiscountManager.GetLightList(SiteSettingManager.GetSiteSetting()?.Id, ProposalFormType.CarBody));
+            return Json(InsuranceContractDiscountService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, ProposalFormType.CarBody));
         }
 
         [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCarBrandList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(VehicleSystemManager.GetSelect2List(searchInput));
+            return Json(VehicleSystemService.GetSelect2List(searchInput));
         }
 
         [AreaConfig(Title = "مشاهده لیست تیپ خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarTypeList([FromForm] int? id)
         {
-            return Json(VehicleTypeManager.GetLightList(id));
+            return Json(VehicleTypeService.GetLightList(id));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarUsageList([FromForm] int? id)
         {
-            return Json(VehicleUsageManager.GetLightList(id));
+            return Json(VehicleUsageService.GetLightList(id));
         }
 
         [AreaConfig(Title = "مشاهده لیست سال ساخت خودرو", Icon = "fa-list-alt")]
@@ -150,7 +150,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult GetRequiredQuestions([FromForm] RequiredQuestionVM input)
         {
-            return Json(CarExteraDiscountManager.GetRequiredQuestions(input, ProposalFormManager.GetByType(ProposalFormType.CarBody, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(CarExteraDiscountService.GetRequiredQuestions(input, ProposalFormService.GetByType(ProposalFormType.CarBody, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
 
@@ -158,14 +158,14 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult GetExteraFilters([FromForm] RequiredQuestionVM input)
         {
-            return Json(CarExteraDiscountManager.GetRequiredQuestionsJsonCtrls(input, ProposalFormManager.GetByType(ProposalFormType.CarBody, SiteSettingManager.GetSiteSetting()?.Id)?.Id));
+            return Json(CarExteraDiscountService.GetRequiredQuestionsJsonCtrls(input, ProposalFormService.GetByType(ProposalFormType.CarBody, SiteSettingService.GetSiteSetting()?.Id)?.Id));
         }
 
         [AreaConfig(Title = "مقادیر سوالات اختیاری استعلام بدنه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetExteraFilterValuess([FromQuery] int? id)
         {
-            return Json(CarExteraDiscountManager.GetValuesForDD(id.ToIntReturnZiro()));
+            return Json(CarExteraDiscountService.GetValuesForDD(id.ToIntReturnZiro()));
         }
     }
 }

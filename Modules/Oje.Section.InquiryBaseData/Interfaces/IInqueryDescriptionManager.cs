@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IInqueryDescriptionManager
+    public interface IInqueryDescriptionService
     {
         ApiResult Create(CreateUpdateInqueryDescriptionVM input);
         ApiResult Delete(int? id);

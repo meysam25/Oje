@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -15,28 +15,28 @@ using Oje.Section.SalesNetworkBaseData.Models.View;
 
 namespace Oje.Section.SalesNetworkBaseData.Services
 {
-    public class SalesNetworkManager : ISalesNetworkManager
+    public class SalesNetworkService : ISalesNetworkService
     {
         readonly SalesNetworkBaseDataDBContext db = null;
-        readonly Interfaces.IProposalFormManager ProposalFormManager = null;
-        readonly ISiteInfoManager SiteInfoManager = null;
-        readonly IUserManager UserManager = null;
-        public SalesNetworkManager(
+        readonly Interfaces.IProposalFormService ProposalFormService = null;
+        readonly ISiteInfoService SiteInfoService = null;
+        readonly IUserService UserService = null;
+        public SalesNetworkService(
                 SalesNetworkBaseDataDBContext db,
-                ISiteInfoManager SiteInfoManager,
-                Interfaces.IProposalFormManager ProposalFormManager,
-                IUserManager UserManager
+                ISiteInfoService SiteInfoService,
+                Interfaces.IProposalFormService ProposalFormService,
+                IUserService UserService
             )
         {
             this.db = db;
-            this.SiteInfoManager = SiteInfoManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.UserManager = UserManager;
+            this.SiteInfoService = SiteInfoService;
+            this.ProposalFormService = ProposalFormService;
+            this.UserService = UserService;
         }
 
         public ApiResult Create(CreateUpdateSalesNetworkVM input)
         {
-            var siteInfo = SiteInfoManager.GetInfo();
+            var siteInfo = SiteInfoService.GetInfo();
             createValidation(input, siteInfo.siteSettingId, siteInfo.loginUserId, siteInfo.childUserIds);
 
             SalesNetwork newItem = new SalesNetwork()
@@ -84,7 +84,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             if (input.ppfIds == null || input.ppfIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             foreach (var ppfid in input.ppfIds)
-                if (!ProposalFormManager.Exist(ppfid, siteSettingId))
+                if (!ProposalFormService.Exist(ppfid, siteSettingId))
                     throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.cIds == null || input.cIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
@@ -94,7 +94,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_One_User);
-            if (!UserManager.IsValidUser(input.userId.ToLongReturnZiro(), siteSettingId, childUserIds, RoleType.Marketer))
+            if (!UserService.IsValidUser(input.userId.ToLongReturnZiro(), siteSettingId, childUserIds, RoleType.Marketer))
                 throw BException.GenerateNewException(BMessages.User_Not_Found);
             if (db.SalesNetworkMarketers.Any(t => t.SalesNetworkId == input.id && t.UserId == input.userId && t.ParentId != null))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
@@ -102,7 +102,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            var siteInfo = SiteInfoManager.GetInfo();
+            var siteInfo = SiteInfoService.GetInfo();
 
             var foundItem = db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
@@ -121,7 +121,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
 
         public object GetById(int? id)
         {
-            var siteInfo = SiteInfoManager.GetInfo();
+            var siteInfo = SiteInfoService.GetInfo();
 
             return db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
@@ -148,7 +148,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             if (searchInput == null)
                 searchInput = new SalesNetworkMainGrid();
 
-            var siteInfo = SiteInfoManager.GetInfo();
+            var siteInfo = SiteInfoService.GetInfo();
             var qureResullt = db.SalesNetworks.Where(t => t.SiteSettingId == siteInfo.siteSettingId && (siteInfo.childUserIds == null || siteInfo.childUserIds.Contains(t.CreateUserId)));
 
             if (!string.IsNullOrEmpty(searchInput.title))
@@ -209,7 +209,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
 
         public ApiResult Update(CreateUpdateSalesNetworkVM input)
         {
-            var siteInfo = SiteInfoManager.GetInfo();
+            var siteInfo = SiteInfoService.GetInfo();
 
             createValidation(input, siteInfo.siteSettingId, siteInfo.loginUserId, siteInfo.childUserIds);
 

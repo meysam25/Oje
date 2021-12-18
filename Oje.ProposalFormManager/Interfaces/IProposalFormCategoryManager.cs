@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFormCategoryManager
+    public interface IProposalFormCategoryService
     {
         object GetSelect2List(Select2SearchVM searchInput);
     }

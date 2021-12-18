@@ -2,22 +2,22 @@
 using Oje.Infrastructure;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class PaymentMethodManager : IPaymentMethodManager
+    public class PaymentMethodService : IPaymentMethodService
     {
         readonly ProposalFormDBContext db = null;
-        public PaymentMethodManager(ProposalFormDBContext db)
+        public PaymentMethodService(ProposalFormDBContext db)
         {
             this.db = db;
         }

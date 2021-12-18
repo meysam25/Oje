@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager;
+﻿using Oje.AccountService;
 using Oje.Infrastructure.Interfac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Oje.AccountService.Hubs;
 
 namespace Oje.Section.Account
 {
@@ -15,6 +16,11 @@ namespace Oje.Section.Account
     {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<NotificationHub>("/notification");
+            });
+
         }
 
         public void ConfigureServices(IServiceCollection services)

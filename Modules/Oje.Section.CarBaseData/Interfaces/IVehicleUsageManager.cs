@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.CarBaseData.Interfaces
 {
-    public interface IVehicleUsageManager
+    public interface IVehicleUsageService
     {
         ApiResult Create(CreateUpdateVehicleUsageVM input);
         ApiResult Delete(int? id);

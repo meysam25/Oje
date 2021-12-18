@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -17,12 +17,12 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class PaymentMethodFileController: Controller
     {
-        readonly IPaymentMethodFileManager PaymentMethodFileManager = null;
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        public PaymentMethodFileController(IPaymentMethodFileManager PaymentMethodFileFileManager, IPaymentMethodManager PaymentMethodManager)
+        readonly IPaymentMethodFileService PaymentMethodFileService = null;
+        readonly IPaymentMethodService PaymentMethodService = null;
+        public PaymentMethodFileController(IPaymentMethodFileService PaymentMethodFileFileService, IPaymentMethodService PaymentMethodService)
         {
-            this.PaymentMethodFileManager = PaymentMethodFileFileManager;
-            this.PaymentMethodManager = PaymentMethodManager;
+            this.PaymentMethodFileService = PaymentMethodFileFileService;
+            this.PaymentMethodService = PaymentMethodService;
         }
 
         [AreaConfig(Title = "فایل های شرایط پرداخت", Icon = "fa-dollar-sign", IsMainMenuItem = true)]
@@ -46,42 +46,42 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdatePaymentMethodFileVM input)
         {
-            return Json(PaymentMethodFileManager.Create(input));
+            return Json(PaymentMethodFileService.Create(input));
         }
 
         [AreaConfig(Title = "حذف فایل های شرایط پرداخت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(PaymentMethodFileManager.Delete(input?.id));
+            return Json(PaymentMethodFileService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک فایل های شرایط پرداخت", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(PaymentMethodFileManager.GetById(input?.id));
+            return Json(PaymentMethodFileService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  فایل های شرایط پرداخت", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdatePaymentMethodFileVM input)
         {
-            return Json(PaymentMethodFileManager.Update(input));
+            return Json(PaymentMethodFileService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست فایل های شرایط پرداخت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] PaymentMethodFileMainGrid searchInput)
         {
-            return Json(PaymentMethodFileManager.GetList(searchInput));
+            return Json(PaymentMethodFileService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] PaymentMethodFileMainGrid searchInput)
         {
-            var result = PaymentMethodFileManager.GetList(searchInput);
+            var result = PaymentMethodFileService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -95,7 +95,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public ActionResult GetPayMethodList()
         {
-            return Json(PaymentMethodManager.GetLightList());
+            return Json(PaymentMethodService.GetLightList());
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,10 +16,10 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     [CustomeAuthorizeFilter]
     public class InsuranceContractCompanyController: Controller
     {
-        readonly IInsuranceContractCompanyManager InsuranceContractCompanyManager = null;
-        public InsuranceContractCompanyController(IInsuranceContractCompanyManager InsuranceContractCompanyManager)
+        readonly IInsuranceContractCompanyService InsuranceContractCompanyService = null;
+        public InsuranceContractCompanyController(IInsuranceContractCompanyService InsuranceContractCompanyService)
         {
-            this.InsuranceContractCompanyManager = InsuranceContractCompanyManager;
+            this.InsuranceContractCompanyService = InsuranceContractCompanyService;
         }
 
         [AreaConfig(Title = "شرکت های بیمه گذار حقوقی", Icon = "fa-building", IsMainMenuItem = true)]
@@ -43,42 +43,42 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateInsuranceContractCompanyVM input)
         {
-            return Json(InsuranceContractCompanyManager.Create(input));
+            return Json(InsuranceContractCompanyService.Create(input));
         }
 
         [AreaConfig(Title = "حذف شرکت های بیمه گذار حقوقی", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(InsuranceContractCompanyManager.Delete(input?.id));
+            return Json(InsuranceContractCompanyService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک شرکت های بیمه گذار حقوقی", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(InsuranceContractCompanyManager.GetById(input?.id));
+            return Json(InsuranceContractCompanyService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  شرکت های بیمه گذار حقوقی", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateInsuranceContractCompanyVM input)
         {
-            return Json(InsuranceContractCompanyManager.Update(input));
+            return Json(InsuranceContractCompanyService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت های بیمه گذار حقوقی", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractCompanyMainGrid searchInput)
         {
-            return Json(InsuranceContractCompanyManager.GetList(searchInput));
+            return Json(InsuranceContractCompanyService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InsuranceContractCompanyMainGrid searchInput)
         {
-            var result = InsuranceContractCompanyManager.GetList(searchInput);
+            var result = InsuranceContractCompanyService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

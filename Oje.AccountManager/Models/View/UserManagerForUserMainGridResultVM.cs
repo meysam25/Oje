@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Models.View
+namespace Oje.AccountService.Models.View
 {
-    public class UserManagerForUserMainGridResultVM
+    public class UserServiceForUserMainGridResultVM
     {
         [Display(Name = "ردیف")]
         public int row { get; set; }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Models.DB
+namespace Oje.AccountService.Models.DB
 {
     [Table("FileAccessRoles")]
     public class FileAccessRole

@@ -14,17 +14,17 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class SiteSettingManager : ISiteSettingManager
+    public class SiteSettingService : ISiteSettingService
     {
         readonly BaseDataDBContext db = null;
-        readonly Oje.AccountManager.Interfaces.ISiteSettingManager GlobalSiteSettingManager = null;
-        public SiteSettingManager(
+        readonly Oje.AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService = null;
+        public SiteSettingService(
                 BaseDataDBContext db,
-                Oje.AccountManager.Interfaces.ISiteSettingManager GlobalSiteSettingManager
+                Oje.AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService
             )
         {
             this.db = db;
-            this.GlobalSiteSettingManager = GlobalSiteSettingManager;
+            this.GlobalSiteSettingService = GlobalSiteSettingService;
         }
 
         public ApiResult Create(CreateUpdateSiteSettingVM input, long? userId)
@@ -59,7 +59,7 @@ namespace Oje.Section.BaseData.Services
 
                     tr.Commit();
 
-                    GlobalSiteSettingManager.UpdateSiteSettings();
+                    GlobalSiteSettingService.UpdateSiteSettings();
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -206,7 +206,7 @@ namespace Oje.Section.BaseData.Services
 
                     tr.Commit();
 
-                    GlobalSiteSettingManager.UpdateSiteSettings();
+                    GlobalSiteSettingService.UpdateSiteSettings();
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
                 catch (Exception)

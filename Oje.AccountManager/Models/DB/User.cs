@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.AccountManager.Models.DB
+namespace Oje.AccountService.Models.DB
 {
     [Table("Users")]
     public class User
@@ -19,6 +19,9 @@ namespace Oje.AccountManager.Models.DB
             UserRoles = new();
             UploadedFiles = new();
             UserCompanies = new();
+            UserNotifications = new();
+            FromUserUserNotifications = new();
+            UserNotificationTrigers = new();
         }
 
         [Key]
@@ -100,5 +103,11 @@ namespace Oje.AccountManager.Models.DB
         public List<UploadedFile> UploadedFiles { get; set; }
         [InverseProperty("User")]
         public List<UserCompany> UserCompanies { get; set; }
+        [InverseProperty("User")]
+        public List<UserNotification> UserNotifications { get; set; }
+        [InverseProperty("FromUser")]
+        public List<UserNotification> FromUserUserNotifications { get; set; }
+        [InverseProperty("User")]
+        public List<UserNotificationTriger> UserNotificationTrigers { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountManager.Filters;
+using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,10 +16,10 @@ namespace Oje.Section.CarBodyBaseData.Areas.CarBodyBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class CarBodyCreateDatePercentController: Controller
     {
-        readonly ICarBodyCreateDatePercentManager CarBodyCreateDatePercentManager = null;
-        public CarBodyCreateDatePercentController(ICarBodyCreateDatePercentManager CarBodyCreateDatePercentManager)
+        readonly ICarBodyCreateDatePercentService CarBodyCreateDatePercentService = null;
+        public CarBodyCreateDatePercentController(ICarBodyCreateDatePercentService CarBodyCreateDatePercentService)
         {
-            this.CarBodyCreateDatePercentManager = CarBodyCreateDatePercentManager;
+            this.CarBodyCreateDatePercentService = CarBodyCreateDatePercentService;
         }
 
         [AreaConfig(Title = "درصد حق بیمه سال ساخت بدنه", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -43,42 +43,42 @@ namespace Oje.Section.CarBodyBaseData.Areas.CarBodyBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCarBodyCreateDatePercentVM input)
         {
-            return Json(CarBodyCreateDatePercentManager.Create(input));
+            return Json(CarBodyCreateDatePercentService.Create(input));
         }
 
         [AreaConfig(Title = "حذف درصد حق بیمه سال ساخت بدنه", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(CarBodyCreateDatePercentManager.Delete(input?.id));
+            return Json(CarBodyCreateDatePercentService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک درصد حق بیمه سال ساخت بدنه", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(CarBodyCreateDatePercentManager.GetById(input?.id));
+            return Json(CarBodyCreateDatePercentService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  درصد حق بیمه سال ساخت بدنه", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCarBodyCreateDatePercentVM input)
         {
-            return Json(CarBodyCreateDatePercentManager.Update(input));
+            return Json(CarBodyCreateDatePercentService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست درصد حق بیمه سال ساخت بدنه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarBodyCreateDatePercentMainGrid searchInput)
         {
-            return Json(CarBodyCreateDatePercentManager.GetList(searchInput));
+            return Json(CarBodyCreateDatePercentService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] CarBodyCreateDatePercentMainGrid searchInput)
         {
-            var result = CarBodyCreateDatePercentManager.GetList(searchInput);
+            var result = CarBodyCreateDatePercentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

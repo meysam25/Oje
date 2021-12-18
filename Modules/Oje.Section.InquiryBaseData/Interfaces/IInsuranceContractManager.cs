@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Interfaces
 {
-    public interface IInsuranceContractManager
+    public interface IInsuranceContractService
     {
         object GetLightList();
         bool Exist(int id);

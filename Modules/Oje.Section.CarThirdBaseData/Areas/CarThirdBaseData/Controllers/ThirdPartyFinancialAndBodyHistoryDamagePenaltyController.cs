@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,12 +16,12 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyFinancialAndBodyHistoryDamagePenaltyController: Controller
     {
-        readonly IThirdPartyFinancialAndBodyHistoryDamagePenaltyManager ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager = null;
+        readonly IThirdPartyFinancialAndBodyHistoryDamagePenaltyService ThirdPartyFinancialAndBodyHistoryDamagePenaltyService = null;
         public ThirdPartyFinancialAndBodyHistoryDamagePenaltyController(
-                IThirdPartyFinancialAndBodyHistoryDamagePenaltyManager ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager
+                IThirdPartyFinancialAndBodyHistoryDamagePenaltyService ThirdPartyFinancialAndBodyHistoryDamagePenaltyService
             )
         {
-            this.ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager = ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager;
+            this.ThirdPartyFinancialAndBodyHistoryDamagePenaltyService = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService;
         }
 
         [AreaConfig(Title = "سابقه خسارت جانی و مالی", Icon = "fa-history", IsMainMenuItem = true)]
@@ -45,42 +45,42 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyFinancialAndBodyHistoryDamagePenaltyVM input)
         {
-            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.Create(input));
+            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.Create(input));
         }
 
         [AreaConfig(Title = "حذف سابقه خسارت جانی و مالی", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.Delete(input?.id));
+            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک سابقه خسارت جانی و مالی", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.GetById(input?.id));
+            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  سابقه خسارت جانی و مالی", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyFinancialAndBodyHistoryDamagePenaltyVM input)
         {
-            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.Update(input));
+            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست سابقه خسارت جانی و مالی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyFinancialAndBodyHistoryDamagePenaltyMainGrid searchInput)
         {
-            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.GetList(searchInput));
+            return Json(ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyFinancialAndBodyHistoryDamagePenaltyMainGrid searchInput)
         {
-            var result = ThirdPartyFinancialAndBodyHistoryDamagePenaltyManager.GetList(searchInput);
+            var result = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

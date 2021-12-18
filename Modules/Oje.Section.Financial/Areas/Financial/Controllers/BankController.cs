@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,10 +16,10 @@ namespace Oje.Section.Financial.Areas.Financial.Controllers
     [CustomeAuthorizeFilter]
     public class BankController: Controller
     {
-        readonly IBankManager BankManager = null;
-        public BankController(IBankManager BankManager)
+        readonly IBankService BankService = null;
+        public BankController(IBankService BankService)
         {
-            this.BankManager = BankManager;
+            this.BankService = BankService;
         }
 
         [AreaConfig(Title = "لیست بانک", Icon = "fa-university", IsMainMenuItem = true)]
@@ -43,42 +43,42 @@ namespace Oje.Section.Financial.Areas.Financial.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateBankVM input)
         {
-            return Json(BankManager.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(BankService.Create(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "حذف لیست بانک", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(BankManager.Delete(input?.id));
+            return Json(BankService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک لیست بانک", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(BankManager.GetById(input?.id));
+            return Json(BankService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  لیست بانک", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateBankVM input)
         {
-            return Json(BankManager.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(BankService.Update(input, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست لیست بانک", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] BankMainGrid searchInput)
         {
-            return Json(BankManager.GetList(searchInput));
+            return Json(BankService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] BankMainGrid searchInput)
         {
-            var result = BankManager.GetList(searchInput);
+            var result = BankService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

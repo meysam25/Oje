@@ -16,10 +16,10 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class CityManager : ICityManager
+    public class CityService : ICityService
     {
         readonly BaseDataDBContext db = null;
-        public CityManager(BaseDataDBContext db)
+        public CityService(BaseDataDBContext db)
         {
             this.db = db;
         }

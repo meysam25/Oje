@@ -1,13 +1,13 @@
-﻿using Oje.FireInsuranceManager.Models.DB;
+﻿using Oje.FireInsuranceService.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.FireInsuranceManager.Interfaces
+namespace Oje.FireInsuranceService.Interfaces
 {
-    public interface IPaymentMethodManager
+    public interface IPaymentMethodService
     {
         List<PaymentMethod> GetBy(int? proposalFormId, int? siteSettingId);
     }

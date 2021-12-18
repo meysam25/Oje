@@ -20,17 +20,17 @@ namespace Oje.Section.CarBaseData
         {
             services.AddDbContextPool<CarDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
-            services.AddScoped<ICarTypeManager, CarTypeManager>();
-            services.AddScoped<ICarSpecificationManager, CarSpecificationManager>();
-            services.AddScoped<IVehicleSystemManager, VehicleSystemManager>();
-            services.AddScoped<IVehicleTypeManager, VehicleTypeManager>();
-            services.AddScoped<IVehicleUsageManager, VehicleUsageManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
-            services.AddScoped<ICarExteraDiscountManager, CarExteraDiscountManager>();
-            services.AddScoped<ICarExteraDiscountValueManager, CarExteraDiscountValueManager>();
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<ICarExteraDiscountRangeAmountManager, CarExteraDiscountRangeAmountManager>();
-            services.AddScoped<ICarExteraDiscountCategoryManager, CarExteraDiscountCategoryManager>();
+            services.AddScoped<ICarTypeService, CarTypeService>();
+            services.AddScoped<ICarSpecificationService, CarSpecificationService>();
+            services.AddScoped<IVehicleSystemService, VehicleSystemService>();
+            services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+            services.AddScoped<IVehicleUsageService, VehicleUsageService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
+            services.AddScoped<ICarExteraDiscountService, CarExteraDiscountService>();
+            services.AddScoped<ICarExteraDiscountValueService, CarExteraDiscountValueService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ICarExteraDiscountRangeAmountService, CarExteraDiscountRangeAmountService>();
+            services.AddScoped<ICarExteraDiscountCategoryService, CarExteraDiscountCategoryService>();
         }
     }
 }

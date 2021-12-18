@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -16,10 +16,10 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
     [CustomeAuthorizeFilter]
     public class ThirdPartyCarCreateDatePercentController: Controller
     {
-        readonly IThirdPartyCarCreateDatePercentManager ThirdPartyCarCreateDatePercentManager = null;
-        public ThirdPartyCarCreateDatePercentController(IThirdPartyCarCreateDatePercentManager ThirdPartyCarCreateDatePercentManager)
+        readonly IThirdPartyCarCreateDatePercentService ThirdPartyCarCreateDatePercentService = null;
+        public ThirdPartyCarCreateDatePercentController(IThirdPartyCarCreateDatePercentService ThirdPartyCarCreateDatePercentService)
         {
-            this.ThirdPartyCarCreateDatePercentManager = ThirdPartyCarCreateDatePercentManager;
+            this.ThirdPartyCarCreateDatePercentService = ThirdPartyCarCreateDatePercentService;
         }
 
         [AreaConfig(Title = "درصد حق بیمه سال ساخت ثالث", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -43,42 +43,42 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateThirdPartyCarCreateDatePercentVM input)
         {
-            return Json(ThirdPartyCarCreateDatePercentManager.Create(input));
+            return Json(ThirdPartyCarCreateDatePercentService.Create(input));
         }
 
         [AreaConfig(Title = "حذف درصد حق بیمه سال ساخت ثالث", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyCarCreateDatePercentManager.Delete(input?.id));
+            return Json(ThirdPartyCarCreateDatePercentService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک درصد حق بیمه سال ساخت ثالث", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(ThirdPartyCarCreateDatePercentManager.GetById(input?.id));
+            return Json(ThirdPartyCarCreateDatePercentService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  درصد حق بیمه سال ساخت ثالث", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateThirdPartyCarCreateDatePercentVM input)
         {
-            return Json(ThirdPartyCarCreateDatePercentManager.Update(input));
+            return Json(ThirdPartyCarCreateDatePercentService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست درصد حق بیمه سال ساخت ثالث", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ThirdPartyCarCreateDatePercentMainGrid searchInput)
         {
-            return Json(ThirdPartyCarCreateDatePercentManager.GetList(searchInput));
+            return Json(ThirdPartyCarCreateDatePercentService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ThirdPartyCarCreateDatePercentMainGrid searchInput)
         {
-            var result = ThirdPartyCarCreateDatePercentManager.GetList(searchInput);
+            var result = ThirdPartyCarCreateDatePercentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

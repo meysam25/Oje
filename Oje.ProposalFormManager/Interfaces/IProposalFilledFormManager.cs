@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFilledFormManager
+    public interface IProposalFilledFormService
     {
         ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId);
     }

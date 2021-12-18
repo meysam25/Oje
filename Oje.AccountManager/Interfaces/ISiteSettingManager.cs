@@ -1,8 +1,8 @@
-﻿using Oje.AccountManager.Models.DB;
+﻿using Oje.AccountService.Models.DB;
 
-namespace Oje.AccountManager.Interfaces
+namespace Oje.AccountService.Interfaces
 {
-    public interface ISiteSettingManager
+    public interface ISiteSettingService
     {
         object GetightList();
         SiteSetting GetSiteSetting();

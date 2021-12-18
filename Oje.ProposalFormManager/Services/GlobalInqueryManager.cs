@@ -1,25 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class GlobalInqueryManager : IGlobalInqueryManager
+    public class GlobalInqueryService : IGlobalInqueryService
     {
         readonly ProposalFormDBContext db = null;
-        readonly IPaymentMethodManager PaymentMethodManager = null;
-        public GlobalInqueryManager(
+        readonly IPaymentMethodService PaymentMethodService = null;
+        public GlobalInqueryService(
                 ProposalFormDBContext db,
-                IPaymentMethodManager PaymentMethodManager
+                IPaymentMethodService PaymentMethodService
             )
         {
             this.db = db;
-            this.PaymentMethodManager = PaymentMethodManager;
+            this.PaymentMethodService = PaymentMethodService;
         }
 
         public void AppendInquiryData(long id, List<ProposalFilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs)
@@ -113,7 +113,7 @@ namespace Oje.ProposalFormManager.Services
             if (foundItem.GlobalInquiryItems.Any(t => t.CalcKey == "BCash"))
                 return false;
 
-            if (!PaymentMethodManager.Exist(siteSettingId, proposalFormId, foundItem.CompanyId))
+            if (!PaymentMethodService.Exist(siteSettingId, proposalFormId, foundItem.CompanyId))
                 return false;
 
             return new { wolePrice = foundItem.GlobalInquiryItems.Where(t => t.Expired != true).Sum(t => t.Price).ToString("###,###") };

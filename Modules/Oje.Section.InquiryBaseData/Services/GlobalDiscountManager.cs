@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -14,29 +14,29 @@ using Oje.Section.InquiryBaseData.Services.EContext;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class GlobalDiscountManager : IGlobalDiscountManager
+    public class GlobalDiscountService : IGlobalDiscountService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly AccountManager.Interfaces.ISiteSettingManager SiteSettingManager = null;
-        readonly Interfaces.IProposalFormManager ProposalFormManager = null;
-        readonly IUserManager UserManager = null;
-        public GlobalDiscountManager(
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly Interfaces.IProposalFormService ProposalFormService = null;
+        readonly IUserService UserService = null;
+        public GlobalDiscountService(
                 InquiryBaseDataDBContext db,
-                AccountManager.Interfaces.ISiteSettingManager SiteSettingManager,
-                Interfaces.IProposalFormManager ProposalFormManager,
-                IUserManager UserManager
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                Interfaces.IProposalFormService ProposalFormService,
+                IUserService UserService
             )
         {
             this.db = db;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.UserManager = UserManager;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
+            this.UserService = UserService;
         }
 
         public ApiResult Create(CreateUpdateGlobalDiscountVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, siteSettingId, loginUserId);
 
             GlobalDiscount newItem = new GlobalDiscount()
@@ -78,7 +78,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormManager.Exist(input.formId.ToIntReturnZiro(), siteSettingId))
+            if (!ProposalFormService.Exist(input.formId.ToIntReturnZiro(), siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
@@ -108,9 +108,9 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.Value);
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
 
             GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
             if (foundItem == null)
@@ -128,9 +128,9 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public CreateUpdateGlobalDiscountVM GetById(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.Value);
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
 
             return db.GlobalDiscounts
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)))
@@ -179,9 +179,9 @@ namespace Oje.Section.InquiryBaseData.Services
             if (searchInput == null)
                 searchInput = new GlobalDiscountMainGrid();
 
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.Value);
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
 
             var qureResult = db.GlobalDiscounts.Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
 
@@ -249,9 +249,9 @@ namespace Oje.Section.InquiryBaseData.Services
 
         public ApiResult Update(CreateUpdateGlobalDiscountVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            var siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.Value);
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
             CreateValidation(input, siteSettingId, loginUserId);
 
             GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();

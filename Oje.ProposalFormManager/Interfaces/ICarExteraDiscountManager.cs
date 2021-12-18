@@ -1,15 +1,15 @@
-﻿using Oje.ProposalFormManager.Models;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
+﻿using Oje.ProposalFormService.Models;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface ICarExteraDiscountManager
+    public interface ICarExteraDiscountService
     {
         List<CarExteraDiscount> GetRequredValidCTRLs(int? proposalFormId, int vehicleSystemId, bool hasPrevInsurance);
         List<CarExteraDiscount> GetOptionSelectedCtrls(List<int> Ids , int? proposalFormId);

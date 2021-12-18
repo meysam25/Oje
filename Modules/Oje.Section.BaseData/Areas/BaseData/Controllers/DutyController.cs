@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
@@ -20,12 +20,12 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
     [CustomeAuthorizeFilter]
     public class DutyController : Controller
     {
-        readonly IDutyManager DutyManager = null;
+        readonly IDutyService DutyService = null;
         public DutyController(
-                IDutyManager DutyManager
+                IDutyService DutyService
             )
         {
-            this.DutyManager = DutyManager;
+            this.DutyService = DutyService;
         }
 
         [AreaConfig(Title = "عوارض", Icon = "fa-percentage", IsMainMenuItem = true)]
@@ -49,42 +49,42 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateDutyVM input)
         {
-            return Json(DutyManager.Create(input));
+            return Json(DutyService.Create(input));
         }
 
         [AreaConfig(Title = "حذف عوارض", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
-            return Json(DutyManager.Delete(input?.id));
+            return Json(DutyService.Delete(input?.id));
         }
 
         [AreaConfig(Title = "مشاهده  یک عوارض", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
-            return Json(DutyManager.GetById(input?.id));
+            return Json(DutyService.GetById(input?.id));
         }
 
         [AreaConfig(Title = "به روز رسانی  عوارض", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateDutyVM input)
         {
-            return Json(DutyManager.Update(input));
+            return Json(DutyService.Update(input));
         }
 
         [AreaConfig(Title = "مشاهده لیست عوارض", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] DutyMainGrid searchInput)
         {
-            return Json(DutyManager.GetList(searchInput));
+            return Json(DutyService.GetList(searchInput));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] DutyMainGrid searchInput)
         {
-            var result = DutyManager.GetList(searchInput);
+            var result = DutyService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

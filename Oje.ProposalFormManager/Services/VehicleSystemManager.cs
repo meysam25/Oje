@@ -1,17 +1,17 @@
 ﻿using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Services.EContext;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class VehicleSystemManager : IVehicleSystemManager
+    public class VehicleSystemService : IVehicleSystemService
     {
         readonly ProposalFormDBContext db = null;
-        public VehicleSystemManager(ProposalFormDBContext db)
+        public VehicleSystemService(ProposalFormDBContext db)
         {
             this.db = db;
         }

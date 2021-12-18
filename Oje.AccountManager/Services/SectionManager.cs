@@ -1,6 +1,6 @@
-﻿using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Models;
-using Oje.AccountManager.Models.DB;
+﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models;
+using Oje.AccountService.Models.DB;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -15,22 +15,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Oje.AccountManager.Models.View;
-using Oje.AccountManager.Services.EContext;
+using Oje.AccountService.Models.View;
+using Oje.AccountService.Services.EContext;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class SectionManager : ISectionManager
+    public class SectionService : ISectionService
     {
         readonly AccountDBContext db = null;
-        readonly IRoleManager RoleManager = null;
-        public SectionManager(
+        readonly IRoleService RoleService = null;
+        public SectionService(
                 AccountDBContext db,
-                IRoleManager RoleManager
+                IRoleService RoleService
             )
         {
             this.db = db;
-            this.RoleManager = RoleManager;
+            this.RoleService = RoleService;
         }
 
         public object GetListForTreeView(int? id)
@@ -82,14 +82,14 @@ namespace Oje.AccountManager.Services
         public List<AccessTreeViewUser> GetListForTreeViewForUser(int? id, LoginUserVM loginUserVM, int? siteSettingId)
         {
             MyValidations.SiteSettingValidation(loginUserVM?.siteSettingId, siteSettingId);
-            var loginUserMaxRoleValue = RoleManager.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
-            var targetRoleMaxRoleValue = RoleManager.GetRoleValueByRoleId(id.ToIntReturnZiro(), siteSettingId);
+            var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
+            var targetRoleMaxRoleValue = RoleService.GetRoleValueByRoleId(id.ToIntReturnZiro(), siteSettingId);
             if (loginUserMaxRoleValue <= targetRoleMaxRoleValue)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
-            var loginUserRoleIds = RoleManager.GetRoleIdsByUserId(loginUserVM?.UserId);
+            var loginUserRoleIds = RoleService.GetRoleIdsByUserId(loginUserVM?.UserId);
             if (loginUserRoleIds == null || loginUserRoleIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
-            var roleSiteSettingId = RoleManager.GetRoleSiteSettignId(id);
+            var roleSiteSettingId = RoleService.GetRoleSiteSettignId(id);
             if (roleSiteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
@@ -218,11 +218,11 @@ namespace Oje.AccountManager.Services
         public object UpdateAccessForUser(CreateUpdateRoleAccessVM input, LoginUserVM loginUserVM, int? siteSettingId)
         {
             MyValidations.SiteSettingValidation(loginUserVM?.siteSettingId, siteSettingId);
-            var loginUserMaxRoleValue = RoleManager.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
-            var targetRoleMaxRoleValue = RoleManager.GetRoleValueByRoleId(input.id.ToIntReturnZiro(), siteSettingId);
+            var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
+            var targetRoleMaxRoleValue = RoleService.GetRoleValueByRoleId(input.id.ToIntReturnZiro(), siteSettingId);
             if (loginUserMaxRoleValue <= targetRoleMaxRoleValue)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
-            var loginUserRoleIds = RoleManager.GetRoleIdsByUserId(loginUserVM?.UserId);
+            var loginUserRoleIds = RoleService.GetRoleIdsByUserId(loginUserVM?.UserId);
             if (loginUserRoleIds == null || loginUserRoleIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 

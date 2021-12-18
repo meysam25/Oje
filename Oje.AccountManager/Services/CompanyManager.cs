@@ -1,17 +1,17 @@
-﻿using Oje.AccountManager.Interfaces;
-using Oje.AccountManager.Services.EContext;
+﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace Oje.AccountManager.Services
+namespace Oje.AccountService.Services
 {
-    public class CompanyManager: ICompanyManager
+    public class CompanyService: ICompanyService
     {
         readonly AccountDBContext db = null;
-        public CompanyManager(AccountDBContext db)
+        public CompanyService(AccountDBContext db)
         {
             this.db = db;
         }

@@ -1,18 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Services.EContext;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFormManager: IProposalFormManager
+    public class ProposalFormService: IProposalFormService
     {
         readonly ProposalFormDBContext db = null;
-        public ProposalFormManager(ProposalFormDBContext db)
+        public ProposalFormService(ProposalFormDBContext db)
         {
             this.db = db;
         }

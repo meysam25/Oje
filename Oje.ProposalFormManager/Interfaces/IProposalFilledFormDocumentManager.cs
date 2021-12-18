@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
-using Oje.ProposalFormManager.Models.View;
+using Oje.ProposalFormService.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Interfaces
+namespace Oje.ProposalFormService.Interfaces
 {
-    public interface IProposalFilledFormDocumentManager
+    public interface IProposalFilledFormDocumentService
     {
         void CreateChequeArr(long proposalFilledFormId, long proposalFilledFormPrice, int? siteSettingId, List<PaymentMethodDetailesCheckVM> checkArr, IFormCollection form);
         GridResultVM<ProposalFilledFormDocumentMainGridResultVM> GetList(ProposalFilledFormDocumentMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status);

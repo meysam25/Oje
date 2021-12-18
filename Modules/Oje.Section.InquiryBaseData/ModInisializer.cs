@@ -22,19 +22,19 @@ namespace Oje.Section.InquiryBaseData
                options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
            );
 
-            services.AddScoped<ICompanyManager, CompanyManager>();
-            services.AddScoped<IInquiryDurationManager, InquiryDurationManager>();
-            services.AddScoped<IProposalFormManager, ProposalFormManager>();
-            services.AddScoped<ICashPayDiscountManager, CashPayDiscountManager>();
-            services.AddScoped<IInquiryMaxDiscountManager, InquiryMaxDiscountManager>();
-            services.AddScoped<IGlobalDiscountManager, GlobalDiscountManager>();
-            services.AddScoped<IInsuranceContractDiscountManager, InsuranceContractDiscountManager>();
-            services.AddScoped<IInsuranceContractManager, InsuranceContractManager>();
-            services.AddScoped<IInquiryCompanyLimitManager, InquiryCompanyLimitManager>();
-            services.AddScoped<IRoundInqueryManager, RoundInqueryManager>();
-            services.AddScoped<INoDamageDiscountManager, NoDamageDiscountManager>();
-            services.AddScoped<IInqueryDescriptionManager, InqueryDescriptionManager>();
-            services.AddScoped<ISiteSettingManager, SiteSettingManager>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IInquiryDurationService, InquiryDurationService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
+            services.AddScoped<ICashPayDiscountService, CashPayDiscountService>();
+            services.AddScoped<IInquiryMaxDiscountService, InquiryMaxDiscountService>();
+            services.AddScoped<IGlobalDiscountService, GlobalDiscountService>();
+            services.AddScoped<IInsuranceContractDiscountService, InsuranceContractDiscountService>();
+            services.AddScoped<IInsuranceContractService, InsuranceContractService>();
+            services.AddScoped<IInquiryCompanyLimitService, InquiryCompanyLimitService>();
+            services.AddScoped<IRoundInqueryService, RoundInqueryService>();
+            services.AddScoped<INoDamageDiscountService, NoDamageDiscountService>();
+            services.AddScoped<IInqueryDescriptionService, InqueryDescriptionService>();
+            services.AddScoped<ISiteSettingService, SiteSettingService>();
         }
     }
 }

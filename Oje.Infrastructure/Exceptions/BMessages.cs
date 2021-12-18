@@ -250,7 +250,7 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "رابط سازمانی نمی تواند بیشتر از ۱۰۰ کارکتر باشد")]
         Company_Connector_Person_Name_Can_Not_Be_More_Then_100_chars = 119,
         [Display(Name = "مدیر عامل نمی تواند بیشتر از ۱۰۰ کارتر باشد")]
-        Manager_Name_Can_Not_Be_More_Then_100_chars = 120,
+        Service_Name_Can_Not_Be_More_Then_100_chars = 120,
         [Display(Name = "لطفا نوع قرارداد را انتخاب کنید")]
         Please_Select_Contract_Type = 121,
         [Display(Name = "لطفا شرکت بیمه گزار حقوقی را انتخاب کنید")]
@@ -458,6 +458,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا شماره بیمه نامه را وارد کنید")]
         Please_Enter_InsuranceNumber = 223,
         [Display(Name ="شماره بیمه نامه نمی تواند بیشتر از 50 کارکتر باشد")]
-        InsuranceNumber_Can_Not_Be_More_Then_50 = 224
+        InsuranceNumber_Can_Not_Be_More_Then_50 = 224,
+        [Display(Name = "لطفا کاربر یا نقش را انتخاب کنید")]
+        Please_Select_User_Or_Role = 225
     }
 }

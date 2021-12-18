@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.FireBaseData.Interfaces
 {
-    public interface IFireInsuranceCoverageActivityDangerLevelManager
+    public interface IFireInsuranceCoverageActivityDangerLevelService
     {
         ApiResult Create(CreateUpdateFireInsuranceCoverageActivityDangerLevelVM input);
         ApiResult Delete(int? id);

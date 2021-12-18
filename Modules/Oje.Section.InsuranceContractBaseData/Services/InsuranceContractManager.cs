@@ -1,4 +1,4 @@
-﻿using Oje.AccountManager.Interfaces;
+﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -16,40 +16,40 @@ using Oje.Section.InsuranceContractBaseData.Services.EContext;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
-    public class InsuranceContractManager : IInsuranceContractManager
+    public class InsuranceContractService : IInsuranceContractService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
-        readonly IInsuranceContractCompanyManager InsuranceContractCompanyManager = null;
-        readonly IInsuranceContractTypeManager InsuranceContractTypeManager = null;
-        readonly Interfaces.IProposalFormManager ProposalFormManager = null;
-        readonly IUserManager UserManager = null;
-        readonly ISiteSettingManager SiteSettingManager = null;
-        readonly IUploadedFileManager uploadedFileManager = null;
-        public InsuranceContractManager
+        readonly IInsuranceContractCompanyService InsuranceContractCompanyService = null;
+        readonly IInsuranceContractTypeService InsuranceContractTypeService = null;
+        readonly Interfaces.IProposalFormService ProposalFormService = null;
+        readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly IUploadedFileService uploadedFileService = null;
+        public InsuranceContractService
             (
                 InsuranceContractBaseDataDBContext db,
-                IUserManager UserManager,
-                ISiteSettingManager SiteSettingManager,
-                Interfaces.IProposalFormManager ProposalFormManager,
-                IInsuranceContractTypeManager InsuranceContractTypeManager,
-                IInsuranceContractCompanyManager InsuranceContractCompanyManager,
-                IUploadedFileManager uploadedFileManager
+                IUserService UserService,
+                ISiteSettingService SiteSettingService,
+                Interfaces.IProposalFormService ProposalFormService,
+                IInsuranceContractTypeService InsuranceContractTypeService,
+                IInsuranceContractCompanyService InsuranceContractCompanyService,
+                IUploadedFileService uploadedFileService
             )
         {
             this.db = db;
-            this.UserManager = UserManager;
-            this.SiteSettingManager = SiteSettingManager;
-            this.ProposalFormManager = ProposalFormManager;
-            this.InsuranceContractTypeManager = InsuranceContractTypeManager;
-            this.InsuranceContractCompanyManager = InsuranceContractCompanyManager;
-            this.uploadedFileManager = uploadedFileManager;
+            this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
+            this.ProposalFormService = ProposalFormService;
+            this.InsuranceContractTypeService = InsuranceContractTypeService;
+            this.InsuranceContractCompanyService = InsuranceContractCompanyService;
+            this.uploadedFileService = uploadedFileService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
             CreateValidation(input, loginUserId, siteSettingId, childUserIds);
 
             var newItem = new InsuranceContract()
@@ -74,7 +74,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             if (input.contractDocument != null && input.contractDocument.Length > 0)
             {
-                newItem.ContractDocumentUrl = uploadedFileManager.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, newItem.Id, ".pdf,.doc,.docx,.xlsx", false);
+                newItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, newItem.Id, ".pdf,.doc,.docx,.xlsx", false);
                 db.SaveChanges();
             }
 
@@ -97,17 +97,17 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Code);
             if (input.insuranceContractTypeId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract_Type);
-            if (!InsuranceContractTypeManager.Exist(input.insuranceContractTypeId.ToIntReturnZiro(), siteSettingId, childUserIds))
+            if (!InsuranceContractTypeService.Exist(input.insuranceContractTypeId.ToIntReturnZiro(), siteSettingId, childUserIds))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract_Type);
             if (input.insuranceContractCompanyId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Legal_Company);
-            if (!InsuranceContractCompanyManager.Exist(input.insuranceContractCompanyId.ToIntReturnZiro(), siteSettingId, childUserIds))
+            if (!InsuranceContractCompanyService.Exist(input.insuranceContractCompanyId.ToIntReturnZiro(), siteSettingId, childUserIds))
                 throw BException.GenerateNewException(BMessages.Please_Select_Legal_Company);
             if (input.proposalFormId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (!string.IsNullOrEmpty(input.description) && input.description.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
-            if (!ProposalFormManager.Exist(input.proposalFormId.ToIntReturnZiro(), siteSettingId))
+            if (!ProposalFormService.Exist(input.proposalFormId.ToIntReturnZiro(), siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.monthlyPrice != null && input.monthlyPrice < 0)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
@@ -123,9 +123,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             var foundItem = db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null ||childUserIds.Contains(t.CreateUserId)) && t.Id == id).FirstOrDefault();
             if (foundItem == null)
@@ -139,9 +139,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public CreateUpdateInsuranceContractVM GetById(int? id)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             return db.InsuranceContracts
                 .Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)) && t.Id == id)
@@ -187,9 +187,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             if (searchInput == null)
                 searchInput = new InsuranceContractMainGrid();
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             var qureResult = db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId &&  (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
 
@@ -265,9 +265,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(CreateUpdateInsuranceContractVM input)
         {
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             CreateValidation(input, loginUserId, siteSettingId, childUserIds);
 
@@ -276,7 +276,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
             if (input.contractDocument != null && input.contractDocument.Length > 0)
-                foundItem.ContractDocumentUrl = uploadedFileManager.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, foundItem.Id, ".pdf,.doc,.docx", false);
+                foundItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, foundItem.Id, ".pdf,.doc,.docx", false);
 
             foundItem.Code = input.code.Value;
             foundItem.CreateDate = DateTime.Now;
@@ -305,9 +305,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public object GetLightList()
         {
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
-            long? loginUserId = UserManager.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingManager.GetSiteSetting()?.Id;
-            var childUserIds = UserManager.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
 
             result.AddRange(db.InsuranceContracts
                 .Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)))

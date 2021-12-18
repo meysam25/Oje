@@ -1,26 +1,26 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
-using Oje.ProposalFormManager.Interfaces;
-using Oje.ProposalFormManager.Models.DB;
-using Oje.ProposalFormManager.Models.View;
-using Oje.ProposalFormManager.Services.EContext;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
+using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.ProposalFormManager.Services
+namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFilledFormStatusLogManager : IProposalFilledFormStatusLogManager
+    public class ProposalFilledFormStatusLogService : IProposalFilledFormStatusLogService
     {
         readonly ProposalFormDBContext db = null;
-        readonly IProposalFilledFormAdminBaseQueryManager ProposalFilledFormAdminBaseQueryManager = null;
-        public ProposalFilledFormStatusLogManager(ProposalFormDBContext db, IProposalFilledFormAdminBaseQueryManager ProposalFilledFormAdminBaseQueryManager)
+        readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
+        public ProposalFilledFormStatusLogService(ProposalFormDBContext db, IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService)
         {
             this.db = db;
-            this.ProposalFilledFormAdminBaseQueryManager = ProposalFilledFormAdminBaseQueryManager;
+            this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
         }
 
         public void Create(long? proposalFilledFormId, ProposalFilledFormStatus? status, DateTime now, long? userId, string description)
@@ -47,7 +47,7 @@ namespace Oje.ProposalFormManager.Services
             if (searchInput == null)
                 searchInput = new ProposalFilledFormLogMainGrid();
 
-            var qureResult = ProposalFilledFormAdminBaseQueryManager
+            var qureResult = ProposalFilledFormAdminBaseQueryService
                 .getProposalFilledFormBaseQuery(siteSettingId, userId)
                 .Where(t => t.Id == searchInput.pKey)
                 .SelectMany(t => t.ProposalFilledFormStatusLogs);

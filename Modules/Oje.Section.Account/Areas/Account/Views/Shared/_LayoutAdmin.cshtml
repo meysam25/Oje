@@ -1,4 +1,6 @@
 ﻿@using Oje.Infrastructure.Services
+@using Oje.AccountService.Interfaces
+@inject IUserNotificationService UserNotificationService
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +10,7 @@
     <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/core.min.css.gz" />
     <link rel="stylesheet" asp-append-version="true" href="/Modules/Account/css/Account.min.css.gz" />
 
+    <script asp-append-version="true" src="/Modules/Core/js/sr.js.gz"></script>
     <script asp-append-version="true" src="/Modules/Core/js/core.min.js.gz"></script>
     <script asp-append-version="true" src="/Modules/Account/js/Account.min.js.gz"></script>
 
@@ -38,14 +41,11 @@
         <header>
             <span class="fa fa-bars headerTopMenuButton"></span>
             <span class="loginUserSecitonHeader">
-                <span class="loginUserName">@Context.GetLoginUserId()?.Fullname</span><i class="loginArrowMenu fa fa-sort-down"></i>
+                <span class="loginUserName"><a href="/UserAccount/UserNotification/Index" class="notificationCount">@(UserNotificationService.GetUserUnreadNotificationCount(Context.GetLoginUserId()?.UserId))</a> @Context.GetLoginUserId()?.Fullname</span><i class="loginArrowMenu fa fa-sort-down"></i>
                 <span class="loginUserMenu">
-                    <a class="loginMenuItem" href="/Account/Dashboard/Logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
+                    <a class="loginMenuItem" href="/Account/Dashboard/Logout"><i class="fa fa-sign-out-alt"></i> خروج</a>
                 </span>
             </span>
-            <cache expires-after="@TimeSpan.FromMinutes(1)" vary-by-cookie="login">
-                @*<partial name="~/Areas/Account/Views/Shared/_LayoutAdminNotifications.cshtml" />*@
-            </cache>
         </header>
         <div class="mainContent">
             @RenderBody()
@@ -55,6 +55,7 @@
 
     @RenderSection("Scripts", required: false)
 <script>
+    $('.notificationCount').click(function(e) { e.stopPropagation(); });
     $('.sideMenuHolder').initSideMenu();
     $('.headerTopMenuButton').click(function () {
         if ($('.sideMenuHolder').length > 0 && $('.sideMenuHolder')[0].toggleSideMenu) {
