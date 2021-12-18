@@ -13,10 +13,10 @@
             }
           ],
           "showColumnConfigButton": true,
-          "exportToExcelUrl": "/Account/RoleService/Export",
+          "exportToExcelUrl": "/Account/RoleManager/Export",
           "actions": {
             "delete": {
-              "url": "/Account/RoleService/Delete"
+              "url": "/Account/RoleManager/Delete"
             },
             "cActions": [
               {
@@ -24,20 +24,20 @@
                 "icon": "fa-pen",
                 "prop": "id",
                 "modalId": "editRoleModal",
-                "url": "/Account/RoleService/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/RoleService/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "url": "/Account/RoleManager/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/RoleManager/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "newLink",
-                "url": "/Account/RoleServiceAccess/Index?id=",
+                "url": "/Account/RoleManagerAccess/Index?id=",
                 "icon": "fa-key",
                 "prop": "id",
-                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/Account/RoleServiceAccess/Index?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-key\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/Account/RoleManagerAccess/Index?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-key\" ></i></a>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/Account/RoleService/GetList",
+          "url": "/Account/RoleManager/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -76,7 +76,7 @@
               "caption": "وب سایت",
               "search": {
                 "searchType": "dropdown",
-                "url": "/Account/RoleService/GetSettingList",
+                "url": "/Account/RoleManager/GetSettingList",
                 "textField": "title",
                 "valueField": "id"
               }
@@ -139,7 +139,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/RoleService/GetSettingList",
+              "dataurl": "/Account/RoleManager/GetSettingList",
               "label": "تنظیمات"
             },
             {
@@ -148,7 +148,7 @@
               "type": "tokenBox2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/RoleService/GetProposalFormList",
+              "dataurl": "/Account/RoleManager/GetProposalFormList",
               "label": "فرم های پیشنهاد"
             }
           ],
@@ -160,7 +160,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/Account/RoleService/Create')",
+              "onClick": "postModalData(this, 'roleGrid', '/Account/RoleManager/Create')",
               "class": "btn-primary"
             }
           ]
@@ -215,7 +215,7 @@
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/RoleService/GetSettingList",
+              "dataurl": "/Account/RoleManager/GetSettingList",
               "label": "تنظیمات"
             },
             {
@@ -224,7 +224,7 @@
               "type": "tokenBox2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/RoleService/GetProposalFormList",
+              "dataurl": "/Account/RoleManager/GetProposalFormList",
               "label": "فرم های پیشنهاد"
             }
           ],
@@ -236,7 +236,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/Account/RoleService/Update')",
+              "onClick": "postModalData(this, 'roleGrid', '/Account/RoleManager/Update')",
               "class": "btn-primary"
             }
           ]

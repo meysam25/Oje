@@ -460,6 +460,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name ="شماره بیمه نامه نمی تواند بیشتر از 50 کارکتر باشد")]
         InsuranceNumber_Can_Not_Be_More_Then_50 = 224,
         [Display(Name = "لطفا کاربر یا نقش را انتخاب کنید")]
-        Please_Select_User_Or_Role = 225
+        Please_Select_User_Or_Role = 225,
+        [Display(Name = "لطفا دامین را وارد کنید")]
+        Please_Enter_Domain = 226
     }
 }

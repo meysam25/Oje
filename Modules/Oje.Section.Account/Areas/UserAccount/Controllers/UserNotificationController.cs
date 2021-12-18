@@ -18,7 +18,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "نوتیفیکیشن")]
     [CustomeAuthorizeFilter]
-    public class UserNotificationController: Controller
+    public class UserNotificationController : Controller
     {
         readonly IUserNotificationService UserNotificationService = null;
         readonly ISiteSettingService SiteSettingService = null;

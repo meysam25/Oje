@@ -14,12 +14,12 @@ namespace Oje.Section.Account.Areas.Account.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = " هویتی (ادمین)", Icon = "fa-users", Title = "نقش ها")]
     [CustomeAuthorizeFilter]
-    public class RoleServiceController : Controller
+    public class RoleManagerController : Controller
     {
         readonly IRoleService RoleService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly IProposalFormService ProposalFormService = null;
-        public RoleServiceController(
+        public RoleManagerController(
             IRoleService RoleService,
             ISiteSettingService SiteSettingService,
             IProposalFormService ProposalFormService
@@ -36,7 +36,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "نقش";
-            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "RoleService", new { area = "Account" });
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "RoleManager", new { area = "Account" });
             return View();
         }
 
@@ -45,7 +45,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Account", "RoleService")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Account", "RoleManager")));
         }
 
         [AreaConfig(Title = "افزودن نقش جدید", Icon = "fa-plus")]

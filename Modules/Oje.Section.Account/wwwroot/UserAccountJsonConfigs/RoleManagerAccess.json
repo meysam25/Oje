@@ -3,7 +3,7 @@
     {
       "treeViews": [
         {
-          "dataUrl": "/UserAccount/RoleServiceAccess/GetModaulsList",
+          "dataUrl": "/UserAccount/RoleManagerAccess/GetModaulsList",
           "dataTextfield": "title",
           "dataValuefield": "id",
           "dataChildfeild": "childs",
@@ -14,7 +14,7 @@
       "actions": [
         {
           "title": "ذخیره",
-          "onClick": "postPanel(this, '/UserAccount/RoleServiceAccess/Update', 'function getParameters(){ var postForm = { id: (new URLSearchParams(document.location.search)).get(\\'id\\') };  return postForm}; getParameters();')",
+          "onClick": "postPanel(this, '/UserAccount/RoleManagerAccess/Update', 'function getParameters(){ var postForm = { id: (new URLSearchParams(document.location.search)).get(\\'id\\') };  return postForm}; getParameters();')",
           "class": "btn-primary"
         }
       ]

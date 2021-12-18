@@ -19,14 +19,14 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "کاربران")]
     [CustomeAuthorizeFilter]
-    public class UserServiceController: Controller
+    public class UserManagerController : Controller
     {
         readonly IUserService UserService = null;
         readonly IRoleService RoleService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly ICompanyService CompanyService = null;
 
-        public UserServiceController(
+        public UserManagerController(
                 IUserService UserService, 
                 IRoleService RoleService, 
                 ISiteSettingService SiteSettingService, 
@@ -44,7 +44,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "کاربران";
-            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserService", new { area = "UserAccount" });
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserManager", new { area = "UserAccount" });
             return View();
         }
 
@@ -53,7 +53,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "UserService")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "UserManager")));
         }
 
         [AreaConfig(Title = "افزودن کاربر جدید", Icon = "fa-plus")]

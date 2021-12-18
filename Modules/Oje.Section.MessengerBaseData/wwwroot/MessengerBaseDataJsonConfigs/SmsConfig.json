@@ -1,0 +1,196 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "mainGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/MessengerBaseData/SmsConfig/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/MessengerBaseData/SmsConfig/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editGridModal",
+                "url": "/MessengerBaseData/SmsConfig/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/SmsConfig/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/MessengerBaseData/SmsConfig/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "type",
+              "caption": "نوع",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/SmsConfigType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "smsUsername",
+              "caption": "نام کاربری",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "addGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/SmsConfigType",
+              "label": "نوع",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "smsUsername",
+              "type": "text",
+              "label": "نام کاربری"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "smsPassword",
+              "type": "password",
+              "label": "کلمه عبور"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "domain",
+              "type": "text",
+              "label": "دامین"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsConfig/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "editGridModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/SmsConfigType",
+              "label": "نوع",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "smsUsername",
+              "type": "text",
+              "label": "نام کاربری"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "smsPassword",
+              "type": "password",
+              "label": "کلمه عبور"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "domain",
+              "type": "text",
+              "label": "دامین"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsConfig/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

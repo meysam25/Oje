@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Oje.Infrastructure;
+using Oje.Sms.Interfaces;
+using Oje.Sms.Services;
 using Oje.Sms.Services.EContext;
 
 namespace Oje.Sms
@@ -11,6 +13,8 @@ namespace Oje.Sms
         {
             services.AddDbContext<SmsDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
+
+            services.AddScoped<ISmsConfigService, SmsConfigService>();
         }
     }
 }

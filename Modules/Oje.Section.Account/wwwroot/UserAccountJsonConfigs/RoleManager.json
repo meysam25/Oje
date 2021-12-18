@@ -11,10 +11,10 @@
             }
           ],
           "showColumnConfigButton": true,
-          "exportToExcelUrl": "/UserAccount/RoleService/Export",
+          "exportToExcelUrl": "/UserAccount/RoleManager/Export",
           "actions": {
             "delete": {
-              "url": "/UserAccount/RoleService/Delete"
+              "url": "/UserAccount/RoleManager/Delete"
             },
             "cActions": [
               {
@@ -22,20 +22,20 @@
                 "icon": "fa-pen",
                 "prop": "id",
                 "modalId": "editRoleModal",
-                "url": "/UserAccount/RoleService/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/UserAccount/RoleService/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "url": "/UserAccount/RoleManager/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/UserAccount/RoleManager/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "newLink",
-                "url": "/UserAccount/RoleServiceAccess/Index?id=",
+                "url": "/UserAccount/RoleManagerAccess/Index?id=",
                 "icon": "fa-key",
                 "prop": "id",
-                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/UserAccount/RoleServiceAccess/Index?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-key\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/UserAccount/RoleManagerAccess/Index?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-key\" ></i></a>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/UserAccount/RoleService/GetList",
+          "url": "/UserAccount/RoleManager/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -114,7 +114,7 @@
               "type": "tokenBox2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/UserAccount/RoleService/GetProposalFormList",
+              "dataurl": "/UserAccount/RoleManager/GetProposalFormList",
               "label": "فرم های پیشنهاد"
             }
           ],
@@ -126,7 +126,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/UserAccount/RoleService/Create')",
+              "onClick": "postModalData(this, 'roleGrid', '/UserAccount/RoleManager/Create')",
               "class": "btn-primary"
             }
           ]
@@ -175,7 +175,7 @@
               "type": "tokenBox2",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/UserAccount/RoleService/GetProposalFormList",
+              "dataurl": "/UserAccount/RoleManager/GetProposalFormList",
               "label": "فرم های پیشنهاد"
             }
           ],
@@ -187,7 +187,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/UserAccount/RoleService/Update')",
+              "onClick": "postModalData(this, 'roleGrid', '/UserAccount/RoleManager/Update')",
               "class": "btn-primary"
             }
           ]

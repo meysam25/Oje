@@ -18,12 +18,12 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "دسترسی نقش ها")]
     [CustomeAuthorizeFilter]
-    public class RoleServiceAccessController: Controller
+    public class RoleManagerAccessController : Controller
     {
         readonly ISectionService SectionService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly IUserService UserService = null;
-        public RoleServiceAccessController(
+        public RoleManagerAccessController(
                 ISectionService SectionService, 
                 ISiteSettingService SiteSettingService,
                 IUserService UserService
@@ -39,7 +39,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "ویرایش دسترسی نقش";
-            ViewBag.ConfigRoute = Url.Action("GetAccessJsonConfig", "RoleServiceAccess", new { area = "UserAccount" });
+            ViewBag.ConfigRoute = Url.Action("GetAccessJsonConfig", "RoleManagerAccess", new { area = "UserAccount" });
             return View("Index");
         }
 
@@ -48,7 +48,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult GetAccessJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "RoleServiceAccess")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "RoleManagerAccess")));
         }
 
         [AreaConfig(Title = "مشاهده دسترسی نقش ها")]
