@@ -32,7 +32,8 @@ namespace Oje.Sms.Services
                 Password = input.smsPassword.Encrypt(),
                 SiteSettingId = siteSettingId.Value,
                 Username = input.smsUsername,
-                Type = input.type.Value
+                Type = input.type.Value,
+                PhoneNumber = input.ph
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -51,6 +52,8 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.type == Infrastructure.Enums.SmsConfigType.Magfa)
                 magfaInputValidation(input, siteSettingId);
+          
+            
             if (db.SmsConfigs.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Type == input.type))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
@@ -63,6 +66,10 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Password);
             if (string.IsNullOrEmpty(input.domain))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Domain);
+            if (input.ph.Length > 20)
+                throw BException.GenerateNewException(BMessages.PhoneNumber_Can_Not_Be_More_Then_20_chars);
+            if (string.IsNullOrEmpty(input.ph))
+                throw BException.GenerateNewException(BMessages.Please_Enter_PhoneNumber);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -85,7 +92,8 @@ namespace Oje.Sms.Services
                 smsUsername = t.Username,
                 domain = t.Domain,
                 isActive = t.IsActive,
-                type = (int) t.Type
+                type = (int) t.Type,
+                ph = t.PhoneNumber
             }).FirstOrDefault();
         }
 
@@ -102,6 +110,8 @@ namespace Oje.Sms.Services
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if(!string.IsNullOrEmpty(searchInput.ph))
+                qureResult = qureResult.Where(t => t.PhoneNumber.Contains(searchInput.ph));
 
             int row = searchInput.skip;
 
@@ -116,7 +126,8 @@ namespace Oje.Sms.Services
                         id = t.Id,
                         username = t.Username,
                         type = t.Type,
-                        isActive = t.IsActive
+                        isActive = t.IsActive,
+                        ph = t.PhoneNumber
                     })
                     .ToList()
                     .Select(t => new SmsConfigMainGridResultVM 
@@ -125,7 +136,8 @@ namespace Oje.Sms.Services
                         id = t.id,
                         isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName()  : BMessages.InActive.GetEnumDisplayName(),
                         type = t.type.GetEnumDisplayName(),
-                        smsUsername = t.username
+                        smsUsername = t.username,
+                        ph = t.ph
                     })
                     .ToList()
             };
@@ -141,10 +153,16 @@ namespace Oje.Sms.Services
             if (!string.IsNullOrEmpty(input.smsPassword))
                 foundItem.Password = input.smsPassword.Encrypt();
             foundItem.Username = input.smsUsername;
+            foundItem.PhoneNumber = input.ph;
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public Models.DB.SmsConfig GetActive(int? siteSettingId)
+        {
+            return db.SmsConfigs.Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true).FirstOrDefault();
         }
     }
 }

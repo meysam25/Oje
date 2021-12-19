@@ -49,7 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.MessengerBaseDa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Sms", "Oje.Sms\Oje.Sms.csproj", "{31BDC4A6-C4E7-4192-8B3F-89C08BE1F6D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oje.JoinServices", "Oje.JoinServices\Oje.JoinServices.csproj", "{63053277-A074-4406-90D0-222E982DB2F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.JoinServices", "Oje.JoinServices\Oje.JoinServices.csproj", "{63053277-A074-4406-90D0-222E982DB2F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workers", "Workers", "{C384A2FA-853C-4DB0-AF40-404A3453C1AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oje.Worker.Sms", "Oje.Worker.Sms\Oje.Worker.Sms.csproj", "{C737A3BA-36A2-4957-9B0C-921349AAD5B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,6 +153,10 @@ Global
 		{63053277-A074-4406-90D0-222E982DB2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63053277-A074-4406-90D0-222E982DB2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63053277-A074-4406-90D0-222E982DB2F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C737A3BA-36A2-4957-9B0C-921349AAD5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C737A3BA-36A2-4957-9B0C-921349AAD5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C737A3BA-36A2-4957-9B0C-921349AAD5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C737A3BA-36A2-4957-9B0C-921349AAD5B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,6 +178,7 @@ Global
 		{B05ABEB1-A379-40A3-8B79-B720DB816409} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
 		{86C7BE05-5853-4E85-8F8F-2E4B794DE336} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
 		{30B858F7-A486-4AC4-BDF7-1B8CAC9193C8} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
+		{C737A3BA-36A2-4957-9B0C-921349AAD5B1} = {C384A2FA-853C-4DB0-AF40-404A3453C1AF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5BEE9DD2-169F-4F13-842E-FBA0D3C46071}

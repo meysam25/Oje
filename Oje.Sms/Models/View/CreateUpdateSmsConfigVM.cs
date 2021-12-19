@@ -14,6 +14,7 @@ namespace Oje.Sms.Models.View
         public string smsPassword { get; set; }
         public string domain { get; set; }
         public SmsConfigType? type { get; set; }
+        public string ph { get; set; }
         public bool? isActive { get; set; }
     }
 }

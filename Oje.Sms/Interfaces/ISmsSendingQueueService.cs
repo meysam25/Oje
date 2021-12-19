@@ -14,5 +14,6 @@ namespace Oje.Sms.Interfaces
         object GetList(SmsSendingQueueMainGrid searchInput, int? siteSettingId);
         void SaveChange();
         void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId);
+        Task SendSms();
     }
 }

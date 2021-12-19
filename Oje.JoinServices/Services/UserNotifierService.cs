@@ -1,5 +1,6 @@
 ﻿using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models;
 using Oje.JoinServices.Interfaces;
 using Oje.Sms.Interfaces;
 using System;
@@ -23,7 +24,7 @@ namespace Oje.JoinServices.Services
             this.SmsTrigerService = SmsTrigerService;
         }
 
-        public void Notify(long? userId, UserNotificationType type, List<long> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink)
+        public void Notify(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink)
         {
             UserNotificationTrigerService.CreateNotificationForUser(userId, type, exteraUserList, objectId, title, siteSettingId, openLink);
             SmsTrigerService.CreateSmsQue(userId, type, exteraUserList, objectId, title, siteSettingId);

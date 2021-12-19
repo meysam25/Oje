@@ -19,6 +19,7 @@ namespace Oje.AccountService.Models.DB
         public string Subject { get; set; }
         [Required, MaxLength(4000)]
         public string Description { get; set; }
+        public ProposalFilledFormUserType? ProposalFilledFormUserType { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

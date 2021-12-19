@@ -132,7 +132,7 @@ namespace Oje.AccountService.Services
 
         private void setCookieForThisUser(User newUser, LoginVM input)
         {
-            string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.HttpContext.Connection.RemoteIpAddress + "," + newUser.SiteSettingId;
+            string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," + newUser.SiteSettingId;
             var cOption = new CookieOptions() { HttpOnly = true };
             if (input.rememberMe == true)
                 cOption.Expires = DateTime.Now.AddDays(1);

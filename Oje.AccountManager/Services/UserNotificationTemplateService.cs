@@ -32,7 +32,8 @@ namespace Oje.AccountService.Services
                 Type = input.type.Value,
                 Description = input.description,
                 Subject = input.subject,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = siteSettingId.Value,
+                ProposalFilledFormUserType = input.pffUserType
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -51,9 +52,9 @@ namespace Oje.AccountService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public UserNotificationTemplate GetBy(UserNotificationType type, int? siteSettingId)
+        public List<UserNotificationTemplate> GetBy(UserNotificationType type, int? siteSettingId)
         {
-            return db.UserNotificationTemplates.Where(t => t.SiteSettingId == siteSettingId && t.Type == type).FirstOrDefault();
+            return db.UserNotificationTemplates.Where(t => t.SiteSettingId == siteSettingId && t.Type == type).ToList();
         }
 
         public object GetById(int? id, int? siteSettingId)
@@ -65,7 +66,8 @@ namespace Oje.AccountService.Services
                     id = t.Id,
                     type = t.Type,
                     subject = t.Subject,
-                    description = t.Description
+                    description = t.Description,
+                    pffUserType = t.ProposalFilledFormUserType
                 })
                 .Take(1)
                 .ToList()
@@ -74,7 +76,8 @@ namespace Oje.AccountService.Services
                     t.id,
                     type = (int)t.type,
                     t.subject,
-                    t.description
+                    t.description,
+                    pffUserType = t.pffUserType != null ? ((int)t.pffUserType).ToString() : ""
                 })
                 .FirstOrDefault();
         }
@@ -90,10 +93,12 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.Subject.Contains(searchInput.subject));
             if (searchInput.type != null)
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
+            if (searchInput.pffUserType != null)
+                qureResult = qureResult.Where(t => t.ProposalFilledFormUserType == searchInput.pffUserType);
 
             int row = searchInput.skip;
 
-            return new GridResultVM<UserNotificationTemplateMainGridResultVM>() 
+            return new GridResultVM<UserNotificationTemplateMainGridResultVM>()
             {
                 total = qureResult.Count(),
                 data = qureResult
@@ -104,15 +109,17 @@ namespace Oje.AccountService.Services
                 {
                     id = t.Id,
                     subject = t.Subject,
-                    type = t.Type
+                    type = t.Type,
+                    pffUserType = t.ProposalFilledFormUserType
                 })
                 .ToList()
-                .Select(t => new UserNotificationTemplateMainGridResultVM 
+                .Select(t => new UserNotificationTemplateMainGridResultVM
                 {
                     row = ++row,
                     id = t.id,
                     subject = t.subject,
-                    type = t.type.GetEnumDisplayName()
+                    type = t.type.GetEnumDisplayName(),
+                    pffUserType = t.pffUserType != null ? t.pffUserType.GetEnumDisplayName() : ""
                 })
                 .ToList()
             };
@@ -128,6 +135,7 @@ namespace Oje.AccountService.Services
             foundItem.Type = input.type.Value;
             foundItem.Description = input.description;
             foundItem.Subject = input.subject;
+            foundItem.ProposalFilledFormUserType = input.pffUserType;
 
             db.SaveChanges();
 
@@ -150,7 +158,7 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.description.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
-            if (db.UserNotificationTemplates.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Type == input.type))
+            if (db.UserNotificationTemplates.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Type == input.type && t.ProposalFilledFormUserType == input.pffUserType))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
     }

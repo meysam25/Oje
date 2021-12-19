@@ -462,6 +462,10 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا کاربر یا نقش را انتخاب کنید")]
         Please_Select_User_Or_Role = 225,
         [Display(Name = "لطفا دامین را وارد کنید")]
-        Please_Enter_Domain = 226
+        Please_Enter_Domain = 226,
+        [Display(Name = "لطفا شماره را وارد کنید")]
+        Please_Enter_PhoneNumber = 227,
+        [Display(Name = "شماره نمی تواند بیشتر از 20 حرف باشد")]
+        PhoneNumber_Can_Not_Be_More_Then_20_chars = 228
     }
 }

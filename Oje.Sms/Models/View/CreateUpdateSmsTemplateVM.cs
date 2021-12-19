@@ -13,5 +13,6 @@ namespace Oje.Sms.Models.View
         public UserNotificationType? type { get; set; }
         public string subject { get; set; }
         public string description { get; set; }
+        public ProposalFilledFormUserType? pffUserType { get; set; }
     }
 }

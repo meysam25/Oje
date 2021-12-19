@@ -24,11 +24,11 @@ namespace Oje.Sms.Services
         readonly ISmsSendingQueueService SmsSendingQueueService = null;
 
         public SmsTrigerService(
-            SmsDBContext db,
-            ISmsTemplateService SmsTemplateService,
-            IUserService UserService,
-            IRoleService RoleService,
-            ISmsSendingQueueService SmsSendingQueueService
+                SmsDBContext db,
+                ISmsTemplateService SmsTemplateService,
+                IUserService UserService,
+                IRoleService RoleService,
+                ISmsSendingQueueService SmsSendingQueueService
             )
         {
             this.db = db;
@@ -47,8 +47,7 @@ namespace Oje.Sms.Services
                 RoleId = input.roleId,
                 UserId = input.userId,
                 UserNotificationType = input.type.Value,
-                SiteSettingId = siteSettingId.Value,
-                SendForOwner = input.sendForOwner.ToBooleanReturnFalse()
+                SiteSettingId = siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -90,8 +89,7 @@ namespace Oje.Sms.Services
                     type = t.UserNotificationType,
                     roleId = t.RoleId,
                     userId = t.UserId,
-                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : "",
-                    sendForOwner = t.SendForOwner
+                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : ""
                 })
                 .Take(1)
                 .Select(t => new
@@ -101,7 +99,6 @@ namespace Oje.Sms.Services
                     roleId = t.roleId == null ? "" : t.roleId.ToString(),
                     userId = t.userId == null ? "" : t.userId.ToString(),
                     t.userId_Title,
-                    sendForOwner = t.sendForOwner.ToBooleanReturnFalse()
                 })
                 .FirstOrDefault();
         }
@@ -119,8 +116,6 @@ namespace Oje.Sms.Services
                 qureResult = qureResult.Where(t => t.RoleId > 0 && t.Role.Title.Contains(searchInput.roleName));
             if (!string.IsNullOrEmpty(searchInput.userName))
                 qureResult = qureResult.Where(t => t.UserId > 0 && (t.User.Firstname + " " + t.User.Lastname).Contains(searchInput.userName));
-            if (searchInput.sendForOwner != null)
-                qureResult = qureResult.Where(t => t.SendForOwner == searchInput.sendForOwner);
 
             int row = searchInput.skip;
 
@@ -133,8 +128,7 @@ namespace Oje.Sms.Services
                     id = t.Id,
                     type = t.UserNotificationType,
                     roleName = t.RoleId > 0 ? t.Role.Title : "",
-                    userName = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : "",
-                    sendForOwner = t.SendForOwner
+                    userName = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : ""
                 })
                 .ToList()
                 .Select(t => new SmsTrigerMainGridResultVM()
@@ -143,8 +137,7 @@ namespace Oje.Sms.Services
                     row = ++row,
                     type = t.type.GetEnumDisplayName(),
                     roleName = t.roleName,
-                    userName = t.userName,
-                    sendForOwner = t.sendForOwner.ToBooleanReturnFalse() == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    userName = t.userName
                 })
                 .ToList()
             };
@@ -161,7 +154,6 @@ namespace Oje.Sms.Services
             foundItem.RoleId = input.roleId;
             foundItem.UserId = input.userId;
             foundItem.UserNotificationType = input.type.Value;
-            foundItem.SendForOwner = input.sendForOwner.ToBooleanReturnFalse();
 
             db.SaveChanges();
 
@@ -177,84 +169,110 @@ namespace Oje.Sms.Services
                     t.RoleId,
                     t.UserId,
                     userFullname = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : "",
-                    mobile = t.UserId > 0 ? t.User.Mobile : "",
-                    t.SendForOwner
+                    mobile = t.UserId > 0 ? t.User.Mobile : ""
                 })
                 .ToList()
                 .Select(t => new UserSmsTrigerURUVM
                 {
                     RoleId = t.RoleId,
-                    UserId = t.UserId,
-                    sendForOwner = t.SendForOwner
+                    UserId = t.UserId
                 })
                 .ToList()
                 ;
         }
 
-        public void CreateSmsQue(long? userId, UserNotificationType type, List<long> exteraUserList, long? objectId, string title, int? siteSettingId)
+        public void CreateSmsQue(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId)
         {
-            var foundTemplate = SmsTemplateService.GetBy(type, siteSettingId);
+            var foundTemplates = SmsTemplateService.GetBy(type, siteSettingId);
+            string userFullname = UserService.GetUserFullName(siteSettingId, userId);
 
-            if (foundTemplate != null && !string.IsNullOrEmpty(foundTemplate.Subject) && !string.IsNullOrEmpty(foundTemplate.Description))
+
+            foreach (var foundTemplate in foundTemplates)
             {
-                var foundTrigers = GetBy(type, siteSettingId);
-                if (foundTrigers != null && foundTrigers.Count > 0)
+                if (foundTemplate != null && !string.IsNullOrEmpty(foundTemplate.Subject) && !string.IsNullOrEmpty(foundTemplate.Description) && foundTemplate.ProposalFilledFormUserType == null)
                 {
-                    string userFullname = UserService.GetUserFullName(siteSettingId, userId);
-                    string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
-                    string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
-                    if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(description))
+                    var foundTrigers = GetBy(type, siteSettingId);
+                    if (foundTrigers != null && foundTrigers.Count > 0)
                     {
-                        List<int> roleIds = foundTrigers.Where(t => t.RoleId.ToIntReturnZiro() > 0).Select(t => t.RoleId.Value).ToList();
-                        var userIds = foundTrigers.Where(t => t.UserId.ToLongReturnZiro() > 0).Select(t => t.UserId.ToLongReturnZiro()).ToList();
-                        if (foundTrigers.Any(t => t.sendForOwner == true))
-                            userIds.AddRange(exteraUserList);
-                        userIds = userIds.GroupBy(t => t).Select(t => t.Key).ToList();
-                        var roleUsers = RoleService.GetUsersBy(roleIds, siteSettingId, GlobalServices.MaxForNotify);
-                        roleUsers = roleUsers.Where(t => !userIds.Contains(t.userId)).ToList();
-                        var allUserInfo = UserService.GetUserFullNameAndMobile(userIds, siteSettingId);
-                        foreach (var user in allUserInfo)
+                        string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
+                        string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                        if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(description))
                         {
-                            if (!string.IsNullOrEmpty(user.userFullname) && !string.IsNullOrEmpty(user.mobile) && user.mobile.IsMobile())
+                            List<int> roleIds = foundTrigers.Where(t => t.RoleId.ToIntReturnZiro() > 0).Select(t => t.RoleId.Value).ToList();
+                            var userIds = foundTrigers.Where(t => t.UserId.ToLongReturnZiro() > 0).Select(t => t.UserId.ToLongReturnZiro()).ToList();
+                            userIds = userIds.GroupBy(t => t).Select(t => t.Key).ToList();
+                            var roleUsers = RoleService.GetUsersBy(roleIds, siteSettingId, GlobalServices.MaxForNotify);
+                            roleUsers = roleUsers.Where(t => !userIds.Contains(t.userId)).ToList();
+                            var allUserInfo = UserService.GetUserFullNameAndMobile(userIds, siteSettingId);
+                            foreach (var user in allUserInfo)
                             {
-                                SmsSendingQueueService.Create(new SmsSendingQueue()
+                                if (!string.IsNullOrEmpty(user.userFullname) && !string.IsNullOrEmpty(user.mobile) && user.mobile.IsMobile())
                                 {
-                                    CreateDate = DateTime.Now,
-                                    MobileNumber = user.mobile,
-                                    Body = description.Replace("{{toUser}}", user.userFullname),
-                                    Subject = subject.Replace("{{toUser}}", user.userFullname),
-                                    FromUserId = userId,
-                                    ObjectId = objectId,
-                                    SiteSettingId = siteSettingId.Value,
-                                    Type = type,
-                                    ToUserId = user.userId,
-                                }, siteSettingId);
+                                    SmsSendingQueueService.Create(new SmsSendingQueue()
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        MobileNumber = user.mobile,
+                                        Body = description.Replace("{{toUser}}", user.userFullname),
+                                        Subject = subject.Replace("{{toUser}}", user.userFullname),
+                                        FromUserId = userId,
+                                        ObjectId = objectId,
+                                        SiteSettingId = siteSettingId.Value,
+                                        Type = type,
+                                        ToUserId = user.userId,
+                                    }, siteSettingId);
+                                }
                             }
-                        }
 
-                        foreach (var user in roleUsers)
+                            foreach (var user in roleUsers)
+                            {
+                                if (!string.IsNullOrEmpty(user.userFullname) && !string.IsNullOrEmpty(user.mobile) && user.mobile.IsMobile())
+                                {
+                                    SmsSendingQueueService.Create(new SmsSendingQueue()
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        MobileNumber = user.mobile,
+                                        Body = description.Replace("{{toUser}}", user.userFullname),
+                                        Subject = subject.Replace("{{toUser}}", user.userFullname),
+                                        FromUserId = userId,
+                                        ObjectId = objectId,
+                                        SiteSettingId = siteSettingId.Value,
+                                        Type = type,
+                                        ToUserId = user.userId,
+                                    }, siteSettingId);
+                                }
+                            }
+
+                        }
+                    }
+                }
+                else if (foundTemplate != null && !string.IsNullOrEmpty(foundTemplate.Subject) && !string.IsNullOrEmpty(foundTemplate.Description) && foundTemplate.ProposalFilledFormUserType != null && exteraUserList != null)
+                {
+                    var foundTargetUsers = exteraUserList.Where(t => t.ProposalFilledFormUserType == foundTemplate.ProposalFilledFormUserType && !string.IsNullOrEmpty(t.mobile) && t.mobile.IsMobile() == true).ToList();
+                    if(foundTargetUsers != null)
+                    {
+                        foreach(var foundTargetUser in foundTargetUsers)
                         {
-                            if (!string.IsNullOrEmpty(user.userFullname) && !string.IsNullOrEmpty(user.mobile) && user.mobile.IsMobile())
+                            string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
+                            string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                            SmsSendingQueueService.Create(new SmsSendingQueue()
                             {
-                                SmsSendingQueueService.Create(new SmsSendingQueue()
-                                {
-                                    CreateDate = DateTime.Now,
-                                    MobileNumber = user.mobile,
-                                    Body = description.Replace("{{toUser}}", user.userFullname),
-                                    Subject = subject.Replace("{{toUser}}", user.userFullname),
-                                    FromUserId = userId,
-                                    ObjectId = objectId,
-                                    SiteSettingId = siteSettingId.Value,
-                                    Type = type,
-                                    ToUserId = user.userId,
-                                }, siteSettingId);
-                            }
+                                CreateDate = DateTime.Now,
+                                MobileNumber = foundTargetUser.mobile,
+                                Body = description.Replace("{{toUser}}", foundTargetUser.fullUserName),
+                                Subject = subject.Replace("{{toUser}}", foundTargetUser.fullUserName),
+                                FromUserId = userId,
+                                ObjectId = objectId,
+                                SiteSettingId = siteSettingId.Value,
+                                Type = type,
+                                ToUserId = foundTargetUser.userId,
+                            }, siteSettingId);
                         }
-
-                        SmsSendingQueueService.SaveChange();
                     }
                 }
             }
+
+            if(foundTemplates != null && foundTemplates.Count > 0)
+                SmsSendingQueueService.SaveChange();
         }
     }
 }

@@ -21,7 +21,6 @@ namespace Oje.Sms.Models.DB
         public long? UserId { get; set; }
         [ForeignKey("UserId"), InverseProperty("SmsTrigers")]
         public User User { get; set; }
-        public bool? SendForOwner { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

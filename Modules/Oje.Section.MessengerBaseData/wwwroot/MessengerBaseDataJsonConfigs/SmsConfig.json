@@ -61,6 +61,13 @@
               }
             },
             {
+              "field": "ph",
+              "caption": "شماره",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "isActive",
               "caption": "وضعیت",
               "search": {
@@ -109,6 +116,12 @@
               "name": "domain",
               "type": "text",
               "label": "دامین"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "ph",
+              "type": "text",
+              "label": "شماره"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -169,6 +182,12 @@
               "name": "domain",
               "type": "text",
               "label": "دامین"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "ph",
+              "type": "text",
+              "label": "شماره"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

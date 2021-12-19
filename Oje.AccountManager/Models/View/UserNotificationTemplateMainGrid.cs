@@ -12,5 +12,6 @@ namespace Oje.AccountService.Models.View
     {
         public string subject { get; set; }
         public UserNotificationType? type { get; set; }
+        public ProposalFilledFormUserType? pffUserType { get; set; }
     }
 }

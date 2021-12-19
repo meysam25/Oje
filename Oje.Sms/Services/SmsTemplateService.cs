@@ -32,7 +32,8 @@ namespace Oje.Sms.Services
                 Type = input.type.Value,
                 Description = input.description,
                 Subject = input.subject,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = siteSettingId.Value,
+                ProposalFilledFormUserType = input.pffUserType
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -55,7 +56,7 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.description.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
-            if (db.SmsTemplates.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Type == input.type))
+            if (db.SmsTemplates.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Type == input.type && t.ProposalFilledFormUserType == input.pffUserType))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -80,7 +81,8 @@ namespace Oje.Sms.Services
                     id = t.Id,
                     type = t.Type,
                     subject = t.Subject,
-                    description = t.Description
+                    description = t.Description,
+                    pffUserType = t.ProposalFilledFormUserType
                 })
                 .Take(1)
                 .ToList()
@@ -89,7 +91,8 @@ namespace Oje.Sms.Services
                     t.id,
                     type = (int)t.type,
                     t.subject,
-                    t.description
+                    t.description,
+                    pffUserType = t.pffUserType != null ?((int)t.pffUserType).ToString() : ""
                 })
                 .FirstOrDefault();
         }
@@ -105,6 +108,8 @@ namespace Oje.Sms.Services
                 qureResult = qureResult.Where(t => t.Subject.Contains(searchInput.subject));
             if (searchInput.type != null)
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
+            if(searchInput.pffUserType != null)
+                qureResult = qureResult.Where(t => t.ProposalFilledFormUserType == searchInput.pffUserType);
 
             int row = searchInput.skip;
 
@@ -119,7 +124,8 @@ namespace Oje.Sms.Services
                 {
                     id = t.Id,
                     subject = t.Subject,
-                    type = t.Type
+                    type = t.Type,
+                    pffUserType = t.ProposalFilledFormUserType
                 })
                 .ToList()
                 .Select(t => new SmsTemplateMainGridResultVM
@@ -127,7 +133,8 @@ namespace Oje.Sms.Services
                     row = ++row,
                     id = t.id,
                     subject = t.subject,
-                    type = t.type.GetEnumDisplayName()
+                    type = t.type.GetEnumDisplayName(),
+                    pffUserType = t.pffUserType.GetEnumDisplayName()
                 })
                 .ToList()
             };
@@ -143,15 +150,16 @@ namespace Oje.Sms.Services
             foundItem.Type = input.type.Value;
             foundItem.Description = input.description;
             foundItem.Subject = input.subject;
+            foundItem.ProposalFilledFormUserType = input.pffUserType;
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public SmsTemplate GetBy(UserNotificationType type, int? siteSettingId)
+        public List<SmsTemplate> GetBy(UserNotificationType type, int? siteSettingId)
         {
-            return db.SmsTemplates.Where(t => t.Type == type && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            return db.SmsTemplates.Where(t => t.Type == type && t.SiteSettingId == siteSettingId).ToList();
         }
     }
 }

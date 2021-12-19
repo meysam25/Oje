@@ -19,5 +19,7 @@ namespace Oje.Sms.Models.View
         public string type { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "شماره")]
+        public string ph { get;  set; }
     }
 }

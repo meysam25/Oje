@@ -17,6 +17,6 @@ namespace Oje.Sms.Interfaces
         object GetById(int? id, int? siteSettingId);
         ApiResult Update(CreateUpdateSmsTemplateVM input, int? siteSettingId);
         GridResultVM<SmsTemplateMainGridResultVM> GetList(SmsTemplateMainGrid searchInput, int? siteSettingId);
-        SmsTemplate GetBy(UserNotificationType type, int? siteSettingId);
+        List<SmsTemplate> GetBy(UserNotificationType type, int? siteSettingId);
     }
 }

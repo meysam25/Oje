@@ -17,6 +17,6 @@ namespace Oje.AccountService.Interfaces
         object GetById(int? id, int? siteSettingId);
         ApiResult Update(CreateUpdateUserNotificationTemplateVM input, int? siteSettingId);
         GridResultVM<UserNotificationTemplateMainGridResultVM> GetList(UserNotificationTemplateMainGrid searchInput, int? siteSettingId);
-        UserNotificationTemplate GetBy(UserNotificationType type, int? siteSettingId);
+        List<UserNotificationTemplate> GetBy(UserNotificationType type, int? siteSettingId);
     }
 }

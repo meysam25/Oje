@@ -17,5 +17,7 @@ namespace Oje.AccountService.Models.View
         public string subject { get; set; }
         [Display(Name = "نوع")]
         public string type { get; set; }
+        [Display(Name = "برای")]
+        public string pffUserType { get; set; }
     }
 }

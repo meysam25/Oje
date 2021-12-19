@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "Oje.Worker.Sms": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

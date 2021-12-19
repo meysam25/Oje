@@ -37,7 +37,7 @@ namespace Oje.AccountService.Filters
                 loginUser = loginCValue.Decrypt2AndGetUserVM();
                 if (loginUser != null)
                 {
-                    if (loginUser.Ip == context.HttpContext.Connection.RemoteIpAddress.ToString() && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
+                    if (loginUser.Ip == context.HttpContext.GetIpAddress()?.ToString() && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
                     {
                         if (!UserAccessCaches.Any(t => t.UserId == loginUser.UserId) ||
                             UserAccessCaches.Where(t => t.UserId == loginUser.UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)

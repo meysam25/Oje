@@ -10,6 +10,5 @@ namespace Oje.Sms.Models.View
     {
         public int? RoleId { get; set; }
         public long? UserId { get; set; }
-        public bool? sendForOwner { get; set; }
     }
 }

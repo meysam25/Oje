@@ -64,16 +64,6 @@
               "search": {
                 "searchType": "text"
               }
-            },
-            {
-              "field": "sendForOwner",
-              "caption": "ارسال برای مالکین",
-              "search": {
-                "searchType": "dropdown",
-                "url": "/Core/BaseData/Get/IsActive",
-                "textField": "title",
-                "valueField": "id"
-              }
             }
           ]
         }
@@ -114,15 +104,6 @@
               "valuefield": "id",
               "dataurl": "/MessengerBaseData/SmsTriger/GetRoleList",
               "label": "نقش"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "sendForOwner",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/IsActive",
-              "label": "ارسال برای مالکین"
             }
           ],
           "actions": [
@@ -174,15 +155,6 @@
               "valuefield": "id",
               "dataurl": "/MessengerBaseData/SmsTriger/GetRoleList",
               "label": "نقش"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "sendForOwner",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/IsActive",
-              "label": "ارسال برای مالکین"
             }
           ],
           "actions": [

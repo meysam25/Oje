@@ -12,5 +12,10 @@ namespace Oje.Infrastructure.Models
         public byte Ip2 { get; set; }
         public byte Ip3 { get; set; }
         public byte Ip4 { get; set; }
+
+        public override string ToString()
+        {
+            return Ip1 + "." + Ip2 + "." + Ip3 + "." + Ip4;
+        }
     }
 }

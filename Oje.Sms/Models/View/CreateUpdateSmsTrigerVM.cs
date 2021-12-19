@@ -13,6 +13,5 @@ namespace Oje.Sms.Models.View
         public UserNotificationType? type { get; set; }
         public int? roleId { get; set; }
         public long? userId { get; set; }
-        public bool? sendForOwner { get; set; }
     }
 }

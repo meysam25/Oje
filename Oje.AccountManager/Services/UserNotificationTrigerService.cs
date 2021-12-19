@@ -53,62 +53,89 @@ namespace Oje.AccountService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public void CreateNotificationForUser(long? userId, UserNotificationType type, List<long> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink)
+        public void CreateNotificationForUser(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink)
         {
-            var foundTemplate = UserNotificationTemplateService.GetBy(type, siteSettingId);
+            var foundTemplates = UserNotificationTemplateService.GetBy(type, siteSettingId);
+            string userFullname = UserService.GetUserFullName(siteSettingId, userId);
 
-            if (foundTemplate != null && !string.IsNullOrEmpty(foundTemplate.Subject) && !string.IsNullOrEmpty(foundTemplate.Description))
+            foreach (var foundTemplate in foundTemplates)
             {
-                var foundTrigers = GetBy(type, siteSettingId);
-                if (foundTrigers != null && foundTrigers.Count > 0)
+                if (foundTemplate != null && !string.IsNullOrEmpty(foundTemplate.Subject) && !string.IsNullOrEmpty(foundTemplate.Description) && foundTemplate.ProposalFilledFormUserType == null)
                 {
-                    string userFullname = UserService.GetUserFullName(siteSettingId, userId);
-                    string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
-                    string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
-                    if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(description))
+                    var foundTrigers = GetBy(type, siteSettingId);
+                    if (foundTrigers != null && foundTrigers.Count > 0)
                     {
-                        List<int> roleIds = foundTrigers.Where(t => t.RoleId.ToIntReturnZiro() > 0).Select(t => t.RoleId.Value).ToList();
-                        List<long> userIds = foundTrigers.Where(t => t.UserId.ToLongReturnZiro() > 0).Select(t => t.UserId.Value).ToList();
-                        userIds.AddRange(exteraUserList);
-                        userIds = userIds.GroupBy(t => t).Select(t => t.Key).ToList();
-                        var roleUsers = RoleService.GetUsersBy(roleIds, siteSettingId, GlobalServices.MaxForNotify);
-                        roleUsers = roleUsers.Where(t => !userIds.Contains(t.userId)).ToList();
-                        foreach (var fUserId in userIds)
+                        string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
+                        string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                        if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(description))
                         {
+                            List<int> roleIds = foundTrigers.Where(t => t.RoleId.ToIntReturnZiro() > 0).Select(t => t.RoleId.Value).ToList();
+                            List<long> userIds = foundTrigers.Where(t => t.UserId.ToLongReturnZiro() > 0).Select(t => t.UserId.Value).ToList();
+                            userIds = userIds.GroupBy(t => t).Select(t => t.Key).ToList();
+                            var roleUsers = RoleService.GetUsersBy(roleIds, siteSettingId, GlobalServices.MaxForNotify);
+                            roleUsers = roleUsers.Where(t => !userIds.Contains(t.userId)).ToList();
+                            foreach (var fUserId in userIds)
+                            {
+                                UserNotificationService.Create(new UserNotification()
+                                {
+                                    CreateDate = DateTime.Now,
+                                    Description = description.Replace("{{toUser}}", foundTrigers.Where(t => t.UserId == fUserId).Select(t => t.userFullname).FirstOrDefault()),
+                                    Subject = subject.Replace("{{toUser}}", foundTrigers.Where(t => t.UserId == fUserId).Select(t => t.userFullname).FirstOrDefault()),
+                                    FromUserId = userId,
+                                    ObjectId = objectId,
+                                    SiteSettingId = siteSettingId.Value,
+                                    Type = type,
+                                    UserId = fUserId,
+                                    TargetPageLink = openLink
+                                }, siteSettingId);
+                            }
+
+                            foreach (var fUserId in roleUsers)
+                            {
+                                UserNotificationService.Create(new UserNotification()
+                                {
+                                    CreateDate = DateTime.Now,
+                                    Description = description.Replace("{{toUser}}", fUserId.userFullname),
+                                    Subject = subject.Replace("{{toUser}}", fUserId.userFullname),
+                                    FromUserId = userId,
+                                    ObjectId = objectId,
+                                    SiteSettingId = siteSettingId.Value,
+                                    Type = type,
+                                    UserId = fUserId.userId,
+                                    TargetPageLink = openLink
+                                }, siteSettingId);
+                            }
+                        }
+                    }
+                }
+                else if (foundTemplate != null && !string.IsNullOrEmpty(foundTemplate.Subject) && !string.IsNullOrEmpty(foundTemplate.Description) && foundTemplate.ProposalFilledFormUserType != null && exteraUserList != null)
+                {
+                    var foundTargetUsers = exteraUserList.Where(t => t.ProposalFilledFormUserType == foundTemplate.ProposalFilledFormUserType ).ToList();
+                    if (foundTargetUsers != null)
+                    {
+                        foreach (var foundTargetUser in foundTargetUsers)
+                        {
+                            string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
+                            string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
                             UserNotificationService.Create(new UserNotification()
                             {
                                 CreateDate = DateTime.Now,
-                                Description = description.Replace("{{toUser}}", foundTrigers.Where(t => t.UserId == fUserId).Select(t => t.userFullname).FirstOrDefault()),
-                                Subject = subject.Replace("{{toUser}}", foundTrigers.Where(t => t.UserId == fUserId).Select(t => t.userFullname).FirstOrDefault()),
+                                Description = description.Replace("{{toUser}}", foundTargetUser.fullUserName),
+                                Subject = subject.Replace("{{toUser}}", foundTargetUser.fullUserName),
                                 FromUserId = userId,
                                 ObjectId = objectId,
                                 SiteSettingId = siteSettingId.Value,
                                 Type = type,
-                                UserId = fUserId,
+                                UserId = foundTargetUser.userId,
                                 TargetPageLink = openLink
                             }, siteSettingId);
                         }
-
-                        foreach (var fUserId in roleUsers)
-                        {
-                            UserNotificationService.Create(new UserNotification()
-                            {
-                                CreateDate = DateTime.Now,
-                                Description = description.Replace("{{toUser}}", fUserId.userFullname),
-                                Subject = subject.Replace("{{toUser}}", fUserId.userFullname),
-                                FromUserId = userId,
-                                ObjectId = objectId,
-                                SiteSettingId = siteSettingId.Value,
-                                Type = type,
-                                UserId = fUserId.userId,
-                                TargetPageLink = openLink
-                            }, siteSettingId);
-                        }
-
-                        UserNotificationService.SaveChange();
                     }
                 }
             }
+
+            if(foundTemplates != null && foundTemplates.Count > 0)
+                UserNotificationService.SaveChange();
         }
 
         private List<UserNotificationTrigerURUVM> GetBy(UserNotificationType type, int? siteSettingId)
@@ -239,6 +266,6 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
         }
 
-        
+
     }
 }

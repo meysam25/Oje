@@ -20,19 +20,25 @@ namespace Oje.Sms.Services
     {
         readonly SmsDBContext db = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+        readonly ISmsSenderService SmsSenderService = null;
+        readonly ISmsSendingQueueErrorService SmsSendingQueueErrorService = null;
         public SmsSendingQueueService(
                 SmsDBContext db,
-                IHttpContextAccessor HttpContextAccessor
+                IHttpContextAccessor HttpContextAccessor,
+                ISmsSenderService SmsSenderService,
+                ISmsSendingQueueErrorService SmsSendingQueueErrorService
             )
         {
             this.db = db;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.SmsSenderService = SmsSenderService;
+            this.SmsSendingQueueErrorService = SmsSendingQueueErrorService;
         }
 
         public void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId)
         {
             var foundIp = HttpContextAccessor.GetIpAddress();
-            if(foundIp != null)
+            if (foundIp != null)
             {
                 smsSendingQueue.Ip1 = foundIp.Ip1;
                 smsSendingQueue.Ip2 = foundIp.Ip2;
@@ -118,6 +124,53 @@ namespace Oje.Sms.Services
 
         public void SaveChange()
         {
+            db.SaveChanges();
+        }
+
+        public async Task SendSms()
+        {
+            var curDT = DateTime.Now.AddSeconds(-55);
+            var allItems = db.SmsSendingQueues.Where(t => t.LastTryDate == null && t.IsSuccess == false).ToList();
+            if (allItems.Count == 0)
+                allItems = db.SmsSendingQueues.Where(t => t.LastTryDate != null && t.IsSuccess == false && curDT < t.LastTryDate && t.CountTry <= 2).ToList();
+            foreach (var item in allItems)
+                item.LastTryDate = DateTime.Now;
+
+            db.SaveChanges();
+
+            foreach (var item in allItems)
+            {
+                SmsResult resultSms = null;
+                try
+                {
+                    resultSms = await SmsSenderService.Send(item.MobileNumber, item.Body, item.SiteSettingId);
+                }
+                catch (Exception ex)
+                {
+                    item.CountTry++;
+                    item.IsSuccess = false;
+                    SmsSendingQueueErrorService.Create(item.Id, DateTime.Now, ex.Message, null);
+                    continue;
+                };
+                if (resultSms != null && resultSms.isSuccess == true)
+                {
+                    item.IsSuccess = true;
+                    item.TraceCode = resultSms.traceCode;
+                }
+                else if (resultSms != null)
+                {
+                    item.CountTry++;
+                    item.IsSuccess = false;
+                    SmsSendingQueueErrorService.Create(item.Id, DateTime.Now, resultSms.message, resultSms.cId);
+                }
+                else
+                {
+                    item.CountTry++;
+                    item.IsSuccess = false;
+                    SmsSendingQueueErrorService.Create(item.Id, DateTime.Now, "علت خطا مشخص نمی باشد", null);
+                }
+            }
+
             db.SaveChanges();
         }
     }

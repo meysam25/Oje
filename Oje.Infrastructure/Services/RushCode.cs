@@ -248,6 +248,27 @@ namespace Oje.Infrastructure.Services
                 var apAddress = input?.HttpContext?.Request?.HttpContext?.Connection?.RemoteIpAddress.ToString();
                 if (!string.IsNullOrEmpty(apAddress))
                 {
+                    if (apAddress == "::1")
+                        apAddress = "127.0.0.1";
+                    return apAddress.GetIpSections();
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static IpSections GetIpAddress(this HttpContext input)
+        {
+            try
+            {
+                var apAddress = input?.Request?.HttpContext?.Connection?.RemoteIpAddress.ToString();
+                if (!string.IsNullOrEmpty(apAddress))
+                {
+                    if (apAddress == "::1")
+                        apAddress = "127.0.0.1";
                     return apAddress.GetIpSections();
                 }
                 return null;

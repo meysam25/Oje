@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,6 @@ namespace Oje.ProposalFormService.Interfaces
         void Create(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId);
         void Update(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId);
         bool HasAny(long proposalFilledFormId, ProposalFilledFormUserType type);
-        List<long> GetProposalFilledFormUserIds(long proposalFilledFormId);
+        List<PPFUserTypes> GetProposalFilledFormUserIds(long proposalFilledFormId);
     }
 }

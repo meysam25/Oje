@@ -25,6 +25,8 @@ namespace Oje.Sms.Models.DB
         public string Password { get; set; }
         public string Domain { get; set; }
         public SmsConfigType Type { get; set; }
+        [Required, MaxLength(20)]
+        public string PhoneNumber { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
 

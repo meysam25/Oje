@@ -15,5 +15,6 @@ namespace Oje.Sms.Interfaces
         object GetById(int? id, int? siteSettingId);
         ApiResult Update(CreateUpdateSmsConfigVM input, int? siteSettingId);
         GridResultVM<SmsConfigMainGridResultVM> GetList(SmsConfigMainGrid searchInput, int? siteSettingId);
+        Models.DB.SmsConfig GetActive(int? siteSettingId);
     }
 }

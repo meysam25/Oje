@@ -12,6 +12,7 @@ namespace Oje.Sms.Models.View
     {
         public string smsUsername { get; set; }
         public SmsConfigType? type { get; set; }
+        public string ph { get; set; }
         public bool? isActive { get; set; }
     }
 }
