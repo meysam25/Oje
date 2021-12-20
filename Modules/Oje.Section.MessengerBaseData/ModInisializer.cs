@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Oje.Sms;
+using Oje.EmailService;
 
 namespace Oje.Section.MessengerBaseData
 {
@@ -15,6 +16,7 @@ namespace Oje.Section.MessengerBaseData
         public void ConfigureServices(IServiceCollection services)
         {
             SmsConfig.Config(services);
+            EmailServiceConfig.Config(services);
         }
     }
 }

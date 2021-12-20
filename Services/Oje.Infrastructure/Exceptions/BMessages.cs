@@ -39,8 +39,8 @@ namespace Oje.Infrastructure.Exceptions
         Dublicate_Username = 13,
         [Display(Name = "عدم تطابق کلمه عبور با تکرار آن")]
         The_Password_Is_Not_Look_Like_Confirm_Password = 14,
-        [Display(Name = "کلمه عبور نمی تواند بیشتر از ۵۰ کارکتر باشد")]
-        Password_Can_Not_Be_More_Then_50_Chars = 15,
+        [Display(Name = "کلمه عبور نمی تواند بیشتر از 30 کارکتر باشد")]
+        Password_Can_Not_Be_More_Then_30_Chars = 15,
         [Display(Name = "کلمه عبور نمی تواند کمتر از ۶ کارکتر باشد")]
         Password_Can_Not_Be_Less_Then_6_Chars = 16,
         [Display(Name = "لطفا تکرار کلمه عبور را وارد کنید")]
@@ -466,6 +466,12 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا شماره را وارد کنید")]
         Please_Enter_PhoneNumber = 227,
         [Display(Name = "شماره نمی تواند بیشتر از 20 حرف باشد")]
-        PhoneNumber_Can_Not_Be_More_Then_20_chars = 228
+        PhoneNumber_Can_Not_Be_More_Then_20_chars = 228,
+        [Display(Name = "لطفا پورت را وارد کنید")]
+        Please_Enter_Prot = 229,
+        [Display(Name = "لطفا هاست را وارد کنید")]
+        Please_Enter_Host = 230,
+        [Display(Name = "لطفا زمان انصراف را وارد کنید")]
+        Please_Enter_Timeout = 231
     }
 }

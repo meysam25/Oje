@@ -25,6 +25,13 @@ namespace Oje.Sms.Services
         {
             CreateUpdateValidation(input, siteSettingId);
 
+            if (input.isActive == true)
+            {
+                var allItems = db.SmsConfigs.Where(t => t.SiteSettingId == siteSettingId).ToList();
+                foreach (var item in allItems)
+                    item.IsActive = false;
+            }
+
             Models.DB.SmsConfig newItem = new Models.DB.SmsConfig() 
             {
                 Domain = input.domain,
@@ -66,10 +73,10 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Password);
             if (string.IsNullOrEmpty(input.domain))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Domain);
-            if (input.ph.Length > 20)
-                throw BException.GenerateNewException(BMessages.PhoneNumber_Can_Not_Be_More_Then_20_chars);
             if (string.IsNullOrEmpty(input.ph))
                 throw BException.GenerateNewException(BMessages.Please_Enter_PhoneNumber);
+            if (input.ph.Length > 20)
+                throw BException.GenerateNewException(BMessages.PhoneNumber_Can_Not_Be_More_Then_20_chars);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -148,6 +155,16 @@ namespace Oje.Sms.Services
             CreateUpdateValidation(input, siteSettingId);
 
             Models.DB.SmsConfig foundItem = db.SmsConfigs.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (input.isActive == true)
+            {
+                var allItems = db.SmsConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id != input.id).ToList();
+                foreach (var item in allItems)
+                    item.IsActive = false;
+            }
+
             foundItem.Domain = input.domain;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             if (!string.IsNullOrEmpty(input.smsPassword))

@@ -1,0 +1,89 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "mainGrid",
+          "showColumnConfigButton": true,
+          "key": "id",
+          "url": "/MessengerBaseData/EmailSendingQueue/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "type",
+              "caption": "نوع",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/UserNotificationType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "email",
+              "caption": "ایمیل",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "lTryDate",
+              "caption": "زمان اخرین سعی",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "countTry",
+              "caption": "تعداد سعی مجدد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "ip",
+              "caption": "ای پی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isSuccess",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "lastError",
+              "caption": "اخرین خطا",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

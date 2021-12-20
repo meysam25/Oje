@@ -167,9 +167,7 @@ namespace Oje.Sms.Services
                 .Select(t => new
                 {
                     t.RoleId,
-                    t.UserId,
-                    userFullname = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : "",
-                    mobile = t.UserId > 0 ? t.User.Mobile : ""
+                    t.UserId
                 })
                 .ToList()
                 .Select(t => new UserSmsTrigerURUVM

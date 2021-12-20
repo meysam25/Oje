@@ -19,7 +19,5 @@ namespace Oje.Sms.Models.View
         public string roleName { get; set; }
         [Display(Name = "کاربر")]
         public string userName { get; set; }
-        [Display(Name = "ارسال برای مالکین")]
-        public string sendForOwner { get; set; }
     }
 }

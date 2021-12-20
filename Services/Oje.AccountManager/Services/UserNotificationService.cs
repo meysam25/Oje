@@ -174,7 +174,7 @@ namespace Oje.AccountService.Services
 
         public void SaveChange()
         {
-            db.SaveChanges();
+            try { db.SaveChanges(); } catch { }
         }
     }
 }

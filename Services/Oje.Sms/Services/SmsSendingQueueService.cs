@@ -132,7 +132,7 @@ namespace Oje.Sms.Services
             var curDT = DateTime.Now.AddSeconds(-55);
             var allItems = db.SmsSendingQueues.Where(t => t.LastTryDate == null && t.IsSuccess == false && t.CountTry == 0).ToList();
             if (allItems.Count == 0)
-                allItems = db.SmsSendingQueues.Where(t => t.LastTryDate != null && t.IsSuccess == false && curDT < t.LastTryDate && t.CountTry <= 2).ToList();
+                allItems = db.SmsSendingQueues.Where(t => t.LastTryDate != null && t.IsSuccess == false && curDT > t.LastTryDate && t.CountTry <= 2).ToList();
             foreach (var item in allItems)
                 item.LastTryDate = DateTime.Now;
 

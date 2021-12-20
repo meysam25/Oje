@@ -11,6 +11,7 @@ namespace Oje.Worker.Sms
         public bool isRegister { get; set; }
         public bool checkSms { get; set; }
         public long timePass { get; set; }
+
         public Worker()
         {
         }

@@ -187,7 +187,7 @@ namespace Oje.AccountService.Services
             if (!string.IsNullOrEmpty(input.password) && input.password != input.confirmPassword)
                 throw BException.GenerateNewException(BMessages.The_Password_Is_Not_Look_Like_Confirm_Password, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.password) && input.password.Length > 50)
-                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_50_Chars, ApiResultErrorCode.ValidationError);
+                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_30_Chars, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.password) && input.password.Length < 6)
                 throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_Less_Then_6_Chars, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.password) && input.password.IsWeekPassword() == true)
@@ -598,7 +598,7 @@ namespace Oje.AccountService.Services
             if (!string.IsNullOrEmpty(input.password) && input.password != input.confirmPassword)
                 throw BException.GenerateNewException(BMessages.The_Password_Is_Not_Look_Like_Confirm_Password, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.password) && input.password.Length > 50)
-                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_50_Chars, ApiResultErrorCode.ValidationError);
+                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_30_Chars, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.password) && input.password.Length < 6)
                 throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_Less_Then_6_Chars, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.password) && input.password.IsWeekPassword() == true)

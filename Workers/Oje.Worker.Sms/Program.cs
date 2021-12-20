@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http;
 using Oje.Infrastructure;
 using Oje.Sms;
 using Oje.Worker.Sms;
-using Microsoft.Extensions.Hosting.WindowsServices;
 
 IHost host = Host.CreateDefaultBuilder(args)
      .UseWindowsService(options =>

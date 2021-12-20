@@ -119,6 +119,19 @@ namespace Oje.Infrastructure.Services
             return (new C_EDSecure()).Decrypt(Convert.FromBase64String(input));
         }
 
+        public static bool IsValidEmail(this string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static bool IsValidExtension(this IFormFile input, string extension)
         {
             try
