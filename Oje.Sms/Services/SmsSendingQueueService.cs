@@ -130,7 +130,7 @@ namespace Oje.Sms.Services
         public async Task SendSms()
         {
             var curDT = DateTime.Now.AddSeconds(-55);
-            var allItems = db.SmsSendingQueues.Where(t => t.LastTryDate == null && t.IsSuccess == false).ToList();
+            var allItems = db.SmsSendingQueues.Where(t => t.LastTryDate == null && t.IsSuccess == false && t.CountTry == 0).ToList();
             if (allItems.Count == 0)
                 allItems = db.SmsSendingQueues.Where(t => t.LastTryDate != null && t.IsSuccess == false && curDT < t.LastTryDate && t.CountTry <= 2).ToList();
             foreach (var item in allItems)
