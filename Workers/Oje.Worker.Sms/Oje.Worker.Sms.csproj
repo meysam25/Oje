@@ -13,6 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Oje.Sms\Oje.Sms.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.Sms\Oje.Sms.csproj" />
   </ItemGroup>
 </Project>
