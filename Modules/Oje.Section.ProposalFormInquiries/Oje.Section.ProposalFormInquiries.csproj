@@ -14,8 +14,8 @@
     <None Remove="Services\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountService.csproj" />
-    <ProjectReference Include="..\..\Oje.FireInsuranceManager\Oje.FireInsuranceService.csproj" />
-    <ProjectReference Include="..\..\Oje.ProposalFormManager\Oje.ProposalFormService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.FireInsuranceManager\Oje.FireInsuranceService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.ProposalFormManager\Oje.ProposalFormService.csproj" />
   </ItemGroup>
 </Project>

@@ -22,7 +22,7 @@
     <ProjectReference Include="..\Modules\Oje.Section.InsuranceContractBaseData\Oje.Section.InsuranceContractBaseData.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.ProposalFormBaseData\Oje.Section.ProposalFormBaseData.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.SalesNetworkBaseData\Oje.Section.SalesNetworkBaseData.csproj" />
-    <ProjectReference Include="..\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

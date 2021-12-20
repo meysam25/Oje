@@ -3,7 +3,7 @@
     <Folder Include="Areas\BaseData\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
   </ItemGroup>
   
 

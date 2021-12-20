@@ -111,10 +111,10 @@ namespace Oje.Sms.Services
                         row = ++row,
                         type = t.type.GetEnumDisplayName(),
                         t.mobile,
-                        createDate = t.createDate + " " + t.createDate.ToString("hh:mm"),
+                        createDate = t.createDate.ToFaDate() + " " + t.createDate.ToString("hh:mm"),
                         lTryDate = t.lTryDate != null ? (t.lTryDate.ToFaDate() + " " + t.lTryDate.Value.ToString("hh:mm")) : "",
                         t.countTry,
-                        isSuccess = t.isSuccess == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                        isSuccess = t.isSuccess == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                         ip = t.ip1 + "." + t.ip2 + "." + t.ip3 + "." + t.ip4,
                         t.lastError
                     })

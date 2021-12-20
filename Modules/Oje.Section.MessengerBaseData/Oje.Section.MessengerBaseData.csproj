@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
-    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountService.csproj" />
-    <ProjectReference Include="..\..\Oje.Sms\Oje.Sms.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.Sms\Oje.Sms.csproj" />
   </ItemGroup>
 </Project>

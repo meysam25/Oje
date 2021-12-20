@@ -4,6 +4,6 @@
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
   </ItemGroup>
 </Project>
