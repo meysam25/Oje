@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -9,6 +10,7 @@ using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.Infrastructure.Services;
 using Oje.JoinServices.Interfaces;
+using Oje.PaymentService.Interfaces;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Models.View;
@@ -30,9 +32,10 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
         readonly IProposalFilledFormCompanyService ProposalFilledFormCompanyService = null;
         readonly IGlobalInqueryService GlobalInqueryService = null;
-        readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
+        readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IBankAccountFactorService BankAccountFactorService = null;
 
         public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
@@ -43,9 +46,10 @@ namespace Oje.ProposalFormService.Services
                 IProposalFilledFormCompanyService ProposalFilledFormCompanyService,
                 IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
                 IGlobalInqueryService GlobalInqueryService,
-                AccountService.Interfaces.IUploadedFileService UploadedFileService,
+                IUploadedFileService UploadedFileService,
                 IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService,
-                IUserNotifierService UserNotifierService
+                IUserNotifierService UserNotifierService,
+                IBankAccountFactorService BankAccountFactorService
             )
         {
             this.db = db;
@@ -58,6 +62,7 @@ namespace Oje.ProposalFormService.Services
             this.UploadedFileService = UploadedFileService;
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
             this.UserNotifierService = UserNotifierService;
+            this.BankAccountFactorService = BankAccountFactorService;
         }
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
@@ -432,10 +437,13 @@ namespace Oje.ProposalFormService.Services
                .Select(t => new
                {
                    t.Id,
+                   t.Price,
                    t.GlobalInqueryId,
                    t.ProposalFormId,
                    t.CreateDate,
                    t.SiteSettingId,
+                   agentUserId = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.Agent).Select(tt => tt.UserId).FirstOrDefault(),
+                   t.PaymentTraceCode,
                    ppfTitle = t.ProposalForm.Title,
                    createUserFullname = t.ProposalFilledFormUsers.Where(t => t.Type == ProposalFilledFormUserType.OwnerUser).Select(t => t.User.Firstname + " " + t.User.Lastname).FirstOrDefault(),
                    values = t.ProposalFilledFormValues.Select(tt => new
@@ -459,6 +467,19 @@ namespace Oje.ProposalFormService.Services
             foundSw.FirstOrDefault().steps = ignoreSteps(foundSw.FirstOrDefault().steps);
             var fFoundSw = foundSw.FirstOrDefault();
             List<ProposalFilledFormPdfGroupVM> listGroup = new();
+            List<ProposalFilledFormPaymentVM> foundPaymentList = BankAccountFactorService.GetListBy(BankAccountFactorType.ProposalFilledForm, foundItem.Id, siteSettingId);
+            if (foundPaymentList != null && foundPaymentList.Count > 0)
+            {
+                List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupPaymentItems = new();
+                foreach (var item in foundPaymentList)
+                {
+                    ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام حساب", value = item.fullName });
+                    ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "مبلغ", value = item.price.ToString("###,###") + " ریال" });
+                    ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "تاریخ", value = item.payDate.ToFaDate() + " " + item.payDate.ToString("hh:mm") });
+                    ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد پیگیری", value = item.traceCode });
+                }
+                listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "وضعیت پرداخت", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
+            }
             foreach (var step in fFoundSw.steps)
             {
                 var allCtrls = step.GetAllListOf<ctrl>();
@@ -499,10 +520,15 @@ namespace Oje.ProposalFormService.Services
             }
 
 
+
+            result.proposalFilledFormId = foundItem.Id;
             result.ProposalFilledFormPdfGroupVMs = listGroup;
             result.createUserFullname = foundItem.createUserFullname;
+            result.traceCode = foundItem.PaymentTraceCode;
             result.ppfTitle = foundItem.ppfTitle;
+            result.agentUserId = foundItem.agentUserId;
             result.id = foundItem.SiteSettingId + "/" + foundItem.ProposalFormId + "/" + foundItem.Id;
+            result.price = foundItem.Price;
             result.ppfCreateDate = foundItem.CreateDate.ToFaDate();
             if (foundItem.GlobalInqueryId > 0)
                 GlobalInqueryService.AppendInquiryData(foundItem.GlobalInqueryId.ToLongReturnZiro(), result.ProposalFilledFormPdfGroupVMs);

@@ -12,6 +12,7 @@
     <ProjectReference Include="..\Oje.AccountManager\Oje.AccountService.csproj" />
     <ProjectReference Include="..\Oje.Infrastructure\Oje.Infrastructure.csproj" />
     <ProjectReference Include="..\Oje.JoinServices\Oje.JoinServices.csproj" />
+    <ProjectReference Include="..\Oje.PaymentService\Oje.PaymentService.csproj" />
   </ItemGroup>
 
 </Project>

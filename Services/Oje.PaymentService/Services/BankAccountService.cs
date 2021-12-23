@@ -1,0 +1,242 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure;
+using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Services;
+using Oje.PaymentService.Interfaces;
+using Oje.PaymentService.Models.DB;
+using Oje.PaymentService.Models.View;
+using Oje.PaymentService.Services.EContext;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Oje.PaymentService.Services
+{
+    public class BankAccountService : IBankAccountService
+    {
+        readonly PaymentDBContext db = null;
+        public BankAccountService(PaymentDBContext db)
+        {
+            this.db = db;
+        }
+
+        public ApiResult Create(BankAccountCreateUpdateVM input, int? siteSettingId)
+        {
+            createUpdateValidation(input, siteSettingId);
+
+            db.Entry(new BankAccount()
+            {
+                BankId = input.bankId.ToIntReturnZiro(),
+                CardNo = input.cardNo.ToLongReturnZiro(),
+                HesabNo = input.hesabNo.ToLongReturnZiro(),
+                IsActive = input.isActive.ToBooleanReturnFalse(),
+                IsForPayment = input.isForPayment.ToBooleanReturnFalse(),
+                ShabaNo = input.shabaNo,
+                SiteSettingId = siteSettingId.Value,
+                Title = input.title,
+                UserId = input.userId
+            }).State = EntityState.Added;
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        private void createUpdateValidation(BankAccountCreateUpdateVM input, int? siteSettingId)
+        {
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (siteSettingId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+            if (input.bankId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_Bank);
+            if (string.IsNullOrEmpty(input.title))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Title);
+            if (input.cardNo.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Enter_CardNo);
+            if (string.IsNullOrEmpty(input.shabaNo))
+                throw BException.GenerateNewException(BMessages.Please_Enter_ShabaNo);
+            if (input.hesabNo.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Enter_HesabNo);
+            if (input.cardNo.Value.FormatCardNo().Length != 19)
+                throw BException.GenerateNewException(BMessages.Invalid_CardNo);
+            if (input.shabaNo.Length != 24)
+                throw BException.GenerateNewException(BMessages.Invalid_ShabaNo);
+        }
+
+        public ApiResult Delete(int? id, int? siteSettingId)
+        {
+            var foundItem = db.BankAccounts.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            db.Entry(foundItem).State = EntityState.Deleted;
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetById(int? id, int? siteSettingId)
+        {
+            return db.BankAccounts
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    bankId = t.BankId,
+                    title = t.Title,
+                    cardNo = t.CardNo,
+                    shabaNo = t.ShabaNo,
+                    hesabNo = t.HesabNo,
+                    userId = t.UserId,
+                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : "",
+                    isForPayment = t.IsForPayment,
+                    isActive = t.IsActive
+                }).FirstOrDefault();
+        }
+
+        public GridResultVM<BankAccountMainGridResultVM> GetList(BankAccountMainGrid searchInput, int? siteSettingId)
+        {
+            if (searchInput == null)
+                searchInput = new BankAccountMainGrid();
+
+            var qureResult = db.BankAccounts.Where(t => t.SiteSettingId == siteSettingId);
+
+            if (searchInput.bankId.ToIntReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.BankId == searchInput.bankId);
+            if (!string.IsNullOrEmpty(searchInput.title))
+                qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
+            if (!string.IsNullOrEmpty(searchInput.userfullanme))
+                qureResult = qureResult.Where(t => t.UserId > 0 && (t.User.Firstname + " " + t.User.Lastname).Contains(searchInput.userfullanme));
+            if (searchInput.hesabNo.ToLongReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.HesabNo == searchInput.hesabNo);
+            if (searchInput.cardNo.ToLongReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.CardNo == searchInput.cardNo);
+            if (searchInput.isActive != null)
+                qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+
+            int row = searchInput.skip;
+
+            return new GridResultVM<BankAccountMainGridResultVM>()
+            {
+                total = qureResult.Count(),
+                data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    bankId = t.Bank.Title,
+                    title = t.Title,
+                    userfullanme = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : "",
+                    cardNo = t.CardNo,
+                    hesabNo = t.HesabNo,
+                    isActive = t.IsActive
+                })
+                .ToList()
+                .Select(t => new BankAccountMainGridResultVM
+                {
+                    row = ++row,
+                    id = t.id,
+                    bankId = t.bankId,
+                    cardNo = t.cardNo.FormatCardNo(),
+                    hesabNo = t.hesabNo.ToString(),
+                    title = t.title,
+                    userfullanme = t.userfullanme,
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                })
+                .ToList()
+            };
+        }
+
+        public ApiResult Update(BankAccountCreateUpdateVM input, int? siteSettingId)
+        {
+            createUpdateValidation(input, siteSettingId);
+
+            var foundItem = db.BankAccounts.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            foundItem.BankId = input.bankId.ToIntReturnZiro();
+            foundItem.CardNo = input.cardNo.ToLongReturnZiro();
+            foundItem.HesabNo = input.hesabNo.ToLongReturnZiro();
+            foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.IsForPayment = input.isForPayment.ToBooleanReturnFalse();
+            foundItem.ShabaNo = input.shabaNo;
+            foundItem.Title = input.title;
+            foundItem.UserId = input.userId;
+
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId)
+        {
+            List<object> result = new List<object>();
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.BankAccounts.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId && t.IsForPayment == true);
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => (t.Title + "(" + t.CardNo + " " + t.HesabNo + ")").Contains(searchInput.search));
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Title + "(" + t.CardNo + "-" + t.HesabNo + ")" }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
+        }
+
+        public bool Exist(int? siteSettingId, int? id)
+        {
+            return db.BankAccounts.Any(t => t.Id == id && t.SiteSettingId == siteSettingId);
+        }
+
+        public List<BankAccountPaymentUserVM> GetAllAcountForPayment(long? userId, int? siteSettingId)
+        {
+            var qureResult = db.BankAccounts.Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.IsForPayment == true && t.Bank.IsActive == true);
+
+            if (userId.ToLongReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.UserId == userId);
+
+            return qureResult
+                .OrderByDescending(t => t.Id)
+                .Select(t => new
+                {
+                    bankAccountId = t.Id,
+                    bankTitle = t.Bank.Title,
+                    userFullname = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : "",
+                    accountTitle = t.Title,
+                    bankIcon = t.Bank.Pic
+                })
+                .Take(1)
+                .Select(t => new BankAccountPaymentUserVM
+                {
+                    accountTitle = t.accountTitle,
+                    bankAccountId = t.bankAccountId,
+                    bankIcon = GlobalConfig.FileAccessHandlerUrl + t.bankIcon,
+                    bankTitle = t.bankTitle,
+                    userFullname = t.userFullname
+                }).ToList();
+        }
+
+        public bool Exist(long? userId, long? bankAccountId, int? siteSettingId)
+        {
+            var qureResult = db.BankAccounts.Where(t => t.Id == bankAccountId && t.SiteSettingId == siteSettingId);
+
+            if (userId.ToLongReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.UserId == userId);
+
+            return qureResult.Any();
+        }
+    }
+}

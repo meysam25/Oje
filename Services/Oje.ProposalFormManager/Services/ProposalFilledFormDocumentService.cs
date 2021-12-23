@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -20,13 +21,13 @@ namespace Oje.ProposalFormService.Services
     {
         readonly ProposalFormDBContext db = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
-        readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
+        readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
         readonly IUserNotifierService UserNotifierService = null;
         public ProposalFilledFormDocumentService(
             ProposalFormDBContext db,
             IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
-            AccountService.Interfaces.IUploadedFileService UploadedFileService,
+            IUploadedFileService UploadedFileService,
             IProposalFilledFormUseService ProposalFilledFormUseService,
             IUserNotifierService UserNotifierService
             )

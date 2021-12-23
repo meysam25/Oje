@@ -10,6 +10,7 @@ namespace Oje.Infrastructure.Models.PageForms
     {
         public string actionName { get; set; }
         public string objectId { get; set; }
+        public string detailesUrl { get; set; }
         public string url { get; set; }
     }
 }

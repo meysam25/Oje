@@ -19,6 +19,8 @@ namespace Oje.Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
@@ -26,8 +28,6 @@ namespace Oje.Web
             GlobalConfig.Configuration = configuration;
             ManageModalResource.Copy();
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -68,7 +68,7 @@ namespace Oje.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISectionService ModulService)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
             app.UseStaticFiles(new StaticFileOptions
@@ -124,7 +124,6 @@ namespace Oje.Web
                 moduleInitializer.Configure(app, env);
             }
 
-            ModulService.UpdateModuals();
         }
     }
 }

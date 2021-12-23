@@ -4,6 +4,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.FileService\Oje.FileService.csproj" />
   </ItemGroup>
   
 

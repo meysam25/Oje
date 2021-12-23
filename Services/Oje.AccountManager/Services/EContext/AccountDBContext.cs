@@ -18,10 +18,8 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleAction> RoleActions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<UploadedFile> UploadedFiles { get; set; }
         public DbSet<SiteSetting> SiteSettings { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<FileAccessRole> FileAccessRoles { get; set; }
         public DbSet<ChildUserId> ChildUserIds { get; set; }
         public DbSet<ProposalForm> ProposalForms { get; set; }
         public DbSet<RoleProposalForm> RoleProposalForms { get; set; }

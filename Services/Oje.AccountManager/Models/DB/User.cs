@@ -17,7 +17,6 @@ namespace Oje.AccountService.Models.DB
             CreatedUsers = new();
             UpdatedUsers = new();
             UserRoles = new();
-            UploadedFiles = new();
             UserCompanies = new();
             UserNotifications = new();
             FromUserUserNotifications = new();
@@ -99,8 +98,6 @@ namespace Oje.AccountService.Models.DB
 
         [InverseProperty("User")]
         public List<UserRole> UserRoles { get; set; }
-        [InverseProperty("CreateByUser")]
-        public List<UploadedFile> UploadedFiles { get; set; }
         [InverseProperty("User")]
         public List<UserCompany> UserCompanies { get; set; }
         [InverseProperty("User")]

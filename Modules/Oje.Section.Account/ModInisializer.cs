@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oje.AccountService.Hubs;
+using Oje.AccountService.Interfaces;
 
 namespace Oje.Section.Account
 {
@@ -20,12 +21,13 @@ namespace Oje.Section.Account
             {
                 endpoints.MapHub<NotificationHub>("/notification");
             });
-
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             AccountConfig.Config(services);
+
+            services.BuildServiceProvider().GetService<ISectionService>().UpdateModuals();
         }
     }
 }

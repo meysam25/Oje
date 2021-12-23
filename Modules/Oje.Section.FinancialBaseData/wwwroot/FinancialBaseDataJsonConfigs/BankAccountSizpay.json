@@ -1,0 +1,208 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "userGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/FinancialBaseData/BankAccountSizpay/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/FinancialBaseData/BankAccountSizpay/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "editRoleModal",
+                "url": "/FinancialBaseData/BankAccountSizpay/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/BankAccountSizpay/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/FinancialBaseData/BankAccountSizpay/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "terminalId",
+              "caption": "شناسه ترمینال",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "merchandId",
+              "caption": "شناسه پذیرنده",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "shbaNo",
+              "caption": "شماره شبا",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "AddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12",
+              "name": "bcId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FinancialBaseData/BankAccountSizpay/GetBankAccounts",
+              "label": "حساب",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "fistKey",
+              "type": "text",
+              "label": "کلید اول",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "secKey",
+              "type": "text",
+              "label": "کلید دوم",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "sKey",
+              "type": "text",
+              "label": "امضا کلید",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "terminalId",
+              "type": "text",
+              "label": "شناسه ترمینال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "merchId",
+              "type": "text",
+              "label": "شناسه پذیرنده",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/BankAccountSizpay/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "editRoleModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12",
+              "name": "bcId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FinancialBaseData/BankAccountSizpay/GetBankAccounts",
+              "label": "حساب",
+              "isRequired": true,
+              "disabled": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "fistKey",
+              "type": "text",
+              "label": "کلید اول",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "secKey",
+              "type": "text",
+              "label": "کلید دوم",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "sKey",
+              "type": "text",
+              "label": "امضا کلید",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "terminalId",
+              "type": "text",
+              "label": "شناسه ترمینال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "merchId",
+              "type": "text",
+              "label": "شناسه پذیرنده",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/BankAccountSizpay/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

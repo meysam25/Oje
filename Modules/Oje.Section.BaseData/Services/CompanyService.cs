@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.BaseData.Services.EContext;
+using Oje.FileService.Interfaces;
 
 namespace Oje.Section.BaseData.Services
 {

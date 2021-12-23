@@ -16,7 +16,6 @@ namespace Oje.AccountService.Models.DB
         {
             UserRoles = new();
             RoleActions = new();
-            FileAccessRoles = new();
             RoleProposalForms = new();
             UserNotificationTrigers = new();
         }
@@ -41,8 +40,6 @@ namespace Oje.AccountService.Models.DB
         public List<RoleAction> RoleActions { get; set; }
         [InverseProperty("Role")]
         public List<UserRole> UserRoles { get; set; }
-        [InverseProperty("Role")]
-        public List<FileAccessRole> FileAccessRoles { get; set; }
         [InverseProperty("Role")]
         public List<RoleProposalForm> RoleProposalForms { get; set; }
         [InverseProperty("Role")]

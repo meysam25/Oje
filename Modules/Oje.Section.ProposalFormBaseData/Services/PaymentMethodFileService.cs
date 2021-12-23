@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -16,11 +17,11 @@ namespace Oje.Section.ProposalFormBaseData.Services
     {
         readonly ProposalFormBaseDataDBContext db = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
-        readonly AccountService.Interfaces.IUploadedFileService uploadedFileService = null;
+        readonly IUploadedFileService uploadedFileService = null;
         public PaymentMethodFileService(
             ProposalFormBaseDataDBContext db,
             AccountService.Interfaces.ISiteSettingService SiteSettingService,
-            AccountService.Interfaces.IUploadedFileService uploadedFileService
+            IUploadedFileService uploadedFileService
             )
         {
             this.db = db;

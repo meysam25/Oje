@@ -65,7 +65,7 @@ namespace Oje.Infrastructure.Services
                 }
                 else if (defValue != null && currentClassArr.Any(t => defValue.classHide.Contains(t)))
                     result = false;
-                else if (defValue != null && currentClassArr.Any(t => defValue.classShow.Contains(t)))
+                else if (defValue != null && currentClassArr.Any(t => defValue.classShow != null && defValue.classShow.Contains(t)))
                 {
 
                 }
@@ -581,6 +581,30 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static string FormatShaba(this long input)
+        {
+            try
+            {
+                return input.ToString("IR##-####-####-####-####-####-##");
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        public static string FormatCardNo(this long input)
+        {
+            try
+            {
+                return input.ToString("####-####-####-####");
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
         public static IpParts ToIp(this string input)
         {
             try
@@ -615,6 +639,30 @@ namespace Oje.Infrastructure.Services
             {
                 return null;
             }
+        }
+
+        public static PaymentFactorVM GetPayModel(this string input)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(input))
+                {
+                    string dCryptStatus = input.Decrypt2();
+
+                    if (dCryptStatus.IndexOf(",") > 0)
+                    {
+                        string[] allParamsArr = dCryptStatus.Split(',');
+                        if (allParamsArr.Length == 5)
+                            return new PaymentFactorVM() { type = (Enums.BankAccountFactorType)allParamsArr[0].ToIntReturnZiro(), objectId = allParamsArr[1].ToLongReturnZiro(), price = allParamsArr[2].ToLongReturnZiro(), returnUrl = allParamsArr[3], userId = allParamsArr[4].ToLongReturnZiro() };
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+
+            return null;
         }
 
         public static long ToLongReturnZiro(this object input)

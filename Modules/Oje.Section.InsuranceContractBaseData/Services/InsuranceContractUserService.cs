@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
+using Oje.FileService.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {

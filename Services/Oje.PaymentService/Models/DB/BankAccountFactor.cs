@@ -1,0 +1,32 @@
+﻿using Oje.Infrastructure.Enums;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Oje.PaymentService.Models.DB
+{
+    [Table("BankAccountFactors")]
+    public class BankAccountFactor
+    {
+        public int BankAccountId { get; set; }
+        [ForeignKey("BankAccountId"), InverseProperty("BankAccountFactors")]
+        public BankAccount BankAccount { get; set; }
+        public BankAccountFactorType Type { get; set; }
+        public long ObjectId { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime CreateDate { get; set; }
+        public long Price { get; set; }
+        [MaxLength(300)]
+        public string TargetLink { get; set; }
+        public bool IsPayed { get; set; }
+        public DateTime? PayDate { get; set; }
+        public long? UserId { get; set; }
+        [MaxLength(50)]
+        public string TraceCode { get; set; }
+        public int SiteSettingId { get; set; }
+    }
+}

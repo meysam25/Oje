@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Services.EContext;
+using Oje.FileService;
 
 namespace Oje.AccountService
 {
@@ -11,6 +12,8 @@ namespace Oje.AccountService
     {
         public static void Config(IServiceCollection services)
         {
+            FileServiceConfig.Config(services);
+
             services.AddDbContextPool<AccountDBContext>(options =>
                     options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"],
                     b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
@@ -19,7 +22,6 @@ namespace Oje.AccountService
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISectionService, SectionService>();
             services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IUploadedFileService, UploadedFileService>();
             services.AddScoped<ISiteSettingService, SiteSettingService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISiteInfoService, SiteInfoService>();

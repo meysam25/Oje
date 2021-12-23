@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.Security", "Mod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.ProposalFormInquiries", "Modules\Oje.Section.ProposalFormInquiries\Oje.Section.ProposalFormInquiries.csproj", "{B05ABEB1-A379-40A3-8B79-B720DB816409}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.Financial", "Modules\Oje.Section.Financial\Oje.Section.Financial.csproj", "{86C7BE05-5853-4E85-8F8F-2E4B794DE336}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.FinancialBaseData", "Modules\Oje.Section.FinancialBaseData\Oje.Section.FinancialBaseData.csproj", "{86C7BE05-5853-4E85-8F8F-2E4B794DE336}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.FireInsuranceService", "Services\Oje.FireInsuranceManager\Oje.FireInsuranceService.csproj", "{4ECE8BEB-4D7D-4AAB-AA83-F64BC48C5643}"
 EndProject
@@ -57,9 +57,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Worker.Sms", "Workers\O
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{AB361DD6-2F25-4661-A83D-01151611F20A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oje.EmailService", "Services\Oje.EmailService\Oje.EmailService.csproj", "{D5F4CDC2-82A3-496A-8ADF-B9DA43102AD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.EmailService", "Services\Oje.EmailService\Oje.EmailService.csproj", "{D5F4CDC2-82A3-496A-8ADF-B9DA43102AD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oje.Worker.Email", "Workers\Oje.Worker.Email\Oje.Worker.Email.csproj", "{84CF5BC8-CF46-44C0-9F19-0E50A1D22343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Worker.Email", "Workers\Oje.Worker.Email\Oje.Worker.Email.csproj", "{84CF5BC8-CF46-44C0-9F19-0E50A1D22343}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.PaymentService", "Services\Oje.PaymentService\Oje.PaymentService.csproj", "{A78BC55C-0FF7-40DE-9338-440CC8190D2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.FileService", "Services\Oje.FileService\Oje.FileService.csproj", "{6A06AC8B-990B-4262-BCB0-4AB4B3E46B83}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.Payment", "Modules\Oje.Section.Payment\Oje.Section.Payment.csproj", "{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -171,6 +177,18 @@ Global
 		{84CF5BC8-CF46-44C0-9F19-0E50A1D22343}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84CF5BC8-CF46-44C0-9F19-0E50A1D22343}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84CF5BC8-CF46-44C0-9F19-0E50A1D22343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A78BC55C-0FF7-40DE-9338-440CC8190D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A78BC55C-0FF7-40DE-9338-440CC8190D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A78BC55C-0FF7-40DE-9338-440CC8190D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A78BC55C-0FF7-40DE-9338-440CC8190D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A06AC8B-990B-4262-BCB0-4AB4B3E46B83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A06AC8B-990B-4262-BCB0-4AB4B3E46B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A06AC8B-990B-4262-BCB0-4AB4B3E46B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A06AC8B-990B-4262-BCB0-4AB4B3E46B83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,6 +219,9 @@ Global
 		{4E7A4003-52A2-4CF7-BE6E-5370C0290BBC} = {C1723884-F4B8-44A9-AA12-8022348CCDCE}
 		{D5F4CDC2-82A3-496A-8ADF-B9DA43102AD8} = {AB361DD6-2F25-4661-A83D-01151611F20A}
 		{84CF5BC8-CF46-44C0-9F19-0E50A1D22343} = {C1723884-F4B8-44A9-AA12-8022348CCDCE}
+		{A78BC55C-0FF7-40DE-9338-440CC8190D2B} = {AB361DD6-2F25-4661-A83D-01151611F20A}
+		{6A06AC8B-990B-4262-BCB0-4AB4B3E46B83} = {AB361DD6-2F25-4661-A83D-01151611F20A}
+		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5BEE9DD2-169F-4F13-842E-FBA0D3C46071}

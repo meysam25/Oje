@@ -15,6 +15,7 @@ using System.Linq;
 using Oje.AccountService.Services.EContext;
 using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Models.PageForms;
+using Oje.FileService.Interfaces;
 
 namespace Oje.AccountService.Services
 {

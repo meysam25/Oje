@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.ProposalFormBaseData.Services.EContext;
 using Oje.Section.ProposalFormBaseData.Models.View;
+using Oje.FileService.Interfaces;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -22,7 +23,7 @@ namespace Oje.ProposalFormService.Services
         readonly ProposalFormDBContext db = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly IUserService UserService = null;
-        readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
+        readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
         readonly IUserNotifierService UserNotifierService = null;
         public ProposalFilledFormCompanyService(
@@ -30,7 +31,7 @@ namespace Oje.ProposalFormService.Services
             IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
             IUserService UserService,
             IProposalFilledFormUseService ProposalFilledFormUseService,
-            AccountService.Interfaces.IUploadedFileService UploadedFileService,
+            IUploadedFileService UploadedFileService,
             IUserNotifierService UserNotifierService
             )
         {

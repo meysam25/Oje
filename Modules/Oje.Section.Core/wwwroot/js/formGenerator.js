@@ -1139,8 +1139,10 @@ function doPageActions(actionOnLastStep) {
             }
             showLoader(formQuery);
             postForm(actionOnLastStep.url, postData, function (res) {
-
-            }, null, function () { hideLoader(formQuery); });
+                if (this.actionOnLastStep.detailesUrl && res.isSuccess == true && res.data) {
+                    location.href = this.actionOnLastStep.detailesUrl + "?id=" + res.data;
+                }
+            }.bind({ actionOnLastStep: actionOnLastStep }), null, function () { hideLoader(formQuery); });
         }
     }
 }

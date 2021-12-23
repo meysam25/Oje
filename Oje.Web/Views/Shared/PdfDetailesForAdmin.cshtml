@@ -100,7 +100,6 @@
                         </div>
                     </div>
                 </div>
-
             }
         }
     }
@@ -108,5 +107,15 @@
     <div class="pdfFooterSection">
         <div>محل امضا بیمه گزار (@(Model.createUserFullname))</div>
     </div>
+
+    @{
+        if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
+        {
+            <div style="text-align:center;padding-top:10px;">
+                <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success" >پرداخت</a>
+            </div>
+        }
+     }
+        
 </div>
 

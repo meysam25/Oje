@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Oje.FileService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -33,7 +34,7 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormDocumentService ProposalFilledFormDocumentService = null;
         readonly IProposalFilledFormValueService ProposalFilledFormValueService = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
-        readonly AccountService.Interfaces.IUploadedFileService UploadedFileService = null;
+        readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly IUserNotifierService UserNotifierService = null;
 
@@ -51,7 +52,7 @@ namespace Oje.ProposalFormService.Services
                 IProposalFilledFormUseService ProposalFilledFormUseService,
                 IProposalFilledFormDocumentService ProposalFilledFormDocumentService,
                 IProposalFilledFormValueService ProposalFilledFormValueService,
-                AccountService.Interfaces.IUploadedFileService UploadedFileService,
+                IUploadedFileService UploadedFileService,
                 IUserNotifierService UserNotifierService,
                 IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService
             )
@@ -83,11 +84,12 @@ namespace Oje.ProposalFormService.Services
             var foundProposalForm = ProposalFormService.GetById(proposalFormId, siteSettingId);
             int payCondationId = form.GetStringIfExist("payCondation").ToIntReturnZiro();
             var allRequiredFileUpload = ProposalFormRequiredDocumentService.GetProposalFormRequiredDocuments(foundProposalForm?.Id, siteSettingId);
+            long newFormId = 0;
             PageForm ppfObj = null;
             try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch { };// catch (Exception) { throw; }
             int companyId = 0;
 
-            if (ppfObj?.panels?.FirstOrDefault()?.isAgentRequired == true && ppfObj?.panels?.FirstOrDefault()?.isCompanyListRequired == true)
+            if (inquiryId > 0)
                 companyId = GlobalInqueryService.GetCompanyId(inquiryId, siteSettingId);
 
             createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId);
@@ -116,6 +118,7 @@ namespace Oje.ProposalFormService.Services
                     tr.Commit();
 
                     UserNotifierService.Notify(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
+                    newFormId = newForm.Id;
                 }
                 catch (Exception)
                 {
@@ -124,7 +127,7 @@ namespace Oje.ProposalFormService.Services
                 }
             }
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+            return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(), data = newFormId };
         }
 
         private void createUploadedFiles(int? siteSettingId, IFormCollection form, long? loginUserId, long proposalFilledFormId)
@@ -180,9 +183,9 @@ namespace Oje.ProposalFormService.Services
             }
         }
 
-       
 
-       
+
+
 
         private void validateCompanyAndAgent(PageForm ppfObj, IFormCollection form, int? siteSettingId, int companyId)
         {
@@ -203,7 +206,7 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
         }
 
-       
+
 
         private void validateIfInquiryRequired(IFormCollection form, PageForm ppfObj, int? siteSettingId)
         {
@@ -280,9 +283,9 @@ namespace Oje.ProposalFormService.Services
             }
         }
 
-       
 
-       
+
+
 
         private void createValidation(int? siteSettingId, IFormCollection form)
         {

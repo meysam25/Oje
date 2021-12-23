@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Oje.FileService.Interfaces;
 
 namespace Oje.Section.Core.Areas.Controllers
 {

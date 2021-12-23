@@ -1,0 +1,11 @@
+﻿
+@model Oje.PaymentService.Models.View.SizPay.GenerateTokenMethodResultVM
+
+<form id="sizPayForm" action="@(Oje.Infrastructure.GlobalConfig.Configuration["PaymentUrls:SizpayPaymentG"])/Route/Payment" method="post">
+    <input type="hidden" name="MerchantID" value="@Model.merchantID" />
+    <input type="hidden" name="TerminalID" value="@Model.terminalID"/>
+    <input type="hidden" name="Token" value="@Model.token"/>
+</form>
+<script>
+    document.getElementById("sizPayForm").submit();
+</script>
