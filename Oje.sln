@@ -67,6 +67,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.FileService", "Services
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.Payment", "Modules\Oje.Section.Payment\Oje.Section.Payment.csproj", "{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.ProposalFilledFormChartReports", "Modules\Oje.Section.ProposalFilledFormChartReports\Oje.Section.ProposalFilledFormChartReports.csproj", "{D996DAC9-4C9F-4A9E-9C65-D85662744D19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +191,10 @@ Global
 		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D996DAC9-4C9F-4A9E-9C65-D85662744D19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D996DAC9-4C9F-4A9E-9C65-D85662744D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D996DAC9-4C9F-4A9E-9C65-D85662744D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D996DAC9-4C9F-4A9E-9C65-D85662744D19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -222,6 +228,7 @@ Global
 		{A78BC55C-0FF7-40DE-9338-440CC8190D2B} = {AB361DD6-2F25-4661-A83D-01151611F20A}
 		{6A06AC8B-990B-4262-BCB0-4AB4B3E46B83} = {AB361DD6-2F25-4661-A83D-01151611F20A}
 		{7ACD9E95-A3AD-48AA-AD50-0A643655D05B} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
+		{D996DAC9-4C9F-4A9E-9C65-D85662744D19} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5BEE9DD2-169F-4F13-842E-FBA0D3C46071}

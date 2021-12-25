@@ -77,10 +77,17 @@ function getPanelTemplate(panel) {
     return result;
 }
 
+var isTryLoadingChart = false;
+
 function getChartTemplate(chart) {
     var result = '';
 
-    if (chart && chart.config && chart.url && chart.dataSchmea && window['Highcharts']) {
+    if (!window['Highcharts'] && !isTryLoadingChart) {
+        loadJS("/Modules/Core/js/chart.min.js.gz");
+        isTryLoadingChart = true;
+    }
+
+    if (chart && chart.config && chart.url && chart.dataSchmea) {
         if (!chart.id)
             chart.id = uuidv4RemoveDash();
         result += '<div id="' + chart.id + '" >';
@@ -91,12 +98,31 @@ function getChartTemplate(chart) {
         functionsList.push(function () {
             postForm(chart.url, new FormData(), function (res) {
                 this.config[this.dataSchmea] = res;
-                Highcharts.chart(this.id, this.config);
+                initChartUntilSerciptLoaded(this.id, this.config);
+
             }.bind(this));
         }.bind(chart));
     }
 
     return result;
+}
+
+function initChartUntilSerciptLoaded(id, config) {
+    if (id && config) {
+        if ($('#' + id).length > 0) {
+            if (window['Highcharts']) {
+                Highcharts.chart(id, config);
+            }
+            else {
+                $('#' + id)[0].interval = setInterval(function () {
+                    if (window['Highcharts']) {
+                        clearInterval($('#' + this.id)[0].interval);
+                        Highcharts.chart(this.id, this.config);
+                    }
+                }.bind({ id: id, config: config }), 1000);
+            }
+        }
+    }
 }
 
 function getTreeViewTemplate(treeView) {

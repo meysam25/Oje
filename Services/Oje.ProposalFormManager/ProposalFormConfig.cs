@@ -2,8 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Oje.Infrastructure;
 using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Interfaces.Reports;
 using Oje.ProposalFormService.Services;
 using Oje.ProposalFormService.Services.EContext;
+using Oje.ProposalFormService.Services.Reports;
 
 namespace Oje.ProposalFormService
 {
@@ -62,6 +64,10 @@ namespace Oje.ProposalFormService
             services.AddScoped<IProposalFormCategoryService, ProposalFormCategoryService>();
             services.AddScoped<IProposalFilledFormAdminBaseQueryService, ProposalFilledFormAdminBaseQueryService>();
             services.AddScoped<IProposalFilledFormStatusLogService, ProposalFilledFormStatusLogService>();
+
+
+            services.AddDbContext<ProposalFormReportDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddScoped<IProposalFilledFormReportService, ProposalFilledFormReportService>();
         }
     }
 }

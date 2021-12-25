@@ -22,6 +22,16 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/js/chart.min.js",
+    "inputFiles": [
+      "wwwroot/js/chart/highcharts.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/js/sr.js",
     "inputFiles": [
       "wwwroot/js/signalr.js"

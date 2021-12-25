@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using Oje.ProposalFormService.Models.DB;
 using System;
 using System.Collections.Generic;
