@@ -36,5 +36,7 @@ namespace Oje.AccountService.Models.DB
 
         [InverseProperty("Action")]
         public List<RoleAction> RoleActions { get; set; }
+        [InverseProperty("Action")]
+        public List<DashboardSection> DashboardSections { get; set; }
     }
 }

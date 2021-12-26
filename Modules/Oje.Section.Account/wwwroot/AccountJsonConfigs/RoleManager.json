@@ -3,13 +3,13 @@
     {
       "grids": [
         {
-          "id": "roleGrid",
+          "id": "accountRoleManagerGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)",
+              "onClick": "showModal('accountRoleManagerAddGridModal', this)",
               "type": "add",
-              "modalId": "AddGridModal"
+              "modalId": "accountRoleManagerAddGridModal"
             }
           ],
           "showColumnConfigButton": true,
@@ -23,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "accountRoleManagerEditRoleModal",
                 "url": "/Account/RoleManager/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/RoleManager/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/RoleManager/GetById\\', \\'accountRoleManagerEditRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "newLink",
@@ -33,6 +33,14 @@
                 "icon": "fa-key",
                 "prop": "id",
                 "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/Account/RoleManagerAccess/Index?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-key\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-object-group",
+                "prop": "id",
+                "modalId": "dashboardRoleActionModal",
+                "url": "",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'dashboardRoleActionModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-object-group\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -90,7 +98,7 @@
       ],
       "moduals": [
         {
-          "id": "AddGridModal",
+          "id": "accountRoleManagerAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -160,13 +168,13 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/Account/RoleManager/Create')",
+              "onClick": "postModalData(this, 'accountRoleManagerGrid', '/Account/RoleManager/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
-          "id": "editRoleModal",
+          "id": "accountRoleManagerEditRoleModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -236,7 +244,174 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/Account/RoleManager/Update')",
+              "onClick": "postModalData(this, 'accountRoleManagerGrid', '/Account/RoleManager/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "dashboardRoleActionModal",
+          "title": "ایتم های قابل نمایش در صفحه داشبورد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "dashboardRoleActionGrid",
+                  "topActions": [
+                    {
+                      "title": "افزودن",
+                      "onClick": "showModal('newDashboardRoleActionModal', this)",
+                      "type": "add",
+                      "modalId": "newDashboardRoleActionModal"
+                    }
+                  ],
+                  "showColumnConfigButton": true,
+                  "actions": {
+                    "delete": {
+                      "url": "/Account/RoleManager/DeleteRoleAction"
+                    },
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-usd",
+                        "prop": "id",
+                        "modalId": "editDashboardRoleActionModal",
+                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/Account/RoleManager/GetRoleAction\\', \\'editDashboardRoleActionModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/Account/RoleManager/GetRoleActionList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "type",
+                      "caption": "نوع",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/DashboardSectionType",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    },
+                    {
+                      "field": "action",
+                      "caption": "بخش",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "newDashboardRoleActionModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "class",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/BootstrapClass",
+              "label": "کلاس"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/DashboardSectionType",
+              "label": "نوع"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "actionId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Account/RoleManager/GetSettingList",
+              "label": "بخش"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'dashboardRoleActionGrid', '/Account/RoleManager/CreateRoleAction')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "editDashboardRoleActionModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "class",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/BootstrapClass",
+              "label": "کلاس"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/DashboardSectionType",
+              "label": "نوع"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "actionId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Account/RoleManager/GetSettingList",
+              "label": "بخش"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'dashboardRoleActionGrid', '/Account/RoleManager/UpdateRoleAction')",
               "class": "btn-primary"
             }
           ]

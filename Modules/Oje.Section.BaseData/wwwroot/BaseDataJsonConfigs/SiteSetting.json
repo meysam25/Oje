@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "baseDataSiteSettingGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('baseDataSiteSettingAddGridModal', this)",
+              "type": "add",
+              "modalId": "baseDataSiteSettingAddGridModal"
             }
           ],
           "exportToExcelUrl": "/BaseData/SiteSetting/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "baseDataSiteSettingEditModal",
                 "url": "/BaseData/SiteSetting/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/SiteSetting/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/SiteSetting/GetById\\', \\'baseDataSiteSettingEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -92,7 +94,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "baseDataSiteSettingAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -157,14 +159,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/SiteSetting/Create')",
+              "onClick": "postModalData(this, 'baseDataSiteSettingGrid', '/BaseData/SiteSetting/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "baseDataSiteSettingEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -229,7 +231,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/SiteSetting/Update')",
+              "onClick": "postModalData(this, 'baseDataSiteSettingGrid', '/BaseData/SiteSetting/Update')",
               "class": "btn-primary"
             }
           ]

@@ -18,6 +18,7 @@ namespace Oje.AccountService.Models.DB
             RoleActions = new();
             RoleProposalForms = new();
             UserNotificationTrigers = new();
+            DashboardSections = new();
         }
 
         [Key]
@@ -44,5 +45,7 @@ namespace Oje.AccountService.Models.DB
         public List<RoleProposalForm> RoleProposalForms { get; set; }
         [InverseProperty("Role")]
         public List<UserNotificationTriger> UserNotificationTrigers { get; set; }
+        [InverseProperty("Role")]
+        public List<DashboardSection> DashboardSections { get; set; }
     }
 }

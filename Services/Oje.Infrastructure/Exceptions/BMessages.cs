@@ -504,6 +504,10 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "یه چیزی از قلم افتاده")]
         Somthing_Missing = 246,
         [Display(Name = "پرداخت نا موفق بود")]
-        Payment_Was_UnsuccessFull = 247
+        Payment_Was_UnsuccessFull = 247,
+        [Display(Name = "لطفا کلاس را انتخاب کنید")]
+        Please_Enter_Class = 248,
+        [Display(Name = "لطفا بخش را انتخاب کنید")]
+        Please_Select_Section = 249
     }
 }

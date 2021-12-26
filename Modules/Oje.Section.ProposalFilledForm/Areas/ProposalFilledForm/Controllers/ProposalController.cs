@@ -63,7 +63,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Content(ProposalFormService.GetJSonConfigFile(input.fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "ذخیره فرم پیشنهاد جدید", Icon = "fa-cog")]
+        [AreaConfig(Title = "ذخیره فرم پیشنهاد جدید", Icon = "fa-pen")]
         [HttpPost]
         public IActionResult Create()
         {

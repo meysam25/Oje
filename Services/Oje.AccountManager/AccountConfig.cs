@@ -14,10 +14,7 @@ namespace Oje.AccountService
         {
             FileServiceConfig.Config(services);
 
-            services.AddDbContextPool<AccountDBContext>(options =>
-                    options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"],
-                    b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
-            );
+            services.AddDbContextPool<AccountDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISectionService, SectionService>();
@@ -31,6 +28,8 @@ namespace Oje.AccountService
             services.AddScoped<IUserNotificationService, UserNotificationService>();
             services.AddScoped<IUserNotificationTrigerService, UserNotificationTrigerService>();
             services.AddScoped<IUserNotificationTemplateService, UserNotificationTemplateService>();
+            services.AddScoped<IDashboardSectionService, DashboardSectionService>();
+            services.AddScoped<IActionService, ActionService>();
         }
     }
 }

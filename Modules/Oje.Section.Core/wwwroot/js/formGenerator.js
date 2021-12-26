@@ -1,23 +1,29 @@
 ﻿
 var functionsList = [];
 
-function generateForm(res) {
+function generateForm(res, targetId) {
     var result = '';
     if (res && res.panels) {
         for (var i = 0; i < res.panels.length; i++) {
             result += getPanelTemplate(res.panels[i]);
         }
     }
-    $('.MainHolder').html(result);
-
-    for (var i = 0; i < functionsList.length; i++) {
-        functionsList[i]();
+    if (targetId) {
+        $('#' + targetId).html(result);
+        executeArrFunctions();
+    }
+    else {
+        $('.MainHolder').html(result);
+        executeArrFunctions();
     }
 
+}
 
-    loadLangugesTranslate();
-
-    functionsList = [];
+function executeArrFunctions() {
+    while (functionsList.length > 0) {
+        var sItem = functionsList.splice(0, 1);
+        sItem[0]();
+    }
 }
 
 function getPanelTemplate(panel) {
@@ -237,12 +243,41 @@ function getInputTemplate(ctrl) {
             case 'multiRowInput':
                 result += getMultiRowInputTemplate(ctrl);
                 break;
+            case 'Content':
+                result += getContentTemplate(ctrl);
+                break;
+            case 'Shortcut':
+                result += getShortcutButtonTemplate(ctrl);
+                break;
             case 'empty':
             default:
                 break;
         }
         if (ctrl.type != 'hidden')
             result += '</div>';
+    }
+
+    return result;
+}
+
+function getShortcutButtonTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl.url && ctrl.label) {
+        result += '<a style="margin-bottom:10px;" class="btn btn-primary btn-block" href="' + ctrl.url + '" >' + ctrl.label + '</a>';
+    }
+
+    return result;
+}
+
+function getContentTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl.url && ctrl.id) {
+        result += '<div id="' + ctrl.id + '" ></div>';
+        functionsList.push(function () {
+            loadJsonConfig(this.ctrl.url, this.ctrl.id);
+        }.bind({ ctrl: ctrl }));
     }
 
     return result;
@@ -293,7 +328,6 @@ function initMoultiRowInputButton(ctrl) {
     if (addNewButtonQuery.length > 0) {
         addNewButtonQuery[0].ctrl = ctrl;
         addNewButtonQuery.click(function () {
-            var startIndexFunction = functionsList.length;
             var ctrlObj = $(this)[0].ctrl;
             if (ctrlObj.ctrls) {
                 var countExist = $(this).closest('.myCtrl').find('.MultiRowInputRow').length;
@@ -308,9 +342,7 @@ function initMoultiRowInputButton(ctrl) {
                 newRowHtml += '</div>';
                 $(this).closest('.myCtrl').find('.MultiRowInputRow:last').after(newRowHtml);
             }
-            for (var i = startIndexFunction; i < functionsList.length; i++) {
-                functionsList[i]();
-            }
+            executeArrFunctions();
         });
     }
 
@@ -427,16 +459,13 @@ function updateDynamicCtrls(curThis) {
             var htmlResult = '';
 
             if (res && res.panels && res.panels.length > 0) {
-                var startIndexForFunctions = functionsList.length;
                 for (var i = 0; i < res.panels.length; i++) {
                     htmlResult += getPanelTemplate(res.panels[i]);
                 }
             }
 
             $('#' + this.ctrl.id).html(htmlResult);
-            for (var i = startIndexForFunctions; i < functionsList.length; i++) {
-                functionsList[i]();
-            }
+            executeArrFunctions();
         }
 
     }.bind({ ctrl: curThis.ctrl }));
@@ -453,7 +482,6 @@ function getDynamicFileUploadDependCtrlTemplate(ctrl) {
         if ($('#' + this.ctrl.id).length > 0) {
             $('#' + this.ctrl.id)[0].addNewRow = function (dataItems) {
                 var arrHtml = '';
-                var currInitFunctionStartIndex = functionsList.length;
                 if (dataItems) {
                     for (var i = 0; i < dataItems.length; i++) {
                         arrHtml += '<div class="col-md-3 col-sm-6 col-xs-12 col-lg-3">';
@@ -469,8 +497,7 @@ function getDynamicFileUploadDependCtrlTemplate(ctrl) {
                     }
                 }
                 $('#' + this.ctrl.id).html(arrHtml);
-                for (var i = currInitFunctionStartIndex; i < functionsList.length; i++)
-                    functionsList[i]();
+                executeArrFunctions();
             }.bind({ ctrl: this.ctrl });
         }
     }.bind({ ctrl: ctrl }));
@@ -489,7 +516,6 @@ function getChkCtrlBoxTemplateCtrl(ctrl) {
         if ($('#' + this.ctrl.id).length > 0) {
             $('#' + this.ctrl.id)[0].addNewRow = function (dataItems) {
                 var arrHtml = '';
-                var currInitFunctionStartIndex = functionsList.length;
                 if (dataItems) {
                     for (var i = 0; i < dataItems.length; i++) {
                         arrHtml += '<div class="col-md-3 col-sm-6 col-xs-12 col-lg-3">';
@@ -544,8 +570,7 @@ function getChkCtrlBoxTemplateCtrl(ctrl) {
                     }
                 }
                 $('#' + this.ctrl.id).html(arrHtml);
-                for (var i = currInitFunctionStartIndex; i < functionsList.length; i++)
-                    functionsList[i]();
+                executeArrFunctions();
             }.bind({ ctrl: this.ctrl });
         }
     }.bind({ ctrl: ctrl }));
@@ -1290,14 +1315,20 @@ function closeThisModal(curElement) {
     $(curElement).closest('.modal').modal('hide');
 }
 
-function loadJsonConfig(jsonUrl) {
+function loadJsonConfig(jsonUrl, targetId) {
     var postData = new FormData();
     if (window['exteraModelParams'])
         for (var prop in exteraModelParams)
             postData.append(prop, exteraModelParams[prop]);
     postForm(jsonUrl, postData, function (res) {
-        generateForm(res);
-    });
+        generateForm(res, this.targetId);
+        if (!this.targetId) {
+            $('.mainLoaderForAdminArea').addClass('mainLoaderForAdminAreaClose');
+            setTimeout(function () {
+                $('.mainLoaderForAdminArea').css('display', 'none');
+            }, 200);
+        }
+    }.bind({ targetId: targetId }));
 }
 
 function bindPanelByUrl(querySelector) {
@@ -1349,10 +1380,6 @@ function bindTranslation() {
             $('[data-lc=' + langsT[i].id + ']').each(function () { $(this).html(langsT[i].des); });
         }
     }
-    $('.mainLoaderForAdminArea').addClass('mainLoaderForAdminAreaClose');
-    setTimeout(function () {
-        $('.mainLoaderForAdminArea').css('display', 'none');
-    }, 300);
 }
 
 function uploadFile(fileName, accepts, url, curButton) {

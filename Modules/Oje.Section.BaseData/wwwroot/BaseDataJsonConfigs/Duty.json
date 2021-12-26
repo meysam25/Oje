@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "baseDataDutyGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('baseDataDutyAddGridModal', this)",
+              "type": "add",
+              "modalId": "baseDataDutyAddGridModal"
             }
           ],
           "exportToExcelUrl": "/BaseData/Duty/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "baseDataDutyEditModal",
                 "url": "/BaseData/Duty/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/Duty/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/Duty/GetById\\', \\'baseDataDutyEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -78,7 +80,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "baseDataDutyAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -124,14 +126,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/Duty/Create')",
+              "onClick": "postModalData(this, 'baseDataDutyGrid', '/BaseData/Duty/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "baseDataDutyEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -177,7 +179,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/Duty/Update')",
+              "onClick": "postModalData(this, 'baseDataDutyGrid', '/BaseData/Duty/Update')",
               "class": "btn-primary"
             }
           ]

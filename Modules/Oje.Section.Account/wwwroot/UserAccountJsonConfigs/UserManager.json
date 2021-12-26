@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "userAccountUserManagerGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('userAccountUserManagerAddGridModal', this)",
+              "type": "add",
+              "modalId": "userAccountUserManagerAddGridModal"
             }
           ],
           "exportToExcelUrl": "/UserAccount/UserManager/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "userAccountUserManagerEditModal",
                 "url": "/UserAccount/UserManager/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/UserAccount/UserManager/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/UserAccount/UserManager/GetById\\', \\'userAccountUserManagerEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -95,7 +97,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "userAccountUserManagerAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -313,14 +315,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/UserAccount/UserManager/Create')",
+              "onClick": "postModalData(this, 'userAccountUserManagerGrid', '/UserAccount/UserManager/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "userAccountUserManagerEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -490,7 +492,7 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/GetProvinceList",
               "label": "استان",
-              "childId": "cityIdEdit" 
+              "childId": "cityIdEdit"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -537,7 +539,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/UserAccount/UserManager/Update')",
+              "onClick": "postModalData(this, 'userAccountUserManagerGrid', '/UserAccount/UserManager/Update')",
               "class": "btn-primary"
             }
           ]

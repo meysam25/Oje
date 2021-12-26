@@ -29,6 +29,7 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<UserNotificationTriger> UserNotificationTrigers { get; set; }
         public DbSet<UserNotificationTemplate> UserNotificationTemplates { get; set; }
+        public DbSet<DashboardSection> DashboardSections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

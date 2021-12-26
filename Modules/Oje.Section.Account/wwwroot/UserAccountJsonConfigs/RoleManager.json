@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "roleGrid",
+          "id": "userAccountRoleManagerGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('userAccountRoleManagerAddGridModal', this)",
+              "type": "add",
+              "modalId": "userAccountRoleManagerAddGridModal"
             }
           ],
           "showColumnConfigButton": true,
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "userAccountRoleManagerEditModal",
                 "url": "/UserAccount/RoleManager/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/UserAccount/RoleManager/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/UserAccount/RoleManager/GetById\\', \\'userAccountRoleManagerEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "newLink",
@@ -71,7 +73,7 @@
       ],
       "moduals": [
         {
-          "id": "AddGridModal",
+          "id": "userAccountRoleManagerAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -126,13 +128,13 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/UserAccount/RoleManager/Create')",
+              "onClick": "postModalData(this, 'userAccountRoleManagerGrid', '/UserAccount/RoleManager/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
-          "id": "editRoleModal",
+          "id": "userAccountRoleManagerEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -187,7 +189,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'roleGrid', '/UserAccount/RoleManager/Update')",
+              "onClick": "postModalData(this, 'userAccountRoleManagerGrid', '/UserAccount/RoleManager/Update')",
               "class": "btn-primary"
             }
           ]

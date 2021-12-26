@@ -36,7 +36,7 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
-        [AreaConfig(Title = "لیست سیزپی", Icon = "fa-cog", IsMainMenuItem = true)]
+        [AreaConfig(Title = "لیست سیزپی", Icon = "fa-dollar-sign", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

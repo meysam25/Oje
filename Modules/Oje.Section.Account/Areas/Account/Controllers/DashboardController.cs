@@ -4,6 +4,7 @@ using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Models.View;
+using Oje.Infrastructure;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -15,15 +16,19 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         readonly IUserService UserService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly ISectionService SectionService = null;
+        readonly IDashboardSectionService DashboardSectionService = null;
+
         public DashboardController(
             IUserService UserService,
             ISiteSettingService SiteSettingService,
-            ISectionService SectionService
+            ISectionService SectionService,
+            IDashboardSectionService DashboardSectionService
             )
         {
             this.UserService = UserService;
             this.SiteSettingService = SiteSettingService;
             this.SectionService = SectionService;
+            this.DashboardSectionService = DashboardSectionService;
         }
 
         [CustomeAuthorizeFilter]
@@ -31,7 +36,17 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "داشبرد";
-            return View();
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Dashboard", new { area = "Account" });
+            return View("Index");
+        }
+
+        [CustomeAuthorizeFilter]
+        [AreaConfig(Title = "تنظیمات صفحه داشبورد", Icon = "fa-cog")]
+        [HttpPost]
+        public IActionResult GetJsonConfig()
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(DashboardSectionService.GetDashboardConfigByUserId(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId));
         }
 
         [HttpGet]
@@ -41,7 +56,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login([FromForm]LoginVM input)
+        public IActionResult Login([FromForm] LoginVM input)
         {
             return Json(UserService.Login(input, SiteSettingService.GetSiteSetting()?.Id));
         }

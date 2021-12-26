@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "baseDataTaxGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('baseDataTaxAddGridModal', this)",
+              "type": "add",
+              "modalId": "baseDataTaxAddGridModal"
             }
           ],
           "exportToExcelUrl": "/BaseData/Tax/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "baseDataTaxEditModal",
                 "url": "/BaseData/Tax/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/Tax/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/Tax/GetById\\', \\'baseDataTaxEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -78,7 +80,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "baseDataTaxAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -124,14 +126,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/Tax/Create')",
+              "onClick": "postModalData(this, 'baseDataTaxGrid', '/BaseData/Tax/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "baseDataTaxEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -177,7 +179,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/Tax/Update')",
+              "onClick": "postModalData(this, 'baseDataTaxGrid', '/BaseData/Tax/Update')",
               "class": "btn-primary"
             }
           ]

@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "baseJobDangerLevelGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('baseJobDangerLevelAddGridModal', this)",
+              "type": "add",
+              "modalId": "baseJobDangerLevelAddGridModal"
             }
           ],
           "exportToExcelUrl": "/BaseData/JobDangerLevel/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "baseJobDangerLevelEditModal",
                 "url": "/BaseData/JobDangerLevel/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/JobDangerLevel/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BaseData/JobDangerLevel/GetById\\', \\'baseJobDangerLevelEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -71,7 +73,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "baseJobDangerLevelAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -110,14 +112,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/JobDangerLevel/Create')",
+              "onClick": "postModalData(this, 'baseJobDangerLevelGrid', '/BaseData/JobDangerLevel/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "baseJobDangerLevelEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -156,7 +158,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/BaseData/JobDangerLevel/Update')",
+              "onClick": "postModalData(this, 'baseJobDangerLevelGrid', '/BaseData/JobDangerLevel/Update')",
               "class": "btn-primary"
             }
           ]

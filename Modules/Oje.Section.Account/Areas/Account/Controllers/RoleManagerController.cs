@@ -19,15 +19,21 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         readonly IRoleService RoleService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly IDashboardSectionService DashboardSectionService = null;
+        readonly IActionService ActionService = null;
         public RoleManagerController(
-            IRoleService RoleService,
-            ISiteSettingService SiteSettingService,
-            IProposalFormService ProposalFormService
+                IRoleService RoleService,
+                ISiteSettingService SiteSettingService,
+                IProposalFormService ProposalFormService,
+                IDashboardSectionService DashboardSectionService,
+                IActionService ActionService
             )
         {
             this.RoleService = RoleService;
             this.SiteSettingService = SiteSettingService;
             this.ProposalFormService = ProposalFormService;
+            this.DashboardSectionService = DashboardSectionService;
+            this.ActionService = ActionService;
         }
 
 
@@ -110,5 +116,50 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         {
             return Json(ProposalFormService.GetightListForSelect2(searchInput, SiteSettingService.GetSiteSetting()?.Id));
         }
+
+
+
+        [AreaConfig(Title = "افزودن بخش نقش جدید", Icon = "fa-plus")]
+        [HttpPost]
+        public IActionResult CreateRoleAction([FromForm] DashboardSectionCreateUpdateVM input)
+        {
+            return Json(DashboardSectionService.Create(input));
+        }
+
+        [AreaConfig(Title = "حذف بخش نقش", Icon = "fa-trash-o")]
+        [HttpPost]
+        public IActionResult DeleteRoleAction([FromForm] GlobalIntId input)
+        {
+            return Json(DashboardSectionService.Delete(input?.id));
+        }
+
+        [AreaConfig(Title = "مشاهده  یک بخش نقش", Icon = "fa-eye")]
+        [HttpPost]
+        public IActionResult GetRoleAction([FromForm] GlobalIntId input)
+        {
+            return Json(DashboardSectionService.GetById(input?.id));
+        }
+
+        [AreaConfig(Title = "به روز رسانی بخش نقش", Icon = "fa-pencil")]
+        [HttpPost]
+        public IActionResult UpdateRoleAction([FromForm] DashboardSectionCreateUpdateVM input)
+        {
+            return Json(DashboardSectionService.Update(input));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست بخش نقش", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetRoleActionList([FromForm] DashboardSectionGridFilters searchInput)
+        {
+            return Json(DashboardSectionService.GetList(searchInput));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست بخش ها", Icon = "fa-list-alt")]
+        [HttpGet]
+        public IActionResult GetSettingList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(ActionService.GetightListForSelect2(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
     }
 }

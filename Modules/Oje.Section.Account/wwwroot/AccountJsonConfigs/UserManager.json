@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "accountUserManagerGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('accountUserManagerAddGridModal', this)",
+              "type": "add",
+              "modalId": "accountUserManagerAddGridModal"
             }
           ],
           "exportToExcelUrl": "/Account/UserManager/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "accountUserManagerEditModal",
                 "url": "/Account/UserManager/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/UserManager/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Account/UserManager/GetById\\', \\'accountUserManagerEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -95,7 +97,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "accountUserManagerAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -313,14 +315,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/Account/UserManager/Create')",
+              "onClick": "postModalData(this, 'accountUserManagerGrid', '/Account/UserManager/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "accountUserManagerEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -537,7 +539,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/Account/UserManager/Update')",
+              "onClick": "postModalData(this, 'accountUserManagerGrid', '/Account/UserManager/Update')",
               "class": "btn-primary"
             }
           ]
