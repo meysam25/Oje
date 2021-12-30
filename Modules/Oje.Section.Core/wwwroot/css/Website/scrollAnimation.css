@@ -1,0 +1,36 @@
+
+.animationOnScrollOpacity {
+    opacity: 0;
+    -moz-transition: 1s;
+    -o-transition: 1s;
+    -webkit-transition: 1s;
+    transition: 1s;
+}
+.animationOnScrollOpacityShow {
+    opacity:1;
+}
+.animationOnScrollMarginTop {
+    margin-top: 100px;
+    -moz-transition: 1s;
+    -o-transition: 1s;
+    -webkit-transition: 1s;
+    transition: 1s;
+}
+.animationOnScrollMarginTopShow {
+    margin-top:40px;
+}
+.animationOnScrollOpacityFlip {
+    opacity: 0;
+    -moz-transition: 1s;
+    -o-transition: 1s;
+    -webkit-transition: 1s;
+    transition: 1s;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+.animationOnScrollOpacityFlipShow {
+    opacity: 1;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+}

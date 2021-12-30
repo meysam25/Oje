@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
 
 namespace Oje.Web
 {
@@ -32,10 +34,9 @@ namespace Oje.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.Configure<FormOptions>(options =>
-            //{
-            //    options.ValueLengthLimit = 1024 * 1024 * 5; // 100MB max len form data
-            //});
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+
+            // Add Response compression services
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(CustomExceptionFilter));
@@ -47,9 +48,13 @@ namespace Oje.Web
                 option.JsonSerializerOptions.Converters.Add(new JsonTextConverter());
             });
             services.AddHttpContextAccessor();
-            services.AddResponseCompression(options =>
-            {
-                options.MimeTypes = new[] { "text/plain", "application/json", "text/json" };
+            services.AddResponseCompression(options => {
+                options.MimeTypes = new string[]{
+                    "text/html",
+                    "application/json"
+                };
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
             });
             services.AddSignalR();
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("Oje") && !a.Location.EndsWith(".Views.dll")).ToList();
@@ -85,6 +90,16 @@ namespace Oje.Web
                     {
                         addExteras = true;
                         content.Context.Response.Headers["Content-Type"] = "text/css";
+                    }
+                    else if (content.File.Name.EndsWith(".svg.gz"))
+                    {
+                        addExteras = true;
+                        content.Context.Response.Headers["Content-Type"] = "image/svg+xml";
+                    }
+                    else if (content.File.Name.EndsWith(".ico.gz"))
+                    {
+                        addExteras = true;
+                        content.Context.Response.Headers["Content-Type"] = "image/x-icon";
                     }
 
                     if (addExteras == true)

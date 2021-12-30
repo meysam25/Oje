@@ -1,0 +1,127 @@
+
+.downloadOurMobileApp {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin: 40px 5px 40px 5px;
+    background: url("/Modules/Assets/MainPage/sectionBG.png") left top no-repeat;
+    background-color: white;
+    display: flex;
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+    .downloadOurMobileApp > div {
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+    }
+
+.downloadOurMobileAppButtonSection {
+    padding-right: 10vw;
+}
+
+.downloadOurMobileAppButtonSectionTitle {
+    font-size: 1.4em;
+    color: black;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 55px;
+}
+
+.downloadOurMobileAppButtonSectionDescription {
+    color: black;
+    margin-bottom: 30px;
+}
+
+.downloadOurMobileAppButtonSectionHelpLink {
+    display: inline-block;
+    background-color: #0077db;
+    color: white;
+    padding: 7px 25px 7px 25px;
+    border: 1px solid #0169c1;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+}
+
+.downloadOurMobileAppButtonSectionDescription2 {
+    font-size: 0.8em;
+    color: #98a4a9;
+    display: block;
+    padding-bottom: 40px;
+}
+
+.downloadOurMobileAppImage {
+    text-align: center;
+    padding-top: 20px;
+}
+
+.downloadOurMobileAppButtonSectionDescription2 > i {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
+
+@media (max-width: 690px) {
+    .downloadOurMobileApp {
+    }
+
+    .downloadOurMobileAppImage {
+        text-align: left;
+        padding-top: 15px;
+    }
+
+        .downloadOurMobileAppImage img {
+            width: 150px;
+        }
+
+    .downloadOurMobileAppButtonSectionTitle {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .downloadOurMobileAppButtonSection {
+        padding-right: 5px;
+    }
+
+    .downloadOurMobileAppButtonSectionDescription {
+        margin-bottom: 8px;
+    }
+
+    .downloadOurMobileAppButtonSectionHelpLink {
+        margin-bottom: 2px;
+    }
+
+    .downloadOurMobileAppButtonSectionDescription2 {
+        display: none;
+    }
+}
+
+@media (max-width: 404px) {
+    .downloadOurMobileAppButtonSectionTitle {
+        font-size: 1.2em;
+    }
+
+    .downloadOurMobileAppButtonSectionDescription {
+        font-size: 0.9em;
+    }
+
+    .downloadOurMobileAppButtonSectionHelpLink {
+        font-size: 0.9em;
+    }
+
+    .downloadOurMobileAppImage img {
+        width: 100px;
+    }
+
+    .downloadOurMobileAppImage {
+        display: flex;
+        -webkit-align-items: end;
+        align-items: end;
+    }
+}

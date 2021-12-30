@@ -1,0 +1,55 @@
+
+.quickAccessSection {
+    background-color: white;
+    margin: 40px 5px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    display:flex;
+    padding:10px;
+}
+    .quickAccessSection > div {
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        width:50%;
+    }
+.allQuckAccessItemsHolder > a {
+    display: inline-block;
+    min-width: 250px;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    color: #2c2c2c;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+    .allQuckAccessItemsHolder > a:hover {
+        color: #0077db;
+    }
+    .allQuckAccessItemsHolder > a > i {
+        font-size:1.2em;
+        margin-left:8px;
+    }
+.tabCtrl .TabContentItem {
+    min-height:450px;
+}
+.quickAccessSection > div .tabCtrl {
+    height:calc(100% - 20px);
+}
+    .quickAccessSection > div .tabCtrl .holderTabContentItems {
+        height: calc(100% - 40px);
+    }
+
+@media (max-width: 830px) {
+    .quickAccessSection {
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+    .quickAccessSection > div {
+        width:100%;
+    }
+}

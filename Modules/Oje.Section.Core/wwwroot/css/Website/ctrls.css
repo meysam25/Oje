@@ -1,0 +1,161 @@
+
+.ctrlRow {
+    display: flex;
+    -ms-flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+
+.ctrl {
+    display: inline-block;
+    vertical-align: top;
+    margin: 5px;
+}
+
+    .ctrl > input, .ctrl > select, .ctrl > textarea {
+        border: 1px solid silver;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        padding: 0px;
+        line-height: 35px;
+        margin: 0px;
+        height: 35px;
+        text-indent: 5px;
+        width: 100%;
+        background-color:white;
+    }
+
+        .ctrl > input:hover, .ctrl > select:hover, .ctrl > textarea:hover {
+            border-color: #0077db;
+        }
+
+        .ctrl > input:focus, .ctrl > select:focus, .ctrl > textarea:focus {
+            border-color: #0077db;
+            -webkit-box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
+            box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
+            outline: none;
+        }
+
+    .ctrl > textarea {
+        resize: none;
+        min-height: 100px;
+    }
+
+.ctrlSize50 {
+    width: calc(50% - 10px);
+}
+
+.ctrlSize100 {
+    flex: 100%;
+}
+
+.mainBtn, .secountBtn {
+    background-color: #0077db;
+    color: white;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 30px 5px 30px;
+    border: 1px solid #036bc2;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+}
+
+    .mainBtn:hover {
+        -webkit-box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
+        box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
+    }
+
+    .mainBtn:active {
+        -webkit-box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
+        box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
+        background-color: white;
+        color: #0077db;
+    }
+
+.secountBtn {
+    border: 1px solid silver;
+    background-color: white;
+    color: #787b7c;
+}
+
+    .secountBtn:hover {
+        -webkit-box-shadow: 0px 0px 14px 1px rgba(0,0,0,0.25);
+        box-shadow: 0px 0px 14px 1px rgba(0,0,0,0.25);
+    }
+
+    .secountBtn:active {
+        -webkit-box-shadow: 0px 0px 14px 1px rgba(0,0,0,0.25);
+        box-shadow: 0px 0px 14px 1px rgba(0,0,0,0.25);
+        background-color: #787b7c;
+        color: white;
+    }
+
+
+
+
+/*tab section begin*/
+.tabCtrl {
+    margin: 10px;
+}
+
+.holderTabHeaderItems {
+    display: flex;
+    padding-right:10px;
+    padding-left:10px;
+}
+
+.TabHeaderItem {
+    cursor:pointer;
+    -webkit-border-top-left-radius: 5px;
+    border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    border-top-right-radius: 5px;
+    padding:4px 20px;
+}
+    .TabHeaderItem:hover > div {
+        color:black;
+    }
+
+    .TabHeaderItem > div {
+        color: silver;
+    }
+
+.TabHeaderItemActive {
+    cursor:default;
+    border: 1px solid silver;
+    border-bottom: none;
+    background-color:white;
+    margin-bottom:-1px;
+}
+
+    .TabHeaderItemActive > div {
+        color: black;
+    }
+
+.holderTabContentItems {
+}
+
+.TabContentItem {
+    padding: 10px;
+    display: none;
+}
+
+.TabContentItemActive {
+    display: block;
+}
+
+.holderTabContentItems {
+    border: 1px solid silver;
+    padding: 10px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+/*tab section end*/

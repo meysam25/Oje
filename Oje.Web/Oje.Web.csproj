@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Modules\Oje.Section.InsuranceContractBaseData\Oje.Section.InsuranceContractBaseData.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.ProposalFormBaseData\Oje.Section.ProposalFormBaseData.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.SalesNetworkBaseData\Oje.Section.SalesNetworkBaseData.csproj" />
+    <ProjectReference Include="..\Modules\Oje.Section.WebMain\Oje.Section.WebMain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,6 +22,31 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/js/mainPage.min.js",
+    "inputFiles": [
+      "wwwroot/js/Website//MainPage/ctrls.js",
+      "wwwroot/js/Website//MainPage/headerFooter.js",
+      "wwwroot/js/Website//MainPage/inquirySection.js",
+      "wwwroot/js/Website//MainPage/ourPride.js",
+      "wwwroot/js/Website//MainPage/yourQuestion.js",
+      "wwwroot/js/Website//animationOnScroll.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/js/jquery.min.js",
+    "inputFiles": [
+      "wwwroot/js/jquery-3.5.1.min.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/js/chart.min.js",
     "inputFiles": [
       "wwwroot/js/chart/highcharts.js"
@@ -67,6 +92,7 @@
     "outputFileName": "wwwroot/Core/css/core.min.css",
     "inputFiles": [
       "wwwroot/css/bootstrap.min.css",
+      "wwwroot/css/font-light.css",
       "wwwroot/css/font.min.css",
       "wwwroot/css/jquery.toast.css",
       "wwwroot/css/select2.min.css",
@@ -82,6 +108,27 @@
     "minify": {
       "enabled": true,
       "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/mainPage.min.css",
+    "inputFiles": [
+      "wwwroot/css/Website/headerFooter.css",
+      "wwwroot/css/Website/ctrls.css",
+      "wwwroot/css/Website/MainPage/aboutusSection.css",
+      "wwwroot/css/Website/MainPage/blogSection.css",
+      "wwwroot/css/Website/MainPage/downloadOurApp.css",
+      "wwwroot/css/Website/MainPage/inquirySection.css",
+      "wwwroot/css/Website/MainPage/ourPride.css",
+      "wwwroot/css/Website/MainPage/quickAccess.css",
+      "wwwroot/css/Website/MainPage/reminder.css",
+      "wwwroot/css/Website/MainPage/setadbimePlus.css",
+      "wwwroot/css/Website/MainPage/yourQuestion.css",
+      "wwwroot/css/Website/scrollAnimation.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
     }
   }
 ]

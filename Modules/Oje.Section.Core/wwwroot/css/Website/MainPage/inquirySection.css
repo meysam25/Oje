@@ -1,0 +1,99 @@
+
+.inquirySection {
+    background-color: white;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin: 40px 5px;
+    background-color: white;
+    display: flex;
+}
+
+.inquirySectionTab {
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+}
+
+.inquirySectionTabHeaderItems {
+    display: flex;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    overflow:hidden;
+}
+
+.inquirySectionTabHeaderItem {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.inquirySectionTabHeaderItemInner {
+    display: inline-block;
+    cursor: pointer;
+    position:relative;
+}
+    .inquirySectionTabHeaderItemInner:after {
+        content: ' ';
+        position: absolute;
+        left: -15px;
+        right: -15px;
+        height: 10px;
+        background-color: transparent;
+        bottom: -23px;
+        -moz-transition: 0.3s;
+        -o-transition: 0.3s;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+
+    .inquirySectionTabHeaderItemInner > div {
+        font-weight: bold;
+        color: silver;
+        -moz-transition: 0.3s;
+        -o-transition: 0.3s;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+    }
+
+    .inquirySectionTabHeaderItemInner > img {
+        opacity: 0.5;
+        -moz-transition: 0.3s;
+        -o-transition: 0.3s;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+    }
+
+    .inquirySectionTabHeaderItemInner:hover > div, .inquirySectionTabHeaderItemActive > div {
+        color: black;
+    }
+
+    .inquirySectionTabHeaderItemInner:hover > img, .inquirySectionTabHeaderItemActive > img {
+        opacity: 1;
+    }
+
+.inquirySectionTabBodyItems {
+    display: flex;
+}
+
+.inquirySectionTabBodyItem {
+    display: none;
+}
+.inquirySectionTabHeaderItemActive{
+    cursor:default;
+}
+.inquirySectionTabHeaderItemActive > div {
+    color: #0077db !important;
+}
+.inquirySectionTabHeaderItemActive {
+    display: inline-block;
+}
+.inquirySectionTabHeaderItemActive:after {
+    background-color: #0077db
+}

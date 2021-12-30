@@ -1,0 +1,63 @@
+
+.ourPrideSection {
+    background-color: white;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom:40px;
+    padding: 30px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin-right:5px;
+    margin-left:5px;
+}
+.ourPrideSectionTitle {
+    width: 250px;
+    text-align: center;
+    height: 2px;
+    background-color: #d0d5d8;
+    display:inline-block;
+}
+    .ourPrideSectionTitle > span {
+        display: inline-block;
+        background-color: white;
+        vertical-align:11px;
+        margin-top:-13px;
+        padding-right: 20px;
+        padding-left: 20px;
+        font-weight: bold;
+        font-size: 1.2em;
+        color: #1f2231;
+    }
+.ourPrideSectionItems {
+    padding-top: 70px;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.ourPrideSectionItem {
+    flex:25%
+}
+.ourPrideSectionItem > img {
+    margin-bottom: 20px;
+    display: inline-block;
+}
+.ourPrideSectionItemLightBoldTxt {
+    color: black;
+    font-weight: bold;
+}
+.ourPrideSectionItemLightText {
+    color: #707e88;
+}
+
+@media (max-width: 900px) {
+    .ourPrideSectionItem {
+        flex:50%;
+    }
+}
+@media (max-width: 450px) {
+    .ourPrideSectionItem {
+        flex: 100%;
+    }
+}

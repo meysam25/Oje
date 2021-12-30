@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/mainPage.min.css.gz" />
+    <script src="/Modules/Core/js/jquery.min.js.gz"></script>
+    <script asp-append-version="true" src="/Modules/Core/js/mainPage.min.js.gz"></script>
+    <script src="/Modules/Core/js/chart.min.js.gz"></script>
+    <link rel="icon" type="image/x-icon" href="/Modules/Assets/favicon.ico.gz">
+</head>
+<body>
+    <div class="wrapper">
+         <div class="wrapperBG"></div>
+        <header>
+            <section class="topHeader">
+                <div class="myContainer">
+                    <img class="mainHeaderLogo" title="لوگوی ستاد بیمه" src="/Modules/Assets/MainPage/logo.png" width="85" height="77" />
+                    <img class="mainHeaderElectronDevelopLogo" title="لوگوی مرکز توسعه تجارت الکترونیکی" src="/Modules/Assets/MainPage/electronDevelopment.png" width="85" height="77" />
+                    <img class="mainHeaderIranLogo" title="لوگوی ایران" src="/Modules/Assets/MainPage/iranlogo.png" width="85" height="77" />
+                    <h1 class="mainHeaderCompanyName">ستاد بیمه</h1>
+                </div>
+            </section>
+            <nav class="headerMenu ">
+                <div class="myContainer">
+                    <div class="topMenuBtton" tabindex="0">
+                        <div class="topMenuBttonLine"></div>
+                        <div class="topMenuBttonLine"></div>
+                        <div class="topMenuBttonLine"></div>
+                    </div>
+                    <div class="holderRigAndLogUser">
+                        <a class="secountBtn">ورود</a>
+                        <a class="mainBtn">ثبت نام</a>
+                    </div>
+                    <div class="headerMenuInner">
+                        <div class="headerMenuItem ">
+                            <div class="headerMenuItemInner headerMenuItemHasArrow">
+                                <span class="headerMenuItemLink">معاملات</span>
+                            </div>
+                            <div class="headerMenuItemSumMenuItems">
+                                <div class="myContainer">
+                                    <div class="headerMenuItemSumMenuItemsInner">
+                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
+                                            <span class="headerMenuItemLink">معاملات</span>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">از کجا شروع کنم ؟</div>
+                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
+                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
+                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
+                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
+                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="headerMenuItem ">
+                            <div class="headerMenuItemInner headerMenuItemHasArrow">
+                                <span class="headerMenuItemLink">سرمایه گذاری</span>
+                            </div>
+                            <div class="headerMenuItemSumMenuItems">
+                                <div class="myContainer">
+                                    <div class="headerMenuItemSumMenuItemsInner">
+                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
+                                            <span class="headerMenuItemLink">سرمایه گذاری</span>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">از کجا شروع نکنم ؟</div>
+                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
+                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
+                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
+                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
+                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="headerMenuItem ">
+                            <div class="headerMenuItemInner headerMenuItemHasArrow">
+                                <span class="headerMenuItemLink">آموزش</span>
+                            </div>
+                            <div class="headerMenuItemSumMenuItems">
+                                <div class="myContainer">
+                                    <div class="headerMenuItemSumMenuItemsInner">
+                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
+                                            <span class="headerMenuItemLink">آموزش</span>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">از کجا شروع نمی کنم ؟</div>
+                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
+                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
+                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
+                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
+                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="headerMenuItem ">
+                            <div class="headerMenuItemInner headerMenuItemHasArrow">
+                                <span class="headerMenuItemLink">درباره مفید</span>
+                            </div>
+                            <div class="headerMenuItemSumMenuItems">
+                                <div class="myContainer">
+                                    <div class="headerMenuItemSumMenuItemsInner">
+                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
+                                            <span class="headerMenuItemLink">درباره مفید</span>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">از کجا شروع کردم ؟</div>
+                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
+                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
+                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup">
+                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
+                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
+                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
+                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
+                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
+                                        </div>
+                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
+                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="headerMenuItem">
+                            <a href="#" class="headerMenuItemLink">شعب و دفاتر</a>
+                        </div>
+                        <div class="headerMenuItem">
+                            <a href="#" class="headerMenuItemLink">خدمات سازمانی</a>
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+            <script>
+                $('.headerMenu').initNavResButton();
+            </script>
+        </header>
+        <main>
+            @RenderBody()
+        </main>
+        <footer>
+            <section class="footerSection">
+                <div class="myContainer">
+                    <div class="footerWeAreMoreThenGoodSection">
+                        <div class="footerWeAreMoreThenGoodSectionReson">
+                            <div>
+                                <img width="80" height="80" src="/Modules/Assets/MainPage/number-1.svg" />
+                            </div>
+                            <div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">رتبه یک سفر</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">معتبرترین عرضه کننده محصولات گردشگری در ایران</div>
+                            </div>
+                        </div>
+                        <div class="footerWeAreMoreThenGoodSectionReson">
+                            <div>
+                                <img width="80" height="80" src="/Modules/Assets/MainPage/laptop.svg.gz" />
+                            </div>
+                            <div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر هر سفر</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">ارائه تمامی خدمات سفر (پرواز , قطار , اتوبوس , هتل و تور)</div>
+                            </div>
+                        </div>
+                        <div class="footerWeAreMoreThenGoodSectionReson">
+                            <div>
+                                <img width="80" height="80" src="/Modules/Assets/MainPage/Messages.svg.gz" />
+                            </div>
+                            <div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر همه لحظات سفر</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">پشتیبانی و همراهی 24 ساعته در تمامی مراحل سفر</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="floatingFooterDestination"></div>
+                    <div id="floatingFooter" class="makeMyContainer100 ">
+                        <div class="myContainer">
+                            <div class="floatingFooterSection">
+                                <div>
+                                    <a class="mainBtn">ثبت نام</a>
+                                    <a class="secountBtn">مشاوره رایگان</a>
+                                </div>
+                                <div class="floatingFooterSectionCenter">
+                                    <div>مرکز تماس و پشتیبانی </div>
+                                    <div>24 ساعت , 7 روز هفته</div>
+                                </div>
+                                <div class="floatingFooterSectionPhoneNumber">
+                                    <div>
+                                        021-91008700
+                                    </div>
+                                    <div>
+                                        8700@emofid.com
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
+                    </script>
+                    <div class="footerDownloadMobileApp">
+                        <div class="footerDownloadMobileAppDescription">
+                            <div class="footerDownloadMobileAppDescriptionTitle">اپلیکیشن علی بابا</div>
+                            <div class="footerDownloadMobileAppDescriptionDes">
+                                <span class="footerDownloadMobileAppDescriptionDesSpan">با نصب اپلیکیشن علی بابا بلیط همه سفر ها در جیب شماست . </span><a class="readMoreButton">مشاهده همه قابلیت ها</a>
+                            </div>
+                        </div>
+                        <div class="footerDownloadMobileAppPlatforms">
+                            <a style="color: #1dab3c;" class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/cafe18.png" /> کافه بازار</a>
+                            <a style="color: #0091ea;" class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/miket18.png" /> مایکت</a>
+                            <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/sibapp.svg" /> سیب اپ</a>
+                            <a class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/download.svg" /> دانلود مستقیم </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="footerSection">
+                <div class="myContainer">
+                    <div class="footerAboutUsSections">
+                        <div class="footerAboutUsSectionRight">
+                            <nav class="footerNavMenue">
+                                <div class="footerNavGroupItems">
+                                    <div class="footerNavGroupItemsTitle">علی بابا</div>
+                                    <a class="footerNavGroupItemsItem">درباره ما</a>
+                                    <a class="footerNavGroupItemsItem">تماس با ما</a>
+                                    <a class="footerNavGroupItemsItem">چرا علی بابا</a>
+                                    <a class="footerNavGroupItemsItem">علی بابا پلاس</a>
+                                    <a class="footerNavGroupItemsItem">مجله علی بابا</a>
+                                </div>
+                                <div class="footerNavGroupItems">
+                                    <div class="footerNavGroupItemsTitle">راهنما</div>
+                                    <a class="footerNavGroupItemsItem">راهنمای خرید</a>
+                                    <a class="footerNavGroupItemsItem">راهنمای استرداد بلیط</a>
+                                    <a class="footerNavGroupItemsItem">قوانین و مقررات</a>
+                                    <a class="footerNavGroupItemsItem">پرسش و پاسخ</a>
+                                </div>
+                                <div class="footerNavGroupItems">
+                                    <div class="footerNavGroupItemsTitle">اطلاعات تکمیلی</div>
+                                    <a class="footerNavGroupItemsItem">باشگاه مشتریان</a>
+                                    <a class="footerNavGroupItemsItem">فروش سازمانی</a>
+                                    <a class="footerNavGroupItemsItem">همکاری با آزانس ها</a>
+                                    <a class="footerNavGroupItemsItem">فرصد های شغلی</a>
+                                </div>
+                            </nav>
+                            <div class="footerProductMenu">
+                                <div class="holderfooterProductMenuItems">
+                                    <a href="#" class="footerProductMenuItem">بلیط چارتر</a>
+                                    <a href="#" class="footerProductMenuItem">تور کیش</a>
+                                    <a href="#" class="footerProductMenuItem">تور استامبول</a>
+                                    <a href="#" class="footerProductMenuItem">اجاره ویلا جاباما</a>
+                                    <a href="#" class="footerProductMenuItem">بلیط قطار</a>
+                                    <a href="#" class="footerProductMenuItem">خرید بلیط هواپیمایی خارجی</a>
+                                    <a href="#" class="footerProductMenuItem">اطلاعات فردوگاهی</a>
+                                    <a href="#" class="footerProductMenuItem">شیوه نامه حقوقی مسافر</a>
+                                    <a href="#" class="footerProductMenuItem">رزرو هتل</a>
+                                    <a href="#" class="footerProductMenuItem">هتل مشهد</a>
+                                    <a href="#" class="footerProductMenuItem">هتل کیش</a>
+                                    <a href="#" class="footerProductMenuItem">هتل درویشی مشهد</a>
+                                    <a href="#" class="footerProductMenuItem">هتل شایگان کیش</a>
+                                </div>
+                                <span class="showMoreButton">بیشتر</span>
+                            </div>
+                            <script>
+                                $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
+                            </script>
+                        </div>
+                        <div class="footerAboutUsSectionLeft">
+                            <a class="leftFooterLink" href="https://alibaba.ir">alibaba.ir</a>
+                            <span class="footerAboutUsTellNumber">تلفن پشتیبانی :<span>021-43900000</span>|<span>021-49275000</span></span>
+                            <span class="footerAboutUsTellNumber">دفتر فروش : قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span>
+                            <div class="footerLeftTrophyIcons">
+                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="footerSection">
+                <div class="myContainer">
+                    <div class="footerSharingAndCopyRightSection">
+                        <div class="footerCopyRightSection">
+                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت سفرهای علی‌بابا می‌باشد. (نسخه 1.22.3)
+                        </div>
+                        <div class="footerSharingIconSection">
+                            <a href="#"><i class="fab fa-telegram-plane"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </footer>
+    </div>
+</body>
+</html>
