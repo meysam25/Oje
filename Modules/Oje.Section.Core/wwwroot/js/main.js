@@ -197,6 +197,17 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
                 break;
         }
     });
+
+    updateCtrlStatus();
+    if (window['updateAllSelectByInnerSelect'])
+        updateAllSelectByInnerSelect(selector);
+}
+
+function updateCtrlStatus() {
+    $('input,select').each(function () {
+        if ($(this)[0].updateStatus)
+            $(this)[0].updateStatus();
+    });
 }
 
 function bindDropdown(curObj, data, textField, valueField) {
@@ -222,6 +233,10 @@ function bindDropdown(curObj, data, textField, valueField) {
 
         if (select2Closing) {
             $(curObj).on('select2:closing', function () { window[this.evName](); }.bind({ evName: select2Closing }));
+        }
+    } else {
+        if ($(curObj).closest('.myDropdown').length > 0) {
+            $(curObj).closest('.myDropdown')[0].updateItemFromSelect();
         }
     }
 }
@@ -510,7 +525,7 @@ function showLoader(selector, setRelative) {
     if ($(selector).find('.loaderPanel').length == 0) {
         if (!setRelative)
             $(selector).css('position', 'relative');
-        $(selector).append('<div class="loaderPanel"><div>لطفا صبر کنید</div></div>');
+        $(selector).append('<div class="loaderPanel"><div class="loader"></div></div>');
     }
 }
 
@@ -542,6 +557,12 @@ function clearForm(selector) {
         if ($(this)[0].ckEditor) {
             $(this)[0].ckEditor.setData('');
         }
+    });
+
+    updateCtrlStatus();
+    $(selector).find('.myDropdown').each(function () {
+        if ($(this)[0].updateItemFromSelect)
+            $(this)[0].updateItemFromSelect();
     });
 }
 
@@ -601,3 +622,41 @@ function openNewLink(holderParametersId, link) {
         location.href = link + qureString;
     }
 }
+
+$.fn.modal = function (action) {
+    function closeModal(curThis) {
+        setTimeout(function () {
+            $(curThis).css('display', 'none');
+            if (!$('.modal').is(':visible')) {
+                $('body').removeClass('modal-open').find('.modal-backdrop').remove();
+            }
+        }, 100);
+        $(curThis).removeClass('show');
+        $('body').find('.modal-backdrop:last-child').removeClass('show')
+    }
+    function openModal(curThis) {
+        $(curThis).css('display', 'block');
+        setTimeout(function () {
+            $(curThis).addClass('show');
+        }, 100);
+        $(curThis).click(function () {
+            $(this).modal('hide');
+        });
+        $(curThis).find('.modal-dialog').click(function (e) { e.stopPropagation(); if (window['closeAllDropdownInPage']) closeAllDropdownInPage(); });
+        $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
+    }
+    function bindCloseButton(curThis) {
+        $(curThis).find('[data-dismiss]').unbind().click(function () {
+            $(this).closest('.modal').modal('hide');
+        });
+    }
+    return this.each(function () {
+        var curThis = this;
+        if (action == 'hide') {
+            closeModal(curThis);
+        } else {
+            openModal(curThis);
+            bindCloseButton(curThis);
+        }
+    });
+};

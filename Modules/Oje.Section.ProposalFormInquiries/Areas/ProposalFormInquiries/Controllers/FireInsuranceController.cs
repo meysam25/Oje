@@ -6,6 +6,7 @@ using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +84,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] FireInsuranceInquiryVM input)
         {
-            return Json(FireInsuranceRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input));
+            return Json(FireInsuranceRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry()));
         }
 
         [AreaConfig(Title = "مشاهده لیست ارزش هر متر مربع", Icon = "fa-list-alt")]

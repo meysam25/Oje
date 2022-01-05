@@ -25,7 +25,7 @@ namespace Oje.ProposalFormService.Services
             return result;
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput)
+        public object GetSelect2List(Select2SearchVM searchInput, int? vehicleTypeId)
         {
             List<object> result = new List<object>();
 
@@ -37,7 +37,8 @@ namespace Oje.ProposalFormService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.VehicleSystems.OrderByDescending(t => t.Id).AsQueryable();
+            var qureResult = db.VehicleSystems.OrderBy(t => t.Order).Where(t => t.IsActive == true && t.VehicleSystemVehicleTypes.Any(tt => tt.VehicleType.IsActive == true && tt.VehicleTypeId == vehicleTypeId));
+
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

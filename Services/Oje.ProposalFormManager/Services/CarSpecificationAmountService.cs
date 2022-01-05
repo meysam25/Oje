@@ -41,6 +41,8 @@ namespace Oje.ProposalFormService.Services
         readonly IInquiryMaxDiscountService InquiryMaxDiscountService = null;
         readonly IPaymentMethodService PaymentMethodService = null;
         readonly ICarBodyCreateDatePercentService CarBodyCreateDatePercentService = null;
+        readonly ICarTypeService CarTypeService = null;
+        readonly IVehicleSpecsService VehicleSpecsService = null;
 
         public CarSpecificationAmountService(
             ProposalFormDBContext db,
@@ -65,7 +67,9 @@ namespace Oje.ProposalFormService.Services
             IDutyService DutyService,
             IInquiryMaxDiscountService InquiryMaxDiscountService,
             IPaymentMethodService PaymentMethodService,
-            ICarBodyCreateDatePercentService CarBodyCreateDatePercentService
+            ICarBodyCreateDatePercentService CarBodyCreateDatePercentService,
+            ICarTypeService CarTypeService,
+            IVehicleSpecsService VehicleSpecsService
             )
         {
             this.db = db;
@@ -91,9 +95,11 @@ namespace Oje.ProposalFormService.Services
             this.InquiryMaxDiscountService = InquiryMaxDiscountService;
             this.PaymentMethodService = PaymentMethodService;
             this.CarBodyCreateDatePercentService = CarBodyCreateDatePercentService;
+            this.CarTypeService = CarTypeService;
+            this.VehicleSpecsService = VehicleSpecsService;
         }
 
-        public object Inquiry(int? siteSettingId, CarBodyInquiryVM input)
+        public object Inquiry(int? siteSettingId, CarBodyInquiryVM input, string targetArea)
         {
             List<GlobalInquery> result = new List<GlobalInquery>();
 
@@ -123,7 +129,7 @@ namespace Oje.ProposalFormService.Services
                 }
                 GlobalInqueryService.Create(result);
 
-                return calceResponeForInquiry(result, objPack, input);
+                return calceResponeForInquiry(result, objPack, input, targetArea);
             }
 
             return new { total = 0, data = new List<object>() };
@@ -168,7 +174,7 @@ namespace Oje.ProposalFormService.Services
             fillAndValidateValidCompany(result, input, siteSettingId);
             fillAndValidatePrevInsuranceAndIsNewCar(result, input);
             fillAndValidateVehicleType(result, input);
-            fillAndValidateVehicleSystem(result, input);
+            fillAndValidateVehicleSystem(input);
             fillAndValidateVehicleUsage(result, input);
             fillAndValidateCarExteraDiscountRequired(result, input);
             fillAndValidateNoDamageDiscount(result, input);
@@ -177,7 +183,7 @@ namespace Oje.ProposalFormService.Services
             fillAndValidateInsuranceContractDiscount(result, input, siteSettingId);
             fillAndValidateInquiryDuration(result, input, siteSettingId);
             fillRoundInquery(result, siteSettingId);
-            fillCarSpecification(result);
+            fillCarSpecification(input, result);
             fillInqueryDescriptions(result, siteSettingId);
             fillTaxAndDuty(result);
             fillInquiryMaxDiscounts(result, siteSettingId);
@@ -191,18 +197,30 @@ namespace Oje.ProposalFormService.Services
             return result;
         }
 
+        void initVeicleBrandObjectAndValidation(CarBodyInquiryVM input)
+        {
+            string brandTitle = VehicleSystemService.GetTitleById(input.brandId);
+            if (string.IsNullOrEmpty(brandTitle))
+                throw BException.GenerateNewException(BMessages.Please_Select_VehicleBrand);
+            input.brandId_Title = brandTitle;
+        }
+
         private void fillCarSpecificationAmount(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            if (input.vType.ToIntReturnZiro() > 0)
+            if (input.specId.ToIntReturnZiro() > 0)
             {
-                result.CarSpecificationAmounts = GetBy(input.vType);
+                result.VehicleSpec = VehicleSpecsService.GetBy(input.specId, input.brandId, input.vehicleTypeId);
+                if (result.VehicleSpec == null)
+                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                input.specId_Title = result.VehicleSpec.Title;
+                result.CarSpecificationAmounts = GetBy(input.specId);
             }
         }
 
-        private List<CarSpecificationAmount> GetBy(int? vType)
+        private List<CarSpecificationAmount> GetBy(int? specId)
         {
             return db.CarSpecificationAmounts
-                .Where(t => t.IsActive == true && t.CarSpecification.VehicleTypes.Any(tt => tt.Id == vType))
+                .Where(t => t.IsActive == true && t.CarSpecification.CarSpecificationVehicleSpecs.Any(tt => tt.VehicleSpecId == specId))
                 .Include(t => t.CarSpecificationAmountCompanies)
                 .AsNoTracking()
                 .ToList();
@@ -269,9 +287,9 @@ namespace Oje.ProposalFormService.Services
             result.InqueryDescriptions = InqueryDescriptionService.GetByProposalFormId(result.currentProposalForm?.Id, siteSettingId);
         }
 
-        private void fillCarSpecification(CarBodyInquiryObjects result)
+        private void fillCarSpecification(CarBodyInquiryVM input, CarBodyInquiryObjects result)
         {
-            result.CarSpecification = CarSpecificationService.GetById(result.VehicleType?.CarSpecificationId);
+            result.CarSpecification = CarSpecificationService.GetById(input.specId);
         }
 
         private void fillRoundInquery(CarBodyInquiryObjects result, int? siteSettingId)
@@ -387,13 +405,17 @@ namespace Oje.ProposalFormService.Services
 
         private void fillAndValidateVehicleUsage(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            result.VehicleUsage = VehicleUsageService.GetById(input.cUsage);
+            result.CarType = CarTypeService.GetById(input.carTypeId, input.vehicleTypeId);
+            if (result.CarType == null)
+                throw BException.GenerateNewException(BMessages.Please_Select_CarType);
+            input.carTypeId_Title = result.CarType.Title;
+
+            result.VehicleUsage = VehicleUsageService.GetById(input.carTypeId);
             if (result.VehicleUsage == null)
                 throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
-            input.cUsage_Title = result.VehicleUsage.Title;
         }
 
-        void fillAndValidateVehicleSystem(CarBodyInquiryObjects result, CarBodyInquiryVM input)
+        void fillAndValidateVehicleSystem(CarBodyInquiryVM input)
         {
             string brandTitle = VehicleSystemService.GetTitleById(input.brandId);
             if (string.IsNullOrEmpty(brandTitle))
@@ -403,10 +425,10 @@ namespace Oje.ProposalFormService.Services
 
         void fillAndValidateVehicleType(CarBodyInquiryObjects result, CarBodyInquiryVM input)
         {
-            result.VehicleType = VehicleTypeService.GetById(input.vType);
+            result.VehicleType = VehicleTypeService.GetById(input.vehicleTypeId);
             if (result.VehicleType == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
-            input.vType_Title = result.VehicleType.Title;
+            input.vehicleTypeId_Title = result.VehicleType.Title;
         }
 
         void fillAndValidatePrevInsuranceAndIsNewCar(CarBodyInquiryObjects result, CarBodyInquiryVM input)
@@ -484,7 +506,7 @@ namespace Oje.ProposalFormService.Services
                         {
                             GlobalInquiryItem newItem = new GlobalInquiryItem();
                             newItem.GlobalInquiryId = newQueryItem.Id;
-                            newItem.Title = dItemValue.Title + (selectValueId.ToIntReturnZiro() > 0 ? dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId.ToIntReturnZiro()).Select(tt => "/" + tt.Title).FirstOrDefault() : "") ;
+                            newItem.Title = dItemValue.Title + (selectValueId.ToIntReturnZiro() > 0 ? dItemValue.CarExteraDiscountValues.Where(tt => tt.IsActive == true && tt.Id == selectValueId.ToIntReturnZiro()).Select(tt => "/" + tt.Title).FirstOrDefault() : "");
                             newItem.CalcKey = "DRO";
 
                             var s1Price = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").Select(t => t.Price).FirstOrDefault();
@@ -866,7 +888,7 @@ namespace Oje.ProposalFormService.Services
             return result;
         }
 
-        object calceResponeForInquiry(List<GlobalInquery> quiryObj, CarBodyInquiryObjects objPack, CarBodyInquiryVM input)
+        object calceResponeForInquiry(List<GlobalInquery> quiryObj, CarBodyInquiryObjects objPack, CarBodyInquiryVM input, string targetArea)
         {
             int row = 0;
             var result = quiryObj
@@ -923,7 +945,8 @@ namespace Oje.ProposalFormService.Services
                     },
                     t.cid,
                     t.desc,
-                    fid = objPack.currentProposalForm?.Id
+                    fid = objPack.currentProposalForm?.Id,
+                    targetArea = targetArea
                 }).ToList();
 
 
@@ -1024,7 +1047,7 @@ namespace Oje.ProposalFormService.Services
 
         bool IsValidInquiry(CarBodyInquiryVM input)
         {
-            return input != null && input.brandId.ToIntReturnZiro() > 0 && input.vType.ToIntReturnZiro() > 0 && input.cUsage.ToIntReturnZiro() > 0 && input.carValue > 0;
+            return input != null && input.brandId.ToIntReturnZiro() > 0 && input.vehicleTypeId.ToIntReturnZiro() > 0 && input.carTypeId.ToIntReturnZiro() > 0 && input.specId.ToIntReturnZiro() > 0;
         }
 
         long RouteThisNumberIfConfigExist(long price, RoundInquery foundConfig)

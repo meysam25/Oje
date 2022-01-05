@@ -49,7 +49,7 @@ namespace Oje.Infrastructure.Exceptions
         Not_Found = 18,
         [Display(Name = "امکان حذف وجود ندارد")]
         Can_Not_Be_Deleted = 19,
-        [Display(Name = "لطفا انتخاب کنید")]
+        [Display(Name = "")]
         Please_Select_One_Item = 20,
         [Display(Name = "کلمه عبور ضعیف می باشد")]
         The_Password_Is_Week = 21,
@@ -508,6 +508,10 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا کلاس را انتخاب کنید")]
         Please_Enter_Class = 248,
         [Display(Name = "لطفا بخش را انتخاب کنید")]
-        Please_Select_Section = 249
+        Please_Select_Section = 249,
+        [Display(Name = "لطفا گروه بندی خصوصیات خودرو را انتخاب کنید")]
+        Please_Select_CarSpecificationCategoryId = 250,
+        [Display(Name = "لطفا نوع خودرو را انتخاب کنید")]
+        Please_Select_VeicleType = 251
     }
 }

@@ -581,6 +581,52 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static bool IsLighthouse(this HttpRequest input)
+        {
+            try
+            {
+                if (input.Headers["User-Agent"][0].ToLower().IndexOf("lighthouse") > 0)
+                    return true;
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static string GetTargetAreaByRefferForInquiry(this HttpRequest input)
+        {
+            try
+            {
+                string currPath = new Uri(input.Headers["Referer"][0]).LocalPath;
+                if (currPath == "/")
+                    return "";
+
+                return "/ProposalFilledForm";
+            }
+            catch
+            {
+                return "/ProposalFilledForm";
+            }
+        }
+
+        public static string GetTargetAreaByRefferForPPFDetailes(this HttpRequest input)
+        {
+            try
+            {
+                string currPath = new Uri(input.Headers["Referer"][0]).LocalPath;
+                if (currPath == "/Proposal/Form")
+                    return "/Proposal/Detaile";
+
+                return "";
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
         public static string FormatShaba(this long input)
         {
             try

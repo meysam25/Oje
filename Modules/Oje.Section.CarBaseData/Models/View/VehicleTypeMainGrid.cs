@@ -10,8 +10,8 @@ namespace Oje.Section.CarBaseData.Models.View
     public class VehicleTypeMainGrid: GlobalGrid
     {
         public string title { get; set; }
-        public string specTitle { get; set; }
-        public string brandTitle { get; set; }
+        public int specCategory { get; set; }
         public bool? isActive { get; set; }
+        public int? types { get; set; }
     }
 }

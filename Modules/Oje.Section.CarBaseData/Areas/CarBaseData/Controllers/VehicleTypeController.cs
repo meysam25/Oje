@@ -18,16 +18,21 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = " پایه خودرو (ادمین)", Icon = "fa-car", Title = "نوع خودرو")]
     [CustomeAuthorizeFilter]
-    public class VehicleTypeController: Controller
+    public class VehicleTypeController : Controller
     {
         readonly IVehicleTypeService VehicleTypeService = null;
-        readonly ICarSpecificationService CarSpecificationService = null;
-        readonly IVehicleSystemService VehicleSystemService = null;
-        public VehicleTypeController(IVehicleTypeService VehicleTypeService, ICarSpecificationService CarSpecificationService, IVehicleSystemService VehicleSystemService)
+        readonly IVehicleSpecCategoryService CarSpecificationCategoryService = null;
+        readonly ICarTypeService CarTypeService = null;
+        public VehicleTypeController
+            (
+                IVehicleTypeService VehicleTypeService,
+                IVehicleSpecCategoryService CarSpecificationCategoryService,
+                ICarTypeService CarTypeService
+            )
         {
             this.VehicleTypeService = VehicleTypeService;
-            this.CarSpecificationService = CarSpecificationService;
-            this.VehicleSystemService = VehicleSystemService;
+            this.CarSpecificationCategoryService = CarSpecificationCategoryService;
+            this.CarTypeService = CarTypeService;
         }
 
         [AreaConfig(Title = "نوع خودرو", Icon = "fa-trailer", IsMainMenuItem = true)]
@@ -96,18 +101,18 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt ")]
-        [HttpGet]
-        public ActionResult GetCarSpecList([FromQuery] Select2SearchVM searchInput)
+        [AreaConfig(Title = "مشاهده لیست گروه بندی خصوصیات خودرو", Icon = "fa-list-alt ")]
+        [HttpPost]
+        public ActionResult GetCarSpecCategoryList()
         {
-            return Json(CarSpecificationService.GetSelect2List(searchInput));
+            return Json(CarSpecificationCategoryService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt ")]
-        [HttpGet]
-        public ActionResult GetCarBrandList([FromQuery] Select2SearchVM searchInput)
+        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt ")]
+        [HttpPost]
+        public ActionResult GetCarCarTypeList()
         {
-            return Json(VehicleSystemService.GetSelect2List(searchInput));
+            return Json(CarTypeService.GetLightList());
         }
     }
 }

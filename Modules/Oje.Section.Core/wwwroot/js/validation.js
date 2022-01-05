@@ -98,10 +98,14 @@ function isNatinalCodeValid(xv) {
     return false;
 }
 
+function isVisibleCtrl(curThis) {
+    return $(curThis).is(':visible') || ($(curThis).closest('.myDropdown').length > 0 && $(curThis).closest('.myDropdown').is(':visible'));
+}
+
 function checkNationalCodeValidation(selectQuery, result) {
     if (result == true) {
         $(selectQuery).find('input[data-validation-nationalcode="true"]').each(function () {
-            if ($(this).is(':visible')) {
+            if (isVisibleCtrl(this)) {
                 if (!isNatinalCodeValid($(this).val())) {
                     result = false;
                     if (!$(this).closest('.myCtrl').hasClass('inValidInput'))
@@ -117,7 +121,7 @@ function checkNationalCodeValidation(selectQuery, result) {
 function checkRequiredValidation(selectQuery, result) {
     if (result == true) {
         $(selectQuery).find('input[data-validation-required="true"], select[data-validation-required="true"]').each(function () {
-            if ($(this).is(':visible') || $(this).attr('data-select2-id')) {
+            if (isVisibleCtrl(this) || $(this).attr('data-select2-id')) {
                 var curValue = $(this).val();
                 if ($(this).parent().hasClass('tokenBox'))
                     curValue = $(this).parent().find('input[type="hidden"]').val();
@@ -136,7 +140,7 @@ function checkRequiredValidation(selectQuery, result) {
 function checkRegValidation(selectQuery, result) {
     if (result == true) {
         $(selectQuery).find('input[data-validation-reg], select[data-validation-reg]').each(function () {
-            if ($(this).is(':visible')) {
+            if (isVisibleCtrl(this)) {
                 var curValue = $(this).val();
                 var curRegExpArrValues = JSON.parse($(this).attr('data-validation-reg'));
                 if (curValue && curRegExpArrValues && curRegExpArrValues.length > 0) {

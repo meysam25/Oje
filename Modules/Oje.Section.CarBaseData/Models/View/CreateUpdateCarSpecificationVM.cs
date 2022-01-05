@@ -12,5 +12,6 @@ namespace Oje.Section.CarBaseData.Models.View
         public string title { get; set; }
         public decimal? carRoomRate { get; set; }
         public bool? isActive { get; set; }
+        public List<int> vehicleSpecIds { get; set; }
     }
 }

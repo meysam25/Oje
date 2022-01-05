@@ -28,7 +28,7 @@ namespace Oje.Web
             Configuration = configuration;
             GlobalConfig.WebHostEnvironment = hostingEnvironment;
             GlobalConfig.Configuration = configuration;
-            ManageModalResource.Copy();
+            //ManageModalResource.Copy();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -42,13 +42,14 @@ namespace Oje.Web
                 options.Filters.Add(typeof(CustomExceptionFilter));
                 options.ModelBinderProviders.Insert(0, new StringModelBinderProvider());
                 options.ModelBinderProviders.Insert(0, new MyHtmlStringBinderProvider());
-            }).AddJsonOptions(option => 
+            }).AddJsonOptions(option =>
             {
                 option.JsonSerializerOptions.Converters.Add(new JsonMyHtmlConverter());
                 option.JsonSerializerOptions.Converters.Add(new JsonTextConverter());
             });
             services.AddHttpContextAccessor();
-            services.AddResponseCompression(options => {
+            services.AddResponseCompression(options =>
+            {
                 options.MimeTypes = new string[]{
                     "text/html",
                     "application/json"
@@ -81,6 +82,7 @@ namespace Oje.Web
                 OnPrepareResponse = content =>
                 {
                     bool addExteras = false;
+                    TimeSpan maxAge = new TimeSpan(365, 0, 0, 0);
                     if (content.File.Name.EndsWith(".js.gz"))
                     {
                         content.Context.Response.Headers["Content-Type"] = "text/javascript";
@@ -101,12 +103,37 @@ namespace Oje.Web
                         addExteras = true;
                         content.Context.Response.Headers["Content-Type"] = "image/x-icon";
                     }
+                    else if (content.File.Name.EndsWith(".png"))
+                    {
+                        content.Context.Response.Headers["Content-Type"] = "image/png";
+                        content.Context.Response.Headers["Cache-Control"] = "max-age=" + maxAge.TotalSeconds.ToString("0");
+                    }
+                    else if (content.File.Name.EndsWith(".svg"))
+                    {
+                        content.Context.Response.Headers["Cache-Control"] = "max-age=" + maxAge.TotalSeconds.ToString("0");
+                        content.Context.Response.Headers["Content-Type"] = "image/svg+xml";
+                    }
+                    else if (content.File.Name.EndsWith(".woff2"))
+                    {
+                        content.Context.Response.Headers["Content-Type"] = "font/woff2";
+                        content.Context.Response.Headers["Cache-Control"] = "max-age=" + maxAge.TotalSeconds.ToString("0");
+                    }
+                    else if (content.File.Name.EndsWith(".jpg"))
+                    {
+                        content.Context.Response.Headers["Cache-Control"] = "max-age=" + maxAge.TotalSeconds.ToString("0");
+                        content.Context.Response.Headers["Content-Type"] = "image/jpg";
+                    }
+                    else if (content.File.Name.EndsWith(".webp"))
+                    {
+                        content.Context.Response.Headers["Cache-Control"] = "max-age=" + maxAge.TotalSeconds.ToString("0");
+                        content.Context.Response.Headers["Content-Type"] = "image/webp";
+                    }
 
                     if (addExteras == true)
                     {
-                        TimeSpan maxAge = new TimeSpan(1, 0, 0, 0);
-                        content.Context.Response.Headers["Content-Encoding"] = "gzip";
                         content.Context.Response.Headers["Cache-Control"] = "max-age=" + maxAge.TotalSeconds.ToString("0");
+                        content.Context.Response.Headers["Content-Encoding"] = "gzip";
+
                     }
                 }
             });

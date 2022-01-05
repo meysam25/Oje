@@ -1,356 +1,563 @@
 ﻿{
-    "panels": [
+  "panels": [
+    {
+      "id": "searchPanel",
+      "title": "استعلام بدنه",
+      "stepWizards": [
         {
-            "id": "searchPanel",
-            "title": "استعلام بدنه",
-            "stepWizards": [
+          "lastStepButtonTitle": "استعلام",
+          "fistStepButtonTitle": "بدون استعلام ادامه میدم",
+          "actionOnLastStep": [
+            {
+              "actionName": "showModal",
+              "objectId": "gridModal"
+            },
+            {
+              "actionName": "refreshGrid",
+              "objectId": "userGrid"
+            }
+          ],
+          "steps": [
+            {
+              "order": 0,
+              "id": "firstStep",
+              "title": "استعلام پلاک خودرو",
+              "panels": [
                 {
-                    "lastStepButtonTitle": "استعلام",
-                    "actionOnLastStep": [
-                        {
-                            "actionName": "refreshGrid",
-                            "objectId": "userGrid"
-                        }
-                    ],
-                    "steps": [
-                        {
-                            "order": 1,
-                            "id": "firstStep",
-                            "title": "شرکت بیمه نامه قبل",
-                            "panels": [
-                                {
-                                    "ctrls": [
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "havePrevInsurance",
-                                            "type": "dropDown",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCompanyList",
-                                            "label": "بیمه نامه سال قبل",
-                                            "name": "havePrevInsurance",
-                                            "showHideCondation": [
-                                                {
-                                                    "value": "",
-                                                    "classHide": [ "startAndEndDate", "isNewCalDD" ],
-                                                    "isDefault": true
-                                                },
-                                                {
-                                                    "value": "0",
-                                                    "classShow": [ "isNewCalDD" ],
-                                                    "classHide": [ "startAndEndDate" ]
-                                                },
-                                                {
-                                                    "value": "!0",
-                                                    "classShow": [ "startAndEndDate" ],
-                                                    "classHide": [ "isNewCalDD" ]
-                                                }
-                                            ],
-                                            "isRequired": true
-                                        },
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "isNewCar",
-                                            "type": "dropDown",
-                                            "class": "isNewCalDD",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/Core/BaseData/Get/YesOrNo",
-                                            "label": "آیا خودرو صفر کیلومتر است",
-                                            "name": "isNewCar",
-                                            "isRequired": true
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "order": 2,
-                            "id": "secoundStep",
-                            "title": "اطلاعات خودرو",
-                            "panels": [
-                                {
-                                    "ctrls": [
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "brandId",
-                                            "type": "dropDown2",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCarBrandList",
-                                            "label": "نوع خودرو",
-                                            "name": "brandId",
-                                            "isRequired": true,
-                                            "targetDropDown": [ "vType", "cUsage" ],
-                                            "dynamicCtrlConfig": {
-                                                "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetRequiredQuestions",
-                                                "css": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                                "targetCtrlId": "showStatus",
-                                                "ctrlIds": [
-                                                    {
-                                                        "ctrlId": "brandId",
-                                                        "postName": "brandId"
-                                                    },
-                                                    {
-                                                        "ctrlId": "havePrevInsurance",
-                                                        "postName": "havePrevInsurance"
-                                                    },
-                                                    {
-                                                        "ctrlId": "isNewCar",
-                                                        "postName": "isNewCar"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "vType",
-                                            "type": "dropDown",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCarTypeList",
-                                            "label": "تیپ خودرو",
-                                            "name": "vType",
-                                            "isRequired": true
-                                        },
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "cUsage",
-                                            "type": "dropDown",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCarUsageList",
-                                            "label": "کاربری خودرو",
-                                            "name": "cUsage",
-                                            "isRequired": true
-                                        },
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "createYear",
-                                            "type": "dropDown",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCreateDateList",
-                                            "label": "سال ساخت",
-                                            "name": "createYear",
-                                            "isRequired": true
-                                        },
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "name": "carValue",
-                                            "type": "text",
-                                            "label": "ارزش خودرو شما (ریال)",
-                                            "isRequired": true
-                                        },
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "name": "exteraValue",
-                                            "type": "text",
-                                            "label": "ارزش وسایل اضافه (ریال)",
-                                            "isRequired": true
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "order": 3,
-                            "id": "penaltyQuestions",
-                            "title": "سابقه خسارت ها",
-                            "showCondation": [
-                                {
-                                    "id": "havePrevInsurance",
-                                    "operator": "!=",
-                                    "value": "0"
-                                },
-                                {
-                                    "id": "havePrevInsurance",
-                                    "operator": "!=",
-                                    "value": ""
-                                }
-                            ],
-                            "panels": [
-                                {
-                                    "ctrls": [
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "noDamageDiscountBody",
-                                            "type": "dropDown",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscount",
-                                            "label": "سابقه عدم خسارت مندرج در بیمه نامه",
-                                            "name": "noDamageDiscountBody",
-                                            "isRequired": true
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "order": 4,
-                            "id": "exteraQuestion",
-                            "title": "سوالات اضافی",
-                            "panels": [
-                                {
-                                    "ctrls": [
-                                        {
-                                            "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                                            "id": "showStatus",
-                                            "type": "dropDown",
-                                            "textfield": "title",
-                                            "valuefield": "id",
-                                            "dataurl": "/Core/BaseData/Get/PriceDiscountStatus",
-                                            "label": "انتخاب روش پرداخت",
-                                            "name": "showStatus",
-                                            "isRequired": true
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "responsePanel",
-            "grids": [
-                {
-                    "id": "userGrid",
-                    "exteraSearchIds": [ "searchPanel" ],
-                    "exteraFilterModalId": "gridFilterModal",
-                    "showColumnConfigButton": true,
-                    "key": "id",
-                    "url": "/ProposalFormInquiries/CarBodyInquiry/Inquiry",
-                    "itemPerPage": 10,
-                    "schema": {
-                        "data": "data",
-                        "total": "total"
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "type": "carPlaque",
+                      "name": "plaque"
                     },
-                    "actions": {
-                        "cActions": [
-                            {
-                                "type": "newLink",
-                                "url": "/ProposalFilledForm/Proposal/Form?fn=CarBody&id=",
-                                "icon": "fa-cart-plus",
-                                "prop": "id",
-                                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/ProposalFilledForm/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
-                            }
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "nationalCode",
+                      "type": "text",
+                      "label": "کد ملی"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "class": "btn-primary btn-block",
+                      "type": "button",
+                      "title": "استعلام سابقه",
+                      "onClick": "alert('وب سرویس پیاده سازی نشده')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 1,
+              "id": "secoundStep",
+              "title": "نوع و کاربری خودرو",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "vehicleTypeId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetVehicleTypeList",
+                      "changeOtherCtrLabel": [
+                        {
+                          "url": "/ProposalFormInquiries/CarBodyInquiry/GetSpecCatTitle",
+                          "targetCtrlId": "specId",
+                          "titleSchema": "title"
+                        }
+                      ],
+                      "label": "نوع خودرو",
+                      "name": "vehicleTypeId",
+                      "isRequired": true,
+                      "childId": "carTypeId"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "carTypeId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCarTypeList",
+                      "label": "کاربری خودرو",
+                      "name": "carTypeId",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 1.1,
+              "id": "secoundStep",
+              "title": "برند و سال ساخت",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "brandId",
+                      "type": "dropDown2",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCarBrandList",
+                      "label": "برند خودرو",
+                      "name": "brandId",
+                      "isRequired": true,
+                      "exteraParameterIds": [ "vehicleTypeId" ]
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "specId",
+                      "type": "dropDown2",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCarSpecList",
+                      "label": "مدل",
+                      "name": "specId",
+                      "isRequired": true,
+                      "exteraParameterIds": [ "brandId", "vehicleTypeId" ]
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "createYear",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCreateDateList",
+                      "label": "سال ساخت",
+                      "name": "createYear",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 1.2,
+              "id": "carValueStep",
+              "title": "ارزش خودرو",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "carValue",
+                      "type": "text",
+                      "label": "ارزش خودرو شما (ریال)",
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "exteraValue",
+                      "type": "text",
+                      "label": "ارزش وسایل اضافه (ریال)",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 2,
+              "id": "firstStep",
+              "title": "شرکت بیمه سال قبل بدنه",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "havePrevInsurance",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCompanyList",
+                      "label": "بیمه نامه سال قبل بدنه",
+                      "name": "havePrevInsurance",
+                      "showHideCondation": [
+                        {
+                          "value": "",
+                          "classHide": [ "startAndEndDate", "isNewCalDD" ],
+                          "isDefault": true
+                        },
+                        {
+                          "value": "0",
+                          "classShow": [ "isNewCalDD" ],
+                          "classHide": [ "startAndEndDate" ]
+                        },
+                        {
+                          "value": "!0",
+                          "classShow": [ "startAndEndDate" ],
+                          "classHide": [ "isNewCalDD" ]
+                        }
+                      ],
+                      "isRequired": true,
+                      "dynamicCtrlConfig": {
+                        "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetRequiredQuestions",
+                        "css": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                        "targetCtrlId": "showStatus",
+                        "ctrlIds": [
+                          {
+                            "ctrlId": "vehicleTypeId",
+                            "postName": "vehicleTypeId"
+                          },
+                          {
+                            "ctrlId": "havePrevInsurance",
+                            "postName": "havePrevInsurance"
+                          },
+                          {
+                            "ctrlId": "isNewCar",
+                            "postName": "isNewCar"
+                          }
                         ]
+                      }
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "isNewCar",
+                      "type": "dropDown",
+                      "class": "isNewCalDD",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/Core/BaseData/Get/YesOrNo",
+                      "label": "آیا خودرو صفر کیلومتر است",
+                      "name": "isNewCar",
+                      "isRequired": true,
+                      "dynamicCtrlConfig": {
+                        "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetRequiredQuestions",
+                        "css": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                        "targetCtrlId": "showStatus",
+                        "ctrlIds": [
+                          {
+                            "ctrlId": "vehicleTypeId",
+                            "postName": "vehicleTypeId"
+                          },
+                          {
+                            "ctrlId": "havePrevInsurance",
+                            "postName": "havePrevInsurance"
+                          },
+                          {
+                            "ctrlId": "isNewCar",
+                            "postName": "isNewCar"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "prevStartDate",
+                      "class": "startAndEndDate",
+                      "type": "persianDateTime",
+                      "label": "تاریخ شروع بیمه نامه قبل",
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "prevEndDate",
+                      "class": "startAndEndDate",
+                      "type": "persianDateTime",
+                      "label": "تاریخ اتمام بیمه نامه قبلی",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 3,
+              "id": "penaltyQuestions",
+              "title": "سابقه عدم خسارت بدنه",
+              "showCondation": [
+                {
+                  "id": "havePrevInsurance",
+                  "operator": "!=",
+                  "value": "0"
+                },
+                {
+                  "id": "havePrevInsurance",
+                  "operator": "!=",
+                  "value": ""
+                }
+              ],
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "noDamageDiscountBody",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscount",
+                      "label": "سابقه عدم خسارت مندرج در بیمه نامه بدنه",
+                      "name": "noDamageDiscountBody",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 4,
+              "id": "thritpartyPrevCompanyStep",
+              "title": "شرکت بیمه سال قبل ثالث",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "havePrevInsuranceThirdParty",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCompanyList",
+                      "label": "بیمه نامه سال قبل ثالث",
+                      "name": "havePrevInsuranceThirdParty",
+                      "showHideCondation": [
+                        {
+                          "value": "",
+                          "classHide": [ "startAndEndDateThirdParty" ],
+                          "isDefault": true
+                        },
+                        {
+                          "value": "0",
+                          "classHide": [ "startAndEndDateThirdParty" ]
+                        },
+                        {
+                          "value": "!0",
+                          "classShow": [ "startAndEndDateThirdParty" ]
+                        }
+                      ],
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "prevStartDateThirdParty",
+                      "class": "startAndEndDateThirdParty",
+                      "type": "persianDateTime",
+                      "label": "تاریخ شروع بیمه نامه قبل",
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "prevEndDateThirdParty",
+                      "class": "startAndEndDateThirdParty",
+                      "type": "persianDateTime",
+                      "label": "تاریخ اتمام بیمه نامه قبلی",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 5,
+              "id": "penaltyQuestions",
+              "title": "سابقه عدم خسارت ثالث",
+              "showCondation": [
+                {
+                  "id": "havePrevInsuranceThirdParty",
+                  "operator": "!=",
+                  "value": "0"
+                },
+                {
+                  "id": "havePrevInsuranceThirdParty",
+                  "operator": "!=",
+                  "value": ""
+                }
+              ],
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "noDamageDiscountThirdParty",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscountThirdParty",
+                      "label": "سابقه عدم خسارت مندرج در بیمه نامه ثالث",
+                      "name": "noDamageDiscountThirdParty",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 6,
+              "id": "exteraQuestion",
+              "title": "سوالات اضافی",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "showStatus",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/Core/BaseData/Get/PriceDiscountStatus",
+                      "label": "انتخاب روش پرداخت",
+                      "name": "showStatus",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "responsePanel",
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "gridModal",
+          "title": "استعلام",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "userGrid",
+                  "exteraSearchIds": [ "searchPanel" ],
+                  "exteraFilterModalId": "gridFilterModal",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFormInquiries/CarBodyInquiry/Inquiry",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "newLink",
+                        "url": "/ProposalFilledForm/Proposal/Form?fn=CarBody&id=",
+                        "icon": "fa-cart-plus",
+                        "prop": "id",
+                        "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"'+ curRow.targetArea +'/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "cn",
+                      "caption": "شرکت"
+                    },
+                    {
+                      "field": "p",
+                      "caption": "حق بیمه پایه"
+                    },
+                    {
+                      "field": "sp",
+                      "caption": "حق بیمه قابل پرداخت"
+                    }
+                  ],
+                  "detailesClientSchema": "dt",
+                  "detailes": {
+                    "id": "detailesGrid",
+                    "key": "id",
+                    "itemPerPage": 10,
+                    "isClient": true,
+                    "schema": {
+                      "data": "data",
+                      "total": "total"
                     },
                     "columns": [
-                        {
-                            "field": "row",
-                            "caption": "ردیف",
-                            "width": "50px",
-                            "textAlign": "center"
-                        },
-                        {
-                            "field": "cn",
-                            "caption": "شرکت"
-                        },
-                        {
-                            "field": "p",
-                            "caption": "حق بیمه پایه"
-                        },
-                        {
-                            "field": "sp",
-                            "caption": "حق بیمه قابل پرداخت"
-                        }
-                    ],
-                    "detailesClientSchema": "dt",
-                    "detailes": {
-                        "id": "detailesGrid",
-                        "key": "id",
-                        "itemPerPage": 10,
-                        "isClient": true,
-                        "schema": {
-                            "data": "data",
-                            "total": "total"
-                        },
-                        "columns": [
-                            {
-                                "field": "t",
-                                "caption": "عنوان"
-                            },
-                            {
-                                "field": "p",
-                                "caption": "مبلغ"
-                            },
-                            {
-                                "field": "isET",
-                                "caption": "وضعیت"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "moduals": [
-                {
-                    "class": "modal-xl",
-                    "id": "gridFilterModal",
-                    "title": "جستجو",
-                    "ctrls": [
-                        {
-                            "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-                            "name": "comIds",
-                            "type": "tokenBox",
-                            "textfield": "title",
-                            "valuefield": "id",
-                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCompanyListGridFilter",
-                            "label": "شرکت"
-                        },
-                        {
-                            "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-                            "name": "dayLimitation",
-                            "type": "dropDown",
-                            "textfield": "title",
-                            "valuefield": "id",
-                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetValidDayForGridFilter",
-                            "label": "خرید بیمه نامه روزانه"
-                        },
-                        {
-                            "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-                            "name": "discountContractId",
-                            "type": "dropDown",
-                            "textfield": "title",
-                            "valuefield": "id",
-                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetValidContractForGrid",
-                            "label": "تخفیف تفاهم نامه"
-                        },
-                        {
-                            "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-                            "name": "discountCode",
-                            "type": "text",
-                            "label": "کد تخفیف"
-                        },
-                        {
-                            "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-                            "id": "holderDynamicCtrls",
-                            "type": "dynamiCtrls",
-                            "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetExteraFilters",
-                            "otherCtrls": [
-                                "havePrevInsurance",
-                                "isNewCar",
-                                "brandId"
-                            ]
-                        }
-                    ],
-                    "actions": [
-                        {
-                            "title": "بستن",
-                            "onClick": "closeThisModal(this)",
-                            "class": "btn-secondary"
-                        },
-                        {
-                            "title": "جستجو",
-                            "onClick": "refreshGrid('userGrid', this)",
-                            "class": "btn-primary"
-                        }
+                      {
+                        "field": "t",
+                        "caption": "عنوان"
+                      },
+                      {
+                        "field": "p",
+                        "caption": "مبلغ"
+                      },
+                      {
+                        "field": "isET",
+                        "caption": "وضعیت"
+                      }
                     ]
+                  }
                 }
-            ]
+              ]
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "gridFilterModal",
+          "title": "جستجو",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "comIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCompanyListGridFilter",
+              "label": "شرکت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "dayLimitation",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetValidDayForGridFilter",
+              "label": "خرید بیمه نامه روزانه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "discountContractId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetValidContractForGrid",
+              "label": "تخفیف تفاهم نامه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "discountCode",
+              "type": "text",
+              "label": "کد تخفیف"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "holderDynamicCtrls",
+              "type": "dynamiCtrls",
+              "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetExteraFilters",
+              "otherCtrls": [
+                "havePrevInsurance",
+                "isNewCar",
+                "brandId"
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "جستجو",
+              "onClick": "refreshGrid('userGrid', this)",
+              "class": "btn-primary"
+            }
+          ]
         }
-    ]
+      ]
+    }
+  ]
 }

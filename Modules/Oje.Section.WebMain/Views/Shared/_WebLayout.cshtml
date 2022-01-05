@@ -1,24 +1,27 @@
-﻿<!DOCTYPE html>
+﻿@using Oje.Infrastructure.Services
+<!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/mainPage.min.css.gz" />
-    <script src="/Modules/Core/js/jquery.min.js.gz"></script>
-    <script asp-append-version="true" src="/Modules/Core/js/mainPage.min.js.gz"></script>
-    <script src="/Modules/Core/js/chart.min.js.gz"></script>
+   
+    @*<script src="/Modules/Core/js/chart.min.js.gz"></script>*@
+    <link rel="preload" as="font" href="/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2" type="font/woff2" crossorigin="anonymous">
     <link rel="icon" type="image/x-icon" href="/Modules/Assets/favicon.ico.gz">
+    <script>
+        var isLH =  @(Context.Request.IsLighthouse().ToString().ToLower())
+    </script>
 </head>
-<body>
+<body class="makeRTL" >
     <div class="wrapper">
-         <div class="wrapperBG"></div>
         <header>
             <section class="topHeader">
                 <div class="myContainer">
-                    <img class="mainHeaderLogo" title="لوگوی ستاد بیمه" src="/Modules/Assets/MainPage/logo.png" width="85" height="77" />
-                    <img class="mainHeaderElectronDevelopLogo" title="لوگوی مرکز توسعه تجارت الکترونیکی" src="/Modules/Assets/MainPage/electronDevelopment.png" width="85" height="77" />
-                    <img class="mainHeaderIranLogo" title="لوگوی ایران" src="/Modules/Assets/MainPage/iranlogo.png" width="85" height="77" />
+                    <img class="mainHeaderLogo" title="لوگوی ستاد بیمه" data-src="/Modules/Assets/MainPage/logo.png" width="85" height="77" />
+                    <img class="mainHeaderElectronDevelopLogo" title="لوگوی مرکز توسعه تجارت الکترونیکی" data-src="/Modules/Assets/MainPage/electronDevelopment.png" width="85" height="77" />
+                    <img class="mainHeaderIranLogo" title="لوگوی ایران" data-src="/Modules/Assets/MainPage/iranlogo.png" width="85" height="77" />
                     <h1 class="mainHeaderCompanyName">ستاد بیمه</h1>
                 </div>
             </section>
@@ -71,7 +74,7 @@
                                             <a href="#" class="headerMenuItemGroupItem">نامی</a>
                                         </div>
                                         <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +118,7 @@
                                             <a href="#" class="headerMenuItemGroupItem">نامی</a>
                                         </div>
                                         <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
                                         </div>
                                     </div>
                                 </div>
@@ -158,7 +161,7 @@
                                             <a href="#" class="headerMenuItemGroupItem">نامی</a>
                                         </div>
                                         <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
                                         </div>
                                     </div>
                                 </div>
@@ -201,7 +204,7 @@
                                             <a href="#" class="headerMenuItemGroupItem">نامی</a>
                                         </div>
                                         <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
+                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
                                         </div>
                                     </div>
                                 </div>
@@ -217,9 +220,6 @@
 
                 </div>
             </nav>
-            <script>
-                $('.headerMenu').initNavResButton();
-            </script>
         </header>
         <main>
             @RenderBody()
@@ -230,7 +230,7 @@
                     <div class="footerWeAreMoreThenGoodSection">
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img width="80" height="80" src="/Modules/Assets/MainPage/number-1.svg" />
+                                <img width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">رتبه یک سفر</div>
@@ -239,7 +239,7 @@
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img width="80" height="80" src="/Modules/Assets/MainPage/laptop.svg.gz" />
+                                <img width="80" height="80" data-src="/Modules/Assets/MainPage/laptop.svg.gz" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر هر سفر</div>
@@ -248,7 +248,7 @@
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img width="80" height="80" src="/Modules/Assets/MainPage/Messages.svg.gz" />
+                                <img width="80" height="80" data-src="/Modules/Assets/MainPage/Messages.svg.gz" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر همه لحظات سفر</div>
@@ -279,9 +279,6 @@
                             </div>
                         </div>
                     </div>
-                    <script>
-                        $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
-                    </script>
                     <div class="footerDownloadMobileApp">
                         <div class="footerDownloadMobileAppDescription">
                             <div class="footerDownloadMobileAppDescriptionTitle">اپلیکیشن علی بابا</div>
@@ -290,10 +287,10 @@
                             </div>
                         </div>
                         <div class="footerDownloadMobileAppPlatforms">
-                            <a style="color: #1dab3c;" class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/cafe18.png" /> کافه بازار</a>
-                            <a style="color: #0091ea;" class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/miket18.png" /> مایکت</a>
-                            <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/sibapp.svg" /> سیب اپ</a>
-                            <a class="footerDownloadAppButton" href="#"><img width="18" src="/Modules/Assets/MainPage/download.svg" /> دانلود مستقیم </a>
+                            <a style="color: #1dab3c;" class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/cafe18.png" /> کافه بازار</a>
+                            <a style="color: #0091ea;" class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/miket18.png" /> مایکت</a>
+                            <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/sibapp.svg" /> سیب اپ</a>
+                            <a class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/download.svg" /> دانلود مستقیم </a>
                         </div>
                     </div>
                 </div>
@@ -344,20 +341,17 @@
                                 </div>
                                 <span class="showMoreButton">بیشتر</span>
                             </div>
-                            <script>
-                                $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
-                            </script>
                         </div>
                         <div class="footerAboutUsSectionLeft">
                             <a class="leftFooterLink" href="https://alibaba.ir">alibaba.ir</a>
                             <span class="footerAboutUsTellNumber">تلفن پشتیبانی :<span>021-43900000</span>|<span>021-49275000</span></span>
                             <span class="footerAboutUsTellNumber">دفتر فروش : قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span>
                             <div class="footerLeftTrophyIcons">
-                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
                             </div>
                         </div>
                     </div>
@@ -381,5 +375,27 @@
             </section>
         </footer>
     </div>
+    <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/websiteCore.min.css.gz" />
+    <script src="/Modules/Core/js/jquery.min.js.gz"></script>
+    <script asp-append-version="true" src="/Modules/Core/js/websiteCor.min.js.gz"></script>
+    <script asp-append-version="true" src="/Modules/Core/js/mainPage.min.js.gz"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+             if(isLH == false) {
+                $('.ourPrideSectionItem').initAutoNumber(300);
+                $('.animationOnScroll').initScrollAnimation();
+            }
+            else {
+                $('.animationOnScrollOpacity').removeClass('animationOnScrollOpacity');
+                $('.animationOnScrollMarginTop').removeClass('animationOnScrollMarginTop');
+                $('.animationOnScrollOpacityFlip').removeClass('animationOnScrollOpacityFlip');
+            }
+            $('img[data-src]').loadImageOnScroll();
+            $('.headerMenu').initNavResButton();
+            $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
+            $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
+        });
+       
+    </script>
 </body>
 </html>

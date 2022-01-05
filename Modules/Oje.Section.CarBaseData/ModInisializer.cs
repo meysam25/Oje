@@ -31,6 +31,8 @@ namespace Oje.Section.CarBaseData
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ICarExteraDiscountRangeAmountService, CarExteraDiscountRangeAmountService>();
             services.AddScoped<ICarExteraDiscountCategoryService, CarExteraDiscountCategoryService>();
+            services.AddScoped<IVehicleSpecCategoryService, VehicleSpecCategoryService>();
+            services.AddScoped<IVehicleSpecService, VehicleSpecService>();
         }
     }
 }

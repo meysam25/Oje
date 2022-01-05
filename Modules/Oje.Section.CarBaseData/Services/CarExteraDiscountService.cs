@@ -31,7 +31,7 @@ namespace Oje.Section.CarBaseData.Services
                 Title = input.title,
                 IsOption = input.isOption.ToBooleanReturnFalse(),
                 Type = input.type.Value,
-                CarTypeId = input.cTypeId,
+                VehicleTypeId = input.cTypeId,
                 CalculateType = input.calcType.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 HasPrevInsurance = input.hasPrevInsurance,
@@ -83,7 +83,7 @@ namespace Oje.Section.CarBaseData.Services
             {
                 id = t.Id,
                 calcType = t.CalculateType,
-                cTypeId = t.CarTypeId,
+                cTypeId = t.VehicleTypeId,
                 description = t.Description,
                 formId = t.ProposalFormId,
                 formId_Title = t.ProposalForm.Title,
@@ -155,7 +155,7 @@ namespace Oje.Section.CarBaseData.Services
             foundItem.Title = input.title;
             foundItem.IsOption = input.isOption.ToBooleanReturnFalse();
             foundItem.Type = input.type.Value;
-            foundItem.CarTypeId = input.cTypeId;
+            foundItem.VehicleTypeId = input.cTypeId;
             foundItem.CalculateType = input.calcType.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.HasPrevInsurance = input.hasPrevInsurance;

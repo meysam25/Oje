@@ -4,6 +4,6 @@ namespace Oje.ProposalFormService.Interfaces
 {
     public interface IThirdPartyRateService
     {
-        object Inquiry(int? siteSettingId, CarThirdPartyInquiryVM input);
+        object Inquiry(int? siteSettingId, CarThirdPartyInquiryVM input, string targetArea);
     }
 }

@@ -64,6 +64,8 @@ namespace Oje.ProposalFormService
             services.AddScoped<IProposalFormCategoryService, ProposalFormCategoryService>();
             services.AddScoped<IProposalFilledFormAdminBaseQueryService, ProposalFilledFormAdminBaseQueryService>();
             services.AddScoped<IProposalFilledFormStatusLogService, ProposalFilledFormStatusLogService>();
+            services.AddScoped<ICarTypeService, CarTypeService>();
+            services.AddScoped<IVehicleSpecsService, VehicleSpecsService>();
 
 
             services.AddDbContext<ProposalFormReportDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));

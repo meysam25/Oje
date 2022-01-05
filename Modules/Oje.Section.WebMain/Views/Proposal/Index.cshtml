@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "_WebLayout";
+}
+
+<div class="myContainer">
+    <section class="globalSection">
+        <div id="ppfHolder">
+        </div>
+    </section>
+
+</div>
+
+
+<script>
+    @{
+        if (ViewBag.exteraParameters != null)
+        {
+            ViewContext.Writer.Write("var exteraModelParams = JSON.parse('" + Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.exteraParameters) + "');");
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function(event) {
+            loadJsonConfig('@ViewBag.ConfigRoute', 'ppfHolder');
+    });
+</script>

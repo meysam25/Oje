@@ -11,6 +11,6 @@ namespace Oje.ProposalFormService.Interfaces
     {
         string GetTitleById(int? id);
         object GetLightList();
-        object GetSelect2List(Select2SearchVM searchInput);
+        object GetSelect2List(Select2SearchVM searchInput, int? vehicleTypeId);
     }
 }

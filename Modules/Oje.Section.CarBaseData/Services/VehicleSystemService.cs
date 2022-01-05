@@ -25,13 +25,19 @@ namespace Oje.Section.CarBaseData.Services
         {
             CreateValidation(input);
 
-            db.Entry(new VehicleSystem()
+            var newItem = new VehicleSystem()
             {
-                CarTypeId = input.carTypeId.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Order = input.order.ToIntReturnZiro(),
                 Title = input.title
-            }).State = EntityState.Added;
+            };
+
+            db.Entry(newItem).State = EntityState.Added;
+            db.SaveChanges();
+
+            foreach (var vtId in input.vehicleTypeIds)
+                db.Entry(new VehicleSystemVehicleType() { VehicleTypeId = vtId, VehicleSystemId = newItem.Id }).State = EntityState.Added;
+
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -43,19 +49,20 @@ namespace Oje.Section.CarBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
-            if (input.carTypeId.ToIntReturnZiro() <= 0)
-                throw BException.GenerateNewException(BMessages.Please_Select_CarType);
             if (input.title.Length > 50)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
-            if (db.VehicleSystems.Any(t => t.Title == input.title && t.CarTypeId == input.carTypeId && t.Id != input.id))
-                throw BException.GenerateNewException(BMessages.Dublicate_Item);
+            if (input.vehicleTypeIds == null || input.vehicleTypeIds.Count == 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_VeicleType);
         }
 
         public ApiResult Delete(int? id)
         {
-            var foundItem = db.VehicleSystems.Where(t => t.Id == id).FirstOrDefault();
+            var foundItem = db.VehicleSystems.Include(t => t.VehicleSystemVehicleTypes).Where(t => t.Id == id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
+
+            foreach(var item in foundItem.VehicleSystemVehicleTypes)
+                db.Entry(item).State = EntityState.Deleted;
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -69,10 +76,10 @@ namespace Oje.Section.CarBaseData.Services
                 .Select(t => new CreateUpdateVehicleSystemVM
                 {
                     id = t.Id,
-                    carTypeId = t.CarTypeId,
                     isActive = t.IsActive,
                     order = t.Order,
-                    title = t.Title
+                    title = t.Title,
+                    vehicleTypeIds = t.VehicleSystemVehicleTypes.Select(tt => tt.VehicleTypeId).ToList()
                 })
                 .FirstOrDefault();
         }
@@ -90,32 +97,32 @@ namespace Oje.Section.CarBaseData.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.order != null)
                 qureResult = qureResult.Where(t => t.Order == searchInput.order);
-            if (searchInput.carTypeId.ToIntReturnZiro() > 0)
-                qureResult = qureResult.Where(t => t.CarTypeId == searchInput.carTypeId);
+            if (searchInput.types.ToIntReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.VehicleSystemVehicleTypes.Any(tt => tt.VehicleTypeId == searchInput.types));
 
             int row = searchInput.skip;
 
-            return new GridResultVM<VehicleSystemMainGridResultVM>() 
+            return new GridResultVM<VehicleSystemMainGridResultVM>()
             {
                 total = qureResult.Count(),
                 data = qureResult.OrderBy(t => t.Order).Skip(searchInput.skip).Take(searchInput.take)
-                .Select(t => new 
+                .Select(t => new
                 {
                     id = t.Id,
                     title = t.Title,
                     order = t.Order,
                     isActive = t.IsActive,
-                    carTypeId = t.CarType.Title
+                    types = t.VehicleSystemVehicleTypes.Select(tt => tt.VehicleType.Title).ToList()
                 })
                 .ToList()
-                .Select(t => new VehicleSystemMainGridResultVM 
+                .Select(t => new VehicleSystemMainGridResultVM
                 {
                     row = ++row,
                     id = t.id,
                     title = t.title,
-                    isActive = t.isActive == true ?BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
                     order = t.order,
-                    carTypeId = t.carTypeId
+                    types = string.Join(",", t.types)
                 })
                 .ToList()
             };
@@ -125,11 +132,16 @@ namespace Oje.Section.CarBaseData.Services
         {
             CreateValidation(input);
 
-            var foundItem = db.VehicleSystems.Where(t => t.Id == input.id).FirstOrDefault();
+            var foundItem = db.VehicleSystems.Include(t => t.VehicleSystemVehicleTypes).Where(t => t.Id == input.id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
-            foundItem.CarTypeId = input.carTypeId.Value;
+            foreach (var item in foundItem.VehicleSystemVehicleTypes)
+                db.Entry(item).State = EntityState.Deleted;
+
+            foreach (var vtId in input.vehicleTypeIds)
+                db.Entry(new VehicleSystemVehicleType() { VehicleTypeId = vtId, VehicleSystemId = foundItem.Id }).State = EntityState.Added;
+
             foundItem.Title = input.title;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Order = input.order.ToIntReturnZiro();
@@ -150,7 +162,7 @@ namespace Oje.Section.CarBaseData.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.VehicleSystems.OrderByDescending(t => t.Id).AsQueryable();
+            var qureResult = db.VehicleSystems.OrderBy(t => t.Order).AsQueryable();
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

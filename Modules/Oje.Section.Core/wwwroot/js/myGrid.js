@@ -72,7 +72,7 @@ $.fn.initMyGrid = function (option) {
                 } else if (searchConfig.search.searchType == 'dropdown') {
                     result += '<select placeholder="' + searchConfig.caption + '" data-valueField = "' + searchConfig.search.valueField + '" data-textField="' + searchConfig.search.textField + '" data-url="' + searchConfig.search.url + '" class="form-control" name="' + searchConfig.field + '">/select>';
                 } else if (searchConfig.search.searchType == 'persianDateTime') {
-                    result += '<input type="text" autocomplete="off" class="form-control myGridPersianDP" name="' + searchConfig.field + '" />';;
+                    result += '<input type="text" data-jdp autocomplete="off" class="form-control myGridPersianDP" name="' + searchConfig.field + '" />';;
                 }
             }
 
@@ -471,7 +471,12 @@ $.fn.initMyGrid = function (option) {
         curElement.initCTRL = function (curObj) {
             $(curObj).find('.myGridPersianDP').each(function () {
                 $(document).ready(function () {
-                    $(this.cObj).MdPersianDateTimePicker();
+                    jalaliDatepicker.startWatch({
+                        separatorChar: "/",
+                        changeMonthRotateYear: true,
+                        showTodayBtn: true,
+                        showEmptyBtn: true
+                    });
                 }.bind({ cObj: this }));
             });
             $(curObj).find('select[data-url]').each(function () {

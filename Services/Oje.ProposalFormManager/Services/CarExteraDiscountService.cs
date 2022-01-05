@@ -24,7 +24,7 @@ namespace Oje.ProposalFormService.Services
                     .Include(t => t.CarExteraDiscountCategory)
                     .Include(t => t.CarExteraDiscountValues).ThenInclude(t => t.CarExteraDiscountRangeAmounts).ThenInclude(t => t.CarExteraDiscountRangeAmountCompanies)
                     .Include(t => t.CarExteraDiscountRangeAmounts).ThenInclude(t => t.CarExteraDiscountRangeAmountCompanies)
-                    .Include(t => t.CarType.VehicleSystems)
+                    //.Include(t => t.CarType.VehicleSystems)
                     .Where(t => t.IsActive == true && Ids.Contains(t.Id) && t.IsOption == true && t.ProposalFormId == proposalFormId)
                     .AsNoTracking()
                     .ToList();
@@ -37,7 +37,7 @@ namespace Oje.ProposalFormService.Services
             var tempResult = db.CarExteraDiscounts
                 .OrderBy(t => t.Order)
                 .Where(t => t.IsActive == true && t.ProposalFormId == proposalFormId && t.IsOption == false &&
-                            (t.CarTypeId == null || t.CarType.VehicleSystems.Any(tt => tt.Id == input.brandId)) &&
+                            (t.VehicleTypeId == null || t.VehicleTypeId == input.vehicleTypeId) &&
                             (t.HasPrevInsurance == null || t.HasPrevInsurance == hasPrevInsurance)
                        )
                 .Select(t => new
@@ -77,7 +77,7 @@ namespace Oje.ProposalFormService.Services
                 .OrderBy(t => t.Order)
                 .Where(t =>
                             t.IsActive == true && t.IsOption == true && t.ProposalFormId == proposalFormId &&
-                             (t.CarTypeId == null || t.CarType.VehicleSystems.Any(tt => tt.Id == input.brandId)) &&
+                             (t.VehicleTypeId == null || t.VehicleTypeId == input.vehicleTypeId) &&
                              (t.HasPrevInsurance == null || t.HasPrevInsurance == hasPrevInsurance)
                         )
                 .AsNoTracking()
@@ -154,11 +154,10 @@ namespace Oje.ProposalFormService.Services
                     .Include(t => t.CarExteraDiscountCategory)
                     .Include(t => t.CarExteraDiscountValues).ThenInclude(t => t.CarExteraDiscountRangeAmounts).ThenInclude(t => t.CarExteraDiscountRangeAmountCompanies)
                     .Include(t => t.CarExteraDiscountRangeAmounts).ThenInclude(t => t.CarExteraDiscountRangeAmountCompanies)
-                    .Include(t => t.CarType.VehicleSystems)
                     .Where(t => t.IsActive == true)
                     .AsNoTracking()
                     .Where(t => t.ProposalFormId == proposalFormId && t.IsOption == false && t.IsActive == true &&
-                            (t.CarTypeId == null || t.CarType.VehicleSystems.Any(tt => tt.Id == vehicleSystemId)) &&
+                            (t.VehicleTypeId == null || t.VehicleType.VehicleSystemVehicleTypes.Any(tt => tt.VehicleSystemId == vehicleSystemId)) &&
                             (t.HasPrevInsurance == null || t.HasPrevInsurance == hasPrevInsurance)
                            )
                      .ToList()

@@ -2,7 +2,7 @@
 @using Oje.AccountService.Interfaces
 @inject IUserNotificationService UserNotificationService
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +11,7 @@
     <link rel="stylesheet" asp-append-version="true" href="/Modules/Account/css/Account.min.css.gz" />
 
     <script asp-append-version="true" src="/Modules/Core/js/sr.js.gz"></script>
+    <script asp-append-version="true" src="/Modules/Core/js/jquery.min.js.gz"></script>
     <script asp-append-version="true" src="/Modules/Core/js/core.min.js.gz"></script>
     <script asp-append-version="true" src="/Modules/Account/js/Account.min.js.gz"></script>
 
@@ -30,7 +31,7 @@
             <a href="/Account/Dashboard/Index" class="sideMenuItem">
                 <span class="sideMenuItemInner">
                     <span class="fa fa-home menuIcon"></span>
-                    <span >داشبرد</span>
+                    <span>داشبرد</span>
                 </span>
             </a>
             <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login">
@@ -52,37 +53,36 @@
             @RenderBody()
         </div>
     </main>
-    <script src="/Modules/Core/js/bs.min.js.gz"></script>
 
     @RenderSection("Scripts", required: false)
-<script>
-    $('.notificationCount').click(function(e) { e.stopPropagation(); });
-    $('.sideMenuHolder').initSideMenu();
-    $('.headerTopMenuButton').click(function () {
-        if ($('.sideMenuHolder').length > 0 && $('.sideMenuHolder')[0].toggleSideMenu) {
-            $('.sideMenuHolder')[0].toggleSideMenu();
-        }
-    });
-    $('.loginUserSecitonHeader').click(function (e) {
-        $('.notificationHolder').removeClass('showLoginMenu');
-        $(this).toggleClass('showLoginMenu');
-        e.stopPropagation();
-    });
-    $('.loginUserMenu').click(function (e) {
-        e.stopPropagation();
-    });
+    <script>
+        $('.notificationCount').click(function(e) { e.stopPropagation(); });
+        $('.sideMenuHolder').initSideMenu();
+        $('.headerTopMenuButton').click(function () {
+            if ($('.sideMenuHolder').length > 0 && $('.sideMenuHolder')[0].toggleSideMenu) {
+                $('.sideMenuHolder')[0].toggleSideMenu();
+            }
+        });
+        $('.loginUserSecitonHeader').click(function (e) {
+            $('.notificationHolder').removeClass('showLoginMenu');
+            $(this).toggleClass('showLoginMenu');
+            e.stopPropagation();
+        });
+        $('.loginUserMenu').click(function (e) {
+            e.stopPropagation();
+        });
 
-    $('.notificationHolder').click(function (e) {
-        $('.loginUserSecitonHeader').removeClass('showLoginMenu');
-        $(this).toggleClass('showLoginMenu');
-        e.stopPropagation();
-    });
-    $('.notificationHolder').click(function (e) {
-        e.stopPropagation();
-    });
-    $('body').click(function () {
-        $('.showLoginMenu').removeClass('showLoginMenu');
-    });
-</script>
+        $('.notificationHolder').click(function (e) {
+            $('.loginUserSecitonHeader').removeClass('showLoginMenu');
+            $(this).toggleClass('showLoginMenu');
+            e.stopPropagation();
+        });
+        $('.notificationHolder').click(function (e) {
+            e.stopPropagation();
+        });
+        $('body').click(function () {
+            $('.showLoginMenu').removeClass('showLoginMenu');
+        });
+    </script>
 </body>
 </html>

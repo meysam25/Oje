@@ -13,7 +13,7 @@ namespace Oje.Section.CarBaseData.Models.DB
     {
         public CarSpecification()
         {
-            VehicleTypes = new List<VehicleType>();
+            CarSpecificationVehicleSpecs = new();
         }
 
         [Key]
@@ -25,6 +25,6 @@ namespace Oje.Section.CarBaseData.Models.DB
         public bool IsActive { get; set; }
 
         [InverseProperty("CarSpecification")]
-        public List<VehicleType> VehicleTypes { get; set; }
+        public List<CarSpecificationVehicleSpec> CarSpecificationVehicleSpecs { get; set; }
     }
 }

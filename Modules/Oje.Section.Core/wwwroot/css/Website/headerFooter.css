@@ -5,6 +5,7 @@
     src: url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.eot?#iefix') format('embedded-opentype'), url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2') format('woff2'), url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff') format('woff'), url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 * {
@@ -20,7 +21,8 @@ html {
 }
 
 body {
-    margin: 0px;
+    margin: 0px !important;
+    text-align: right !important;
 }
 
 .wrapper {
@@ -31,45 +33,35 @@ body {
     flex-direction: column;
 }
 
-.wrapperBG {
-    background: url("/Modules/Assets/MainPage/bgp.png");
-    position: fixed;
-    z-index: 1;
-    left: 0px;
-    width: 100vw;
-    height: 100vh;
-    top: 0px;
-}
-
-
-.wrapper > header {
-    padding-top: 5px;
-    background-color: white;
-    -webkit-box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
-    box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
-    position: relative;
-    z-index: 3;
-}
-
-.wrapper > main {
-    -webkit-flex-grow: 1;
-    flex-grow: 1;
-    position: relative;
-    z-index: 2;
-}
-
-    .wrapper > main > div > section {
+    .wrapper > header {
+        padding-top: 5px;
+        background-color: white;
         -webkit-box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
         box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
+        position: relative;
+        z-index: 3;
     }
 
-.wrapper > footer {
-    background-color: white;
-    -webkit-box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
-    box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
-    position: relative;
-    z-index: 3;
-}
+    .wrapper > main {
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        background: url("/Modules/Assets/MainPage/bgp.png");
+        margin-right: 0px !important;
+        margin-left: 0px !important;
+    }
+
+        .wrapper > main > div > section {
+            -webkit-box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
+            box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
+        }
+
+    .wrapper > footer {
+        background-color: white;
+        -webkit-box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
+        box-shadow: 0px 2px 8px 1px rgba(0, 0, 0, .08);
+        position: relative;
+        z-index: 3;
+    }
 
 .myContainer {
     width: 75%;
@@ -644,7 +636,29 @@ body {
     width: 100%;
     background-color: white;
 }
-
+.plaqueLeftPart > div:nth-child(2n) {
+    margin-top:-7px !important;
+}
+.form-control{
+    height:38px !important;
+}
+.myCtrl > label:not(.btn){
+    top:8px !important;
+}
+.myCtrlMakeActive > label:not(.btn) {
+    top: -10px !important;
+}
+.myCtrl>label>span {
+    font-size:1em;
+}
+.globalSection {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background-color: white;
+    margin: 40px 6px;
+    padding: 10px;
+}
 
 @media (max-width: 380px) {
     .mainHeaderElectronDevelopLogo {
@@ -665,6 +679,14 @@ body {
 @media (max-width: 450px) {
     .footerSharingIconSection i {
         margin: 6px 6px 6px 6px;
+    }
+    .floatingFooterSection {
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+    .floatingFooterSection > div {
+        text-align:center;
     }
 }
 
@@ -697,6 +719,9 @@ body {
         -ms-flex-direction: column;
         -webkit-flex-direction: column;
         flex-direction: column;
+    }
+    section{
+        margin:20px 5px !important;
     }
 }
 

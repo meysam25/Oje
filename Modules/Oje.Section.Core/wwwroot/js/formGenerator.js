@@ -9,14 +9,77 @@ function generateForm(res, targetId) {
         }
     }
     if (targetId) {
-        $('#' + targetId).html(result);
-        executeArrFunctions();
+        if (typeof targetId === 'string' || targetId instanceof String) {
+            $('#' + targetId).html(result);
+            executeArrFunctions();
+            initLabelMoveCtrl($('#' + targetId));
+        }
+        else {
+            $(targetId).html(result);
+            executeArrFunctions();
+            initLabelMoveCtrl($(targetId));
+        }
+
     }
     else {
         $('.MainHolder').html(result);
         executeArrFunctions();
+        initLabelMoveCtrl($('.MainHolder'));
     }
+}
 
+function makeCtrlFocused(curThis) {
+    $(curThis).closest('.myCtrl').addClass('myCtrlMakeActive');
+}
+function makeCtrlBlure(curThis) {
+    $(curThis).closest('.myCtrl').removeClass('myCtrlMakeActive');
+}
+
+function initLabelMoveCtrl(querySelector) {
+    if (!querySelector)
+        querySelector = $('body');
+    querySelector.find('.myCtrl').find('select[data-select2-id]').each(function () {
+        if ($(this).data('select2')) {
+            var curThis = this;
+            $(this).on('select2:open', function () {
+                makeCtrlFocused(curThis);
+            });
+            $(this).on('select2:close', function () {
+                if (!$(curThis).data('select2').val())
+                    makeCtrlBlure(curThis);
+            });
+        }
+    });
+
+    querySelector.find('.myCtrl').find('input[type!=file], select').focus(function () {
+        makeCtrlFocused(this);
+    })
+    querySelector.find('.myCtrl').find('label').click(function () {
+        if (!$(this).closest('.myCtrl').hasClass('myCtrlMakeActive')) {
+            var sQuery = $(this).closest('.myCtrl').find('input[type!=file], select');
+            if ($(sQuery).data('select2')) {
+                $(sQuery).select2('open');
+            } else {
+                //sQuery.focus();
+            }
+        }
+    });
+    querySelector.find('.myCtrl').find('input[type!=file], select').blur(function () {
+        setTimeout(function () {
+            if (!$(this).val()) {
+                makeCtrlBlure(this);
+            }
+        }.bind(this), 200)
+    })
+    querySelector.find('.myCtrl').find('input[type!=file], select').each(function () {
+        $(this)[0].updateStatus = function () {
+            if (!$(this).val()) {
+                makeCtrlBlure(this);
+            } else {
+                makeCtrlFocused(this);
+            }
+        };
+    });
 }
 
 function executeArrFunctions() {
@@ -249,6 +312,12 @@ function getInputTemplate(ctrl) {
             case 'Shortcut':
                 result += getShortcutButtonTemplate(ctrl);
                 break;
+            case 'carPlaque':
+                result += getPlaqueTemplate(ctrl);
+                break;
+            case 'button':
+                result += getButtonTemplateWidthLabel(ctrl);
+                break;
             case 'empty':
             default:
                 break;
@@ -256,6 +325,81 @@ function getInputTemplate(ctrl) {
         if (ctrl.type != 'hidden')
             result += '</div>';
     }
+
+    return result;
+}
+
+function getButtonTemplateWidthLabel(ctrl) {
+    var result = '';
+
+    result += '<div class="form-group" >'
+    result += getButtonTemplate(ctrl);
+    result += '</div>';
+
+    return result;
+}
+
+function getPlaqueTemplate(ctrl) {
+    var result = '';
+    if (ctrl) {
+        if (ctrl.label) {
+            result += '<label style="display:block;"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        }
+        result += '<div class="plaqueCtrl form-group" >';
+        result += '<div class="plaqueRightPart" >';
+        result += '<div class="plaqueRightPartRight">';
+        result += '<input type="text" placeholder="55" name="' + ctrl.name + '_1" />';
+        result += '</div>';
+        result += '<div class="plaqueRightPartLeft">';
+        result += '<input type="text" placeholder="555" name="' + ctrl.name + '_2" />';
+        result += getPlaqueDropdownItem(ctrl);
+        result += '<input type="text" placeholder="55" name="' + ctrl.name + '_4" />';
+        result += '</div>';
+        result += '</div>';
+        result += '<div class="plaqueLeftPart" >';
+        result += '<img src="/Modules/Images/iran.png" />';
+        result += '<div>I.R</div>';
+        result += '<div>Iran</div>';
+        result += '</div>';
+        result += '</div>';
+    }
+    return result;
+}
+
+function getPlaqueDropdownItem(ctrl) {
+    var result = '';
+
+    result += '<select style="vertical-align:top" class="fa" name="' + ctrl.name + '_2" >';
+    result += '<option value="الف">الف</option>';
+    result += '<option class="fa" value="accessible"></option>';
+    result += '<option value="ب">ب</option>';
+    result += '<option value="پ">پ</option>';
+    result += '<option value="ت">ت</option>';
+    result += '<option value="ث">ث</option>';
+    result += '<option value="ج">ج</option>';
+    result += '<option value="ح">ح</option>';
+    result += '<option value="د">د</option>';
+    result += '<option value="ر">ر</option>';
+    result += '<option value="ز">ز</option>';
+    result += '<option value="ژ">ژ</option>';
+    result += '<option value="س">س</option>';
+    result += '<option value="ش">ش</option>';
+    result += '<option value="ص">ص</option>';
+    result += '<option value="ض">ض</option>';
+    result += '<option value="ط">ط</option>';
+    result += '<option value="ظ">ظ</option>';
+    result += '<option value="ع">ع</option>';
+    result += '<option value="ف">ف</option>';
+    result += '<option value="ق">ق</option>';
+    result += '<option value="ک">ک</option>';
+    result += '<option value="گ">گ</option>';
+    result += '<option value="ل">ل</option>';
+    result += '<option value="م">م</option>';
+    result += '<option value="ن">ن</option>';
+    result += '<option value="و">و</option>';
+    result += '<option value="ه">ه</option>';
+    result += '<option value="ی">ی</option>';
+    result += '</select>';
 
     return result;
 }
@@ -430,10 +574,12 @@ function getDynamicCtrlsTemplate(ctrl) {
             if (allTargetCtrl && allTargetCtrl.length > 0) {
 
                 for (var i = 0; i < allTargetCtrl.length; i++) {
-                    $('#' + allTargetCtrl[i])[0].ctrlObj = this;
-                    $('#' + allTargetCtrl[i]).change(function () {
-                        updateDynamicCtrls($(this)[0].ctrlObj);
-                    });
+                    if ($('#' + allTargetCtrl[i]).length > 0) {
+                        $('#' + allTargetCtrl[i])[0].ctrlObj = this;
+                        $('#' + allTargetCtrl[i]).change(function () {
+                            updateDynamicCtrls($(this)[0].ctrlObj);
+                        });
+                    }
                 }
             }
             else {
@@ -466,6 +612,7 @@ function updateDynamicCtrls(curThis) {
 
             $('#' + this.ctrl.id).html(htmlResult);
             executeArrFunctions();
+            initLabelMoveCtrl($('#' + this.ctrl.id));
         }
 
     }.bind({ ctrl: curThis.ctrl }));
@@ -622,12 +769,14 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
 }
 
 function getTextBoxTemplate(ctrl) {
+    if (!ctrl.id)
+        ctrl.id = uuidv4RemoveDash();
     var result = '';
     result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '">';
     if (ctrl.label) {
-        result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input autocomplete="off" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + (ctrl.type == 'persianDateTime' ? 'text' : ctrl.type) + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input autocomplete="off" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + (ctrl.type == 'persianDateTime' ? 'text' : ctrl.type) + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
     if (ctrl.onEnter && ctrl.id) {
         functionsList.push(function () {
@@ -647,7 +796,12 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.type == "persianDateTime") {
         functionsList.push(function () {
             setTimeout(function () {
-                $('#' + this.id).MdPersianDateTimePicker();
+                jalaliDatepicker.startWatch({
+                    separatorChar: "/",
+                    changeMonthRotateYear: true,
+                    showTodayBtn: true,
+                    showEmptyBtn: true
+                });
             }.bind({ id: this.id }), 100);
         }.bind({ id: ctrl.id }));
     }
@@ -725,11 +879,15 @@ function getTextAreaTemplate(ctrl) {
 function getFileCTRLTemplate(ctrl) {
     var result = '';
 
-    result += '<div class="myCtrl form-group">';
+    if (!ctrl.id)
+        ctrl.id = uuidv4RemoveDash();
+
+    result += '<div class="myCtrl form-group myFileUpload">';
+
     if (ctrl.label) {
-        result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '<a ' + (ctrl.sampleUrl ? 'href="' + ctrl.sampleUrl + '"' : '') + ' style="margin-left:5px;margin-right:5px;font-size:8pt;" data-name="' + ctrl.name + '_address" >' + (ctrl.sampleUrl ? '(مشاهده)' : '') + '</a></label>';
+        result += '<label class="btn btn-primary btn-block" style="margin-bottom:0px;text-align:center;" for="file_' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '<a target="_blank" ' + (ctrl.sampleUrl ? 'href="' + ctrl.sampleUrl + '"' : '') + ' style="margin-left:5px;margin-right:5px;font-size:8pt;" data-name="' + ctrl.name + '_address" >' + (ctrl.sampleUrl ? '(مشاهده)' : '') + '</a></label>';
     }
-    result += '<input ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
+    result += '<input id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     return result;
@@ -758,7 +916,10 @@ function getTokennCTRLTemplate(ctrl) {
 function getDropdownCTRLTemplate(ctrl) {
     var result = '';
 
-    result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '"' + (ctrl.moveNameToParent ? ' name="' + ctrl.name + '"' : '') + '>';
+    if (!ctrl.id)
+        ctrl.id = uuidv4RemoveDash();
+
+    result += '<div id="myCtrlDivHolder' + ctrl.id + '" class="myCtrl ' + (ctrl.type == 'dropDown' && !ctrl.moveNameToParent ? 'myDropdown myDropdownHeight' : '') + ' form-group ' + (ctrl.class ? ctrl.class : '') + '"' + (ctrl.moveNameToParent ? ' name="' + ctrl.name + '"' : '') + '>';
     if (ctrl.label) {
         result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
@@ -769,10 +930,18 @@ function getDropdownCTRLTemplate(ctrl) {
         }
     }
     result += '</select>';
+    if (ctrl.type == 'dropDown' && !ctrl.moveNameToParent) {
+        result += '<div class="myDropdownText myDropdownHeight" ><span class="myDropdownHeight"></span><i ></i></div>';
+        result += '<div id="myCtrlDivHolder' + ctrl.id + '_HItems" class="myDropdownItems"></div>';
+    }
     result += '</div>';
 
     if (ctrl.type == 'dropDown')
-        functionsList.push(function () { initDropdown($('#' + this.id)); }.bind({ id: ctrl.id }));
+        functionsList.push(function () {
+            if (!this.moveNameToParent)
+                $('#' + this.id).closest('.myDropdown').initMyDropdown();
+            initDropdown($('#' + this.id));
+        }.bind({ id: ctrl.id, moveNameToParent: ctrl.moveNameToParent }));
     else
         functionsList.push(function () {
             var exteraSelect2Parameters = {};
@@ -782,7 +951,7 @@ function getDropdownCTRLTemplate(ctrl) {
                     exteraSelect2Parameters[prop] = exteraModelParams[prop];
 
             var select2Option = {
-                placeholder: ctrl.ph ? ctrl.ph : "لطفا انتخاب کنید",
+                placeholder: ctrl.ph ? ctrl.ph : "",
                 ajax: {
                     url: this.dataurl,
                     data: function (params) {
@@ -794,6 +963,17 @@ function getDropdownCTRLTemplate(ctrl) {
                 }
             };
             $('#' + this.id).select2(select2Option);
+            if (this.exteraParameterIds) {
+                for (var i = 0; i < this.exteraParameterIds.length; i++) {
+                    $('#' + this.exteraParameterIds).change(function () {
+                        var s2Obj = $('#' + this.id).data('select2');
+                        if (s2Obj) {
+                            s2Obj.val(['']);
+                            s2Obj.trigger('change');
+                        }
+                    }.bind({ id: this.id }));
+                }
+            }
         }.bind({ id: ctrl.id, dataurl: ctrl.dataurl, exteraParameterIds: ctrl.exteraParameterIds }));
 
     initDropDownExteraFunctions(ctrl);
@@ -832,11 +1012,47 @@ function bindExteraDropDown(res, ctrlCss, targetCtrlId) {
         if (ctrlHtmls && $('#' + targetCtrlId).length > 0) {
             $('#' + targetCtrlId).closest('.myPanel').find('.dynamicCtrlsHolder').remove();
             $('#' + targetCtrlId).closest('.myCtrl').parent().after(ctrlHtmls);
+            //initLabelMoveCtrl($('#' + targetCtrlId).closest('.myPanel'));
+            executeArrFunctions();
+        }
+    }
+}
+
+function changeAllLabel(changeOtherCtrLabel, curName, curValue) {
+    if (curName && curValue) {
+        for (var i = 0; i < changeOtherCtrLabel.length; i++) {
+            var curConfig = changeOtherCtrLabel[i];
+            if (curConfig.url && curConfig.targetCtrlId && curConfig.titleSchema) {
+                var postData = new FormData();
+                postData.append(curName, curValue);
+                postForm(curConfig.url, postData, function (res) {
+                    if (res && this.curConfig.titleSchema && $('#' + this.curConfig.targetCtrlId).length > 0) {
+                        var targetQuery = $('#' + this.curConfig.targetCtrlId).closest('.myCtrl').find('label');
+                        var curHtml = targetQuery.html();
+                        var hasRequred = false;
+                        if (curHtml && curHtml.trim().indexOf('<span style="color:red">*</span>') > -1)
+                            hasRequred = true;
+                        targetQuery.html(res[this.curConfig.titleSchema] + (hasRequred == true ? '<span style="color:red">*</span>' : ''));
+                    }
+                }.bind({ curConfig: curConfig }));
+            }
         }
     }
 }
 
 function initDropDownExteraFunctions(ctrl) {
+    if (ctrl.changeOtherCtrLabel && ctrl.changeOtherCtrLabel.length > 0) {
+        functionsList.push(function () {
+            if ($('#' + ctrl.id).length > 0) {
+                var curCtrl = this.ctrl;
+                $('#' + ctrl.id).change(function () {
+                    var curValue = $(this).val();
+                    var curName = $(this).attr('name');
+                    changeAllLabel(curCtrl.changeOtherCtrLabel, curName, curValue);
+                });
+            }
+        }.bind({ ctrl: ctrl }));
+    }
     if (ctrl.bindFormUrl) {
         functionsList.push(function () {
             if ($('#' + this.ctrl.id).length > 0) {
@@ -933,7 +1149,8 @@ function initDropDownExteraFunctions(ctrl) {
                         $('#' + this.childId)[0].resData = null;
                         initDropdown($('#' + this.childId));
                     } else {
-                        $('#' + this.childId).html('<option value="">لطفا انتخاب کنید</option>');
+                        $('#' + this.childId).html('<option value=""></option>');
+                        $('#' + this.childId).closest('.myDropdown')[0].updateItemFromSelect();
                     }
 
                 }.bind({ childId: this.childId, id: this.id }));
@@ -970,12 +1187,14 @@ function showAndHideCtrl(curValue, showHideCondation, curCtrlId) {
 }
 
 function showAndHideByClass(classObj, curCtrlId) {
-    if (classObj.classShow && classObj.classShow.length > 0 && $('#' + curCtrlId).is(':visible')) {
+    var isCtrlVisible = $('#' + curCtrlId).is(':visible');
+    var isParentVisible = $('#' + curCtrlId).closest('.myDropdown').length > 0 && $('#' + curCtrlId).closest('.myDropdown').is(':visible');
+    if (classObj.classShow && classObj.classShow.length > 0 && (isCtrlVisible || isParentVisible)) {
         for (var i = 0; i < classObj.classShow.length; i++) {
             $('.' + classObj.classShow[i]).parent().css('display', 'block');
         }
     }
-    if (classObj.classHide && classObj.classHide.length > 0 && $('#' + curCtrlId).is(':visible')) {
+    if (classObj.classHide && classObj.classHide.length > 0 && (isCtrlVisible || isParentVisible)) {
         for (var i = 0; i < classObj.classHide.length; i++) {
             $('.' + classObj.classHide[i]).parent().css('display', 'none');
         }
@@ -1037,7 +1256,7 @@ function getStepWizardTemplate(wizard) {
             if (i > 0)
                 result += '<button class="btn btn-warning btn-sm stepButton buttonBack">بازگشت</button>';
             var isLastStep = (i + 1) >= wizard.steps.length;
-            result += '<button class="btn btn-primary btn-sm stepButton ' + (isLastStep ? 'lastStepButton' : 'buttonConfirm') + ' ">' + (isLastStep ? wizard.lastStepButtonTitle : 'ادامه') + '</button>';
+            result += '<button class="btn btn-primary btn-sm stepButton ' + (isLastStep ? 'lastStepButton' : 'buttonConfirm') + ' ">' + (isLastStep ? wizard.lastStepButtonTitle : (wizard.fistStepButtonTitle && i == 0 ? wizard.fistStepButtonTitle : 'ادامه')) + '</button>';
             result += '</div>';
             result += '</div>';
         }
@@ -1120,8 +1339,8 @@ function initSWFunctions(curId, actionOnLastStep) {
             }
         };
         $('#' + curId)[0].movePrev = function () {
-            if (!validateForm($(this).find('.panelSWizardHolderContentItemActive')))
-                return;
+            //if (!validateForm($(this).find('.panelSWizardHolderContentItemActive')))
+            //    return;
             var nextStep = $(this).find('.panelSWizardHolderHeaderItemActive').prev();
             while (isShowCondationValid(nextStep) == false)
                 nextStep = nextStep.prev();
@@ -1191,9 +1410,11 @@ function doPageActions(actionOnLastStep) {
             showLoader(formQuery);
             postForm(actionOnLastStep.url, postData, function (res) {
                 if (this.actionOnLastStep.detailesUrl && res.isSuccess == true && res.data) {
-                    location.href = this.actionOnLastStep.detailesUrl + "?id=" + res.data;
+                    location.href = (res.data.url ? res.data.url : this.actionOnLastStep.detailesUrl) + "?id=" + res.data.id;
                 }
             }.bind({ actionOnLastStep: actionOnLastStep }), null, function () { hideLoader(formQuery); });
+        } else if (actionOnLastStep.actionName == 'showModal' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
+            $('#' + actionOnLastStep.objectId).modal('show');
         }
     }
 }

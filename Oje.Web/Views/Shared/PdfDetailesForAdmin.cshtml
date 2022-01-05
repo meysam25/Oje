@@ -1,5 +1,9 @@
 ﻿@{
     Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    if(ViewBag.newLayoutName != null)
+    {
+        Layout = ViewBag.newLayoutName;
+    }
     ViewBag.Title = Model.ppfTitle;
 }
 @model Oje.Infrastructure.Models.Pdf.ProposalFilledForm.ProposalFilledFormPdfVM
@@ -63,8 +67,17 @@
    }
 </style>
 <script>
-    $('.mainLoaderForAdminArea').css('display', 'none');
+    if(window["$"]) {
+        $('.mainLoaderForAdminArea').css('display', 'none');
+    }
 </script>
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
+    }
+}
 <div class="pdfBody">
     @{
         if(!string.IsNullOrEmpty(Model.companyTitle))
@@ -119,3 +132,9 @@
         
 </div>
 
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("</section></div>");
+    }
+}

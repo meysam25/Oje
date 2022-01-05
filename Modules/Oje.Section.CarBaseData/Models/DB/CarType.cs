@@ -13,9 +13,8 @@ namespace Oje.Section.CarBaseData.Models.DB
     {
         public CarType()
         {
-            VehicleSystems = new List<VehicleSystem>();
-            VehicleUsageCarTypes = new List<VehicleUsageCarType>();
-            CarExteraDiscounts = new List<CarExteraDiscount>();
+            VehicleUsageCarTypes = new();
+            VehicleTypeCarTypes = new();
         }
 
         [Key]
@@ -24,12 +23,11 @@ namespace Oje.Section.CarBaseData.Models.DB
         [MaxLength(50)]
         public string Title { get; set; }
         public bool IsActive { get; set; }
+        public int Order { get; set; }
 
-        [InverseProperty("CarType")]
-        public List<VehicleSystem> VehicleSystems { get; set; }
         [InverseProperty("CarType")]
         public List<VehicleUsageCarType> VehicleUsageCarTypes { get; set; }
         [InverseProperty("CarType")]
-        public List<CarExteraDiscount> CarExteraDiscounts { get; set; }
+        public List<VehicleTypeCarType> VehicleTypeCarTypes { get; set; }
     }
 }

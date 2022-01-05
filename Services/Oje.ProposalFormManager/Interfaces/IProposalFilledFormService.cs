@@ -10,6 +10,6 @@ namespace Oje.ProposalFormService.Interfaces
 {
     public interface IProposalFilledFormService
     {
-        ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId);
+        ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl);
     }
 }

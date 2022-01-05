@@ -75,7 +75,7 @@ namespace Oje.ProposalFormService.Services
             this.UserNotifierService = UserNotifierService;
         }
 
-        public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId)
+        public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl)
         {
             createValidation(siteSettingId, form);
 
@@ -127,7 +127,7 @@ namespace Oje.ProposalFormService.Services
                 }
             }
 
-            return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(), data = newFormId };
+            return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(), data = new { url = targetUrl, id = newFormId } };
         }
 
         private void createUploadedFiles(int? siteSettingId, IFormCollection form, long? loginUserId, long proposalFilledFormId)

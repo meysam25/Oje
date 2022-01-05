@@ -7,6 +7,7 @@
     margin: 40px 5px;
     background-color: white;
     display: flex;
+    padding:5px;
 }
 
 .inquirySectionTab {
@@ -84,6 +85,7 @@
 
 .inquirySectionTabBodyItem {
     display: none;
+    padding:10px;
 }
 .inquirySectionTabHeaderItemActive{
     cursor:default;
@@ -92,8 +94,26 @@
     color: #0077db !important;
 }
 .inquirySectionTabHeaderItemActive {
-    display: inline-block;
+    display: block;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
 }
 .inquirySectionTabHeaderItemActive:after {
     background-color: #0077db
+}
+@media (max-width: 650px) {
+    .inquirySectionTabHeaderItems {
+        -ms-flex-wrap: wrap;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        padding-bottom: 0px;
+        border: 1px solid #80aed6;
+    }
+    .inquirySectionTabHeaderItem {
+        width: 33.33333%;
+        border: 1px solid #80aed6;
+    }
+    .inquirySectionTabHeaderItemActive:after{
+        display:none;
+    }
 }

@@ -49,17 +49,23 @@
               }
             },
             {
-              "field": "specTitle",
-              "caption": "خصوصیات خودرو",
+              "field": "types",
+              "caption": "کاربری خودرو",
               "search": {
-                "searchType": "text"
+                "searchType": "dropdown",
+                "url": "/CarBaseData/VehicleType/GetCarCarTypeList",
+                "textField": "title",
+                "valueField": "id"
               }
             },
             {
-              "field": "brandTitle",
-              "caption": "برند خودرو",
+              "field": "specCategory",
+              "caption": "گروه بندی خصوصیات خودرو",
               "search": {
-                "searchType": "text"
+                "searchType": "dropdown",
+                "url": "/CarBaseData/VehicleType/GetCarSpecCategoryList",
+                "textField": "title",
+                "valueField": "id"
               }
             },
             {
@@ -94,22 +100,18 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "carSpecId",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/CarBaseData/VehicleType/GetCarSpecList",
-              "label": "خصوصیات خودرو",
-              "isRequired": true
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب نمایش"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "carVehicleSystemId",
-              "type": "dropDown2",
-              "textfield": "text",
+              "name": "specCatId",
+              "type": "dropDown",
+              "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/CarBaseData/VehicleType/GetCarBrandList",
-              "label": "برند خودرو",
+              "dataurl": "/CarBaseData/VehicleType/GetCarSpecCategoryList",
+              "label": "گروه بندی خصوصیات خودرو",
               "isRequired": true
             },
             {
@@ -120,6 +122,16 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "carTypeIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/VehicleType/GetCarCarTypeList",
+              "label": "کاربری خودرو",
+              "isRequired": true
             }
           ],
           "actions": [
@@ -153,22 +165,18 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "carSpecId",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/CarBaseData/VehicleType/GetCarSpecList",
-              "label": "خصوصیات خودرو",
-              "isRequired": true
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب نمایش"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "carVehicleSystemId",
-              "type": "dropDown2",
-              "textfield": "text",
+              "name": "specCatId",
+              "type": "dropDown",
+              "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/CarBaseData/VehicleType/GetCarBrandList",
-              "label": "برند خودرو",
+              "dataurl": "/CarBaseData/VehicleType/GetCarSpecCategoryList",
+              "label": "گروه بندی خصوصیات خودرو",
               "isRequired": true
             },
             {
@@ -179,6 +187,16 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "carTypeIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/VehicleType/GetCarCarTypeList",
+              "label": "کاربری خودرو",
+              "isRequired": true
             }
           ],
           "actions": [

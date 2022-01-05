@@ -6,7 +6,12 @@
       "stepWizards": [
         {
           "lastStepButtonTitle": "استعلام",
+          "fistStepButtonTitle": "بدون استعلام ادامه میدم",
           "actionOnLastStep": [
+            {
+              "actionName": "showModal",
+              "objectId": "gridModal"
+            },
             {
               "actionName": "refreshGrid",
               "objectId": "userGrid"
@@ -14,7 +19,36 @@
           ],
           "steps": [
             {
-              "order": 1,
+              "order": 0,
+              "id": "firstStep",
+              "title": "استعلام پلاک خودرو",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "type": "carPlaque",
+                      "name": "plaque"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "nationalCode",
+                      "type": "text",
+                      "label": "کد ملی"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "class": "btn-primary btn-block",
+                      "type": "button",
+                      "title": "استعلام سابقه",
+                      "onClick": "alert('وب سرویس پیاده سازی نشده')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 2,
               "id": "firstStep",
               "title": "شرکت بیمه نامه قبل",
               "panels": [
@@ -46,7 +80,26 @@
                           "classHide": [ "isNewCalDD" ]
                         }
                       ],
-                      "isRequired": true
+                      "isRequired": true,
+                      "dynamicCtrlConfig": {
+                        "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetRequiredQuestions",
+                        "css": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                        "targetCtrlId": "showStatus",
+                        "ctrlIds": [
+                          {
+                            "ctrlId": "vehicleTypeId",
+                            "postName": "vehicleTypeId"
+                          },
+                          {
+                            "ctrlId": "havePrevInsurance",
+                            "postName": "havePrevInsurance"
+                          },
+                          {
+                            "ctrlId": "isNewCar",
+                            "postName": "isNewCar"
+                          }
+                        ]
+                      }
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
@@ -58,7 +111,26 @@
                       "dataurl": "/Core/BaseData/Get/YesOrNo",
                       "label": "آیا خودرو صفر کیلومتر است",
                       "name": "isNewCar",
-                      "isRequired": true
+                      "isRequired": true,
+                      "dynamicCtrlConfig": {
+                        "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetRequiredQuestions",
+                        "css": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                        "targetCtrlId": "showStatus",
+                        "ctrlIds": [
+                          {
+                            "ctrlId": "vehicleTypeId",
+                            "postName": "vehicleTypeId"
+                          },
+                          {
+                            "ctrlId": "havePrevInsurance",
+                            "postName": "havePrevInsurance"
+                          },
+                          {
+                            "ctrlId": "isNewCar",
+                            "postName": "isNewCar"
+                          }
+                        ]
+                      }
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
@@ -81,9 +153,51 @@
               ]
             },
             {
-              "order": 2,
+              "order": 1,
               "id": "secoundStep",
-              "title": "اطلاعات خودرو",
+              "title": "نوع و کاربری خودرو",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "vehicleTypeId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetVehicleTypeList",
+                      "changeOtherCtrLabel": [
+                        {
+                          "url": "/ProposalFormInquiries/CarThirdPartyInquiry/GetSpecCatTitle",
+                          "targetCtrlId": "specId",
+                          "titleSchema": "title"
+                        }
+                      ],
+                      "clearInputsOnChange": [ "brandId", "specId" ],
+                      "label": "نوع خودرو",
+                      "name": "vehicleTypeId",
+                      "isRequired": true,
+                      "childId": "carTypeId"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "carTypeId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarTypeList",
+                      "label": "کاربری خودرو",
+                      "name": "carTypeId",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 1.1,
+              "id": "secoundStep",
+              "title": "برند و سال ساخت",
               "panels": [
                 {
                   "ctrls": [
@@ -94,51 +208,22 @@
                       "textfield": "title",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarBrandList",
-                      "label": "نوع خودرو",
+                      "label": "برند خودرو",
                       "name": "brandId",
                       "isRequired": true,
-                      "targetDropDown": [ "vType", "cUsage" ],
-                      "dynamicCtrlConfig": {
-                        "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetRequiredQuestions",
-                        "css": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                        "targetCtrlId": "showStatus",
-                        "ctrlIds": [
-                          {
-                            "ctrlId": "brandId",
-                            "postName": "brandId"
-                          },
-                          {
-                            "ctrlId": "havePrevInsurance",
-                            "postName": "havePrevInsurance"
-                          },
-                          {
-                            "ctrlId": "isNewCar",
-                            "postName": "isNewCar"
-                          }
-                        ]
-                      }
+                      "exteraParameterIds": [ "vehicleTypeId" ]
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "vType",
-                      "type": "dropDown",
+                      "id": "specId",
+                      "type": "dropDown2",
                       "textfield": "title",
                       "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarTypeList",
-                      "label": "تیپ خودرو",
-                      "name": "vType",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "cUsage",
-                      "type": "dropDown",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarUsageList",
-                      "label": "کاربری خودرو",
-                      "name": "cUsage",
-                      "isRequired": true
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarSpecList",
+                      "label": "مدل",
+                      "name": "specId",
+                      "isRequired": true,
+                      "exteraParameterIds": [ "brandId", "vehicleTypeId" ]
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
@@ -206,7 +291,30 @@
                       "label": "سابقه خسارت راننده",
                       "name": "driverDamageHistoryId",
                       "isRequired": true
-                    },
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 3.1,
+              "id": "discountQuestions",
+              "title": "سابقه عدم خسارت ها",
+              "showCondation": [
+                {
+                  "id": "havePrevInsurance",
+                  "operator": "!=",
+                  "value": "0"
+                },
+                {
+                  "id": "havePrevInsurance",
+                  "operator": "!=",
+                  "value": ""
+                }
+              ],
+              "panels": [
+                {
+                  "ctrls": [
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "id": "bodyNoDamagePercentId",
@@ -261,90 +369,99 @@
     },
     {
       "id": "responsePanel",
-      "grids": [
-        {
-          "id": "userGrid",
-          "exteraSearchIds": [ "searchPanel" ],
-          "exteraFilterModalId": "gridFilterModal",
-          "showColumnConfigButton": true,
-          "key": "id",
-          "url": "/ProposalFormInquiries/CarThirdPartyInquiry/Inquiry",
-          "itemPerPage": 10,
-          "schema": {
-            "data": "data",
-            "total": "total"
-          },
-          "actions": {
-            "cActions": [
-              {
-                "type": "newLink",
-                "url": "/ProposalFilledForm/Proposal/Form?fn=CreateCarThirdParty&id=",
-                "icon": "fa-cart-plus",
-                "prop": "id",
-                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/ProposalFilledForm/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
-              }
-            ]
-          },
-          "columns": [
-            {
-              "field": "row",
-              "caption": "ردیف",
-              "width": "50px",
-              "textAlign": "center"
-            },
-            {
-              "field": "cn",
-              "caption": "شرکت"
-            },
-            {
-              "field": "p",
-              "caption": "حق بیمه پایه"
-            },
-            {
-              "field": "sp",
-              "caption": "حق بیمه قابل پرداخت"
-            },
-            {
-              "field": "tmsj",
-              "caption": "تعهد مالی سال جاری"
-            },
-            {
-              "field": "tjsj",
-              "caption": "تعهد جانی سال جاری"
-            },
-            {
-              "field": "trsj",
-              "caption": "عهد راننده سال جاری"
-            }
-          ],
-          "detailesClientSchema": "dt",
-          "detailes": {
-            "id": "detailesGrid",
-            "key": "id",
-            "itemPerPage": 10,
-            "isClient": true,
-            "schema": {
-              "data": "data",
-              "total": "total"
-            },
-            "columns": [
-              {
-                "field": "t",
-                "caption": "عنوان"
-              },
-              {
-                "field": "p",
-                "caption": "مبلغ"
-              },
-              {
-                "field": "isET",
-                "caption": "وضعیت"
-              }
-            ]
-          }
-        }
-      ],
       "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "gridModal",
+          "title": "استعلام",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "userGrid",
+                  "exteraSearchIds": [ "searchPanel" ],
+                  "exteraFilterModalId": "gridFilterModal",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFormInquiries/CarThirdPartyInquiry/Inquiry",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "newLink",
+                        "url": "/ProposalFilledForm/Proposal/Form?fn=CarBody&id=",
+                        "icon": "fa-cart-plus",
+                        "prop": "id",
+                        "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"'+ curRow.targetArea +'/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "cn",
+                      "caption": "شرکت"
+                    },
+                    {
+                      "field": "p",
+                      "caption": "حق بیمه پایه"
+                    },
+                    {
+                      "field": "sp",
+                      "caption": "حق بیمه قابل پرداخت"
+                    },
+                    {
+                      "field": "tmsj",
+                      "caption": "تعهد مالی سال جاری"
+                    },
+                    {
+                      "field": "tjsj",
+                      "caption": "تعهد جانی سال جاری"
+                    },
+                    {
+                      "field": "trsj",
+                      "caption": "عهد راننده سال جاری"
+                    }
+                  ],
+                  "detailesClientSchema": "dt",
+                  "detailes": {
+                    "id": "detailesGrid",
+                    "key": "id",
+                    "itemPerPage": 10,
+                    "isClient": true,
+                    "schema": {
+                      "data": "data",
+                      "total": "total"
+                    },
+                    "columns": [
+                      {
+                        "field": "t",
+                        "caption": "عنوان"
+                      },
+                      {
+                        "field": "p",
+                        "caption": "مبلغ"
+                      },
+                      {
+                        "field": "isET",
+                        "caption": "وضعیت"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
         {
           "class": "modal-xl",
           "id": "gridFilterModal",

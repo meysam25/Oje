@@ -26,6 +26,11 @@ namespace Oje.Section.CarBaseData.Services.EContext
         public DbSet<CarExteraDiscountRangeAmount> CarExteraDiscountRangeAmounts { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CarExteraDiscountCategory> CarExteraDiscountCategories { get; set; }
+        public DbSet<VehicleSpecCategory> VehicleSpecCategories { get; set; }
+        public DbSet<VehicleSpec> VehicleSpecs { get; set; }
+        public DbSet<VehicleTypeCarType> VehicleTypeCarTypes { get; set; }
+        public DbSet<VehicleSystemVehicleType> VehicleSystemVehicleTypes { get; set; }
+        public DbSet<CarSpecificationVehicleSpec> CarSpecificationVehicleSpecs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +38,9 @@ namespace Oje.Section.CarBaseData.Services.EContext
             modelBuilder.Entity<VehicleUsage>().Property(e => e.BodyPercent).HasPrecision(5, 3);
             modelBuilder.Entity<VehicleUsage>().Property(e => e.ThirdPartyPercent).HasPrecision(5, 3);
             modelBuilder.Entity<CarExteraDiscountRangeAmount>().Property(e => e.Percent).HasPrecision(5, 2);
+            modelBuilder.Entity<VehicleTypeCarType>().HasKey(t => new { t.CarTypeId, t.VehicleTypeId });
+            modelBuilder.Entity<VehicleSystemVehicleType>().HasKey(t => new { t.VehicleSystemId, t.VehicleTypeId });
+            modelBuilder.Entity<CarSpecificationVehicleSpec>().HasKey(t => new { t.CarSpecificationId, t.VehicleSpecId });
 
             base.OnModelCreating(modelBuilder);
         }

@@ -24,21 +24,25 @@ namespace Oje.ProposalFormService.Models.View
         [Display(Name = "آیا خودرو صفر کیلومتر است")]
         public string isNewCar_Title { get; set; }
         [Display(Name = "نوع خودرو")]
-        public int? brandId { get; set; }
+        public int? vehicleTypeId { get; set; }
         [Display(Name = "نوع خودرو")]
+        public string vehicleTypeId_Title { get; set; }
+        [Display(Name = "برند خودرو")]
+        public int? brandId { get; set; }
+        [Display(Name = "برند خودرو")]
         public string brandId_Title { get; set; }
-        [Display(Name = "تیپ خودرو")]
-        public int? vType { get; set; }
-        [Display(Name = "تیپ خودرو")]
-        public string vType_Title { get; set; }
         [Display(Name = "کاربری خودرو")]
-        public int? cUsage { get; set; }
+        public int? carTypeId { get; set; }
         [Display(Name = "کاربری خودرو")]
-        public string cUsage_Title { get; set; }
+        public string carTypeId_Title { get; set; }
         [Display(Name = "سال ساخت")]
         public int? createYear { get; set; }
         [Display(Name = "سال ساخت")]
         public string createYear_Title { get; set; }
+        [Display(Name = "خصوصیت خودرو")]
+        public int? specId { get; set; }
+        [Display(Name = "خصوصیت خودرو")]
+        public string specId_Title { get; set; }
         [Display(Name ="ارزش خودروی شما (ریال)")]
         public long? carValue { get; set; }
         [Display(Name ="ارزش وسایل اضافه (ریال)")]
@@ -61,6 +65,7 @@ namespace Oje.ProposalFormService.Models.View
         public string dayLimitation_Title { get; set; }
         [Display(Name = "کد تخفیف")]
         public string discountCode { get; set; }
+
 
         public List<int> dynamicCTRLs { get; set; }
         public List<string> dynamicCTRLs_Title { get; set; }

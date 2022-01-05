@@ -6,75 +6,66 @@
     <section class="inquirySection animationOnScroll animationOnScrollOpacity">
         <div class="inquirySectionTab">
             <div class="inquirySectionTabHeaderItems">
-                <div class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner inquirySectionTabHeaderItemActive">
-                        <img src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
+                <div data-json-url="/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
+                    <div class="inquirySectionTabHeaderItemInner ">
+                        <img data-src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
                         <div> شخص ثالث</div>
                     </div>
                 </div>
-                <div class="inquirySectionTabHeaderItem">
+                <div data-json-url="/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner">
-                        <img src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
+                        <img data-src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
                         <div> بدنه</div>
                     </div>
                 </div>
-                <div class="inquirySectionTabHeaderItem">
+                <div data-json-url="/ProposalFormInquiries/FireInsurance/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner">
-                        <img src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
+                        <img data-src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
                         <div>آتش سوزی</div>
                     </div>
                 </div>
-                <div class="inquirySectionTabHeaderItem">
+                <div data-json-url="/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner">
-                        <img src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
+                        <img data-src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
                         <div> شخص ثالث</div>
                     </div>
                 </div>
-                <div class="inquirySectionTabHeaderItem">
+                <div data-json-url="/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner">
-                        <img src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
+                        <img data-src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
                         <div>بدنه</div>
                     </div>
                 </div>
-                <div class="inquirySectionTabHeaderItem">
+                <div data-json-url="/ProposalFormInquiries/FireInsurance/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner">
-                        <img src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
+                        <img data-src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
                         <div>سایر بیمه نامه ها</div>
                     </div>
                 </div>
             </div>
 
             <div class="inquirySectionTabBodyItems">
-                <div class="inquirySectionTabBodyItem inquirySectionTabHeaderItemActive">
-                    test
+                <div class="inquirySectionTabBodyItem ">
                 </div>
                 <div class="inquirySectionTabBodyItem">
-                    محتوای بدنه
                 </div>
                 <div class="inquirySectionTabBodyItem">
-                    محتوای آتش سوزی
                 </div>
                 <div class="inquirySectionTabBodyItem">
-                    محتوی ثالث
                 </div>
                 <div class="inquirySectionTabBodyItem">
-                    محتوای بدنه
                 </div>
                 <div class="inquirySectionTabBodyItem">
-                    محتوای آتش سوزی
                 </div>
             </div>
         </div>
     </section>
-    <script>
-        $('.inquirySectionTab').initInquiryTab();
-    </script>
 </div>
 <div class="myContainer">
     <section class="setadbimePlusSection animationOnScroll animationOnScrollMarginTop">
         <div class="setadbimePlusSectionInner">
             <div class="setadbimePlusSectionInnerLogo">
-                <img src="/Modules/Assets/MainPage/setad-plus-logo.svg" width="64" height="64" />
+                <img data-src="/Modules/Assets/MainPage/setad-plus-logo.svg" width="64" height="64" />
             </div>
             <div class="setadbimePlusSectionInnerDescription">
                 <div class="setadbimePlusSectionInnerDescriptionTitle">ستاد بیمه پلاس جمع تجربه های سفر</div>
@@ -88,7 +79,7 @@
         </div>
     </section>
 </div>
-<div class="myContainer">
+<div style="display:none;" class="myContainer">
     <section class="quickAccessSection animationOnScroll animationOnScrollOpacityFlip">
         <div class="quickAccessSectionTabQA">
             <div class="tabCtrl">
@@ -169,8 +160,8 @@
         </div>
     </section>
 </div>
-<script>
-    $('.tabCtrl').initTabCtrl();
+@*<script>
+    
     Highcharts.chart('hiChartMonthly', {
         chart: {
             type: 'line'
@@ -384,7 +375,7 @@
             data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
         }]
     });
-</script>
+</script>*@
 <div class="myContainer">
     <section class="aboutUsSection animationOnScroll animationOnScrollMarginTop">
         <div class="aboutUsSectionTitle">آزانس تبلیغ6اتی الرا</div>
@@ -394,15 +385,15 @@
         </div>
         <div class="aboutUsSectionAbilityIcons">
             <div class="aboutUsSectionAbilityIcon">
-                <img src="/Modules/Assets/MainPage/rahkar.png" />
+                <img data-src="/Modules/Assets/MainPage/rahkar.png" width="80" height="80" />
                 <div>راهکارهای تبلیغات و بازاریابی</div>
             </div>
             <div class="aboutUsSectionAbilityIcon">
-                <img src="/Modules/Assets/MainPage/rahkar-digital.png" />
+                <img data-src="/Modules/Assets/MainPage/rahkar-digital.png" width="80" height="80" />
                 <div>راهکارهای دیجیتال و آنلاین</div>
             </div>
             <div class="aboutUsSectionAbilityIcon">
-                <img src="/Modules/Assets/MainPage/mohtava.png" />
+                <img data-src="/Modules/Assets/MainPage/mohtava.png" width="80" height="80" />
                 <div>تولید محتوا و طراحی گرافیک</div>
             </div>
         </div>
@@ -416,7 +407,7 @@
     <section class="blogSection animationOnScroll animationOnScrollOpacity">
         <div class="blogSectionEntity">
             <div class="blogSectionMainBlog">
-                <a href="#" class="blogSectionMainBlogImg"><i></i><img width="600" height="400" src="/Modules/Assets/MainPage/branding.jpg" /></a>
+                <a href="#" class="blogSectionMainBlogImg"><i></i><img width="600" height="400" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
                 <div class="blogSectionMainBlogTitleAndDes">
                     <a href="#" class="blogSectionMainBlogTitle">هویت بصری برند چیست ؟</a>
                     <a href="#" class="blogSectionMainBlogDescription">
@@ -426,7 +417,7 @@
             </div>
             <div class="blogSectionSubBlog">
                 <div class="blogSectionSubBlogItem">
-                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" src="/Modules/Assets/MainPage/branding.jpg" /></a>
+                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
                     <div class="blogSectionSubBlogItemTitleAndDes">
                         <a href="#" class="blogSectionSubBlogItemTitle">هویت بصری برند چیست ؟</a>
                         <a href="#" class="blogSectionSubBlogItemDescription">
@@ -435,7 +426,7 @@
                     </div>
                 </div>
                 <div class="blogSectionSubBlogItem">
-                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" src="/Modules/Assets/MainPage/branding.jpg" /></a>
+                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
                     <div class="blogSectionSubBlogItemTitleAndDes">
                         <a href="#" class="blogSectionSubBlogItemTitle">هویت بصری برند چیست ؟</a>
                         <a href="#" class="blogSectionSubBlogItemDescription">
@@ -444,7 +435,7 @@
                     </div>
                 </div>
                 <div class="blogSectionSubBlogItem">
-                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" src="/Modules/Assets/MainPage/branding.jpg" /></a>
+                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
                     <div class="blogSectionSubBlogItemTitleAndDes">
                         <a href="#" class="blogSectionSubBlogItemTitle">هویت بصری برند چیست ؟</a>
                         <a href="#" class="blogSectionSubBlogItemDescription">
@@ -462,7 +453,7 @@
 <div class="myContainer">
     <section class="reminderSection animationOnScroll animationOnScrollOpacityFlip">
         <div class="reminderSectionDescription">
-            <img width="64" height="64" src="/Modules/Assets/MainPage/blueCalender.png" />
+            <img width="64" height="64" data-src="/Modules/Assets/MainPage/blueCalender.png" />
             <div class="reminderSectionDescriptionTexts">
                 <div class="reminderSectionDescriptionTextsTitle">یادآوری تمدید یا اقساط بیمه</div>
                 <div class="reminderSectionDescriptionTextsDescription">
@@ -500,7 +491,7 @@
             <div class="downloadOurMobileAppButtonSectionDescription2"><i class="fab fa-android"></i> <i class="fab fa-apple"></i> قابلیت نصب روی Android و iOS</div>
         </div>
         <div class="downloadOurMobileAppImage">
-            <img width="360" src="/Modules/Assets/MainPage/mobileAppExampleImage.webp" title="تصویر نمونه مبایل اپ ستاد بیمه" />
+            <img width="370" height="294" data-src="/Modules/Assets/MainPage/mobileAppExampleImage.webp" title="تصویر نمونه مبایل اپ ستاد بیمه" />
         </div>
     </section>
 </div>
@@ -565,22 +556,19 @@
         </div>
     </section>
 </div>
-<script>
-    $('.yourQuestion .yourQuestionItem').initMyQuestionItem();
-</script>
 <div class="myContainer">
     <section class="ourPrideSection animationOnScroll animationOnScrollMarginTop">
         <div class="ourPrideSectionTitle"><span>افتخارات ستاد بیمه</span></div>
         <div class="ourPrideSectionItems">
             <div class="ourPrideSectionItem">
-                <img width="80" src="/Modules/Assets/MainPage/noone.png" />
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/noone.png" />
                 <div>
                     <span style="display:block;" class="ourPrideSectionItemLightBoldTxt" data-target-value="1">0</span>
                     اولین هلدینگ خدمات بازار سرمایه و بزرگترین کارگزاری بورس در ایران
                 </div>
             </div>
             <div class="ourPrideSectionItem">
-                <img width="80" src="/Modules/Assets/MainPage/users.png" />
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/users.png" />
                 <div>
                     <span class="ourPrideSectionItemLightText">بیش از</span>
                     <span class="ourPrideSectionItemLightBoldTxt" data-target-value="10">0</span>
@@ -589,7 +577,7 @@
                 </div>
             </div>
             <div class="ourPrideSectionItem">
-                <img width="80" src="/Modules/Assets/MainPage/property.png" />
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/property.png" />
                 <div>
                     <span class="ourPrideSectionItemLightText">بیش از</span>
                     <span class="ourPrideSectionItemLightBoldTxt" data-target-value="340">0</span>
@@ -598,7 +586,7 @@
                 </div>
             </div>
             <div class="ourPrideSectionItem">
-                <img width="80" src="/Modules/Assets/MainPage/branch.png" />
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/branch.png" />
                 <div>
                     <span class="ourPrideSectionItemLightText">بیش از</span>
                     <span class="ourPrideSectionItemLightBoldTxt" data-target-value="5000">0</span>
@@ -608,8 +596,11 @@
             </div>
         </div>
     </section>
-    <script>
-        $('.ourPrideSectionItem').initAutoNumber(300);
-        $('.animationOnScroll').initScrollAnimation();
-    </script>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        $('.tabCtrl').initTabCtrl();
+        $('.yourQuestion .yourQuestionItem').initMyQuestionItem();
+        $('.inquirySectionTab').initInquiryTab();
+    });
+</script>

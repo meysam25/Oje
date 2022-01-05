@@ -20,9 +20,9 @@
         -webkit-border-radius: 5px;
         border-radius: 5px;
         padding: 0px;
-        line-height: 35px;
+        line-height: 36px;
         margin: 0px;
-        height: 35px;
+        height: 36px;
         text-indent: 5px;
         width: 100%;
         background-color:white;
@@ -54,7 +54,7 @@
 
 .mainBtn, .secountBtn {
     background-color: #0077db;
-    color: white;
+    color: white !important;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -65,6 +65,7 @@
     margin: 3px;
     -webkit-text-decoration: none;
     text-decoration: none;
+    white-space:nowrap;
 }
 
     .mainBtn:hover {
@@ -76,13 +77,13 @@
         -webkit-box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
         box-shadow: 0px 0px 14px 1px rgba(0,119,219,0.25);
         background-color: white;
-        color: #0077db;
+        color: #0077db !important;
     }
 
 .secountBtn {
     border: 1px solid silver;
     background-color: white;
-    color: #787b7c;
+    color: #787b7c !important;
 }
 
     .secountBtn:hover {
@@ -94,7 +95,7 @@
         -webkit-box-shadow: 0px 0px 14px 1px rgba(0,0,0,0.25);
         box-shadow: 0px 0px 14px 1px rgba(0,0,0,0.25);
         background-color: #787b7c;
-        color: white;
+        color: white !important;
     }
 
 

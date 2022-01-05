@@ -36,6 +36,8 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService = null;
         readonly IInquiryDurationService InquiryDurationService = null;
         readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
+        readonly ICarTypeService CarTypeService = null;
+        readonly IVehicleSpecsService VehicleSpecsService = null;
 
         public CarThirdPartyInquiryController(
             ICompanyService CompanyService,
@@ -52,7 +54,9 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             IProposalFormService ProposalFormService,
             IThirdPartyRequiredFinancialCommitmentService ThirdPartyRequiredFinancialCommitmentService,
             IInquiryDurationService InquiryDurationService,
-            IInsuranceContractDiscountService InsuranceContractDiscountService
+            IInsuranceContractDiscountService InsuranceContractDiscountService,
+            ICarTypeService CarTypeService,
+            IVehicleSpecsService VehicleSpecsService
             )
         {
             this.CompanyService = CompanyService;
@@ -70,6 +74,8 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.ThirdPartyRequiredFinancialCommitmentService = ThirdPartyRequiredFinancialCommitmentService;
             this.InquiryDurationService = InquiryDurationService;
             this.InsuranceContractDiscountService = InsuranceContractDiscountService;
+            this.CarTypeService = CarTypeService;
+            this.VehicleSpecsService = VehicleSpecsService;
         }
 
         [AreaConfig(Title = "استعلام ثالث", Icon = "fa-car", IsMainMenuItem = true)]
@@ -93,7 +99,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] CarThirdPartyInquiryVM input)
         {
-            return Json(ThirdPartyRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input));
+            return Json(ThirdPartyRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry()));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
@@ -133,16 +139,37 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
 
         [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetCarBrandList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetCarBrandList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? vehicleTypeId)
         {
-            return Json(VehicleSystemService.GetSelect2List(searchInput));
+            return Json(VehicleSystemService.GetSelect2List(searchInput, vehicleTypeId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تیپ خودرو", Icon = "fa-list-alt")]
-        [HttpPost]
-        public ActionResult GetCarTypeList([FromForm] int? id)
+        [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt")]
+        [HttpGet]
+        public ActionResult GetCarSpecList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? vehicleTypeId, [FromQuery] int? brandId)
         {
-            return Json(VehicleTypeService.GetLightList(id));
+            return Json(VehicleSpecsService.GetSelect2List(searchInput, vehicleTypeId, brandId));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetVehicleTypeList()
+        {
+            return Json(VehicleTypeService.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده عنوان گروه بندی خصوصیت", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetSpecCatTitle([FromForm] int? vehicleTypeId)
+        {
+            return Json(VehicleTypeService.GetSpacCatTitleBy(vehicleTypeId));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetCarTypeList([FromQuery] int id)
+        {
+            return Json(CarTypeService.GetLightList(id));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]

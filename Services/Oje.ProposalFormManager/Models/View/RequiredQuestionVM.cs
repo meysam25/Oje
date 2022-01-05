@@ -8,7 +8,7 @@ namespace Oje.ProposalFormService.Models.View
 {
     public class RequiredQuestionVM
     {
-        public int? brandId { get; set; }
+        public int? vehicleTypeId { get; set; }
         public int? havePrevInsurance { get; set; }
         public bool? isNewCar { get; set; }
     }

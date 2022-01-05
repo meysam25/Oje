@@ -45,5 +45,7 @@ namespace Oje.ProposalFormService.Models.View
         public List<InqueryDescription> InqueryDescriptions { get; set; }
         public List<PaymentMethod> PaymentMethods { get; set; }
         public List<CarSpecificationAmount> CarSpecificationAmounts { get; set; }
+        public CarType CarType { get;  set; }
+        public VehicleSpec VehicleSpec { get; set; }
     }
 }

@@ -22,14 +22,18 @@ namespace Oje.ProposalFormService.Services
             return db.VehicleTypes.Where(t => t.Id == id).AsNoTracking().FirstOrDefault();
         }
 
-        public object GetLightList(int? vehicleSystemId)
+        public object GetLightList()
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            if (vehicleSystemId.ToIntReturnZiro() > 0)
-                result.AddRange(db.VehicleTypes.Where(t => t.IsActive == true && t.VehicleSystemId == vehicleSystemId).Select(t => new { id = t.Id, title = t.Title }).ToList());
+                result.AddRange(db.VehicleTypes.OrderBy(t => t.Order).Where(t => t.IsActive == true).Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
+        }
+
+        public object GetSpacCatTitleBy(int? vehicleTypeId)
+        {
+            return new { title = db.VehicleTypes.OrderBy(t => t.Order).Where(t => t.IsActive == true && t.Id == vehicleTypeId).Select(t => t.VehicleSpecCategory.Title).FirstOrDefault() };
         }
     }
 }

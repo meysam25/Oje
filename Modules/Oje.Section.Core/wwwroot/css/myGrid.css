@@ -4,6 +4,12 @@
     width: 100%;
     background-color: white;
 }
+    .myGrid tbody > tr:nth-child(2n+1) {
+        background-color:rgb(245, 245, 245);
+    }
+    .myGrid tbody > tr:last-child {
+        background-color: white;
+    }
 
     .myGrid tr td {
         padding: 5px;

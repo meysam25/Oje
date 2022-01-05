@@ -29,10 +29,9 @@ namespace Oje.ProposalFormService.Models.DB
         public string Title { get; set; }
         public bool IsOption { get; set; }
         public CarExteraDiscountType Type { get; set; }
-        public int? CarTypeId { get; set; }
-        [ForeignKey("CarTypeId")]
-        [InverseProperty("CarExteraDiscounts")]
-        public CarType CarType { get; set; }
+        public int? VehicleTypeId { get; set; }
+        [ForeignKey("VehicleTypeId"), InverseProperty("CarExteraDiscounts")]
+        public VehicleType VehicleType { get; set; }
         public CarExteraDiscountCalculateType CalculateType { get; set; }
         public bool IsActive { get; set; }
         public bool? HasPrevInsurance { get; set; }

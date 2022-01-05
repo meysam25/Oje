@@ -16,26 +16,38 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
 {
     [Area("CarBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " پایه خودرو (ادمین)", Icon = "fa-car", Title = "خصوصیات خودرو")]
+    [AreaConfig(ModualTitle = " پایه خودرو (ادمین)", Icon = "fa-car", Title = "جزئیات خصوصیات خودرو")]
     [CustomeAuthorizeFilter]
-    public class CarSpecificationController: Controller
+    public class CarSpecificationController : Controller
     {
         readonly ICarSpecificationService CarSpecificationService = null;
-        public CarSpecificationController(ICarSpecificationService CarSpecificationService)
+        readonly IVehicleSpecCategoryService VehicleSpecCategoryService = null;
+        readonly IVehicleSystemService VehicleSystemService = null;
+        readonly IVehicleSpecService VehicleSpecService = null;
+        public CarSpecificationController
+            (
+                ICarSpecificationService CarSpecificationService,
+                IVehicleSpecCategoryService VehicleSpecCategoryService,
+                IVehicleSystemService VehicleSystemService,
+                IVehicleSpecService VehicleSpecService
+            )
         {
             this.CarSpecificationService = CarSpecificationService;
+            this.VehicleSpecCategoryService = VehicleSpecCategoryService;
+            this.VehicleSystemService = VehicleSystemService;
+            this.VehicleSpecService = VehicleSpecService;
         }
 
-        [AreaConfig(Title = "خصوصیات خودرو", Icon = "fa-truck-loading", IsMainMenuItem = true)]
+        [AreaConfig(Title = "جزئیات خصوصیات خودرو", Icon = "fa-truck-loading", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خصوصیات خودرو";
+            ViewBag.Title = "جزئیات خصوصیات خودرو";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "CarSpecification", new { area = "CarBaseData" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خصوصیات خودرو", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست جزئیات خصوصیات خودرو", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -43,35 +55,35 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("CarBaseData", "CarSpecification")));
         }
 
-        [AreaConfig(Title = "افزودن خصوصیات خودرو جدید", Icon = "fa-plus")]
+        [AreaConfig(Title = "افزودن جزئیات خصوصیات خودرو جدید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCarSpecificationVM input)
         {
             return Json(CarSpecificationService.Create(input));
         }
 
-        [AreaConfig(Title = "حذف خصوصیات خودرو", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "حذف جزئیات خصوصیات خودرو", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalIntId input)
         {
             return Json(CarSpecificationService.Delete(input?.id));
         }
 
-        [AreaConfig(Title = "مشاهده  یک خصوصیات خودرو", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده  یک جزئیات خصوصیات خودرو", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
             return Json(CarSpecificationService.GetById(input?.id));
         }
 
-        [AreaConfig(Title = "به روز رسانی  خصوصیات خودرو", Icon = "fa-pencil")]
+        [AreaConfig(Title = "به روز رسانی  جزئیات خصوصیات خودرو", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCarSpecificationVM input)
         {
             return Json(CarSpecificationService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست جزئیات خصوصیات خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarSpecificationMainGrid searchInput)
         {
@@ -90,6 +102,27 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
                 return NotFound();
 
             return Json(Convert.ToBase64String(byteResult));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست گروه بندی خصوصیات خودرو", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetCarSpecCategoryList()
+        {
+            return Json(VehicleSpecCategoryService.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
+        [HttpGet]
+        public ActionResult GetBrandList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(VehicleSystemService.GetSelect2List(searchInput));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt")]
+        [HttpGet]
+        public ActionResult GetVehicleSpecList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? catId, [FromQuery] int? sysId)
+        {
+            return Json(VehicleSpecService.GetLightList(catId, sysId, searchInput));
         }
     }
 }

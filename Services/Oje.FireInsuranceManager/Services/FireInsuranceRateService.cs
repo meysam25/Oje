@@ -97,7 +97,7 @@ namespace Oje.FireInsuranceService.Services
             this.FireInsuranceCoverageCityDangerLevelService = FireInsuranceCoverageCityDangerLevelService;
         }
 
-        public object Inquiry(int? siteSettingId, FireInsuranceInquiryVM input)
+        public object Inquiry(int? siteSettingId, FireInsuranceInquiryVM input, string targetArea)
         {
 
             if (inquiryValidation(siteSettingId, input, null))
@@ -120,7 +120,7 @@ namespace Oje.FireInsuranceService.Services
 
                     GlobalInqueryService.Create(result);
 
-                    return calceResponeForInquiry(result, filledObj, input);
+                    return calceResponeForInquiry(result, filledObj, input, targetArea);
                 }
 
             }
@@ -224,14 +224,15 @@ namespace Oje.FireInsuranceService.Services
                             Price = RouteThisNumberIfConfigExist((Convert.ToDecimal(s1Price * filledObj.FireInsuranceBuildingAge.Percent) / filledObj.v100).ToLongReturnZiro(), filledObj.RoundInquery),
                             Title = String.Format(BMessages.Building_Age.GetEnumDisplayName(), filledObj.FireInsuranceBuildingAge.Title)
                         };
-                        newItem.GlobalInquiryItems.Add(ageRow);
+                        if (ageRow.Price > 0)
+                            newItem.GlobalInquiryItems.Add(ageRow);
                     }
 
                 }
             }
         }
 
-        object calceResponeForInquiry(List<GlobalInquery> quiryObj, FireInsuranceInquiryFilledObj objPack, FireInsuranceInquiryVM input)
+        object calceResponeForInquiry(List<GlobalInquery> quiryObj, FireInsuranceInquiryFilledObj objPack, FireInsuranceInquiryVM input, string targetArea)
         {
             int row = 0;
             var result = quiryObj
@@ -288,7 +289,8 @@ namespace Oje.FireInsuranceService.Services
                     },
                     t.cid,
                     t.desc,
-                    fid = objPack.ProposalForm?.Id
+                    fid = objPack.ProposalForm?.Id,
+                    targetArea = targetArea
                 }).ToList();
 
 

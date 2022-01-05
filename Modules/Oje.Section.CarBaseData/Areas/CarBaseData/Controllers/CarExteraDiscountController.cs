@@ -22,19 +22,19 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     {
         readonly ICarExteraDiscountService CarExteraDiscountService = null;
         readonly IProposalFormService ProposalFormService = null;
-        readonly ICarTypeService CarTypeService = null;
         readonly ICarExteraDiscountCategoryService CarExteraDiscountCategoryService = null;
+        readonly IVehicleTypeService VehicleTypeService = null;
         public CarExteraDiscountController(
             ICarExteraDiscountService CarExteraDiscountService,
             IProposalFormService ProposalFormService,
-            ICarTypeService CarTypeService,
-            ICarExteraDiscountCategoryService CarExteraDiscountCategoryService
+            ICarExteraDiscountCategoryService CarExteraDiscountCategoryService,
+            IVehicleTypeService VehicleTypeService
             )
         {
             this.CarExteraDiscountService = CarExteraDiscountService;
             this.ProposalFormService = ProposalFormService;
-            this.CarTypeService = CarTypeService;
             this.CarExteraDiscountCategoryService = CarExteraDiscountCategoryService;
+            this.VehicleTypeService = VehicleTypeService;
         }
 
         [AreaConfig(Title = "تخفیف اضافه", Icon = "fa-tag", IsMainMenuItem = true)]
@@ -103,11 +103,11 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarTypeList()
         {
-            return Json(CarTypeService.GetLightList());
+            return Json(VehicleTypeService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست گروه بندی تخفیف", Icon = "fa-list-alt")]

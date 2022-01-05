@@ -12,7 +12,7 @@ namespace Oje.Section.CarBaseData.Interfaces
     {
         ApiResult Create(CreateUpdateCarSpecificationVM input);
         ApiResult Delete(int? id);
-        CreateUpdateCarSpecificationVM GetById(int? id);
+        object GetById(int? id);
         ApiResult Update(CreateUpdateCarSpecificationVM input);
         GridResultVM<CarSpecificationMainGridResultVM> GetList(CarSpecificationMainGrid searchInput);
         object GetSelect2List(Select2SearchVM searchInput);

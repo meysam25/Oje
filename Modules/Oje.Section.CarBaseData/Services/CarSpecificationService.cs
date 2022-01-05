@@ -25,12 +25,22 @@ namespace Oje.Section.CarBaseData.Services
         {
             CreateValidation(input);
 
-            db.Entry(new CarSpecification()
+            var newitem = new CarSpecification()
             {
                 CarRoomRate = input.carRoomRate,
                 Title = input.title,
                 IsActive = input.isActive.ToBooleanReturnFalse()
-            }).State = EntityState.Added;
+            };
+            db.Entry(newitem).State = EntityState.Added;
+            db.SaveChanges();
+
+            foreach (var VehicleSpecId in input.vehicleSpecIds)
+                db.Entry(new CarSpecificationVehicleSpec() 
+                {
+                    CarSpecificationId = newitem.Id,
+                    VehicleSpecId = VehicleSpecId
+                } ).State = EntityState.Added;
+
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -48,6 +58,8 @@ namespace Oje.Section.CarBaseData.Services
                 throw BException.GenerateNewException(BMessages.Dublicate_Title);
             if (input.carRoomRate != null && input.carRoomRate <= 0)
                 throw BException.GenerateNewException(BMessages.Invalid_CarRomeRate);
+            if (input.vehicleSpecIds == null || input.vehicleSpecIds.Count == 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_CarSpecification);
         }
 
         public ApiResult Delete(int? id)
@@ -62,14 +74,15 @@ namespace Oje.Section.CarBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public CreateUpdateCarSpecificationVM GetById(int? id)
+        public object GetById(int? id)
         {
-            return db.CarSpecifications.Where(t => t.Id == id).Select(t => new CreateUpdateCarSpecificationVM
+            return db.CarSpecifications.Where(t => t.Id == id).Select(t => new 
             {
                 id = t.Id,
                 title = t.Title,
                 carRoomRate = t.CarRoomRate,
-                isActive = t.IsActive
+                isActive = t.IsActive,
+                vehicleSpecIds = t.CarSpecificationVehicleSpecs.Select(tt => new { id = tt.VehicleSpecId, title = tt.VehicleSpec.Title }).ToList()
             }).FirstOrDefault();
         }
 
@@ -86,6 +99,8 @@ namespace Oje.Section.CarBaseData.Services
                 qureResult = qureResult.Where(t => t.CarRoomRate == searchInput.carRomeRate);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.specs))
+                qureResult = qureResult.Where(t => t.CarSpecificationVehicleSpecs.Any(tt => tt.VehicleSpec.Title.Contains(searchInput.specs)));
 
             int row = searchInput.skip;
 
@@ -98,7 +113,8 @@ namespace Oje.Section.CarBaseData.Services
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
-                    carRomeRate = t.CarRoomRate
+                    carRomeRate = t.CarRoomRate,
+                    specs = t.CarSpecificationVehicleSpecs.Select(tt => tt.VehicleSpec.Title).ToList()
                 })
                 .ToList()
                 .Select(t => new CarSpecificationMainGridResultVM
@@ -107,7 +123,8 @@ namespace Oje.Section.CarBaseData.Services
                     id = t.id,
                     isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
                     row = ++row,
-                    title = t.title
+                    title = t.title,
+                    specs = string.Join(",", t.specs)
                 })
                 .ToList()
             };
@@ -117,13 +134,23 @@ namespace Oje.Section.CarBaseData.Services
         {
             CreateValidation(input);
 
-            var foundItem = db.CarSpecifications.Where(t => t.Id == input.id).FirstOrDefault();
+            var foundItem = db.CarSpecifications.Include(t => t.CarSpecificationVehicleSpecs).Where(t => t.Id == input.id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
+
+            foreach (var item in foundItem.CarSpecificationVehicleSpecs)
+                db.Entry(item).State = EntityState.Deleted;
 
             foundItem.Title = input.title;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.CarRoomRate = input.carRoomRate;
+
+            foreach (var VehicleSpecId in input.vehicleSpecIds)
+                db.Entry(new CarSpecificationVehicleSpec()
+                {
+                    CarSpecificationId = foundItem.Id,
+                    VehicleSpecId = VehicleSpecId
+                }).State = EntityState.Added;
 
             db.SaveChanges();
 

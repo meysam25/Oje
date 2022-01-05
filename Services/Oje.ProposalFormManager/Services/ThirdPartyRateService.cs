@@ -48,6 +48,9 @@ namespace Oje.ProposalFormService.Services
         readonly IInqueryDescriptionService InqueryDescriptionService = null;
         readonly IPaymentMethodService PaymentMethodService = null;
         readonly IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService = null;
+        readonly ICarTypeService CarTypeService = null;
+        readonly IVehicleSpecsService VehicleSpecsService = null;
+
 
         public ThirdPartyRateService(
             ProposalFormDBContext db,
@@ -80,7 +83,9 @@ namespace Oje.ProposalFormService.Services
             IInquiryDurationService InquiryDurationService,
             IInqueryDescriptionService InqueryDescriptionService,
             IPaymentMethodService PaymentMethodService,
-            IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService
+            IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService,
+            ICarTypeService CarTypeService,
+            IVehicleSpecsService VehicleSpecsService
             )
         {
             this.db = db;
@@ -114,9 +119,11 @@ namespace Oje.ProposalFormService.Services
             this.InqueryDescriptionService = InqueryDescriptionService;
             this.PaymentMethodService = PaymentMethodService;
             this.ThirdPartyBodyNoDamageDiscountHistoryService = ThirdPartyBodyNoDamageDiscountHistoryService;
+            this.CarTypeService = CarTypeService;
+            this.VehicleSpecsService = VehicleSpecsService;
         }
 
-        public object Inquiry(int? siteSettingId, CarThirdPartyInquiryVM input)
+        public object Inquiry(int? siteSettingId, CarThirdPartyInquiryVM input, string targetArea)
         {
             List<GlobalInquery> result = new List<GlobalInquery>();
 
@@ -164,13 +171,13 @@ namespace Oje.ProposalFormService.Services
                 }
                 GlobalInqueryService.Create(result);
 
-                return calceResponeForInquiry(result, objPack, input);
+                return calceResponeForInquiry(result, objPack, input, targetArea);
             }
 
             return new { total = 0, data = new List<object>() };
         }
 
-        object calceResponeForInquiry(List<GlobalInquery> quiryObj, CarThirdPartyInquiryObjects objPack, CarThirdPartyInquiryVM input)
+        object calceResponeForInquiry(List<GlobalInquery> quiryObj, CarThirdPartyInquiryObjects objPack, CarThirdPartyInquiryVM input, string targetArea)
         {
             int row = 0;
             var result = quiryObj
@@ -230,7 +237,8 @@ namespace Oje.ProposalFormService.Services
                     trsj = objPack.ThirdPartyDriverFinancialCommitmentLong.ToString("###,###"),
                     t.cid,
                     t.desc,
-                    fid = objPack.currentProposalForm?.Id
+                    fid = objPack.currentProposalForm?.Id,
+                    targetArea = targetArea
                 }).ToList();
 
 
@@ -752,7 +760,7 @@ namespace Oje.ProposalFormService.Services
 
         void DublicateInqueryForExteraCommitment(List<GlobalInquery> inputResult, CarThirdPartyInquiryObjects objPack, CarThirdPartyInquiryVM input)
         {
-            if (input.coverIds == null || input.coverIds.Count == 0 || objPack.ThirdPartyRequiredFinancialCommitments == null || objPack.ThirdPartyRequiredFinancialCommitments.Count == 0)
+            if (input.coverIds == null || input.coverIds.Count == 0 || objPack.ThirdPartyRequiredFinancialCommitments == null || objPack.ThirdPartyRequiredFinancialCommitments.Count == 0 || objPack.CarSpecification == null)
                 return;
 
             List<GlobalInquery> result = new List<GlobalInquery>();
@@ -767,7 +775,7 @@ namespace Oje.ProposalFormService.Services
                             .Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitmentComs.Any(tt => tt.CompanyId == inquery.CompanyId)).ToList();
                         if (listRate.Count > 0)
                         {
-                            var foundWithType = listRate.OrderByDescending(t => t.Year).Where(t => t.CarSpecificationId == objPack.VehicleType?.CarSpecificationId).FirstOrDefault();
+                            var foundWithType = listRate.OrderByDescending(t => t.Year).Where(t => t.CarSpecificationId == objPack.CarSpecification.Id).FirstOrDefault();
                             if (foundWithType == null)
                                 foundWithType = listRate.OrderByDescending(t => t.Year).FirstOrDefault();
                             if (foundWithType != null)
@@ -1084,11 +1092,11 @@ namespace Oje.ProposalFormService.Services
 
         void InquiryCalceS3(CarThirdPartyInquiryObjects carThirdPartyInquiryObjects, GlobalInquery newQueryItem)
         {
-            if (carThirdPartyInquiryObjects.ThirdPartyPassengerRates != null && carThirdPartyInquiryObjects.VehicleType != null)
+            if (carThirdPartyInquiryObjects.ThirdPartyPassengerRates != null && carThirdPartyInquiryObjects.CarSpecification != null)
             {
                 var foundRate = carThirdPartyInquiryObjects.ThirdPartyPassengerRates.OrderByDescending(t => t.Id)
                 .Where(t => t.ThirdPartyPassengerRateCompanies != null && t.ThirdPartyPassengerRateCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId))
-                .Where(t => t.CarSpecificationId == carThirdPartyInquiryObjects.VehicleType.CarSpecificationId)
+                .Where(t => t.CarSpecificationId == carThirdPartyInquiryObjects.CarSpecification.Id)
                 .FirstOrDefault();
                 if (foundRate != null && carThirdPartyInquiryObjects.ThirdPartyDriverFinancialCommitment != null)
                 {
@@ -1229,6 +1237,7 @@ namespace Oje.ProposalFormService.Services
                 initVicleTypeObjectAndValidation(result, input);
                 initVeicleBrandObjectAndValidation(input);
                 initVehicleUsageObjectAndValidation(result, input);
+                initVehicleSpecsObjectAndValidation(result, input);
                 initCreateYearInputObjectAndValidation(input);
                 initRequiredCtrlsObjectAndValidation(result, input);
                 initNoDamageDiscountObjAndValidation(result, input);
@@ -1236,7 +1245,8 @@ namespace Oje.ProposalFormService.Services
                 initThirdPartyFinancialAndBodyHistoryDamagePenaltyObjectAndValidation(result, input);
                 initThirdPartyDriverHistoryDamagePenaltyObjectAndValidation(result, input);
                 initShowStatusObjectAndValidation(input, siteSettingId, result);
-                initThirdPartyRatesObjectAndValidate(result, result.VehicleType?.CarSpecificationId);
+                result.CarSpecification = CarSpecificationService.GetById(input.specId);
+                initThirdPartyRatesObjectAndValidate(result, result.CarSpecification?.Id);
                 initThirdPartyRequiredFinancialCommitment(result, input);
                 initExteraDiscountRightFilterObjectAndValidation(result, input);
                 initInsuranceContractDiscountObjectAndValidation(result, input, siteSettingId);
@@ -1246,7 +1256,6 @@ namespace Oje.ProposalFormService.Services
                 result.ThirdPartyDriverFinancialCommitment = ThirdPartyDriverFinancialCommitmentService.GetLastActiveItem();
                 result.ThirdPartyPassengerRates = ThirdPartyPassengerRateService.GetActiveItems();
                 result.RoundInquery = RoundInqueryService.GetBySiteSettingAndProposalForm(siteSettingId, result.currentProposalForm?.Id);
-                result.CarSpecification = CarSpecificationService.GetById(result.VehicleType?.CarSpecificationId);
                 result.InqueryDescriptions = InqueryDescriptionService.GetByProposalFormId(result.currentProposalForm?.Id, siteSettingId);
                 result.Tax = TaxService.GetLastItem();
                 result.Duty = DutyService.GetLastItem();
@@ -1268,6 +1277,13 @@ namespace Oje.ProposalFormService.Services
             return result;
         }
 
+        private void initVehicleSpecsObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
+        {
+            result.VehicleSpec = VehicleSpecsService.GetBy(input.specId, input.brandId, input.vehicleTypeId);
+            if (result.VehicleSpec == null)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            input.specId_Title = result.VehicleSpec.Title;
+        }
 
         void initInquiryDurationObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input, int? siteSettingId)
         {
@@ -1428,10 +1444,14 @@ namespace Oje.ProposalFormService.Services
 
         void initVehicleUsageObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            result.VehicleUsage = VehicleUsageService.GetById(input.cUsage);
+            result.CarType = CarTypeService.GetById(input.carTypeId, input.vehicleTypeId);
+            if (result.CarType == null)
+                throw BException.GenerateNewException(BMessages.Please_Select_CarType);
+            input.carTypeId_Title = result.CarType.Title;
+
+            result.VehicleUsage = VehicleUsageService.GetById(input.carTypeId);
             if (result.VehicleUsage == null)
                 throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
-            input.cUsage_Title = result.VehicleUsage.Title;
         }
 
         void initVeicleBrandObjectAndValidation(CarThirdPartyInquiryVM input)
@@ -1444,10 +1464,10 @@ namespace Oje.ProposalFormService.Services
 
         void initVicleTypeObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
-            result.VehicleType = VehicleTypeService.GetById(input.vType);
+            result.VehicleType = VehicleTypeService.GetById(input.vehicleTypeId);
             if (result.VehicleType == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
-            input.vType_Title = result.VehicleType.Title;
+            input.vehicleTypeId_Title = result.VehicleType.Title;
         }
 
         void initThirdPartyDriverNoDamageDiscountHistoryObjectAndValidation(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
@@ -1550,7 +1570,7 @@ namespace Oje.ProposalFormService.Services
 
         bool IsValidInquiry(CarThirdPartyInquiryVM input)
         {
-            return input != null && input.brandId.ToIntReturnZiro() > 0 && input.vType.ToIntReturnZiro() > 0 && input.cUsage.ToIntReturnZiro() > 0;
+            return input != null && input.brandId.ToIntReturnZiro() > 0 && input.vehicleTypeId.ToIntReturnZiro() > 0 && input.carTypeId.ToIntReturnZiro() > 0 && input.specId.ToIntReturnZiro() > 0;
         }
     }
 }

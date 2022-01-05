@@ -66,6 +66,9 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<CarSpecificationAmount> CarSpecificationAmounts { get; set; }
         public DbSet<ProposalFormCategory> ProposalFormCategories { get; set; }
         public DbSet<ProposalFilledFormStatusLog> ProposalFilledFormStatusLogs { get; set; }
+        public DbSet<VehicleTypeCarType> VehicleTypeCarTypes { get; set; }
+        public DbSet<VehicleSpec> VehicleSpecs { get; set; }
+        public DbSet<CarType> CarTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -84,6 +87,9 @@ namespace Oje.ProposalFormService.Services.EContext
             modelBuilder.Entity<ProposalFilledFormCompany>().HasKey(t => new { t.CompanyId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormUser>().HasKey(t => new { t.ProposalFilledFormId, t.UserId, t.Type });
             modelBuilder.Entity<PaymentMethodCompany>().HasKey(t => new { t.CompanyId, t.PaymentMethodId });
+            modelBuilder.Entity<VehicleTypeCarType>().HasKey(t => new { t.CarTypeId, t.VehicleTypeId });
+            modelBuilder.Entity<VehicleSystemVehicleType>().HasKey(t => new { t.VehicleSystemId, t.VehicleTypeId });
+            modelBuilder.Entity<CarSpecificationVehicleSpec>().HasKey(t => new { t.CarSpecificationId, t.VehicleSpecId });
 
             base.OnModelCreating(modelBuilder);
         }

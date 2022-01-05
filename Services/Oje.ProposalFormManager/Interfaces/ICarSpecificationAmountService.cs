@@ -9,6 +9,6 @@ namespace Oje.ProposalFormService.Interfaces
 {
     public interface ICarSpecificationAmountService
     {
-        object Inquiry(int? siteSettingId, CarBodyInquiryVM input);
+        object Inquiry(int? siteSettingId, CarBodyInquiryVM input, string targetArea);
     }
 }

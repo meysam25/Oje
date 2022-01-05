@@ -10,6 +10,6 @@ namespace Oje.ProposalFormService.Interfaces
     public interface IVehicleUsageService
     {
         VehicleUsage GetById(int? id);
-        object GetLightList(int? vehicleSystemId);
+        object GetLightList(int? carTypeId);
     }
 }

@@ -9,6 +9,6 @@ namespace Oje.FireInsuranceService.Interfaces
 {
     public interface IFireInsuranceRateService
     {
-        object Inquiry(int? siteSettingId, FireInsuranceInquiryVM input);
+        object Inquiry(int? siteSettingId, FireInsuranceInquiryVM input, string targetArea);
     }
 }

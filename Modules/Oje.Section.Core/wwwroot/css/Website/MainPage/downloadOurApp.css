@@ -78,6 +78,7 @@
 
         .downloadOurMobileAppImage img {
             width: 150px;
+            height:auto;
         }
 
     .downloadOurMobileAppButtonSectionTitle {
@@ -117,6 +118,7 @@
 
     .downloadOurMobileAppImage img {
         width: 100px;
+        height: auto;
     }
 
     .downloadOurMobileAppImage {

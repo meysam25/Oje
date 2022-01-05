@@ -13,10 +13,10 @@ namespace Oje.ProposalFormService.Models.DB
     {
         public CarSpecification()
         {
-            VehicleTypes = new ();
             ThirdPartyPassengerRates = new ();
             ThirdPartyExteraFinancialCommitments = new();
             CarSpecificationAmounts = new();
+            CarSpecificationVehicleSpecs = new();
         }
 
         [Key]
@@ -28,12 +28,12 @@ namespace Oje.ProposalFormService.Models.DB
         public bool IsActive { get; set; }
 
         [InverseProperty("CarSpecification")]
-        public List<VehicleType> VehicleTypes { get; set; }
-        [InverseProperty("CarSpecification")]
         public List<ThirdPartyPassengerRate> ThirdPartyPassengerRates { get; set; }
         [InverseProperty("CarSpecification")]
         public List<ThirdPartyExteraFinancialCommitment> ThirdPartyExteraFinancialCommitments { get; set; }
         [InverseProperty("CarSpecification")]
         public List<CarSpecificationAmount> CarSpecificationAmounts { get; set; }
+        [InverseProperty("CarSpecification")]
+        public List<CarSpecificationVehicleSpec> CarSpecificationVehicleSpecs { get; set; }
     }
 }

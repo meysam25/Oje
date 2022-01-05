@@ -8,6 +8,10 @@
           "lastStepButtonTitle": "استعلام",
           "actionOnLastStep": [
             {
+              "actionName": "showModal",
+              "objectId": "gridModal"
+            },
+            {
               "actionName": "refreshGrid",
               "objectId": "userGrid"
             }
@@ -15,8 +19,8 @@
           "steps": [
             {
               "order": 1,
-              "id": "firstStep",
-              "title": "مشخصات بنا",
+              "id": "provinceAndCity",
+              "title": "شهر و استان",
               "panels": [
                 {
                   "ctrls": [
@@ -42,7 +46,18 @@
                       "dataurl": "/Core/BaseData/GetCityList",
                       "label": "شهر",
                       "isRequired": true
-                    },
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 2,
+              "id": "valueStep",
+              "title": "ارزش",
+              "panels": [
+                {
+                  "ctrls": [
                     {
                       "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
                       "id": "eachUnitPrice",
@@ -61,6 +76,24 @@
                       "label": "متراژ بنا",
                       "isRequired": true
                     },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "assetValue",
+                      "type": "text",
+                      "label": "لوازم منزل (ریال)",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 3,
+              "id": "buildingInfo",
+              "title": "مشخصات ساختمان",
+              "panels": [
+                {
+                  "ctrls": [
                     {
                       "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
                       "id": "buildingType",
@@ -93,14 +126,18 @@
                       "dataurl": "/ProposalFormInquiries/FireInsurance/GetBuildingAgeList",
                       "label": "سن بنا",
                       "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "assetValue",
-                      "type": "text",
-                      "label": "لوازم منزل (ریال)",
-                      "isRequired": true
-                    },
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 4,
+              "id": "exteraQuestion",
+              "title": "روش پرداخت",
+              "panels": [
+                {
+                  "ctrls": [
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "id": "showStatus",
@@ -122,78 +159,88 @@
     },
     {
       "id": "responsePanel",
-      "grids": [
-        {
-          "id": "userGrid",
-          "exteraSearchIds": [ "searchPanel" ],
-          "exteraFilterModalId": "gridFilterModal",
-          "showColumnConfigButton": true,
-          "key": "id",
-          "url": "/ProposalFormInquiries/FireInsurance/Inquiry",
-          "itemPerPage": 10,
-          "schema": {
-            "data": "data",
-            "total": "total"
-          },
-          "actions": {
-            "cActions": [
-              {
-                "type": "newLink",
-                "url": "/ProposalFilledForm/Proposal/Form?fn=CreateCarThirdParty&id=",
-                "icon": "fa-cart-plus",
-                "prop": "id",
-                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/ProposalFilledForm/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
-              }
-            ]
-          },
-          "columns": [
-            {
-              "field": "row",
-              "caption": "ردیف",
-              "width": "50px",
-              "textAlign": "center"
-            },
-            {
-              "field": "cn",
-              "caption": "شرکت"
-            },
-            {
-              "field": "p",
-              "caption": "حق بیمه پایه"
-            },
-            {
-              "field": "sp",
-              "caption": "حق بیمه قابل پرداخت"
-            }
-          ],
-          "detailesClientSchema": "dt",
-          "detailes": {
-            "id": "detailesGrid",
-            "key": "id",
-            "itemPerPage": 10,
-            "isClient": true,
-            "schema": {
-              "data": "data",
-              "total": "total"
-            },
-            "columns": [
-              {
-                "field": "t",
-                "caption": "عنوان"
-              },
-              {
-                "field": "p",
-                "caption": "مبلغ"
-              },
-              {
-                "field": "isET",
-                "caption": "وضعیت"
-              }
-            ]
-          }
-        }
-      ],
+
       "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "gridModal",
+          "title": "استعلام",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "userGrid",
+                  "exteraSearchIds": [ "searchPanel" ],
+                  "exteraFilterModalId": "gridFilterModal",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFormInquiries/FireInsurance/Inquiry",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "newLink",
+                        "url": "/ProposalFilledForm/Proposal/Form?fn=CreateCarThirdParty&id=",
+                        "icon": "fa-cart-plus",
+                        "prop": "id",
+                        "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"'+ curRow.targetArea +'/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "cn",
+                      "caption": "شرکت"
+                    },
+                    {
+                      "field": "p",
+                      "caption": "حق بیمه پایه"
+                    },
+                    {
+                      "field": "sp",
+                      "caption": "حق بیمه قابل پرداخت"
+                    }
+                  ],
+                  "detailesClientSchema": "dt",
+                  "detailes": {
+                    "id": "detailesGrid",
+                    "key": "id",
+                    "itemPerPage": 10,
+                    "isClient": true,
+                    "schema": {
+                      "data": "data",
+                      "total": "total"
+                    },
+                    "columns": [
+                      {
+                        "field": "t",
+                        "caption": "عنوان"
+                      },
+                      {
+                        "field": "p",
+                        "caption": "مبلغ"
+                      },
+                      {
+                        "field": "isET",
+                        "caption": "وضعیت"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
         {
           "class": "modal-xl",
           "id": "gridFilterModal",

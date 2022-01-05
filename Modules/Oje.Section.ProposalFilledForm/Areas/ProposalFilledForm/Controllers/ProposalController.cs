@@ -67,7 +67,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public IActionResult Create()
         {
-            return Json(ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUserId()?.UserId, Request.GetTargetAreaByRefferForPPFDetailes()));
         }
 
         [AreaConfig(Title = "لیست مدارم مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]

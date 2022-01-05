@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Oje.ProposalFormService.Services
 {
-    public class CarSpecificationService: ICarSpecificationService
+    public class CarSpecificationService : ICarSpecificationService
     {
         readonly ProposalFormDBContext db = null;
         public CarSpecificationService(ProposalFormDBContext db)
@@ -16,7 +16,7 @@ namespace Oje.ProposalFormService.Services
 
         public CarSpecification GetById(int? id)
         {
-            return db.CarSpecifications.Where(t => t.Id == id).AsNoTracking().FirstOrDefault();
+            return db.CarSpecifications.Where(t => t.CarSpecificationVehicleSpecs.Any(tt => tt.VehicleSpecId == id)).AsNoTracking().FirstOrDefault();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
     {
         [Route("/")]
         [Route("[Controller]/[Action]")]
+        [HttpGet]
         public IActionResult Index ()
         {
             ViewBag.Title = "ستاد بیمه";

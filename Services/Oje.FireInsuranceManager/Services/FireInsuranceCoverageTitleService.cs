@@ -56,7 +56,7 @@ namespace Oje.FireInsuranceService.Services
                         textfield = "title",
                         valuefield = "id",
                         dataurl = "/ProposalFormInquiries/FireInsurance/GetActivityList",
-                        ph  = BMessages.Please_Select_Your_Activity.GetEnumDisplayName(),
+                        ph  = "",
                         label = cover.title
                     });
                     allCtrls.Add(new
@@ -72,7 +72,7 @@ namespace Oje.FireInsuranceService.Services
                         parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
                         name = "exteraQuestions[" + i + "].value",
                         type = "text",
-                        ph = "لطفا سرمایه را وارد کنید",
+                        ph = "",
                         label  = cover.title
                     });
                     allCtrls.Add(new

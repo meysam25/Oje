@@ -15,11 +15,11 @@ namespace Oje.Section.CarBaseData.Models.View
         public int id { get; set; }
         [Display(Name = "عنوان")]
         public string title { get; set; }
-        [Display(Name = "خصوصیات خودرو")]
-        public string specTitle { get; set; }
-        [Display(Name = "برند خودرو")]
-        public string brandTitle { get; set; }
+        [Display(Name = "گروه بندی خصوصیات خودرو")]
+        public string specCategory { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "کاربری خودرو")]
+        public string types { get; set; }
     }
 }

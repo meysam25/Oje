@@ -56,6 +56,13 @@
               }
             },
             {
+              "field": "specs",
+              "caption": "خصوصیات خودرو",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "isActive",
               "caption": "وضعیت",
               "search": {
@@ -70,7 +77,7 @@
       ],
       "moduals": [
         {
-          "class": "",
+          "class": "modal-xl",
           "id": "AddGridModal",
           "title": "افزودن",
           "ctrls": [
@@ -79,26 +86,57 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "carRoomRate",
               "type": "text",
               "label": "نرخ اطاق بار"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "catId",
+              "id": "catId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetCarSpecCategoryList",
+              "label": "گروه بندی خصوصیات خودرو"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "sysId",
+              "id": "sysId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetBrandList",
+              "label": "برند خودرو"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vehicleSpecIds",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetVehicleSpecList",
+              "label": "خصوصیات خودرو",
+              "isRequired": true,
+              "exteraParameterIds": [ "catId", "sysId" ]
             }
           ],
           "actions": [
@@ -115,7 +153,7 @@
           ]
         },
         {
-          "class": "",
+          "class": "modal-xl",
           "id": "editRoleModal",
           "title": "ویرایش",
           "ctrls": [
@@ -124,26 +162,57 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "carRoomRate",
               "type": "text",
               "label": "نرخ اطاق بار"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "catId",
+              "id": "catId2",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetCarSpecCategoryList",
+              "label": "گروه بندی خصوصیات خودرو"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "sysId",
+              "id": "sysId2",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetBrandList",
+              "label": "برند خودرو"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vehicleSpecIds",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetVehicleSpecList",
+              "label": "خصوصیات خودرو",
+              "isRequired": true,
+              "exteraParameterIds": [ "catId2", "sysId2" ]
             }
           ],
           "actions": [

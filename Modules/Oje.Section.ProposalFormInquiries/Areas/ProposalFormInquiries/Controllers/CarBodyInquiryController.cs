@@ -32,6 +32,9 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly ICarExteraDiscountService CarExteraDiscountService = null;
         readonly ICarSpecificationAmountService CarSpecificationAmountService = null;
         readonly INoDamageDiscountService NoDamageDiscountService = null;
+        readonly ICarTypeService CarTypeService = null;
+        readonly IVehicleSpecsService VehicleSpecsService = null;
+        readonly IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService = null;
         public CarBodyInquiryController(
                 ICompanyService CompanyService,
                 IInquiryDurationService InquiryDurationService,
@@ -43,7 +46,10 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
                 IVehicleUsageService VehicleUsageService,
                 ICarExteraDiscountService CarExteraDiscountService,
                 ICarSpecificationAmountService CarSpecificationAmountService,
-                INoDamageDiscountService NoDamageDiscountService
+                INoDamageDiscountService NoDamageDiscountService,
+                ICarTypeService CarTypeService,
+                IVehicleSpecsService VehicleSpecsService,
+                IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService
             )
         {
             this.CompanyService = CompanyService;
@@ -57,6 +63,9 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.CarExteraDiscountService = CarExteraDiscountService;
             this.CarSpecificationAmountService = CarSpecificationAmountService;
             this.NoDamageDiscountService = NoDamageDiscountService;
+            this.CarTypeService = CarTypeService;
+            this.VehicleSpecsService = VehicleSpecsService;
+            this.ThirdPartyBodyNoDamageDiscountHistoryService = ThirdPartyBodyNoDamageDiscountHistoryService;
         }
 
         [AreaConfig(Title = "استعلام بدنه", Icon = "fa-car-crash", IsMainMenuItem = true)]
@@ -80,7 +89,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] CarBodyInquiryVM input)
         {
-            return Json(CarSpecificationAmountService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input));
+            return Json(CarSpecificationAmountService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry()));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
@@ -95,6 +104,13 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         public ActionResult GetNoDamageDiscount()
         {
             return Json(NoDamageDiscountService.GetLightList(ProposalFormService.GetByType(ProposalFormType.CarBody, SiteSettingService.GetSiteSetting()?.Id)?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست تخفیف عدم خسارت جانی ", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetNoDamageDiscountThirdParty()
+        {
+            return Json(ThirdPartyBodyNoDamageDiscountHistoryService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت فیلتر گرید", Icon = "fa-list-alt")]
@@ -120,16 +136,37 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
 
         [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetCarBrandList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetCarBrandList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? vehicleTypeId)
         {
-            return Json(VehicleSystemService.GetSelect2List(searchInput));
+            return Json(VehicleSystemService.GetSelect2List(searchInput, vehicleTypeId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تیپ خودرو", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetCarTypeList([FromForm] int? id)
+        public ActionResult GetVehicleTypeList()
         {
-            return Json(VehicleTypeService.GetLightList(id));
+            return Json(VehicleTypeService.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده عنوان گروه بندی خصوصیت", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetSpecCatTitle([FromForm] int? vehicleTypeId)
+        {
+            return Json(VehicleTypeService.GetSpacCatTitleBy(vehicleTypeId));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt")]
+        [HttpGet]
+        public ActionResult GetCarSpecList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? vehicleTypeId, [FromQuery] int? brandId)
+        {
+            return Json(VehicleSpecsService.GetSelect2List(searchInput, vehicleTypeId, brandId));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetCarTypeList([FromQuery] int id)
+        {
+            return Json(CarTypeService.GetLightList(id));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]

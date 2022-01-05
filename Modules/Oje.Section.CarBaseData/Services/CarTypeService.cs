@@ -28,7 +28,8 @@ namespace Oje.Section.CarBaseData.Services
             db.Entry(new CarType()
             {
                 Title = input.title,
-                IsActive = input.isActive.ToBooleanReturnFalse()
+                IsActive = input.isActive.ToBooleanReturnFalse(),
+                Order = input.order.ToIntReturnZiro()
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -64,7 +65,8 @@ namespace Oje.Section.CarBaseData.Services
             {
                 id = t.Id,
                 title = t.Title,
-                isActive = t.IsActive
+                isActive = t.IsActive,
+                order = t.Order,
             }).FirstOrDefault();
         }
 
@@ -85,7 +87,7 @@ namespace Oje.Section.CarBaseData.Services
             return new GridResultVM<CarTypeMainGridResultVM>()
             {
                 total = qureResult.Count(),
-                data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
+                data = qureResult.OrderBy(t => t.Order).Skip(searchInput.skip).Take(searchInput.take)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -114,6 +116,7 @@ namespace Oje.Section.CarBaseData.Services
 
             foundItem.Title = input.title;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.Order = input.order.ToIntReturnZiro();
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);

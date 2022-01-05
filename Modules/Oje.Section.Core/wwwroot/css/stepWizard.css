@@ -1,8 +1,11 @@
 ﻿
 .panelSWizard {
-    border:1px solid silver;
-    margin-bottom:10px;
-    padding-top:10px;
+    border: 1px solid silver;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
 }
 
 .panelSWizardHolderHeader {

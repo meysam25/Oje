@@ -21,11 +21,15 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
     public class VehicleSystemController: Controller
     {
         readonly IVehicleSystemService VehicleSystemService = null;
-        readonly ICarTypeService CarTypeService = null;
-        public VehicleSystemController(IVehicleSystemService VehicleSystemService, ICarTypeService CarTypeService)
+        readonly IVehicleTypeService VehicleTypeService = null;
+        public VehicleSystemController
+            (
+                IVehicleSystemService VehicleSystemService,
+                IVehicleTypeService VehicleTypeService
+            )
         {
             this.VehicleSystemService = VehicleSystemService;
-            this.CarTypeService = CarTypeService;
+            this.VehicleTypeService = VehicleTypeService;
         }
 
         [AreaConfig(Title = "برند خودرو", Icon = "fa-copyright", IsMainMenuItem = true)]
@@ -94,11 +98,11 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "لیست کاربری خودرو", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarTypeList()
         {
-            return Json(CarTypeService.GetLightList());
+            return Json(VehicleTypeService.GetLightList());
         }
     }
 }

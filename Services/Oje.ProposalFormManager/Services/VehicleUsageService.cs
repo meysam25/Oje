@@ -17,23 +17,23 @@ namespace Oje.ProposalFormService.Services
             this.db = db;
         }
 
-        public VehicleUsage GetById(int? id)
+        public VehicleUsage GetById(int? carTypeId)
         {
-            return db.VehicleUsages.Where(t => t.Id == id).AsNoTracking().FirstOrDefault();
+            return db.VehicleUsages.Where(t => t.VehicleUsageCarTypes.Any(tt => tt.CarTypeId == carTypeId)).AsNoTracking().FirstOrDefault();
         }
 
         public object GetLightList(int? vehicleSystemId)
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            if (vehicleSystemId.ToIntReturnZiro() > 0)
-                result.AddRange(
-                    db.VehicleUsages
-                    .Where(t => t.IsActive == true && t.VehicleUsageCarTypes.
-                                                        Any(tt => tt.CarType.IsActive == true && tt.CarType.VehicleSystems.
-                                                                Any(ttt => ttt.IsActive == true && ttt.Id == vehicleSystemId)))
-                    .Select(t => new { id = t.Id, title = t.Title }).ToList()
-                    );
+            //if (vehicleSystemId.ToIntReturnZiro() > 0)
+            //    result.AddRange(
+            //        db.VehicleUsages
+            //        .Where(t => t.IsActive == true && t.VehicleUsageCarTypes.
+            //                                            Any(tt => tt.CarType.IsActive == true && tt.CarType.VehicleSystems.
+            //                                                    Any(ttt => ttt.IsActive == true && ttt.Id == vehicleSystemId)))
+            //        .Select(t => new { id = t.Id, title = t.Title }).ToList()
+            //        );
 
             return result;
         }
