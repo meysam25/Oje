@@ -48,7 +48,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProposalFormRequiredDocumentVM input)
         {
-            return Json(ProposalFormRequiredDocumentService.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormRequiredDocumentService.Create(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "حذف مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-trash-o")]
@@ -69,7 +69,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormRequiredDocumentVM input)
         {
-            return Json(ProposalFormRequiredDocumentService.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormRequiredDocumentService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt ")]

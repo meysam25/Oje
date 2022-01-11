@@ -60,7 +60,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult Create([FromForm]CreateUpdateUserVM input)
         {
-            return Json(UserService.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(UserService.Create(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "حذف کاربر", Icon = "fa-trash-o")]
@@ -81,7 +81,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateUserVM input)
         {
-            return Json(UserService.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(UserService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]

@@ -31,5 +31,15 @@ namespace Oje.Infrastructure.Enums
         ProposalFilledForm = 10,
         [Display(Name ="مدارک تایین قیمت شرکت", Prompt = "ProposalFilledFormCompanies")]
         CompanyPrice = 11,
+        [Display(Name = "تصویر بزرگ بلاگ", Prompt = "Blog", Description = "1000*800")]
+        BlogBigImage = 12,
+        [Display(Name = "تصویر متوسط بلاگ", Prompt = "Blog", Description = "200*160")]
+        BlogMedImage = 13,
+        [Display(Name = "تصویر کوچک بلاگ", Prompt = "Blog", Description = "80*80")]
+        BlogSmallImage = 14,
+        [Display(Name = "فایل صوتی بلاگ", Prompt = "BlogSound")]
+        BlogSound = 15,
+        [Display(Name = "تصویر بزرگ بلاگ 600", Prompt = "Blog", Description = "600*400")]
+        BlogBigImage600 = 16,
     }
 }

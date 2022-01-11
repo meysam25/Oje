@@ -28,15 +28,31 @@ namespace Oje.Infrastructure.Services
             string result = "";
             Random random = new Random();
 
-            count += random.Next(0, 5); 
-
             for (int i = 0; i < count; i++)
             {
-                var currCategroy = validChars[random.Next(0, 2)];
+                List<string> currCategroy = null;
+                if (i == 0)
+                    currCategroy = validChars[2];
+                else
+                    currCategroy = validChars[random.Next(0, 3)];
                 result += currCategroy[random.Next(0, currCategroy.Count - 1)];
             }
 
             return result;
+        }
+
+        public static int GenerateRandomNumber(int count)
+        {
+            string result = "";
+            Random random = new Random();
+
+            for (int i = 0; i < count; i++)
+            {
+                var currCategroy = validChars[1];
+                result += currCategroy[random.Next(0, currCategroy.Count - 1)];
+            }
+
+            return result.ToIntReturnZiro();
         }
     }
 }

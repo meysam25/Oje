@@ -940,10 +940,17 @@ namespace Oje.Infrastructure.Services
                 result.Fullname = dycriptTextArr[2];
                 result.Ip = dycriptTextArr[3];
                 result.siteSettingId = string.IsNullOrEmpty(dycriptTextArr[4]) ? null : dycriptTextArr[4].ToIntReturnZiro();
+                result.sessionFileName = dycriptTextArr[5];
+                string roles = dycriptTextArr[6];
+                result.roles = roles.Split('-').ToList();
+                if (string.IsNullOrEmpty(result.sessionFileName))
+                    return null;
+                if (!MySession.IsFileExist(result.sessionFileName))
+                    return null;
             }
             catch
             {
-
+                return null;
             }
 
             return result;
@@ -972,7 +979,7 @@ namespace Oje.Infrastructure.Services
             }
         }
 
-        public static LoginUserVM GetLoginUserId(this HttpContext input)
+        public static LoginUserVM GetLoginUser(this HttpContext input)
         {
             try
             {

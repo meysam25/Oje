@@ -30,9 +30,15 @@ function initTokenBox(curObj) {
     $(curObj).find('select').change(function () {
         var selectedText = $(this).find('option:selected').text();
         var selectedValue = $(this).find('option:selected').val();
+        if (!selectedText && !selectedValue)
+            return;
         if (!selectedValue)
             selectedValue = selectedText;
         $(this).val(null);
+        if ($(this).data('select2')) {
+            $(this).data('select2').val(['']);
+            $(this).data('select2').trigger('change');
+        }
         if ($(curObj)[0].isSelected(selectedValue) == false) {
             $(curObj)[0].addNewToken(selectedText, selectedValue, curItemName);
         } else {

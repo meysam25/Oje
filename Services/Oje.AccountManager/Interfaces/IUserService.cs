@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
@@ -17,7 +18,7 @@ namespace Oje.AccountService.Interfaces
         GridResultVM<AdminUserGridResult> GetList(UserServiceMainGrid searchInput);
         List<Models.DB.Action> GetUserSections(long userId);
         LoginUserVM GetLoginUser();
-        void Logout();
+        void Logout(LoginUserVM loginUserVM);
         List<long> GetUserIdByRoleIds(List<int> roleIds);
         List<long> GetChildsUserId(long userId);
         ApiResult CreateForUser(CreateUpdateUserForUserVM input, long? loginUserId, LoginUserVM loginUserVM, int? siteSettingId);
@@ -25,6 +26,7 @@ namespace Oje.AccountService.Interfaces
         CreateUpdateUserForUserVM GetByIdForUser(long? id, LoginUserVM loginUserVM, int? siteSettingId);
         ApiResult UpdateForUser(CreateUpdateUserForUserVM input, long? loginUserId, LoginUserVM loginUserVM, int? siteSettingId);
         GridResultVM<UserServiceForUserMainGridResultVM> GetListForUser(UserServiceForUserMainGrid searchInput, LoginUserVM loginUserVM, int? siteSettingId);
+        User GetBy(string username, int? siteSettingId);
         object GetUserInfoByUserId(long? userId);
         long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string email, string eCode, List<long?> childUserIds, int? siteSettingId);
         void DeleteFlag(long userId, int? siteSettingId, List<long> childUserIds);
@@ -35,5 +37,7 @@ namespace Oje.AccountService.Interfaces
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId, int companyId);
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId);
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
+        void setCookieForThisUser(User newUser, LoginVM input);
+        void UpdatePassword(User user, string password);
     }
 }

@@ -14,6 +14,7 @@ namespace Oje.JoinServices
         public static void Config(IServiceCollection services)
         {
             services.AddScoped<IUserNotifierService, UserNotifierService>();
+            services.AddScoped<ISMSUserService, SMSUserService>();
         }
     }
 }

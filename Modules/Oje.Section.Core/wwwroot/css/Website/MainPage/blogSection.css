@@ -47,15 +47,16 @@
     font-weight: bold;
     color: #787c7d;
     margin-bottom: 8px;
-    -webkit-text-decoration: none;
-    text-decoration: none;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
 }
 
 .blogSectionMainBlogDescription {
     color: #787c7d;
     text-align: justify;
-    text-decoration: none;
-    max-height: 50px;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
+    max-height: 44px;
     overflow: hidden;
     display: inline-block;
 }
@@ -86,6 +87,11 @@
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    width: 135px;
+    height: 90px;
 }
 
     .blogSectionSubBlogItemImg:after {
@@ -162,11 +168,11 @@
 
 .blogSectionSubBlogItemDescription {
     text-align: justify;
-    height: 50px;
+    height: 44px;
     overflow: hidden;
     color: #787c7d;
-    -webkit-text-decoration: none;
-    text-decoration: none;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
 }
 
 .blogSectionSubBlogItemTitle {
@@ -174,8 +180,8 @@
     font-weight: bold;
     font-size: 1.2em;
     color: #787c7d;
-    -webkit-text-decoration: none;
-    text-decoration: none;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
 }
 
     .blogSectionSubBlogItemTitle:hover, .blogSectionSubBlogItemDescription:hover, .blogSectionMainBlogTitle:hover, .blogSectionMainBlogDescription:hover {
@@ -346,7 +352,7 @@
 
 @media (max-width: 430px) {
     .blogSectionMainBlogImg > img, .blogSectionSubBlogItemImg > img {
-        width: 70px;
+        width: 135px;
         height: auto;
     }
 
@@ -366,9 +372,9 @@
         margin-bottom: 4px;
     }
     .blogSectionMainBlogDescription {
-        height:45px;
+        height:40px;
     }
     .blogSectionSubBlogItemDescription{
-        height:45px;
+        height:40px;
     }
 }

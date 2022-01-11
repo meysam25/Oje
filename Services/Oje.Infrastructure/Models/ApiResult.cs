@@ -24,6 +24,12 @@ namespace Oje.Infrastructure.Models
         {
             return new ApiResult() { isSuccess = isSuccess, messageCode = messageCode, message = messageCode.GetAttribute<DisplayAttribute>()?.Name };
         }
+
+        public static ApiResult GenerateNewResult(bool isSuccess, BMessages messageCode, object data)
+        {
+            return new ApiResult() { isSuccess = isSuccess, messageCode = messageCode, message = messageCode.GetAttribute<DisplayAttribute>()?.Name, data = data };
+        }
+
         public static ApiResult GenerateNewResult(bool isSuccess, BMessages messageCode, string fileData, string fileName)
         {
             return new ApiResult() { isSuccess = isSuccess, messageCode = messageCode, message = messageCode.GetAttribute<DisplayAttribute>()?.Name, fileData = fileData, fileName = fileName };

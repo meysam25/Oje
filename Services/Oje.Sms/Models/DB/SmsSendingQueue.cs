@@ -44,6 +44,7 @@ namespace Oje.Sms.Models.DB
         public byte Ip4 { get; set; }
         [MaxLength(50)]
         public string TraceCode { get; set; }
+        public long? CreateUserId { get; set; }
         public int SiteSettingId { get; set; }
 
         [InverseProperty("SmsSendingQueue")]

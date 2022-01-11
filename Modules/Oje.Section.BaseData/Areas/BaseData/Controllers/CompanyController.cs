@@ -47,7 +47,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateCompanyVM input)
         {
-            return Json(CompanyService.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(CompanyService.Create(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "حذف شرکت بیمه", Icon = "fa-trash-o")]
@@ -68,7 +68,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateCompanyVM input)
         {
-            return Json(CompanyService.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(CompanyService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت بیمه", Icon = "fa-list-alt ")]

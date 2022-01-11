@@ -18,7 +18,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
     [Area("ProposalFormInquiries")]
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "استعلام", Icon = "fa-file-invoice", Title = "استعلام آتش سوزی")]
-    [CustomeAuthorizeFilter]
+    
     public class FireInsuranceController: Controller
     {
         readonly IFireInsuranceBuildingUnitValueService FireInsuranceBuildingUnitValueService = null;
@@ -65,6 +65,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
 
         [AreaConfig(Title = "استعلام آتش سوزی", Icon = "fa-fire", IsMainMenuItem = true)]
         [HttpGet]
+        [CustomeAuthorizeFilter]
         public IActionResult Index()
         {
             ViewBag.Title = "استعلام آتش سوزی";

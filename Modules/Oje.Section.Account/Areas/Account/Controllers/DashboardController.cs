@@ -4,7 +4,8 @@ using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Models.View;
-using Oje.Infrastructure;
+using Oje.Sms.Models.View;
+using Oje.JoinServices.Interfaces;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -17,18 +18,24 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         readonly ISiteSettingService SiteSettingService = null;
         readonly ISectionService SectionService = null;
         readonly IDashboardSectionService DashboardSectionService = null;
+        readonly Sms.Interfaces.ISmsSendingQueueService SmsSendingQueueService = null;
+        readonly ISMSUserService SMSUserService = null;
 
         public DashboardController(
             IUserService UserService,
             ISiteSettingService SiteSettingService,
             ISectionService SectionService,
-            IDashboardSectionService DashboardSectionService
+            IDashboardSectionService DashboardSectionService,
+            Sms.Interfaces.ISmsSendingQueueService SmsSendingQueueService,
+            ISMSUserService SMSUserService
             )
         {
             this.UserService = UserService;
             this.SiteSettingService = SiteSettingService;
             this.SectionService = SectionService;
             this.DashboardSectionService = DashboardSectionService;
+            this.SmsSendingQueueService = SmsSendingQueueService;
+            this.SMSUserService = SMSUserService;
         }
 
         [CustomeAuthorizeFilter]
@@ -46,7 +53,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(DashboardSectionService.GetDashboardConfigByUserId(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId));
+            return Content(DashboardSectionService.GetDashboardConfigByUserId(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
 
         [HttpGet]
@@ -63,7 +70,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
 
         public IActionResult Logout()
         {
-            UserService.Logout();
+            UserService.Logout(HttpContext.GetLoginUser());
             return RedirectToAction("Login");
         }
 
@@ -72,7 +79,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult GetLoginUserInfo()
         {
-            return Json(UserService.GetUserInfoByUserId(HttpContext.GetLoginUserId()?.UserId));
+            return Json(UserService.GetUserInfoByUserId(HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده منو های کاربر")]
@@ -80,7 +87,43 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult GetLoginUserSideMenu()
         {
-            return Json(SectionService.GetSideMenuAjax(HttpContext.GetLoginUserId()?.UserId));
+            return Json(SectionService.GetSideMenuAjax(HttpContext.GetLoginUser()?.UserId));
+        }
+
+        [HttpPost]
+        public IActionResult IsUserLogin()
+        {
+            return Json(HttpContext.GetLoginUser()?.UserId > 0);
+        }
+
+        [HttpPost]
+        public IActionResult LoginWithSMS(RegLogSMSVM input)
+        {
+            return Json(SmsSendingQueueService.LoginWithSMS(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpPost]
+        public IActionResult LoginRegister(RegLogSMSVM input)
+        {
+            return Json(SMSUserService.LoginRegister(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpPost]
+        public IActionResult ActiveCodeForResetPassword(RegLogSMSVM input)
+        {
+            return Json(SmsSendingQueueService.ActiveCodeForResetPassword(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpPost]
+        public IActionResult CheckIfSmsCodeIsValid(RegLogSMSVM input)
+        {
+            return Json(SMSUserService.CheckIfSmsCodeIsValid(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpPost]
+        public IActionResult ChangePasswordAndLogin(ChangePasswordAndLoginVM input)
+        {
+            return Json(SMSUserService.ChagePasswordAndLogin(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

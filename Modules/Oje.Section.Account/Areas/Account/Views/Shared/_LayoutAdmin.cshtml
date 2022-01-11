@@ -34,7 +34,7 @@
                     <span>داشبرد</span>
                 </span>
             </a>
-            <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login">
+            <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login" vary-by="@(Oje.Infrastructure.GlobalConfig.siteMenuCache)" >
                 <partial name="~/Areas/Account/Views/Shared/_LayoutAdminSideMenu.cshtml" />
             </cache>
         </div>
@@ -43,7 +43,7 @@
         <header>
             <span class="fa fa-bars headerTopMenuButton"></span>
             <span class="loginUserSecitonHeader">
-                <span class="loginUserName"><a href="/UserAccount/UserNotification/Index" class="notificationCount">@(UserNotificationService.GetUserUnreadNotificationCount(Context.GetLoginUserId()?.UserId))</a> @Context.GetLoginUserId()?.Fullname</span><i class="loginArrowMenu fa fa-sort-down"></i>
+                <span class="loginUserName"><a href="/UserAccount/UserNotification/Index" class="notificationCount">@(UserNotificationService.GetUserUnreadNotificationCount(Context.GetLoginUser()?.UserId))</a> @(!string.IsNullOrEmpty(Context.GetLoginUser()?.Fullname.Trim()) ? Context.GetLoginUser()?.Fullname : Context.GetLoginUser()?.Username)</span><i class="loginArrowMenu fa fa-sort-down"></i>
                 <span class="loginUserMenu">
                     <a class="loginMenuItem" href="/Account/Dashboard/Logout"><i class="fa fa-sign-out-alt"></i> خروج</a>
                 </span>

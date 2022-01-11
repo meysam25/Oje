@@ -46,7 +46,7 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] BankCreateUpdateVM input)
         {
-            return Json(BankService.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(BankService.Create(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "حذف لیست بانک", Icon = "fa-trash-o")]
@@ -67,7 +67,7 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
         [HttpPost]
         public IActionResult Update([FromForm] BankCreateUpdateVM input)
         {
-            return Json(BankService.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(BankService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست لیست بانک", Icon = "fa-list-alt ")]

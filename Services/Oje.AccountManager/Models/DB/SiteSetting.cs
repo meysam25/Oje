@@ -27,6 +27,7 @@ namespace Oje.AccountService.Models.DB
         [Required]
         [MaxLength(100)]
         public string PanelUrl { get; set; }
+        public long? UserId { get; set; }
 
         [InverseProperty("SiteSetting")]
         public List<Role> Roles { get; set; }

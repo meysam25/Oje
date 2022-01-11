@@ -7,6 +7,7 @@ $.fn.loadImageOnScroll = function () {
             if (!$(this.curThis).attr('src'))
                 $(this.curThis).attr('src', $(this.curThis).attr('data-src'))
         }.bind({ curThis: foundObj }));
+        setTimeout(function () { handler(foundObj) }, 100)
         $(window).on('DOMContentLoaded load resize scroll', handler);
     });
 }

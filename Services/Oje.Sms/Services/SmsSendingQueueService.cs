@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
 using Oje.Sms.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Sms.Services
 {
@@ -22,28 +18,51 @@ namespace Oje.Sms.Services
         readonly IHttpContextAccessor HttpContextAccessor = null;
         readonly ISmsSenderService SmsSenderService = null;
         readonly ISmsSendingQueueErrorService SmsSendingQueueErrorService = null;
+        readonly ISmsValidationHistoryService SmsValidationHistoryService = null;
+        readonly IUserService UserService = null;
+        readonly ISmsTemplateService SmsTemplateService = null;
         public SmsSendingQueueService(
                 SmsDBContext db,
                 IHttpContextAccessor HttpContextAccessor,
                 ISmsSenderService SmsSenderService,
-                ISmsSendingQueueErrorService SmsSendingQueueErrorService
+                ISmsSendingQueueErrorService SmsSendingQueueErrorService,
+                ISmsValidationHistoryService SmsValidationHistoryService,
+                IUserService UserService,
+                ISmsTemplateService SmsTemplateService
             )
         {
             this.db = db;
             this.HttpContextAccessor = HttpContextAccessor;
             this.SmsSenderService = SmsSenderService;
             this.SmsSendingQueueErrorService = SmsSendingQueueErrorService;
+            this.SmsValidationHistoryService = SmsValidationHistoryService;
+            this.UserService = UserService;
+            this.SmsTemplateService = SmsTemplateService;
         }
 
-        public void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId)
+        public void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite)
         {
             var foundIp = HttpContextAccessor.GetIpAddress();
-            if (foundIp != null)
+            if (foundIp == null)
+                throw BException.GenerateNewException(BMessages.Ip_Format_Is_Not_Valid);
+            if (siteSettingId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+
+            smsSendingQueue.Ip1 = foundIp.Ip1;
+            smsSendingQueue.Ip2 = foundIp.Ip2;
+            smsSendingQueue.Ip3 = foundIp.Ip3;
+            smsSendingQueue.Ip4 = foundIp.Ip4;
+            smsSendingQueue.SiteSettingId = siteSettingId.Value;
+
+            if (smsLimits != null)
             {
-                smsSendingQueue.Ip1 = foundIp.Ip1;
-                smsSendingQueue.Ip2 = foundIp.Ip2;
-                smsSendingQueue.Ip3 = foundIp.Ip3;
-                smsSendingQueue.Ip4 = foundIp.Ip4;
+                var foundLimit = smsLimits.Where(t => t.type == smsSendingQueue.Type && t.isWebsite == isWebsite).FirstOrDefault();
+                if (foundLimit != null)
+                {
+                    if (db.SmsSendingQueues.Count(t => t.Ip1 == smsSendingQueue.Ip1 && t.Ip2 == smsSendingQueue.Ip2 && t.Ip3 == smsSendingQueue.Ip3 && t.Ip4 == smsSendingQueue.Ip4 && t.Type == smsSendingQueue.Type) >= foundLimit.value)
+                        return;
+                }
+
             }
 
             db.Entry(smsSendingQueue).State = EntityState.Added;
@@ -122,6 +141,76 @@ namespace Oje.Sms.Services
             };
         }
 
+        public object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)
+        {
+            LoginWithSMSValidation(input, ipSections, siteSettingId);
+
+            var foundUser = UserService.GetBy(siteSettingId, input.username);
+
+            if (foundUser != null && (foundUser.IsActive == false || foundUser.IsDelete == true))
+                throw BException.GenerateNewException(BMessages.UnknownError);
+
+            var newCode = SmsValidationHistoryService.Create(ipSections, input.username, siteSettingId, SmsValidationHistoryType.RegisterLogin);
+
+            List<SmsTemplate> foundTemplate = null;
+            string smsMessage = "";
+
+            UserNotificationType? curType = null;
+
+
+            if (foundUser != null)
+            {
+                curType = UserNotificationType.Login;
+                smsMessage = "کاربر گرامی " + foundUser.Firstname + " " + foundUser.Lastname + " رمز یک بار مصرف جهت ورود شما عبارت است از " + newCode;
+                foundTemplate = SmsTemplateService.GetBy(curType.Value, siteSettingId);
+            }
+            else
+            {
+                curType = UserNotificationType.Register;
+                smsMessage = "کاربر گرامی لطفا جهت ثبت نام از این کد استفاده کنید " + newCode;
+                foundTemplate = SmsTemplateService.GetBy(curType.Value, siteSettingId);
+            }
+
+            if (foundTemplate != null && foundTemplate.Count > 0)
+                smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, newCode.ToString(), foundUser != null ? (foundUser.Firstname + " " + foundUser.Lastname) : null);
+
+            Create(new SmsSendingQueue()
+            {
+                Body = smsMessage,
+                CreateDate = DateTime.Now,
+                MobileNumber = input.username,
+                SiteSettingId = siteSettingId.ToIntReturnZiro(),
+                Subject = curType.GetEnumDisplayName(),
+                Type = curType.Value
+            }, siteSettingId, GlobalConfig.GetSmsLimitFromConfig(), null);
+            SaveChange();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode, new
+            {
+                data = new { username = input.username },
+                labels = new List<object>() { new { inputName = "code", labelText = "کد  به شماره  " + input.username + " ارسال گردید" } },
+                stepId = "confirmSMS",
+                countDownId = "tryAginButtonCD"
+            });
+        }
+
+        private void LoginWithSMSValidation(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)
+        {
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (string.IsNullOrEmpty(input.username))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
+            if (!input.username.IsMobile())
+                throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
+            if (ipSections == null)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (siteSettingId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(SmsValidationHistoryType.RegisterLogin, ipSections, siteSettingId);
+            if (deffFromLastSendSecound < 120)
+                throw BException.GenerateNewException(string.Format(BMessages.Please_W8_X_Secound.GetEnumDisplayName(), (120 - deffFromLastSendSecound)));
+        }
+
         public void SaveChange()
         {
             db.SaveChanges();
@@ -172,6 +261,72 @@ namespace Oje.Sms.Services
             }
 
             db.SaveChanges();
+        }
+
+        public object ActiveCodeForResetPassword(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)
+        {
+            ActiveCodeForResetPasswordValidation(input, ipSections, siteSettingId);
+
+            var foundUser = UserService.GetBy(siteSettingId, input.username);
+
+            if (foundUser != null && foundUser.IsActive == true && foundUser.IsDelete != true)
+            {
+                var newCode = SmsValidationHistoryService.Create(ipSections, input.username, siteSettingId, SmsValidationHistoryType.ForgetPassword);
+
+                List<SmsTemplate> foundTemplate = null;
+                string smsMessage = "";
+
+                UserNotificationType curType = UserNotificationType.ForgetPassword;
+                smsMessage = "کاربر گرامی " + foundUser.Firstname + " " + foundUser.Lastname + " رمز یک بار مصرف جهت ورود شما عبارت است از " + newCode;
+                foundTemplate = SmsTemplateService.GetBy(curType, siteSettingId);
+
+                if (foundTemplate != null && foundTemplate.Count > 0)
+                    smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, newCode.ToString(), foundUser != null ? (foundUser.Firstname + " " + foundUser.Lastname) : null);
+
+                Create(new SmsSendingQueue()
+                {
+                    Body = smsMessage,
+                    CreateDate = DateTime.Now,
+                    MobileNumber = input.username,
+                    SiteSettingId = siteSettingId.ToIntReturnZiro(),
+                    Subject = curType.GetEnumDisplayName(),
+                    Type = curType
+                }, siteSettingId, GlobalConfig.GetSmsLimitFromConfig(), null);
+                SaveChange();
+
+                return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode, new
+                {
+                    data = new { username = input.username },
+                    labels = new List<object>() { new { inputName = "code", labelText = "کد  به شماره  " + input.username + " ارسال گردید" } },
+                    stepId = "recoveryPasswordConfirmSMS",
+                    countDownId = "tryAginButtonCDRP"
+                });
+            }
+
+            return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode, new
+            {
+                data = new { username = input.username },
+                labels = new List<object>() { new { inputName = "code", labelText = "کد  به شماره  " + input.username + " ارسال گردید" } },
+                stepId = "recoveryPasswordConfirmSMS",
+                countDownId = "tryAginButtonCDRP"
+            });
+        }
+
+        private void ActiveCodeForResetPasswordValidation(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)
+        {
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (string.IsNullOrEmpty(input.username))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
+            if (!input.username.IsMobile())
+                throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
+            if (ipSections == null)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (siteSettingId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(SmsValidationHistoryType.ForgetPassword, ipSections, siteSettingId);
+            if (deffFromLastSendSecound < 120)
+                throw BException.GenerateNewException(string.Format(BMessages.Please_W8_X_Secound.GetEnumDisplayName(), (120 - deffFromLastSendSecound)));
         }
     }
 }

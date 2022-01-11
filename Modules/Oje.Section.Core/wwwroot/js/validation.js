@@ -121,7 +121,7 @@ function checkNationalCodeValidation(selectQuery, result) {
 function checkRequiredValidation(selectQuery, result) {
     if (result == true) {
         $(selectQuery).find('input[data-validation-required="true"], select[data-validation-required="true"]').each(function () {
-            if (isVisibleCtrl(this) || $(this).attr('data-select2-id')) {
+            if (isVisibleCtrl(this) || $(this).attr('data-select2-id') || $(this).attr('type') == 'file') {
                 var curValue = $(this).val();
                 if ($(this).parent().hasClass('tokenBox'))
                     curValue = $(this).parent().find('input[type="hidden"]').val();

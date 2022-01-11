@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Oje.Infrastructure;
 using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,13 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         {
             ViewBag.Title = "ستاد بیمه";
             return View();
+        }
+
+        [Route("[Controller]/[Action]")]
+        public IActionResult GetLoginModalConfig()
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("WebMain", "LoginModal")));
         }
     }
 }

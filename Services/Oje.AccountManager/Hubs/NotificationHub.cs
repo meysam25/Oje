@@ -19,7 +19,7 @@ namespace Oje.AccountService.Hubs
 
         public override Task OnConnectedAsync()
         {
-            var loginUser = Context.GetHttpContext().GetLoginUserId();
+            var loginUser = Context.GetHttpContext().GetLoginUser();
             if (loginUser == null)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
 

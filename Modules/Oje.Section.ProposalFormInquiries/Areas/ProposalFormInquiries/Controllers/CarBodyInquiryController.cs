@@ -18,7 +18,6 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
     [Area("ProposalFormInquiries")]
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "استعلام", Icon = "fa-file-invoice", Title = "استعلام بدنه")]
-    [CustomeAuthorizeFilter]
     public class CarBodyInquiryController: Controller
     {
         readonly ICompanyService CompanyService = null;
@@ -70,6 +69,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
 
         [AreaConfig(Title = "استعلام بدنه", Icon = "fa-car-crash", IsMainMenuItem = true)]
         [HttpGet]
+        [CustomeAuthorizeFilter]
         public IActionResult Index()
         {
             ViewBag.Title = "استعلام بدنه";

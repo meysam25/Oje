@@ -24,6 +24,7 @@ namespace Oje.Sms
             services.AddScoped<IMagfaSMSSenderService, MagfaSMSSenderService>();
             services.AddScoped<ISmsSenderService, SmsSenderService>();
             services.AddScoped<ISmsSendingQueueErrorService, SmsSendingQueueErrorService>();
+            services.AddScoped<ISmsValidationHistoryService, SmsValidationHistoryService>();
 
             cacheServices = services;
         }

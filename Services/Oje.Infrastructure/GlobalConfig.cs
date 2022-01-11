@@ -3,11 +3,9 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Oje.Models;
+using Oje.Infrastructure.Models;
 
 namespace Oje.Infrastructure
 {
@@ -17,6 +15,7 @@ namespace Oje.Infrastructure
         public static IWebHostEnvironment WebHostEnvironment { get; set; }
         public static List<Assembly> Moduals { get; set; }
         private static string UploadImageFolderName { get { return "UploadImages"; } }
+        public static int siteMenuCache { get; set; } = 0;
 
         public static string FileAccessHandlerUrl { get { return "/Core/BaseData/GetFile"; } }
 
@@ -49,6 +48,22 @@ namespace Oje.Infrastructure
                 result = result + "/" + cPath;
 
             return result;
+        }
+
+        private static List<SmsLimit> smsLImitsCache = null;
+
+        public static List<SmsLimit> GetSmsLimitFromConfig()
+        {
+            try
+            {
+                if(smsLImitsCache == null)
+                    smsLImitsCache = Configuration.GetSection("SmsLimits").Get<List<SmsLimit>>();
+                return smsLImitsCache;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

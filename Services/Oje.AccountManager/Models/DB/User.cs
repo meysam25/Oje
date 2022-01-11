@@ -93,6 +93,8 @@ namespace Oje.AccountService.Models.DB
         public int? CityId { get; set; }
         [ForeignKey("CityId"), InverseProperty("Users")]
         public City City { get; set; }
+        public int? CountInvalidPass { get; set; }
+        public DateTime? TemproryLockDate { get; set; }
         public int? SiteSettingId { get; set; }
 
 

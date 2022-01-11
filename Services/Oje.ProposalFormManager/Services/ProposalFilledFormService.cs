@@ -117,7 +117,7 @@ namespace Oje.ProposalFormService.Services
 
                     tr.Commit();
 
-                    UserNotifierService.Notify(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
+                    UserNotifierService.Notify(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, foundProposalForm.Title, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
                     newFormId = newForm.Id;
                 }
                 catch (Exception)

@@ -44,6 +44,14 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تغییر وضعیت فرم پیشنهاد به صادره")]
         ProposalFilledFormStatusChangeIssue = 17,
         [Display(Name = "تغییر وضعیت فرم پیشنهاد به رد شده")]
-        ProposalFilledFormStatusChangeNotIssue = 18
+        ProposalFilledFormStatusChangeNotIssue = 18,
+        [Display(Name = "ورود")]
+        Login = 19,
+        [Display(Name = "ثبت نام")]
+        Register = 20,
+        [Display(Name = "ثبت نام موفقیت آمیز")]
+        RegisterSuccessFull = 21,
+        [Display(Name = "فراموشی کلمه عبور")]
+        ForgetPassword = 22
     }
 }

@@ -26,7 +26,7 @@
     align-items: center;
     -webkit-justify-content: center;
     justify-content: center;
-    z-index:4;
+    z-index: 4;
 }
 
 .loader {
@@ -46,7 +46,7 @@
     100% {
         transform: rotate(360deg);
     }
-} 
+}
 
 .confirmDialogBG {
     position: fixed;
@@ -333,8 +333,8 @@ input[type=checkbox] + label, input[type=checkbox] {
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
-    overflow:hidden;
-    display:block;
+    overflow: hidden;
+    display: block;
 }
 
     .plaqueCtrl input, .plaqueCtrl select {
@@ -348,9 +348,9 @@ input[type=checkbox] + label, input[type=checkbox] {
         -webkit-border-radius: 4px;
         border-radius: 4px;
         border: 1px solid #c4c4c4;
-        outline:none;
-        margin-right:5px;
-        margin-left:5px;
+        outline: none;
+        margin-right: 5px;
+        margin-left: 5px;
     }
 
 .plaqueRightPartRight {
@@ -358,24 +358,26 @@ input[type=checkbox] + label, input[type=checkbox] {
     border-left: 1px solid #acacac;
     width: 24%
 }
+
     .plaqueRightPartRight input {
-        width:calc(100% - 11px);
+        width: calc(100% - 11px);
     }
 
-    .plaqueRightPartLeft {
-        display: inline-block;
-        width: 76%;
-    }
+.plaqueRightPartLeft {
+    display: inline-block;
+    width: 76%;
+}
+
     .plaqueRightPartLeft input, .plaqueRightPartLeft select {
         width: calc(33.33% - 11px);
     }
 
-    .plaqueRightPart {
-        display: inline-block;
-        background-color: #f2f2f2;
-        vertical-align: top;
-        width: calc(100% - 28px);
-    }
+.plaqueRightPart {
+    display: inline-block;
+    background-color: #f2f2f2;
+    vertical-align: top;
+    width: calc(100% - 28px);
+}
 
 .plaqueLeftPart {
     display: inline-block;
@@ -384,17 +386,20 @@ input[type=checkbox] + label, input[type=checkbox] {
     background-color: #002f9c;
     border-right: 1px solid #5674bb;
 }
+
     .plaqueLeftPart > img {
-        display:inline-block;
-        margin-top:3px;
-        margin-bottom:3px;
-        margin-right:3px;
-        margin-left:5px;
-        vertical-align:top;
+        display: inline-block;
+        margin-top: 3px;
+        margin-bottom: 3px;
+        margin-right: 3px;
+        margin-left: 5px;
+        vertical-align: top;
     }
+
     .plaqueLeftPart > div:nth-child(2n) {
-        margin-top:-9px;
+        margin-top: -9px;
     }
+
     .plaqueLeftPart > div {
         text-align: left;
         color: white;
@@ -402,12 +407,15 @@ input[type=checkbox] + label, input[type=checkbox] {
         margin-right: 3px;
         margin-left: 5px;
     }
-.select2-search__field{
-    text-align:right;
+
+.select2-search__field {
+    text-align: right;
 }
+
 .myCtrl {
-    position:relative;
+    position: relative;
 }
+
     .myCtrl > label:not(.btn) {
         position: absolute;
         top: 5px;
@@ -418,9 +426,10 @@ input[type=checkbox] + label, input[type=checkbox] {
         -o-transition: 0.2s;
         -webkit-transition: 0.2s;
         transition: 0.2s;
-        cursor:pointer;
+        cursor: pointer;
     }
-.myCtrlMakeActive > label:not(.btn) {
+
+.myCtrlMakeActive > label:not(.btn), .makeLabelBGSilver > label:not(.btn) {
     font-size: 0.8em;
     top: -15px;
     right: 10px;
@@ -429,21 +438,36 @@ input[type=checkbox] + label, input[type=checkbox] {
     padding-left: 5px;
     cursor: pointer;
 }
-.myCtrl input, .myCtrl select {
+
+.myCtrl input, .myCtrl select, .myCtrl textarea {
     -moz-box-shadow: none !important;
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
-    background-color:white !important;
-    cursor:pointer;
+    background-color: white !important;
+    cursor: pointer;
 }
 
-.myFileUpload input[type=file]{
-    display:none;
+.myFileUpload input[type=file] {
+    display: none;
 }
+
 .btn a {
-    color:white;
+    color: white;
 }
-.select2-selection__arrow{
-    right:auto;
-    left:1px;
+
+.select2-selection__arrow {
+    right: auto;
+    left: 1px;
+}
+
+.countDownNumberFinished {
+    cursor: pointer;
+}
+
+.countDownCtrl {
+    margin-bottom: 15px;
+}
+
+.makeLabelBGSilver > label {
+    background-color: #fafafa !important;
 }

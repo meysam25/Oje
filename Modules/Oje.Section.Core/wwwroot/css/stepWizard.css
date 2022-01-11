@@ -23,10 +23,13 @@
     transition: 0.4s;
     white-space:nowrap;
     font-weight:bold;
+    position:relative;
+    
 }
 .panelSWizardHolderHeaderItemActive {
     opacity: 1;
-    width: 100%;
+    width: calc(100% - 25px);
+    padding-right: 25px;
 }
 .panelSWizardHolderContent{
     position:relative;
@@ -44,12 +47,23 @@
     opacity: 0;
     z-index: 1;
     padding:10px;
+    display:none;
 }
 .panelSWizardHolderContentItemActive{
     position:static;
     z-index:2;
     opacity:1;
+    display:block;
 }
 .stepButton {
     margin-left:10px;
+}
+.swMoveBackToStepButton{
+    cursor:pointer;
+    position:absolute;
+    right:0px;
+    top:0px;
+}
+.swMoveBackToStepButton > i{
+    font-size:1.5em;
 }

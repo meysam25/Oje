@@ -1,4 +1,5 @@
 ﻿using Oje.Sms.Interfaces;
+using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
 using Oje.Sms.Services.EContext;
 using System;
@@ -15,6 +16,11 @@ namespace Oje.Sms.Services
         public UserService(SmsDBContext db)
         {
             this.db = db;
+        }
+
+        public User GetBy(int? siteSettingId, string username)
+        {
+            return db.Users.Where(t => t.SiteSettingId == siteSettingId && t.Username == username).FirstOrDefault();
         }
 
         public string GetUserFullName(int? siteSettingId, long? userId)

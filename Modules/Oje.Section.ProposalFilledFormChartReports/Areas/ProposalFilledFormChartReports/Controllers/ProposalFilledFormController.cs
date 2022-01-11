@@ -53,7 +53,7 @@ namespace Oje.Section.ProposalFilledFormChartReports.Areas.ProposalFilledFormCha
         [HttpPost]
         public IActionResult GetSource()
         {
-            return Json(ProposalFilledFormService.GetProposalFormChartReport(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFilledFormService.GetProposalFormChartReport(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
     }
 }

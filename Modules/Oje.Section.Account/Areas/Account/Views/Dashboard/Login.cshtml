@@ -17,11 +17,11 @@
         </div>
         <input id="userPassword" autocomplete="off" type="password" class="form-control" name="password" aria-label="Password" aria-describedby="basic-addon2">
     </div>
-    <div class="input-group mb-3">
+@*    <div class="input-group mb-3">
         <div class="captchaCTRL">
         </div>
 
-    </div>
+    </div>*@
     <div style="direction:rtl;text-align:right;" class=" mb-3">
         <input type="checkbox"  name="rememberMe" value="True" id="remember">
         <label  for="remember">مرا به خاطر بسپار</label>
@@ -42,6 +42,6 @@
             }
         }, null, function () { hideLoader($('.loginBox'), true); });
     });
-    $('.captchaCTRL').initCaptcha();
+    //$('.captchaCTRL').initCaptcha();
     $('.loginBox').keypress(function (e) { if (e.keyCode == 13) $('.loginButton').click(); });
 </script>

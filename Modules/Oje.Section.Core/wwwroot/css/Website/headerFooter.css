@@ -67,7 +67,29 @@ body {
     width: 75%;
     margin-left: auto;
     margin-right: auto;
+    -moz-transition: 0.6s;
+    -o-transition: 0.6s;
+    -webkit-transition: 0.6s;
+    transition: 0.6s;
 }
+
+.myContainerEffect1 {
+    max-height: 0px;
+    overflow: hidden;
+    margin-top:-40px;
+}
+    .myContainerEffect1 > section {
+        opacity:0;
+        margin:0px;
+    }
+
+.myContainerEffect1Active {
+    max-height: 600px;
+    margin-top:0px;
+}
+    .myContainerEffect1Active > section {
+        opacity:1;
+    }
 
 .mainHeaderLogo {
     float: right;
@@ -636,21 +658,27 @@ body {
     width: 100%;
     background-color: white;
 }
+
 .plaqueLeftPart > div:nth-child(2n) {
-    margin-top:-7px !important;
+    margin-top: -7px !important;
 }
-.form-control{
-    height:38px !important;
+
+.form-control {
+    height: 38px !important;
 }
-.myCtrl > label:not(.btn){
-    top:8px !important;
+
+.myCtrl > label:not(.btn) {
+    top: 8px !important;
 }
+
 .myCtrlMakeActive > label:not(.btn) {
     top: -10px !important;
 }
-.myCtrl>label>span {
-    font-size:1em;
+
+.myCtrl > label > span {
+    font-size: 1em;
 }
+
 .globalSection {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -659,6 +687,7 @@ body {
     margin: 40px 6px;
     padding: 10px;
 }
+
 
 @media (max-width: 380px) {
     .mainHeaderElectronDevelopLogo {
@@ -680,14 +709,16 @@ body {
     .footerSharingIconSection i {
         margin: 6px 6px 6px 6px;
     }
+
     .floatingFooterSection {
         -ms-flex-direction: column;
         -webkit-flex-direction: column;
         flex-direction: column;
     }
-    .floatingFooterSection > div {
-        text-align:center;
-    }
+
+        .floatingFooterSection > div {
+            text-align: center;
+        }
 }
 
 @media (max-width: 520px) {
@@ -720,8 +751,9 @@ body {
         -webkit-flex-direction: column;
         flex-direction: column;
     }
-    section{
-        margin:20px 5px !important;
+
+    section {
+        margin: 20px 5px !important;
     }
 }
 

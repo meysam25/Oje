@@ -13,7 +13,6 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "ثبت فرم")]
-    [CustomeAuthorizeFilter]
     public class ProposalController : Controller
     {
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
@@ -65,9 +64,10 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "ذخیره فرم پیشنهاد جدید", Icon = "fa-pen")]
         [HttpPost]
+        [CustomeAuthorizeFilter]
         public IActionResult Create()
         {
-            return Json(ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUserId()?.UserId, Request.GetTargetAreaByRefferForPPFDetailes()));
+            return Json(ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUser()?.UserId, Request.GetTargetAreaByRefferForPPFDetailes()));
         }
 
         [AreaConfig(Title = "لیست مدارم مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]

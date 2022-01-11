@@ -60,42 +60,42 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         [HttpPost]
         public IActionResult Create([FromForm]CreateUpdateUserForUserVM input)
         {
-            return Json(UserService.CreateForUser(input, HttpContext.GetLoginUserId()?.UserId, HttpContext.GetLoginUserId(), SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.CreateForUser(input, HttpContext.GetLoginUser()?.UserId, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "حذف کاربر", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
-            return Json(UserService.DeleteForUser(input?.id, HttpContext.GetLoginUserId(), SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.DeleteForUser(input?.id, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده  یک کاربر", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input)
         {
-            return Json(UserService.GetByIdForUser(input?.id, HttpContext.GetLoginUserId(), SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.GetByIdForUser(input?.id, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "به روز رسانی  کاربر", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateUserForUserVM input)
         {
-            return Json(UserService.UpdateForUser(input, HttpContext.GetLoginUserId()?.UserId, HttpContext.GetLoginUserId(), SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.UpdateForUser(input, HttpContext.GetLoginUser()?.UserId, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserServiceForUserMainGrid searchInput)
         {
-            return Json(UserService.GetListForUser(searchInput, HttpContext.GetLoginUserId(), SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.GetListForUser(searchInput, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] UserServiceForUserMainGrid searchInput)
         {
-            var result = UserService.GetListForUser(searchInput, HttpContext.GetLoginUserId(), SiteSettingService.GetSiteSetting()?.Id);
+            var result = UserService.GetListForUser(searchInput, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -109,7 +109,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         [HttpPost]
         public IActionResult GetRoleList()
         {
-            return Json(RoleService.GetRoleLightListForUser(HttpContext.GetLoginUserId(), SiteSettingService.GetSiteSetting()?.Id));
+            return Json(RoleService.GetRoleLightListForUser(HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت های بیمه")]

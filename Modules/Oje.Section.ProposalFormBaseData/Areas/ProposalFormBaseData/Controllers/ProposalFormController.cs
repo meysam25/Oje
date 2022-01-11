@@ -48,7 +48,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateProposalFormVM input)
         {
-            return Json(ProposalFormService.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormService.Create(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "حذف فرم های پیشنهاد", Icon = "fa-trash-o")]
@@ -69,7 +69,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormVM input)
         {
-            return Json(ProposalFormService.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFormService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]

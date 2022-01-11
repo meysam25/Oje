@@ -1,0 +1,302 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "blogAdminBlogGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('blogAdminBlogAddGridModal', this)",
+              "type": "add",
+              "modalId": "blogAdminBlogAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/BlogAdmin/Blog/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/BlogAdmin/Blog/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "blogAdminBlogEditModal",
+                "url": "/BlogAdmin/Blog/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/BlogAdmin/Blog/GetById\\', \\'blogAdminBlogEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/BlogAdmin/Blog/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createBy",
+              "caption": "توسط",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "publishDate",
+              "caption": "تاریخ انتشار",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "blogAdminBlogAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "catId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/BlogAdmin/Blog/GetCatList",
+              "label": "گروه بندی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "publishDate",
+              "type": "persianDateTime",
+              "label": "تاریخ انتشار",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "summery",
+              "type": "textarea",
+              "label": "خلاصه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "ck",
+              "label": "توضیحات",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "اپارات"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainImage",
+              "type": "file",
+              "label": "تصویر اصلی 1000 * 750",
+              "acceptEx": ".jpg,.png,.jpeg"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainSound",
+              "type": "file",
+              "label": "فایل صوتی",
+              "acceptEx": ".mp3"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "tags",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/BlogAdmin/Blog/GetTagList",
+              "label": "تگ",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "rBlogs",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/BlogAdmin/Blog/GetBlogLightist",
+              "label": "مرتبط"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'blogAdminBlogGrid', '/BlogAdmin/Blog/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "blogAdminBlogEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "catId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/BlogAdmin/Blog/GetCatList",
+              "label": "گروه بندی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "publishDate",
+              "type": "persianDateTime",
+              "label": "تاریخ انتشار",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "summery",
+              "type": "textarea",
+              "label": "خلاصه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "ck",
+              "label": "توضیحات",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "اپارات"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainImage",
+              "type": "file",
+              "label": "تصویر اصلی 1000 * 750",
+              "acceptEx": ".jpg,.png,.jpeg"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainSound",
+              "type": "file",
+              "label": "فایل صوتی",
+              "acceptEx": ".mp3"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "tags",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/BlogAdmin/Blog/GetTagList",
+              "label": "تگ",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "rBlogs",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/BlogAdmin/Blog/GetBlogLightist",
+              "label": "مرتبط"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'blogAdminBlogGrid', '/BlogAdmin/Blog/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

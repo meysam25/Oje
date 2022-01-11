@@ -23,10 +23,12 @@ namespace Oje.Sms.Services.EContext
         public DbSet<SmsSendingQueue> SmsSendingQueues { get; set; }
         public DbSet<SmsSendingQueueError> SmsSendingQueueErrors { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<SmsValidationHistory> SmsValidationHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SmsSendingQueueError>().HasKey(t => new { t.SmsSendingQueueId, t.CreateDate });
+            modelBuilder.Entity<SmsValidationHistory>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate, t.Type });
 
             base.OnModelCreating(modelBuilder);
         }

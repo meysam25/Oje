@@ -133,7 +133,7 @@ a:hover {
 
 .loginBox {
     width: 300px;
-    height: 400px;
+    height: 315px;
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.16);
@@ -141,7 +141,7 @@ a:hover {
     left: 50vw;
     margin-left: -150px;
     top: 50vh;
-    margin-top: -200px;
+    margin-top: -170px;
     padding: 10px;
     background-color: white;
     -moz-border-radius: 3px;

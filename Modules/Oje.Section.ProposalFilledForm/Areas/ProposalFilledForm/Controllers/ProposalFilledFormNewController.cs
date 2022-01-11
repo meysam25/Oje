@@ -90,7 +90,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         {
             Response.ContentType = "application/json; charset=utf-8";
             return Content(ProposalFilledFormAdminService.GetJsonConfir(
-                    fid, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New,
+                    fid, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New,
                     Url.Action("GetById", "ProposalFilledFormNew", new { area = "ProposalFilledForm", id = fid }),
                     Url.Action("Update", "ProposalFilledFormNew", new { area = "ProposalFilledForm", id = fid })
                     )
@@ -101,7 +101,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public IActionResult Update([FromQuery] GlobalLongId input)
         {
-            return Json(ProposalFilledFormAdminService.Update(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New, Request.Form));
+            return Json(ProposalFilledFormAdminService.Update(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New, Request.Form));
         }
 
 
@@ -109,42 +109,42 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public IActionResult CreateUserRefer([FromForm] CreateUpdateProposalFilledFormUserReffer input)
         {
-            return Json(ProposalFilledFormAdminService.CreateUserRefer(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.CreateUserRefer(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "تغییر نماینده فرم پیشنهاد جدید", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdateAgent([FromForm] long? userId, long? id)
         {
-            return Json(ProposalFilledFormAdminService.UpdateAgent(id, userId, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.UpdateAgent(id, userId, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده جزییات فرم پیشنهاد جدید", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromQuery] GlobalLongId input)
         {
-            return Json(ProposalFilledFormAdminService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "حذف فرم پیشنهاد جدید", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
-            return Json(ProposalFilledFormAdminService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده وضعیت فرم پیشنهاد جدید", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetStatus([FromForm] GlobalLongId input)
         {
-            return Json(ProposalFilledFormAdminService.GetStatus(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.GetStatus(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "تغییر وضعیت فرم پیشنهاد جدید", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdateStatus([FromForm] ProposalFilledFormChangeStatusVM input)
         {
-            return Json(ProposalFilledFormAdminService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ها", Icon = "fa-list-alt")]
@@ -179,28 +179,28 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult GetRefferUsers([FromForm] GlobalLongId input)
         {
-            return Json(ProposalFilledFormAdminService.GetRefferUsers(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.GetRefferUsers(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده نماینده فرم پیشنهاد جدید", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetAgent([FromForm] GlobalLongId input)
         {
-            return Json(ProposalFilledFormAdminService.GetAgent(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.GetAgent(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت های فرم پیشنهاد جدید", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetPPFCompanies([FromForm] GlobalLongId input)
         {
-            return Json(ProposalFilledFormAdminService.GetCompanies(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.GetCompanies(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "به روز رسانی شرکت فرم پیشنهاد جدید", Icon = "fa-pencil")]
         [HttpPost]
         public ActionResult UpdateCompanies([FromForm] CreateUpdateProposalFilledFormCompany input)
         {
-            return Json(ProposalFilledFormAdminService.UpdateCompanies(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.UpdateCompanies(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده لیست گروه بندی فرم پیشنهاد", Icon = "fa-eye")]
@@ -221,14 +221,14 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public IActionResult CreatePricingCompany([FromForm] CreateUpdateProposalFilledFormCompanyPrice input)
         {
-            return Json(ProposalFilledFormCompanyService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormCompanyService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "ویرایش شرکت فرم پیشنهاد جدید", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdatePricingCompany([FromForm] CreateUpdateProposalFilledFormCompanyPrice input)
         {
-            return Json(ProposalFilledFormCompanyService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormCompanyService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "دانلود پی دی اف فرم پیشنهاد جدید", Icon = "fa-download")]
@@ -245,21 +245,21 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {
-            return Json(ProposalFilledFormAdminService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "حذف اسناد فرم پیشنهاد جدید", Icon = "fa-trash-o")]
         [HttpPost]
         public ActionResult DeletePPFImage([FromForm] GlobalLongId input, [FromForm] long? pKey)
         {
-            return Json(ProposalFilledFormAdminService.DeleteUploadImage(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.DeleteUploadImage(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "افزودن اسناد فرم پیشنهاد جدید", Icon = "fa-plus")]
         [HttpPost]
         public ActionResult UploadNewFile([FromForm] long? pKey, [FromForm] IFormFile mainFile)
         {
-            return Json(ProposalFilledFormAdminService.UploadImage(pKey, mainFile, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.UploadImage(pKey, mainFile, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "جزییات فرم پیشنهاد جدید", Icon = "fa-eye")]
@@ -267,28 +267,28 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         public IActionResult PdfDetailesForAdmin([FromQuery] long id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
-            return View(ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return View(ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده شرکت تایین قیمت فرم پیشنهاد جدید", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetPricingCompany([FromForm] GlobalStringId input)
         {
-            return Json(ProposalFilledFormCompanyService.GetBy(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormCompanyService.GetBy(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "حذف شرکت فرم پیشنهاد جدید", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult DeleteCompany([FromForm] GlobalStringId input)
         {
-            return Json(ProposalFilledFormCompanyService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormCompanyService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "انتخاب شرکت فرم پیشنهاد جدید", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult SelectCompany([FromForm] GlobalStringId input)
         {
-            return Json(ProposalFilledFormCompanyService.Select(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormCompanyService.Select(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
 
@@ -296,14 +296,14 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult GetPricingCompanyList([FromForm] ProposalFilledFormCompanyPriceMainGrid searchInput)
         {
-            return Json(ProposalFilledFormCompanyService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormCompanyService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "خروجی اکسل تایین قیمت", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult PricingCompanyExport([FromForm] ProposalFilledFormCompanyPriceMainGrid searchInput)
         {
-            var result = ProposalFilledFormCompanyService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New);
+            var result = ProposalFilledFormCompanyService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -317,14 +317,14 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFilledFormMainGrid searchInput)
         {
-            return Json(ProposalFilledFormAdminService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "خروجی اکسل فرم پیشنهاد جدید", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] ProposalFilledFormMainGrid searchInput)
         {
-            var result = ProposalFilledFormAdminService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New);
+            var result = ProposalFilledFormAdminService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -338,42 +338,42 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public IActionResult DeleteDocument([FromForm] GlobalLongId input, [FromForm] long? pKey)
         {
-            return Json(ProposalFilledFormDocumentService.Delete(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormDocumentService.Delete(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "ایجاد مدرک مالی فرم پیشنهاد جدید", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult CreateDocument([FromForm] ProposalFilledFormDocumentCreateUpdateVM input)
         {
-            return Json(ProposalFilledFormDocumentService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormDocumentService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "ایجاد مدرک مالی فرم پیشنهاد جدید", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdateDocument([FromForm] ProposalFilledFormDocumentCreateUpdateVM input)
         {
-            return Json(ProposalFilledFormDocumentService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormDocumentService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "حذف مدرک مالی فرم پیشنهاد جدید", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult GetDocument([FromForm] GlobalLongId input, [FromForm] long? pKey)
         {
-            return Json(ProposalFilledFormDocumentService.GetBy(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormDocumentService.GetBy(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده لیست مدارک مالی فرم پیشنهاد جدید", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetDocumentList([FromForm] ProposalFilledFormDocumentMainGrid searchInput)
         {
-            return Json(ProposalFilledFormDocumentService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormDocumentService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "خروجی اکسل مدارک مالی فرم پیشنهاد جدید", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult GetDocumentListExport([FromForm] ProposalFilledFormDocumentMainGrid searchInput)
         {
-            var result = ProposalFilledFormDocumentService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId, ProposalFilledFormStatus.New);
+            var result = ProposalFilledFormDocumentService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -387,7 +387,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult GetStatusLogList([FromForm] ProposalFilledFormLogMainGrid searchInput)
         {
-            return Json(ProposalFilledFormStatusLogService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUserId()?.UserId));
+            return Json(ProposalFilledFormStatusLogService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
     }
 }

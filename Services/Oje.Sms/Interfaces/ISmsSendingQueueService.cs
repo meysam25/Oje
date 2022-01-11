@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
 using System;
@@ -13,7 +14,9 @@ namespace Oje.Sms.Interfaces
     {
         object GetList(SmsSendingQueueMainGrid searchInput, int? siteSettingId);
         void SaveChange();
-        void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId);
+        void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite);
         Task SendSms();
+        object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId);
+        object ActiveCodeForResetPassword(RegLogSMSVM input, IpSections ipSections, int? siteSettingId);
     }
 }

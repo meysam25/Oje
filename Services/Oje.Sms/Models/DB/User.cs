@@ -32,6 +32,8 @@ namespace Oje.Sms.Models.DB
         public string Lastname { get; set; }
         [MaxLength(14)]
         public string Mobile { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public int? SiteSettingId { get; set; }
 
         [InverseProperty("User")]

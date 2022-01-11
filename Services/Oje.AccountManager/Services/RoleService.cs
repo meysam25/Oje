@@ -451,5 +451,23 @@ namespace Oje.AccountService.Services
                     userFullname = t.Firstname + " " + t.Lastname
                 }).Take(count).ToList();
         }
+
+        public Role CreateGet(string name, string title, int value, RoleType type)
+        {
+            var foundRole = db.Roles.Where(t => t.Name == name && t.SiteSettingId == null).FirstOrDefault();
+            if (foundRole == null)
+            {
+                Create(new CreateUpdateRoleVM()
+                {
+                    name = name,
+                    title = title,
+                    type = type,
+                    value = value
+                });
+                foundRole = db.Roles.Where(t => t.Name == name && t.SiteSettingId == null).FirstOrDefault();
+            }
+
+            return foundRole;
+        }
     }
 }

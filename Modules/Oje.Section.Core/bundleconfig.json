@@ -12,6 +12,7 @@
       "wwwroot/js/main.js",
       "wwwroot/js/validation.js",
       "wwwroot/js/dropdown.js",
+      "wwwroot/js/countDown.js",
       "wwwroot/js/formGenerator.js",
       "wwwroot/js/notificationHob.js"
     ],
@@ -32,7 +33,9 @@
       "wwwroot/js/main.js",
       "wwwroot/js/validation.js",
       "wwwroot/js/dropdown.js",
-      "wwwroot/js/formGenerator.js"
+      "wwwroot/js/countDown.js",
+      "wwwroot/js/formGenerator.js",
+      "wwwroot/js/Website/bindLoginButtonClick.js"
     ],
     "minify": {
       "enabled": true,
@@ -42,13 +45,14 @@
   {
     "outputFileName": "wwwroot/Core/js/mainPage.min.js",
     "inputFiles": [
-      "wwwroot/js/Website//MainPage/ctrls.js",
-      "wwwroot/js/Website//MainPage/headerFooter.js",
-      "wwwroot/js/Website//MainPage/inquirySection.js",
-      "wwwroot/js/Website//MainPage/ourPride.js",
-      "wwwroot/js/Website//MainPage/yourQuestion.js",
-      "wwwroot/js/Website//animationOnScroll.js",
-      "wwwroot/js/Website//lazyLoadOnScroll.js"
+      "wwwroot/js/Website/MainPage/ctrls.js",
+      "wwwroot/js/Website/MainPage/headerFooter.js",
+      "wwwroot/js/Website/MainPage/inquirySection.js",
+      "wwwroot/js/Website/MainPage/ourPride.js",
+      "wwwroot/js/Website/MainPage/yourQuestion.js",
+      "wwwroot/js/Website/MainPage/blog.js",
+      "wwwroot/js/Website/animationOnScroll.js",
+      "wwwroot/js/Website/lazyLoadOnScroll.js"
     ],
     "minify": {
       "enabled": true,
@@ -153,10 +157,20 @@
     }
   },
   {
-    "outputFileName": "wwwroot/Core/css/mainPage.min.css",
+    "outputFileName": "wwwroot/Core/css/master.min.css",
     "inputFiles": [
       "wwwroot/css/Website/headerFooter.css",
       "wwwroot/css/Website/ctrls.css",
+      "wwwroot/css/Website/scrollAnimation.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/mainPage.min.css",
+    "inputFiles": [
       "wwwroot/css/Website/MainPage/aboutusSection.css",
       "wwwroot/css/Website/MainPage/blogSection.css",
       "wwwroot/css/Website/MainPage/downloadOurApp.css",
@@ -165,8 +179,7 @@
       "wwwroot/css/Website/MainPage/quickAccess.css",
       "wwwroot/css/Website/MainPage/reminder.css",
       "wwwroot/css/Website/MainPage/setadbimePlus.css",
-      "wwwroot/css/Website/MainPage/yourQuestion.css",
-      "wwwroot/css/Website/scrollAnimation.css"
+      "wwwroot/css/Website/MainPage/yourQuestion.css"
     ],
     "minify": {
       "enabled": true,

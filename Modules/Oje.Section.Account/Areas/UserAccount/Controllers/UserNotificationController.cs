@@ -53,21 +53,21 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         [HttpPost]
         public ActionResult GetById([FromForm] string id)
         {
-            return Json(UserNotificationService.GetBy(id, HttpContext.GetLoginUserId()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserNotificationService.GetBy(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست نوتیفیکیشن", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserNotificationMainGrid searchInput)
         {
-            return Json(UserNotificationService.GetList(searchInput, HttpContext.GetLoginUserId()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserNotificationService.GetList(searchInput, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] UserNotificationMainGrid searchInput)
         {
-            var result = UserNotificationService.GetList(searchInput, HttpContext.GetLoginUserId()?.UserId, SiteSettingService.GetSiteSetting()?.Id);
+            var result = UserNotificationService.GetList(searchInput, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);

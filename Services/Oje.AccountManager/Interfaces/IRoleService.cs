@@ -1,4 +1,6 @@
-﻿using Oje.AccountService.Models.View;
+﻿using Oje.AccountService.Models.DB;
+using Oje.AccountService.Models.View;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using System.Collections.Generic;
 
@@ -26,5 +28,8 @@ namespace Oje.AccountService.Interfaces
         object GetRoleLightListForUser(LoginUserVM loginUserVM, int? siteSettingId);
         int CreateOrGetRole(string title, string name, int value);
         List<RoleUsersVM> GetUsersBy(List<int> roleIds, int? siteSettingId, int count);
+
+
+        Role CreateGet(string name, string title, int value, RoleType type);
     }
 }

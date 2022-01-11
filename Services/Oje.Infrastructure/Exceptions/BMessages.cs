@@ -512,6 +512,26 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا گروه بندی خصوصیات خودرو را انتخاب کنید")]
         Please_Select_CarSpecificationCategoryId = 250,
         [Display(Name = "لطفا نوع خودرو را انتخاب کنید")]
-        Please_Select_VeicleType = 251
+        Please_Select_VeicleType = 251,
+        [Display(Name = "لطفا کد پیامک شده را وارد کنید")]
+        Please_Enter_SMSCode = 252,
+        [Display(Name = "لطفا {0} ثانیه صبر کنید")]
+        Please_W8_X_Secound = 253,
+        [Display(Name = "لطفا برای کد فقط از عدد استفاده کنید")]
+        Please_Just_Use_Number_For_Code = 254,
+        [Display(Name = "کد وارد شده معتبر نمی باشد")]
+        Invalid_Code = 255,
+        [Display(Name = "امکان حذف وجود ندارد")]
+        Unable_To_Delete = 256,
+        [Display(Name = "عنوان نمی تواند بیشتر از 300 کارکتر باشد")]
+        Title_Can_Not_Be_More_Then_300_chars = 257,
+        [Display(Name = "لطفا تاریخ انتشار را وارد کنید")]
+        Please_Select_Published_Date = 258,
+        [Display(Name = "لطفا خلاصه را وارد کنید")]
+        Please_Enter_Summery = 259,
+        [Display(Name = "خلاصه نمی تواند بیشتر از 1000 کارکتر باشد")]
+        Summery_Can_Not_Be_More_then_1000_Chars = 260,
+        [Display(Name = "لطفا حداقل یک تگ انتخاب کنید")]
+        Please_Select_Tag = 261
     }
 }

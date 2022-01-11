@@ -2,6 +2,10 @@
     Layout = "_WebLayout";
 }
 
+@section Styles {
+    <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/mainPage.min.css.gz" />
+}
+
 <div class="myContainer">
     <section class="inquirySection animationOnScroll animationOnScrollOpacity">
         <div class="inquirySectionTab">
@@ -403,52 +407,8 @@
         </div>
     </section>
 </div>
-<div class="myContainer">
-    <section class="blogSection animationOnScroll animationOnScrollOpacity">
-        <div class="blogSectionEntity">
-            <div class="blogSectionMainBlog">
-                <a href="#" class="blogSectionMainBlogImg"><i></i><img width="600" height="400" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
-                <div class="blogSectionMainBlogTitleAndDes">
-                    <a href="#" class="blogSectionMainBlogTitle">هویت بصری برند چیست ؟</a>
-                    <a href="#" class="blogSectionMainBlogDescription">
-                        هر برند دارای دو بعد هویتی می باشد که شامل هویت غیر بصری  و بصری آن است. هویت غیر بصری برند همان مفاهیم و استراتژی های تدوین شده برند می باشد و هویت بصری برند، همان روش یا ابزاری است که بوسیله آن برند ها در معرض دید مردم قرار می گیرند. در حقیقت این
-                    </a>
-                </div>
-            </div>
-            <div class="blogSectionSubBlog">
-                <div class="blogSectionSubBlogItem">
-                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
-                    <div class="blogSectionSubBlogItemTitleAndDes">
-                        <a href="#" class="blogSectionSubBlogItemTitle">هویت بصری برند چیست ؟</a>
-                        <a href="#" class="blogSectionSubBlogItemDescription">
-                            هر برند دارای دو بعد هویتی می باشد که شامل هویت غیر بصری  و بصری آن ن برند ها در معرض دید مردم قرار می گیرند. در حقیقت این
-                        </a>
-                    </div>
-                </div>
-                <div class="blogSectionSubBlogItem">
-                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
-                    <div class="blogSectionSubBlogItemTitleAndDes">
-                        <a href="#" class="blogSectionSubBlogItemTitle">هویت بصری برند چیست ؟</a>
-                        <a href="#" class="blogSectionSubBlogItemDescription">
-                            هر برند دارای دو بعد هویتی می باشد که شامل هویت غیر بصری  و بصری آن است. هویت غیر بصری برند همان مفاهیم و است. هویت غیر بصری برند همان مفاهیم و استراتژی های تدوین شده برند می باشد و هویت بصری ست. هویت غیر بصری برند همان مفاهیم و استراتژی های تدوین شده برند می باشد و هویت بصری ست. هویت غیر بصری برند همان مفاهیم و استراتژی های تدوین شده برند می باشد و هویت بصری ست. هویت غیر بصری برند همان مفاهیم و استراتژی های تدوین شده برند می باشد و هویت بصری ستراتژی های تدوین شده برند می باشد و هویت بصری برند، همان روش یا ابزاری است که بوسیله آن برند ها در معرض دید مردم قرار می گیرند. در حقیقت این
-                        </a>
-                    </div>
-                </div>
-                <div class="blogSectionSubBlogItem">
-                    <a href="#" class="blogSectionSubBlogItemImg"><i></i><img width="135" height="100" data-src="/Modules/Assets/MainPage/branding.jpg" /></a>
-                    <div class="blogSectionSubBlogItemTitleAndDes">
-                        <a href="#" class="blogSectionSubBlogItemTitle">هویت بصری برند چیست ؟</a>
-                        <a href="#" class="blogSectionSubBlogItemDescription">
-                            هر برند  بصری آن است. هویت غیر بصری برند همان مفاهیم و استراتژی هاقرار می گیرند. در حقیقت این
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="blogSectionHolderButton">
-            <a class="mainBtn" href="#">همه اخبار و مقالات</a>
-        </div>
-    </section>
+<div id="holderBlogs" class="myContainer myContainerEffect1">
+    
 </div>
 <div class="myContainer">
     <section class="reminderSection animationOnScroll animationOnScrollOpacityFlip">
@@ -602,5 +562,6 @@
         $('.tabCtrl').initTabCtrl();
         $('.yourQuestion .yourQuestionItem').initMyQuestionItem();
         $('.inquirySectionTab').initInquiryTab();
+        $('#holderBlogs').bindBlog('/Blog/Blog/GetMainBlog');
     });
 </script>

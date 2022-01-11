@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Oje.AccountService.Models.View;
 using Oje.AccountService.Services.EContext;
+using Oje.AccountService.Filters;
 
 namespace Oje.AccountService.Services
 {
@@ -211,6 +212,9 @@ namespace Oje.AccountService.Services
             }
 
             db.SaveChanges();
+
+            CustomeAuthorizeFilter.UserAccessCaches = new();
+            GlobalConfig.siteMenuCache++;
 
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
         }

@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.JoinServices\Oje.JoinServices.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.Sms\Oje.Sms.csproj" />
   </ItemGroup>
   
 

@@ -2,7 +2,7 @@
 @using Oje.Infrastructure.Services
 
 @{
-    var moduals = ModulService.GetSideMenu(Context.GetLoginUserId()?.UserId);
+    var moduals = ModulService.GetSideMenu(Context.GetLoginUser()?.UserId);
     if (moduals != null && moduals.Count > 0)
     {
         foreach (var item in moduals)

@@ -48,7 +48,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] CreateUpdateSiteSettingVM input)
         {
-            return Json(SiteSettingService.Create(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(SiteSettingService.Create(input, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "حذف تنظیمات", Icon = "fa-trash-o")]
@@ -69,10 +69,10 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateSiteSettingVM input)
         {
-            return Json(SiteSettingService.Update(input, HttpContext.GetLoginUserId()?.UserId));
+            return Json(SiteSettingService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تنظیمات", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تنظیمات", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] SiteSettingMainGrid searchInput)
         {
@@ -93,7 +93,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput)
         {
