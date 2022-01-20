@@ -22,16 +22,19 @@ namespace Oje.Section.Blog.Services
         readonly BlogDBContext db = null;
         readonly IBlogTagService BlogTagService = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IBlogReviewService BlogReviewService = null;
         public BlogService
             (
                 BlogDBContext db,
                 IBlogTagService BlogTagService,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IBlogReviewService BlogReviewService
             )
         {
             this.db = db;
             this.BlogTagService = BlogTagService;
             this.UploadedFileService = UploadedFileService;
+            this.BlogReviewService = BlogReviewService;
         }
 
         public ApiResult Create(BlogCreateUpdateVM input, int? siteSettingId, long loginUserId)
@@ -141,7 +144,7 @@ namespace Oje.Section.Blog.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public BlogVM GetById(long? id, int? siteSettingId)
+        public BlogVM GetById(long? id, int? siteSettingId, IpSections ipSections)
         {
             return
                 db.Blogs
@@ -151,6 +154,7 @@ namespace Oje.Section.Blog.Services
                {
                    id = t.Id,
                    catId = t.BlogCategoryId,
+                   catTitle = t.BlogCategory.Title,
                    title = t.Title,
                    publishDate = t.PublisheDate,
                    summery = t.Summery,
@@ -159,11 +163,17 @@ namespace Oje.Section.Blog.Services
                    mainImage_address = t.ImageUrl,
                    mainSound_address = t.SoundUrl,
                    isActive = t.IsActive,
+                   commCount = t.BlogReviews.Count(tt => tt.IsConfirm == true),
+                   likeCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.Like),
+                   didILikeIt = t.BlogLastLikeAndViews.Any(tt => tt.Type == BlogLastLikeAndViewType.Like && tt.Ip1 == ipSections.Ip1 && tt.Ip2 == ipSections.Ip2 && tt.Ip3 == ipSections.Ip3 && tt.Ip4 == ipSections.Ip4),
                    tags = t.BlogTagBlogs.Select(tt => tt.BlogTag.Title).ToList(),
                    rBlogs = t.BlogOwnBlogs.Select(tt => new
                    {
                        id = tt.BlogRelatedId,
-                       title = tt.BlogRelated.Title
+                       title = tt.BlogRelated.Title,
+                       catTitle = tt.BlogRelated.BlogCategory.Title,
+                       src = tt.BlogRelated.ImageUrl200,
+                       pDate = tt.BlogRelated.PublisheDate
                    }).ToList()
                })
                .Take(1)
@@ -171,17 +181,29 @@ namespace Oje.Section.Blog.Services
                .Select(t => new BlogVM
                {
                    id = t.id,
+                   commCount = t.commCount,
+                   likeCount = t.likeCount,
                    catId = t.catId,
+                   catTitle = t.catTitle,
                    title = t.title,
                    publishDate = t.publishDate.ToFaDate(),
                    summery = t.summery,
+                   url = GenerateUrlForBlog(t.catTitle, t.title, t.id),
                    description = t.description,
+                   didILikeIt = t.didILikeIt,
                    aparatUrl = t.aparatUrl,
                    mainImage_address = !string.IsNullOrEmpty(t.mainImage_address) ? (GlobalConfig.FileAccessHandlerUrl + t.mainImage_address) : "",
                    mainSound_address = !string.IsNullOrEmpty(t.mainSound_address) ? (GlobalConfig.FileAccessHandlerUrl + t.mainSound_address) : "",
                    isActive = t.isActive,
-                   tags = t.tags.Select(tt => new { id = tt, title = tt }).ToList(),
-                   rBlogs = t.rBlogs
+                   tags = t.tags.Select(tt => new BlogTagVM { id = tt, title = tt }).ToList(),
+                   rBlogs = t.rBlogs.Select(tt => new BlogVM
+                   {
+                       id = tt.id,
+                       title = tt.title,
+                       mainImage_address = !string.IsNullOrEmpty(tt.src) ? (GlobalConfig.FileAccessHandlerUrl + tt.src) : "",
+                       url = GenerateUrlForBlog(tt.catTitle, tt.title, tt.id),
+                       publishDate = tt.pDate.ToFaDate()
+                   }).ToList()
                })
                .FirstOrDefault();
         }
@@ -316,7 +338,7 @@ namespace Oje.Section.Blog.Services
             if (qureResult.Count() >= 50)
                 hasPagination = true;
 
-            result.AddRange(qureResult.Select(t => new { id = t.Title, text = t.Title }).ToList());
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Title }).ToList());
 
             return new { results = result, pagination = new { more = hasPagination } };
         }
@@ -326,14 +348,275 @@ namespace Oje.Section.Blog.Services
             return db.Blogs
                 .Where(t => t.IsActive == true && t.PublisheDate <= DateTime.Now)
                 .OrderByDescending(t => t.Id)
-                .Take(4)
+                .Take(count)
                 .Select(t => new
                 {
                     img1 = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl600,
                     img2 = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl200,
                     title = t.Title,
-                    desc = t.Summery
-                }).ToList();
+                    desc = t.Summery,
+                    cTitle = t.BlogCategory.Title,
+                    id = t.Id
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    t.img1,
+                    t.img2,
+                    t.desc,
+                    t.title,
+                    url = GenerateUrlForBlog(t.cTitle, t.title, t.id)
+                })
+                .ToList()
+                ;
+        }
+
+
+
+        public string GenerateUrlForBlog(string catTitle, string blogTitle, long? blogId)
+        {
+            return "/Blog/" + blogId + "/" + GlobalConfig.replaceInvalidChars(blogTitle) + "/" + GlobalConfig.replaceInvalidChars(catTitle);
+        }
+
+        public object Search(BlogSearchVM input, int? siteSettingId, int itemPerPage = 10)
+        {
+            var queryResult = db.Blogs.Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.PublisheDate <= DateTime.Now);
+
+            if (input.page == null || input.page <= 0)
+                input.page = 1;
+
+            if (input.sortID != null)
+            {
+                if (input.sortID == BlogSortTypes.Commented)
+                    queryResult = queryResult.OrderByDescending(t => t.BlogReviews.Count(tt => tt.IsConfirm == true));
+                else if (input.sortID == BlogSortTypes.Viewed)
+                    queryResult = queryResult.OrderByDescending(t => t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.View));
+            }
+            else
+                queryResult = queryResult.OrderBy(t => t.PublisheDate);
+
+            if (input.typeId != null)
+            {
+                if (input.typeId == BlogTypes.Video)
+                    queryResult = queryResult.Where(t => !string.IsNullOrEmpty(t.VideoUrl));
+                else if (input.typeId == BlogTypes.Sound)
+                    queryResult = queryResult.Where(t => !string.IsNullOrEmpty(t.SoundUrl));
+                else
+                    queryResult = queryResult.Where(t => string.IsNullOrEmpty(t.SoundUrl) && string.IsNullOrEmpty(t.VideoUrl));
+            }
+
+            if (input.catIds != null && input.catIds.Count > 0)
+                queryResult = queryResult.Where(t => input.catIds.Contains(t.BlogCategoryId));
+
+            if (input.keyWordId.ToLongReturnZiro() > 0)
+                queryResult = queryResult.Where(t => t.BlogTagBlogs.Any(tt => tt.BlogTagId == input.keyWordId));
+
+            int curPage = input.page.Value;
+            var totalItem = queryResult.Count();
+
+            return new
+            {
+                total = totalItem > 0 ? totalItem.ToString("###,###") : "0",
+                pageCount = Math.Ceiling(Convert.ToDecimal(totalItem) / Convert.ToDecimal(itemPerPage)).ToIntReturnZiro(),
+                data = queryResult
+                .Skip(itemPerPage * (curPage - 1))
+                .Take(itemPerPage)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title,
+                    src = t.ImageUrl600,
+                    summery = t.Summery,
+                    createUserFullname = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
+                    createDate = t.PublisheDate,
+                    catTitle = t.BlogCategory.Title,
+                    fCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.Like),
+                    mCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.View)
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    t.id,
+                    t.title,
+                    src = !string.IsNullOrEmpty(t.src) ? GlobalConfig.FileAccessHandlerUrl + t.src : "",
+                    t.summery,
+                    t.createUserFullname,
+                    createDate = t.createDate.GetUserFrindlyDate(),
+                    t.catTitle,
+                    t.fCount,
+                    t.mCount,
+                    url = GenerateUrlForBlog(t.catTitle, t.title, t.id)
+                })
+                .ToList()
+            };
+        }
+
+        public void SetViewOrLike(long id, IpSections ipSections, BlogLastLikeAndViewType type)
+        {
+            if (type == BlogLastLikeAndViewType.Like)
+            {
+                var foundItem = db.BlogLastLikeAndViews.Where(t => t.BlogId == id && t.Type == type && t.Ip1 == ipSections.Ip1 && t.Ip2 == ipSections.Ip2 && t.Ip3 == ipSections.Ip3 && t.Ip4 == ipSections.Ip4).FirstOrDefault();
+                if (foundItem == null)
+                {
+                    db.Entry(new BlogLastLikeAndView()
+                    {
+                        BlogId = id,
+                        Ip1 = ipSections.Ip1,
+                        Ip2 = ipSections.Ip2,
+                        Ip3 = ipSections.Ip3,
+                        Ip4 = ipSections.Ip4,
+                        Type = type,
+                        CreateDate = DateTime.Now,
+                    }).State = EntityState.Added;
+                }
+                else
+                    db.Entry(foundItem).State = EntityState.Deleted;
+
+                db.SaveChanges();
+            }
+            else
+            {
+                db.Entry(new BlogLastLikeAndView()
+                {
+                    BlogId = id,
+                    Ip1 = ipSections.Ip1,
+                    Ip2 = ipSections.Ip2,
+                    Ip3 = ipSections.Ip3,
+                    Ip4 = ipSections.Ip4,
+                    Type = type,
+                    CreateDate = DateTime.Now,
+                }).State = EntityState.Added;
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch { }
+            }
+
+        }
+
+        public List<BlogVM> GetMostTypeBlogs(int? siteSettingId, int count, BlogLastLikeAndViewType type, long id)
+        {
+            if (count <= 0)
+                count = 10;
+
+            return
+                db.Blogs
+                .Where(t => t.SiteSettingId == siteSettingId && t.Id != id)
+                .OrderByDescending(t => t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.View))
+                .Take(count)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.Title,
+                    t.ImageUrl50,
+                    catTitle = t.BlogCategory.Title,
+                    t.PublisheDate
+                })
+                .ToList()
+                .Select(t => new BlogVM
+                {
+                    id = t.Id,
+                    title = t.Title,
+                    mainImage_address = !string.IsNullOrEmpty(t.ImageUrl50) ? (GlobalConfig.FileAccessHandlerUrl + t.ImageUrl50) : "",
+                    url = GenerateUrlForBlog(t.catTitle, t.Title, t.Id),
+                    publishDate = t.PublisheDate.ToFaDate()
+                })
+                .ToList();
+        }
+
+        public object BlogActions(long id, BlogWebAction input, int? siteSettingId, IpSections ipSections)
+        {
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (string.IsNullOrEmpty(input.action))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (ipSections == null)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!db.Blogs.Any(t => t.IsActive == true && t.PublisheDate <= DateTime.Now && t.Id == id && t.SiteSettingId == siteSettingId))
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (input.action == "likeOrDisLike")
+            {
+                SetViewOrLike(id, ipSections, BlogLastLikeAndViewType.Like);
+                return getLikeCount(id);
+            }
+            else if (input.action == "newReview")
+                return BlogReviewService.Create(input, siteSettingId, ipSections, id);
+            else if (input.action == "commentList")
+                return BlogReviewService.GetConfirmList(siteSettingId, ipSections, id);
+            else
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+        }
+
+        private int getLikeCount(long id)
+        {
+            return db.BlogLastLikeAndViews.Count(t => t.BlogId == id && t.Type == BlogLastLikeAndViewType.Like);
+        }
+
+        public BlogVM GetByIdForWeb(long? id, int? siteSettingId, IpSections ipSections)
+        {
+            return
+                db.Blogs
+                .OrderByDescending(t => t.Id)
+                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+               .Select(t => new
+               {
+                   id = t.Id,
+                   catId = t.BlogCategoryId,
+                   catTitle = t.BlogCategory.Title,
+                   title = t.Title,
+                   publishDate = t.PublisheDate,
+                   summery = t.Summery,
+                   description = t.Description,
+                   aparatUrl = t.VideoUrl,
+                   mainImage_address = t.ImageUrl,
+                   mainSound_address = t.SoundUrl,
+                   isActive = t.IsActive,
+                   commCount = t.BlogReviews.Count(tt => tt.IsConfirm == true),
+                   likeCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.Like),
+                   didILikeIt = t.BlogLastLikeAndViews.Any(tt => tt.Type == BlogLastLikeAndViewType.Like && tt.Ip1 == ipSections.Ip1 && tt.Ip2 == ipSections.Ip2 && tt.Ip3 == ipSections.Ip3 && tt.Ip4 == ipSections.Ip4),
+                   tags = t.BlogTagBlogs.Select(tt => new { title = tt.BlogTag.Title, id = tt.BlogTagId }).ToList(),
+                   rBlogs = t.BlogOwnBlogs.Select(tt => new
+                   {
+                       id = tt.BlogRelatedId,
+                       title = tt.BlogRelated.Title,
+                       catTitle = tt.BlogRelated.BlogCategory.Title,
+                       src = tt.BlogRelated.ImageUrl200,
+                       pDate = tt.BlogRelated.PublisheDate
+                   }).ToList()
+               })
+               .Take(1)
+               .ToList()
+               .Select(t => new BlogVM
+               {
+                   id = t.id,
+                   commCount = t.commCount,
+                   likeCount = t.likeCount,
+                   catId = t.catId,
+                   catTitle = t.catTitle,
+                   title = t.title,
+                   publishDate = t.publishDate.ToFaDate(),
+                   summery = t.summery,
+                   url = GenerateUrlForBlog(t.catTitle, t.title, t.id),
+                   description = t.description,
+                   didILikeIt = t.didILikeIt,
+                   aparatUrl = t.aparatUrl,
+                   mainImage_address = !string.IsNullOrEmpty(t.mainImage_address) ? (GlobalConfig.FileAccessHandlerUrl + t.mainImage_address) : "",
+                   mainSound_address = !string.IsNullOrEmpty(t.mainSound_address) ? (GlobalConfig.FileAccessHandlerUrl + t.mainSound_address) : "",
+                   isActive = t.isActive,
+                   tags = t.tags.Select(tt => new BlogTagVM { id = tt.id + "", title = tt.title }).ToList(),
+                   rBlogs = t.rBlogs.Select(tt => new BlogVM
+                   {
+                       id = tt.id,
+                       title = tt.title,
+                       mainImage_address = !string.IsNullOrEmpty(tt.src) ? (GlobalConfig.FileAccessHandlerUrl + tt.src) : "",
+                       url = GenerateUrlForBlog(tt.catTitle, tt.title, tt.id),
+                       publishDate = tt.pDate.ToFaDate()
+                   }).ToList()
+               })
+               .FirstOrDefault();
         }
     }
 }

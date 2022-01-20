@@ -73,7 +73,7 @@ namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input)
         {
-            return Json(BlogService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(BlogService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetIpAddress()));
         }
 
         [AreaConfig(Title = "به روز رسانی بلاگ", Icon = "fa-pencil")]

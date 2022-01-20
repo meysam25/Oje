@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Enums
 {
-    public enum BlogLastLikeAndViewType
+    public enum BlogLastLikeAndViewType: byte
     {
         [Display(Name = "مشاهده")]
         View = 1,

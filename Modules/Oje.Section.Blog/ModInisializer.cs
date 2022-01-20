@@ -25,7 +25,6 @@ namespace Oje.Section.Blog
             services.AddScoped<IBlogLastLikeAndViewService, BlogLastLikeAndViewService>();
             services.AddScoped<IBlogReviewService, BlogReviewService>();
             services.AddScoped<IBlogTagService, BlogTagService>();
-            services.AddScoped<IBlogTagService, BlogTagService>();
         }
     }
 }

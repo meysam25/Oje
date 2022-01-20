@@ -17,11 +17,17 @@ namespace Oje.Section.Blog.Models.View
         public string summery { get; internal set; }
         [IgnoreStringEncode]
         public MyHtmlString description { get; internal set; }
-        public string aparatUrl { get; internal set; }
+        [IgnoreStringEncode]
+        public MyHtmlString aparatUrl { get; internal set; }
         public string mainImage_address { get; internal set; }
         public string mainSound_address { get; internal set; }
         public bool isActive { get; internal set; }
-        public object tags { get; set; }
-        public object rBlogs { get; set; }
+        public List<BlogTagVM> tags { get; set; }
+        public List<BlogVM> rBlogs { get; set; }
+        public string catTitle { get; internal set; }
+        public int commCount { get; set; }
+        public int likeCount { get; set; }
+        public bool didILikeIt { get; set; }
+        public string url { get; set; }
     }
 }

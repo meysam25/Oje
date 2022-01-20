@@ -18,7 +18,8 @@ namespace Oje.Section.Blog.Models.View
         public string summery { get; set; }
         [IgnoreStringEncode]
         public MyHtmlString description { get; set; }
-        public string aparatUrl { get; set; }
+        [IgnoreStringEncode]
+        public MyHtmlString aparatUrl { get; set; }
         public bool? isActive { get; set; }
         public IFormFile mainImage { get; set; }
         public IFormFile mainSound { get; set; }

@@ -711,6 +711,45 @@ namespace Oje.Infrastructure.Services
             return null;
         }
 
+        public static string GetUserFrindlyDate(this DateTime input)
+        {
+            try
+            {
+                string result = "";
+                string suffix = "";
+                var defDate = DateTime.Now - input;
+                if (defDate.TotalMilliseconds < 0)
+                {
+                    suffix = "دیگه";
+                    defDate = input - DateTime.Now;
+                }
+                else
+                    suffix = "پیش";
+
+                if (defDate.TotalMinutes <= 10)
+                    result = "لحضات " + suffix;
+                if (defDate.TotalMinutes > 10 && defDate.TotalMinutes < 60)
+                    result = Math.Floor(defDate.TotalMinutes).ToIntReturnZiro() + " دقیقه " + suffix;
+                else if (defDate.TotalHours >= 1 && defDate.TotalHours < 24)
+                    result = Math.Floor(defDate.TotalHours) + " ساعت " + suffix;
+                else if (defDate.TotalDays >= 1 && defDate.TotalDays < 32)
+                    result = Math.Floor(defDate.TotalDays) + " روز " + suffix;
+                else if (defDate.TotalDays >= 32 && defDate.TotalDays < 367)
+                    result = Math.Floor(defDate.TotalDays / Convert.ToDouble(31)) + " ماه " + suffix;
+                else 
+                    result = Math.Floor(defDate.TotalDays / Convert.ToDouble(365)) + " سال " + suffix;
+
+                if (string.IsNullOrWhiteSpace(result))
+                    result = input.ToFaDate();
+
+                return result;
+            }
+            catch
+            {
+                return input.ToFaDate() + " " + input.ToString("HH:mm:ss");
+             }
+        }
+
         public static long ToLongReturnZiro(this object input)
         {
             try

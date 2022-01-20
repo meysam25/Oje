@@ -65,5 +65,10 @@ namespace Oje.Infrastructure
                 return null;
             }
         }
+
+        public static string replaceInvalidChars(string input)
+        {
+            return System.Net.WebUtility.UrlEncode((input + "").Trim().Replace(" ", "-").Replace("--", "-"));
+        }
     }
 }

@@ -37,11 +37,17 @@ $.fn.initFloatingFooter = function (placeHolderId) {
             var curPlaceHolderObj = curPlaceHolder[0];
             var handler = onVisibilityChange(curPlaceHolderObj, function (currVisible) {
                 if (currVisible == false) {
-                    $(this.curThis).removeClass('makeMyContainer100').addClass('floatingFooterSectionMakeFloat')
+                    if (this.curThis.hasClass('makeMyContainer100'))
+                        this.curThis.removeClass('makeMyContainer100')
+                    if (!this.curThis.hasClass('floatingFooterSectionMakeFloat'))
+                        this.curThis.addClass('floatingFooterSectionMakeFloat')
                 } else {
-                    $(this.curThis).removeClass('floatingFooterSectionMakeFloat').addClass('makeMyContainer100')
+                    if (this.curThis.hasClass('floatingFooterSectionMakeFloat'))
+                        this.curThis.removeClass('floatingFooterSectionMakeFloat');
+                    if (!this.curThis.hasClass('makeMyContainer100'))
+                        this.curThis.addClass('makeMyContainer100');
                 }
-            }.bind({ curPlaceHolderObj: curPlaceHolderObj, curThis: this }), true);
+            }.bind({ curPlaceHolderObj: curPlaceHolderObj, curThis: $(this) }), true);
 
             $(window).on('DOMContentLoaded load resize scroll', handler);
         }

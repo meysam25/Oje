@@ -1,0 +1,43 @@
+﻿{
+  "panels": [
+    {
+      "ctrls": [
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+          "name": "fullname",
+          "type": "text",
+          "label": "نام",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+          "name": "mobile",
+          "type": "text",
+          "label": "همراه",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+          "name": "email",
+          "type": "text",
+          "label": "ایمیل",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "description",
+          "type": "textarea",
+          "label": "نظر",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "type": "button",
+          "title": "ذخیره",
+          "onClick": "submitNewReviewForBlog(this)",
+          "class": "btn-primary btn-block"
+        }
+      ]
+    }
+  ]
+}

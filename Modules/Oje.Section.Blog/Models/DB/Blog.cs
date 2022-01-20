@@ -45,7 +45,7 @@ namespace Oje.Section.Blog.Models.DB
         public string ImageUrl200 { get; set; }
         [MaxLength(200)]
         public string ImageUrl50 { get; set; }
-        [MaxLength(200)]
+        [MaxLength(400)]
         public string VideoUrl { get; set; }
         [MaxLength(200)]
         public string SoundUrl { get; set; }

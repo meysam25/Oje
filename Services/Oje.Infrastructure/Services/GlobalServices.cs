@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Oje.Infrastructure.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +16,17 @@ namespace Oje.Infrastructure.Services
         }
 
         public static int MaxForNotify { get { return 1000; } }
+
+        public static void FillSeoInfo(ViewDataDictionary viewData, string pageTitle, string pageDescription, string pageLink, string pageShortLink, WebSiteTypes website, string imageUrl, DateTime? createDate)
+        {
+            viewData["Title"] = pageTitle;
+            viewData["metaDescription"] = pageDescription;
+            viewData["canonical"] = pageLink;
+            viewData["shortLink"] = pageShortLink;
+            viewData["type"] = website.ToString();
+            viewData["imageUrl"] = imageUrl;
+            if (createDate != null)
+                viewData["createDate"] = createDate.Value.ToUniversalTime().ToString();
+        }
     }
 }

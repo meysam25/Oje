@@ -1,0 +1,183 @@
+﻿@{
+    Layout = "_WebLayout";
+}
+
+@model Oje.Section.Blog.Models.View.BlogVM
+
+@section Styles {
+<link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/blog.min.css.gz" />
+}
+
+<div class="myContainer">
+    <section class="article">
+        <div class="articleDescription">
+            <div class="articleDescriptionInner">
+                <ul class="breadcrumb">
+                    <li><a href="/">ستاد بیمه</a></li>
+                    <li><a href="/Blogs">مقالات</a></li>
+                    <li>@Model.title</li>
+                </ul>
+                <div class="articleContent">
+                    <div class="articleContentTitle">
+                        <h1>@Model.title</h1>
+                        <span class="articleContentLikeButton fa fa-heart @(Model.didILikeIt == true     ? "articleContentLikeButtonActive" : "")"></span>
+                    </div>
+                    <div class="articleContentInfo">
+                        <a href="/Blogs/Category/@((Model.catTitle + "").Trim().Replace(" ","-").Replace("--","-"))/@(Model.catId)" class="articleContentInfoCat">@Model.catTitle</a>
+                        <span class="articleContentInfoCreateDateTime">@Model.publishDate<i class="fa fa-clock"></i></span>
+                    </div>
+                    @{
+                        if (string.IsNullOrEmpty(Model.aparatUrl))
+                        {
+                            <img class="articleContentMainImage" alt="@Model.title" width="1000" height="800" src="@Model.mainImage_address" />
+                        }
+                        else
+                        {
+                            ViewContext.Writer.Write(Model.aparatUrl);
+                        }
+                    }
+                    @{
+                        if (!string.IsNullOrEmpty(Model.mainSound_address))
+                        {
+                            <audio style="width:100%;margin-top:10px;" controls>
+                                <source src="@(Model.mainSound_address)" type="audio/mpeg">
+                                <div style="color:red;">لطفا بروزر خود را بهروز رسانی کنید</div>
+                            </audio>
+
+                        }
+                    }
+                    <div class="articleContentP">
+                        @{
+                            ViewContext.Writer.Write(Model.description);
+                        }
+                    </div>
+
+                   
+                    <div class="articleContentShareAndInfo">
+                         <div class="blogTags">
+                            @{
+                                if (Model.tags != null && Model.tags.Count > 0)
+                                {
+                                    foreach (var tag in Model.tags)
+                                    {
+                                        <a href="/Blogs/@tag.title.Replace(" ","-").Replace("--","-")/@tag.id" class="secountBtn blogTag">@tag.title</a>
+                                    }
+                                }
+                            }
+                        </div>
+                        <i class="blogInfo ">@Model.commCount<i class="fa fa-comment"></i></i>
+                        <i id="likeCount" class="blogInfo "><span>@Model.likeCount</span><i class="fa fa-heart"></i></i>
+                        <a href="http://www.linkedin.com/shareArticle?mini=true&url=@(ViewBag.curDomain + Model.url)" class="shareButton"><img data-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
+                        <a href="https://telegram.me/share/url?url=@(ViewBag.curDomain + Model.url)" class="shareButton"><img data-src="/Modules/Assets/MainPage/telegram.svg" /></a>
+                        <a href="http://twitter.com/intent/tweet/?text=@(Model.title)&url=@(ViewBag.curDomain + Model.url)" class="shareButton"><img data-src="/Modules/Assets/MainPage/twitter.svg" /></a>
+                    </div>
+                    <div style="clear:both;" ></div>
+                    <div class="articleUouViewSection">
+                        <div class="articleUouViewSectioninputs">
+                            <div class="articleUouViewSectioninputs">دیدگاه شما</div>
+                            <div class="articleUouViewSectioninputsHolder">
+                            </div>
+                        </div>
+                        <div class="otherViews"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="otherArticle">
+            <div class="otherArticleInner">
+                @{
+                    if (Model.rBlogs != null && Model.rBlogs.Count > 0)
+                    {
+                        <div class="otherArticleRelatedBox">
+                            <div class="otherArticleRelatedBoxTitle">مطالب مرتبط</div>
+                            <div class="otherArticleRelatedItems">
+                                @{
+                                    foreach (var rB in Model.rBlogs)
+                                    {
+                                        <div class="otherArticleRelatedItem">
+                                            <div>
+                                                <span class="holderOtherArticleImage">
+                                                    <img width="100" height="80" alt="@rB.title" data-src="@(rB.mainImage_address)" />
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <a class="otherArticleItemTitle" title="@rB.title" href="@rB.url">@rB.title</a>
+                                                <span class="otherArticleCDate"><i style="margin-left:5px;" class="fa fa-clock"></i>@(rB.publishDate)</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+
+                @{
+                    List<Oje.Section.Blog.Models.View.BlogVM> mViewBlogs = ViewBag.mViews;
+                    if (mViewBlogs != null && mViewBlogs.Count > 0)
+                    {
+                        <div class="otherArticleRelatedBox">
+                            <div class="otherArticleRelatedBoxTitle">مطالب پر بازدید</div>
+                            <div class="otherArticleRelatedItems">
+                                @{
+                                    foreach (var rB in mViewBlogs)
+                                    {
+                                        <div class="otherArticleRelatedItem">
+                                            <div>
+                                                <span class="holderOtherArticleImage">
+                                                    <img width="100" height="80" alt="@rB.title" data-src="@(rB.mainImage_address)" />
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <a class="otherArticleItemTitle" title="@rB.title" href="@rB.url">@rB.title</a>
+                                                <span class="otherArticleCDate"><i style="margin-left:5px;" class="fa fa-clock"></i>@(rB.publishDate)</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+
+                @{
+                    List<Oje.Section.Blog.Models.View.BlogVM> mLikeBlogs = ViewBag.mLikeBlogs;
+                    if (mLikeBlogs != null && mLikeBlogs.Count > 0)
+                    {
+                        <div class="otherArticleRelatedBox">
+                            <div class="otherArticleRelatedBoxTitle">مطالب محبوب</div>
+                            <div class="otherArticleRelatedItems">
+                                @{
+                                    foreach (var rB in mLikeBlogs)
+                                    {
+                                        <div class="otherArticleRelatedItem">
+                                            <div>
+                                                <span class="holderOtherArticleImage">
+                                                    <img width="100" height="80" alt="@rB.title" data-src="@(rB.mainImage_address)" />
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <a class="otherArticleItemTitle" title="@rB.title" href="@rB.url">@rB.title</a>
+                                                <span class="otherArticleCDate"><i style="margin-left:5px;" class="fa fa-clock"></i>@(rB.publishDate)</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+    </section>
+</div>
+@section FooterR {
+<script asp-append-version="true" src="/Modules/Core/js/blog.min.js.gz"></script>
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+    });
+</script>

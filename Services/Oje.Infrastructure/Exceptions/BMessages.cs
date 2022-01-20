@@ -532,6 +532,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "خلاصه نمی تواند بیشتر از 1000 کارکتر باشد")]
         Summery_Can_Not_Be_More_then_1000_Chars = 260,
         [Display(Name = "لطفا حداقل یک تگ انتخاب کنید")]
-        Please_Select_Tag = 261
+        Please_Select_Tag = 261,
+        [Display(Name = "ایمیل شما معتبر نمی باشد")]
+        Invalid_Email = 262
     }
 }

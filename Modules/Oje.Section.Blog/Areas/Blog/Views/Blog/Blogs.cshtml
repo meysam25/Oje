@@ -2,70 +2,53 @@
     Layout = "_WebLayout";
 }
 
-<div class="myContainer">
-    <section class="inquirySection animationOnScroll animationOnScrollOpacity">
-        <div class="inquirySectionTab">
-            <div class="inquirySectionTabHeaderItems">
-                <div data-json-url="/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner ">
-                        <img data-src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
-                        <div> شخص ثالث</div>
-                    </div>
-                </div>
-                <div data-json-url="/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
-                        <div> بدنه</div>
-                    </div>
-                </div>
-                <div data-json-url="/ProposalFormInquiries/FireInsurance/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
-                        <div>آتش سوزی</div>
-                    </div>
-                </div>
-                <div data-json-url="/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
-                        <div> شخص ثالث</div>
-                    </div>
-                </div>
-                <div data-json-url="/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
-                        <div>بدنه</div>
-                    </div>
-                </div>
-                <div data-json-url="/ProposalFormInquiries/FireInsurance/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
-                        <div>سایر بیمه نامه ها</div>
-                    </div>
-                </div>
-            </div>
+@section Styles {
+<link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/blogs.min.css.gz" />
+}
 
-            <div class="inquirySectionTabBodyItems">
-                <div class="inquirySectionTabBodyItem ">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
+<script>
+    var keyWordId = '@ViewBag.keyWordId';
+    var catId = '@ViewBag.catId';
+</script>
+
+<div id="blogContainer" class="myContainer">
+    <section class="blogSearch">
+        <h1 class="blogPageTitle">@(ViewBag.Title)</h1>
+        <div class="holderCats">
+            <a style="visibility:hidden" class="blogCatButton mainBtn  ">اخبار</a>
+        </div>
+        <div class="holderBlogSortAndType">
+            <div class="BlogSortAndTypeSection">
+                <div id="holderDropdownSort" class="BlogSortAndTypeItem"></div>
+                <div id="holderDropdownType" class="BlogSortAndTypeItem"></div>
+            </div>
+            <div class="BlogSortAndTypeSection">
+                <div class="blogSearchSummery" style="-webkit-flex-grow: 1; flex-grow: 1;"><strong>0</strong> مطلب موجود می باشد.</div>
             </div>
         </div>
     </section>
+    <section class="blogItemsSection">
+        <div class="holderBlogItems">
+            <div class="BlogItemLoader"></div>
+            <div class="BlogItemLoader"></div>
+            <div class="BlogItemLoader"></div>
+            <div class="BlogItemLoader"></div>
+            <div class="BlogItemLoader"></div>
+            <div class="BlogItemLoader"></div>
+            <div class="BlogItemLoader"></div>
+            <div class="BlogItemLoader"></div>
+        </div>
+        <div id="scrollDtectorForBlog"></div>
+        <nav class="holderPagination"></nav>
+        <button class="loadMoreButton mainBtn">نمایش بیشتر</button>
+    </section>
 </div>
+@section FooterR {
+<script asp-append-version="true" src="/Modules/Core/js/blogs.min.js.gz"></script>
+}
+
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
-        $('.tabCtrl').initTabCtrl();
-        $('.yourQuestion .yourQuestionItem').initMyQuestionItem();
-        $('.inquirySectionTab').initInquiryTab();
-        $('#holderBlogs').bindBlog('/Blog/Blog/GetMainBlog');
+
     });
 </script>

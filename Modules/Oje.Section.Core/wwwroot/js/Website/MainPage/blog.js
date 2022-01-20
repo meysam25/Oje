@@ -7,11 +7,11 @@ $.fn.bindBlog = function (url) {
         return `
             <div class="blogSectionMainBlog">
                 <div>
-                    <a title="${item.title}" href="#" class="blogSectionMainBlogImg"><i></i><img alt="${item.title}" width="600" height="400" data-src="${item.img1}" ></a>
+                    <a title="${item.title}" href="${item.url}" class="blogSectionMainBlogImg"><i></i><img alt="${item.title}" width="600" height="400" data-src="${item.img1}" ></a>
                 </div>
                 <div class="blogSectionMainBlogTitleAndDes">
-                    <a href="#" title="${item.title}" class="blogSectionMainBlogTitle">${item.title}</a>
-                    <a href="#" title="${item.title}" class="blogSectionMainBlogDescription">
+                    <a href="${item.url}" title="${item.title}" class="blogSectionMainBlogTitle">${item.title}</a>
+                    <a href="${item.url}" title="${item.title}" class="blogSectionMainBlogDescription">
                         ${item.desc}
                     </a>
                 </div>
@@ -22,10 +22,10 @@ $.fn.bindBlog = function (url) {
     function getOthersItemHtml(item) {
         return `
             <div class="blogSectionSubBlogItem">
-                <div ><a title="${item.title}" class="blogSectionSubBlogItemImg" href="#" ><i></i><img alt="${item.title}" width="135" height="100" data-src="${item.img2}"></a></div>
+                <div ><a title="${item.title}" class="blogSectionSubBlogItemImg" href="${item.url}" ><i></i><img alt="${item.title}" width="135" height="100" data-src="${item.img2}"></a></div>
                 <div class="blogSectionSubBlogItemTitleAndDes">
-                    <a href="#" title="${item.title}" class="blogSectionSubBlogItemTitle">${item.title}</a>
-                    <a href="#" title="${item.title}" class="blogSectionSubBlogItemDescription">
+                    <a href="${item.url}" title="${item.title}" class="blogSectionSubBlogItemTitle">${item.title}</a>
+                    <a href="${item.url}" title="${item.title}" class="blogSectionSubBlogItemDescription">
                         ${item.desc}
                     </a>
                 </div>

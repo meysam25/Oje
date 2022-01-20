@@ -17,5 +17,7 @@ namespace Oje.Section.Blog.Interfaces
         GridResultVM<BlogCategoryMainGridResultVM> GetList(BlogCategoryMainGrid searchInput, int? siteSettingId);
         object GetLightList(int? siteSettingId);
         List<BlogCategoryWebVM> GetListForWeb(int? siteSettingId);
+        object GetLightListForWeb(int? siteSettingId);
+        BlogCategoryCreateUpdateVM GetBy(int id, int? siteSettingId);
     }
 }

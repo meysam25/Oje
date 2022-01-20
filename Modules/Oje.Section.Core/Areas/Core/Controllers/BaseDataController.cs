@@ -48,6 +48,8 @@ namespace Oje.Section.Core.Areas.Controllers
             if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || string.IsNullOrEmpty(foundFile.FileContentType))
                 return Content("File Not Found");
 
+            Response.Headers["Cache-Control"] = "max-age=" + new TimeSpan(365, 0, 0, 0).TotalSeconds.ToString("0");
+
             return File(System.IO.File.ReadAllBytes(foundFile.FileNameOnServer), foundFile.FileContentType, new FileInfo(foundFile.FileName).Name);
         }
 

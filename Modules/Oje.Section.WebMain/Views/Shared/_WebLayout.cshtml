@@ -2,28 +2,81 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
+    <meta charSet="utf-8" />
+    <meta http-equiv="Content-Type" content="Type=text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="robots" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:locale" content="fa_IR" />
+    <meta property="og:site_name" content="ستاد بیمه" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>@ViewBag.Title</title>
+    <meta name="twitter:title" content="@ViewData["Title"]" />
+    <meta property="og:title" content="@ViewData["Title"]" />
+
+
+    @{
+        if (!string.IsNullOrEmpty(ViewData["imageUrl"] + ""))
+        {
+            <meta property="og:image" content="@(ViewData["imageUrl"])" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["type"] + ""))
+        {
+            <meta property="og:type" content="@ViewData["type"]" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["createDate"] + ""))
+        {
+            <meta property="article:published_time" content="@ViewData["createDate"] " />
+        }
+        if (!string.IsNullOrEmpty(ViewData["canonical"] + ""))
+        {
+            <link rel="canonical" href="@ViewData["canonical"]" />
+            <meta property="og:url" content="@ViewData["canonical"]" />
+        }
+        else
+        {
+            <link rel="canonical" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+            <meta property="og:url" content="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["shortLink"] + ""))
+        {
+            <link rel="shortlink" href="@ViewData["shortLink"]" />
+        }
+        else
+        {
+            <link rel="shortlink" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["metaDescription"] + ""))
+        {
+            <meta name="description" content="@ViewData["metaDescription"]" />
+            <meta property="og:description" content="@ViewData["metaDescription"]" />
+            <meta name="twitter:description" content="@ViewData["metaDescription"]" />
+        }
+
+    }
+
     <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/master.min.css.gz" />
+     <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/websiteCore.min.css.gz" />
     @RenderSection("Styles", required: false)
     @*<script src="/Modules/Core/js/chart.min.js.gz"></script>*@
     <link rel="preload" as="font" href="/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" as="font" href="/Modules/webfonts/fa-light-300.woff2" type="font/woff2" crossorigin="anonymous">
-    <link rel="icon" type="image/x-icon" href="/Modules/Assets/favicon.ico.gz">
+    <link rel="icon" type="image/x-icon" href="/Modules/Assets/favicon.ico.gz" sizes="32x32">
     <script>
         var isLH =  @(Context.Request.IsLighthouse().ToString().ToLower())
     </script>
 </head>
-<body class="makeRTL">
+<body dir="rtl" class="makeRTL">
     <div class="wrapper">
         <header>
             <section class="topHeader">
                 <div class="myContainer">
-                    <img class="mainHeaderLogo" title="لوگوی ستاد بیمه" data-src="/Modules/Assets/MainPage/logo.png" width="85" height="77" />
-                    <img class="mainHeaderElectronDevelopLogo" title="لوگوی مرکز توسعه تجارت الکترونیکی" data-src="/Modules/Assets/MainPage/electronDevelopment.png" width="85" height="77" />
-                    <img class="mainHeaderIranLogo" title="لوگوی ایران" data-src="/Modules/Assets/MainPage/iranlogo.png" width="85" height="77" />
-                    <h1 class="mainHeaderCompanyName">ستاد بیمه</h1>
+                    <a title="ستاد بیمه" href="/"><img class="mainHeaderLogo" title="لوگوی ستاد بیمه" src="/Modules/Assets/MainPage/logo.png" width="85" height="77" /></a>
+                    <img class="mainHeaderElectronDevelopLogo" title="لوگوی مرکز توسعه تجارت الکترونیکی" src="/Modules/Assets/MainPage/electronDevelopment.png" width="85" height="77" />
+                    <img class="mainHeaderIranLogo" title="لوگوی ایران" src="/Modules/Assets/MainPage/iranlogo.png" width="85" height="77" />
+                    <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="ستاد بیمه" href="/">ستاد بیمه</a></h1>
                 </div>
             </section>
             <nav class="headerMenu ">
@@ -35,7 +88,7 @@
                     </div>
                     <div class="holderRigAndLogUser">
                         <a class="secountBtn">ورود</a>
-                        <a class="mainBtn">ثبت نام</a>
+                        <a href="#" title="ثبت نام" class="mainBtn">ثبت نام</a>
                     </div>
                     <div class="headerMenuInner">
                         <div class="headerMenuItem ">
@@ -223,9 +276,7 @@
             </nav>
         </header>
         <main>
-            <div style="display:block">
-                @RenderBody()
-            </div>
+            @RenderBody()
         </main>
         <footer>
             <section class="footerSection">
@@ -233,7 +284,7 @@
                     <div class="footerWeAreMoreThenGoodSection">
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
+                                <img alt="رتبه یک سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">رتبه یک سفر</div>
@@ -242,7 +293,7 @@
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img width="80" height="80" data-src="/Modules/Assets/MainPage/laptop.svg.gz" />
+                                <img alt="همسفر هر سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/laptop.svg.gz" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر هر سفر</div>
@@ -251,7 +302,7 @@
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img width="80" height="80" data-src="/Modules/Assets/MainPage/Messages.svg.gz" />
+                                <img alt="همسفر همه لحظات سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/Messages.svg.gz" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر همه لحظات سفر</div>
@@ -260,12 +311,12 @@
                         </div>
                     </div>
                     <div id="floatingFooterDestination"></div>
-                    <div id="floatingFooter" class="makeMyContainer100 ">
+                    <div id="floatingFooter" class="makeMyContainer100">
                         <div class="myContainer">
                             <div class="floatingFooterSection">
                                 <div>
-                                    <a class="mainBtn">ثبت نام</a>
-                                    <a class="secountBtn">مشاوره رایگان</a>
+                                    <a href="#" title="ثبت نام" class="mainBtn">ثبت نام</a>
+                                    <a href="#" title="مشاوره رایگان" class="secountBtn">مشاوره رایگان</a>
                                 </div>
                                 <div class="floatingFooterSectionCenter">
                                     <div>مرکز تماس و پشتیبانی </div>
@@ -286,14 +337,14 @@
                         <div class="footerDownloadMobileAppDescription">
                             <div class="footerDownloadMobileAppDescriptionTitle">اپلیکیشن علی بابا</div>
                             <div class="footerDownloadMobileAppDescriptionDes">
-                                <span class="footerDownloadMobileAppDescriptionDesSpan">با نصب اپلیکیشن علی بابا بلیط همه سفر ها در جیب شماست . </span><a class="readMoreButton">مشاهده همه قابلیت ها</a>
+                                <span class="footerDownloadMobileAppDescriptionDesSpan">با نصب اپلیکیشن علی بابا بلیط همه سفر ها در جیب شماست . </span><a href="#" class="readMoreButton">مشاهده همه قابلیت ها</a>
                             </div>
                         </div>
                         <div class="footerDownloadMobileAppPlatforms">
-                            <a style="color: #1dab3c;" class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/cafe18.png" /> کافه بازار</a>
-                            <a style="color: #0091ea;" class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/miket18.png" /> مایکت</a>
-                            <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/sibapp.svg" /> سیب اپ</a>
-                            <a class="footerDownloadAppButton" href="#"><img width="18" height="18" data-src="/Modules/Assets/MainPage/download.svg" /> دانلود مستقیم </a>
+                            <a style="color: #1dab3c;" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/cafe18.png" alt="کافه بازار" />کافه بازار</a>
+                            <a style="color: #0091ea;" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/miket18.png" alt="مایکت" /> مایکت</a>
+                            <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/sibapp.svg" alt="سیب اپ" /> سیب اپ</a>
+                            <a class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/download.svg" alt="دانلود مستقیم" /> دانلود مستقیم</a>
                         </div>
                     </div>
                 </div>
@@ -305,25 +356,25 @@
                             <nav class="footerNavMenue">
                                 <div class="footerNavGroupItems">
                                     <div class="footerNavGroupItemsTitle">علی بابا</div>
-                                    <a class="footerNavGroupItemsItem">درباره ما</a>
-                                    <a class="footerNavGroupItemsItem">تماس با ما</a>
-                                    <a class="footerNavGroupItemsItem">چرا علی بابا</a>
-                                    <a class="footerNavGroupItemsItem">علی بابا پلاس</a>
-                                    <a class="footerNavGroupItemsItem">مجله علی بابا</a>
+                                    <a href="#" class="footerNavGroupItemsItem">درباره ما</a>
+                                    <a href="#" class="footerNavGroupItemsItem">تماس با ما</a>
+                                    <a href="#" class="footerNavGroupItemsItem">چرا علی بابا</a>
+                                    <a href="#" class="footerNavGroupItemsItem">علی بابا پلاس</a>
+                                    <a href="#" class="footerNavGroupItemsItem">مجله علی بابا</a>
                                 </div>
                                 <div class="footerNavGroupItems">
                                     <div class="footerNavGroupItemsTitle">راهنما</div>
-                                    <a class="footerNavGroupItemsItem">راهنمای خرید</a>
-                                    <a class="footerNavGroupItemsItem">راهنمای استرداد بلیط</a>
-                                    <a class="footerNavGroupItemsItem">قوانین و مقررات</a>
-                                    <a class="footerNavGroupItemsItem">پرسش و پاسخ</a>
+                                    <a href="#" class="footerNavGroupItemsItem">راهنمای خرید</a>
+                                    <a href="#" class="footerNavGroupItemsItem">راهنمای استرداد بلیط</a>
+                                    <a href="#" class="footerNavGroupItemsItem">قوانین و مقررات</a>
+                                    <a href="#" class="footerNavGroupItemsItem">پرسش و پاسخ</a>
                                 </div>
                                 <div class="footerNavGroupItems">
                                     <div class="footerNavGroupItemsTitle">اطلاعات تکمیلی</div>
-                                    <a class="footerNavGroupItemsItem">باشگاه مشتریان</a>
-                                    <a class="footerNavGroupItemsItem">فروش سازمانی</a>
-                                    <a class="footerNavGroupItemsItem">همکاری با آزانس ها</a>
-                                    <a class="footerNavGroupItemsItem">فرصد های شغلی</a>
+                                    <a href="#" class="footerNavGroupItemsItem">باشگاه مشتریان</a>
+                                    <a href="#" class="footerNavGroupItemsItem">فروش سازمانی</a>
+                                    <a href="#" class="footerNavGroupItemsItem">همکاری با آزانس ها</a>
+                                    <a href="#" class="footerNavGroupItemsItem">فرصد های شغلی</a>
                                 </div>
                             </nav>
                             <div class="footerProductMenu">
@@ -350,11 +401,11 @@
                             <span class="footerAboutUsTellNumber">تلفن پشتیبانی :<span>021-43900000</span>|<span>021-49275000</span></span>
                             <span class="footerAboutUsTellNumber">دفتر فروش : قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span>
                             <div class="footerLeftTrophyIcons">
-                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
-                                <a><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" /></a>
+                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
                             </div>
                         </div>
                     </div>
@@ -378,13 +429,15 @@
             </section>
         </footer>
     </div>
-    <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/websiteCore.min.css.gz" />
     <script src="/Modules/Core/js/jquery.min.js.gz"></script>
+   
     <script asp-append-version="true" src="/Modules/Core/js/websiteCor.min.js.gz"></script>
     <script asp-append-version="true" src="/Modules/Core/js/mainPage.min.js.gz"></script>
     <script>
+        $('img[data-src]').loadImageOnScroll();
         document.addEventListener("DOMContentLoaded", function(event) {
              if(isLH == false) {
+                $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
                 $('.ourPrideSectionItem').initAutoNumber(300);
                 $('.animationOnScroll').initScrollAnimation();
             }
@@ -393,12 +446,11 @@
                 $('.animationOnScrollMarginTop').removeClass('animationOnScrollMarginTop');
                 $('.animationOnScrollOpacityFlip').removeClass('animationOnScrollOpacityFlip');
             }
-            $('img[data-src]').loadImageOnScroll();
             $('.headerMenu').initNavResButton();
             $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
-            $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
             $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
         });
     </script>
+    @RenderSection("FooterR", required: false)
 </body>
 </html>

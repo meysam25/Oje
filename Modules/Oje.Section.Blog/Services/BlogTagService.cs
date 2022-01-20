@@ -72,5 +72,10 @@ namespace Oje.Section.Blog.Services
 
             return new { results = result, pagination = new { more = hasPagination } };
         }
+
+        public BlogTag GetBy(long id, int? siteSettingId)
+        {
+            return db.BlogTags.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+        }
     }
 }

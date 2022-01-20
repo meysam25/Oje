@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Models;
+using Oje.Section.Blog.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Oje.Section.Blog.Interfaces
     {
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
         long CreateIfNotExist(string tag, int? siteSettingId);
+        BlogTag GetBy(long id, int? siteSettingId);
     }
 }

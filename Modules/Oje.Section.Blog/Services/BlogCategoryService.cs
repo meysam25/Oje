@@ -79,6 +79,19 @@ namespace Oje.Section.Blog.Services
             return result;
         }
 
+        public object GetLightListForWeb(int? siteSettingId)
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(db.BlogCategories.Where(t => t.IsActive == true && t.Blogs.Any() && t.SiteSettingId == siteSettingId).Select(t => new
+            {
+                id = t.Id,
+                title = t.Title
+            }).ToList());
+
+            return result;
+        }
+
         public ApiResult Delete(int? id, int? siteSettingId)
         {
             var foundItem = db.BlogCategories.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
@@ -164,6 +177,11 @@ namespace Oje.Section.Blog.Services
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public BlogCategoryCreateUpdateVM GetBy(int id, int? siteSettingId)
+        {
+            return db.BlogCategories.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.IsActive == true).Select(t => new BlogCategoryCreateUpdateVM { id = t.Id, title = t.Title }).FirstOrDefault();
         }
     }
 }

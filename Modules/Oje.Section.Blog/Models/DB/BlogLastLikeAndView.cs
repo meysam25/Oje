@@ -27,6 +27,7 @@ namespace Oje.Section.Blog.Models.DB
         [ForeignKey("BlogId")]
         [InverseProperty("BlogLastLikeAndViews")]
         public Blog Blog { get; set; }
+        public DateTime CreateDate { get; set; }
 
     }
 }
