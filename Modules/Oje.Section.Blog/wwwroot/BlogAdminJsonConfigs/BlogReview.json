@@ -1,0 +1,101 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "reviewGrid",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/BlogAdmin/BlogReview/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "changeAgentModal",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/BlogAdmin/BlogReview/GetById\\', \\'viewReviewModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "ignoreParentButton": true,
+                "template": "function bindRow (curRow) { return '<span data-url=\"/BlogAdmin/BlogReview/Confirm\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"تایید\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.iA== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/BlogAdmin/BlogReview/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "blogTitle",
+              "caption": "عنوان بلاگ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "userFullname",
+              "caption": "نام کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "userMobile",
+              "caption": "همراه",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "userEmail",
+              "caption": "ایمیل",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "viewReviewModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "descrption",
+              "type": "textarea",
+              "label": "متن"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

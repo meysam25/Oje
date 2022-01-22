@@ -1,0 +1,38 @@
+﻿{
+  "panels": [
+    {
+      "id": "addNewPPF",
+      "title": "ثبت فرم پیشنهاد",
+      "ctrls": [
+        {
+          "id": "ppfCatId",
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "ppfCatId",
+          "type": "dropDown2",
+          "textfield": "text",
+          "valuefield": "id",
+          "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormCategoryList",
+          "label": "گروه بندی"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "fid",
+          "type": "dropDown2",
+          "textfield": "text",
+          "valuefield": "id",
+          "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormList",
+          "exteraParameterIds": [ "ppfCatId" ],
+          "label": "فرم پیشنهاد"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "type": "button",
+          "class": "btn-block btn-primary",
+          "onClick": "openNewLink('addNewPPF', '/Proposal/Form')",
+          "title": "شروع"
+        }
+
+      ]
+    }
+  ]
+}

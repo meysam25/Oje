@@ -31,6 +31,7 @@ namespace Oje.Section.Blog.Models.DB
         [ForeignKey("BlogId")]
         [InverseProperty("BlogReviews")]
         public Blog Blog { get; set; }
+        [Column(TypeName = "datetime")]
         public DateTime CreateDate { get; set; }
         public DateTime? ConfirmDate { get; set; }
         public long? ConfirmUserId { get; set; }

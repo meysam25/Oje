@@ -534,6 +534,12 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا حداقل یک تگ انتخاب کنید")]
         Please_Select_Tag = 261,
         [Display(Name = "ایمیل شما معتبر نمی باشد")]
-        Invalid_Email = 262
+        Invalid_Email = 262,
+        [Display(Name = "عنوان نمی تواند بیشتر از 1000 کارکتر باشد")]
+        Title_Can_Not_Be_More_Then_1000_chars = 263,
+        [Display(Name = "لطفا جواب را وارد کنید")]
+        Please_Enter_Answer = 264,
+        [Display(Name = "جواب نمی تواند بیشتر از 4000 کارکتر باشد")]
+        Answer_Can_Not_Be_More_Then_4000_Chars = 265
     }
 }

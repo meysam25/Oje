@@ -26,5 +26,12 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             Response.ContentType = "application/json; charset=utf-8";
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("WebMain", "LoginModal")));
         }
+
+        [Route("[Controller]/[Action]")]
+        public IActionResult GetOtherInsuranceConfig()
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("WebMain", "OtherInsurance")));
+        }
     }
 }

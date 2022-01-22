@@ -46,6 +46,165 @@ namespace Oje.Section.Blog.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
+        public object Delete(string id, int? siteSettingId)
+        {
+            byte? ip1 = null;
+            byte? ip2 = null;
+            byte? ip3 = null;
+            byte? ip4 = null;
+            DateTime? cd = null;
+            long? blogId = null;
+            try
+            {
+                var arrIdItems = id.Split(',');
+                ip1 = arrIdItems[0].ToByteReturnZiro();
+                ip2 = arrIdItems[1].ToByteReturnZiro();
+                ip3 = arrIdItems[2].ToByteReturnZiro();
+                ip4 = arrIdItems[3].ToByteReturnZiro();
+                cd = new DateTime(arrIdItems[4].ToLongReturnZiro());
+                blogId = arrIdItems[5].ToLongReturnZiro();
+            }
+            catch { }
+            var foundItem = db.BlogReviews
+                .Where(t => t.SiteSettingId == siteSettingId && t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            db.Entry(foundItem).State = EntityState.Deleted;
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetById(string id, int? siteSettingId)
+        {
+            byte? ip1 = null;
+            byte? ip2 = null;
+            byte? ip3 = null;
+            byte? ip4 = null;
+            DateTime? cd = null;
+            long? blogId = null;
+            try
+            {
+                var arrIdItems = id.Split(',');
+                ip1 = arrIdItems[0].ToByteReturnZiro();
+                ip2 = arrIdItems[1].ToByteReturnZiro();
+                ip3 = arrIdItems[2].ToByteReturnZiro();
+                ip4 = arrIdItems[3].ToByteReturnZiro();
+                cd = new DateTime(arrIdItems[4].ToLongReturnZiro());
+                blogId = arrIdItems[5].ToLongReturnZiro();
+            }
+            catch { }
+
+            return db.BlogReviews
+                .Where(t => t.SiteSettingId == siteSettingId && t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .Select(t => new
+                {
+                    descrption = t.Description
+                })
+                .FirstOrDefault();
+        }
+
+
+        public object Confirm(string id, int? siteSettingId, long? userId)
+        {
+            if (userId.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+            byte? ip1 = null;
+            byte? ip2 = null;
+            byte? ip3 = null;
+            byte? ip4 = null;
+            DateTime? cd = null;
+            long? blogId = null;
+            try
+            {
+                var arrIdItems = id.Split(',');
+                ip1 = arrIdItems[0].ToByteReturnZiro();
+                ip2 = arrIdItems[1].ToByteReturnZiro();
+                ip3 = arrIdItems[2].ToByteReturnZiro();
+                ip4 = arrIdItems[3].ToByteReturnZiro();
+                cd = new DateTime(arrIdItems[4].ToLongReturnZiro());
+                blogId = arrIdItems[5].ToLongReturnZiro();
+            }
+            catch { }
+            var foundItem = db.BlogReviews
+                .Where(t => t.SiteSettingId == siteSettingId && t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            foundItem.IsConfirm = !foundItem.IsConfirm;
+            foundItem.ConfirmUserId = userId;
+            if (foundItem.IsConfirm == true)
+                foundItem.ConfirmDate = DateTime.Now;
+            else
+                foundItem.ConfirmDate = null;
+
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public GridResultVM<BlogReviewMainGridResultVM> GetList(BlogReviewMainGrid searchInput, int? siteSettingId)
+        {
+            if (searchInput == null)
+                searchInput = new BlogReviewMainGrid();
+
+            var qureResult = db.BlogReviews.Where(t => t.SiteSettingId == siteSettingId);
+
+            if (!string.IsNullOrEmpty(searchInput.blogTitle))
+                qureResult = qureResult.Where(t => t.Blog.Title.Contains(searchInput.blogTitle));
+            if (!string.IsNullOrEmpty(searchInput.userFullname))
+                qureResult = qureResult.Where(t => t.Title.Contains(searchInput.userFullname));
+            if (!string.IsNullOrEmpty(searchInput.userMobile))
+                qureResult = qureResult.Where(t => t.Mobile.Contains(searchInput.userMobile));
+            if (!string.IsNullOrEmpty(searchInput.userEmail))
+                qureResult = qureResult.Where(t => t.Email.Contains(searchInput.userEmail));
+            if (searchInput.isActive != null)
+                qureResult = qureResult.Where(t => t.IsConfirm == searchInput.isActive);
+
+            int row = searchInput.skip;
+
+            return new GridResultVM<BlogReviewMainGridResultVM>()
+            {
+                total = qureResult.Count(),
+                data = qureResult
+                .OrderByDescending(t => t.CreateDate)
+                .Skip(searchInput.skip)
+                .Take(searchInput.take)
+                .Select(t => new
+                {
+                    t.Ip1,
+                    t.Ip2,
+                    t.Ip3,
+                    t.Ip4,
+                    t.CreateDate,
+                    t.BlogId,
+                    t.Title,
+                    t.Email,
+                    t.Mobile,
+                    t.IsConfirm,
+                    t.ConfirmDate,
+                    blogTitle = t.Blog.Title
+                })
+                .ToList()
+                .Select(t => new BlogReviewMainGridResultVM
+                {
+                    row = ++row,
+                    id = t.Ip1 + "," + t.Ip2 + "," + t.Ip3 + "," + t.Ip4 + "," + t.CreateDate.Ticks + "," + t.BlogId,
+                    blogTitle = t.blogTitle,
+                    iA = t.IsConfirm == true ? true : false,
+                    isActive = t.IsConfirm == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    userFullname = t.Title,
+                    userMobile = t.Mobile,
+                    userEmail = t.Email
+                })
+                .ToList()
+
+            };
+        }
+
         public object GetConfirmList(int? siteSettingId, IpSections ipSections, long blogId)
         {
             return db.BlogReviews
@@ -60,7 +219,7 @@ namespace Oje.Section.Blog.Services
                     ic = t.IsConfirm
                 })
                 .ToList();
-               
+
 
         }
 

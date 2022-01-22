@@ -13,6 +13,7 @@
     <ProjectReference Include="..\Modules\Oje.Section.ProposalFilledFormChartReports\Oje.Section.ProposalFilledFormChartReports.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.ProposalFilledForm\Oje.Section.ProposalFilledForm.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.ProposalFormInquiries\Oje.Section.ProposalFormInquiries.csproj" />
+    <ProjectReference Include="..\Modules\Oje.Section.Question\Oje.Section.Question.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.Security\Oje.Section.Security.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.Account\Oje.Section.Account.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.BaseData\Oje.Section.BaseData.csproj" />

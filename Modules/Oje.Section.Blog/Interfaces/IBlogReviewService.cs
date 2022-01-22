@@ -12,5 +12,9 @@ namespace Oje.Section.Blog.Interfaces
     {
         ApiResult Create(BlogWebAction input, int? siteSettingId, IpSections ipSections, long blogId);
         object GetConfirmList(int? siteSettingId, IpSections ipSections, long blogId);
+        object GetById(string id, int? siteSettingId);
+        object Delete(string id, int? siteSettingId);
+        object Confirm(string id, int? siteSettingId, long? userId);
+        GridResultVM<BlogReviewMainGridResultVM> GetList(BlogReviewMainGrid searchInput, int? siteSettingId);
     }
 }
