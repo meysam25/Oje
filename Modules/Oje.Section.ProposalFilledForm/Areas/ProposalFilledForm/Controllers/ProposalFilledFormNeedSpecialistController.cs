@@ -57,7 +57,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "لیست فرم پیشنهاد نیاز به کارشناسی", Icon = "fa-file-o", IsMainMenuItem = true)]
+        [AreaConfig(Title = "لیست فرم پیشنهاد نیاز به کارشناسی", Icon = "fa-file", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

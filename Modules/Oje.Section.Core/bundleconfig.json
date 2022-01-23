@@ -71,6 +71,7 @@
       "wwwroot/js/Website/MainPage/ourPride.js",
       "wwwroot/js/Website/MainPage/yourQuestion.js",
       "wwwroot/js/Website/MainPage/blog.js",
+      "wwwroot/js/Website/MainPage/minPageDashboard.js",
       "wwwroot/js/Website/animationOnScroll.js",
       "wwwroot/js/Website/lazyLoadOnScroll.js"
     ],

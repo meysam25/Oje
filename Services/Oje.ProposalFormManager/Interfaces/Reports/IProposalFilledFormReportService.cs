@@ -13,5 +13,6 @@ namespace Oje.ProposalFormService.Interfaces.Reports
         object GetProposalFormChartReport(int? siteSettingId, long? userId);
         object GetProposalFormAgentsChartReport(int? siteSettingId, long? userId);
         object GetProposalFormCompanyChartReport(int? siteSettingId, long? userId);
+        object GetProposalFormTimeChartReport(int? siteSettingId, long? userId, DateTime beginTime);
     }
 }

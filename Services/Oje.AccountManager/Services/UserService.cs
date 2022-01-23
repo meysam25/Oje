@@ -73,7 +73,7 @@ namespace Oje.AccountService.Services
             else if (foundUser != null && foundUser.Password == input.password.Encrypt())
             {
                 setCookieForThisUser(foundUser, input);
-                return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name, data = new { stepId = "rigLogStep", hideModal = true } };
+                return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name, data = new { stepId = "rigLogStep", hideModal = true, userfullname = (!string.IsNullOrEmpty(foundUser.Firstname) ? (foundUser.Firstname + " " + foundUser.Lastname) : foundUser.Username) } };
             }
 
             if (foundUser != null)

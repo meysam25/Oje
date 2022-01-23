@@ -57,7 +57,7 @@ namespace Oje.JoinServices.Services
             UserService.UpdatePassword(foundUser, input.password);
             UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true });
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true });
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = (string.IsNullOrEmpty(foundUser.Firstname) ? foundUser.Username : (foundUser.Firstname + " " + foundUser.Lastname)) });
         }
 
         private void ChagePasswordAndLoginValidation(ChangePasswordAndLoginVM input, IpSections ipSections, int? siteSettingId)
@@ -173,7 +173,7 @@ namespace Oje.JoinServices.Services
                 SmsSendingQueueService.SaveChange();
             }
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true });
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = input.username });
         }
 
         private void LoginRegisterValidation(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)

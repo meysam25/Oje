@@ -138,5 +138,25 @@ namespace Oje.ProposalFormService.Services.Reports
 
             return resultSeries;
         }
+
+        public object GetProposalFormTimeChartReport(int? siteSettingId, long? userId, DateTime beginTime)
+        {
+            List<object> resultSeries = new List<object>();
+            List<object> resultData = new List<object>();
+
+            var resultObjQoury = getBaseQueiry(siteSettingId, userId);
+            resultObjQoury = resultObjQoury.Where(t => t.CreateDate >= beginTime);
+
+            var grouptedItems = resultObjQoury.GroupBy(t => t.ProposalFormId).Select(t => new { ppfTitle = t.FirstOrDefault().ProposalForm.Title, count = t.Count() }).ToList();
+
+            foreach (var item in grouptedItems)
+            {
+                resultData.Add(new { name = item.ppfTitle, y = item.count });
+            }
+
+            resultSeries.Add(new { name = "فرم پیشنهاد", colorByPoint = true, data = resultData });
+
+            return resultSeries;
+        }
     }
 }

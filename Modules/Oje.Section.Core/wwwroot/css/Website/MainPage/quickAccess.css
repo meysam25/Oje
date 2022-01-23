@@ -5,15 +5,17 @@
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
-    display:flex;
-    padding:10px;
+    display: flex;
+    padding: 10px;
 }
+
     .quickAccessSection > div {
         -webkit-flex-grow: 1;
         flex-grow: 1;
-        width:50%;
+        width: 50%;
     }
-.allQuckAccessItemsHolder > a {
+
+.allQuckAccessItemsHolder .WebModActions > a, .allQuckAccessItemsHolder > a {
     display: inline-block;
     min-width: 250px;
     -webkit-text-decoration: none;
@@ -26,22 +28,67 @@
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
 }
-    .allQuckAccessItemsHolder > a:hover {
+
+    .allQuckAccessItemsHolder .WebModActions > a:hover, .allQuckAccessItemsHolder > a:hover {
         color: #0077db;
     }
-    .allQuckAccessItemsHolder > a > i {
-        font-size:1.2em;
-        margin-left:8px;
+
+    .allQuckAccessItemsHolder .WebModActions > a > i, .allQuckAccessItemsHolder > a > i {
+        margin-left: 8px;
     }
+
 .tabCtrl .TabContentItem {
-    min-height:450px;
+    min-height: 450px;
 }
+
 .quickAccessSection > div .tabCtrl {
-    height:calc(100% - 20px);
+    height: calc(100% - 20px);
 }
+
     .quickAccessSection > div .tabCtrl .holderTabContentItems {
         height: calc(100% - 40px);
     }
+
+.WebMod {
+    display: inline-block;
+    height: 38px;
+    width: 280px;
+    position: relative;
+    cursor: pointer;
+}
+
+    .WebMod > i {
+        margin-left: 8px;
+    }
+
+.WebModActions {
+    position: absolute;
+    opacity: 0;
+    background-color: white;
+    right: 0px;
+    left: 0px;
+    top: 37px;
+    max-height: 0px;
+    overflow: hidden;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    border: 1px solid transparent;
+}
+
+.WebMod:hover .WebModActions {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 10px;
+    opacity: 1;
+    z-index: 1;
+    border: 1px solid silver;
+}
+
+.WebMod:hover {
+    color: #007bff;
+}
 
 @media (max-width: 830px) {
     .quickAccessSection {
@@ -49,7 +96,8 @@
         -webkit-flex-direction: column;
         flex-direction: column;
     }
-    .quickAccessSection > div {
-        width:100%;
-    }
+
+        .quickAccessSection > div {
+            width: 100%;
+        }
 }

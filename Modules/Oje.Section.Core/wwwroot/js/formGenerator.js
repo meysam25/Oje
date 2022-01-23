@@ -1384,6 +1384,13 @@ function submitThisStep(curThis, targetUrl) {
                     }
                     if (res.data.hideModal) {
                         $(this).closest('.modal').modal('hide');
+
+                    }
+                    if (res.data.userfullname && window['userLoginWeb']) {
+                        userLoginWeb(res.data.userfullname);
+                        if (window['showLoginUserPanelInMainPage']) {
+                            showLoginUserPanelInMainPage();
+                        }
                     }
                 }
             }.bind(quarySelector), null, function () { hideLoader($(quarySelector.find('.myPanel'))) }.bind(quarySelector));
@@ -1704,21 +1711,7 @@ function closeThisModal(curElement) {
     $(curElement).closest('.modal').modal('hide');
 }
 
-function loadJsonConfig(jsonUrl, targetId) {
-    var postData = new FormData(); 
-    if (window['exteraModelParams'])
-        for (var prop in exteraModelParams)
-            postData.append(prop, exteraModelParams[prop]);
-    postForm(jsonUrl, postData, function (res) {
-        generateForm(res, this.targetId);
-        if (!this.targetId) {
-            $('.mainLoaderForAdminArea').addClass('mainLoaderForAdminAreaClose');
-            setTimeout(function () {
-                $('.mainLoaderForAdminArea').css('display', 'none');
-            }, 200);
-        }
-    }.bind({ targetId: targetId }));
-}
+
 
 function bindPanelByUrl(querySelector) {
     if (querySelector.length > 0) {
@@ -1790,4 +1783,20 @@ function uploadFile(fileName, accepts, url, curButton) {
         });
         $('#' + id).click();
     }
+}
+
+function loadJsonConfig(jsonUrl, targetId) {
+    var postData = new FormData();
+    if (window['exteraModelParams'])
+        for (var prop in exteraModelParams)
+            postData.append(prop, exteraModelParams[prop]);
+    postForm(jsonUrl, postData, function (res) {
+        generateForm(res, this.targetId);
+        if (!this.targetId) {
+            $('.mainLoaderForAdminArea').addClass('mainLoaderForAdminAreaClose');
+            setTimeout(function () {
+                $('.mainLoaderForAdminArea').css('display', 'none');
+            }, 200);
+        }
+    }.bind({ targetId: targetId }));
 }

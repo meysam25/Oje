@@ -71,11 +71,17 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult Logout()
         {
             UserService.Logout(HttpContext.GetLoginUser());
-            return RedirectToAction("Login");
+            try
+            {
+                string referer = Request.Headers["Referer"].ToString();
+                ViewBag.referer = referer;
+            }
+            catch { }
+            ViewBag.loginUrl = Url.Action("Login");
+            return View();
         }
 
         [AreaConfig(Title = "مشاهده مشخصات کاربر لاگین شده")]
-        [CustomeAuthorizeFilter]
         [HttpPost]
         public IActionResult GetLoginUserInfo()
         {
@@ -83,7 +89,6 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         }
 
         [AreaConfig(Title = "مشاهده منو های کاربر")]
-        [CustomeAuthorizeFilter]
         [HttpPost]
         public IActionResult GetLoginUserSideMenu()
         {

@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "_LayoutAdminNoHeaderFooter";
+    ViewBag.Title = "خروج";
+}
+
+
+<script>
+   var referer = '@ViewBag.referer';
+   var loginUrl = '@ViewBag.loginUrl';
+
+   localStorage.clear();
+   if(referer)
+   {
+       location.href = referer;
+   }
+   else {
+        location.href = loginUrl;
+   }
+</script>

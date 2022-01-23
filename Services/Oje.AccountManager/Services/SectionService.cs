@@ -169,7 +169,11 @@ namespace Oje.AccountService.Services
 
         public object GetSideMenuAjax(long? userId)
         {
+            if (userId <= 0)
+                return new { };
             var listRoleIds = db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserRoles).Select(t => t.RoleId).ToList();
+            if (!listRoleIds.Any())
+                return new { };
             return db.Sections
                 .Select(t => new
                 {
@@ -184,7 +188,10 @@ namespace Oje.AccountService.Services
                         title = ttt.Title,
                         url = ttt.Name
                     }).ToList()
-                }).ToList().Where(t => t.actions.Any()).ToList();
+                })
+                .ToList()
+                .Where(t => t.actions.Any())
+                .ToList();
         }
 
         public ApiResult UpdateAccess(CreateUpdateRoleAccessVM input)

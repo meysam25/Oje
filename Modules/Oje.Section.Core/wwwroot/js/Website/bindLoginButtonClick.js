@@ -4,11 +4,45 @@ $.fn.initLoginButton = function (url, modalId) {
         var newId = uuidv4RemoveDash();
         $('body').append('<div id="' + newId + '" ></div>');
         loadJsonConfig(url, newId);
-        $(this).click(function ()
-        {
+        $(this).click(function () {
             if ($('#' + modalId).length > 0) {
                 $('#' + modalId).modal('show');
             }
         });
+        bindIfUserAreadyLogin();
     });
+}
+
+function bindIfUserAreadyLogin() {
+
+    if (localStorage.getItem('curLogin')) {
+        var res = JSON.parse(localStorage.getItem('curLogin'));
+        var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
+        userLoginWeb(userFullname);
+    } else {
+        postForm('/Account/Dashboard/GetLoginUserInfo', new FormData(), function (res) {
+            if (res) {
+                var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
+                localStorage.setItem('curLogin', JSON.stringify(res));
+                userLoginWeb(userFullname);
+            }
+        });
+    }
+}
+
+function userLoginWeb(userfullname) {
+    $('.holderRigAndLogUser').find('a').css('display', 'none');
+    $('.holderRigAndLogUser').append(getLoginUserMenuTemplate(userfullname));
+}
+
+function getLoginUserMenuTemplate(userfullanme) {
+    return `
+    <div class="logedInUserMenu">
+        <span class="logedInUserMenuFullname" >${userfullanme}</span>
+        <div class="logedInUserMenuItems">
+            <a href="#" >داشبورد</a>
+            <a href="/Account/Dashboard/Logout" >خروج</a>
+        </div>
+    </div>
+`;
 }
