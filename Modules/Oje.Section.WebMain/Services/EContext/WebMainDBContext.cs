@@ -1,18 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.Section.Question.Models.DB;
+using Oje.Section.WebMain.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.Section.Question.Services.EContext
+namespace Oje.Section.WebMain.Services.EContext
 {
-    public class QuestionDBContext : DbContext
+    public class WebMainDBContext: DbContext
     {
-        public DbSet<YourQuestion> YourQuestions { get; set; }
+        public DbSet<TopMenu> TopMenus { get; set; }
 
-        public QuestionDBContext(DbContextOptions<QuestionDBContext> options) : base(options)
+        public WebMainDBContext(DbContextOptions<WebMainDBContext> options) : base(options)
         {
 
         }

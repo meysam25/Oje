@@ -1612,10 +1612,20 @@ function showModal(targetModal, curElement) {
     clearForm($('#' + targetModal));
     $('#' + targetModal).modal('show');
     $('#' + targetModal)[0].grid = $(curElement).closest('.myGridCTRL')[0];
+    if ($(curElement).closest('.myGridCTRL').length > 0)
+        $('#' + targetModal)[0].gridOwnerId = $(curElement).closest('.myGridCTRL').attr('id');
     if ($(curElement).closest('.modal').length > 0) {
         var pKey = $(curElement).closest('.modal')[0].pKey;
         if (pKey)
             $('#' + targetModal)[0].pKey = pKey;
+    }
+    if ($(curElement).closest('.gridDetailes').length > 0) {
+        var option = $(curElement).closest('.gridDetailes')[0].option;
+        if (option && option.exteraParameters && option.exteraParameters.pKey) {
+            var pKey = option.exteraParameters.pKey;
+            if (pKey)
+                $('#' + targetModal)[0].pKey = pKey;
+        }
     }
 }
 
@@ -1627,6 +1637,7 @@ function showEditModal(key, url, modalId, curElement, parentKey) {
         postData.append('id', key);
         if (parentKey)
             postData.append('pKey', parentKey);
+        var gridId = gridSelector.attr('id');
 
         postForm(url, postData, function (res) {
             if (res) {
@@ -1638,6 +1649,7 @@ function showEditModal(key, url, modalId, curElement, parentKey) {
                     $('#' + modalId)[0].pKey = parentKey;
                 else
                     $('#' + modalId)[0].pKey = key;
+                $('#' + modalId)[0].gridOwnerId = gridId;
                 if ($('#' + modalId).find('.myGridCTRL').length > 0) {
                     $('#' + modalId).find('.myGridCTRL').each(function () {
                         $(this)[0].refreshData();
@@ -1674,6 +1686,8 @@ function simpleAjax(key, url, curElement) {
 
 function postModalData(curElement, gridId, url) {
     var qSelector = $(curElement).closest('.modal').find('.modal-content');
+    if (!gridId && $(curElement).closest('.modal')[0].gridOwnerId)
+        gridId = $(curElement).closest('.modal')[0].gridOwnerId;
     var postFormData = getFormData($(qSelector));
     showLoader(qSelector);
     postForm(url, postFormData, function (res) {

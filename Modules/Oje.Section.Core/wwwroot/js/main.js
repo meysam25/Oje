@@ -394,7 +394,7 @@ function getFormData(selector) {
     return postData;
 }
 
-var allCacheURLs = ['/core/basedata/get', '/getjsonconfig'];
+var allCacheURLs = ['/core/basedata/get', '/getjsonconfig', '/account/dashboard/getloginuserinfo'];
 
 function isValidURL(url) {
     var foundURl = allCacheURLs.filter(function (item) { return url.toLowerCase().indexOf(item) > -1; })

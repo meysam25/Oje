@@ -57,6 +57,11 @@
 
     }
 
+    <script src="/Modules/Core/js/jquery.min.js.gz"></script>
+
+    <script asp-append-version="true" src="/Modules/Core/js/websiteCor.min.js.gz"></script>
+    <script asp-append-version="true" src="/Modules/Core/js/mainPage.min.js.gz"></script>
+
     <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/master.min.css.gz" />
     <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/websiteCore.min.css.gz" />
     @RenderSection("Styles", required: false)
@@ -89,7 +94,7 @@
                         <a class="secountBtn">ورود</a>
                         <a href="#" title="ثبت نام" class="mainBtn">ثبت نام</a>
                     </div>
-                    <div class="headerMenuInner">
+                    <div id="topMenuHolderItems" class="headerMenuInner">
                         <div class="headerMenuItem ">
                             <div class="headerMenuItemInner headerMenuItemHasArrow">
                                 <span class="headerMenuItemLink">معرفی بیمه</span>
@@ -131,7 +136,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="headerMenuItem ">
@@ -307,7 +311,10 @@
                             </div>
                         </div>
                     </div>
-
+                    <script>
+                        $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
+                        $('#topMenuHolderItems').loadTopMenu('/TopMenu/GetTopMenu');
+                    </script>
                 </div>
             </nav>
         </header>
@@ -323,8 +330,8 @@
                                 <img alt="رتبه یک سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
                             </div>
                             <div>
-                                <div class="footerWeAreMoreThenGoodSectionResonTitle">رتبه یک سفر</div>
-                                <div class="footerWeAreMoreThenGoodSectionResonDescription">معتبرترین عرضه کننده محصولات گردشگری در ایران</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">کارگزاری بیمه برخط</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">معتبرترین عرضه کننده محصولات بیمه ای در کشور با مجوز بیمه مرکزی</div>
                             </div>
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
@@ -332,8 +339,8 @@
                                 <img alt="همسفر هر سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/laptop.svg.gz" />
                             </div>
                             <div>
-                                <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر هر سفر</div>
-                                <div class="footerWeAreMoreThenGoodSectionResonDescription">ارائه تمامی خدمات سفر (پرواز , قطار , اتوبوس , هتل و تور)</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">خرید آسان بیمه</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">ارائه تمامی خدمات بیمه (ثالث , بدنه , درمان تکمیلی , مسئولیت و....)</div>
                             </div>
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
@@ -341,8 +348,8 @@
                                 <img alt="همسفر همه لحظات سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/Messages.svg.gz" />
                             </div>
                             <div>
-                                <div class="footerWeAreMoreThenGoodSectionResonTitle">همسفر همه لحظات سفر</div>
-                                <div class="footerWeAreMoreThenGoodSectionResonDescription">پشتیبانی و همراهی 24 ساعته در تمامی مراحل سفر</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">پستیبانی در زمان خسارت</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">پشتیبانی و همراهی 24 ساعته در تمامی مراحل بیمه نامه و دریافت خسارت</div>
                             </div>
                         </div>
                     </div>
@@ -369,7 +376,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="footerDownloadMobileApp">
+                  @*  <div class="footerDownloadMobileApp">
                         <div class="footerDownloadMobileAppDescription">
                             <div class="footerDownloadMobileAppDescriptionTitle">اپلیکیشن علی بابا</div>
                             <div class="footerDownloadMobileAppDescriptionDes">
@@ -382,7 +389,7 @@
                             <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/sibapp.svg" alt="سیب اپ" /> سیب اپ</a>
                             <a class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/download.svg" alt="دانلود مستقیم" /> دانلود مستقیم</a>
                         </div>
-                    </div>
+                    </div>*@
                 </div>
             </section>
             <section class="footerSection">
@@ -391,17 +398,16 @@
                         <div class="footerAboutUsSectionRight">
                             <nav class="footerNavMenue">
                                 <div class="footerNavGroupItems">
-                                    <div class="footerNavGroupItemsTitle">علی بابا</div>
+                                    <div class="footerNavGroupItemsTitle">کارگزاری اوج</div>
                                     <a href="#" class="footerNavGroupItemsItem">درباره ما</a>
                                     <a href="#" class="footerNavGroupItemsItem">تماس با ما</a>
-                                    <a href="#" class="footerNavGroupItemsItem">چرا علی بابا</a>
-                                    <a href="#" class="footerNavGroupItemsItem">علی بابا پلاس</a>
-                                    <a href="#" class="footerNavGroupItemsItem">مجله علی بابا</a>
+                                    <a href="#" class="footerNavGroupItemsItem">چرا کارگزاری اوج</a>
+                                    <a href="#" class="footerNavGroupItemsItem">مجله کارگزاری اوج</a>
                                 </div>
                                 <div class="footerNavGroupItems">
                                     <div class="footerNavGroupItemsTitle">راهنما</div>
                                     <a href="#" class="footerNavGroupItemsItem">راهنمای خرید</a>
-                                    <a href="#" class="footerNavGroupItemsItem">راهنمای استرداد بلیط</a>
+                                    <a href="#" class="footerNavGroupItemsItem">راهنمای فسخ بیمه نامه</a>
                                     <a href="#" class="footerNavGroupItemsItem">قوانین و مقررات</a>
                                     <a href="#" class="footerNavGroupItemsItem">پرسش و پاسخ</a>
                                 </div>
@@ -409,7 +415,7 @@
                                     <div class="footerNavGroupItemsTitle">اطلاعات تکمیلی</div>
                                     <a href="#" class="footerNavGroupItemsItem">باشگاه مشتریان</a>
                                     <a href="#" class="footerNavGroupItemsItem">فروش سازمانی</a>
-                                    <a href="#" class="footerNavGroupItemsItem">همکاری با آزانس ها</a>
+                                    <a href="#" class="footerNavGroupItemsItem">همکاری با نمایندگان بیمه</a>
                                     <a href="#" class="footerNavGroupItemsItem">فرصد های شغلی</a>
                                 </div>
                             </nav>
@@ -433,7 +439,7 @@
                             </div>
                         </div>
                         <div class="footerAboutUsSectionLeft">
-                            <a class="leftFooterLink" href="https://alibaba.ir">alibaba.ir</a>
+                            <a class="leftFooterLink" href="@(Context.Request.IsHttps ? "https" : "http")://@(Context.Request.Host)">@(Context.Request.Host)</a>
                             <span class="footerAboutUsTellNumber">تلفن پشتیبانی :<span>021-43900000</span>|<span>021-49275000</span></span>
                             <span class="footerAboutUsTellNumber">دفتر فروش : قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span>
                             <div class="footerLeftTrophyIcons">
@@ -451,7 +457,7 @@
                 <div class="myContainer">
                     <div class="footerSharingAndCopyRightSection">
                         <div class="footerCopyRightSection">
-                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت سفرهای علی‌بابا می‌باشد. (نسخه 1.22.3)
+                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت کارگزاری بر خط اوج می‌باشد.
                         </div>
                         <div class="footerSharingIconSection">
                             <a href="#"><i class="fab fa-telegram-plane"></i></a>
@@ -465,13 +471,10 @@
             </section>
         </footer>
     </div>
-    <script src="/Modules/Core/js/jquery.min.js.gz"></script>
 
-    <script asp-append-version="true" src="/Modules/Core/js/websiteCor.min.js.gz"></script>
-    <script asp-append-version="true" src="/Modules/Core/js/mainPage.min.js.gz"></script>
     <script>
         $('img[data-src]').loadImageOnScroll();
-        $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
+        
         document.addEventListener("DOMContentLoaded", function(event) {
              if(isLH == false) {
                 $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
@@ -483,7 +486,7 @@
                 $('.animationOnScrollMarginTop').removeClass('animationOnScrollMarginTop');
                 $('.animationOnScrollOpacityFlip').removeClass('animationOnScrollOpacityFlip');
             }
-            $('.headerMenu').initNavResButton();
+            
             $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
         });
     </script>

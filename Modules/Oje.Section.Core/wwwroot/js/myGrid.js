@@ -587,9 +587,10 @@ $.fn.initMyGrid = function (option) {
                 $(currButton).addClass('fa-minus-square');
                 var curTr = $(currButton).closest('tr');
                 var optionX = $(this)[0].option
-                curTr.after('<tr class="holderDetailesGrid"><td colspan="' + templateFunctions.getGridColumnCount(optionX) + '" ><div class="myGridCTRL gridDetailes"></div></td></tr>');
+                curTr.after('<tr class="holderDetailesGrid"><td colspan="' + templateFunctions.getGridColumnCount(optionX) + '" ><div id="' + optionX.detailes.id +'" class="myGridCTRL gridDetailes"></div></td></tr>');
                 var currRowData = JSON.parse(curTr.attr('data-row-json'));
                 optionX.detailes.ds = currRowData[optionX.detailesClientSchema];
+                optionX.detailes.exteraParameters = { pKey: currRowData[optionX.key] };
                 curTr.next().find('.myGridCTRL').initMyGrid(optionX.detailes);
             } else {
                 $(currButton).removeClass('fa-minus-square');

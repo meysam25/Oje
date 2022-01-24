@@ -15,19 +15,13 @@ $.fn.initLoginButton = function (url, modalId) {
 
 function bindIfUserAreadyLogin() {
 
-    if (localStorage.getItem('curLogin')) {
-        var res = JSON.parse(localStorage.getItem('curLogin'));
-        var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
-        userLoginWeb(userFullname);
-    } else {
-        postForm('/Account/Dashboard/GetLoginUserInfo', new FormData(), function (res) {
-            if (res) {
-                var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
-                localStorage.setItem('curLogin', JSON.stringify(res));
-                userLoginWeb(userFullname);
-            }
-        });
-    }
+    postForm('/Account/Dashboard/GetLoginUserInfo', new FormData(), function (res) {
+        if (res) {
+            var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
+            localStorage.setItem('curLogin', JSON.stringify(res));
+            userLoginWeb(userFullname);
+        }
+    });
 }
 
 function userLoginWeb(userfullname) {

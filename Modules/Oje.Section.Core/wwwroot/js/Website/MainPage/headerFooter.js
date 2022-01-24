@@ -1,5 +1,61 @@
 ﻿
 
+$.fn.loadTopMenu = function (url) {
+
+    function getTopMenuTemplate(l1Item) {
+        var result = '';
+
+        result += '<div class="headerMenuItem ">';
+        result += '<div class="headerMenuItemInner ' + (l1Item.childs && l1Item.childs.length > 0 ? 'headerMenuItemHasArrow' : '' )+'">';
+        if (l1Item.link)
+            result += '<a href="' + (l1Item.link ? l1Item.link : '#') + '" class="headerMenuItemLink">' + l1Item.title + '</a>';
+        else
+            result += '<span class="headerMenuItemLink">' + l1Item.title + '</span>';
+        result += '</div>';
+
+        if (l1Item.childs && l1Item.childs.length > 0) {
+            result += '<div class="headerMenuItemSumMenuItems">';
+            result += '<div class="myContainer">';
+            result += '<div class="headerMenuItemSumMenuItemsInner">';
+            result += '<div class="headerMenuItemGroup headerMenuMoveBackButton">';
+            result += '<span class="headerMenuItemLink">' + l1Item.title + '</span>';
+            result += '</div>';
+            for (var j = 0; j < l1Item.childs.length; j++) {
+                var level2Item = l1Item.childs[j];
+                result += '<div class="headerMenuItemGroup">';
+                result += '<div class="headerMenuItemGroupTitle">' + level2Item.title + '</div>';
+                if (level2Item.childs && level2Item.childs.length > 0) {
+                    for (var m = 0; m < level2Item.childs.length; m++) {
+                        result += '<a href="' + (level2Item.childs[m].link ? level2Item.childs[m].link : '#') + '" title="' + level2Item.childs[m].title +'" class="headerMenuItemGroupItem">' + level2Item.childs[m].title +'</a>';
+                    }
+                }
+                result += '</div>';
+            }
+            result += '</div>';
+            result += '</div>';
+            result += '</div>';
+        }
+        result += '</div>';
+
+        return result;
+    }
+    return this.each(function () {
+        postForm(url, new FormData(), function (res) {
+            var template = '';
+            if (res && res.length > 0) {
+                for (var i = 0; i < res.length; i++) {
+                    var level1Item = res[i];
+                    template += getTopMenuTemplate(level1Item);
+                    
+                }
+            }
+            $(this.curThis).html(template);
+            $('.headerMenu').initNavResButton();
+        }.bind({ curThis: $(this) }));
+    });
+}
+
+
 $.fn.initNavResButton = function () {
     return this.each(function () {
         $(this).find('.topMenuBtton').click(function (e) {
