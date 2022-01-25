@@ -11,6 +11,9 @@ namespace Oje.Section.WebMain.Services.EContext
     public class WebMainDBContext: DbContext
     {
         public DbSet<TopMenu> TopMenus { get; set; }
+        public DbSet<Page> Pages { get; set; }
+        public DbSet<PageLeftRightDesign> PageLeftRightDesigns { get; set; }
+        public DbSet<PageLeftRightDesignItem> PageLeftRightDesignItems { get; set; }
 
         public WebMainDBContext(DbContextOptions<WebMainDBContext> options) : base(options)
         {

@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Oje.Infrastructure\Oje.Infrastructure.csproj" />
-    <ProjectReference Include="..\Oje.WebImageFormat\Oje.WebImageFormat.csproj" />
   </ItemGroup>
 
 </Project>

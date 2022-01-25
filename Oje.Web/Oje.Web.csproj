@@ -30,6 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ImageConvertorWebP\x86\" />
+    <Folder Include="ImageConvertorWebP\x64\" />
     <Folder Include="wwwroot\Modules\" />
   </ItemGroup>
 
@@ -68,6 +70,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="BlinkBinariesWindows\v8_context_snapshot.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ImageConvertorWebP\x64\libwebp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ImageConvertorWebP\x86\libwebp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

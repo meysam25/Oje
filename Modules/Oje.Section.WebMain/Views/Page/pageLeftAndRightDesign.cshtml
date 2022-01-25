@@ -1,0 +1,45 @@
+﻿@model Oje.Section.WebMain.Models.View.PageLeftRightDesignWebVM
+
+
+<div class="myContainer removeBoxShadow">
+    <div class="pageLRDesign">
+        @{
+            if (!string.IsNullOrEmpty(Model.title))
+            {
+                <h3 class="pageLRDesignTitle"><span><span>@Model.title</span></span></h3>
+            }
+            if (!string.IsNullOrEmpty(Model.description))
+            {
+                <div class="pageLRDesignDescription">
+                    @Model.description
+                </div>
+            }
+
+            if (Model.PageLeftRightDesignWebItemVMs != null && Model.PageLeftRightDesignWebItemVMs.Count > 0)
+            {
+                <div class="pageLRDesignItems">
+                    @{
+                        foreach (var item in Model.PageLeftRightDesignWebItemVMs)
+                        {
+                            <div class="pageLRDesignItem">
+                                <div class="pageLRDesignItemTextSide">
+                                    <div class="pageLRDesignItemTitle">@item.title</div>
+                                    <p>@item.description</p>
+                                    @{
+                                        if (!string.IsNullOrEmpty(item.bTitle) && !string.IsNullOrEmpty(item.bLink))
+                                        {
+                                            <a title="@item.bTitle" href="@item.bLink" class="mainBtn">@item.bTitle</a>
+                                        }
+                                    }
+                                </div>
+                                <div class="pageLRDesignItemImageSide">
+                                    <img alt="@item.title" width="570" height="370" class="pageLRDesignItemMainImage" data-src="@item.image" />
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>

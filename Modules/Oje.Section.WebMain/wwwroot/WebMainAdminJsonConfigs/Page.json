@@ -1,0 +1,219 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "WebMainAdminPageGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('WebMainAdminPageAddGridModal', this)",
+              "type": "add",
+              "modalId": "WebMainAdminPageAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/WebMainAdmin/Page/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/WebMainAdmin/Page/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "WebMainAdminPageEditModal",
+                "url": "/WebMainAdmin/Page/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/WebMainAdmin/Page/GetById\\', \\'WebMainAdminPageEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-link",
+                "prop": "id",
+                "modalId": "WebMainAdminPageEditModal",
+                "url": "/WebMainAdmin/Page/GetById",
+                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"'+ curRow.url +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-link\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/WebMainAdmin/Page/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "summery",
+              "caption": "خلاصه",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "WebMainAdminPageAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "subTitle",
+              "type": "text",
+              "label": "زیر عنوان"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "bTitle",
+              "type": "text",
+              "label": "عنوان دکمه"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "mainImage",
+              "type": "file",
+              "label": "تصویر اصلی (1500*300)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "mainImageSmall",
+              "type": "file",
+              "label": "تصویر مبایل (800*600)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "bLink",
+              "type": "text",
+              "label": "مسیر دکمه"
+            },
+
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "summery",
+              "type": "textarea",
+              "label": "خلاصه",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'WebMainAdminPageGrid', '/WebMainAdmin/Page/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "WebMainAdminPageEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "subTitle",
+              "type": "text",
+              "label": "زیر عنوان"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "bTitle",
+              "type": "text",
+              "label": "عنوان دکمه"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "mainImage",
+              "type": "file",
+              "label": "تصویر اصلی (1500*300)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "mainImageSmall",
+              "type": "file",
+              "label": "تصویر مبایل (800*600)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "bLink",
+              "type": "text",
+              "label": "مسیر دکمه"
+            },
+
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "summery",
+              "type": "textarea",
+              "label": "خلاصه",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "دخیره",
+              "onClick": "postModalData(this, 'WebMainAdminPageGrid', '/WebMainAdmin/Page/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

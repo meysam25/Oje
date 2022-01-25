@@ -210,6 +210,16 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/css/page.min.css",
+    "inputFiles": [
+      "wwwroot/css/Website/Page/page.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/css/mainPage.min.css",
     "inputFiles": [
       "wwwroot/css/Website/MainPage/aboutusSection.css",

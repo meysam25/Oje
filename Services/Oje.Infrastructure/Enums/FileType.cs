@@ -41,5 +41,11 @@ namespace Oje.Infrastructure.Enums
         BlogSound = 15,
         [Display(Name = "تصویر بزرگ بلاگ 600", Prompt = "Blog", Description = "600*400")]
         BlogBigImage600 = 16,
+        [Display(Name = "تصویر اصلی صفحه", Prompt = "Page", Description = "1500*300", AutoGenerateField = true)]
+        PageMainImage = 17,
+        [Display(Name = "تصویر اصلی صفحه (کوچک)", Prompt = "Page", Description = "800*600", AutoGenerateField = true)]
+        PageMainImageSmall = 18,
+        [Display(Name = "تصویر دیزاین چپ و راست", Prompt = "PageLeftRightDesignItem", Description = "560*373")]
+        PageLeftRightDesignItem = 19,
     }
 }

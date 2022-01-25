@@ -21,6 +21,9 @@ namespace Oje.Section.WebMain
             services.AddDbContextPool<WebMainDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<ITopMenuService, TopMenuService>();
+            services.AddScoped<IPageService, PageService>();
+            services.AddScoped<IPageLeftRightDesignService, PageLeftRightDesignService>();
+            services.AddScoped<IPageLeftRightDesignItemService, PageLeftRightDesignItemService>();
         }
     }
 }

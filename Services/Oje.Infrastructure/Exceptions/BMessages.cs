@@ -540,6 +540,22 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا جواب را وارد کنید")]
         Please_Enter_Answer = 264,
         [Display(Name = "جواب نمی تواند بیشتر از 4000 کارکتر باشد")]
-        Answer_Can_Not_Be_More_Then_4000_Chars = 265
+        Answer_Can_Not_Be_More_Then_4000_Chars = 265,
+        [Display(Name = "عنوان نمی تواند بیشتر از 200 کارکتر باشد")]
+        Title_Can_Not_Be_More_Then_200_chars = 266,
+        [Display(Name = "زیرعنوان نمی تواند بیشتر از 200 کارکتر باشد")]
+        SubTitle_Can_Not_Be_More_Then_200_chars = 267,
+        [Display(Name = "عنوان دکمه نمی تواند بیشتر از 50 کارکتر باشد")]
+        Button_Title_Can_Not_Be_More_Then_50_Chars = 268,
+        [Display(Name = "مسیر دکمه نمی تواند بیشتر از 200 کارکتر باشد")]
+        Button_Link_Can_Not_Be_More_Then_200_Chars = 269,
+        [Display(Name = "لطفا تصویر اصلی را انتخاب کنید")]
+        Please_Select_Main_Image = 270,
+        [Display(Name = "ابعاد تصویر انتخاب شده صحیح نمی باشد")]
+        Invalid_Image_Size = 271,
+        [Display(Name = "لطفا صفحه مورد نظر را انتخاب کنید")]
+        Please_Select_Page = 272,
+        [Display(Name = "دیزاین چپ و راست")]
+        Please_Select_Design = 273
     }
 }

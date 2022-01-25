@@ -1,0 +1,60 @@
+﻿@{
+    Layout = "_WebLayout";
+}
+
+@model Oje.Section.WebMain.Models.View.PageWebVM
+
+@section Styles {
+<link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/page.min.css.gz" />
+}
+
+<div class="pageG">
+    <div class="pageGSocial removeBoxShadow">
+        <a href="#">
+            <img width="32" height="32" src="/Modules/Assets/MainPage/telegram.svg" />
+        </a>
+        <a href="#">
+            <img width="32" height="32" src="/Modules/Assets/MainPage/instagram.svg" />
+        </a>
+        <a href="#">
+            <img width="32" height="32" src="/Modules/Assets/MainPage/twitter.svg" />
+        </a>
+    </div>
+    <div class="pageGHolderMainImage">
+        <div class="myContainer HolderPageGTitleButton removeBoxShadow">
+            <div class="PageGTitleButton">
+                <h1>@Model.title</h1>
+                @{
+                    if (!string.IsNullOrEmpty(Model.subTitle))
+                    {
+                        <h2>@Model.subTitle</h2>
+                    }
+                    if (!string.IsNullOrEmpty(Model.bLink) && !string.IsNullOrEmpty(Model.bTitle))
+                    {
+                        <a href="@Model.bLink" title="@Model.bTitle" class="mainBtn">@Model.bTitle</a>
+                    }
+                }
+
+            </div>
+        </div>
+        <img alt="@Model.title" class="pageGMainImageMP8" width="2000" height="600" src="@Model.mainImage" />
+        <img alt="@Model.title" class="pageGMainImageMM8" width="800" height="600" src="@Model.mainImageSmall" />
+        <div class="myContainer removeBoxShadow">
+             <ul style="border-bottom:none;" class="breadcrumb">
+                <li><a href="/">ستاد بیمه</a></li>
+                <li>@Model.title</li>
+            </ul>
+        </div>
+    </div>
+    @{
+        var sorrtedItem = Model.Items.OrderBy(t => t.order).ToList();
+        foreach(var item in sorrtedItem)
+        {
+            if(item.type == Oje.Infrastructure.Enums.PageWebItemType.LeftAndRight)
+            {
+                Html.RenderPartial("pageLeftAndRightDesign", item);
+            }
+        }
+    }
+    
+</div>

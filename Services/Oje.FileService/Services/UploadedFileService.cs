@@ -13,6 +13,8 @@ using System.Linq;
 using Oje.FileService.Services.EContext;
 using Oje.FileService.Interfaces;
 using Oje.FileService.Models.DB;
+using System.Runtime.InteropServices;
+using Imazen.WebP;
 
 namespace Oje.FileService.Services
 {
@@ -29,6 +31,8 @@ namespace Oje.FileService.Services
                 return "";
 
             UploadNewFileValidation(userPic, extensions);
+
+            
 
             UploadedFile newFile = new UploadedFile()
             {
@@ -50,7 +54,7 @@ namespace Oje.FileService.Services
             if (!string.IsNullOrEmpty(fileType.GetAttribute<DisplayAttribute>()?.Prompt))
                 subFolder = fileType.GetAttribute<DisplayAttribute>()?.Prompt;
 
-            string fn = newFile.Id + "_" + fi.Name.Replace(fi.Extension, "").Slugify() + fi.Extension;
+            string fn = newFile.Id + "_" + fi.Name.Replace(fi.Extension, "").Slugify() + ".webp";
             string tempFilePath = Path.Combine(GlobalConfig.GetUploadImageDirectory(subFolder));
             if (objectId != null)
                 tempFilePath = Path.Combine(tempFilePath, objectId + "");
@@ -66,6 +70,17 @@ namespace Oje.FileService.Services
                         using (Bitmap bmp = new Bitmap(userPic.OpenReadStream()))
                         {
                             var bmpSize = GetBmpSize(fileType.GetAttribute<DisplayAttribute>()?.Description, bmp);
+                            bool? isSizeValidationRequired = false;
+                            try { isSizeValidationRequired = fileType.GetAttribute<DisplayAttribute>()?.AutoGenerateField; } catch { }
+                            if (isSizeValidationRequired == true)
+                            {
+                                if(bmp.Width != bmpSize.Width || bmp.Height != bmpSize.Height)
+                                {
+                                    db.Entry(newFile).State = EntityState.Deleted;
+                                    db.SaveChanges();
+                                    throw BException.GenerateNewException(BMessages.Invalid_Image_Size);
+                                }
+                            }
                             using (var resultBmp = C_Image.ResizeBitmap(bmp, bmpSize))
                             {
                                 saveImage(resultBmp, fs, fi.Extension);
@@ -91,16 +106,19 @@ namespace Oje.FileService.Services
         {
             if (OperatingSystem.IsWindows())
             {
-                ImageCodecInfo jpgEncoder = null;
-                if (!string.IsNullOrEmpty(FileNameExtension) && FileNameExtension.ToLower() == ".png")
-                    jpgEncoder = GetEncoder(ImageFormat.Png);
-                else
-                    jpgEncoder = GetEncoder(ImageFormat.Jpeg);
-                Encoder myEncoder = Encoder.Quality;
-                EncoderParameters myEncoderParameters = new EncoderParameters(1);
-                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 70L);
-                myEncoderParameters.Param[0] = myEncoderParameter;
-                resultBmp.Save(fs, jpgEncoder, myEncoderParameters);
+                //ImageCodecInfo jpgEncoder = null;
+                //if (!string.IsNullOrEmpty(FileNameExtension) && FileNameExtension.ToLower() == ".png")
+                //    jpgEncoder = GetEncoder(ImageFormat.Png);
+                //else
+                //    jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                //Encoder myEncoder = Encoder.Quality;
+                //EncoderParameters myEncoderParameters = new EncoderParameters(1);
+                //EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 70L);
+                //myEncoderParameters.Param[0] = myEncoderParameter;
+                //resultBmp.Save(fs, jpgEncoder, myEncoderParameters);
+                Imazen.WebP.Extern.LoadLibrary.LoadWebPOrFail();
+                var encoder = new SimpleEncoder();
+                encoder.Encode(resultBmp, fs, 70);
             }
             else
                 throw new NotImplementedException("saveImage");
