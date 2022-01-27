@@ -138,66 +138,53 @@
 <script>
     showLoginUserPanelInMainPage();
 </script>
-<div class="myContainer">
+<div id="holderAboutUs" class="myContainer">
     <section class="aboutUsSection animationOnScroll animationOnScrollMarginTop">
-        <div class="aboutUsSectionTitle">آزانس تبلیغ6اتی الرا</div>
-        <div class="aboutUsSectionSubTitle">تبلیغات, برندسازی, دیجیتال مارکتینگ و طراحی سایت</div>
+        <div class="aboutUsSectionTitle"></div>
+        <div class="aboutUsSectionSubTitle"></div>
         <div class="aboutUsSectionDescription">
-            آژانس تبلیغاتی الرا، متشکل از تیمی جوان و در عین حال مجرب و خلاق، تمام توان خود را در مسیر توسعه ی کسب و کارهای کشور، بعنوان مشاور و مجری طرح های برندینگ و بازاریابی، اجرای کمپین های تبلیغاتی، تولید محتوا، طراحی سایت و فروشگاه آنلاین بکار گرفته است و بعنوان تنها شرکت تبلیغاتی در تهران اقدام به ارائه پکیج کاملی از خدمات این حوزه کرده است تا دغدغه صاحبان کسب و کار و سازمان ها را نسبت به انتخاب پیمانکار و مشاور مناسب و تسریع کار در حوزه های بازاریابی و تبلیغات، مرتفع نماید.
+            
         </div>
         <div class="aboutUsSectionAbilityIcons">
             <div class="aboutUsSectionAbilityIcon">
-                <img data-src="/Modules/Assets/MainPage/rahkar.png" width="80" height="80" />
-                <div>راهکارهای تبلیغات و بازاریابی</div>
+                <img width="80" height="80" />
+                <div></div>
             </div>
             <div class="aboutUsSectionAbilityIcon">
-                <img data-src="/Modules/Assets/MainPage/rahkar-digital.png" width="80" height="80" />
-                <div>راهکارهای دیجیتال و آنلاین</div>
+                <img  width="80" height="80" />
+                <div></div>
             </div>
             <div class="aboutUsSectionAbilityIcon">
-                <img data-src="/Modules/Assets/MainPage/mohtava.png" width="80" height="80" />
-                <div>تولید محتوا و طراحی گرافیک</div>
+                <img  width="80" height="80" />
+                <div></div>
             </div>
         </div>
         <div class="aboutUsSectionExteraButtons">
-            <a class="secountBtn">مشاهده اطلاعات بیشتر</a>
-            <a class="mainBtn">تماس با ستاد بیمه</a>
+            <a href="#" class="secountBtn">مشاهده اطلاعات بیشتر</a>
+            <a href="#" class="mainBtn">تماس با ستاد بیمه</a>
         </div>
     </section>
 </div>
-<div id="holderBlogs" class="myContainer"></div>
-<div class="myContainer">
+<script>
+    $('#holderAboutUs').initMainPageAboutUs('/Home/GetAboutUsMainPage');
+</script>
+<div id="holderBlogs" style="display:none;" class="myContainer"></div>
+<div id="reminderSection" class="myContainer">
     <section class="reminderSection animationOnScroll animationOnScrollOpacityFlip">
         <div class="reminderSectionDescription">
-            <img width="64" height="64" data-src="/Modules/Assets/MainPage/blueCalender.png" />
+            <img class="reminderMainLogo" width="64" height="64"  />
             <div class="reminderSectionDescriptionTexts">
-                <div class="reminderSectionDescriptionTextsTitle">یادآوری تمدید یا اقساط بیمه</div>
-                <div class="reminderSectionDescriptionTextsDescription">
-                    لورم ایپسوم متن ساختگی با تولید سادگی نمفهوم از صنعت چاپ و با استفده از طراحان گرافیک است . چاپگراها و متون بلکه روزنامه و مجله در ستون و سطر آنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
-                </div>
+                <div class="reminderSectionDescriptionTextsTitle"></div>
+                <div class="reminderSectionDescriptionTextsDescription"></div>
             </div>
         </div>
-        <div class="reminderSectionInput ctrlRow">
-            <div class="ctrl ctrlSize50">
-                <select>
-                    <option>لطفا موضوع یادآوری را انتخاب کنید</option>
-                    <option>موضوع 1</option>
-                    <option>موضوع 2</option>
-                    <option>موضوع 3</option>
-                </select>
-            </div>
-            <div class="ctrl ctrlSize50">
-                <input type="text" placeholder="لطفا تاریخ یادآوری را مشخص کنید" />
-            </div>
-            <div class="ctrl ctrlSize100">
-                <textarea></textarea>
-            </div>
-            <div class="reminderSectionInputHolderButton">
-                <button class="mainBtn">ثبت یاد آوری</button>
-            </div>
-        </div>
+        <div class="reminderSectionInput "></div>
     </section>
 </div>
+<script>
+    loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'));
+    $('#reminderSection').loadAndBindRemindUsSection('/Reminder/GetMainPageDescription');
+</script>
 @*<div class="myContainer">
     <section class="downloadOurMobileApp animationOnScroll animationOnScrollMarginTop">
     <div class="downloadOurMobileAppButtonSection">
@@ -212,7 +199,7 @@
     </section>
     </div>*@
 <div id="yourQuestion" class="myContainer"></div>
-<div class="myContainer">
+<div id="ourPrideDiv" class="myContainer">
     <section class="ourPrideSection animationOnScroll animationOnScrollMarginTop">
         <div class="ourPrideSectionTitle"><span>افتخارات ستاد بیمه</span></div>
         <div class="ourPrideSectionItems">
@@ -254,11 +241,13 @@
     </section>
 </div>
 <script>
+    $('#ourPrideDiv').loadAndBindOurPride('/Home/GetOurPrideMainPage');
+    $('#holderBlogs').bindBlog('/Blog/Blog/GetMainBlog');
     document.addEventListener("DOMContentLoaded", function(event) {
 
         $('.tabCtrl').initTabCtrl();
         $('.inquirySectionTab').initInquiryTab();
-        $('#holderBlogs').bindBlog('/Blog/Blog/GetMainBlog');
+        
         $('#yourQuestion').loadYourQuestionList();
     });
 </script>

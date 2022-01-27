@@ -21,6 +21,7 @@ namespace Oje.AccountService.Models.DB
             UserNotifications = new();
             FromUserUserNotifications = new();
             UserNotificationTrigers = new();
+            SiteSettings = new();
         }
 
         [Key]
@@ -108,5 +109,7 @@ namespace Oje.AccountService.Models.DB
         public List<UserNotification> FromUserUserNotifications { get; set; }
         [InverseProperty("User")]
         public List<UserNotificationTriger> UserNotificationTrigers { get; set; }
+        [InverseProperty("User")]
+        public List<SiteSetting> SiteSettings { get; set; }
     }
 }

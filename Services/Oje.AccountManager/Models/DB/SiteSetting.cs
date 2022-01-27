@@ -28,6 +28,10 @@ namespace Oje.AccountService.Models.DB
         [MaxLength(100)]
         public string PanelUrl { get; set; }
         public long? UserId { get; set; }
+        [ForeignKey("UserId"), InverseProperty("SiteSettings")]
+        public User User { get; set; }
+        [MaxLength(4000)]
+        public string SeoMainPage { get; set; }
 
         [InverseProperty("SiteSetting")]
         public List<Role> Roles { get; set; }

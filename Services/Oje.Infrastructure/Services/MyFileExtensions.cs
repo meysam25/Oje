@@ -33,7 +33,8 @@ namespace Oje.Infrastructure.Services
             { ".zip", new byte[] {  80, 75, 3, 4 }  },
             { ".docx", new byte[] {  80, 75, 3, 4 }  },
             { ".pdf", new byte[] { 37, 80, 68, 70 }  },
-            { ".xlsx", new byte[] { 80, 75, 3, 4 }  }
+            { ".xlsx", new byte[] { 80, 75, 3, 4 }  },
+            { ".svg", new byte[] { 60, 115, 118, 103 }  }
         };
     }
 }

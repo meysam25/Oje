@@ -41,6 +41,8 @@ namespace Oje.Section.BaseData.Models.DB
         [InverseProperty("UpdateUserSiteSettings")]
         public User UpdateUser { get; set; }
         public bool IsHttps { get; set; }
+        [MaxLength(4000)]
+        public string SeoMainPage { get; set; }
         public bool IsActive { get; set; }
     }
 }

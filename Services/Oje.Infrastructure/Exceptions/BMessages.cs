@@ -556,6 +556,18 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا صفحه مورد نظر را انتخاب کنید")]
         Please_Select_Page = 272,
         [Display(Name = "دیزاین چپ و راست")]
-        Please_Select_Design = 273
+        Please_Select_Design = 273,
+        [Display(Name = "لطفا تاریخ را انتخاب کنید")]
+        Please_Select_Date = 274,
+        [Display(Name = "توضیحات بسیار طولانی می باشد")]
+        To_Much_Summery = 275,
+        [Display(Name = "تاریخ باید بزرگ تر از امروز باشد")]
+        Date_Should_Be_From_Tomarow = 276,
+        [Display(Name = "لطفا لینک را وارد کنید")]
+        Please_Enter_Link = 277,
+        [Display(Name = "لینک نمی تواند بیشتر از 200 کارکتر باشد")]
+        Link_Can_Not_Be_More_Then_200_Chars = 278,
+        [Display(Name = "سه او نمی تواند بیشتر از 4000 کارتر باشد")]
+        Seo_Can_Not_Be_More_Then_4000_Chars = 279
     }
 }

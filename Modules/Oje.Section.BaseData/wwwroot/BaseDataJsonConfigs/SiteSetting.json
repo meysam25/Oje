@@ -149,6 +149,12 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "امن"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "seo",
+              "type": "textarea",
+              "label": "توضیحات سه او صفحه اصلی"
             }
           ],
           "actions": [
@@ -221,6 +227,12 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "امن"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "seo",
+              "type": "textarea",
+              "label": "توضیحات سه او صفحه اصلی"
             }
           ],
           "actions": [

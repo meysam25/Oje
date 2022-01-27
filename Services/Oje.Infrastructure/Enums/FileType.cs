@@ -47,5 +47,7 @@ namespace Oje.Infrastructure.Enums
         PageMainImageSmall = 18,
         [Display(Name = "تصویر دیزاین چپ و راست", Prompt = "PageLeftRightDesignItem", Description = "560*373")]
         PageLeftRightDesignItem = 19,
+        [Display(Name = "خصوصیات", Prompt = "Property")]
+        Property = 20
     }
 }

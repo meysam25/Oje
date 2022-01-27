@@ -54,7 +54,7 @@ $.fn.bindBlog = function (url) {
                                 </div>
                                 <div class="blogSectionHolderButton"><a class="mainBtn" href="/Blogs">همه اخبار و مقالات</a></div>
                             </section>`;
-                $(this.curThis).addClass('myContainerEffect1Active').html(result);
+                $(this.curThis).css('display','block').addClass('myContainerEffect1Active').html(result);
                 $(this.curThis).find('img[data-src]').loadImageOnScroll();
             }
         }.bind({ curThis: this }), null, function () {

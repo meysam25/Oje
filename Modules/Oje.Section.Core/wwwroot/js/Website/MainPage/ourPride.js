@@ -27,8 +27,69 @@ $.fn.initAutoNumber = function (calceTime) {
                     this.curThis.isAutoStarted = true;
                 }
             }.bind({ curThis: foundObj }));
-            
+
             $(window).on('DOMContentLoaded load resize scroll', handler);
         }
     });
 };
+
+
+$.fn.loadAndBindOurPride = function (url) {
+
+    function getOurPrideItem(imgSrc, title) {
+        var result = '';
+
+        if (title) {
+            result += '<div class="ourPrideSectionItem">';
+            if (imgSrc)
+                result += '<img width="80" alt="'+ title.replace('{','').replace('}','') +'" height="80" data-src="' + imgSrc + '" />';
+            result += ' <div >';
+            result += getOurPrideItemTemplate(title);
+            result += '</div>';
+            result += '</div>';
+        }
+
+        return result;
+    }
+
+    function getOurPrideItemTemplate(title) {
+        var result = '';
+
+        if (title) {
+            if (title.indexOf('{') == -1 || title.indexOf('}') == -1) {
+                result = '<span class="ourPrideSectionItemLightText">' + title + '</span>';
+            } else {
+                var leftPart = title.split('{')[0];
+                var rightPart = title.split('}')[1];
+                var centerNumberPart = title.split('{')[1].split('}')[0];
+                if (isNaN(centerNumberPart))
+                    centerNumberPart = 1000;
+                if (leftPart)
+                    result += '<span class="ourPrideSectionItemLightText">' + leftPart + '</span>';
+                if (centerNumberPart) {
+                    result += '<span class="ourPrideSectionItemLightBoldTxt" data-target-value="' + centerNumberPart +'">0</span>';
+                }
+                if (rightPart)
+                    result += '<span class="ourPrideSectionItemLightText">' + rightPart + '</span>';
+            }
+        }
+
+        return result;
+    }
+
+    return this.each(function () {
+        postForm(url, new FormData(), function (res) {
+            var template = '';
+            if (res) {
+                template += getOurPrideItem(res.image1_address, res.title1);
+                template += getOurPrideItem(res.image2_address, res.title2);
+                template += getOurPrideItem(res.image3_address, res.title3);
+                template += getOurPrideItem(res.image4_address, res.title4);
+                $(this.curThis).find('.ourPrideSectionTitle span').html(res.title);
+            }
+            $(this.curThis).find('.ourPrideSectionItems').html(template);
+            $(this.curThis).find('img[data-src]').loadImageOnScroll();
+            $(this.curThis).find('.ourPrideSectionItem').initAutoNumber(300);
+        }.bind({ curThis: this }));
+    });
+}

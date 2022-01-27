@@ -339,3 +339,6 @@
 .imageGallery .myTableBody > tr:last-child, .imageGallery .myTableBody > tr:last-child > td, .imageGallery .myTableBody {
     display: block;
 }
+.gridDetailes{
+    padding-right:30px;
+}

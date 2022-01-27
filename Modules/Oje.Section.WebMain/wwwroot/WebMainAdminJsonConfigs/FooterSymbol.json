@@ -1,0 +1,29 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/WebMainAdmin/FooterSymbol/Get",
+      "title": "توضیحات فوتر",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "samandehi",
+          "type": "textarea",
+          "label": "ساماندهی"
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "enamad",
+          "type": "textarea",
+          "label": "نماد الکترونیکی"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/WebMainAdmin/FooterSymbol/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

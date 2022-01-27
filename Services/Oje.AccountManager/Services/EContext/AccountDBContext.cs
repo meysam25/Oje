@@ -30,12 +30,14 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<UserNotificationTriger> UserNotificationTrigers { get; set; }
         public DbSet<UserNotificationTemplate> UserNotificationTemplates { get; set; }
         public DbSet<DashboardSection> DashboardSections { get; set; }
+        public DbSet<Property> Properties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoleProposalForm>().HasKey(t => new { t.RoleId, t.ProposalFormId });
             modelBuilder.Entity<UserCompany>().HasKey(t => new { t.UserId, t.CompanyId });
             modelBuilder.Entity<UserNotification>().HasKey(t => new { t.UserId, t.CreateDate, t.Type });
+            modelBuilder.Entity<Property>().HasKey(t => new { t.Name, t.SiteSettingId, t.Type });
 
             base.OnModelCreating(modelBuilder);
         }

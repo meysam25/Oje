@@ -32,7 +32,7 @@ namespace Oje.FileService.Services
 
             UploadNewFileValidation(userPic, extensions);
 
-            
+
 
             UploadedFile newFile = new UploadedFile()
             {
@@ -54,7 +54,7 @@ namespace Oje.FileService.Services
             if (!string.IsNullOrEmpty(fileType.GetAttribute<DisplayAttribute>()?.Prompt))
                 subFolder = fileType.GetAttribute<DisplayAttribute>()?.Prompt;
 
-            string fn = newFile.Id + "_" + fi.Name.Replace(fi.Extension, "").Slugify() + ".webp";
+            string fn = newFile.Id + "_" + fi.Name.Replace(fi.Extension, "").Slugify() + (isImage(fi.Extension) ? ".webp" : fi.Extension);
             string tempFilePath = Path.Combine(GlobalConfig.GetUploadImageDirectory(subFolder));
             if (objectId != null)
                 tempFilePath = Path.Combine(tempFilePath, objectId + "");
@@ -74,7 +74,7 @@ namespace Oje.FileService.Services
                             try { isSizeValidationRequired = fileType.GetAttribute<DisplayAttribute>()?.AutoGenerateField; } catch { }
                             if (isSizeValidationRequired == true)
                             {
-                                if(bmp.Width != bmpSize.Width || bmp.Height != bmpSize.Height)
+                                if (bmp.Width != bmpSize.Width || bmp.Height != bmpSize.Height)
                                 {
                                     db.Entry(newFile).State = EntityState.Deleted;
                                     db.SaveChanges();

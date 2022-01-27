@@ -1,0 +1,73 @@
+﻿{
+  "panels": [
+    {
+      "ctrls": [
+        {
+          "id": "ppfCatId2",
+          "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "ppfCatId",
+          "type": "dropDown2",
+          "textfield": "text",
+          "valuefield": "id",
+          "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormCategoryList",
+          "label": "گروه بندی",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "fid",
+          "type": "dropDown2",
+          "textfield": "text",
+          "valuefield": "id",
+          "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormList",
+          "exteraParameterIds": [ "ppfCatId2" ],
+          "label": "فرم پیشنهاد",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "targetDate",
+          "class": "startAndEndDate",
+          "type": "persianDateTime",
+          "label": "تاریخ یادآوری",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "mobile",
+          "type": "text",
+          "label": "شماره همراه",
+          "isRequired": true,
+          "validations": [
+            {
+              "reg": "^[0-9]*$",
+              "msg": "لطفا فقط عدد وارد کنید"
+            },
+            {
+              "reg": "^([0-9]){11}$",
+              "msg": "شماره همراه باید ۱۱ عدد باشد"
+            },
+            {
+              "reg": "^(09)",
+              "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+            }
+          ]
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "summery",
+          "type": "textarea",
+          "label": "توضیحات"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "type": "button",
+          "class": "btn-block btn-primary",
+          "onClick": "postPanel(this, '/Reminder/Create', null, true)",
+          "title": "ثبت یاد آوری"
+        }
+
+      ]
+    }
+  ]
+}

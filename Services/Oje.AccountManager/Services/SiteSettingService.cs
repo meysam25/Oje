@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oje.AccountService.Services.EContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Oje.AccountService.Services
 {
@@ -42,7 +43,7 @@ namespace Oje.AccountService.Services
             if (!string.IsNullOrEmpty(host))
             {
                 if (SS == null || SS.Count == 0)
-                    SS = db.SiteSettings.ToList();
+                    SS = db.SiteSettings.Include(t => t.User).AsNoTracking().ToList();
                 return SS.Where(t => t.WebsiteUrl == host || t.PanelUrl == host).FirstOrDefault();
             }
             return null;

@@ -1,0 +1,74 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/WebMainAdmin/FooterDescription/Get",
+      "title": "توضیحات فوتر",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logo1",
+          "type": "file",
+          "label": "لوگوی 1 (80*80)",
+          "acceptEx": ".jpg,.png,.jpeg,.svg"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logoTitle1",
+          "type": "text",
+          "label": "زیرعنوان لوگوی 1"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logoDescription1",
+          "type": "text",
+          "label": "توضیحات لوگوی 1"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logo2",
+          "type": "file",
+          "label": "لوگوی 2 (80*80)",
+          "acceptEx": ".jpg,.png,.jpeg,.svg"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logoTitle2",
+          "type": "text",
+          "label": "زیرعنوان لوگوی 2"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logoDescription2",
+          "type": "text",
+          "label": "توضیحات لوگوی 2"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logo3",
+          "type": "file",
+          "label": "لوگوی 3 (80*80)",
+          "acceptEx": ".jpg,.png,.jpeg,.svg"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logoTitle3",
+          "type": "text",
+          "label": "زیرعنوان لوگوی 3"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "logoDescription3",
+          "type": "text",
+          "label": "توضیحات لوگوی 3"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/WebMainAdmin/FooterDescription/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

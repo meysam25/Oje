@@ -30,6 +30,7 @@ namespace Oje.AccountService
             services.AddScoped<IUserNotificationTemplateService, UserNotificationTemplateService>();
             services.AddScoped<IDashboardSectionService, DashboardSectionService>();
             services.AddScoped<IActionService, ActionService>();
+            services.AddScoped<IPropertyService, PropertyService>();
         }
     }
 }

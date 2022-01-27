@@ -199,10 +199,10 @@ namespace Oje.AccountService.Services
 
             if (db.Users.Any(t => t.Username == input.username && t.Id != input.id && t.SiteSettingId == input.sitesettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Username, ApiResultErrorCode.ValidationError);
-            if (!string.IsNullOrEmpty(input.mobile) && db.Users.Any(t => t.Id != input.id && t.Mobile == input.mobile && t.SiteSettingId == input.sitesettingId))
-                throw BException.GenerateNewException(BMessages.Dublicate_Mobile, ApiResultErrorCode.ValidationError);
-            if (!string.IsNullOrEmpty(input.email) && db.Users.Any(t => t.Id != input.id && t.Email == input.email && t.SiteSettingId == input.sitesettingId))
-                throw BException.GenerateNewException(BMessages.Dublicate_Email, ApiResultErrorCode.ValidationError);
+            //if (!string.IsNullOrEmpty(input.mobile) && db.Users.Any(t => t.Id != input.id && t.Mobile == input.mobile && t.SiteSettingId == input.sitesettingId))
+            //    throw BException.GenerateNewException(BMessages.Dublicate_Mobile, ApiResultErrorCode.ValidationError);
+            //if (!string.IsNullOrEmpty(input.email) && db.Users.Any(t => t.Id != input.id && t.Email == input.email && t.SiteSettingId == input.sitesettingId))
+            //    throw BException.GenerateNewException(BMessages.Dublicate_Email, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.insuranceECode) && db.Users.Any(t => t.Id != input.id && t.InsuranceECode == input.insuranceECode && t.SiteSettingId == input.sitesettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Electronic_Code, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.bankAccount) && input.bankAccount.Length > 20)
@@ -1083,6 +1083,19 @@ namespace Oje.AccountService.Services
             var foundUser = db.Users.Where(t => t.Id == user.Id).FirstOrDefault();
             foundUser.Password = password.Encrypt();
             db.SaveChanges();
+        }
+
+        public object GetUserInfoBy(long? userId)
+        {
+            return db.Users
+                .Where(t => t.Id == userId)
+                .Select(t => new 
+                {
+                    tell = t.Tell,
+                    add = t.Address,
+                    email = t.Email
+                })
+                .FirstOrDefault();
         }
     }
 }

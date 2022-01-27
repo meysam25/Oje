@@ -39,5 +39,6 @@ namespace Oje.AccountService.Interfaces
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
         void setCookieForThisUser(User newUser, LoginVM input);
         void UpdatePassword(User user, string password);
+        object GetUserInfoBy(long? userId);
     }
 }

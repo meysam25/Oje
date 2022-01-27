@@ -46,7 +46,7 @@ function getPanelTemplate(panel) {
             panel.id = uuidv4RemoveDash();
         result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel ' + (panel.class ? panel.class : '') + '" >';
         if (panel.title)
-            result += '<h4 style="padding:10px;padding-right:0px;">' + panel.title + '</h3>';
+            result += '<div style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
         if (panel.charts) {
             for (var i = 0; i < panel.charts.length; i++) {
                 result += getChartTemplate(panel.charts[i]);
@@ -346,7 +346,7 @@ function getPlaqueTemplate(ctrl) {
         result += '</div>';
         result += '</div>';
         result += '<div class="plaqueLeftPart" >';
-        result += '<img width="19" height="11" src="/Modules/Images/iran.png" />';
+        result += '<img alt="پرچم ایران" width="19" height="11" src="/Modules/Images/iran.png" />';
         result += '<div>I.R</div>';
         result += '<div>Iran</div>';
         result += '</div>';
@@ -764,12 +764,11 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input autocomplete="off" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input autocomplete="new-password" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     functionsList.push(function () {
-        setTimeout(function ()
-        {
+        setTimeout(function () {
             $('#' + this.id).attr('type', (this.type == 'persianDateTime' ? 'text' : this.type));
         }.bind(this), 300);
         inputNewLabelEventHandler(this.id);
@@ -910,9 +909,9 @@ function loadJS(src) {
 
 function getTextAreaTemplate(ctrl) {
     var result = '';
-    result += '<div class="myCtrl form-group ' + (ctrl.type == 'ck' ? 'makeLabelBGSilver' : '') +'">';
+    result += '<div class="myCtrl form-group ' + (ctrl.type == 'ck' ? 'makeLabelBGSilver' : '') + '">';
     if (ctrl.label) {
-        result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        result += '<label for="' + ctrl.id  +'" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
     var id = (ctrl.id ? ctrl.id : uuidv4RemoveDash());
     if (!ctrl.id)
@@ -965,15 +964,29 @@ function getTokennCTRLTemplate(ctrl) {
     return result;
 }
 
+function setSelect2LabelAria(curId) {
+    var sQuery = $('#' + curId).closest('.myCtrl');
+    if (sQuery.length > 0) {
+        var curLabel = sQuery.find('label').text();
+        var curLabelId = sQuery.find('label').attr('id');
+        if (curLabel) {
+            sQuery.find('[aria-labelledby]').attr('aria-label', curLabel).attr('aria-labelledby', curLabelId);
+            sQuery.find('[role="textbox"]').attr('aria-label', curLabel).attr('aria-labelledby', curLabelId);
+        }
+    }
+}
+
 function getDropdownCTRLTemplate(ctrl) {
     var result = '';
 
     if (!ctrl.id)
         ctrl.id = uuidv4RemoveDash();
 
+    var labelId = uuidv4RemoveDash();
+
     result += '<div id="myCtrlDivHolder' + ctrl.id + '" class="myCtrl ' + (ctrl.type == 'dropDown' && !ctrl.moveNameToParent ? 'myDropdown myDropdownHeight' : '') + ' form-group ' + (ctrl.class ? ctrl.class : '') + '"' + (ctrl.moveNameToParent ? ' name="' + ctrl.name + '"' : '') + '>';
     if (ctrl.label) {
-        result += '<label  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        result += '<label id="' + labelId +'" for="' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
     result += '<select ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
@@ -1015,6 +1028,7 @@ function getDropdownCTRLTemplate(ctrl) {
                 }
             };
             $('#' + this.id).select2(select2Option);
+            setSelect2LabelAria(this.id);
             if (this.exteraParameterIds) {
                 for (var i = 0; i < this.exteraParameterIds.length; i++) {
                     $('#' + this.exteraParameterIds).change(function () {
@@ -1027,8 +1041,7 @@ function getDropdownCTRLTemplate(ctrl) {
                 }
             }
         }.bind({ id: ctrl.id, dataurl: ctrl.dataurl, exteraParameterIds: ctrl.exteraParameterIds }));
-        functionsList.push(function ()
-        {
+        functionsList.push(function () {
             var querySelector = $('#' + this.id);
             $(querySelector)[0].updateStatus = function () {
                 if (!$(this).val()) {
@@ -1049,9 +1062,9 @@ function getDropdownCTRLTemplate(ctrl) {
                     });
                 }
             }
-        }.bind({ id: ctrl.id}));
+        }.bind({ id: ctrl.id }));
     }
-       
+
 
     initDropDownExteraFunctions(ctrl);
 
@@ -1610,6 +1623,7 @@ function getGridTemplate(grid) {
 
 function showModal(targetModal, curElement) {
     clearForm($('#' + targetModal));
+    $('#' + targetModal)[0].pKey = null;
     $('#' + targetModal).modal('show');
     $('#' + targetModal)[0].grid = $(curElement).closest('.myGridCTRL')[0];
     if ($(curElement).closest('.myGridCTRL').length > 0)
@@ -1705,7 +1719,7 @@ function refreshGrid(gridId, currButtonInsideModal) {
     $('#' + gridId)[0].refreshData();
 }
 
-function postPanel(curElement, url, exteraParameters) {
+function postPanel(curElement, url, exteraParameters, clearPanelAfter) {
     var foundPanel = $(curElement).closest('.myPanel');
     if (foundPanel.length > 0) {
         showLoader(foundPanel);
@@ -1717,7 +1731,11 @@ function postPanel(curElement, url, exteraParameters) {
                 postData.append(item, exParameters[item]);
             }
         }
-        postForm(url, postData, function (res) { }, null, function () { hideLoader(foundPanel) });
+        postForm(url, postData, function (res) {
+            if (this.clearPanelAfter && res.isSuccess) {
+                clearForm(this.foundPanel);
+            }
+        }.bind({ foundPanel: foundPanel, clearPanelAfter: clearPanelAfter }), null, function () { hideLoader(foundPanel) });
     }
 }
 

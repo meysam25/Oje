@@ -45,7 +45,8 @@ namespace Oje.Section.BaseData.Services
                         CreateDate = DateTime.Now,
                         CreateUserId = userId.Value,
                         IsHttps = input.isHttps.ToBooleanReturnFalse(),
-                        IsActive = input.isActive.ToBooleanReturnFalse()
+                        IsActive = input.isActive.ToBooleanReturnFalse(),
+                        SeoMainPage = input.seo
                     };
 
                     db.Entry(newItem).State = EntityState.Added;
@@ -93,6 +94,8 @@ namespace Oje.Section.BaseData.Services
             //    throw BException.GenerateNewException(BMessages.PanelUrl_And_Website_Should_Be_Deffrent, ApiResultErrorCode.ValidationError);
             if (db.SiteSettings.Any(t => t.UserId == input.userId && t.Id != input.id))
                 throw BException.GenerateNewException(BMessages.User_Is_Used_In_Another_Setting, ApiResultErrorCode.ValidationError);
+            if (!string.IsNullOrEmpty(input.seo) && input.seo.Length > 4000)
+                throw BException.GenerateNewException(BMessages.Seo_Can_Not_Be_More_Then_4000_Chars);
         }
 
         public ApiResult Delete(int? id)
@@ -119,6 +122,7 @@ namespace Oje.Section.BaseData.Services
                 userId_Title = t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")",
                 isHttps = t.IsHttps,
                 isActive = t.IsActive,
+                seo = t.SeoMainPage
             }).FirstOrDefault();
         }
 
@@ -195,6 +199,7 @@ namespace Oje.Section.BaseData.Services
                     editItem.UpdateUserId = userId.Value;
                     editItem.IsHttps = input.isHttps.ToBooleanReturnFalse();
                     editItem.IsActive = input.isActive.ToBooleanReturnFalse();
+                    editItem.SeoMainPage = input.seo;
 
                     db.SaveChanges();
 

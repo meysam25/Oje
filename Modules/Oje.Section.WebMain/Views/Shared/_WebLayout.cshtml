@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="Type=text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=6.0" />
     <meta name="robots" content="index, follow" />
     <meta name="format-detection" content="telephone=no" />
     <meta property="og:locale" content="fa_IR" />
@@ -324,7 +324,7 @@
         <footer>
             <section class="footerSection">
                 <div class="myContainer">
-                    <div class="footerWeAreMoreThenGoodSection">
+                    <div id="footerWeAreMoreThenGoodSection" class="footerWeAreMoreThenGoodSection">
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
                                 <img alt="رتبه یک سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
@@ -353,6 +353,9 @@
                             </div>
                         </div>
                     </div>
+                    <script>
+                        $('#footerWeAreMoreThenGoodSection').bindFooterDescription('/Home/GetFooterDescrption');
+                    </script>
                     <div id="floatingFooterDestination"></div>
                     <div id="floatingFooter" class="makeMyContainer100">
                         <div class="myContainer">
@@ -366,38 +369,38 @@
                                     <div>24 ساعت , 7 روز هفته</div>
                                 </div>
                                 <div class="floatingFooterSectionPhoneNumber">
-                                    <div>
+                                    <div id="footerTell1">
                                         021-91008700
                                     </div>
-                                    <div>
+                                    <div id="footerEmail">
                                         8700@emofid.com
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                  @*  <div class="footerDownloadMobileApp">
+                    @*  <div class="footerDownloadMobileApp">
                         <div class="footerDownloadMobileAppDescription">
-                            <div class="footerDownloadMobileAppDescriptionTitle">اپلیکیشن علی بابا</div>
-                            <div class="footerDownloadMobileAppDescriptionDes">
-                                <span class="footerDownloadMobileAppDescriptionDesSpan">با نصب اپلیکیشن علی بابا بلیط همه سفر ها در جیب شماست . </span><a href="#" class="readMoreButton">مشاهده همه قابلیت ها</a>
-                            </div>
+                        <div class="footerDownloadMobileAppDescriptionTitle">اپلیکیشن علی بابا</div>
+                        <div class="footerDownloadMobileAppDescriptionDes">
+                        <span class="footerDownloadMobileAppDescriptionDesSpan">با نصب اپلیکیشن علی بابا بلیط همه سفر ها در جیب شماست . </span><a href="#" class="readMoreButton">مشاهده همه قابلیت ها</a>
+                        </div>
                         </div>
                         <div class="footerDownloadMobileAppPlatforms">
-                            <a style="color: #1dab3c;" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/cafe18.png" alt="کافه بازار" />کافه بازار</a>
-                            <a style="color: #0091ea;" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/miket18.png" alt="مایکت" /> مایکت</a>
-                            <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/sibapp.svg" alt="سیب اپ" /> سیب اپ</a>
-                            <a class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/download.svg" alt="دانلود مستقیم" /> دانلود مستقیم</a>
+                        <a style="color: #1dab3c;" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/cafe18.png" alt="کافه بازار" />کافه بازار</a>
+                        <a style="color: #0091ea;" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/miket18.png" alt="مایکت" /> مایکت</a>
+                        <a style="color: #492f8c" class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/sibapp.svg" alt="سیب اپ" /> سیب اپ</a>
+                        <a class="footerDownloadAppButton" href="#"><img width="18" height="18" src="/Modules/Assets/MainPage/download.svg" alt="دانلود مستقیم" /> دانلود مستقیم</a>
                         </div>
-                    </div>*@
+                        </div>*@
                 </div>
             </section>
             <section class="footerSection">
                 <div class="myContainer">
                     <div class="footerAboutUsSections">
                         <div class="footerAboutUsSectionRight">
-                            <nav class="footerNavMenue">
-                                <div class="footerNavGroupItems">
+                            <nav id="footerNavMenu" class="footerNavMenue">
+                                @*<div class="footerNavGroupItems">
                                     <div class="footerNavGroupItemsTitle">کارگزاری اوج</div>
                                     <a href="#" class="footerNavGroupItemsItem">درباره ما</a>
                                     <a href="#" class="footerNavGroupItemsItem">تماس با ما</a>
@@ -417,37 +420,37 @@
                                     <a href="#" class="footerNavGroupItemsItem">فروش سازمانی</a>
                                     <a href="#" class="footerNavGroupItemsItem">همکاری با نمایندگان بیمه</a>
                                     <a href="#" class="footerNavGroupItemsItem">فرصد های شغلی</a>
-                                </div>
+                                </div>*@
                             </nav>
                             <div class="footerProductMenu">
-                                <div class="holderfooterProductMenuItems">
-                                    <a href="#" class="footerProductMenuItem">بلیط چارتر</a>
-                                    <a href="#" class="footerProductMenuItem">تور کیش</a>
-                                    <a href="#" class="footerProductMenuItem">تور استامبول</a>
-                                    <a href="#" class="footerProductMenuItem">اجاره ویلا جاباما</a>
-                                    <a href="#" class="footerProductMenuItem">بلیط قطار</a>
-                                    <a href="#" class="footerProductMenuItem">خرید بلیط هواپیمایی خارجی</a>
-                                    <a href="#" class="footerProductMenuItem">اطلاعات فردوگاهی</a>
-                                    <a href="#" class="footerProductMenuItem">شیوه نامه حقوقی مسافر</a>
-                                    <a href="#" class="footerProductMenuItem">رزرو هتل</a>
-                                    <a href="#" class="footerProductMenuItem">هتل مشهد</a>
-                                    <a href="#" class="footerProductMenuItem">هتل کیش</a>
-                                    <a href="#" class="footerProductMenuItem">هتل درویشی مشهد</a>
-                                    <a href="#" class="footerProductMenuItem">هتل شایگان کیش</a>
+                                <div id="holderfooterProductMenuItems" class="holderfooterProductMenuItems">
+                                    @*<a href="#" class="footerProductMenuItem">بلیط چارتر</a>
+                                        <a href="#" class="footerProductMenuItem">تور کیش</a>
+                                        <a href="#" class="footerProductMenuItem">تور استامبول</a>
+                                        <a href="#" class="footerProductMenuItem">اجاره ویلا جاباما</a>
+                                        <a href="#" class="footerProductMenuItem">بلیط قطار</a>
+                                        <a href="#" class="footerProductMenuItem">خرید بلیط هواپیمایی خارجی</a>
+                                        <a href="#" class="footerProductMenuItem">اطلاعات فردوگاهی</a>
+                                        <a href="#" class="footerProductMenuItem">شیوه نامه حقوقی مسافر</a>
+                                        <a href="#" class="footerProductMenuItem">رزرو هتل</a>
+                                        <a href="#" class="footerProductMenuItem">هتل مشهد</a>
+                                        <a href="#" class="footerProductMenuItem">هتل کیش</a>
+                                        <a href="#" class="footerProductMenuItem">هتل درویشی مشهد</a>
+                                        <a href="#" class="footerProductMenuItem">هتل شایگان کیش</a>*@
                                 </div>
                                 <span class="showMoreButton">بیشتر</span>
                             </div>
                         </div>
                         <div class="footerAboutUsSectionLeft">
                             <a class="leftFooterLink" href="@(Context.Request.IsHttps ? "https" : "http")://@(Context.Request.Host)">@(Context.Request.Host)</a>
-                            <span class="footerAboutUsTellNumber">تلفن پشتیبانی :<span>021-43900000</span>|<span>021-49275000</span></span>
-                            <span class="footerAboutUsTellNumber">دفتر فروش : قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span>
-                            <div class="footerLeftTrophyIcons">
-                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
-                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
-                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
-                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
-                                <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                            <span class="footerAboutUsTellNumber  ">تلفن پشتیبانی :<span id="footerTell2">021-43900000 | 021-49275000</span></span>
+                            <span class="footerAboutUsTellNumber ">دفتر فروش :<span id="footerAddress"> قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span></span>
+                            <div id="footerSharingIconSection" class="footerLeftTrophyIcons">
+                                @* <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                    <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                    <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                    <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>
+                                    <a href="#"><img width="80" height="80" data-src="/Modules/Assets/MainPage/etehadiyeLogo.png" alt="پیاده سازی نشده" /></a>*@
                             </div>
                         </div>
                     </div>
@@ -460,11 +463,10 @@
                             کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت کارگزاری بر خط اوج می‌باشد.
                         </div>
                         <div class="footerSharingIconSection">
-                            <a href="#"><i class="fab fa-telegram-plane"></i></a>
-                            <a href="#"><i class="fab fa-youtube"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegram.svg" /></a>
+                            <a href="#"><img width="32" height="32" alt="تویتر" data-src="/Modules/Assets/MainPage/twitter.svg" /></a>
+                            <a href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagram.svg" /></a>
+                            <a href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
                         </div>
                     </div>
                 </div>
@@ -473,22 +475,25 @@
     </div>
 
     <script>
+        bindFooterExteraLinks();
+        bindFooterExteraLinkGroups();
+        bindFooterSambole();
+        bindFooterPhoneAndAddress();
         $('img[data-src]').loadImageOnScroll();
-        
-        document.addEventListener("DOMContentLoaded", function(event) {
-             if(isLH == false) {
-                $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
-                $('.ourPrideSectionItem').initAutoNumber(300);
-                $('.animationOnScroll').initScrollAnimation();
-            }
-            else {
-                $('.animationOnScrollOpacity').removeClass('animationOnScrollOpacity');
-                $('.animationOnScrollMarginTop').removeClass('animationOnScrollMarginTop');
-                $('.animationOnScrollOpacityFlip').removeClass('animationOnScrollOpacityFlip');
-            }
-            
-            $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
-        });
+         if(isLH == false)
+         {
+            $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
+            $('.animationOnScroll').initScrollAnimation();
+         }
+        else
+        {
+            $('.animationOnScrollOpacity').removeClass('animationOnScrollOpacity');
+            $('.animationOnScrollMarginTop').removeClass('animationOnScrollMarginTop');
+            $('.animationOnScrollOpacityFlip').removeClass('animationOnScrollOpacityFlip');
+        }
+
+        $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
+       
     </script>
     @RenderSection("FooterR", required: false)
 </body>

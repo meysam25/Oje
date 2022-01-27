@@ -394,10 +394,13 @@ function getFormData(selector) {
     return postData;
 }
 
-var allCacheURLs = ['/core/basedata/get', '/getjsonconfig', '/account/dashboard/getloginuserinfo'];
+var allCacheURLs = [
+    '/core/basedata/get', '/getjsonconfig', '/account/dashboard/getloginuserinfo', '/TopMenu/GetTopMenu', '/Home/GetAboutUsMainPage', '/Home/GetReminderConfig', '/Reminder/GetMainPageDescription',
+    '/Home/GetOurPrideMainPage', '/Home/GetFooterDescrption', '/Home/GetFooterInfor', '/GetCompanyList', '/GetCreateDateList', '/Blog/Blog/GetMainBlog', '/Home/GetLoginModalConfig'
+];
 
 function isValidURL(url) {
-    var foundURl = allCacheURLs.filter(function (item) { return url.toLowerCase().indexOf(item) > -1; })
+    var foundURl = allCacheURLs.filter(function (item) { return url.toLowerCase().indexOf(item.toLowerCase()) > -1; })
     return foundURl && foundURl.length > 0
 }
 

@@ -471,8 +471,7 @@ input[type=checkbox] + label, input[type=checkbox] {
 .makeLabelBGSilver > label {
     background-color: #fafafa !important;
 }
-
-@media (max-width: 400px){
+@media (max-width: 400px) {
     .select2-selection__rendered {
         white-space:unset !important;
         height:36px !important;

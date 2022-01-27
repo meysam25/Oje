@@ -308,9 +308,8 @@ body {
     text-align: justify;
 }
 
-.footerSharingIconSection i {
-    font-size: 1.9em;
-    color: #6c7680;
+.footerSharingIconSection img {
+    display:inline-block;
     margin: 6px 15px 6px 15px;
 }
 
@@ -619,6 +618,7 @@ body {
 
 .footerWeAreMoreThenGoodSectionResonDescription {
     color: #6c7680;
+    margin:0px 10px;
 }
 
 .footerDownloadMobileAppDescriptionTitle {
@@ -861,7 +861,7 @@ body {
 }
 
 @media (max-width: 450px) {
-    .footerSharingIconSection i {
+    .footerSharingIconSection img {
         margin: 6px 6px 6px 6px;
     }
 

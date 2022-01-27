@@ -18,5 +18,9 @@ namespace Oje.Infrastructure.Models
 
         public static implicit operator string(MyHtmlString v) { return v?.innerText; }
         public static implicit operator MyHtmlString(string v) { return new MyHtmlString(v); }
+        public override string ToString()
+        {
+            return innerText;
+        }
     }
 }
