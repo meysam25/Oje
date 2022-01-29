@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.Section.Security.Models.DB
+namespace Oje.Security.Models.DB
 {
     [Table("IpLimitationWhiteLists")]
     public class IpLimitationWhiteList

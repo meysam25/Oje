@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Oje.Section.Security.Models.DB;
+using Oje.Security.Models.DB;
 
-namespace Oje.Section.Security.Services.EContext
+namespace Oje.Security.Services.EContext
 {
     public class SecurityDBContext: DbContext
     {

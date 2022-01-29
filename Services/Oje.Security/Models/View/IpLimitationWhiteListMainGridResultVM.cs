@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.Section.Security.Models.View
+namespace Oje.Security.Models.View
 {
     public class IpLimitationWhiteListMainGridResultVM
     {

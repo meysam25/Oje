@@ -651,18 +651,18 @@ namespace Oje.Infrastructure.Services
             }
         }
 
-        public static IpParts ToIp(this string input)
+        public static IpSections ToIp(this string input)
         {
             try
             {
                 if (string.IsNullOrEmpty(input))
                     return null;
                 if (input == "::1")
-                    return new IpParts() { Ip1 = 127, Ip2 = 0, Ip3 = 0, Ip4 = 1 };
+                    return new IpSections() { Ip1 = 127, Ip2 = 0, Ip3 = 0, Ip4 = 1 };
                 var allParts = input.Split('.');
                 if (allParts.Length != 4)
                     return null;
-                var result = new IpParts() { Ip1 = allParts[0].ToIntReturnZiro(), Ip2 = allParts[1].ToIntReturnZiro(), Ip3 = allParts[2].ToIntReturnZiro(), Ip4 = allParts[3].ToIntReturnZiro() };
+                var result = new IpSections() { Ip1 = allParts[0].ToByteReturnZiro(), Ip2 = allParts[1].ToByteReturnZiro(), Ip3 = allParts[2].ToByteReturnZiro(), Ip4 = allParts[3].ToByteReturnZiro() };
                 if (result.Ip1 > 255 || result.Ip2 > 255 || result.Ip3 > 255 || result.Ip4 > 255)
                     return null;
                 return result;

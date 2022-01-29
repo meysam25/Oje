@@ -5,8 +5,8 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using Oje.Section.Security.Interfaces;
-using Oje.Section.Security.Models.View;
+using Oje.Security.Interfaces;
+using Oje.Security.Models.View;
 
 namespace Oje.Section.Security.Areas.Security.Controllers
 {

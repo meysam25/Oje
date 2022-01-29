@@ -1,12 +1,10 @@
 ﻿using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
-using Oje.Section.Security.Interfaces;
-using Oje.Section.Security.Services.EContext;
-using System.Collections.Generic;
+using Oje.Security.Interfaces;
+using Oje.Security.Services.EContext;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
-namespace Oje.Section.Security.Services
+namespace Oje.Security.Services
 {
     public class RoleService : IRoleService
     {

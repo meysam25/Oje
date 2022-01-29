@@ -3,18 +3,13 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Oje.Section.Security.Interfaces;
-using Oje.Section.Security.Services.EContext;
-using Oje.Section.Security.Models.View;
-using Oje.Section.Security.Models.DB;
+using Oje.Security.Services.EContext;
+using Oje.Security.Interfaces;
+using Oje.Security.Models.View;
+using Oje.Security.Models.DB;
 
-namespace Oje.Section.Security.Services
+namespace Oje.Security.Services
 {
     public class FileAccessRoleService : IFileAccessRoleService
     {
