@@ -568,6 +568,18 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لینک نمی تواند بیشتر از 200 کارکتر باشد")]
         Link_Can_Not_Be_More_Then_200_Chars = 278,
         [Display(Name = "سه او نمی تواند بیشتر از 4000 کارتر باشد")]
-        Seo_Can_Not_Be_More_Then_4000_Chars = 279
+        Seo_Can_Not_Be_More_Then_4000_Chars = 279,
+        [Display(Name = "لطفا حداکثر تعداد نرم افزاری را وارد کنید")]
+        Please_Enter_MaxSoftware_Count = 280,
+        [Display (Name = "لطفا حداکثر تعداد موفقیت نرم افزاری را وارد کنید")]
+        Please_Enter_MaxSoftware_Success_Count = 281,
+        [Display(Name = "لطفا حداکثر تعداد فایر وال را وارد کنید")]
+        Please_Enter_MaxFirewall_Count = 282,
+        [Display(Name = "لطفا حداکثر تعداد موفقیت فایروال را وارد کنید")]
+        Please_Enter_MaxFirewall_Success_Count = 283,
+        [Display(Name = "خطا در انجام عملیات.")]
+        Invalid_Ip_Address = 284,
+        [Display(Name = "خطا در انجام عملیات..")]
+        ReferrUrl_Is_Invalid = 285,
     }
 }

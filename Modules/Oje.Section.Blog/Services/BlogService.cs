@@ -9,6 +9,7 @@ using Oje.Section.Blog.Interfaces;
 using Oje.Section.Blog.Models.DB;
 using Oje.Section.Blog.Models.View;
 using Oje.Section.Blog.Services.EContext;
+using Oje.Security.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,18 +24,21 @@ namespace Oje.Section.Blog.Services
         readonly IBlogTagService BlogTagService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IBlogReviewService BlogReviewService = null;
+        readonly IBlockAutoIpService BlockAutoIpService = null;
         public BlogService
             (
                 BlogDBContext db,
                 IBlogTagService BlogTagService,
                 IUploadedFileService UploadedFileService,
-                IBlogReviewService BlogReviewService
+                IBlogReviewService BlogReviewService,
+                IBlockAutoIpService BlockAutoIpService
             )
         {
             this.db = db;
             this.BlogTagService = BlogTagService;
             this.UploadedFileService = UploadedFileService;
             this.BlogReviewService = BlogReviewService;
+            this.BlockAutoIpService = BlockAutoIpService;
         }
 
         public ApiResult Create(BlogCreateUpdateVM input, int? siteSettingId, long loginUserId)
@@ -525,6 +529,12 @@ namespace Oje.Section.Blog.Services
                 .ToList();
         }
 
+        void validateBlog(long id, int? siteSettingId)
+        {
+            if (!db.Blogs.Any(t => t.IsActive == true && t.PublisheDate <= DateTime.Now && t.Id == id && t.SiteSettingId == siteSettingId))
+                throw BException.GenerateNewException(BMessages.Not_Found);
+        }
+
         public object BlogActions(long id, BlogWebAction input, int? siteSettingId, IpSections ipSections)
         {
             if (input == null)
@@ -533,16 +543,23 @@ namespace Oje.Section.Blog.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (ipSections == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
-            if (!db.Blogs.Any(t => t.IsActive == true && t.PublisheDate <= DateTime.Now && t.Id == id && t.SiteSettingId == siteSettingId))
-                throw BException.GenerateNewException(BMessages.Not_Found);
 
             if (input.action == "likeOrDisLike")
             {
+                BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LikeBlog, BlockAutoIpAction.BeforeExecute, ipSections, siteSettingId);
+                validateBlog(id, siteSettingId);
                 SetViewOrLike(id, ipSections, BlogLastLikeAndViewType.Like);
+                BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LikeBlog, BlockAutoIpAction.AfterExecute, ipSections, siteSettingId);
                 return getLikeCount(id);
             }
             else if (input.action == "newReview")
-                return BlogReviewService.Create(input, siteSettingId, ipSections, id);
+            {
+                BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.BlogReview, BlockAutoIpAction.BeforeExecute, ipSections, siteSettingId);
+                validateBlog(id, siteSettingId);
+                var tempResult = BlogReviewService.Create(input, siteSettingId, ipSections, id);
+                BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.BlogReview, BlockAutoIpAction.AfterExecute, ipSections, siteSettingId);
+                return tempResult;
+            }
             else if (input.action == "commentList")
                 return BlogReviewService.GetConfirmList(siteSettingId, ipSections, id);
             else

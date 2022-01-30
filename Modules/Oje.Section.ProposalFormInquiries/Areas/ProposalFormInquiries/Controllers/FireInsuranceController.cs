@@ -7,6 +7,7 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
+using Oje.Security.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly IFireInsuranceRateService FireInsuranceRateService = null;
         readonly IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService = null;
         readonly IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService = null;
+        readonly IBlockAutoIpService BlockAutoIpService = null;
 
         public FireInsuranceController(
                 IFireInsuranceBuildingUnitValueService FireInsuranceBuildingUnitValueService,
@@ -46,7 +48,8 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
                 IInsuranceContractDiscountService InsuranceContractDiscountService,
                 IFireInsuranceRateService FireInsuranceRateService,
                 IFireInsuranceCoverageTitleService FireInsuranceCoverageTitleService,
-                IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService
+                IFireInsuranceTypeOfActivityService FireInsuranceTypeOfActivityService,
+                IBlockAutoIpService BlockAutoIpService
             )
         {
             this.FireInsuranceBuildingUnitValueService = FireInsuranceBuildingUnitValueService;
@@ -61,6 +64,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.FireInsuranceRateService = FireInsuranceRateService;
             this.FireInsuranceCoverageTitleService = FireInsuranceCoverageTitleService;
             this.FireInsuranceTypeOfActivityService = FireInsuranceTypeOfActivityService;
+            this.BlockAutoIpService = BlockAutoIpService;
         }
 
         [AreaConfig(Title = "استعلام آتش سوزی", Icon = "fa-fire", IsMainMenuItem = true)]
@@ -85,7 +89,11 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] FireInsuranceInquiryVM input)
         {
-            return Json(FireInsuranceRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry()));
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.FireInsuranceInquiry, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = FireInsuranceRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry());
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.FireInsuranceInquiry, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+
+            return Json(tempResult);
         }
 
         [AreaConfig(Title = "مشاهده لیست ارزش هر متر مربع", Icon = "fa-list-alt")]

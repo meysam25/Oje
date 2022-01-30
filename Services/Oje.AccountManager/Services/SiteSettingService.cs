@@ -19,6 +19,7 @@ namespace Oje.AccountService.Services
         readonly AccountDBContext db = null;
         readonly IHttpContextAccessor httpContextAccessor = null;
         static List<SiteSetting> SS { get; set; }
+        static object lockObject = new object();
         public SiteSettingService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor
@@ -39,19 +40,25 @@ namespace Oje.AccountService.Services
 
         public SiteSetting GetSiteSetting()
         {
+            if (lockObject == null)
+                lockObject = new object();
+            if (SS == null || SS.Count == 0)
+            {
+                lock (lockObject)
+                {
+                    if (SS == null || SS.Count == 0)
+                        SS = db.SiteSettings.Include(t => t.User).AsNoTracking().ToList();
+                }
+            }
             string host = httpContextAccessor.HttpContext?.Request?.Host.Host;
             if (!string.IsNullOrEmpty(host))
-            {
-                if (SS == null || SS.Count == 0)
-                    SS = db.SiteSettings.Include(t => t.User).AsNoTracking().ToList();
                 return SS.Where(t => t.WebsiteUrl == host || t.PanelUrl == host).FirstOrDefault();
-            }
             return null;
         }
 
         public void UpdateSiteSettings()
         {
-            SS = db.SiteSettings.ToList();
+            SS = db.SiteSettings.Include(t => t.User).AsNoTracking().ToList();
         }
     }
 }

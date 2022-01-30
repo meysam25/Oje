@@ -20,6 +20,13 @@ namespace Oje.Security
             services.AddScoped<IIpLimitationBlackListService, IpLimitationBlackListService>();
             services.AddScoped<IFileAccessRoleService, FileAccessRoleService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IBlockClientConfigService, BlockClientConfigService>();
+            services.AddScoped<IBlockAutoIpService, BlockAutoIpService>();
+            services.AddScoped<IBlockFirewallIpService, BlockFirewallIpService>();
+
+            cacheServices = services;
         }
+
+        public static IServiceCollection cacheServices { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.View;
+using Oje.Security.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
         readonly ICarTypeService CarTypeService = null;
         readonly IVehicleSpecsService VehicleSpecsService = null;
+        readonly IBlockAutoIpService BlockAutoIpService = null;
 
         public CarThirdPartyInquiryController(
             ICompanyService CompanyService,
@@ -55,9 +57,11 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             IInquiryDurationService InquiryDurationService,
             IInsuranceContractDiscountService InsuranceContractDiscountService,
             ICarTypeService CarTypeService,
-            IVehicleSpecsService VehicleSpecsService
+            IVehicleSpecsService VehicleSpecsService,
+            IBlockAutoIpService BlockAutoIpService
             )
         {
+            this.BlockAutoIpService = BlockAutoIpService;
             this.CompanyService = CompanyService;
             this.VehicleSystemService = VehicleSystemService;
             this.VehicleTypeService = VehicleTypeService;
@@ -99,7 +103,10 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] CarThirdPartyInquiryVM input)
         {
-            return Json(ThirdPartyRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry()));
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CarThirdInquiry, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = ThirdPartyRateService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry());
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CarThirdInquiry, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]

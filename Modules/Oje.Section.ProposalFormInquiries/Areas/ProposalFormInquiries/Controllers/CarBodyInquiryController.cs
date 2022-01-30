@@ -7,6 +7,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.View;
+using Oje.Security.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly ICarTypeService CarTypeService = null;
         readonly IVehicleSpecsService VehicleSpecsService = null;
         readonly IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService = null;
+        readonly IBlockAutoIpService BlockAutoIpService = null;
         public CarBodyInquiryController(
                 ICompanyService CompanyService,
                 IInquiryDurationService InquiryDurationService,
@@ -48,7 +50,8 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
                 INoDamageDiscountService NoDamageDiscountService,
                 ICarTypeService CarTypeService,
                 IVehicleSpecsService VehicleSpecsService,
-                IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService
+                IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService,
+                IBlockAutoIpService BlockAutoIpService
             )
         {
             this.CompanyService = CompanyService;
@@ -65,6 +68,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.CarTypeService = CarTypeService;
             this.VehicleSpecsService = VehicleSpecsService;
             this.ThirdPartyBodyNoDamageDiscountHistoryService = ThirdPartyBodyNoDamageDiscountHistoryService;
+            this.BlockAutoIpService = BlockAutoIpService;
         }
 
         [AreaConfig(Title = "استعلام بدنه", Icon = "fa-car-crash", IsMainMenuItem = true)]
@@ -89,7 +93,10 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult Inquiry([FromForm] CarBodyInquiryVM input)
         {
-            return Json(CarSpecificationAmountService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry()));
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CarBodyInquiry, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = CarSpecificationAmountService.Inquiry(SiteSettingService.GetSiteSetting()?.Id, input, Request.GetTargetAreaByRefferForInquiry());
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CarBodyInquiry, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]

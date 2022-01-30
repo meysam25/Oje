@@ -611,6 +611,20 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static string GetRefererUrl(this HttpRequest input)
+        {
+            try
+            {
+                var  currPath = new Uri(input.Headers["Referer"][0]);
+
+                return currPath.Host + ":" + currPath.Port;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static string GetTargetAreaByRefferForPPFDetailes(this HttpRequest input)
         {
             try

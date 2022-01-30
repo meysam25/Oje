@@ -33,7 +33,7 @@ namespace Oje.Infrastructure.Filters
                 var result = new ViewResult { ViewName = "CustomError" };
                 result.ViewData = new ViewDataDictionary(_modelMetadataProvider, context.ModelState);
                 if (be == null)
-                    result.ViewData.Add("Exception", context.Exception.Message); //"Unexpected Error");
+                    result.ViewData.Add("Exception", "خطا در انجام عملیات");
                 else
                     result.ViewData.Add("Exception", be.Message);
                 context.Result = result;
@@ -41,10 +41,11 @@ namespace Oje.Infrastructure.Filters
             else
             {
                 if (be == null)
-                    context.Result = new JsonResult(new ApiResult() { errorCode = ApiResultErrorCode.UnknownError, message = context.Exception.Message });
+                    context.Result = new JsonResult(new ApiResult() { errorCode = ApiResultErrorCode.UnknownError, message = "خطا در انجام عملیات" });
                 else
                     context.Result = new JsonResult(new ApiResult() { errorCode = be.Code, message = context.Exception.Message, messageCode = be.BMessages });
             }
+            context.ExceptionHandled = true;
 
         }
     }

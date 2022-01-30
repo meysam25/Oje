@@ -1,23 +1,20 @@
-using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Interfac;
-using Oje.Infrastructure.Services;
 using Oje.Infrastructure.Services.ModelBinder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Oje.AccountService.Middlewares;
 
 namespace Oje.Web
 {
@@ -44,6 +41,7 @@ namespace Oje.Web
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(CustomExceptionFilter));
+                options.Filters.Add(typeof(PreventPostRequestIfNoReferrerUrlFilter));
                 options.ModelBinderProviders.Insert(0, new StringModelBinderProvider());
                 options.ModelBinderProviders.Insert(0, new MyHtmlStringBinderProvider());
             }).AddJsonOptions(option =>
@@ -80,6 +78,7 @@ namespace Oje.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.HttpsStuff();
             app.UseResponseCompression();
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -141,18 +140,6 @@ namespace Oje.Web
                     }
                 }
             });
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                //app.UseHsts();
-            }
-            //app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
 

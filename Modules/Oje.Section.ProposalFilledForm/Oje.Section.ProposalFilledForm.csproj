@@ -3,5 +3,6 @@
     <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
     <ProjectReference Include="..\..\Services\Oje.JoinServices\Oje.JoinServices.csproj" />
     <ProjectReference Include="..\..\Services\Oje.ProposalFormManager\Oje.ProposalFormService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.Security\Oje.Security.csproj" />
   </ItemGroup>
 </Project>

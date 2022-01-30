@@ -7,6 +7,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.Section.ProposalFilledForm.Models.View;
+using Oje.Security.Interfaces;
 
 namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
@@ -23,6 +24,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         readonly IPaymentMethodService PaymentMethodService = null;
         readonly IBankService BankService = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
+        readonly IBlockAutoIpService BlockAutoIpService = null;
         public ProposalController(
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
                 IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService,
@@ -31,7 +33,8 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
                 IGlobalInqueryService GlobalInqueryService,
                 IPaymentMethodService PaymentMethodService,
                 IBankService BankService,
-                AccountService.Interfaces.IUserService UserService
+                AccountService.Interfaces.IUserService UserService,
+                IBlockAutoIpService BlockAutoIpService
             )
         {
             this.SiteSettingService = SiteSettingService;
@@ -42,6 +45,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.PaymentMethodService = PaymentMethodService;
             this.BankService = BankService;
             this.UserService = UserService;
+            this.BlockAutoIpService = BlockAutoIpService;
         }
 
         [AreaConfig(Title = "ثبت فرم", Icon = "fa-file-powerpoint")]
@@ -67,7 +71,10 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [CustomeAuthorizeFilter]
         public IActionResult Create()
         {
-            return Json(ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUser()?.UserId, Request.GetTargetAreaByRefferForPPFDetailes()));
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CreateProposalFilledForm, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUser()?.UserId, Request.GetTargetAreaByRefferForPPFDetailes());
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CreateProposalFilledForm, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
         }
 
         [AreaConfig(Title = "لیست مدارم مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]

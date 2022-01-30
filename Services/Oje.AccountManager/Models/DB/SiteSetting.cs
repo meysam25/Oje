@@ -30,6 +30,7 @@ namespace Oje.AccountService.Models.DB
         public long? UserId { get; set; }
         [ForeignKey("UserId"), InverseProperty("SiteSettings")]
         public User User { get; set; }
+        public bool IsHttps { get; set; }
         [MaxLength(4000)]
         public string SeoMainPage { get; set; }
 
