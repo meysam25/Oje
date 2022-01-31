@@ -26,8 +26,9 @@ namespace Oje.Section.Core.Areas.Core.Controllers
         }
 
         [Route("{*url}", Order = int.MaxValue - 50)]
-        public IActionResult CatchAll()
+        public IActionResult CatchAll(string url)
         {
+
             BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.PageNotFound, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             throw BException.GenerateNewException(BMessages.Not_Found, Infrastructure.Enums.ApiResultErrorCode.NotFound);
         }

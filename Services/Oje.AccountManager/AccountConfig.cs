@@ -10,8 +10,11 @@ namespace Oje.AccountService
 {
     public static class AccountConfig
     {
+        public static IServiceCollection cacheService { get; set; }
         public static void Config(IServiceCollection services)
         {
+            cacheService = services;
+
             FileServiceConfig.Config(services);
 
             services.AddDbContextPool<AccountDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));

@@ -44,5 +44,11 @@ namespace Oje.Section.BaseData.Models.DB
         [MaxLength(4000)]
         public string SeoMainPage { get; set; }
         public bool IsActive { get; set; }
+        [MaxLength(200)]
+        public string Image96 { get; set; }
+        [MaxLength(200)]
+        public string Image192 { get; set; }
+        [MaxLength(200)]
+        public string Image512 { get; set; }
     }
 }

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
@@ -33,6 +30,12 @@ namespace Oje.AccountService.Models.DB
         public bool IsHttps { get; set; }
         [MaxLength(4000)]
         public string SeoMainPage { get; set; }
+        [MaxLength(200)]
+        public string Image96 { get; set; }
+        [MaxLength(200)]
+        public string Image192 { get; set; }
+        [MaxLength(200)]
+        public string Image512 { get; set; }
 
         [InverseProperty("SiteSetting")]
         public List<Role> Roles { get; set; }

@@ -7,5 +7,7 @@ namespace Oje.AccountService.Interfaces
         object GetightList();
         SiteSetting GetSiteSetting();
         void UpdateSiteSettings();
+        object GetManifest();
+        string GetMainService();
     }
 }

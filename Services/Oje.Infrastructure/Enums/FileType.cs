@@ -48,6 +48,12 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تصویر دیزاین چپ و راست", Prompt = "PageLeftRightDesignItem", Description = "560*373")]
         PageLeftRightDesignItem = 19,
         [Display(Name = "خصوصیات", Prompt = "Property")]
-        Property = 20
+        Property = 20,
+        [Display(Name = "لوگوی سایت 96", Prompt = "MainLogo", Description = "96*96", AutoGenerateFilter = true)]
+        MainLogo96 = 21,
+        [Display(Name = "لوگوی سایت 192", Prompt = "MainLogo", Description = "192*192", AutoGenerateFilter = true)]
+        MainLogo192 = 22,
+        [Display(Name = "لوگوی سایت 512", Prompt = "MainLogo", Description = "512*512", AutoGenerateFilter = true)]
+        MainLogo512 = 23,
     }
 }

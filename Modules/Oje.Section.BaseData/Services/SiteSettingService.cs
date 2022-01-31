@@ -11,27 +11,32 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.BaseData.Services.EContext;
+using Oje.FileService.Interfaces;
+using Oje.Infrastructure;
 
 namespace Oje.Section.BaseData.Services
 {
     public class SiteSettingService : ISiteSettingService
     {
         readonly BaseDataDBContext db = null;
-        readonly Oje.AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService = null;
+        readonly AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService = null;
+        readonly IUploadedFileService UploadedFileService = null;
         public SiteSettingService(
                 BaseDataDBContext db,
-                Oje.AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService
+                Oje.AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService,
+                IUploadedFileService UploadedFileService
             )
         {
             this.db = db;
             this.GlobalSiteSettingService = GlobalSiteSettingService;
+            this.UploadedFileService = UploadedFileService;
         }
 
         public ApiResult Create(CreateUpdateSiteSettingVM input, long? userId)
         {
             createUpdateValidation(input, userId);
 
-           
+
             using (var tr = db.Database.BeginTransaction())
             {
                 try
@@ -51,6 +56,13 @@ namespace Oje.Section.BaseData.Services
 
                     db.Entry(newItem).State = EntityState.Added;
                     db.SaveChanges();
+
+                    if(input.minPic != null && input.minPic.Length > 0)
+                    {
+                        newItem.Image96 = UploadedFileService.UploadNewFile(FileType.MainLogo96, input.minPic, userId, null, newItem.Id, ".jpg,.png,.jpeg", false, null);
+                        newItem.Image192 = UploadedFileService.UploadNewFile(FileType.MainLogo192, input.minPic, userId, null, newItem.Id, ".jpg,.png,.jpeg", false, null);
+                        newItem.Image512 = UploadedFileService.UploadNewFile(FileType.MainLogo512, input.minPic, userId, null, newItem.Id, ".jpg,.png,.jpeg", false, null);
+                    }
 
                     var foundTargetUser = db.Users.Where(t => t.Id == input.userId).FirstOrDefault();
                     if (foundTargetUser == null)
@@ -96,6 +108,8 @@ namespace Oje.Section.BaseData.Services
                 throw BException.GenerateNewException(BMessages.User_Is_Used_In_Another_Setting, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.seo) && input.seo.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Seo_Can_Not_Be_More_Then_4000_Chars);
+            if (input.id.ToIntReturnZiro() <= 0 && (input.minPic == null || input.minPic.Length == 0))
+                throw BException.GenerateNewException(BMessages.Please_Select_Main_Image);
         }
 
         public ApiResult Delete(int? id)
@@ -112,8 +126,8 @@ namespace Oje.Section.BaseData.Services
 
         public object GetById(int? id)
         {
-            return db.SiteSettings.Where(t => t.Id == id).Select(t => new 
-            { 
+            return db.SiteSettings.Where(t => t.Id == id).Select(t => new
+            {
                 id = t.Id,
                 title = t.Title,
                 websiteUrl = t.WebsiteUrl,
@@ -122,7 +136,8 @@ namespace Oje.Section.BaseData.Services
                 userId_Title = t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")",
                 isHttps = t.IsHttps,
                 isActive = t.IsActive,
-                seo = t.SeoMainPage
+                seo = t.SeoMainPage,
+                minPic_address = GlobalConfig.FileAccessHandlerUrl + t.Image512
             }).FirstOrDefault();
         }
 
@@ -149,12 +164,12 @@ namespace Oje.Section.BaseData.Services
 
             int row = searchInput.skip;
 
-            return new GridResultVM<SiteSettingGridList>() 
+            return new GridResultVM<SiteSettingGridList>()
             {
                 total = qureResult.Count(),
                 data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
-                .Select(t => new 
-                { 
+                .Select(t => new
+                {
                     id = t.Id,
                     website = t.WebsiteUrl,
                     title = t.Title,
@@ -164,8 +179,8 @@ namespace Oje.Section.BaseData.Services
                     isActive = t.IsActive
                 })
                 .ToList()
-                .Select(t => new SiteSettingGridList 
-                { 
+                .Select(t => new SiteSettingGridList
+                {
                     row = ++row,
                     id = t.id,
                     website = t.website,
@@ -173,7 +188,7 @@ namespace Oje.Section.BaseData.Services
                     userfirstname = t.userfirstname,
                     userlastname = t.userlastname,
                     isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
-                    isHttps = t.isHttps == true ? "بلی" :"خیر"
+                    isHttps = t.isHttps == true ? "بلی" : "خیر"
                 })
                 .ToList()
             };
@@ -202,6 +217,13 @@ namespace Oje.Section.BaseData.Services
                     editItem.SeoMainPage = input.seo;
 
                     db.SaveChanges();
+
+                    if (input.minPic != null && input.minPic.Length > 0)
+                    {
+                        editItem.Image96 = UploadedFileService.UploadNewFile(FileType.MainLogo96, input.minPic, userId, null, editItem.Id, ".jpg,.png,.jpeg", false, null);
+                        editItem.Image192 = UploadedFileService.UploadNewFile(FileType.MainLogo192, input.minPic, userId, null, editItem.Id, ".jpg,.png,.jpeg", false, null);
+                        editItem.Image512 = UploadedFileService.UploadNewFile(FileType.MainLogo512, input.minPic, userId, null, editItem.Id, ".jpg,.png,.jpeg", false, null);
+                    }
 
                     var foundTargetUser = db.Users.Where(t => t.Id == input.userId).FirstOrDefault();
                     if (foundTargetUser == null)

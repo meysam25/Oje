@@ -397,7 +397,7 @@ function getFormData(selector) {
 var allCacheURLs = [
     '/core/basedata/get', '/getjsonconfig', '/account/dashboard/getloginuserinfo', '/TopMenu/GetTopMenu', '/Home/GetAboutUsMainPage', '/Home/GetReminderConfig', '/Reminder/GetMainPageDescription',
     '/Home/GetOurPrideMainPage', '/Home/GetFooterDescrption', '/Home/GetFooterInfor', '/GetCompanyList', '/GetCreateDateList', '/Blog/Blog/GetMainBlog', '/Home/GetLoginModalConfig',
-    '/Home/GetFooterExteraLink', '/Home/GetFooterExteraLinkGroup', '/Home/GetFooterSambole'
+    '/Home/GetFooterExteraLink', '/Home/GetFooterExteraLinkGroup', '/Home/GetFooterSambole', '/Question/YourQuestion/GetList'
 ];
 
 function isValidURL(url) {

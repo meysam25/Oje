@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Oje.Section.BaseData.Models.View
         public long? userId { get; set; }
         public bool? isHttps { get; set; }
         public bool? isActive { get; set; }
+        public IFormFile minPic { get; set; }
         public string seo { get; set; }
     }
 }

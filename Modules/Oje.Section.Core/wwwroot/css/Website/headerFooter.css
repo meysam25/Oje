@@ -19,6 +19,7 @@
 html {
     direction: rtl;
     height: 100%;
+    overflow-x:hidden;
 }
 
 body {
@@ -885,6 +886,10 @@ body {
     .myContainer > img {
         width: 70px;
         height: 55px;
+    }
+    .mainHeaderLogo {
+        width:55px;
+        height:55px;
     }
 
     .footerDownloadMobileApp {
