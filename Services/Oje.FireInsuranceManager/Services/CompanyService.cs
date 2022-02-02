@@ -1,5 +1,6 @@
 ﻿using Oje.FireInsuranceService.Interfaces;
 using Oje.FireInsuranceService.Services.EContext;
+using Oje.Infrastructure;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using System;
@@ -20,9 +21,9 @@ namespace Oje.FireInsuranceService.Services
 
         public object GetLightList()
         {
-            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+            List<object> result = new();
 
-            result.AddRange(db.Companies.Select(t => new { id = t.Id, title = t.Title }).ToList());
+            result.AddRange(db.Companies.Select(t => new { id = t.Id, title = t.Title, src = GlobalConfig.FileAccessHandlerUrl + t.Pic32 }).ToList());
 
             return result;
         }

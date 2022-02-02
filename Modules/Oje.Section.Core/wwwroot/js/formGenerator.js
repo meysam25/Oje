@@ -3,10 +3,12 @@ var functionsList = [];
 
 function generateForm(res, targetId) {
     var result = '';
-    if (res && res.panels) {
+    if (res && res.panels && res.panels.length > 0) {
+        result += '<div class="row">';
         for (var i = 0; i < res.panels.length; i++) {
             result += getPanelTemplate(res.panels[i]);
         }
+        result += '</div>';
     }
     if (targetId) {
         if (typeof targetId === 'string' || targetId instanceof String) {
@@ -44,7 +46,7 @@ function getPanelTemplate(panel) {
     if (panel) {
         if (!panel.id)
             panel.id = uuidv4RemoveDash();
-        result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel ' + (panel.class ? panel.class : '') + '" >';
+        result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel ' + (panel.class ? panel.class : 'col-md-12 col-sm-12 col-xs-12 col-lg-12 col-xl-12') + '" >';
         if (panel.title)
             result += '<div style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
         if (panel.charts) {
@@ -88,6 +90,19 @@ function getPanelTemplate(panel) {
             }
             result += '</div>';
         }
+
+        if (panel.ePanels && panel.ePanels.length > 0) {
+            result += '<div class="row">';
+            result += '<div class="col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12 ">';
+            result += '<div class="expandablePanelGroup">'
+            for (var i = 0; i < panel.ePanels.length; i++) {
+                result += getEPanelsTemplate(panel.ePanels[i]);
+            }
+            result += '</div>';
+            result += '</div>';
+            result += '</div>';
+        }
+
         functionsList.push(function () {
             bindPanelByUrl($('#' + this.panelId));
         }.bind({ panelId: panel.id }));
@@ -95,6 +110,34 @@ function getPanelTemplate(panel) {
     }
     return result;
 }
+
+function getEPanelsTemplate(ePanel) {
+    var result = '';
+    if (ePanel) {
+        if (!ePanel.id)
+            ePanel.id = uuidv4RemoveDash();
+
+        result += '<div id="' + ePanel.id + '" class="expandablePanel">';
+        result += '<div class="expandablePanelHeader"><div class="expandablePanelHeaderTitle">' + ePanel.title + '</div><span class="expandablePanelHeaderArrow"></span></div>';
+        result += '<div class="expandablePanelBody">';
+
+        if (ePanel.ctrls && ePanel.ctrls.length > 0) {
+            result += '<div class="row">';
+            for (var i = 0; i < ePanel.ctrls.length; i++) {
+                result += getInputTemplate(ePanel.ctrls[i]);
+            }
+            result += '</div>';
+        }
+
+        result += '</div>';
+        result += '</div>';
+    }
+
+    functionsList.push(function () { $('#' + this.ePanel.id).initExpanablePanel(); }.bind({ ePanel: ePanel }));
+
+    return result;
+}
+
 
 var isTryLoadingChart = false;
 
@@ -219,10 +262,12 @@ function getModualTemplateCTRL(modual) {
             result += getInputTemplate(modual.ctrls[i]);
         }
         result += '</div>';
-    } else if (modual && modual.panels) {
+    } else if (modual && modual.panels && modual.panels.length > 0) {
+        result += '<div class="row">';
         for (var i = 0; i < modual.panels.length; i++) {
             result += getPanelTemplate(modual.panels[i]);
         }
+        result += '</div>';
     }
 
     return result;
@@ -230,6 +275,8 @@ function getModualTemplateCTRL(modual) {
 function getInputTemplate(ctrl) {
     var result = '';
     if (ctrl) {
+        if (ctrl.onChange)
+            ctrl.onChange = ctrl.onChange.replace(/&#39;/g, '\'');
         if (!ctrl.id)
             ctrl.id = uuidv4RemoveDash();
         if (ctrl.type != 'hidden')
@@ -296,12 +343,114 @@ function getInputTemplate(ctrl) {
             case 'countDownButton':
                 result += getCountDownButtonTemplate(ctrl);
                 break;
+            case 'multiSelectLine':
+                result += getMultiSelectLineTemplate(ctrl);
+                break;
+            case 'multiSelectImg':
+                result += getMultiSelectImgTemplate(ctrl);
+                break;
             case 'empty':
             default:
                 break;
         }
         if (ctrl.type != 'hidden')
             result += '</div>';
+    }
+
+    return result;
+}
+
+function getMultiSelectImgTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl) {
+        result += '<div data-name="' + ctrl.name + '" id="' + ctrl.id + '" class="multiSelectImage">';
+        result += '<div class="multiSelectImageTitle">' + ctrl.label + '</div>';
+        result += '<div class="multiSelectImageBody" ></div>';
+        result += '</div>';
+
+        if (ctrl.dataurl) {
+            functionsList.push(function () {
+                postForm(this.ctrl.dataurl, new FormData(), function (res) {
+                    var resTemplate = '';
+
+                    if (res && res.length > 0) {
+                        for (var i = 0; i < res.length; i++) {
+                            resTemplate += getMultiSelectImgItemTemplate(res[i], this.ctrl.textfield, this.ctrl.valuefield, this.ctrl.imgfield, this.ctrl.onChange);
+                        }
+                    }
+
+                    $('#' + this.ctrl.id).find('.multiSelectImageBody').html(resTemplate);
+                }.bind({ ctrl: this.ctrl }))
+            }.bind({ ctrl: ctrl }));
+        }
+    }
+
+    return result;
+}
+
+function getMultiSelectImgItemTemplate(objItem, textField, valueField, imgField, onChange) {
+    var result = '';
+
+    if (objItem && textField && valueField && imgField && objItem[textField] && objItem[valueField] && objItem[imgField]) {
+        result += '<div onClick="multiSelectImgClick(this)" data-onChange="' + (onChange ? onChange : '') + '" class="multiSelectImageBodyItem" data-id="' + objItem[valueField] + '" ><img alt="' + objItem[textField] +'" class="multiSelectImageBodyItemImg" width="32" height="32" src="' + objItem[imgField] + '" /><span class="multiSelectImageBodyItemTitle" >' + objItem[textField] + '</span></div>';
+    }
+
+    return result;
+}
+
+function multiSelectImgClick(curElement) {
+    if (curElement) {
+        var sQuery = $(curElement);
+        var onChange = sQuery.attr('data-onChange');
+        var curId = sQuery.attr('data-id');
+        var curName = sQuery.closest('.multiSelectImage').attr('data-name');
+        if (sQuery.hasClass('multiSelectImageBodyItemActive')) {
+            sQuery.removeClass('multiSelectImageBodyItemActive');
+            sQuery.find('input[type=hidden]').remove();
+        } else {
+            sQuery.addClass('multiSelectImageBodyItemActive');
+            sQuery.append('<input type="hidden" value="' + curId + '" name="' + curName +'" />');
+        }
+        if (onChange)
+            eval(onChange);
+    }
+}
+
+function getMultiSelectLineTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl && ctrl.name && ctrl.dataurl) {
+        result += '<div data-name="' + ctrl.name + '" id="' + ctrl.id + '" class="multiSelectLine">';
+        result += '<div class="multiSelectLineTitle">' + ctrl.label + '</div>';
+        result += '<div class="multiSelectLineBody"></div>'
+        result += '</div>';
+
+        functionsList.push(function () {
+            postForm(this.ctrl.dataurl, new FormData(), function (res) {
+                var resTemplate = '';
+                if (res && res.length > 0) {
+                    for (var i = 0; i < res.length; i++) {
+                        resTemplate += getMultiSelectLineItemTemplate(res[i], this.ctrl.textfield, this.ctrl.valuefield);
+                    }
+                }
+                var sQ = $('#' + this.ctrl.id);
+                sQ.find('.multiSelectLineBody').html(resTemplate);
+                sQ.initMultiSelectLine(this.ctrl.onChange);
+            }.bind({ ctrl: this.ctrl }));
+        }.bind({ ctrl: ctrl }));
+    }
+
+
+
+    return result;
+}
+
+function getMultiSelectLineItemTemplate(itemObj, titleSchema, valueSchema) {
+    var result = '';
+
+    if (itemObj && titleSchema && valueSchema && itemObj[titleSchema] && itemObj[valueSchema]) {
+        result += '<div data-id="' + itemObj[valueSchema] + '" class="multiSelectLineBodyItem"><div class="multiSelectLineBodyItemTitle">' + itemObj[titleSchema] + '</div><div class="multiSelectLineBodyItemSelectIndicator"></div></div>';
     }
 
     return result;
@@ -554,7 +703,7 @@ function getDynamicCtrlsTemplate(ctrl) {
     var result = '';
 
     if (ctrl && ctrl.id && ctrl.dataurl) {
-        result += '<div class="row" id="' + ctrl.id + '" ></div>';
+        result += '<div class="" id="' + ctrl.id + '" ></div>';
     }
 
     functionsList.push(function () {
@@ -594,9 +743,11 @@ function updateDynamicCtrls(curThis) {
             var htmlResult = '';
 
             if (res && res.panels && res.panels.length > 0) {
+                htmlResult += '<div class="row">';
                 for (var i = 0; i < res.panels.length; i++) {
                     htmlResult += getPanelTemplate(res.panels[i]);
                 }
+                htmlResult += '</div>';
             }
 
             $('#' + this.ctrl.id).html(htmlResult);
@@ -764,7 +915,7 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input autocomplete="new-password" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input autocomplete="off" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     functionsList.push(function () {
@@ -773,6 +924,14 @@ function getTextBoxTemplate(ctrl) {
         }.bind(this), 300);
         inputNewLabelEventHandler(this.id);
     }.bind({ id: ctrl.id, type: ctrl.type }));
+
+    if (ctrl.onChange) {
+        functionsList.push(function () {
+            $('#' + this.ctrl.id).change(function () {
+                eval(this.ctrl.onChange);
+            }.bind({ ctrl: this.ctrl }));
+        }.bind({ ctrl: ctrl }));
+    }
 
     if (ctrl.onEnter && ctrl.id) {
         functionsList.push(function () {
@@ -911,7 +1070,7 @@ function getTextAreaTemplate(ctrl) {
     var result = '';
     result += '<div class="myCtrl form-group ' + (ctrl.type == 'ck' ? 'makeLabelBGSilver' : '') + '">';
     if (ctrl.label) {
-        result += '<label for="' + ctrl.id  +'" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        result += '<label for="' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
     var id = (ctrl.id ? ctrl.id : uuidv4RemoveDash());
     if (!ctrl.id)
@@ -986,7 +1145,7 @@ function getDropdownCTRLTemplate(ctrl) {
 
     result += '<div id="myCtrlDivHolder' + ctrl.id + '" class="myCtrl ' + (ctrl.type == 'dropDown' && !ctrl.moveNameToParent ? 'myDropdown myDropdownHeight' : '') + ' form-group ' + (ctrl.class ? ctrl.class : '') + '"' + (ctrl.moveNameToParent ? ' name="' + ctrl.name + '"' : '') + '>';
     if (ctrl.label) {
-        result += '<label id="' + labelId +'" for="' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        result += '<label id="' + labelId + '" for="' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
     result += '<select ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
@@ -1006,7 +1165,12 @@ function getDropdownCTRLTemplate(ctrl) {
             if (!this.moveNameToParent)
                 $('#' + this.id).closest('.myDropdown').initMyDropdown();
             initDropdown($('#' + this.id));
-        }.bind({ id: ctrl.id, moveNameToParent: ctrl.moveNameToParent }));
+            if (this.onChange) {
+                $('#' + this.id).change(function () {
+                    eval(this.sOnChange);
+                }.bind({ sOnChange: this.onChange }));
+            }
+        }.bind({ id: ctrl.id, moveNameToParent: ctrl.moveNameToParent, onChange: ctrl.onChange }));
     else {
         functionsList.push(function () {
             var exteraSelect2Parameters = {};
@@ -1040,7 +1204,12 @@ function getDropdownCTRLTemplate(ctrl) {
                     }.bind({ id: this.id }));
                 }
             }
-        }.bind({ id: ctrl.id, dataurl: ctrl.dataurl, exteraParameterIds: ctrl.exteraParameterIds }));
+            if (this.onChange) {
+                $('#' + this.id).change(function () {
+                    eval(this.sOnChange);
+                }.bind({ sOnChange: this.onChange }));
+            }
+        }.bind({ id: ctrl.id, dataurl: ctrl.dataurl, exteraParameterIds: ctrl.exteraParameterIds, onChange: ctrl.onChange }));
         functionsList.push(function () {
             var querySelector = $('#' + this.id);
             $(querySelector)[0].updateStatus = function () {
@@ -1344,9 +1513,11 @@ function getStepWizardTemplate(wizard) {
 
 
             if (wizard.steps[i].panels && wizard.steps[i].panels.length > 0) {
+                result += '<div class="row">';
                 for (var j = 0; j < wizard.steps[i].panels.length; j++) {
                     result += getPanelTemplate(wizard.steps[i].panels[j]);
                 }
+                result += '</div>';
             }
 
             if (!wizard.steps[i].submitUrl) {
@@ -1740,7 +1911,9 @@ function postPanel(curElement, url, exteraParameters, clearPanelAfter) {
 }
 
 function closeThisModal(curElement) {
-    $(curElement).closest('.modal').modal('hide');
+    if (curElement) {
+        $(curElement).closest('.modal').modal('hide');
+    }
 }
 
 

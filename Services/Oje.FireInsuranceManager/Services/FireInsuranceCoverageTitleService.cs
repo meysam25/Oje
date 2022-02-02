@@ -57,6 +57,7 @@ namespace Oje.FireInsuranceService.Services
                         valuefield = "id",
                         dataurl = "/ProposalFormInquiries/FireInsurance/GetActivityList",
                         ph  = "",
+                        onChange = "refreshGrid('userGrid')",
                         label = cover.title
                     });
                     allCtrls.Add(new
@@ -73,6 +74,7 @@ namespace Oje.FireInsuranceService.Services
                         name = "exteraQuestions[" + i + "].value",
                         type = "text",
                         ph = "",
+                        onChange = "refreshGrid('userGrid')",
                         label  = cover.title
                     });
                     allCtrls.Add(new
@@ -91,6 +93,7 @@ namespace Oje.FireInsuranceService.Services
                         textfield = "title",
                         valuefield = "id",
                         dataurl = "/Core/BaseData/Get/IsActive",
+                        onChange = "refreshGrid('userGrid')",
                         label = cover.title
                     });
                     allCtrls.Add(new

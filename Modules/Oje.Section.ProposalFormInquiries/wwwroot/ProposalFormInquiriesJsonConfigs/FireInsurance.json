@@ -162,17 +162,95 @@
 
       "moduals": [
         {
-          "class": "modal-xl",
+          "class": "modal-xl makeModalMinH100 myContainer",
           "id": "gridModal",
           "title": "استعلام",
           "panels": [
             {
+              "ctrls": [
+                {
+                  "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                  "id": "holderDynamicCtrls",
+                  "type": "dynamiCtrls",
+                  "dataurl": "/ProposalFormInquiries/FireInsurance/GetExteraFilters"
+                }
+              ]
+            },
+            {
+              "class": "col-md-4 col-sm-5 col-xl-4 col-lg-4 col-xs-12",
+              "ePanels": [
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "شرکت بیمه",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "comIds",
+                      "type": "multiSelectImg",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "imgfield": "src",
+                      "dataurl": "/ProposalFormInquiries/FireInsurance/GetCompanyListGridFilter",
+                      "label": "جستجو در شرکت های بیمه",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
+                },
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "مدت زمانه بیمه نامه",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "dayLimitation",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/FireInsurance/GetValidDayForGridFilter",
+                      "label": "خرید بیمه نامه روزانه",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
+                },
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "تخفیفات",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "discountContractId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/FireInsurance/GetValidContractForGrid",
+                      "label": "تخفیف تفاهم نامه",
+                      "onChange": "refreshGrid('userGrid')"
+                    },
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "discountCode",
+                      "type": "text",
+                      "label": "کد تخفیف",
+                      "onChange": "refreshGrid('userGrid')"
+                    },
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "title": "اعمال کد تخفیف",
+                      "class": "btn-block btn-primary",
+                      "onClick": "",
+                      "type": "button"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "class": "col-md-8 col-sm-7 col-xl-8 col-lg-8 col-xs-12",
               "grids": [
                 {
                   "id": "userGrid",
+                  "class": "thirdPartyGridConvertToCard",
                   "exteraSearchIds": [ "searchPanel" ],
-                  "exteraFilterModalId": "gridFilterModal",
-                  "showColumnConfigButton": true,
                   "key": "id",
                   "url": "/ProposalFormInquiries/FireInsurance/Inquiry",
                   "itemPerPage": 10,
@@ -191,12 +269,14 @@
                       }
                     ]
                   },
+                  "formatters": {
+                    "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'"
+                  },
                   "columns": [
                     {
-                      "field": "row",
-                      "caption": "ردیف",
-                      "width": "50px",
-                      "textAlign": "center"
+                      "field": "sr",
+                      "caption": "تصویر شرکت",
+                      "formatter": "imgTemplate"
                     },
                     {
                       "field": "cn",
@@ -238,64 +318,6 @@
                   }
                 }
               ]
-            }
-          ]
-        },
-        {
-          "class": "modal-xl",
-          "id": "gridFilterModal",
-          "title": "جستجو",
-          "ctrls": [
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "comIds",
-              "type": "tokenBox",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/ProposalFormInquiries/FireInsurance/GetCompanyListGridFilter",
-              "label": "شرکت"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "dayLimitation",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/ProposalFormInquiries/FireInsurance/GetValidDayForGridFilter",
-              "label": "خرید بیمه نامه روزانه"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "discountContractId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/ProposalFormInquiries/FireInsurance/GetValidContractForGrid",
-              "label": "تخفیف تفاهم نامه"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "discountCode",
-              "type": "text",
-              "label": "کد تخفیف"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "holderDynamicCtrls",
-              "type": "dynamiCtrls",
-              "dataurl": "/ProposalFormInquiries/FireInsurance/GetExteraFilters"
-            }
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "جستجو",
-              "onClick": "refreshGrid('userGrid', this)",
-              "class": "btn-primary"
             }
           ]
         }

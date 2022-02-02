@@ -1,0 +1,88 @@
+
+.expandablePanel {
+}
+    .expandablePanel:last-child .expandablePanelHeaderTitle{
+        border-bottom:1px solid transparent;
+    }
+
+    .expandablePanelOpen .expandablePanelBody {
+        max-height: 800px;
+    }
+
+.expandablePanelOpen .expandablePanelHeaderArrow {
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.expandablePanelOpen .expandablePanelHeaderTitle {
+    border-bottom: 1px solid silver !important;
+}
+.expandablePanelOpen .expandablePanelBody {
+    padding:10px;
+    border-bottom:1px solid silver;
+}
+.expandablePanelOpen:last-child .expandablePanelBody{
+    border-bottom:1px solid transparent;
+}
+.expandablePanelBodyScroll {
+    overflow-y: scroll;
+}
+.expandablePanelBody .form-group{
+    margin-bottom:5px;
+    margin-top:5px;
+}
+.expandablePanelHeader {
+    cursor: pointer;
+    position: relative;
+}
+
+.expandablePanelHeaderTitle {
+    line-height: 40px;
+    padding-left: 35px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    font-weight: bold;
+    padding-right: 10px;
+    border-bottom: 1px solid silver;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.expandablePanelHeaderArrow {
+    position: absolute;
+    left: 10px;
+    top: 15px;
+    border-top: 7px solid #2a2a2a;
+    border-right: 7px solid transparent;
+    border-left: 7px solid transparent;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.expandablePanelBody {
+    max-height: 0px;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    overflow-y: hidden;
+    border-bottom: 1px solid transparent;
+    overflow-x: hidden;
+}
+.expandablePanelGroup {
+    border: 1px solid silver;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 0px 6px 1px rgba(0,0,0,0.18);
+    box-shadow: 0px 0px 6px 1px rgba(0,0,0,0.18);
+}

@@ -35,6 +35,10 @@ namespace Oje.ProposalFormService.Models.DB
         public string Title { get; set; }
         [Required, MaxLength(100)]
         public string Pic { get; set; }
+        [MaxLength(100)]
+        public string Pic32 { get; set; }
+        [MaxLength(100)]
+        public string Pic64 { get; set; }
         public bool IsActive { get; set; }
 
         [InverseProperty("Company")]

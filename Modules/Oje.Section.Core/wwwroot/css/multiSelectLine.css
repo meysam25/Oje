@@ -1,0 +1,83 @@
+
+.multiSelectLineBodyItem {
+    position: relative;
+    padding: 8px 0px;
+    cursor: pointer;
+}
+
+.multiSelectLineBodyItem:hover .multiSelectLineBodyItemSelectIndicator {
+    outline: 3px solid #00b600;
+}
+
+    .multiSelectLineBodyItem:hover .multiSelectLineBodyItemTitle {
+        
+    }
+
+.multiSelectLineBodyItemActive .multiSelectLineBodyItemSelectIndicator {
+    outline: 3px solid green;
+    border-color: black;
+}
+
+.multiSelectLineBodyItemActive .multiSelectLineBodyItemTitle {
+    font-weight: bold;
+}
+
+.multiSelectLineBodyItem:first-child:before {
+    display: none;
+}
+
+.multiSelectLineBodyItem:last-child:after {
+    display: none;
+}
+
+.multiSelectLineBodyItemTitle {
+    padding-right: 40px;
+    line-height: 38px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 38px;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+.multiSelectLineBodyItemSelectIndicator {
+    position: absolute;
+    right: 7px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    border: 3px solid silver;
+    background-color: white;
+    z-index: 2;
+}
+
+.multiSelectLineBodyItem:before {
+    content: ' ';
+    position: absolute;
+    width: 8px;
+    height: 23px;
+    top: -23px;
+    background-color: silver;
+    z-index: 1;
+    right: 13px;
+}
+
+.multiSelectLineBodyItem:after {
+    content: ' ';
+    position: absolute;
+    width: 8px;
+    height: 23px;
+    bottom: -23px;
+    background-color: silver;
+    z-index: 1;
+    right: 13px;
+}

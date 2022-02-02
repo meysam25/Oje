@@ -33,6 +33,10 @@ namespace Oje.FireInsuranceService.Models.DB
         public string Title { get; set; }
         [Required, MaxLength(100)]
         public string Pic { get; set; }
+        [MaxLength(100)]
+        public string Pic32 { get; set; }
+        [MaxLength(100)]
+        public string Pic64 { get; set; }
 
         [InverseProperty("Company")]
         public List<FireInsuranceCoverageCompany> FireInsuranceCoverageCompanies { get; set; }

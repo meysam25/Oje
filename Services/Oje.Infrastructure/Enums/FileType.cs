@@ -55,5 +55,9 @@ namespace Oje.Infrastructure.Enums
         MainLogo192 = 22,
         [Display(Name = "لوگوی سایت 512", Prompt = "MainLogo", Description = "512*512", AutoGenerateFilter = true)]
         MainLogo512 = 23,
+        [Display(Name = "تصویر شرکت بیمه (کوچک)", Prompt = "CompanyLogo", Description = "32*32")]
+        CompanyLogo32 = 24,
+        [Display(Name = "تصویر شرکت بیمه (64px)", Prompt = "CompanyLogo", Description = "64*64")]
+        CompanyLogo64 = 25
     }
 }

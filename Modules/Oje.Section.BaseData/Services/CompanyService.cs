@@ -46,6 +46,8 @@ namespace Oje.Section.BaseData.Services
             if (input.minPic != null && input.minPic.Length > 0)
             {
                 newItem.Pic = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.minPic, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.Pic32 = uploadedFileService.UploadNewFile(FileType.CompanyLogo32, input.minPic, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.Pic64 = uploadedFileService.UploadNewFile(FileType.CompanyLogo64, input.minPic, userId, null, newItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 
@@ -154,6 +156,8 @@ namespace Oje.Section.BaseData.Services
             if (input.minPic != null && input.minPic.Length > 0)
             {
                 foundItem.Pic = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.minPic, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.Pic32 = uploadedFileService.UploadNewFile(FileType.CompanyLogo32, input.minPic, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.Pic64 = uploadedFileService.UploadNewFile(FileType.CompanyLogo64, input.minPic, userId, null, foundItem.Id, ".png,.jpg,.jpeg", false);
                 db.SaveChanges();
             }
 

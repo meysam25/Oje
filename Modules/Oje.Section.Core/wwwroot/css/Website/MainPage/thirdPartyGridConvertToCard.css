@@ -1,0 +1,143 @@
+﻿
+.thirdPartyGridConvertToCard {
+    text-align:center;
+}
+
+    .thirdPartyGridConvertToCard thead {
+        display: none;
+    }
+    .thirdPartyGridConvertToCard > .myGrid {
+        text-align: center !important;
+    }
+    .thirdPartyGridConvertToCard > table > .myTableBody {
+        text-align: center !important;
+    }
+    .thirdPartyGridConvertToCard > table > tbody > tr {
+        display: inline-block;
+        width: 280px;
+        border: 1px solid silver;
+        margin: 0px 7px 14px 7px;
+        -moz-border-radius: 20px;
+        -webkit-border-radius: 20px;
+        border-radius: 20px;
+        padding: 20px;
+        background-color: white !important;
+        -webkit-box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
+        box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
+        text-align: right;
+    }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td {
+            display: inline-block !important;
+            border: none;
+            width:auto !important;
+            font-size: 0.9em;
+        }
+
+            .thirdPartyGridConvertToCard > table > tbody > tr > td > .gridResTitle {
+                display: inline-block !important;
+                width: 140px !important;
+                font-size:1em;
+            }
+
+            .thirdPartyGridConvertToCard > table > tbody > tr > td:first-child {
+                border:none !important;
+                width:100% !important;
+                display:none !important;
+            }
+                .thirdPartyGridConvertToCard > table > tbody > tr > td:first-child > .gridExpandButton {
+                    width:100%;
+                    display:block;
+                    text-align:center;
+                }
+                    .thirdPartyGridConvertToCard > table > tbody > tr > td:first-child > .gridExpandButton:before {
+                        content: 'جزییات';
+                        font-size: 1.1em !important;
+                        background-color: #005ad3;
+                        padding: 5px 10px;
+                        color: white;
+                        -moz-border-radius: 10px;
+                        -webkit-border-radius: 10px;
+                        border-radius: 10px;
+                    }
+
+                .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child {
+                    border: none;
+                    display: block !important;
+                }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr:last-child {
+            display: none;
+        }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction {
+            width: 100%;
+            -moz-border-radius: 15px;
+            -webkit-border-radius: 15px;
+            border-radius: 15px;
+            height: auto;
+            margin-top: 10px;
+        }
+
+            .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction > a {
+                color: white;
+                font-size: 1.2em;
+                line-height: 30px;
+                height: 35px;
+                -webkit-text-decoration: none;
+                text-decoration: none;
+            }
+                .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction > a:before {
+                    content:'سفارش';
+                    line-height:34px;
+                }
+                .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction > a > i {
+                    display: none;
+                }
+
+                .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction:hover {
+                    -webkit-box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
+                    box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
+                }
+
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(3) {
+            width: calc(100% - 76px) !important;
+            font-weight: bold;
+            border-bottom: 1px solid silver !important;
+            height: 80px;
+            line-height: 64px;
+            font-size: 1.1em;
+        }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(4) {
+            padding-top: 10px;
+        }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(3) > .gridResTitle {
+            display: none !important;
+        }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(2) > .gridResTitle {
+            display: none !important;
+        }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(2) {
+            border-bottom: 1px solid silver !important;
+            height: 80px;
+        }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(7) {
+            display: block !important;
+            border-bottom: 1px solid silver !important;
+            padding-bottom: 10px;
+        }
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(8) {
+            font-weight: bold;
+            display: block;
+        }
+
+            .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(8) .gridResTitle {
+                font-weight: normal;
+            }

@@ -4,6 +4,8 @@
     "inputFiles": [
       "wwwroot/js/JalaliDatePicker.js",
       "wwwroot/js/myGrid.js",
+      "wwwroot/js/expandablePanel.js",
+      "wwwroot/js/multiSelectLine.js",
       "wwwroot/js/jquery.toast.js",
       "wwwroot/js/select2.min.js",
       "wwwroot/js/seperatorPlugin.js",
@@ -26,6 +28,8 @@
     "inputFiles": [
       "wwwroot/js/JalaliDatePicker.js",
       "wwwroot/js/myGrid.js",
+      "wwwroot/js/expandablePanel.js",
+      "wwwroot/js/multiSelectLine.js",
       "wwwroot/js/jquery.toast.js",
       "wwwroot/js/select2.min.js",
       "wwwroot/js/seperatorPlugin.js",
@@ -154,13 +158,16 @@
       "wwwroot/css/select2.min.css",
       "wwwroot/css/myGrid.css",
       "wwwroot/css/myGridRes.css",
+      "wwwroot/css/multiSelectLine.css",
+      "wwwroot/css/expandablePanel.css",
       "wwwroot/css/treeView.css",
       "wwwroot/css/main.css",
       "wwwroot/css/makeRTL.css",
       "wwwroot/css/JalaliDatePicker.css",
       "wwwroot/css/stepWizard.css",
       "wwwroot/css/validation.css",
-      "wwwroot/css/dropdown.css"
+      "wwwroot/css/dropdown.css",
+      "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css"
     ],
     "minify": {
       "enabled": true,
@@ -177,12 +184,15 @@
       "wwwroot/css/select2.min.css",
       "wwwroot/css/myGrid.css",
       "wwwroot/css/myGridRes.css",
+      "wwwroot/css/multiSelectLine.css",
+      "wwwroot/css/expandablePanel.css",
       "wwwroot/css/main.css",
       "wwwroot/css/makeRTL.css",
       "wwwroot/css/JalaliDatePicker.css",
       "wwwroot/css/stepWizard.css",
       "wwwroot/css/validation.css",
-      "wwwroot/css/dropdown.css"
+      "wwwroot/css/dropdown.css",
+      "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css"
     ],
     "minify": {
       "enabled": true,

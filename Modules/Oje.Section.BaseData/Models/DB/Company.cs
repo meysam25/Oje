@@ -27,5 +27,9 @@ namespace Oje.Section.BaseData.Models.DB
         [Required]
         [MaxLength(100)]
         public string Pic { get; set; }
+        [MaxLength(100)]
+        public string Pic32 { get; set; }
+        [MaxLength(100)]
+        public string Pic64 { get; set; }
     }
 }

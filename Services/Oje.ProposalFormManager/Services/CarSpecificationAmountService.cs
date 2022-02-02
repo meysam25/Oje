@@ -900,7 +900,7 @@ namespace Oje.ProposalFormService.Services
                     cid = t.CompanyId,
                     p = t.GlobalInquiryItems.Where(tt => tt.CalcKey == "s1").Select(tt => tt.Price).FirstOrDefault(),
                     cn = objPack.validCompanies.Where(x => x.Id == t.CompanyId).Select(x => x.Title).FirstOrDefault(),
-                    cnPic = objPack.validCompanies.Where(x => x.Id == t.CompanyId).Select(x => x.Pic).FirstOrDefault(),
+                    cnPic = objPack.validCompanies.Where(x => x.Id == t.CompanyId).Select(x => x.Pic64).FirstOrDefault(),
                     desc = objPack.InqueryDescriptions.OrderByDescending(tt => tt.SiteSettingId).Where(tt => tt.InqueryDescriptionCompanies.Any(ttt => ttt.CompanyId == t.CompanyId)).Select(tt => new
                     {
                         title = tt.Title,
