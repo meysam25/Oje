@@ -85,6 +85,7 @@
     -webkit-transition: 0.3s;
     transition: 0.3s;
     height:38px;
+    cursor:pointer;
 }
 
     .myDropdownItem:hover, .myDropdownItemSelected {

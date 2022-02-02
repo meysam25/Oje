@@ -20,6 +20,10 @@ $.fn.initMyDropdown = function () {
     return this.each(function () {
         var curElement = $(this)[0];
         curElement.openMDD = function () {
+            if (!this.isBodyClosedBinded) {
+                this.isBodyClosedBinded = true;
+                $('body').click(function () { this.cE.closeMDD(); }.bind({ cE: this }));
+            }
             closeAllDropdownInPage();
             makeCtrlFocused($(this).find('select'));
             if ($(this)[0].actionTimeoutInterval)
@@ -32,7 +36,7 @@ $.fn.initMyDropdown = function () {
             $('#' + itemId).css('top', $(this).offset().top + 37);
             $('#' + itemId).css('left', $(this).offset().left);
             $(this).addClass('myDropdownMakeVisibleItems');
-            $('#' + itemId).css('display', 'block').css('opacity','1').css('z-index','1000');
+            $('#' + itemId).css('display', 'block').css('opacity', '1').css('z-index', '1000');
             $(this)[0].actionTimeoutInterval = setTimeout(function () { $(this).addClass('myDroppdownShowItem'); }.bind(this), 10);
             $(this)[0].bindSelectItemEventMMD();
         };
@@ -88,9 +92,7 @@ $.fn.initMyDropdown = function () {
             if (targetIndex > -1) {
                 var selectQuery = $(this).find('option:eq(' + targetIndex + ')');
                 if (selectQuery.length > 0) {
-                    //$(this).find('option').removeAttr('selected');
                     $(this).find('select').val(selectQuery.val());
-                    //selectQuery.attr('selected', 'selected');
                     $(this).find('select').change();
                 }
             }
@@ -115,6 +117,13 @@ $.fn.initMyDropdown = function () {
         };
 
         curElement.bindSelectItemEventMMD();
+        $(curElement).closest('.myCtrl').find('label').click(function (e) {
+            $(this).closest('.myDropdown')[0].openMDD();
+            e.preventDefault();
+            e.stopPropagation();
+
+            return false;
+        });
 
         $(this).click(function (e) {
             if ($(this).hasClass('myDropdownMakeVisibleItems')) {
@@ -128,10 +137,3 @@ $.fn.initMyDropdown = function () {
 
 
 }
-
-$('body').click(function () {
-    $('.myDropdown').each(function () {
-        if ($(this)[0].closeMDD)
-            $(this)[0].closeMDD();
-    });
-});

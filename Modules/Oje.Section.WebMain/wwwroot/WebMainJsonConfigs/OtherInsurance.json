@@ -11,7 +11,7 @@
           "type": "dropDown2",
           "textfield": "text",
           "valuefield": "id",
-          "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormCategoryList",
+          "dataurl": "/Home/GetProposalFormCategoryList",
           "label": "گروه بندی"
         },
         {
@@ -20,7 +20,7 @@
           "type": "dropDown2",
           "textfield": "text",
           "valuefield": "id",
-          "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormList",
+          "dataurl": "/Home/GetProposalFormList",
           "exteraParameterIds": [ "ppfCatId" ],
           "label": "فرم پیشنهاد"
         },

@@ -34,6 +34,7 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormDocumentService ProposalFilledFormDocumentService = null;
         readonly IProposalFilledFormValueService ProposalFilledFormValueService = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
+        readonly AccountService.Interfaces.IRoleService RoleService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly IUserNotifierService UserNotifierService = null;
@@ -54,7 +55,8 @@ namespace Oje.ProposalFormService.Services
                 IProposalFilledFormValueService ProposalFilledFormValueService,
                 IUploadedFileService UploadedFileService,
                 IUserNotifierService UserNotifierService,
-                IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService
+                IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
+                AccountService.Interfaces.IRoleService RoleService
             )
         {
             this.db = db;
@@ -73,6 +75,7 @@ namespace Oje.ProposalFormService.Services
             this.UploadedFileService = UploadedFileService;
             this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
             this.UserNotifierService = UserNotifierService;
+            this.RoleService = RoleService;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl)
@@ -119,6 +122,11 @@ namespace Oje.ProposalFormService.Services
 
                     UserNotifierService.Notify(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, foundProposalForm.Title, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
                     newFormId = newForm.Id;
+
+                    if (RoleService.IsUserInRole(loginUserId, "user"))
+                        targetUrl = "/Proposal/Detaile";
+                    else
+                        targetUrl = "";
                 }
                 catch (Exception)
                 {

@@ -469,5 +469,10 @@ namespace Oje.AccountService.Services
 
             return foundRole;
         }
+
+        public bool IsUserInRole(long? loginUserId, string roleName)
+        {
+            return db.UserRoles.Any(t => loginUserId == t.UserId && t.Role.Name.ToLower() == roleName.ToLower());
+        }
     }
 }

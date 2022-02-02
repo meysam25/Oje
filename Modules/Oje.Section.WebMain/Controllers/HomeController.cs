@@ -2,6 +2,7 @@
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.View;
@@ -20,13 +21,17 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         readonly IUserService UserService = null;
         readonly IFooterExteraLinkService FooterExteraLinkService = null;
         readonly IFooterGroupExteraLinkService FooterGroupExteraLinkService = null;
+        readonly ProposalFormService.Interfaces.IProposalFormCategoryService ProposalFormCategoryService = null;
+        readonly ProposalFormService.Interfaces.IProposalFormService ProposalFormService = null;
         public HomeController
             (
                 IPropertyService PropertyService,
                 ISiteSettingService SiteSettingService,
                 IUserService UserService,
                 IFooterExteraLinkService FooterExteraLinkService,
-                IFooterGroupExteraLinkService FooterGroupExteraLinkService
+                IFooterGroupExteraLinkService FooterGroupExteraLinkService,
+                ProposalFormService.Interfaces.IProposalFormCategoryService ProposalFormCategoryService,
+                ProposalFormService.Interfaces.IProposalFormService ProposalFormService
             )
         {
             this.PropertyService = PropertyService;
@@ -34,6 +39,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.UserService = UserService;
             this.FooterExteraLinkService = FooterExteraLinkService;
             this.FooterGroupExteraLinkService = FooterGroupExteraLinkService;
+            this.ProposalFormCategoryService = ProposalFormCategoryService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         [Route("/")]
@@ -132,6 +139,18 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         public ActionResult GetFooterExteraLinkGroup()
         {
             return Json(FooterGroupExteraLinkService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpGet]
+        public ActionResult GetProposalFormCategoryList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(ProposalFormCategoryService.GetSelect2List(searchInput));
+        }
+
+        [HttpGet]
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? ppfCatId)
+        {
+            return Json(ProposalFormService.GetSelect2List(searchInput, ppfCatId));
         }
     }
 }

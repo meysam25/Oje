@@ -416,7 +416,7 @@ input[type=checkbox] + label, input[type=checkbox] {
     position: relative;
 }
 
-    .myCtrl > label:not(.btn) {
+    .myCtrl:not(.form-check) > label:not(.btn) {
         position: absolute;
         top: 5px;
         right: 10px;
@@ -429,7 +429,7 @@ input[type=checkbox] + label, input[type=checkbox] {
         cursor: pointer;
     }
 
-.myCtrlMakeActive > label:not(.btn), .makeLabelBGSilver > label:not(.btn) {
+.myCtrlMakeActive:not(.form-check) > label:not(.btn), .makeLabelBGSilver:not(.form-check) > label:not(.btn) {
     font-size: 0.8em;
     top: -15px;
     right: 10px;
@@ -491,9 +491,9 @@ input[type=checkbox] + label, input[type=checkbox] {
     border-radius: 4px;
     padding-right: 10px;
     padding-left: 10px;
-    padding:2px 5px;
-    cursor:pointer;
-    margin:4px;
+    padding: 2px 5px;
+    cursor: pointer;
+    margin: 4px;
 }
 
     .multiSelectImageBodyItem:hover {
@@ -509,7 +509,7 @@ input[type=checkbox] + label, input[type=checkbox] {
 .multiSelectImageBodyItemTitle {
     display: inline-block;
     vertical-align: -6px;
-    margin-right:3px;
+    margin-right: 3px;
 }
 
 .multiSelectImageBodyItemActive {
@@ -518,14 +518,16 @@ input[type=checkbox] + label, input[type=checkbox] {
 
     .multiSelectImageBodyItemActive .multiSelectImageBodyItemTitle {
         color: green;
-        font-weight:bold;
+        font-weight: bold;
     }
+
 .makeModalMinH100 {
-    max-width:unset !important;
+    max-width: unset !important;
 }
-.makeModalMinH100 .modal-content {
-    min-height: 94vh;
-}
+
+    .makeModalMinH100 .modal-content {
+        min-height: 94vh;
+    }
 
 @media (max-width: 400px) {
     .select2-selection__rendered {

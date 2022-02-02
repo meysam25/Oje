@@ -1209,6 +1209,16 @@ function getDropdownCTRLTemplate(ctrl) {
                     eval(this.sOnChange);
                 }.bind({ sOnChange: this.onChange }));
             }
+            $('#' + this.id).closest('.myCtrl').find('label').click(function (e)
+            {
+                e.preventDefault();
+                e.stopPropagation();
+                var s2Obj = $(this).closest('.myCtrl').find('select').data('select2');
+                if (s2Obj) {
+                    s2Obj.open();
+                }
+                return false;
+            });
         }.bind({ id: ctrl.id, dataurl: ctrl.dataurl, exteraParameterIds: ctrl.exteraParameterIds, onChange: ctrl.onChange }));
         functionsList.push(function () {
             var querySelector = $('#' + this.id);

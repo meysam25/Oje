@@ -510,7 +510,7 @@ namespace Oje.ProposalFormService.Services
                                     }
                                 }
                             }
-                            else if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)))
+                            else if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
                                 ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = ctrl.parentCL, title = title, value = value });
                         }
                     }
