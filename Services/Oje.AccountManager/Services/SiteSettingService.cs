@@ -118,7 +118,6 @@ namespace Oje.AccountService.Services
             result += "'/Modules/Core/js/mainPage.min.js.gz',";
             result += "'/Modules/Core/js/registerServices.min.js.gz',";
             result += "'/Modules/Core/js/chart.min.js.gz',";
-            result += "'/serviceWorker.js',";
             result += "'/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2',";
             result += "'/Modules/webfonts/fa-light-300.woff2',";
             result += "'/Modules/Assets/MainPage/electronDevelopment.png',";
@@ -147,6 +146,7 @@ namespace Oje.AccountService.Services
 
             result += @"
                 self.addEventListener('fetch', fetchEvent => {
+                  if (fetchEvent.request.method != 'GET') return;
                   fetchEvent.respondWith(
                     caches.match(fetchEvent.request).then(res => {
                       return res || fetch(fetchEvent.request);

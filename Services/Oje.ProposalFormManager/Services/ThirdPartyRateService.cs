@@ -215,17 +215,17 @@ namespace Oje.ProposalFormService.Services
                     t.hdp,
                     t.hod,
                     t.id,
-                    p = t.p.ToString("###,###") + " ریال",
+                    p = t.p.ToString("###,###") + " ",
                     sr = GlobalConfig.FileAccessHandlerUrl + t.cnPic,
                     t.cn,
-                    sp = (t.dt.Where(tt => tt.isE != true).Count() > 0 ? t.dt.Where(tt => tt.isE != true).Sum(tt => tt.p).ToString("###,###") : "0") + " ریال",
+                    sp = (t.dt.Where(tt => tt.isE != true).Count() > 0 ? t.dt.Where(tt => tt.isE != true).Sum(tt => tt.p).ToString("###,###") : "0") + " ",
                     dt = new
                     {
                         total = t.dt.Count(),
                         data = t.dt.Select(tt => new
                         {
                             t = tt.t,
-                            p = (tt.p < 0 ? tt.p * -1 : tt.p).ToString("###,###") + (tt.p > 0 ? "+" : tt.p < 0 ? "-" : "") + " ریال",
+                            p = (tt.p < 0 ? tt.p * -1 : tt.p).ToString("###,###") + (tt.p > 0 ? "+" : tt.p < 0 ? "-" : "") + " ",
                             tt.isE,
                             isET = tt.isE == true ? "عدم اعمال در محاصبات" : "اعمال",
                             tt.c,

@@ -66,18 +66,29 @@
     -o-transition: 0.5s;
     -webkit-transition: 0.5s;
     transition: 0.5s;
+    z-index:1;
 }
+    .expandablePanelHeaderArrow:before {
+        content:' ';
+        position: absolute;
+        left: -7px;
+        top: -8px;
+        border-top: 7px solid white;
+        border-right: 7px solid transparent;
+        border-left: 7px solid transparent;
+        z-index: 2;
+    }
 
-.expandablePanelBody {
-    max-height: 0px;
-    -moz-transition: 0.5s;
-    -o-transition: 0.5s;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    overflow-y: hidden;
-    border-bottom: 1px solid transparent;
-    overflow-x: hidden;
-}
+    .expandablePanelBody {
+        max-height: 0px;
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        overflow-y: hidden;
+        border-bottom: 1px solid transparent;
+        overflow-x: hidden;
+    }
 .expandablePanelGroup {
     border: 1px solid silver;
     -moz-border-radius: 4px;

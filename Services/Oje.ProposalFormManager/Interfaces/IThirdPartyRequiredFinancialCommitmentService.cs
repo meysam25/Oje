@@ -11,5 +11,6 @@ namespace Oje.ProposalFormService.Interfaces
     {
         List<ThirdPartyRequiredFinancialCommitment> GetByIds(List<int> coverIds);
         object GetLightList();
+        object GetLightListShortTitle();
     }
 }

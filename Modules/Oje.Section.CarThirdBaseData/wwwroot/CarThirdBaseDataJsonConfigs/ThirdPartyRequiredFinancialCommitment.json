@@ -114,6 +114,13 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "sTitle",
+              "type": "text",
+              "label": "عنوان کوتاه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "price",
               "type": "text",
               "label": "مبلغ",
@@ -174,6 +181,13 @@
               "name": "title",
               "type": "text",
               "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "sTitle",
+              "type": "text",
+              "label": "عنوان کوتاه",
               "isRequired": true
             },
             {

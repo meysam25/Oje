@@ -391,41 +391,8 @@
               ]
             },
             {
-              "class": "col-md-4 col-sm-5 col-xl-4 col-lg-4 col-xs-12",
+              "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12 onlyMobile600T",
               "ePanels": [
-                {
-                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
-                  "title": "تعهد مالی",
-                  "ctrls": [
-                    {
-                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-                      "name": "coverIds",
-                      "type": "multiSelectLine",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCommitmentGridFilter",
-                      "label": "سقف جبران خسارت های مالی",
-                      "onChange": "refreshGrid('userGrid')"
-                    }
-                  ]
-                },
-                {
-                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
-                  "title": "شرکت بیمه",
-                  "ctrls": [
-                    {
-                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-                      "name": "comIds",
-                      "type": "multiSelectImg",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "imgfield": "src",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCompanyListGridFilter",
-                      "label": "جستجو در شرکت های بیمه",
-                      "onChange": "refreshGrid('userGrid')"
-                    }
-                  ]
-                },
                 {
                   "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
                   "title": "مدت زمانه بیمه نامه",
@@ -475,7 +442,103 @@
               ]
             },
             {
-              "class": "col-md-8 col-sm-7 col-xl-8 col-lg-8 col-xs-12",
+              "class": "inquiryModalRightFilter",
+              "ctrls": [
+                {
+                  "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 multiSelectLineMakeSmallVersion",
+                  "name": "coverIds",
+                  "type": "multiSelectLine",
+                  "textfield": "title",
+                  "valuefield": "id",
+                  "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCommitmentGridFilterShortTitle",
+                  "label": "تعهد مالی",
+                  "onChange": "refreshGrid('userGrid')"
+                }
+              ],
+              "ePanels": [
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "مدت زمانه بیمه نامه",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "dayLimitation",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetValidDayForGridFilter",
+                      "label": "خرید بیمه نامه روزانه",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
+                },
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "تعهد مالی انتخابی",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "coverIds",
+                      "type": "multiSelectLine",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCommitmentGridFilter",
+                      "label": "سقف جبران خسارت های مالی",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
+                },
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "تخفیفات",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "discountContractId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetValidContractForGrid",
+                      "label": "تخفیف تفاهم نامه",
+                      "onChange": "refreshGrid('userGrid')"
+                    },
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "discountCode",
+                      "type": "text",
+                      "label": "کد تخفیف",
+                      "onChange": "refreshGrid('userGrid')"
+                    },
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "title": "اعمال کد تخفیف",
+                      "class": "btn-block btn-primary",
+                      "onClick": "",
+                      "type": "button"
+                    }
+                  ]
+                },
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "مقایسه شرکت ها",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "comIds",
+                      "type": "multiSelectImg",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "imgfield": "src",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCompanyListGridFilter",
+                      "label": "جستجو در شرکت های بیمه",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "class": "inquiryModalLeftFilter",
               "grids": [
                 {
                   "class": "thirdPartyGridConvertToCard",
@@ -500,7 +563,8 @@
                     ]
                   },
                   "formatters": {
-                    "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'"
+                    "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'",
+                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزییات بیشتر<i></i></span>'"
                   },
                   "columns": [
                     {
@@ -511,10 +575,6 @@
                     {
                       "field": "cn",
                       "caption": "شرکت"
-                    },
-                    {
-                      "field": "p",
-                      "caption": "حق بیمه پایه"
                     },
                     {
                       "field": "tmsj",
@@ -529,15 +589,21 @@
                       "caption": "عهد راننده سال جاری"
                     },
                     {
+                      "field": "expandButton",
+                      "caption": " ",
+                      "formatter": "customeExpandButton"
+                    },
+                    {
                       "field": "sp",
                       "caption": "حق بیمه قابل پرداخت"
                     }
                   ],
                   "detailesClientSchema": "dt",
                   "detailes": {
+                    "headerTemplate": "<div class=\"gridDetailesHeader\" ><i onclick=\"closeThisDetailes(this)\"></i><span>جزییات استعلام</span></div>",
                     "id": "detailesGrid",
                     "key": "id",
-                    "itemPerPage": 10,
+                    "itemPerPage": 1000,
                     "isClient": true,
                     "schema": {
                       "data": "data",
@@ -551,13 +617,31 @@
                       {
                         "field": "p",
                         "caption": "مبلغ"
-                      },
-                      {
-                        "field": "isET",
-                        "caption": "وضعیت"
                       }
                     ]
                   }
+                }
+              ]
+            },
+            {
+              "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12 onlyMobile600T",
+              "ePanels": [
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "مقایسه شرکت ها",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "comIds",
+                      "type": "multiSelectImg",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "imgfield": "src",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCompanyListGridFilter",
+                      "label": "جستجو در شرکت های بیمه",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
                 }
               ]
             }

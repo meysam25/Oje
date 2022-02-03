@@ -36,5 +36,14 @@ namespace Oje.ProposalFormService.Services
 
             return result;
         }
+
+        public object GetLightListShortTitle()
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true).OrderBy(t => t.Order).Select(t => new { id = t.Id, title = t.ShortTitle }).ToList());
+
+            return result;
+        }
     }
 }

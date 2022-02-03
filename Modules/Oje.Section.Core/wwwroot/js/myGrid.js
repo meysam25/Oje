@@ -267,6 +267,7 @@ $.fn.initMyGrid = function (option) {
         },
         getGridTemplate: function (option) {
             var doseHaveAnyHeaderAction = false;
+
             var columnConfigButton = '<div class="topGridAction">';
             if (option.topActions && option.topActions.length > 0) {
                 doseHaveAnyHeaderAction = true;
@@ -297,7 +298,7 @@ $.fn.initMyGrid = function (option) {
                 columnConfigButton = '';
             }
             return `
-                        `+ columnConfigButton + `
+                        `+ (option.headerTemplate ? option.headerTemplate : '') + columnConfigButton + `
                         <table class="myGrid" >
                             ` + this.getGridHeaderTemplate(option) + `
                             ` + this.getGridBodyTemplateLoading(option) + `

@@ -81,3 +81,30 @@
     z-index: 1;
     right: 13px;
 }
+
+.multiSelectLineMakeSmallVersion .multiSelectLineBodyItemSelectIndicator {
+    width:14px;
+    height:14px;
+    border-width:2px;
+}
+.multiSelectLineMakeSmallVersion .multiSelectLineBodyItem:after {
+    width:6px;
+    right:11px;
+    height:30px;
+}
+.multiSelectLineMakeSmallVersion .multiSelectLineBodyItem:before {
+    width: 6px;
+    right: 11px;
+    top: -30px;
+    height: 30px;
+}
+.multiSelectLineBodyItemTitle {
+    padding-right: 25px;
+    line-height: 31px;
+}
+.multiSelectLineMakeSmallVersion .multiSelectLineTitle {
+    padding-right: 7px;
+}
+.multiSelectLineMakeSmallVersion .multiSelectLineBody {
+    padding-right: 15px;
+}

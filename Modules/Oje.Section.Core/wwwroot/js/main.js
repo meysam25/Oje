@@ -576,6 +576,51 @@ function clearForm(selector) {
     });
 }
 
+function expandGridThisRow(curElement) {
+    if (curElement) {
+        closeAllGridDetailes(curElement);
+        var currentWith = $(window).width();
+        if (currentWith <= 650) {
+            if ($(curElement).prev().hasClass('floatGridDetiles')) {
+                $(curElement).html('جزییات بیشتر<i ></i>');
+                $(curElement).removeClass('gridDetialseMakeLessShow');
+                $(curElement).prev().remove();
+                $(curElement).closest('tr').after('<tr></tr>');
+                $(curElement).closest('tr').find('.gridExpandButton').click();
+            }
+            else {
+                $(curElement).html('جزییات کمتر<i ></i>');
+                $(curElement).addClass('gridDetialseMakeLessShow');
+                $(curElement).closest('tr').find('.gridExpandButton').click();
+                var templateDetailes = '<div class="floatGridDetiles">' + $(curElement).closest('tr').next().find('.gridDetailes').clone().html() + '</div>';
+                $(curElement).before(templateDetailes);
+                $(curElement).closest('tr').next().remove();
+            }
+        }
+        else {
+            $(curElement).closest('tr').find('.gridExpandButton').click();
+        }
+    }
+}
+
+function closeAllGridDetailes(curElement) {
+    var currentWith = $(window).width();
+    if (currentWith <= 650) {
+        $(curElement).closest('table.myGrid').find('>tbody.myTableBody>tr').each(function () {
+            if ($(this).find('>td>span.gridExpandButton.fa-minus-square').length > 0) {
+                if ($(this).find('.btn-roundMoreGridDetailes')[0] != curElement)
+                    $(this).find('.btn-roundMoreGridDetailes').click();
+            }
+        });
+    }
+}
+
+function closeThisDetailes(curElement) {
+    if (curElement) {
+        $(curElement).closest('.holderDetailesGrid').prev().find('.gridExpandButton').click();
+    }
+}
+
 function confirmDialog(title, message, posetiveEvent, negativeEvent) {
     var newId = "confirmDialog_" + Math.random();
     newId = newId.replace('.', '');

@@ -22,6 +22,8 @@ namespace Oje.ProposalFormService.Models.DB
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
+        [MaxLength(50)]
+        public string ShortTitle { get; set; }
         public long Price { get; set; }
         public int Order { get; set; }
         public bool IsActive { get; set; }

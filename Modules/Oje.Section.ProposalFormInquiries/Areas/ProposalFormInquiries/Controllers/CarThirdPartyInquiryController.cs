@@ -130,6 +130,13 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             return Json(ThirdPartyRequiredFinancialCommitmentService.GetLightList());
         }
 
+        [AreaConfig(Title = "مشاهده لیست تعهد های مالی عنوان کوتاه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetCommitmentGridFilterShortTitle()
+        {
+            return Json(ThirdPartyRequiredFinancialCommitmentService.GetLightListShortTitle());
+        }
+
         [AreaConfig(Title = "مشاهده لیست بیمه نامه روزانه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetValidDayForGridFilter()

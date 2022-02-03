@@ -30,7 +30,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Order = input.order.ToIntReturnZiro(),
                 Price = input.price.ToLongReturnZiro(),
-                Title = input.title
+                Title = input.title,
+                ShortTitle = input.sTitle
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -57,6 +58,10 @@ namespace Oje.Section.CarThirdBaseData.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.price.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Price);
+            if (string.IsNullOrEmpty(input.sTitle))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Title);
+            if (input.sTitle.Length > 50)
+                throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
 
         }
 
@@ -87,7 +92,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                     isActive = t.IsActive,
                     order = t.Order,
                     price = t.Price,
-                    title = t.Title
+                    title = t.Title,
+                    sTitle = t.ShortTitle
                 }).FirstOrDefault();
         }
 
@@ -155,6 +161,7 @@ namespace Oje.Section.CarThirdBaseData.Services
             foundItem.Order = input.order.ToIntReturnZiro();
             foundItem.Price = input.price.ToLongReturnZiro();
             foundItem.Title = input.title;
+            foundItem.ShortTitle = input.sTitle;
 
             if (input.cIds != null)
                 foreach (int cId in input.cIds)

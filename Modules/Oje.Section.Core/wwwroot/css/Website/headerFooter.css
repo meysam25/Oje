@@ -19,7 +19,7 @@
 html {
     direction: rtl;
     height: 100%;
-    overflow-x:hidden;
+    overflow-x: hidden;
 }
 
 body {
@@ -180,13 +180,27 @@ body {
 .headerMenuItemHasArrow:after {
     content: ' ';
     position: absolute;
-    left: -14px;
+    left: -16px;
     top: 46%;
     width: 0;
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid #585f66;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid #585f66;
+    z-index: 1;
+}
+
+.headerMenuItemHasArrow:before {
+    content: ' ';
+    position: absolute;
+    left: -16px;
+    top: calc( 46% - 1px);
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid white;
+    z-index: 2;
 }
 
 .headerMenuItemSumMenuItemsInner {
@@ -310,7 +324,7 @@ body {
 }
 
 .footerSharingIconSection img {
-    display:inline-block;
+    display: inline-block;
     margin: 6px 15px 6px 15px;
 }
 
@@ -619,7 +633,7 @@ body {
 
 .footerWeAreMoreThenGoodSectionResonDescription {
     color: #6c7680;
-    margin:0px 10px;
+    margin: 0px 10px;
 }
 
 .footerDownloadMobileAppDescriptionTitle {
@@ -887,9 +901,10 @@ body {
         width: 70px;
         height: 55px;
     }
+
     .mainHeaderLogo {
-        width:55px;
-        height:55px;
+        width: 55px;
+        height: 55px;
     }
 
     .footerDownloadMobileApp {
@@ -1046,29 +1061,37 @@ body {
     .myContainer {
         width: 100% !important;
     }
+
     .modal-dialog.myContainer {
         width: 96% !important;
     }
 }
 
+@media (max-width: 700px) {
+    .modal-dialog.myContainer {
+        width: 100% !important;
+        margin:0px;
+    }
+}
+
 .logedInUserMenu {
     position: relative;
-    margin-left:10px;
+    margin-left: 10px;
 }
-   
 
-    .logedInUserMenuFullname {
-        display:inline-block;
-        line-height: 38px;
-        font-weight: bold;
-        width: 150px;
-        overflow: hidden;
-        white-space: nowrap;
-        -ms-text-overflow: ellipsis;
-        -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
-        cursor: pointer;
-    }
+
+.logedInUserMenuFullname {
+    display: inline-block;
+    line-height: 38px;
+    font-weight: bold;
+    width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
 
 .logedInUserMenuItems {
     max-height: 0px;
@@ -1083,27 +1106,28 @@ body {
     border-radius: 3px;
     -moz-transition: 0.5s;
     -o-transition: 0.5s;
-    -webkit-transition:  0.5s;
-    transition:  0.5s;
-    border:1px solid transparent;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    border: 1px solid transparent;
 }
+
 .logedInUserMenu:hover .logedInUserMenuItems {
     max-height: 500px;
-    border:1px solid silver;
+    border: 1px solid silver;
 }
 
-    .logedInUserMenuItems a {
-        display: block;
-        padding-right:5px;
-        line-height: 39px;
-        border-bottom: 1px solid silver;
-        color: #585858;
+.logedInUserMenuItems a {
+    display: block;
+    padding-right: 5px;
+    line-height: 39px;
+    border-bottom: 1px solid silver;
+    color: #585858;
+}
+
+    .logedInUserMenuItems a:hover {
+        color: black;
     }
 
-        .logedInUserMenuItems a:hover {
-            color: black;
-        }
-
-        .logedInUserMenuItems a:last-child {
-            border-bottom: none;
-        }
+    .logedInUserMenuItems a:last-child {
+        border-bottom: none;
+    }
