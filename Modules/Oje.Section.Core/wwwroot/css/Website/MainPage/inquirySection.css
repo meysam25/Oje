@@ -7,7 +7,7 @@
     margin: 40px 5px;
     background-color: white;
     display: flex;
-    padding:5px;
+    padding: 5px;
 }
 
 .inquirySectionTab {
@@ -23,7 +23,7 @@
     display: flex;
     padding-bottom: 15px;
     border-bottom: 1px solid #e5e5e5;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .inquirySectionTabHeaderItem {
@@ -35,8 +35,9 @@
 .inquirySectionTabHeaderItemInner {
     display: inline-block;
     cursor: pointer;
-    position:relative;
+    position: relative;
 }
+
     .inquirySectionTabHeaderItemInner:after {
         content: ' ';
         position: absolute;
@@ -85,35 +86,112 @@
 
 .inquirySectionTabBodyItem {
     display: none;
-    padding:10px;
+    padding: 10px;
 }
-.inquirySectionTabHeaderItemActive{
-    cursor:default;
+
+.inquirySectionTabHeaderItemActive {
+    cursor: default;
 }
-.inquirySectionTabHeaderItemActive > div {
-    color: #0077db !important;
-}
+
+    .inquirySectionTabHeaderItemActive > div {
+        color: #0077db !important;
+    }
+
 .inquirySectionTabHeaderItemActive {
     display: block;
     -webkit-flex-grow: 1;
     flex-grow: 1;
 }
-.inquirySectionTabHeaderItemActive:after {
-    background-color: #0077db
-}
+
+    .inquirySectionTabHeaderItemActive:after {
+        background-color: #0077db
+    }
+
 @media (max-width: 650px) {
+    .inquirySection {
+        padding: 0px;
+    }
+
     .inquirySectionTabHeaderItems {
         -ms-flex-wrap: wrap;
         -webkit-flex-wrap: wrap;
         flex-wrap: wrap;
         padding-bottom: 0px;
-        border: 1px solid #80aed6;
+        border-bottom: none;
     }
+
     .inquirySectionTabHeaderItem {
-        width: 33.33333%;
-        border: 1px solid #80aed6;
+        width: 50%;
+        border-left: 1px solid #e2e6e9;
+        border-bottom: 1px solid #e2e6e9;
+        text-align: right;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
-    .inquirySectionTabHeaderItemActive:after{
-        display:none;
+
+        .inquirySectionTabHeaderItem:nth-child(even) {
+            border-left: none;
+        }
+
+    .inquirySectionTabHeaderItemActive:after {
+        display: none;
     }
+
+    .inquirySectionTabHeaderItemInner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 10px;
+        height: 100%;
+    }
+
+        .inquirySectionTabHeaderItemInner > div {
+            -webkit-flex-grow: 1;
+            flex-grow: 1;
+            padding-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .inquirySectionTabHeaderItemInner > img {
+            width: 32px;
+            height: 32px;
+        }
+
+    .inquirySectionTabBodyItems {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        right: -100vw;
+        background-color: white;
+        z-index: 999;
+        top: 0px;
+        -moz-transition: 0.4s;
+        -o-transition: 0.4s;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+    }
+
+    .inquirySectionTabBodyItemsActive {
+        right: 0px;
+    }
+
+    .inquirySectionTabBodyItems #searchPanel > .myPanelTitle {
+        position: relative;
+        padding-right: 20px !important;
+    }
+
+        .inquirySectionTabBodyItems #searchPanel > .myPanelTitle:before, .inquirySectionTabBodyItems #searchPanel > .myPanelTitle:after {
+            position: absolute;
+            content: ' ';
+            right: 3px;
+            top: 10px;
+            border-left: 10px solid black;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        .inquirySectionTabBodyItems #searchPanel > .myPanelTitle:after {
+            border-left-color: white;
+            right: 4px;
+        }
 }

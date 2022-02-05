@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "FireInsuranceBuildingAgeGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('FireInsuranceBuildingAgeAddGridModal', this)",
+              "type": "add",
+              "modalId": "FireInsuranceBuildingAgeAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FireBaseData/FireInsuranceBuildingAge/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "FireInsuranceBuildingAgeModal",
                 "url": "/FireBaseData/FireInsuranceBuildingAge/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceBuildingAge/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceBuildingAge/GetById\\', \\'FireInsuranceBuildingAgeModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -71,7 +73,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "FireInsuranceBuildingAgeAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -124,14 +126,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceBuildingAge/Create')",
+              "onClick": "postModalData(this, 'FireInsuranceBuildingAgeGrid', '/FireBaseData/FireInsuranceBuildingAge/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "FireInsuranceBuildingAgeModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -184,7 +186,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceBuildingAge/Update')",
+              "onClick": "postModalData(this, 'FireInsuranceBuildingAgeGrid', '/FireBaseData/FireInsuranceBuildingAge/Update')",
               "class": "btn-primary"
             }
           ]

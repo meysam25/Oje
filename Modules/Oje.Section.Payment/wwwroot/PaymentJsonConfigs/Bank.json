@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "BankuserGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('BankAddGridModal', this)",
+              "type": "add",
+              "modalId": "BankAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FinancialBaseData/Bank/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "editBankModal",
                 "url": "/FinancialBaseData/Bank/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/Bank/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/Bank/GetById\\', \\'editBankModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -64,7 +66,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "BankAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -103,14 +105,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/Bank/Create')",
+              "onClick": "postModalData(this, 'BankuserGrid', '/FinancialBaseData/Bank/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "editBankModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -149,7 +151,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/Bank/Update')",
+              "onClick": "postModalData(this, 'BankuserGrid', '/FinancialBaseData/Bank/Update')",
               "class": "btn-primary"
             }
           ]

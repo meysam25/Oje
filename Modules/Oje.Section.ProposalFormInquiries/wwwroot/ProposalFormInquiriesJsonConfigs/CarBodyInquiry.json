@@ -415,12 +415,11 @@
       "id": "responsePanel",
       "moduals": [
         {
-          "class": "modal-xl makeModalMinH100 myContainer",
+          "class": "modal-xl makeModalMinH100 myContainer fixNoThirdBug",
           "id": "gridModal",
           "title": "استعلام",
           "panels": [
             {
-
               "ctrls": [
                 {
                   "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -436,7 +435,58 @@
               ]
             },
             {
-              "class": "col-md-4 col-sm-5 col-xl-4 col-lg-4 col-xs-12",
+              "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12 onlyMobile600T",
+              "ePanels": [
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "مدت زمانه بیمه نامه",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "dayLimitation",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetValidDayForGridFilter",
+                      "label": "خرید بیمه نامه روزانه",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
+                },
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "تخفیفات",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "discountContractId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetValidContractForGrid",
+                      "label": "تخفیف تفاهم نامه",
+                      "onChange": "refreshGrid('userGrid')"
+                    },
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "discountCode",
+                      "type": "text",
+                      "label": "کد تخفیف",
+                      "onChange": "refreshGrid('userGrid')"
+                    },
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "title": "اعمال کد تخفیف",
+                      "class": "btn-block btn-primary",
+                      "onClick": "",
+                      "type": "button"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "class": "inquiryModalRightFilter",
               "ePanels": [
                 {
                   "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
@@ -504,7 +554,7 @@
               ]
             },
             {
-              "class": "col-md-8 col-sm-7 col-xl-8 col-lg-8 col-xs-12",
+              "class": "inquiryModalLeftFilter",
               "grids": [
                 {
                   "id": "userGrid",
@@ -529,7 +579,8 @@
                     ]
                   },
                   "formatters": {
-                    "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'"
+                    "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'",
+                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزییات بیشتر<i></i></span>'"
                   },
                   "columns": [
                     {
@@ -542,8 +593,10 @@
                       "caption": "شرکت"
                     },
                     {
-                      "field": "p",
-                      "caption": "حق بیمه پایه"
+                      "class": "myGridExButton",
+                      "field": "expandButton",
+                      "caption": " ",
+                      "formatter": "customeExpandButton"
                     },
                     {
                       "field": "sp",
@@ -552,6 +605,7 @@
                   ],
                   "detailesClientSchema": "dt",
                   "detailes": {
+                    "headerTemplate": "<div class=\"gridDetailesHeader\" ><i onclick=\"closeThisDetailes(this)\"></i><span>جزییات استعلام</span></div>",
                     "id": "detailesGrid",
                     "key": "id",
                     "itemPerPage": 10,
@@ -568,13 +622,31 @@
                       {
                         "field": "p",
                         "caption": "مبلغ"
-                      },
-                      {
-                        "field": "isET",
-                        "caption": "وضعیت"
                       }
                     ]
                   }
+                }
+              ]
+            },
+            {
+              "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12 onlyMobile600T",
+              "ePanels": [
+                {
+                  "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
+                  "title": "مقایسه شرکت ها",
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "name": "comIds",
+                      "type": "multiSelectImg",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "imgfield": "src",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCompanyListGridFilter",
+                      "label": "جستجو در شرکت های بیمه",
+                      "onChange": "refreshGrid('userGrid')"
+                    }
+                  ]
                 }
               ]
             }

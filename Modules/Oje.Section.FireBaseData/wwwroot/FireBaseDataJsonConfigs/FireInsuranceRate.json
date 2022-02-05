@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "FireInsuranceRateGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('FireInsuranceRateAddGridModal', this)",
+              "type": "add",
+              "modalId": "FireInsuranceRateAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FireBaseData/FireInsuranceRate/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "FireInsuranceRateModal",
                 "url": "/FireBaseData/FireInsuranceRate/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceRate/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceRate/GetById\\', \\'FireInsuranceRateModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -115,7 +117,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "FireInsuranceRateAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -165,7 +167,7 @@
               "type": "text",
               "label": "حداقل",
               "isRequired": true,
-              "seperator": true 
+              "seperator": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -200,14 +202,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceRate/Create')",
+              "onClick": "postModalData(this, 'FireInsuranceRateGrid', '/FireBaseData/FireInsuranceRate/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "FireInsuranceRateModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -292,7 +294,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceRate/Update')",
+              "onClick": "postModalData(this, 'FireInsuranceRateGrid', '/FireBaseData/FireInsuranceRate/Update')",
               "class": "btn-primary"
             }
           ]

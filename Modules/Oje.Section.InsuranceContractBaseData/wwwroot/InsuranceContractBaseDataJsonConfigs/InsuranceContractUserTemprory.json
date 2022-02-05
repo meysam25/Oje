@@ -3,13 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "InsuranceContractUserTemproryGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)",
+              "onClick": "showModal('InsuranceContractUserTemproryaddGridModal', this)",
               "type": "add",
-              "modalId": "addGridModal"
+              "modalId": "InsuranceContractUserTemproryaddGridModal"
             },
             {
               "title": "دانلود فایل نمونه",
@@ -31,9 +31,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "InsuranceContractUserTemproryeditGridModal",
                 "url": "/InsuranceContractBaseData/InsuranceContractUserTemprory/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractUserTemprory/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractUserTemprory/GetById\\', \\'InsuranceContractUserTemproryeditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "ajax",
@@ -150,7 +150,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "addGridModal",
+          "id": "InsuranceContractUserTemproryaddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -290,14 +290,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContractUserTemprory/Create')",
+              "onClick": "postModalData(this, 'InsuranceContractUserTemproryGrid', '/InsuranceContractBaseData/InsuranceContractUserTemprory/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editGridModal",
+          "id": "InsuranceContractUserTemproryeditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -437,7 +437,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContractUserTemprory/Update')",
+              "onClick": "postModalData(this, 'InsuranceContractUserTemproryGrid', '/InsuranceContractBaseData/InsuranceContractUserTemprory/Update')",
               "class": "btn-primary"
             }
           ]

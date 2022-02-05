@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ThirdPartyBodyNoDamageDiscountHistoryGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ThirdPartyBodyNoDamageDiscountHistoryAddGridModal', this)",
+              "type": "add",
+              "modalId": "ThirdPartyBodyNoDamageDiscountHistoryAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ThirdPartyBodyNoDamageDiscountHistoryModal",
                 "url": "/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/GetById\\', \\'ThirdPartyBodyNoDamageDiscountHistoryModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -71,7 +73,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "ThirdPartyBodyNoDamageDiscountHistoryAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -110,14 +112,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/Create')",
+              "onClick": "postModalData(this, 'ThirdPartyBodyNoDamageDiscountHistoryGrid', '/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "ThirdPartyBodyNoDamageDiscountHistoryModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -156,7 +158,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/Update')",
+              "onClick": "postModalData(this, 'ThirdPartyBodyNoDamageDiscountHistoryGrid', '/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/Update')",
               "class": "btn-primary"
             }
           ]

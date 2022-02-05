@@ -607,6 +607,7 @@ input[type=checkbox] + label, input[type=checkbox] {
 .inquiryModalRightFilter {
     width: 280px;
     padding: 15px;
+    padding-right:25px;
 }
 
 .multiSelectLineMakeSmallVersion {
@@ -637,6 +638,13 @@ input[type=checkbox] + label, input[type=checkbox] {
     .inquiryModalLeftFilter {
         width: calc(100% - 60px);
         padding-left:2px;
+    }
+    .fixNoThirdBug .inquiryModalLeftFilter {
+        width:100%;
+        padding-left:15px;
+    }
+    .fixNoThirdBug .inquiryModalRightFilter {
+        display:none;
     }
 }
 

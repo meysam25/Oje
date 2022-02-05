@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "NoDamageDiscountGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('NoDamageDiscountAddGridModal', this)",
+              "type": "add",
+              "modalId": "NoDamageDiscountAddGridModal"
             }
           ],
           "exportToExcelUrl": "/InquiryBaseData/NoDamageDiscount/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "NoDamageDiscountModal",
                 "url": "/InquiryBaseData/NoDamageDiscount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/NoDamageDiscount/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/NoDamageDiscount/GetById\\', \\'NoDamageDiscountModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -88,7 +90,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "NoDamageDiscountAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -153,14 +155,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/NoDamageDiscount/Create')",
+              "onClick": "postModalData(this, 'NoDamageDiscountGrid', '/InquiryBaseData/NoDamageDiscount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "NoDamageDiscountModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -225,7 +227,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/NoDamageDiscount/Update')",
+              "onClick": "postModalData(this, 'NoDamageDiscountGrid', '/InquiryBaseData/NoDamageDiscount/Update')",
               "class": "btn-primary"
             }
           ]

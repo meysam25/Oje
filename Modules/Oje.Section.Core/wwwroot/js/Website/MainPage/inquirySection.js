@@ -19,8 +19,8 @@ $.fn.initInquiryTab = function () {
         }
 
         curElement.clickHeaderTabItem = function (curThis) {
-            if ($(curThis).hasClass('inquirySectionTabHeaderItemActive'))
-                return false;
+            //if ($(curThis).hasClass('inquirySectionTabHeaderItemActive'))
+            //    return false;
             var foundIndex = $(curThis).closest('.inquirySectionTab')[0].getSelectTabIndex(curThis);
             var curUrl = $(curThis).closest('.inquirySectionTabHeaderItem').attr('data-json-url');
             $(curThis).closest('.inquirySectionTabHeaderItems').find('.inquirySectionTabHeaderItemActive').removeClass('inquirySectionTabHeaderItemActive');
@@ -32,6 +32,8 @@ $.fn.initInquiryTab = function () {
                 holderSelector.addClass('inquirySectionTabHeaderItemActive');
                 $(curThis).closest('.inquirySectionTab')[0].loadStepConfig(curUrl, holderSelector);
             }
+            if ($(window).width() <= 650)
+                $(curThis).closest('.inquirySectionTab').find('.inquirySectionTabBodyItems').addClass('inquirySectionTabBodyItemsActive');
         }
 
         curElement.showLoader = function (holderSelector) {
@@ -41,10 +43,17 @@ $.fn.initInquiryTab = function () {
 
         curElement.loadStepConfig = function (url, holderSelector) {
             $(this)[0].showLoader(holderSelector);
-            loadJsonConfig(url, holderSelector);
+            loadJsonConfig(url, holderSelector, function () {
+                if ($(window).width() <= 650) {
+                    $(this.holderSelector).find('.row > .myPanel > .myPanelTitle').click(function () {
+                        $(this).closest('.inquirySectionTabBodyItemsActive').removeClass('inquirySectionTabBodyItemsActive');
+                    });
+                }
+            }.bind({ holderSelector: holderSelector }));
         };
 
-        $(curElement).find('.inquirySectionTabHeaderItem:first-child').find('.inquirySectionTabHeaderItemInner').click();
+        if ($(window).width() > 650)
+            $(curElement).find('.inquirySectionTabHeaderItem:first-child').find('.inquirySectionTabHeaderItemInner').click();
 
     });
 };

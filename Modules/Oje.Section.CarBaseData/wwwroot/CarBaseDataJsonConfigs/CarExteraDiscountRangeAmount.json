@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "CarExteraDiscountRangeAmountGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('CarExteraDiscountRangeAmountAddGridModal', this)",
+              "type": "add",
+              "modalId": "CarExteraDiscountRangeAmountAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarBaseData/CarExteraDiscountRangeAmount/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "CarExteraDiscountRangeAmountModal",
                 "url": "/CarBaseData/CarExteraDiscountRangeAmount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/CarExteraDiscountRangeAmount/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/CarExteraDiscountRangeAmount/GetById\\', \\'CarExteraDiscountRangeAmountModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -95,7 +97,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "CarExteraDiscountRangeAmountAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -188,14 +190,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBaseData/CarExteraDiscountRangeAmount/Create')",
+              "onClick": "postModalData(this, 'CarExteraDiscountRangeAmountGrid', '/CarBaseData/CarExteraDiscountRangeAmount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "CarExteraDiscountRangeAmountModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -288,7 +290,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBaseData/CarExteraDiscountRangeAmount/Update')",
+              "onClick": "postModalData(this, 'CarExteraDiscountRangeAmountGrid', '/CarBaseData/CarExteraDiscountRangeAmount/Update')",
               "class": "btn-primary"
             }
           ]

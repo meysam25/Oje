@@ -3,7 +3,7 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "SmsSendingQueueGrid",
           "showColumnConfigButton": true,
           "key": "id",
           "url": "/MessengerBaseData/SmsSendingQueue/GetList",

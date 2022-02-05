@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "InquiryMaxDiscountGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('InquiryMaxDiscountAddGridModal', this)",
+              "type": "add",
+              "modalId": "InquiryMaxDiscountAddGridModal"
             }
           ],
           "exportToExcelUrl": "/InquiryBaseData/InquiryMaxDiscount/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "InquiryMaxDiscountModal",
                 "url": "/InquiryBaseData/InquiryMaxDiscount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/InquiryMaxDiscount/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/InquiryMaxDiscount/GetById\\', \\'InquiryMaxDiscountModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -88,7 +90,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "InquiryMaxDiscountAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -147,14 +149,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/InquiryMaxDiscount/Create')",
+              "onClick": "postModalData(this, 'InquiryMaxDiscountGrid', '/InquiryBaseData/InquiryMaxDiscount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "InquiryMaxDiscountModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -213,7 +215,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/InquiryMaxDiscount/Update')",
+              "onClick": "postModalData(this, 'InquiryMaxDiscountGrid', '/InquiryBaseData/InquiryMaxDiscount/Update')",
               "class": "btn-primary"
             }
           ]

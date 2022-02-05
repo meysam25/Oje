@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ThirdPartyCarCreateDatePercentGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ThirdPartyCarCreateDatePercentAddGridModal', this)",
+              "type": "add",
+              "modalId": "ThirdPartyCarCreateDatePercentAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ThirdPartyCarCreateDatePercentModal",
                 "url": "/CarThirdBaseData/ThirdPartyCarCreateDatePercent/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyCarCreateDatePercent/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyCarCreateDatePercent/GetById\\', \\'ThirdPartyCarCreateDatePercentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -85,7 +87,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "ThirdPartyCarCreateDatePercentAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -138,14 +140,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Create')",
+              "onClick": "postModalData(this, 'ThirdPartyCarCreateDatePercentGrid', '/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "ThirdPartyCarCreateDatePercentModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -198,7 +200,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Update')",
+              "onClick": "postModalData(this, 'ThirdPartyCarCreateDatePercentGrid', '/CarThirdBaseData/ThirdPartyCarCreateDatePercent/Update')",
               "class": "btn-primary"
             }
           ]

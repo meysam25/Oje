@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "InsuranceContractGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+              "onClick": "showModal('InsuranceContractaddGridModal', this)",
+              "type": "add",
+              "modalId": "InsuranceContractaddGridModal"
             }
           ],
           "exportToExcelUrl": "/InsuranceContractBaseData/InsuranceContract/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "InsuranceContracteditGridModal",
                 "url": "/InsuranceContractBaseData/InsuranceContract/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContract/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContract/GetById\\', \\'InsuranceContracteditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -105,7 +107,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "addGridModal",
+          "id": "InsuranceContractaddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -206,14 +208,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContract/Create')",
+              "onClick": "postModalData(this, 'InsuranceContractGrid', '/InsuranceContractBaseData/InsuranceContract/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editGridModal",
+          "id": "InsuranceContracteditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -314,7 +316,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContract/Update')",
+              "onClick": "postModalData(this, 'InsuranceContractGrid', '/InsuranceContractBaseData/InsuranceContract/Update')",
               "class": "btn-primary"
             }
           ]

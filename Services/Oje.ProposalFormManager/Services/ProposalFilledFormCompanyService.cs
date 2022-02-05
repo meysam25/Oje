@@ -154,6 +154,8 @@ namespace Oje.ProposalFormService.Services
             input.cIds = input.cIds.Where(t => !canNotBeRemoved.Contains(t)).ToList();
             if (input.cIds.Count > 0)
                 Create(String.Join(",", input.cIds), input.id.ToLongReturnZiro(), loginUserId);
+            else
+                db.SaveChanges();
         }
 
         public ApiResult Delete(string id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)

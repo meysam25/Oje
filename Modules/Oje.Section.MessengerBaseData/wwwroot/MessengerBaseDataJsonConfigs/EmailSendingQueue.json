@@ -3,7 +3,7 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "EmailSendingQueueGrid",
           "showColumnConfigButton": true,
           "key": "id",
           "url": "/MessengerBaseData/EmailSendingQueue/GetList",

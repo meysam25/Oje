@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ThirdPartyLifeCommitmentGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ThirdPartyLifeCommitmentAddGridModal', this)",
+              "type": "add",
+              "modalId": "ThirdPartyLifeCommitmentAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarThirdBaseData/ThirdPartyLifeCommitment/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ThirdPartyLifeCommitmentModal",
                 "url": "/CarThirdBaseData/ThirdPartyLifeCommitment/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyLifeCommitment/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyLifeCommitment/GetById\\', \\'ThirdPartyLifeCommitmentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -78,7 +80,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "ThirdPartyLifeCommitmentAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -125,14 +127,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyLifeCommitment/Create')",
+              "onClick": "postModalData(this, 'ThirdPartyLifeCommitmentGrid', '/CarThirdBaseData/ThirdPartyLifeCommitment/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "ThirdPartyLifeCommitmentModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -179,7 +181,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyLifeCommitment/Update')",
+              "onClick": "postModalData(this, 'ThirdPartyLifeCommitmentGrid', '/CarThirdBaseData/ThirdPartyLifeCommitment/Update')",
               "class": "btn-primary"
             }
           ]

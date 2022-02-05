@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "CarExteraDiscountCategoryGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('CarExteraDiscountCategoryAddGridModal', this)",
+              "type": "add",
+              "modalId": "CarExteraDiscountCategoryAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarBaseData/CarExteraDiscountCategory/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "CarExteraDiscountCategoryModal",
                 "url": "/CarBaseData/CarExteraDiscountCategory/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/CarExteraDiscountCategory/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/CarExteraDiscountCategory/GetById\\', \\'CarExteraDiscountCategoryModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -61,7 +63,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "CarExteraDiscountCategoryAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -90,14 +92,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/CarBaseData/CarExteraDiscountCategory/Create')",
+              "onClick": "postModalData(this, 'CarExteraDiscountCategoryGrid', '/CarBaseData/CarExteraDiscountCategory/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "CarExteraDiscountCategoryModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -126,7 +128,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/CarBaseData/CarExteraDiscountCategory/Update')",
+              "onClick": "postModalData(this, 'CarExteraDiscountCategoryGrid', '/CarBaseData/CarExteraDiscountCategory/Update')",
               "class": "btn-primary"
             }
           ]

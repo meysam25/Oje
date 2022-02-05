@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ThirdPartyDriverFinancialCommitmentGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ThirdPartyDriverFinancialCommitmentAddGridModal', this)",
+              "type": "add",
+              "modalId": "ThirdPartyDriverFinancialCommitmentAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ThirdPartyDriverFinancialCommitmentModal",
                 "url": "/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/GetById\\', \\'ThirdPartyDriverFinancialCommitmentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -78,7 +80,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "ThirdPartyDriverFinancialCommitmentAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -125,14 +127,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/Create')",
+              "onClick": "postModalData(this, 'ThirdPartyDriverFinancialCommitmentGrid', '/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "ThirdPartyDriverFinancialCommitmentModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -179,7 +181,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/Update')",
+              "onClick": "postModalData(this, 'ThirdPartyDriverFinancialCommitmentGrid', '/CarThirdBaseData/ThirdPartyDriverFinancialCommitment/Update')",
               "class": "btn-primary"
             }
           ]

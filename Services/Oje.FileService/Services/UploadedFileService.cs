@@ -51,7 +51,7 @@ namespace Oje.FileService.Services
 
             string subFolder = "";
             string bitmapSizeStr = fileType.GetAttribute<DisplayAttribute>()?.Description + "";
-          
+
             bool? dontCovertToWebP = false;
 
             try { dontCovertToWebP = fileType.GetAttribute<DisplayAttribute>()?.AutoGenerateFilter; } catch { }
@@ -59,7 +59,7 @@ namespace Oje.FileService.Services
             if (!string.IsNullOrEmpty(fileType.GetAttribute<DisplayAttribute>()?.Prompt))
                 subFolder = fileType.GetAttribute<DisplayAttribute>()?.Prompt;
 
-            string fn = newFile.Id + "_" + fi.Name.Replace(fi.Extension, "").Slugify() + (!string.IsNullOrEmpty(bitmapSizeStr) ? ("-" + bitmapSizeStr.Replace("*", "x")) : "")  + ((isImage(fi.Extension) && dontCovertToWebP == false) ? ".webp" : fi.Extension);
+            string fn = newFile.Id + "_" + fi.Name.Replace(fi.Extension, "").Slugify() + (!string.IsNullOrEmpty(bitmapSizeStr) ? ("-" + bitmapSizeStr.Replace("*", "x")) : "") + ((isImage(fi.Extension) && dontCovertToWebP == false) ? ".webp" : fi.Extension);
             string tempFilePath = Path.Combine(GlobalConfig.GetUploadImageDirectory(subFolder));
             if (objectId != null)
                 tempFilePath = Path.Combine(tempFilePath, objectId + "");
@@ -111,7 +111,7 @@ namespace Oje.FileService.Services
         {
             if (OperatingSystem.IsWindows())
             {
-                if(dontCovertToWebP == true)
+                if (dontCovertToWebP == true)
                 {
                     ImageCodecInfo jpgEncoder = null;
                     if (!string.IsNullOrEmpty(FileNameExtension) && FileNameExtension.ToLower() == ".png")
@@ -254,7 +254,7 @@ namespace Oje.FileService.Services
                 .Select(t => new
                 {
                     t.id,
-                    src = isImage(Path.GetFileName(t.src)) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg"
+                    src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg"
                 })
                 .ToList()
                 ;

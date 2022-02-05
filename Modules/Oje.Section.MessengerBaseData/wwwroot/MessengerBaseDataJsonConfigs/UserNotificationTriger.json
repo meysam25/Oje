@@ -3,13 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "UserNotificationTrigerGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)",
+              "onClick": "showModal('UserNotificationTrigeraddGridModal', this)",
               "type": "add",
-              "modalId": "addGridModal"
+              "modalId": "UserNotificationTrigeraddGridModal"
             }
           ],
           "exportToExcelUrl": "/MessengerBaseData/UserNotificationTriger/Export",
@@ -23,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "UserNotificationTrigereditGridModal",
                 "url": "/MessengerBaseData/UserNotificationTriger/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/UserNotificationTriger/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/UserNotificationTriger/GetById\\', \\'UserNotificationTrigereditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -72,7 +72,7 @@
       ],
       "moduals": [
         {
-          "id": "addGridModal",
+          "id": "UserNotificationTrigeraddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -116,13 +116,13 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/UserNotificationTriger/Create')",
+              "onClick": "postModalData(this, 'UserNotificationTrigerGrid', '/MessengerBaseData/UserNotificationTriger/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
-          "id": "editGridModal",
+          "id": "UserNotificationTrigereditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -167,7 +167,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/UserNotificationTriger/Update')",
+              "onClick": "postModalData(this, 'UserNotificationTrigerGrid', '/MessengerBaseData/UserNotificationTriger/Update')",
               "class": "btn-primary"
             }
           ]

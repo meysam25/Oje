@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "FireInsuranceTypeOfActivityGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('FireInsuranceTypeOfActivityAddGridModal', this)",
+              "type": "add",
+              "modalId": "FireInsuranceTypeOfActivityAddGridModal"
             }
           ],
           "exportToExcelUrl": "/InquiryBaseData/CashPayDiscount/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "FireInsuranceTypeOfActivityModal",
                 "url": "/InquiryBaseData/CashPayDiscount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/CashPayDiscount/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/CashPayDiscount/GetById\\', \\'FireInsuranceTypeOfActivityModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -88,7 +90,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "FireInsuranceTypeOfActivityAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -147,14 +149,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/CashPayDiscount/Create')",
+              "onClick": "postModalData(this, 'FireInsuranceTypeOfActivityGrid', '/InquiryBaseData/CashPayDiscount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "FireInsuranceTypeOfActivityModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -213,7 +215,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/CashPayDiscount/Update')",
+              "onClick": "postModalData(this, 'FireInsuranceTypeOfActivityGrid', '/InquiryBaseData/CashPayDiscount/Update')",
               "class": "btn-primary"
             }
           ]

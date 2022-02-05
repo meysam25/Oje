@@ -26,7 +26,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetLightList()
         {
-            List<object> result = new();
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
 
             result.AddRange(db.Companies.Select(t => new { id = t.Id, title = t.Title, src = GlobalConfig.FileAccessHandlerUrl + t.Pic32 }).ToList());
 

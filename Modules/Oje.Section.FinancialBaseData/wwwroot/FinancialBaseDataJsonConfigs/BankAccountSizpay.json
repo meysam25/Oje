@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "BankAccountSizpayGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('BankAccountSizpayAddGridModal', this)",
+              "type": "add",
+              "modalId": "BankAccountSizpayAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FinancialBaseData/BankAccountSizpay/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "BankAccountSizpayModal",
                 "url": "/FinancialBaseData/BankAccountSizpay/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/BankAccountSizpay/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/BankAccountSizpay/GetById\\', \\'BankAccountSizpayModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -75,7 +77,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "BankAccountSizpayAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -132,14 +134,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/BankAccountSizpay/Create')",
+              "onClick": "postModalData(this, 'BankAccountSizpayGrid', '/FinancialBaseData/BankAccountSizpay/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "BankAccountSizpayModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -197,7 +199,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/BankAccountSizpay/Update')",
+              "onClick": "postModalData(this, 'BankAccountSizpayGrid', '/FinancialBaseData/BankAccountSizpay/Update')",
               "class": "btn-primary"
             }
           ]

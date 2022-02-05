@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "FireInsuranceCoverageGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('FireInsuranceCoverageAddGridModal', this)",
+              "type": "add",
+              "modalId": "FireInsuranceCoverageAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FireBaseData/FireInsuranceCoverage/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "FireInsuranceCoverageModal",
                 "url": "/FireBaseData/FireInsuranceCoverage/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceCoverage/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceCoverage/GetById\\', \\'FireInsuranceCoverageModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -95,7 +97,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "FireInsuranceCoverageAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -164,14 +166,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceCoverage/Create')",
+              "onClick": "postModalData(this, 'FireInsuranceCoverageGrid', '/FireBaseData/FireInsuranceCoverage/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "FireInsuranceCoverageModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -240,7 +242,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceCoverage/Update')",
+              "onClick": "postModalData(this, 'FireInsuranceCoverageGrid', '/FireBaseData/FireInsuranceCoverage/Update')",
               "class": "btn-primary"
             }
           ]

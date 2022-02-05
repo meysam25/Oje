@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ThirdPartyPassengerRateGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ThirdPartyPassengerRateAddGridModal', this)",
+              "type": "add",
+              "modalId": "ThirdPartyPassengerRateAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarThirdBaseData/ThirdPartyPassengerRate/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ThirdPartyPassengerRateModal",
                 "url": "/CarThirdBaseData/ThirdPartyPassengerRate/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyPassengerRate/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyPassengerRate/GetById\\', \\'ThirdPartyPassengerRateModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -95,7 +97,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "ThirdPartyPassengerRateAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -161,14 +163,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyPassengerRate/Create')",
+              "onClick": "postModalData(this, 'ThirdPartyPassengerRateGrid', '/CarThirdBaseData/ThirdPartyPassengerRate/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "ThirdPartyPassengerRateModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -234,7 +236,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarThirdBaseData/ThirdPartyPassengerRate/Update')",
+              "onClick": "postModalData(this, 'ThirdPartyPassengerRateGrid', '/CarThirdBaseData/ThirdPartyPassengerRate/Update')",
               "class": "btn-primary"
             }
           ]

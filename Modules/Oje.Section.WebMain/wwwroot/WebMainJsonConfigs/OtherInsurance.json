@@ -1,7 +1,7 @@
 ﻿{
   "panels": [
     {
-      "id": "addNewPPF",
+      "id": "searchPanel",
       "title": "ثبت فرم پیشنهاد",
       "ctrls": [
         {
@@ -28,7 +28,7 @@
           "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
           "type": "button",
           "class": "btn-block btn-primary",
-          "onClick": "openNewLink('addNewPPF', '/Proposal/Form')",
+          "onClick": "openNewLink('searchPanel', '/Proposal/Form')",
           "title": "شروع"
         }
 

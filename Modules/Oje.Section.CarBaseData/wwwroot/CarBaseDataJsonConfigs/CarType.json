@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "CarTypeGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('CarTypeAddGridModal', this)",
+              "type": "add",
+              "modalId": "CarTypeAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarBaseData/CarType/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "CarTypeModal",
                 "url": "/CarBaseData/CarType/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/CarType/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/CarType/GetById\\', \\'CarTypeModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -64,7 +66,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "CarTypeAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -102,14 +104,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBaseData/CarType/Create')",
+              "onClick": "postModalData(this, 'CarTypeGrid', '/CarBaseData/CarType/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "CarTypeModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -147,7 +149,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBaseData/CarType/Update')",
+              "onClick": "postModalData(this, 'CarTypeGrid', '/CarBaseData/CarType/Update')",
               "class": "btn-primary"
             }
           ]

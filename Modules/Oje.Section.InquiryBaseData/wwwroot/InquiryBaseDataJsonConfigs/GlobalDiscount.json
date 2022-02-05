@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "GlobalDiscountGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+              "onClick": "showModal('GlobalDiscountaddGridModal', this)",
+              "type": "add",
+              "modalId": "GlobalDiscountaddGridModal"
             }
           ],
           "exportToExcelUrl": "/InquiryBaseData/GlobalDiscount/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "GlobalDiscounteditGridModal",
                 "url": "/InquiryBaseData/GlobalDiscount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/GlobalDiscount/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/GlobalDiscount/GetById\\', \\'GlobalDiscounteditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -109,7 +111,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "addGridModal",
+          "id": "GlobalDiscountaddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -215,14 +217,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InquiryBaseData/GlobalDiscount/Create')",
+              "onClick": "postModalData(this, 'GlobalDiscountGrid', '/InquiryBaseData/GlobalDiscount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editGridModal",
+          "id": "GlobalDiscounteditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -328,7 +330,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InquiryBaseData/GlobalDiscount/Update')",
+              "onClick": "postModalData(this, 'GlobalDiscountGrid', '/InquiryBaseData/GlobalDiscount/Update')",
               "class": "btn-primary"
             }
           ]

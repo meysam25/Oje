@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "BankAccountGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('BankAccountAddGridModal', this)",
+              "type": "add",
+              "modalId": "BankAccountAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FinancialBaseData/BankAccount/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "BankAccountModal",
                 "url": "/FinancialBaseData/BankAccount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/BankAccount/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/BankAccount/GetById\\', \\'BankAccountModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -95,7 +97,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "BankAccountAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -179,14 +181,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/BankAccount/Create')",
+              "onClick": "postModalData(this, 'BankAccountGrid', '/FinancialBaseData/BankAccount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "BankAccountModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -270,7 +272,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FinancialBaseData/BankAccount/Update')",
+              "onClick": "postModalData(this, 'BankAccountGrid', '/FinancialBaseData/BankAccount/Update')",
               "class": "btn-primary"
             }
           ]

@@ -48,7 +48,7 @@ function getPanelTemplate(panel) {
             panel.id = uuidv4RemoveDash();
         result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel ' + (panel.class ? panel.class : 'col-md-12 col-sm-12 col-xs-12 col-lg-12 col-xl-12') + '" >';
         if (panel.title)
-            result += '<div style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
+            result += '<div class="myPanelTitle" style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
         if (panel.charts) {
             for (var i = 0; i < panel.charts.length; i++) {
                 result += getChartTemplate(panel.charts[i]);
@@ -2000,7 +2000,7 @@ function uploadFile(fileName, accepts, url, curButton) {
     }
 }
 
-function loadJsonConfig(jsonUrl, targetId) {
+function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished) {
     var postData = new FormData();
     if (window['exteraModelParams'])
         for (var prop in exteraModelParams)
@@ -2013,5 +2013,9 @@ function loadJsonConfig(jsonUrl, targetId) {
                 $('.mainLoaderForAdminArea').css('display', 'none');
             }, 200);
         }
-    }.bind({ targetId: targetId }));
+
+        if (this.whatToDoAfterFinished) {
+            this.whatToDoAfterFinished();
+        }
+    }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }));
 }

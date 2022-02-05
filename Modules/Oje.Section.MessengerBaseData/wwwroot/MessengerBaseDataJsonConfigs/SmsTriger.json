@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "SmsTrigerGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+              "onClick": "showModal('SmsTrigeraddGridModal', this)",
+              "type": "add",
+              "modalId": "SmsTrigeraddGridModal"
             }
           ],
           "exportToExcelUrl": "/MessengerBaseData/SmsTriger/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "SmsTrigereditGridModal",
                 "url": "/MessengerBaseData/SmsTriger/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/SmsTriger/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/SmsTriger/GetById\\', \\'SmsTrigereditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -70,7 +72,7 @@
       ],
       "moduals": [
         {
-          "id": "addGridModal",
+          "id": "SmsTrigeraddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -114,13 +116,13 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTriger/Create')",
+              "onClick": "postModalData(this, 'SmsTrigerGrid', '/MessengerBaseData/SmsTriger/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
-          "id": "editGridModal",
+          "id": "SmsTrigereditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -165,7 +167,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTriger/Update')",
+              "onClick": "postModalData(this, 'SmsTrigerGrid', '/MessengerBaseData/SmsTriger/Update')",
               "class": "btn-primary"
             }
           ]

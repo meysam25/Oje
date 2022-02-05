@@ -51,6 +51,8 @@ body {
         background: url("/Modules/Assets/MainPage/bgp.png");
         margin-right: 0px !important;
         margin-left: 0px !important;
+        width: 100vw;
+        overflow-x: hidden;
     }
 
         .wrapper > main > div > section {

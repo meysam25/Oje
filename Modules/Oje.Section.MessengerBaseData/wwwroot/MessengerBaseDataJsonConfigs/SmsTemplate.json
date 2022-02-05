@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "SmsTemplateGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+              "onClick": "showModal('SmsTemplateaddGridModal', this)",
+              "type": "add",
+              "modalId": "SmsTemplateaddGridModal"
             }
           ],
           "exportToExcelUrl": "/MessengerBaseData/SmsTemplate/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "SmsTemplateeditGridModal",
                 "url": "/MessengerBaseData/SmsTemplate/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/SmsTemplate/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/SmsTemplate/GetById\\', \\'SmsTemplateeditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -73,7 +75,7 @@
       ],
       "moduals": [
         {
-          "id": "addGridModal",
+          "id": "SmsTemplateaddGridModal",
           "class": "modal-xl",
           "title": "افزودن",
           "ctrls": [
@@ -123,13 +125,13 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTemplate/Create')",
+              "onClick": "postModalData(this, 'SmsTemplateGrid', '/MessengerBaseData/SmsTemplate/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
-          "id": "editGridModal",
+          "id": "SmsTemplateeditGridModal",
           "class": "modal-xl",
           "title": "ویرایش",
           "ctrls": [
@@ -179,7 +181,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/SmsTemplate/Update')",
+              "onClick": "postModalData(this, 'SmsTemplateGrid', '/MessengerBaseData/SmsTemplate/Update')",
               "class": "btn-primary"
             }
           ]

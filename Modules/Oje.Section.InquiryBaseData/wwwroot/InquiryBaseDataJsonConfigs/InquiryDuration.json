@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "InquiryDurationGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('InquiryDurationAddGridModal', this)",
+              "type": "add",
+              "modalId": "InquiryDurationAddGridModal"
             }
           ],
           "exportToExcelUrl": "/InquiryBaseData/InquiryDuration/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "InquiryDurationModal",
                 "url": "/InquiryBaseData/InquiryDuration/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/InquiryDuration/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/InquiryDuration/GetById\\', \\'InquiryDurationModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -95,7 +97,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "InquiryDurationAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -161,14 +163,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/InquiryDuration/Create')",
+              "onClick": "postModalData(this, 'InquiryDurationGrid', '/InquiryBaseData/InquiryDuration/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "InquiryDurationModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -234,7 +236,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/InquiryBaseData/InquiryDuration/Update')",
+              "onClick": "postModalData(this, 'InquiryDurationGrid', '/InquiryBaseData/InquiryDuration/Update')",
               "class": "btn-primary"
             }
           ]

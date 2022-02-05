@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "FireInsuranceCoverageActivityDangerLevelGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('FireInsuranceCoverageActivityDangerLevelAddGridModal', this)",
+              "type": "add",
+              "modalId": "FireInsuranceCoverageActivityDangerLevelAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FireBaseData/FireInsuranceCoverageActivityDangerLevel/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "FireInsuranceCoverageActivityDangerLevelModal",
                 "url": "/FireBaseData/FireInsuranceCoverageActivityDangerLevel/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceCoverageActivityDangerLevel/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceCoverageActivityDangerLevel/GetById\\', \\'FireInsuranceCoverageActivityDangerLevelModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -78,7 +80,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "FireInsuranceCoverageActivityDangerLevelAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -126,14 +128,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceCoverageActivityDangerLevel/Create')",
+              "onClick": "postModalData(this, 'FireInsuranceCoverageActivityDangerLevelGrid', '/FireBaseData/FireInsuranceCoverageActivityDangerLevel/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "FireInsuranceCoverageActivityDangerLevelModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -181,7 +183,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceCoverageActivityDangerLevel/Update')",
+              "onClick": "postModalData(this, 'FireInsuranceCoverageActivityDangerLevelGrid', '/FireBaseData/FireInsuranceCoverageActivityDangerLevel/Update')",
               "class": "btn-primary"
             }
           ]

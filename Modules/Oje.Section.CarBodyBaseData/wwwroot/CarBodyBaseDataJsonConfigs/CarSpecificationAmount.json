@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "CarSpecificationAmountGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('CarSpecificationAmountAddGridModal', this)",
+              "type": "add",
+              "modalId": "CarSpecificationAmountAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarBodyBaseData/CarSpecificationAmount/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "CarSpecificationAmountModal",
                 "url": "/CarBodyBaseData/CarSpecificationAmount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBodyBaseData/CarSpecificationAmount/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBodyBaseData/CarSpecificationAmount/GetById\\', \\'CarSpecificationAmountModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -92,7 +94,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "CarSpecificationAmountAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -166,14 +168,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBodyBaseData/CarSpecificationAmount/Create')",
+              "onClick": "postModalData(this, 'CarSpecificationAmountGrid', '/CarBodyBaseData/CarSpecificationAmount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "CarSpecificationAmountModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -247,7 +249,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBodyBaseData/CarSpecificationAmount/Update')",
+              "onClick": "postModalData(this, 'CarSpecificationAmountGrid', '/CarBodyBaseData/CarSpecificationAmount/Update')",
               "class": "btn-primary"
             }
           ]

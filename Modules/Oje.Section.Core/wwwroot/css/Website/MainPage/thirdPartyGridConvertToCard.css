@@ -28,7 +28,7 @@
         -webkit-box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
         box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
         text-align: right;
-        vertical-align:top;
+        vertical-align: top;
     }
 
         .thirdPartyGridConvertToCard > table > tbody > tr > td {
@@ -292,8 +292,16 @@
                     width: calc(100% - 140px) !important;
                 }
 
-@media (max-width: 650px) {
-    .thirdPartyGridConvertToCard .gridDetailesHeader {
+    .thirdPartyGridConvertToCard > table > tbody > tr > .myGridExButton {
+        width: 100%;
+    }
+
+    .thirdPartyGridConvertToCard > table > tbody > tr > .myGridExButton > .gridResTitle {
+        display: none !important;
+    }
+
+    @media (max-width: 650px) {
+        .thirdPartyGridConvertToCard .gridDetailesHeader {
         display: none !important;
     }
 
@@ -303,42 +311,51 @@
         border-radius: 5px;
         max-width: 240px;
     }
+
     .thirdPartyGridConvertToCard .floatGridDetiles {
         display: block;
     }
-        .thirdPartyGridConvertToCard > table > .myTableBody > tr > td {
-            width: 100% !important;
-            text-align: left !important;
-        }
-    .thirdPartyGridConvertToCard .floatGridDetiles .myGrid tbody > tr > td:first-child {
-        width:130px !important;
+
+    .thirdPartyGridConvertToCard > table > .myTableBody > tr > td {
+        width: 100% !important;
+        text-align: left !important;
     }
+
+    .thirdPartyGridConvertToCard .floatGridDetiles .myGrid tbody > tr > td:first-child {
+        width: 130px !important;
+    }
+
     .thirdPartyGridConvertToCard .floatGridDetiles .myGrid tbody > tr > td:last-child {
         width: calc(100% - 130px) !important;
-        text-align:left !important
+        text-align: left !important
     }
+
     .thirdPartyGridConvertToCard > table > tbody > tr {
         margin-right: 2px !important;
         margin-left: 2px !important;
         padding: 5px !important;
     }
-        .thirdPartyGridConvertToCard > table > tbody > tr > td > .gridResTitle{
-            float:right;
-            text-align:right !important;
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td > .gridResTitle {
+            float: right;
+            text-align: right !important;
         }
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(2){
-            width:76px !important;
+
+        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(2) {
+            width: 76px !important;
         }
+
         .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(3) {
             width: calc(100% - 76px);
-            text-align:right !important;
+            text-align: right !important;
         }
 }
 
 @media (max-width: 620px) {
     .thirdPartyGridConvertToCard > table > tbody > tr {
-        width:240px;
+        width: 240px;
     }
+
         .thirdPartyGridConvertToCard .floatGridDetiles .myGrid tbody > tr > td, .thirdPartyGridConvertToCard > table > tbody > tr > td {
             font-size: 0.7em;
         }

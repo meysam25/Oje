@@ -210,7 +210,7 @@ $.fn.initMyGrid = function (option) {
                         else
                             curCellData = option.formatters[option.columns[i].formatter](null, data);
                     }
-                    result += '<td style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span  class="gridResTitle">' + option.columns[i].caption + ': </span>' + curCellData + '</td>';
+                    result += '<td class="' + (option.columns[i].class ? option.columns[i].class : '') + '" style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span  class="gridResTitle">' + option.columns[i].caption + ': </span>' + curCellData + '</td>';
                 }
             }
             if (this.hasAction(option)) {
@@ -588,7 +588,7 @@ $.fn.initMyGrid = function (option) {
                 $(currButton).addClass('fa-minus-square');
                 var curTr = $(currButton).closest('tr');
                 var optionX = $(this)[0].option
-                curTr.after('<tr class="holderDetailesGrid"><td colspan="' + templateFunctions.getGridColumnCount(optionX) + '" ><div id="' + optionX.detailes.id +'" class="myGridCTRL gridDetailes"></div></td></tr>');
+                curTr.after('<tr class="holderDetailesGrid"><td colspan="' + templateFunctions.getGridColumnCount(optionX) + '" ><div id="' + optionX.detailes.id + '" class="myGridCTRL gridDetailes"></div></td></tr>');
                 var currRowData = JSON.parse(curTr.attr('data-row-json'));
                 optionX.detailes.ds = currRowData[optionX.detailesClientSchema];
                 optionX.detailes.exteraParameters = { pKey: currRowData[optionX.key] };

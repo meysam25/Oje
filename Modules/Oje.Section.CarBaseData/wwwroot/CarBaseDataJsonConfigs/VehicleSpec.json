@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "VehicleSpecGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('VehicleSpecAddGridModal', this)",
+              "type": "add",
+              "modalId": "VehicleSpecAddGridModal"
             }
           ],
           "exportToExcelUrl": "/CarBaseData/VehicleSpec/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "VehicleSpecModal",
                 "url": "/CarBaseData/VehicleSpec/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/VehicleSpec/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarBaseData/VehicleSpec/GetById\\', \\'VehicleSpecModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -81,7 +83,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "VehicleSpecAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -139,14 +141,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBaseData/VehicleSpec/Create')",
+              "onClick": "postModalData(this, 'VehicleSpecGrid', '/CarBaseData/VehicleSpec/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "VehicleSpecModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -204,7 +206,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/CarBaseData/VehicleSpec/Update')",
+              "onClick": "postModalData(this, 'VehicleSpecGrid', '/CarBaseData/VehicleSpec/Update')",
               "class": "btn-primary"
             }
           ]

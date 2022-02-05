@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "EmailTemplateGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)", "type": "add", "modalId": "addGridModal"
+              "onClick": "showModal('EmailTemplateaddGridModal', this)",
+              "type": "add",
+              "modalId": "EmailTemplateaddGridModal"
             }
           ],
           "exportToExcelUrl": "/MessengerBaseData/EmailTemplate/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "EmailTemplateeditGridModal",
                 "url": "/MessengerBaseData/EmailTemplate/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/EmailTemplate/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/MessengerBaseData/EmailTemplate/GetById\\', \\'EmailTemplateeditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -73,7 +75,7 @@
       ],
       "moduals": [
         {
-          "id": "addGridModal",
+          "id": "EmailTemplateaddGridModal",
           "class": "modal-xl",
           "title": "افزودن",
           "ctrls": [
@@ -123,13 +125,13 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/EmailTemplate/Create')",
+              "onClick": "postModalData(this, 'EmailTemplateGrid', '/MessengerBaseData/EmailTemplate/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
-          "id": "editGridModal",
+          "id": "EmailTemplateeditGridModal",
           "class": "modal-xl",
           "title": "ویرایش",
           "ctrls": [
@@ -179,7 +181,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/MessengerBaseData/EmailTemplate/Update')",
+              "onClick": "postModalData(this, 'EmailTemplateGrid', '/MessengerBaseData/EmailTemplate/Update')",
               "class": "btn-primary"
             }
           ]

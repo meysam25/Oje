@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "FireInsuranceTypeOfActivityGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('FireInsuranceTypeOfActivityAddGridModal', this)",
+              "type": "add",
+              "modalId": "FireInsuranceTypeOfActivityAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FireBaseData/FireInsuranceTypeOfActivity/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "FireInsuranceTypeOfActivityModal",
                 "url": "/FireBaseData/FireInsuranceTypeOfActivity/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceTypeOfActivity/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceTypeOfActivity/GetById\\', \\'FireInsuranceTypeOfActivityModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -71,7 +73,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "FireInsuranceTypeOfActivityAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -110,14 +112,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceTypeOfActivity/Create')",
+              "onClick": "postModalData(this, 'FireInsuranceTypeOfActivityGrid', '/FireBaseData/FireInsuranceTypeOfActivity/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "FireInsuranceTypeOfActivityModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -156,7 +158,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceTypeOfActivity/Update')",
+              "onClick": "postModalData(this, 'FireInsuranceTypeOfActivityGrid', '/FireBaseData/FireInsuranceTypeOfActivity/Update')",
               "class": "btn-primary"
             }
           ]

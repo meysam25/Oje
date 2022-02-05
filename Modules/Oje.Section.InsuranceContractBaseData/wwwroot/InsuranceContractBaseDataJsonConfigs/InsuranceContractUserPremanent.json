@@ -3,13 +3,13 @@
     {
       "grids": [
         {
-          "id": "mainGrid",
+          "id": "InsuranceContractUserPremanentGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('addGridModal', this)",
+              "onClick": "showModal('InsuranceContractUserPremanentaddGridModal', this)",
               "type": "add",
-              "modalId": "addGridModal"
+              "modalId": "InsuranceContractUserPremanentaddGridModal"
             },
             {
               "title": "دانلود فایل نمونه",
@@ -31,9 +31,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editGridModal",
+                "modalId": "InsuranceContractUserPremanenteditGridModal",
                 "url": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractUserPremanent/GetById\\', \\'editGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractUserPremanent/GetById\\', \\'InsuranceContractUserPremanenteditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "ajax",
@@ -150,7 +150,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "addGridModal",
+          "id": "InsuranceContractUserPremanentaddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -290,14 +290,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContractUserPremanent/Create')",
+              "onClick": "postModalData(this, 'InsuranceContractUserPremanentGrid', '/InsuranceContractBaseData/InsuranceContractUserPremanent/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editGridModal",
+          "id": "InsuranceContractUserPremanenteditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -437,7 +437,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'mainGrid', '/InsuranceContractBaseData/InsuranceContractUserPremanent/Update')",
+              "onClick": "postModalData(this, 'InsuranceContractUserPremanentGrid', '/InsuranceContractBaseData/InsuranceContractUserPremanent/Update')",
               "class": "btn-primary"
             }
           ]

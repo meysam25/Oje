@@ -3,11 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "FireInsuranceBuildingBodyGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('FireInsuranceBuildingBodyAddGridModal', this)",
+              "type": "add",
+              "modalId": "FireInsuranceBuildingBodyAddGridModal"
             }
           ],
           "exportToExcelUrl": "/FireBaseData/FireInsuranceBuildingBody/Export",
@@ -21,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "FireInsuranceBuildingBodyModal",
                 "url": "/FireBaseData/FireInsuranceBuildingBody/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceBuildingBody/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FireBaseData/FireInsuranceBuildingBody/GetById\\', \\'FireInsuranceBuildingBodyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -64,7 +66,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "FireInsuranceBuildingBodyAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -96,14 +98,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceBuildingBody/Create')",
+              "onClick": "postModalData(this, 'FireInsuranceBuildingBodyGrid', '/FireBaseData/FireInsuranceBuildingBody/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "FireInsuranceBuildingBodyModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -135,7 +137,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/FireBaseData/FireInsuranceBuildingBody/Update')",
+              "onClick": "postModalData(this, 'FireInsuranceBuildingBodyGrid', '/FireBaseData/FireInsuranceBuildingBody/Update')",
               "class": "btn-primary"
             }
           ]
