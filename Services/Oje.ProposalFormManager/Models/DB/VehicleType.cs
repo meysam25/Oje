@@ -16,6 +16,7 @@ namespace Oje.ProposalFormService.Models.DB
             VehicleTypeCarTypes = new();
             VehicleSystemVehicleTypes = new();
             CarExteraDiscounts = new();
+            VehicleSpecs = new();
         }
 
         [Key]
@@ -35,6 +36,8 @@ namespace Oje.ProposalFormService.Models.DB
         public List<VehicleSystemVehicleType> VehicleSystemVehicleTypes { get; set; }
         [InverseProperty("VehicleType")]
         public List<CarExteraDiscount> CarExteraDiscounts { get; set; }
+        [InverseProperty("VehicleType")]
+        public List<VehicleSpec> VehicleSpecs { get; set; }
 
     }
 }

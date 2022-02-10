@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
-    public class VehicleSpecsService: IVehicleSpecsService
+    public class VehicleSpecsService : IVehicleSpecsService
     {
         readonly ProposalFormDBContext db = null;
         public VehicleSpecsService(ProposalFormDBContext db)
@@ -23,7 +23,7 @@ namespace Oje.ProposalFormService.Services
         {
             return db.VehicleSpecs
                 .OrderBy(t => t.Order)
-                .Where(t => t.Id == id && t.IsActive == true && t.VehicleSystem.IsActive == true && t.VehicleSystem.Id == brandId && t.VehicleSystem.VehicleSystemVehicleTypes.Any(tt => tt.VehicleType.IsActive == true && tt.VehicleTypeId == vehicleTypeId))
+                .Where(t => t.Id == id && t.IsActive == true && t.VehicleSystem.IsActive == true && t.VehicleSystem.Id == brandId && t.VehicleTypeId != null && t.VehicleTypeId == vehicleTypeId)
                 .AsNoTracking()
                 .FirstOrDefault();
         }
@@ -42,7 +42,7 @@ namespace Oje.ProposalFormService.Services
 
             var qureResult = db.VehicleSpecs
                 .OrderBy(t => t.Order)
-                .Where(t => t.IsActive == true && t.VehicleSystem.IsActive == true && t.VehicleSystem.Id == brandId && t.VehicleSystem.VehicleSystemVehicleTypes.Any(tt => tt.VehicleType.IsActive == true && tt.VehicleTypeId == vehicleTypeId));
+                .Where(t => t.IsActive == true && t.VehicleSystem.IsActive == true  && t.VehicleSystem.Id == brandId && t.VehicleTypeId != null && t.VehicleTypeId == vehicleTypeId);
 
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));

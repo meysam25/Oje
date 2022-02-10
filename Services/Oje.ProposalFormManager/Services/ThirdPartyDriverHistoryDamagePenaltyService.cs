@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Oje.ProposalFormService.Services
 {
-    public class ThirdPartyDriverHistoryDamagePenaltyService: IThirdPartyDriverHistoryDamagePenaltyService
+    public class ThirdPartyDriverHistoryDamagePenaltyService : IThirdPartyDriverHistoryDamagePenaltyService
     {
         readonly ProposalFormDBContext db = null;
         public ThirdPartyDriverHistoryDamagePenaltyService(ProposalFormDBContext db)
@@ -24,13 +24,13 @@ namespace Oje.ProposalFormService.Services
 
         public object GetLightList()
         {
-            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+            List<object> result = new List<object>() { new { id = "no", title = BMessages.No_Damage.GetEnumDisplayName() } };
 
-                result.AddRange(
-                    db.ThirdPartyDriverHistoryDamagePenalties
-                    .Where(t => t.IsActive == true)
-                    .Select(t => new { id = t.Id, title = t.Title }).ToList()
-                    );
+            result.AddRange(
+                db.ThirdPartyDriverHistoryDamagePenalties
+                .Where(t => t.IsActive == true)
+                .Select(t => new { id = t.Id, title = t.Title }).ToList()
+                );
 
             return result;
         }

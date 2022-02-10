@@ -18,7 +18,7 @@ namespace Oje.AccountService.Services
     {
         readonly AccountDBContext db = null;
         readonly IProposalFormService proposalFormService = null;
-        const int minusRoleValue = 100;
+        const int minusRoleValue = 0;
         public RoleService(AccountDBContext db, IProposalFormService proposalFormService)
         {
             this.db = db;

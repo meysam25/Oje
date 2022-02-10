@@ -134,7 +134,7 @@ namespace Oje.ProposalFormService.Services
 
                 long GlobalInputInqueryId = GlobalInputInqueryService.Create(input, InqeryExteraParameters, siteSettingId);
                 if (GlobalInputInqueryId > 0 && objPack.ThirdPartyDriverFinancialCommitment != null && objPack.ThirdPartyRates != null &&
-                    objPack.ThirdPartyRates.Count > 0 && objPack.ThirdPartyLifeCommitment != null && objPack.VehicleUsage != null)
+                    objPack.ThirdPartyRates.Count > 0 && objPack.ThirdPartyLifeCommitment != null)
                 {
                     CreateGlobalInqueryObjectForEachCompanyS1(objPack, siteSettingId, GlobalInputInqueryId, result);
                     foreach (var newQueryItem in result)
@@ -805,7 +805,7 @@ namespace Oje.ProposalFormService.Services
                                     {
                                         CalcKey = "s2",
                                         Price = Math.Ceiling(Convert.ToDecimal(ex.Price - objPack.ThirdPartyFinancialCommitment.Price) * foundWithType.Rate).ToLongReturnZiro(),
-                                        Title = ex.Title,
+                                        Title = "تعهد مالی " + ex.Title,
                                         GlobalInquiryId = newITem.Id,
                                         basePriceEC = foundWithType?.ThirdPartyRequiredFinancialCommitment?.Price
                                     });
@@ -824,7 +824,7 @@ namespace Oje.ProposalFormService.Services
 
         void InquiryCalceS9_2(CarThirdPartyInquiryObjects objPack, GlobalInquery newQueryItem, CarThirdPartyInquiryVM input)
         {
-            if (input.havePrevInsurance != null && input.havePrevInsurance == 0 && input.isNewCar != null && input.isNewCar == 0)
+            if (input.havePrevInsurance != null && input.havePrevInsurance == 0 && input.isNewCar != null && input.isNewCar == false)
             {
                 var foundS1 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").FirstOrDefault();
                 var foundS4 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s4").FirstOrDefault();
@@ -1226,10 +1226,10 @@ namespace Oje.ProposalFormService.Services
                 else
                     cleanInputRelatedToDontHavePrevInsurance(input);
 
-                if (input.isNewCar == 0 && input.createYear.ToIntReturnZiro() <= 0)
+                if (input.isNewCar == false && input.createYear.ToIntReturnZiro() <= 0)
                     throw BException.GenerateNewException(BMessages.Please_Enter_Car_CreateDate);
 
-                if (input.isNewCar == 0)
+                if (input.isNewCar == false)
                     input.isNewCar_Title = "خیر";
                 else
                     input.isNewCar_Title = "بله";
@@ -1450,8 +1450,8 @@ namespace Oje.ProposalFormService.Services
             input.carTypeId_Title = result.CarType.Title;
 
             result.VehicleUsage = VehicleUsageService.GetById(input.carTypeId);
-            if (result.VehicleUsage == null)
-                throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
+            //if (result.VehicleUsage == null)
+            //    throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
         }
 
         void initVeicleBrandObjectAndValidation(CarThirdPartyInquiryVM input)
@@ -1479,6 +1479,10 @@ namespace Oje.ProposalFormService.Services
                     throw BException.GenerateNewException(BMessages.Driver_NoDamage_Discount_IsNotValid);
                 input.driverNoDamageDiscountHistory_Title = result.ThirdPartyDriverNoDamageDiscountHistory.Title;
             }
+            else if (input.driverNoDamageDiscountHistory == 0 && input.havePrevInsurance > 0)
+            {
+                result.ThirdPartyDriverNoDamageDiscountHistory = new ThirdPartyDriverNoDamageDiscountHistory() { IsActive = true, Percent = 0, Title = BMessages.No_Damage.GetEnumDisplayName() };
+            }
             else
             {
                 input.driverNoDamageDiscountHistory_Title = null;
@@ -1495,6 +1499,10 @@ namespace Oje.ProposalFormService.Services
                     throw BException.GenerateNewException(BMessages.Body_NoDamage_Discount_IsNotValid);
                 input.bodyNoDamagePercentId_Title = result.bodyNoDamagePercent.Title;
             }
+            else if (input.bodyNoDamagePercentId == 0 && input.havePrevInsurance.ToIntReturnZiro() > 0)
+            {
+                result.bodyNoDamagePercent = new ThirdPartyBodyNoDamageDiscountHistory() { IsActive = true, Title = BMessages.No_Damage.GetEnumDisplayName(), Percent = 0 };
+            }
             else
             {
                 input.bodyNoDamagePercentId_Title = null;
@@ -1508,14 +1516,14 @@ namespace Oje.ProposalFormService.Services
             if (result.prevInsuranceCompany == null)
                 throw BException.GenerateNewException(BMessages.Selected_Company_Is_Not_Valid);
             input.havePrevInsurance_Title = result.prevInsuranceCompany.Title;
-            input.isNewCar = 0;
+            input.isNewCar = false;
             if (string.IsNullOrEmpty(input.prevEndDate) || input.prevEndDate.ConvertPersianNumberToEnglishNumber().ToEnDate() == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Previus_Insurance_Expired_Date);
             if (string.IsNullOrEmpty(input.prevStartDate) || input.prevStartDate.ConvertPersianNumberToEnglishNumber().ToEnDate() == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Previus_Insurance_Start_Date);
-            if (input.bodyNoDamagePercentId.ToIntReturnZiro() <= 0)
+            if (input.bodyNoDamagePercentId.ToIntReturnZiro() < 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Body_NoDamage_Discount_Percent);
-            if (input.driverNoDamageDiscountHistory.ToIntReturnZiro() <= 0)
+            if (input.driverNoDamageDiscountHistory.ToIntReturnZiro() < 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Driver_NoDamage_Discount_Percent);
             if (!string.IsNullOrEmpty(input.prevEndDate) && !string.IsNullOrEmpty(input.prevStartDate) &&
                 input.prevEndDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null && input.prevStartDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)

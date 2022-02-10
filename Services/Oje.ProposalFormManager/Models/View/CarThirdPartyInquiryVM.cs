@@ -14,7 +14,7 @@ namespace Oje.ProposalFormService.Models.View
         [Display(Name = "بیمه نامه سال قبل")]
         public string havePrevInsurance_Title { get; set; }
         [Display(Name = "آیا خودرو صفر کیلومتر است")]
-        public int? isNewCar { get; set; }
+        public bool? isNewCar { get; set; }
         [Display(Name = "آیا خودرو صفر کیلومتر است")]
         public string isNewCar_Title { get; set; }
         [Display(Name = "نوع خودرو")]

@@ -72,13 +72,6 @@
               }
             },
             {
-              "field": "title",
-              "caption": "عنوان",
-              "search": {
-                "searchType": "text"
-              }
-            },
-            {
               "field": "isActive",
               "caption": "وضعیت",
               "search": {

@@ -31,7 +31,7 @@
 }
 
 .multiSelectLineBodyItemTitle {
-    padding-right: 40px;
+    padding-right: 35px;
     line-height: 38px;
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -44,6 +44,7 @@
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
+    font-size:0.9em;
 }
 
 .multiSelectLineBodyItemSelectIndicator {
@@ -98,7 +99,7 @@
     top: -30px;
     height: 30px;
 }
-.multiSelectLineBodyItemTitle {
+.multiSelectLineMakeSmallVersion .multiSelectLineBodyItemTitle {
     padding-right: 25px;
     line-height: 31px;
 }

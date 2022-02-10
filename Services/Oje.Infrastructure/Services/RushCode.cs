@@ -617,7 +617,7 @@ namespace Oje.Infrastructure.Services
             {
                 var  currPath = new Uri(input.Headers["Referer"][0]);
 
-                return currPath.Host + ":" + currPath.Port;
+                return currPath.Host ;
             }
             catch
             {

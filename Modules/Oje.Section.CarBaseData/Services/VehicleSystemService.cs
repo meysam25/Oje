@@ -150,7 +150,7 @@ namespace Oje.Section.CarBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput)
+        public object GetSelect2List(Select2SearchVM searchInput, int? vehicleTypesId)
         {
             List<object> result = new List<object>();
 
@@ -163,6 +163,8 @@ namespace Oje.Section.CarBaseData.Services
                 searchInput.page = 1;
 
             var qureResult = db.VehicleSystems.OrderBy(t => t.Order).AsQueryable();
+            if(vehicleTypesId.ToIntReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.VehicleSystemVehicleTypes.Any(tt => tt.VehicleTypeId == vehicleTypesId));
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

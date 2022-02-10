@@ -682,7 +682,7 @@ namespace Oje.AccountService.Services
             foreach (var rid in input.roleIds)
             {
                 var roleValue = RoleService.GetRoleValueByRoleId(rid, siteSettingId);
-                if (roleValue >= loginUserMaxRoleValue)
+                if (roleValue > loginUserMaxRoleValue)
                     throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
             }
         }

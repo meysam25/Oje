@@ -292,7 +292,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetCompanyList",
+              "dataurl": "/UserAccount/UserManager/GetCompanyList",
               "label": "شرکت",
               "isRequired": true
             },
@@ -302,7 +302,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetRoleList",
+              "dataurl": "/UserAccount/UserManager/GetRoleList",
               "label": "نقش",
               "isRequired": true
             }
@@ -516,7 +516,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetCompanyList",
+              "dataurl": "/UserAccount/UserManager/GetCompanyList",
               "label": "شرکت",
               "isRequired": true
             },
@@ -526,7 +526,7 @@
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/Account/UserManager/GetRoleList",
+              "dataurl": "/UserAccount/UserManager/GetRoleList",
               "label": "نقش",
               "isRequired": true
             }

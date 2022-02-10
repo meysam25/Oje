@@ -24,7 +24,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetLightList()
         {
-            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+            List<object> result = new List<object>() { new { id = "0", title = BMessages.No_Discount.GetEnumDisplayName() } };
 
             result.AddRange(
                 db.ThirdPartyDriverNoDamageDiscountHistories

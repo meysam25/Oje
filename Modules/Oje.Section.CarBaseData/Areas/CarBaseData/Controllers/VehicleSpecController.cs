@@ -23,15 +23,18 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         readonly IVehicleSpecService VehicleSpecService = null;
         readonly IVehicleSpecCategoryService VehicleSpecCategoryService = null;
         readonly IVehicleSystemService VehicleSystemService = null;
+        readonly IVehicleTypeService VehicleTypeService = null;
         public VehicleSpecController(
                 IVehicleSpecService VehicleSpecService, 
                 IVehicleSpecCategoryService VehicleSpecCategoryService,
-                IVehicleSystemService VehicleSystemService
+                IVehicleSystemService VehicleSystemService,
+                IVehicleTypeService VehicleTypeService
             )
         {
             this.VehicleSpecService = VehicleSpecService;
             this.VehicleSpecCategoryService = VehicleSpecCategoryService;
             this.VehicleSystemService = VehicleSystemService;
+            this.VehicleTypeService = VehicleTypeService;
         }
 
         [AreaConfig(Title = "خصوصیات خودرو", Icon = "fa-car-battery", IsMainMenuItem = true)]
@@ -107,11 +110,18 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(VehicleSpecCategoryService.GetLightList());
         }
 
+        [AreaConfig(Title = "لیست نوع خودرو", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetVehicleTypeList()
+        {
+            return Json(VehicleTypeService.GetLightList());
+        }
+
         [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetVSystemList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(VehicleSystemService.GetSelect2List(searchInput));
+            return Json(VehicleSystemService.GetSelect2List(searchInput, null));
         }
     }
 }

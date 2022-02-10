@@ -23,6 +23,9 @@ namespace Oje.Section.CarBaseData.Models.DB
         public int VehicleSpecCategoryId { get; set; }
         [ForeignKey("VehicleSpecCategoryId"), InverseProperty("VehicleSpecs")]
         public VehicleSpecCategory VehicleSpecCategory { get; set; }
+        public int? VehicleTypeId { get; set; }
+        [ForeignKey("VehicleTypeId"), InverseProperty("VehicleSpecs")]
+        public VehicleType VehicleType { get; set; }
         public bool IsActive { get; set; }
         public int Order { get; set; }
         public int VehicleSystemId { get; set; }

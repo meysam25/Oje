@@ -29,7 +29,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetLightListForBody()
         {
-            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+            List<object> result = new List<object>() { new { id = "no", title = BMessages.No_Damage.GetEnumDisplayName() } };
 
             result.AddRange(db.ThirdPartyFinancialAndBodyHistoryDamagePenalties.Where(t => t.IsActive == true && t.IsFinancial != true).Select(t => new { id = t.Id, title = t.Title }).ToList());
 
@@ -38,7 +38,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetLightListForFinancial()
         {
-            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+            List<object> result = new List<object>() { new { id = "no", title = BMessages.No_Damage.GetEnumDisplayName() } };
 
             result.AddRange(db.ThirdPartyFinancialAndBodyHistoryDamagePenalties.Where(t => t.IsActive == true && t.IsFinancial == true).Select(t => new { id = t.Id, title = t.Title }).ToList());
 

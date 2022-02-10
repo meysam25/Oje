@@ -46,7 +46,7 @@ namespace Oje.Section.CarThirdBaseData.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.percent == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Percent);
-            if (input.percent <= 0 || input.percent >= 100)
+            if (input.percent <= 0 || input.percent > 100)
                 throw BException.GenerateNewException(BMessages.Invalid_Percent);
             if (db.ThirdPartyFinancialAndBodyHistoryDamagePenalties.Any(tt => tt.Title == input.title && tt.Id != input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);

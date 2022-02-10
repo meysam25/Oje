@@ -111,6 +111,16 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "id": "isDeter",
+              "name": "isDeter",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "تعیین نشده ها"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "catId",
               "id": "catId",
               "type": "dropDown",
@@ -121,13 +131,24 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "vtId",
+              "id": "vtId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetVehicleTypeList",
+              "label": "نوع خودرو"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "sysId",
               "id": "sysId",
               "type": "dropDown2",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/CarBaseData/CarSpecification/GetBrandList",
-              "label": "برند خودرو"
+              "label": "برند خودرو",
+              "exteraParameterIds": [ "vtId" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -138,7 +159,7 @@
               "dataurl": "/CarBaseData/CarSpecification/GetVehicleSpecList",
               "label": "خصوصیات خودرو",
               "isRequired": true,
-              "exteraParameterIds": [ "catId", "sysId" ]
+              "exteraParameterIds": [ "catId", "sysId", "vtId", "isDeter" ]
             }
           ],
           "actions": [
@@ -187,6 +208,16 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "id": "isDeter2",
+              "name": "isDeter",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "تعیین نشده ها"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "catId",
               "id": "catId2",
               "type": "dropDown",
@@ -197,13 +228,24 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "id": "vtId2",
+              "name": "vtId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/CarSpecification/GetVehicleTypeList",
+              "label": "نوع خودرو"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "sysId",
               "id": "sysId2",
               "type": "dropDown2",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/CarBaseData/CarSpecification/GetBrandList",
-              "label": "برند خودرو"
+              "label": "برند خودرو",
+              "exteraParameterIds": [ "vtId2" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -214,7 +256,7 @@
               "dataurl": "/CarBaseData/CarSpecification/GetVehicleSpecList",
               "label": "خصوصیات خودرو",
               "isRequired": true,
-              "exteraParameterIds": [ "catId2", "sysId2" ]
+              "exteraParameterIds": [ "catId2", "sysId2", "vtId2", "isDeter2" ]
             }
           ],
           "actions": [

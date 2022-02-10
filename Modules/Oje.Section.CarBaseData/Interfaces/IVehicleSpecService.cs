@@ -15,6 +15,6 @@ namespace Oje.Section.CarBaseData.Interfaces
         object GetById(int? id);
         ApiResult Update(VehicleSpecCreateUpdateVM input);
         GridResultVM<VehicleSpecMainGridResultVM> GetList(VehicleSpecMainGrid searchInput);
-        object GetLightList(int? VehicleSpecCategoryId, int? VehicleSystemId, Select2SearchVM searchInput);
+        object GetLightList(int? VehicleSpecCategoryId, int? VehicleSystemId, Select2SearchVM searchInput, int? vehicleTypesId, bool? determine);
     }
 }

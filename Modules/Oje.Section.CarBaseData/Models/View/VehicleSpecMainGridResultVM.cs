@@ -21,5 +21,7 @@ namespace Oje.Section.CarBaseData.Models.View
         public string isActive { get; set; }
         [Display(Name = "برند خودرو")]
         public string vSystem { get; set; }
+        [Display(Name = "نوع خودرو")]
+        public string vehicleTypeId { get; set; }
     }
 }

@@ -34,7 +34,8 @@ namespace Oje.Section.CarBaseData.Services
                 VehicleSpecCategoryId = input.specCat.ToIntReturnZiro(),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Order = input.order.ToIntReturnZiro(),
-                VehicleSystemId = input.vSystemId.ToIntReturnZiro()
+                VehicleSystemId = input.vSystemId.ToIntReturnZiro(),
+                VehicleTypeId = input.vehicleTypeId.ToIntReturnZiro()
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -51,6 +52,8 @@ namespace Oje.Section.CarBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_CarSpecification);
             if (input.vSystemId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_VehicleSystem);
+            if (input.vehicleTypeId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_VeicleType);
         }
 
         public ApiResult Delete(int? id)
@@ -75,7 +78,8 @@ namespace Oje.Section.CarBaseData.Services
                 isActive = t.IsActive,
                 order = t.Order,
                 vSystemId = t.VehicleSystemId,
-                vSystemId_Title = t.VehicleSystem.Title
+                vSystemId_Title = t.VehicleSystem.Title,
+                vehicleTypeId = t.VehicleTypeId
             }).FirstOrDefault();
         }
 
@@ -94,6 +98,8 @@ namespace Oje.Section.CarBaseData.Services
                 qureResult = qureResult.Where(t => t.VehicleSpecCategoryId == searchInput.specCat);
             if (!string.IsNullOrEmpty(searchInput.vSystem))
                 qureResult = qureResult.Where(t => t.VehicleSystem.Title.Contains(searchInput.vSystem));
+            if(searchInput.vehicleTypeId.ToIntReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.VehicleTypeId == searchInput.vehicleTypeId);
 
             int row = searchInput.skip;
 
@@ -110,7 +116,8 @@ namespace Oje.Section.CarBaseData.Services
                     isActive = t.IsActive,
                     specCat = t.VehicleSpecCategory.Title,
                     title = t.Title,
-                    vSystem = t.VehicleSystem.Title
+                    vSystem = t.VehicleSystem.Title,
+                    vehicleTypeId = t.VehicleType.Title
                 })
                 .ToList()
                 .Select(t => new VehicleSpecMainGridResultVM
@@ -120,7 +127,8 @@ namespace Oje.Section.CarBaseData.Services
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     specCat = t.specCat,
                     title = t.title,
-                    vSystem = t.vSystem
+                    vSystem = t.vSystem,
+                    vehicleTypeId = t.vehicleTypeId
                 })
                 .ToList()
             };
@@ -139,13 +147,14 @@ namespace Oje.Section.CarBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Order = input.order.ToIntReturnZiro();
             foundItem.VehicleSystemId = input.vSystemId.ToIntReturnZiro();
+            foundItem.VehicleTypeId = input.vehicleTypeId.ToIntReturnZiro();
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetLightList(int? VehicleSpecCategoryId, int? VehicleSystemId, Select2SearchVM searchInput)
+        public object GetLightList(int? VehicleSpecCategoryId, int? VehicleSystemId, Select2SearchVM searchInput, int? vehicleTypeId, bool? determine)
         {
             List<object> result = new List<object>();
 
@@ -158,6 +167,12 @@ namespace Oje.Section.CarBaseData.Services
                 searchInput.page = 1;
 
             var qureResult = db.VehicleSpecs.OrderBy(t => t.Order).AsQueryable();
+            if(vehicleTypeId.ToIntReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.VehicleTypeId == vehicleTypeId);
+            if (determine == true)
+                qureResult = qureResult.Where(t => t.CarSpecificationVehicleSpecs.Count > 0);
+            if (determine == false)
+                qureResult = qureResult.Where(t => t.CarSpecificationVehicleSpecs.Count == 0);
             if (VehicleSpecCategoryId.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.VehicleSpecCategoryId == VehicleSpecCategoryId);
             if (VehicleSystemId.ToIntReturnZiro() > 0)

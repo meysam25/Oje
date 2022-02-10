@@ -24,18 +24,21 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
         readonly IVehicleSpecCategoryService VehicleSpecCategoryService = null;
         readonly IVehicleSystemService VehicleSystemService = null;
         readonly IVehicleSpecService VehicleSpecService = null;
+        readonly IVehicleTypeService VehicleTypeService = null;
         public CarSpecificationController
             (
                 ICarSpecificationService CarSpecificationService,
                 IVehicleSpecCategoryService VehicleSpecCategoryService,
                 IVehicleSystemService VehicleSystemService,
-                IVehicleSpecService VehicleSpecService
+                IVehicleSpecService VehicleSpecService,
+                IVehicleTypeService VehicleTypeService
             )
         {
             this.CarSpecificationService = CarSpecificationService;
             this.VehicleSpecCategoryService = VehicleSpecCategoryService;
             this.VehicleSystemService = VehicleSystemService;
             this.VehicleSpecService = VehicleSpecService;
+            this.VehicleTypeService = VehicleTypeService;
         }
 
         [AreaConfig(Title = "جزئیات خصوصیات خودرو", Icon = "fa-truck-loading", IsMainMenuItem = true)]
@@ -111,18 +114,26 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(VehicleSpecCategoryService.GetLightList());
         }
 
+        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetVehicleTypeList()
+        {
+            return Json(VehicleTypeService.GetLightList());
+        }
+
+
         [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetBrandList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetBrandList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? vtId)
         {
-            return Json(VehicleSystemService.GetSelect2List(searchInput));
+            return Json(VehicleSystemService.GetSelect2List(searchInput, vtId));
         }
 
         [AreaConfig(Title = "مشاهده لیست خصوصیات خودرو", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetVehicleSpecList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? catId, [FromQuery] int? sysId)
+        public ActionResult GetVehicleSpecList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? catId, [FromQuery] int? sysId, [FromQuery] int? vtId, [FromQuery] bool? isDeter)
         {
-            return Json(VehicleSpecService.GetLightList(catId, sysId, searchInput));
+            return Json(VehicleSpecService.GetLightList(catId, sysId, searchInput, vtId, isDeter));
         }
     }
 }

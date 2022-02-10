@@ -51,6 +51,16 @@
               }
             },
             {
+              "field": "vehicleTypeId",
+              "caption": "نوع خودرو",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/CarBaseData/VehicleSpec/GetVehicleTypeList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
               "field": "title",
               "caption": "عنوان",
               "search": {
@@ -98,6 +108,16 @@
               "valuefield": "id",
               "dataurl": "/CarBaseData/VehicleSpec/GetCategoryList",
               "label": "گروه بندی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vehicleTypeId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/VehicleSpec/GetVehicleTypeList",
+              "label": "نوع خودرو",
               "isRequired": true
             },
             {
@@ -163,6 +183,16 @@
               "valuefield": "id",
               "dataurl": "/CarBaseData/VehicleSpec/GetCategoryList",
               "label": "گروه بندی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vehicleTypeId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBaseData/VehicleSpec/GetVehicleTypeList",
+              "label": "نوع خودرو",
               "isRequired": true
             },
             {

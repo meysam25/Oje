@@ -295,9 +295,9 @@ namespace Oje.Infrastructure.Exceptions
         Selected_Company_Is_Not_Valid = 141,
         [Display(Name = "لطفا تاریخ اتمام بیمه نامه قبلی را انتخاب کنید")]
         Please_Enter_Previus_Insurance_Expired_Date = 142,
-        [Display(Name = "لطفا درصد عدم خسارت جانی (مندرج در بیمه نامه ) را انتخاب کنید")]
+        [Display(Name = "لطفا درصد عدم خسارت جانی را انتخاب کنید")]
         Please_Enter_Body_NoDamage_Discount_Percent = 143,
-        [Display(Name = "لطفا درصد عدم خسارت راننده ( مندرج در بیمه نامه ) را انتخاب کنید")]
+        [Display(Name = "لطفا درصد عدم خسارت راننده را انتخاب کنید")]
         Please_Enter_Driver_NoDamage_Discount_Percent = 144,
         [Display(Name = "لطفا سال ساخت را انتخاب کنید")]
         Please_Enter_Car_CreateDate = 145,
@@ -307,9 +307,9 @@ namespace Oje.Infrastructure.Exceptions
         No_Company_Exist = 147,
         [Display(Name = "خطای اعتبار سنجی")]
         Validation_Error = 148,
-        [Display(Name = "درصد عدم خسارت جانی (مندرج در بیمه نامه ) صحیح نمی باشد")]
+        [Display(Name = "درصد عدم خسارت جانی صحیح نمی باشد")]
         Body_NoDamage_Discount_IsNotValid = 149,
-        [Display(Name = "درصد عدم خسارت راننده ( مندرج در بیمه نامه ) صحیح نمی باشد")]
+        [Display(Name = "درصد عدم خسارت راننده  صحیح نمی باشد")]
         Driver_NoDamage_Discount_IsNotValid = 150,
         [Display(Name = "لطفا برند خودرو را انتخاب کنید")]
         Please_Select_VehicleBrand = 151,
@@ -581,5 +581,9 @@ namespace Oje.Infrastructure.Exceptions
         Invalid_Ip_Address = 284,
         [Display(Name = "خطا در انجام عملیات..")]
         ReferrUrl_Is_Invalid = 285,
+        [Display(Name = "بدون خسارت")]
+        No_Damage = 286,
+        [Display(Name = "بدون تخفیف")]
+        No_Discount = 287,
     }
 }

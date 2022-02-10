@@ -14,5 +14,6 @@ namespace Oje.Section.CarBaseData.Models.View
         public int? order { get; set; }
         public bool? isActive { get; set; }
         public int? vSystemId { get; set; }
+        public int? vehicleTypeId { get; set; }
     }
 }

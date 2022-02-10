@@ -1,10 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\Account\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bundleconfig.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\js\sideMenue.js" />
   </ItemGroup>
 
@@ -14,7 +21,5 @@
     <ProjectReference Include="..\..\Services\Oje.Security\Oje.Security.csproj" />
     <ProjectReference Include="..\..\Services\Oje.Sms\Oje.Sms.csproj" />
   </ItemGroup>
-  
-
 
 </Project>

@@ -24,7 +24,7 @@ namespace Oje.Infrastructure.Filters
                 var referUrl = context.HttpContext.Request.GetRefererUrl();
                 if (string.IsNullOrEmpty(referUrl))
                     throw BException.GenerateNewException(BMessages.ReferrUrl_Is_Invalid);
-                if ((context.HttpContext.Request.Host.Host + ":" + (context.HttpContext.Request.Host.Port == null ? 80 : context.HttpContext.Request.Host.Port)) != referUrl && referUrl != "rt.sizpay.ir:443")
+                if ((context.HttpContext.Request.Host.Host ) != referUrl && referUrl != "rt.sizpay.ir:443")
                     throw BException.GenerateNewException(BMessages.ReferrUrl_Is_Invalid);
             }
         }

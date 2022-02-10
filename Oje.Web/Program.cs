@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Oje.Web
@@ -20,8 +21,16 @@ namespace Oje.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel(options => options.AddServerHeader = false);
-                    webBuilder.UseUrls("https://localhost:5001", "http://*");
+                    webBuilder.UseKestrel(options => 
+                    {
+                        options.AddServerHeader = false;
+                        //options.Listen(IPAddress.Any, 80);
+                        //options.Listen(IPAddress.Any, 443, listenOptions =>
+                        //{
+                        //    //listenOptions.UseHttps("certificate.pfx", "1");
+                        //});
+                    });
+                    webBuilder.UseUrls("https://localhost:5001");
                     webBuilder.UseIISIntegration();
                     webBuilder.UseStartup<Startup>();
                 });
