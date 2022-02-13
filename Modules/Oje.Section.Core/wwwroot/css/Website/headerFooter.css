@@ -123,6 +123,10 @@ body {
     clear: both;
 }
 
+.moveBackButtonInResponsive {
+    display: none !important;
+}
+
 .headerMenu {
     margin-top: 5px;
     border-top: 1px solid #dbdcdd;
@@ -167,9 +171,9 @@ body {
     position: absolute;
     right: 0px;
     left: 0px;
-    top: 62px;
+    top: 0px;
     background-color: white;
-    max-height: 0px;
+    height: 0px;
     overflow: hidden;
     -moz-transition: opacity 0.4s, max-height 0.4s;
     -o-transition: opacity 0.4s, max-height 0.4s;
@@ -891,6 +895,10 @@ body {
         .floatingFooterSection > div {
             text-align: center;
         }
+
+    .floatingFooterSectionMakeFloat {
+        display: none !important;
+    }
 }
 
 @media (max-width: 520px) {
@@ -936,14 +944,23 @@ body {
 
 @media (min-width: 850px) {
     .headerMenuItem:hover .headerMenuItemSumMenuItems {
-        max-height: calc( 100vh - 200px);
+        height: auto;
+        top:63px;
         opacity: 1;
     }
 }
 
 @media (max-width: 850px) {
+    .moveBackButtonInResponsive {
+        display: block !important;
+        padding-right: 10px;
+        padding-top: 20px;
+        font-size: 2em;
+        cursor: pointer;
+    }
+
     .headerMenuInner {
-        max-height: 0px;
+        height: 100vh;
     }
 
     .holderRigAndLogUser {
@@ -952,10 +969,6 @@ body {
 
     .topMenuBtton {
         display: inline-block;
-    }
-
-    .topMenuBttonOpen .headerMenuInner {
-        max-height: 100vh;
     }
 
     .topMenuBttonOpen .headerMenuItem {
@@ -978,6 +991,19 @@ body {
     .headerMenuItemSumMenuItems {
         z-index: 3;
         overflow-y: auto;
+        position: fixed;
+        right: -100vw;
+        top: 0px;
+        height: 100vh;
+        width: 100vw;
+        -moz-transition: 0.3s;
+        -o-transition: 0.3s;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+    }
+
+    .openHeaderMenuItemSumMenuItems .headerMenuItemSumMenuItems {
+        right: 0px;
     }
 
     .headerMenuItemSumMenuItemsInner {
@@ -989,34 +1015,33 @@ body {
     .headerMenuMoveBackButton {
         display: block;
         line-height: 10px;
-        border-bottom: 1px solid silver;
         padding-right: 20px;
     }
-
-        .headerMenuMoveBackButton:after {
-            content: ' ';
-            position: absolute;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            border-left: 8px solid #585f66;
-            right: 5px;
-            top: 6px;
-        }
-
-        .headerMenuMoveBackButton:before {
-            content: ' ';
-            position: absolute;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            border-left: 8px solid white;
-            right: 7px;
-            top: 6px;
-            z-index: 3;
-        }
-
+    .closeSubMenuItemButton{
+        font-size:1.5em;
+        vertical-align:-6px;
+        margin-left:10px;
+    }
     .headerMenuItem:not(.closeHoverMenu):hover .headerMenuItemSumMenuItems {
-        max-height: calc( 100vh - 200px);
+        height: calc( 100vh - 200px);
         opacity: 1;
+    }
+
+    .headerMenuInner {
+        position: fixed;
+        right: -100vw;
+        top: 0px;
+        width: 100vw;
+        height: 100vh;
+        -moz-transition: 0.3s;
+        -o-transition: 0.3s;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+        background-color: white;
+    }
+
+    .topMenuBttonOpen .headerMenuInner {
+        right: 0px;
     }
 }
 
@@ -1072,7 +1097,7 @@ body {
 @media (max-width: 700px) {
     .modal-dialog.myContainer {
         width: 100% !important;
-        margin:0px;
+        margin: 0px;
     }
 }
 
@@ -1086,7 +1111,7 @@ body {
     display: inline-block;
     line-height: 38px;
     font-weight: bold;
-    width: 150px;
+    width: 186px;
     overflow: hidden;
     white-space: nowrap;
     -ms-text-overflow: ellipsis;

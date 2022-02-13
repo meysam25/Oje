@@ -12,7 +12,7 @@ namespace Oje.FileService.Interfaces
     public interface IUploadedFileService
     {
         string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null);
-        UploadedFile GetFile(string fn, long? userId);
+        UploadedFile GetFile(string fn, long? userId, List<long> allChildUserId);
         int GetCountBy(long objectId, FileType fileType);
         object GetListBy(long objectId, FileType fileType, int skip, int take);
         void Delete(long? uploadFileId, int? siteSettingId, long? objectId, FileType fileType);

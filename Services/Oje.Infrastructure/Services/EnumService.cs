@@ -13,10 +13,11 @@ namespace Oje.Infrastructure.Services
 {
     public static class EnumService
     {
-        public static List<IdTitle> GetEnum(string enumName)
+        public static List<IdTitle> GetEnum(string enumName, bool ignoreEmpty = false)
         {
             List<IdTitle> result = new List<IdTitle>();
-            result.Add(new IdTitle { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name });
+            if (ignoreEmpty == false)
+                result.Add(new IdTitle { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name });
 
             var assembly = Assembly.GetExecutingAssembly();
             var enumType = assembly.GetType("Oje.Infrastructure.Enums." + enumName);
@@ -39,7 +40,9 @@ namespace Oje.Infrastructure.Services
             return result;
         }
 
-        public static JsonSerializerSettings EnumConverterSetting {  get
+        public static JsonSerializerSettings EnumConverterSetting
+        {
+            get
             {
                 var jsonSetting = new JsonSerializerSettings()
                 {
@@ -48,7 +51,8 @@ namespace Oje.Infrastructure.Services
                 };
                 jsonSetting.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 return jsonSetting;
-            } }
+            }
+        }
 
     }
 }

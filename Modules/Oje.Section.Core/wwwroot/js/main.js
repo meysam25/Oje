@@ -551,6 +551,7 @@ function clearForm(selector) {
             s2Obj.trigger('change');
         }
     });
+    $(selector).find('img[data-name]').attr('src', '/Modules/Images/unknown.svg');
     $(selector).find('input[type="text"]').not('[data-no-clear]').val('');
     $(selector).find('input[type="hidden"]').not('[data-no-clear]').val('');
     $(selector).find('input[type="radio"]').prop('checked', false);

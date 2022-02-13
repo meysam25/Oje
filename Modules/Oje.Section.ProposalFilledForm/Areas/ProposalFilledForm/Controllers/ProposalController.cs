@@ -2,6 +2,7 @@
 using Oje.AccountService.Filters;
 using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -68,11 +69,14 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "ذخیره فرم پیشنهاد جدید", Icon = "fa-pen")]
         [HttpPost]
-        [CustomeAuthorizeFilter]
+        //[CustomeAuthorizeFilter]
         public IActionResult Create()
         {
+            var loginUserId = HttpContext.GetLoginUser()?.UserId;
+            if (loginUserId.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CreateProposalFilledForm, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, HttpContext.GetLoginUser()?.UserId, Request.GetTargetAreaByRefferForPPFDetailes());
+            var tempResult = ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, loginUserId, Request.GetTargetAreaByRefferForPPFDetailes());
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CreateProposalFilledForm, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }

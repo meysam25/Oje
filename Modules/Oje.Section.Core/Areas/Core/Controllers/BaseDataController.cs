@@ -20,15 +20,18 @@ namespace Oje.Section.Core.Areas.Controllers
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProvinceService ProvinceService = null;
         readonly ICityService CityService = null;
+        readonly IUserService UserService = null;
         public BaseDataController(
                 IUploadedFileService UploadedFileService,
                 IProvinceService ProvinceService,
-                ICityService CityService
+                ICityService CityService,
+                IUserService UserService
             )
         {
             this.UploadedFileService = UploadedFileService;
             this.ProvinceService = ProvinceService;
             this.CityService = CityService;
+            this.UserService = UserService;
         }
 
         [HttpGet]
@@ -44,7 +47,10 @@ namespace Oje.Section.Core.Areas.Controllers
             if (string.IsNullOrEmpty(fn))
                 return Content("File Not Found");
 
-            var foundFile = UploadedFileService.GetFile(fn, HttpContext.GetLoginUser()?.UserId);
+            var loginUserId = HttpContext.GetLoginUser()?.UserId;
+
+            var allChildUserId = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            var foundFile = UploadedFileService.GetFile(fn, loginUserId.ToLongReturnZiro(), allChildUserId);
             if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || string.IsNullOrEmpty(foundFile.FileContentType))
                 return Content("File Not Found");
 
@@ -57,6 +63,12 @@ namespace Oje.Section.Core.Areas.Controllers
         public IActionResult Get(string id)
         {
             return Json(EnumService.GetEnum(id));
+        }
+
+        [HttpPost]
+        public IActionResult GetNoEmpty(string id)
+        {
+            return Json(EnumService.GetEnum(id, true));
         }
 
         [HttpPost]

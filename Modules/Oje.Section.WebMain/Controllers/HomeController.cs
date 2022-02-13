@@ -48,17 +48,17 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "ستاد بیمه";
-
             var curSetting = SiteSettingService.GetSiteSetting();
             if (curSetting == null)
                 return NotFound();
+
+            ViewBag.Title = curSetting.Title;
 
             GlobalServices.FillSeoInfo(
                   ViewData,
                    curSetting.Title,
                    curSetting.SeoMainPage,
-                   Request.Scheme + "://" + Request.Host + "/" ,
+                   Request.Scheme + "://" + Request.Host + "/",
                    Request.Scheme + "://" + Request.Host + "/",
                    WebSiteTypes.website,
                    Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",

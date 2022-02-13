@@ -32,7 +32,7 @@ function userLoginWeb(userfullname) {
 function getLoginUserMenuTemplate(userfullanme) {
     return `
     <div class="logedInUserMenu">
-        <span class="logedInUserMenuFullname" >${userfullanme}</span>
+        <span class="logedInUserMenuFullname" ><img src="" />${userfullanme}<i style="font-size:2em;vertical-align:-9px;margin-right:10px;" class="fa fa-angle-down" ></i><i style="font-size:2em;vertical-align:-9px;margin-right:10px;" class="fa fa-user-circle" ></i></span>
         <div class="logedInUserMenuItems">
             <a href="#" >داشبورد</a>
             <a href="/Account/Dashboard/Logout" >خروج</a>

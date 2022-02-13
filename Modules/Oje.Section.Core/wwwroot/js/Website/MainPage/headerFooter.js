@@ -18,7 +18,7 @@ $.fn.loadTopMenu = function (url) {
             result += '<div class="myContainer">';
             result += '<div class="headerMenuItemSumMenuItemsInner">';
             result += '<div class="headerMenuItemGroup headerMenuMoveBackButton">';
-            result += '<span class="headerMenuItemLink">' + l1Item.title + '</span>';
+            result += '<span class="headerMenuItemLink"><i class="fa fa-arrow-right closeSubMenuItemButton"></i>' + l1Item.title + '</span>';
             result += '</div>';
             for (var j = 0; j < l1Item.childs.length; j++) {
                 var level2Item = l1Item.childs[j];
@@ -43,6 +43,7 @@ $.fn.loadTopMenu = function (url) {
         postForm(url, new FormData(), function (res) {
             var template = '';
             if (res && res.length > 0) {
+                template += '<i class="moveBackButtonInResponsive fa fa-arrow-right" ></i>';
                 for (var i = 0; i < res.length; i++) {
                     var level1Item = res[i];
                     template += getTopMenuTemplate(level1Item);
@@ -64,10 +65,24 @@ $.fn.initNavResButton = function () {
         $(this).find('.headerMenuMoveBackButton').click(function (e) {
             e.stopPropagation();
             e.preventDefault();
-            $(this).closest('.headerMenuItem').addClass('closeHoverMenu');
+            //$(this).closest('.headerMenuItem').addClass('closeHoverMenu');
         });
         $(this).find('.headerMenuItem').click(function (e) {
-            $(this).removeClass('closeHoverMenu');
+            //$(this).removeClass('closeHoverMenu');
+            $(this).toggleClass('openHeaderMenuItemSumMenuItems');
+        });
+        $(this).find('.headerMenuMoveBackButton > .headerMenuItemLink').click(function ()
+        {
+            $(this).closest('.headerMenuItem').click();
+        });
+        $(this).find('.headerMenuItemSumMenuItemsInner').click(function (e)
+        {
+            e.stopPropagation();
+        });
+        $(this).find('.moveBackButtonInResponsive').click(function (e)
+        {
+            e.stopPropagation();
+            $(this).closest('.headerMenu').toggleClass('topMenuBttonOpen');
         });
     });
 }
@@ -92,6 +107,8 @@ $.fn.initFloatingFooter = function (placeHolderId) {
         if (curPlaceHolder.length > 0) {
             var curPlaceHolderObj = curPlaceHolder[0];
             var handler = onVisibilityChange(curPlaceHolderObj, function (currVisible) {
+                if (this.curThis[0].disableFloating)
+                    return;
                 if (currVisible == false) {
                     if (this.curThis.hasClass('makeMyContainer100'))
                         this.curThis.removeClass('makeMyContainer100')

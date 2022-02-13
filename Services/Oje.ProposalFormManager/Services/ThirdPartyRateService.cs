@@ -180,6 +180,7 @@ namespace Oje.ProposalFormService.Services
         object calceResponeForInquiry(List<GlobalInquery> quiryObj, CarThirdPartyInquiryObjects objPack, CarThirdPartyInquiryVM input, string targetArea)
         {
             int row = 0;
+            var priceUnit = "ریال";
             var result = quiryObj
                 .Where(t => t.deleteMe != true)
                 .Select(t => new
@@ -218,23 +219,23 @@ namespace Oje.ProposalFormService.Services
                     p = t.p.ToString("###,###") + " ",
                     sr = GlobalConfig.FileAccessHandlerUrl + t.cnPic,
                     t.cn,
-                    sp = (t.dt.Where(tt => tt.isE != true).Count() > 0 ? t.dt.Where(tt => tt.isE != true).Sum(tt => tt.p).ToString("###,###") : "0") + " ",
+                    sp = (t.dt.Where(tt => tt.isE != true).Count() > 0 ? t.dt.Where(tt => tt.isE != true).Sum(tt => tt.p).ToString("###,###") : "0") + priceUnit,
                     dt = new
                     {
                         total = t.dt.Count(),
                         data = t.dt.Select(tt => new
                         {
                             t = tt.t,
-                            p = (tt.p < 0 ? tt.p * -1 : tt.p).ToString("###,###") + (tt.p > 0 ? "+" : tt.p < 0 ? "-" : "") + " ",
+                            p = (tt.p < 0 ? tt.p * -1 : tt.p).ToString("###,###") + (tt.p > 0 ? "+" : tt.p < 0 ? "-" : "") + priceUnit,
                             tt.isE,
                             isET = tt.isE == true ? "عدم اعمال در محاصبات" : "اعمال",
                             tt.c,
                             tt.bp
                         }).ToList()
                     },
-                    tmsj = ((t.dt.Any(tt => tt.c == "s2" && tt.bp.ToLongReturnZiro() > 0) ? t.dt.Where(tt => tt.c == "s2").Select(tt => tt.bp).FirstOrDefault() : objPack.ThirdPartyFinancialCommitmentLong).Value.ToString("###,###")),
-                    tjsj = objPack.ThirdPartyLifeCommitmentLong.ToString("###,###"),
-                    trsj = objPack.ThirdPartyDriverFinancialCommitmentLong.ToString("###,###"),
+                    tmsj = ((t.dt.Any(tt => tt.c == "s2" && tt.bp.ToLongReturnZiro() > 0) ? t.dt.Where(tt => tt.c == "s2").Select(tt => tt.bp).FirstOrDefault() : objPack.ThirdPartyFinancialCommitmentLong).Value.ToString("###,###")) + priceUnit,
+                    tjsj = objPack.ThirdPartyLifeCommitmentLong.ToString("###,###") + priceUnit,
+                    trsj = objPack.ThirdPartyDriverFinancialCommitmentLong.ToString("###,###") + priceUnit,
                     t.cid,
                     t.desc,
                     fid = objPack.currentProposalForm?.Id,

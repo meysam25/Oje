@@ -122,10 +122,6 @@
         margin-left: 15px;
     }
 
-    .makeRTL .fa-chevron-right::before {
-        content: ""
-    }
-
     .makeRTL .modal-header .close {
         margin: unset;
         padding: unset;

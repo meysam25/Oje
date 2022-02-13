@@ -27,6 +27,39 @@ function generateForm(res, targetId) {
     }
 }
 
+
+$.fn.addStatusBarToElement = function (onClose, onMax, onMin, option) {
+    var getToobarTemplate = function () {
+        return '<div class="myPanelToolbar" style=""><i style="' + (option && option.close == 'hide' ? 'display:none;' : '') + '"  class="fa fa-times toolbarCloseButton"></i><i class="fa fa-arrows toolBarMaxMin"></i></div>';
+    };
+
+    this.each(function () {
+        $(this).addClass('holderMyToolbar');
+        $(this).append(getToobarTemplate(option));
+        $(this).find('.toolbarCloseButton').click(function () {
+            if (onClose)
+                onClose();
+            $(this).closest('.holderMyToolbar').remove();
+        });
+        $(this).find('.toolBarMaxMin').click(function () {
+            if ($(this).hasClass('fa-arrows')) {
+                if (onMax) {
+                    var onMaxResult = onMax();
+                    if (onMaxResult)
+                        return;
+                }
+                $(this).removeClass('fa-arrows').addClass('fa-compress-arrows-alt');
+                $(this).closest('.holderMyToolbar').addClass('myToolbarMakeMaximum');
+            } else {
+                if (onMin)
+                    onMin();
+                $(this).removeClass('fa-compress-arrows-alt').addClass('fa-arrows');
+                $(this).closest('.holderMyToolbar').removeClass('myToolbarMakeMaximum');
+            }
+        });
+    });
+}
+
 function makeCtrlFocused(curThis) {
     $(curThis).closest('.myCtrl').addClass('myCtrlMakeActive');
 }
@@ -393,7 +426,7 @@ function getMultiSelectImgItemTemplate(objItem, textField, valueField, imgField,
     var result = '';
 
     if (objItem && textField && valueField && imgField && objItem[textField] && objItem[valueField] && objItem[imgField]) {
-        result += '<div onClick="multiSelectImgClick(this)" data-onChange="' + (onChange ? onChange : '') + '" class="multiSelectImageBodyItem" data-id="' + objItem[valueField] + '" ><img alt="' + objItem[textField] +'" class="multiSelectImageBodyItemImg" width="32" height="32" src="' + objItem[imgField] + '" /><span class="multiSelectImageBodyItemTitle" >' + objItem[textField] + '</span></div>';
+        result += '<div onClick="multiSelectImgClick(this)" data-onChange="' + (onChange ? onChange : '') + '" class="multiSelectImageBodyItem" data-id="' + objItem[valueField] + '" ><img alt="' + objItem[textField] + '" class="multiSelectImageBodyItemImg" width="32" height="32" src="' + objItem[imgField] + '" /><span class="multiSelectImageBodyItemTitle" >' + objItem[textField] + '</span></div>';
     }
 
     return result;
@@ -410,7 +443,7 @@ function multiSelectImgClick(curElement) {
             sQuery.find('input[type=hidden]').remove();
         } else {
             sQuery.addClass('multiSelectImageBodyItemActive');
-            sQuery.append('<input type="hidden" value="' + curId + '" name="' + curName +'" />');
+            sQuery.append('<input type="hidden" value="' + curId + '" name="' + curName + '" />');
         }
         if (onChange)
             eval(onChange);
@@ -470,7 +503,7 @@ function getCountDownButtonTemplate(ctrl) {
 function getButtonTemplateWidthLabel(ctrl) {
     var result = '';
 
-    result += '<div class="form-group" >'
+    result += '<div class="form-group ' + (ctrl.showHideClass ? ctrl.showHideClass : '') +'" >'
     result += getButtonTemplate(ctrl);
     result += '</div>';
 
@@ -483,7 +516,7 @@ function getPlaqueTemplate(ctrl) {
         if (ctrl.label) {
             result += '<label style="display:block;"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
         }
-        result += '<div class="plaqueCtrl form-group" >';
+        result += '<div class="plaqueCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '" >';
         result += '<div class="plaqueRightPart" >';
         result += '<div class="plaqueRightPartRight">';
         result += '<input type="text" placeholder="55" name="' + ctrl.name + '_1" />';
@@ -898,6 +931,7 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
                             }
                             $('#' + this.ctrl.id).html(template);
                         }
+                        executeArrFunctions();
                     }
                 }.bind({ ctrl: this.ctrl }));
             }
@@ -915,7 +949,7 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input autocomplete="off" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input autocomplete="off" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     functionsList.push(function () {
@@ -1094,13 +1128,38 @@ function getFileCTRLTemplate(ctrl) {
 
     result += '<div class="myCtrl form-group myFileUpload">';
 
+    result += '<div class="holderUploadImage">';
+    result += '<img data-name="' + ctrl.name + '_address" id="img_' + ctrl.id + '" src="' + (ctrl.sampleUrl ? ctrl.sampleUrl : '/Modules/Images/unknown.svg') + '" />';
+    result += '</div>';
+
     if (ctrl.label) {
-        result += '<label class="btn btn-primary btn-block" style="margin-bottom:0px;text-align:center;" for="file_' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '<a target="_blank" ' + (ctrl.sampleUrl ? 'href="' + ctrl.sampleUrl + '"' : '') + ' style="margin-left:5px;margin-right:5px;font-size:8pt;" data-name="' + ctrl.name + '_address" >' + (ctrl.sampleUrl ? '(مشاهده)' : '') + '</a></label>';
+        result += '<label class="btn btn-primary btn-block" style="margin-bottom:0px;text-align:center;" for="file_' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
     result += '<input id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
+    functionsList.push(function () {
+        var imgId = 'img_' + this.id;
+        $('#file_' + this.id).change(function () {
+            readFileFromInput(this, imgId);
+        });
+
+        $('#file_' + this.id).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' });
+    }.bind({ id: ctrl.id }));
+
     return result;
+}
+
+function readFileFromInput(fileInput, imgId) {
+    if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#' + imgId).attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(fileInput.files[0]);
+    }
 }
 
 function getTokennCTRLTemplate(ctrl) {
@@ -1209,8 +1268,7 @@ function getDropdownCTRLTemplate(ctrl) {
                     eval(this.sOnChange);
                 }.bind({ sOnChange: this.onChange }));
             }
-            $('#' + this.id).closest('.myCtrl').find('label').click(function (e)
-            {
+            $('#' + this.id).closest('.myCtrl').find('label').click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 var s2Obj = $(this).closest('.myCtrl').find('select').data('select2');
@@ -1531,11 +1589,12 @@ function getStepWizardTemplate(wizard) {
             }
 
             if (!wizard.steps[i].submitUrl) {
-                result += '<div class="panelSWizardHolderContentHolderStepButton">';
+                result += '<div style="height:27px;" class="panelSWizardHolderContentHolderStepButton">';
                 if (i > 0)
-                    result += '<button class="btn btn-warning btn-sm stepButton buttonBack">بازگشت</button>';
+                    result += '<button class="btn btn-warning btn-sm stepButton buttonBack"><i class="fa fa-chevron-right"></i>بازگشت</button>';
                 var isLastStep = (i + 1) >= wizard.steps.length;
-                result += '<button class="btn btn-primary btn-sm stepButton ' + (isLastStep ? 'lastStepButton' : 'buttonConfirm') + ' ">' + (isLastStep ? wizard.lastStepButtonTitle : (wizard.fistStepButtonTitle && i == 0 ? wizard.fistStepButtonTitle : 'ادامه')) + '</button>';
+                if (wizard.steps[i].hideMoveNextButton != true)
+                    result += '<button class="btn btn-primary btn-sm stepButton ' + (isLastStep ? 'lastStepButton' : 'buttonConfirm') + ' ">' + (isLastStep ? wizard.lastStepButtonTitle : (wizard.fistStepButtonTitle && i == 0 ? wizard.fistStepButtonTitle : 'ادامه<i class="fa fa-chevron-left"></i>')) + '</button>';
                 result += '</div>';
             }
 
@@ -1551,6 +1610,21 @@ function getStepWizardTemplate(wizard) {
     }.bind({ wizard: wizard }));
 
     return result;
+}
+
+function convertToPerisanDate(curDate) {
+    try {
+        return curDate.toLocaleDateString('fa-IR').replace(/([۰-۹])/g, token => String.fromCharCode(token.charCodeAt(0) - 1728))
+    }
+    catch {
+        return '';
+    }
+}
+
+function getLastYearFromToday(yearCount) {
+    var date = new Date();
+    date.setFullYear(date.getFullYear() + yearCount);
+    return convertToPerisanDate(date);
 }
 
 function submitThisStep(curThis, targetUrl) {
@@ -1648,6 +1722,14 @@ function isShowCondationValid(nextJQObj) {
     }
 
     return result;
+}
+
+function moveToNextStepForSW(curItem) {
+    if (curItem) {
+        if ($(curItem).closest('.panelSWizard').length > 0) {
+            $(curItem).closest('.panelSWizard')[0].moveNext();
+        }
+    }
 }
 
 function initSWFunctions(curId, actionOnLastStep) {

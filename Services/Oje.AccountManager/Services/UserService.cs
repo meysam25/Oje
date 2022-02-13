@@ -911,9 +911,9 @@ namespace Oje.AccountService.Services
         {
             return db.Users.Where(t => t.Id == userId).Select(t => new
             {
-                firstname = t.Firstname,
-                lastname = t.Lastname,
-                username = t.Username,
+                firstname = t.Firstname.Trim(),
+                lastname = t.Lastname.Trim(),
+                username = t.Username.Trim(),
                 pic = GlobalConfig.FileAccessHandlerUrl + t.UserPic
             }).FirstOrDefault();
         }

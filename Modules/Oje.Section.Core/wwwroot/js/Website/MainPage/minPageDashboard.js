@@ -21,8 +21,19 @@ function showLoginUserPanelInMainPage() {
 
                 $('#adminPanel').find('.allQuckAccessItemsHolder').html(htmlShortCut);
                 $('#adminPanel').css('display', 'block');
+                initShortCutItemClick();
+                $('#adminPanel .quickAccessSection').addStatusBarToElement(null, function () { location.href = "/Account/Dashboard/Index"; return true; }, null);
+                disableFloatingFooter();
             }
         });
+}
+function disableFloatingFooter() {
+    $('#floatingFooter').removeClass('floatingFooterSectionMakeFloat').addClass('makeMyContainer100')[0].disableFloating = true;
+    
+}
+function initShortCutItemClick() {
+    $('#adminPanel').find('.allQuckAccessItemsHolder').find('.WebMod').click(function (e) { $(this).toggleClass('WebModActive'); e.stopPropagation(); });
+    $('body').click(function () { $('#adminPanel').find('.allQuckAccessItemsHolder').find('.WebMod').removeClass('WebModActive') });
 }
 
 function getItemCount(items) {

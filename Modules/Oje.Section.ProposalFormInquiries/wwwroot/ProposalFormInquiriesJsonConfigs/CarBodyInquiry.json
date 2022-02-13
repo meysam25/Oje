@@ -6,7 +6,6 @@
       "stepWizards": [
         {
           "lastStepButtonTitle": "استعلام",
-          "fistStepButtonTitle": "بدون استعلام ادامه میدم",
           "actionOnLastStep": [
             {
               "actionName": "showModal",
@@ -20,8 +19,43 @@
           "steps": [
             {
               "order": 0,
+              "id": "rFirstStep",
+              "title": "نحویه استعلام",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "typeOfInquery",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/Core/BaseData/Get/TypeOfInquiry",
+                      "label": "نوع استعلام",
+                      "name": "typeOfInquery",
+                      "isRequired": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 0.1,
               "id": "firstStep",
               "title": "استعلام پلاک خودرو",
+              "hideMoveNextButton": true,
+              "showCondation": [
+                {
+                  "id": "typeOfInquery",
+                  "operator": "!=",
+                  "value": "2"
+                },
+                {
+                  "id": "typeOfInquery",
+                  "operator": "!=",
+                  "value": ""
+                }
+              ],
               "panels": [
                 {
                   "ctrls": [
@@ -250,7 +284,8 @@
                       "class": "startAndEndDate",
                       "type": "persianDateTime",
                       "label": "تاریخ شروع بیمه نامه قبل",
-                      "isRequired": true
+                      "isRequired": true,
+                      "yearFromKnow": -1
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
@@ -258,7 +293,8 @@
                       "class": "startAndEndDate",
                       "type": "persianDateTime",
                       "label": "تاریخ اتمام بیمه نامه قبلی",
-                      "isRequired": true
+                      "isRequired": true,
+                      "yearFromKnow": 0
                     }
                   ]
                 }
@@ -267,7 +303,7 @@
             {
               "order": 3,
               "id": "penaltyQuestions",
-              "title": "سابقه عدم خسارت بدنه",
+              "title": "درصد عدم خسارت بدنه",
               "showCondation": [
                 {
                   "id": "havePrevInsurance",
@@ -290,7 +326,7 @@
                       "textfield": "title",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscount",
-                      "label": "سابقه عدم خسارت مندرج در بیمه نامه بدنه",
+                      "label": "درصد عدم خسارت مندرج در بیمه نامه بدنه",
                       "name": "noDamageDiscountBody",
                       "isRequired": true
                     }
@@ -354,7 +390,7 @@
             {
               "order": 5,
               "id": "penaltyQuestions",
-              "title": "سابقه عدم خسارت ثالث",
+              "title": "درصد عدم خسارت ثالث",
               "showCondation": [
                 {
                   "id": "havePrevInsuranceThirdParty",
@@ -377,7 +413,7 @@
                       "textfield": "title",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscountThirdParty",
-                      "label": "سابقه عدم خسارت مندرج در بیمه نامه ثالث",
+                      "label": "درصد عدم خسارت مندرج در بیمه نامه ثالث",
                       "name": "noDamageDiscountThirdParty",
                       "isRequired": true
                     }
@@ -580,7 +616,7 @@
                   },
                   "formatters": {
                     "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'",
-                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزییات بیشتر<i></i></span>'"
+                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزئیات محاسبه<i></i></span>'"
                   },
                   "columns": [
                     {

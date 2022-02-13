@@ -34,7 +34,7 @@
                     <span>داشبرد</span>
                 </span>
             </a>
-            <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login" vary-by="@(Oje.Infrastructure.GlobalConfig.siteMenuCache)" >
+            <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login" vary-by="@(Oje.Infrastructure.GlobalConfig.siteMenuCache)">
                 <partial name="~/Areas/Account/Views/Shared/_LayoutAdminSideMenu.cshtml" />
             </cache>
         </div>
@@ -42,6 +42,18 @@
     <main>
         <header>
             <span class="fa fa-bars headerTopMenuButton"></span>
+            <a style="float:left;margin-top:7px;margin-right:10px;cursor:pointer;" id="moveBackButtonHistory" class="btn btn-warning btn-sm ">بازگشت<i style="margin-right:5px;" class="fa fa-chevron-left"></i></a>
+            <script>
+                if(document.referrer && history && history.length > 1 && document.referrer.indexOf(location.origin) > -1) {
+                    $('#moveBackButtonHistory').click(function()
+                    {
+                        history.back();
+                    });
+                }
+                else{
+                    $('#moveBackButtonHistory').css('display','none');
+                }
+            </script>
             <span class="loginUserSecitonHeader">
                 <span class="loginUserName"><a href="/UserAccount/UserNotification/Index" class="notificationCount">@(UserNotificationService.GetUserUnreadNotificationCount(Context.GetLoginUser()?.UserId))</a> @(!string.IsNullOrEmpty(Context.GetLoginUser()?.Fullname.Trim()) ? Context.GetLoginUser()?.Fullname : Context.GetLoginUser()?.Username)</span><i class="loginArrowMenu fa fa-sort-down"></i>
                 <span class="loginUserMenu">

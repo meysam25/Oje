@@ -59,7 +59,9 @@ namespace Oje.Sms.Services
                 var foundLimit = smsLimits.Where(t => t.type == smsSendingQueue.Type && t.isWebsite == isWebsite).FirstOrDefault();
                 if (foundLimit != null)
                 {
-                    if (db.SmsSendingQueues.Count(t => t.Ip1 == smsSendingQueue.Ip1 && t.Ip2 == smsSendingQueue.Ip2 && t.Ip3 == smsSendingQueue.Ip3 && t.Ip4 == smsSendingQueue.Ip4 && t.Type == smsSendingQueue.Type) >= foundLimit.value)
+                    if (db.SmsSendingQueues.Count(t => 
+                    t.CreateDate.Year == smsSendingQueue.CreateDate.Year && t.CreateDate.Month == smsSendingQueue.CreateDate.Month && t.CreateDate.Day == smsSendingQueue.CreateDate.Day && 
+                    t.Ip1 == smsSendingQueue.Ip1 && t.Ip2 == smsSendingQueue.Ip2 && t.Ip3 == smsSendingQueue.Ip3 && t.Ip4 == smsSendingQueue.Ip4 && t.Type == smsSendingQueue.Type) >= foundLimit.value)
                         return;
                 }
 
@@ -161,13 +163,13 @@ namespace Oje.Sms.Services
             if (foundUser != null)
             {
                 curType = UserNotificationType.Login;
-                smsMessage = "کاربر گرامی " + foundUser.Firstname + " " + foundUser.Lastname + " رمز یک بار مصرف جهت ورود شما عبارت است از " + newCode;
+                smsMessage = "کاربر گرامی " + foundUser.Firstname + " " + foundUser.Lastname + " رمز یک بار مصرف جهت ورود شما عبارت است از " + Environment.NewLine + newCode;
                 foundTemplate = SmsTemplateService.GetBy(curType.Value, siteSettingId);
             }
             else
             {
                 curType = UserNotificationType.Register;
-                smsMessage = "کاربر گرامی لطفا جهت ثبت نام از این کد استفاده کنید " + newCode;
+                smsMessage = "کاربر گرامی لطفا جهت ثبت نام از این کد استفاده کنید " + Environment.NewLine + newCode;
                 foundTemplate = SmsTemplateService.GetBy(curType.Value, siteSettingId);
             }
 
@@ -277,7 +279,7 @@ namespace Oje.Sms.Services
                 string smsMessage = "";
 
                 UserNotificationType curType = UserNotificationType.ForgetPassword;
-                smsMessage = "کاربر گرامی " + foundUser.Firstname + " " + foundUser.Lastname + " رمز یک بار مصرف جهت ورود شما عبارت است از " + newCode;
+                smsMessage = "کاربر گرامی " + foundUser.Firstname + " " + foundUser.Lastname + " رمز یک بار مصرف جهت ورود شما عبارت است از " + Environment.NewLine + newCode;
                 foundTemplate = SmsTemplateService.GetBy(curType, siteSettingId);
 
                 if (foundTemplate != null && foundTemplate.Count > 0)

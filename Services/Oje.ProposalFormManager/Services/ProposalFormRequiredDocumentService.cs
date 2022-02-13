@@ -39,7 +39,7 @@ namespace Oje.ProposalFormService.Services
                 {
                     t.title,
                     t.isRequired,
-                    sample = GlobalConfig.FileAccessHandlerUrl + t.sample
+                    sample = !string.IsNullOrEmpty(t.sample) ?( GlobalConfig.FileAccessHandlerUrl + t.sample): ""
                 })
                 .ToList();
         }

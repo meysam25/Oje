@@ -35,7 +35,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetLightListForInquiryDD()
         {
-            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
+            List<object> result = new List<object>();// { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
             result.Add(new { id = "0", title = BMessages.I_Dont_Have_One.GetAttribute<DisplayAttribute>()?.Name });
 
             result.AddRange(db.Companies.Where(t => t.IsActive == true).Select(t => new { id = t.Id, title = t.Title }).ToList());

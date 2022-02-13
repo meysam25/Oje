@@ -321,7 +321,7 @@
                   },
                   "formatters": {
                     "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'",
-                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزییات بیشتر<i></i></span>'"
+                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزئیات محاسبه<i></i></span>'"
                   },
                   "columns": [
                     {

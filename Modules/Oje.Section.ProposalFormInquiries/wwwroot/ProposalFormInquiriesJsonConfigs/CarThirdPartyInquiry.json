@@ -6,7 +6,6 @@
       "stepWizards": [
         {
           "lastStepButtonTitle": "استعلام",
-          "fistStepButtonTitle": "بدون استعلام ادامه میدم",
           "actionOnLastStep": [
             {
               "actionName": "showModal",
@@ -20,28 +19,101 @@
           "steps": [
             {
               "order": 0,
-              "id": "firstStep",
-              "title": "استعلام پلاک خودرو",
+              "id": "rFirstStep",
+              "title": "نحویه استعلام",
+              "hideMoveNextButton": true,
               "panels": [
                 {
                   "ctrls": [
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "type": "carPlaque",
-                      "name": "plaque"
+                      "id": "typeOfInquery",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/Core/BaseData/GetNoEmpty/TypeOfInquiry",
+                      "label": "نوع استعلام",
+                      "name": "typeOfInquery",
+                      "isRequired": true,
+                      "showHideCondation": [
+                        {
+                          "value": "",
+                          "classHide": [ "normalInquiry" ],
+                          "isDefault": true
+                        },
+                        {
+                          "value": "1",
+                          "classShow": [ "plaqueInput" ],
+                          "classHide": [ "normalInquiry" ]
+                        },
+                        {
+                          "value": "2",
+                          "classShow": [ "normalInquiry" ],
+                          "classHide": [ "plaqueInput" ]
+                        }
+                      ]
                     },
                     {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "type": "carPlaque",
+                      "name": "plaque",
+                      "class": "plaqueInput"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
                       "name": "nationalCode",
                       "type": "text",
-                      "label": "کد ملی"
+                      "label": "کد ملی",
+                      "class": "plaqueInput"
                     },
                     {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "class": "btn-primary btn-block",
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "showHideClass": "plaqueInput",
+                      "class": "btn-primary btn-block ",
                       "type": "button",
                       "title": "استعلام سابقه",
                       "onClick": "alert('وب سرویس پیاده سازی نشده')"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "id": "vehicleTypeId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetVehicleTypeList",
+                      "changeOtherCtrLabel": [
+                        {
+                          "url": "/ProposalFormInquiries/CarThirdPartyInquiry/GetSpecCatTitle",
+                          "targetCtrlId": "specId",
+                          "titleSchema": "title"
+                        }
+                      ],
+                      "clearInputsOnChange": [ "brandId", "specId" ],
+                      "label": "نوع خودرو",
+                      "name": "vehicleTypeId",
+                      "isRequired": true,
+                      "childId": "carTypeId",
+                      "class": "normalInquiry"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "id": "carTypeId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarTypeList",
+                      "label": "کاربری خودرو",
+                      "name": "carTypeId",
+                      "isRequired": true,
+                      "class": "normalInquiry"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "showHideClass": "normalInquiry",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "ادامه",
+                      "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
                 }
@@ -138,7 +210,8 @@
                       "class": "startAndEndDate",
                       "type": "persianDateTime",
                       "label": "تاریخ شروع بیمه نامه قبل",
-                      "isRequired": true
+                      "isRequired": true,
+                      "yearFromKnow": -1
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
@@ -146,49 +219,8 @@
                       "class": "startAndEndDate",
                       "type": "persianDateTime",
                       "label": "تاریخ اتمام بیمه نامه قبلی",
-                      "isRequired": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 1,
-              "id": "secoundStep",
-              "title": "نوع و کاربری خودرو",
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "vehicleTypeId",
-                      "type": "dropDown",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetVehicleTypeList",
-                      "changeOtherCtrLabel": [
-                        {
-                          "url": "/ProposalFormInquiries/CarThirdPartyInquiry/GetSpecCatTitle",
-                          "targetCtrlId": "specId",
-                          "titleSchema": "title"
-                        }
-                      ],
-                      "clearInputsOnChange": [ "brandId", "specId" ],
-                      "label": "نوع خودرو",
-                      "name": "vehicleTypeId",
                       "isRequired": true,
-                      "childId": "carTypeId"
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "carTypeId",
-                      "type": "dropDown",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarTypeList",
-                      "label": "کاربری خودرو",
-                      "name": "carTypeId",
-                      "isRequired": true
+                      "yearFromKnow": 0
                     }
                   ]
                 }
@@ -299,7 +331,7 @@
             {
               "order": 3.1,
               "id": "discountQuestions",
-              "title": "سابقه عدم خسارت ها",
+              "title": "درصد عدم خسارت ها",
               "showCondation": [
                 {
                   "id": "havePrevInsurance",
@@ -564,7 +596,7 @@
                   },
                   "formatters": {
                     "imgTemplate": "'<img alt=\"'+ data.cn +'\" src=\"'+ data.sr +'\" width=\"64\" height=\"64\" />'",
-                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزییات بیشتر<i></i></span>'"
+                    "customeExpandButton": "'<span onClick=\"expandGridThisRow(this)\" class=\"btn btn-block btn-roundMoreGridDetailes\">جزئیات محاسبه<i></i></span>'"
                   },
                   "columns": [
                     {

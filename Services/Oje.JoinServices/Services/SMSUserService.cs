@@ -151,7 +151,7 @@ namespace Oje.JoinServices.Services
                 UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true });
 
                 List<SmsTemplate> foundTemplate = null;
-                string smsMessage = "کاربر گرامی ثبت نام شما با موفقیت انجام گرفت کلمه عبور شما عبارت است از " + password;
+                string smsMessage = "کاربر گرامی ثبت نام شما با موفقیت انجام گرفت کلمه عبور شما عبارت است از " + Environment.NewLine + password;
 
                 foundTemplate = SmsTemplateService.GetBy(UserNotificationType.RegisterSuccessFull, siteSettingId);
                 if (foundTemplate != null && foundTemplate.Count > 0)

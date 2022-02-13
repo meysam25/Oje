@@ -12,9 +12,15 @@ namespace Oje.ProposalFormService.Services
     public class ThirdPartyRequiredFinancialCommitmentService : IThirdPartyRequiredFinancialCommitmentService
     {
         readonly ProposalFormDBContext db = null;
-        public ThirdPartyRequiredFinancialCommitmentService(ProposalFormDBContext db)
+        readonly IInquiryCompanyLimitService InquiryCompanyLimitService = null;
+        public ThirdPartyRequiredFinancialCommitmentService
+            (
+                ProposalFormDBContext db,
+                IInquiryCompanyLimitService InquiryCompanyLimitService
+            )
         {
             this.db = db;
+            this.InquiryCompanyLimitService = InquiryCompanyLimitService;
         }
 
         public List<ThirdPartyRequiredFinancialCommitment> GetByIds(List<int> coverIds)
@@ -28,20 +34,38 @@ namespace Oje.ProposalFormService.Services
                             .ToList();
         }
 
-        public object GetLightList()
+        public object GetLightList(int? siteSettingId)
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true).OrderBy(t => t.Order).Select(t => new { id = t.Id, title = t.Title }).ToList());
+            var validComs = InquiryCompanyLimitService.GetCompanies(siteSettingId, Infrastructure.Enums.InquiryCompanyLimitType.ThirdParty);
+            var qureResult = db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitments.Any(tt => tt.IsActive == true));
+
+            if (validComs != null && validComs.Count > 0)
+            {
+                var allValidComIds = validComs.Select(t => t.Id).ToList();
+                qureResult = qureResult.Where(t => t.ThirdPartyRequiredFinancialCommitmentCompanies.Any(tt => allValidComIds.Contains(tt.CompanyId)));
+            }
+
+            result.AddRange(qureResult.OrderBy(t => t.Order).Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
         }
 
-        public object GetLightListShortTitle()
+        public object GetLightListShortTitle(int? siteSettingId)
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true).OrderBy(t => t.Order).Select(t => new { id = t.Id, title = t.ShortTitle }).ToList());
+            var validComs = InquiryCompanyLimitService.GetCompanies(siteSettingId, Infrastructure.Enums.InquiryCompanyLimitType.ThirdParty);
+            var qureResult = db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitments.Any(tt => tt.IsActive == true));
+
+            if (validComs != null && validComs.Count > 0)
+            {
+                var allValidComIds = validComs.Select(t => t.Id).ToList();
+                qureResult = qureResult.Where(t => t.ThirdPartyRequiredFinancialCommitmentCompanies.Any(tt => allValidComIds.Contains(tt.CompanyId)));
+            }
+
+            result.AddRange(qureResult.OrderBy(t => t.Order).Select(t => new { id = t.Id, title = t.ShortTitle }).ToList());
 
             return result;
         }

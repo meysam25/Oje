@@ -127,14 +127,14 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult GetCommitmentGridFilter()
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentService.GetLightList());
+            return Json(ThirdPartyRequiredFinancialCommitmentService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست تعهد های مالی عنوان کوتاه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCommitmentGridFilterShortTitle()
         {
-            return Json(ThirdPartyRequiredFinancialCommitmentService.GetLightListShortTitle());
+            return Json(ThirdPartyRequiredFinancialCommitmentService.GetLightListShortTitle(SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه روزانه", Icon = "fa-list-alt")]

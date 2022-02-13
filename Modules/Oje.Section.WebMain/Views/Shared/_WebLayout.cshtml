@@ -456,7 +456,8 @@
         }
 
         $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
-
+        localStorage.clear();
+        caches.delete('mainServiceName');
     </script>
     @RenderSection("FooterR", required: false)
 </body>

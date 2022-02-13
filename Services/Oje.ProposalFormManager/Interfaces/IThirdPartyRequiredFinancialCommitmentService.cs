@@ -10,7 +10,7 @@ namespace Oje.ProposalFormService.Interfaces
     public interface IThirdPartyRequiredFinancialCommitmentService
     {
         List<ThirdPartyRequiredFinancialCommitment> GetByIds(List<int> coverIds);
-        object GetLightList();
-        object GetLightListShortTitle();
+        object GetLightList(int? siteSettingId);
+        object GetLightListShortTitle(int? siteSettingId);
     }
 }
