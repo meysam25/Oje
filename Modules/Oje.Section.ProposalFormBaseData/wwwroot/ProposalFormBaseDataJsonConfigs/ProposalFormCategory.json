@@ -3,11 +3,11 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ProposalFormCategoryGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ProposalFormCategoryAddGridModal', this)", "type": "add", "modalId": "ProposalFormCategoryAddGridModal"
             }
           ],
           "exportToExcelUrl": "/ProposalFormBaseData/ProposalFormCategory/Export",
@@ -21,9 +21,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ProposalFormCategoryEditGridModal",
                 "url": "/ProposalFormBaseData/ProposalFormCategory/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalFormCategory/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalFormCategory/GetById\\', \\'ProposalFormCategoryEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -58,7 +58,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "ProposalFormCategoryAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -81,14 +81,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalFormCategory/Create')",
+              "onClick": "postModalData(this, 'ProposalFormCategoryGrid', '/ProposalFormBaseData/ProposalFormCategory/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "ProposalFormCategoryEditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -111,7 +111,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalFormCategory/Update')",
+              "onClick": "postModalData(this, 'ProposalFormCategoryGrid', '/ProposalFormBaseData/ProposalFormCategory/Update')",
               "class": "btn-primary"
             }
           ]

@@ -14,6 +14,7 @@ namespace Oje.Section.BaseData.Models.DB
     {
         [Key]
         public int Id { get; set; }
+        [MaxLength(100)]
         public string Title { get; set; }
         public int ProvinceId { get; set; }
         [ForeignKey("ProvinceId")]

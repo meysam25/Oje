@@ -34,6 +34,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تغییر کلمه عبور بعد از برسی صحت کد پیامک شده")]
         ChangePasswordAndLogin = 14,
         [Display(Name = "عدم پیدا کردن صفحه")]
-        PageNotFound = 15
+        PageNotFound = 15,
+        [Display(Name = "تماس با ما")]
+        ContactUs = 16
     }
 }

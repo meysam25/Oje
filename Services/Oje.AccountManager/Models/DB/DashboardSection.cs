@@ -23,6 +23,9 @@ namespace Oje.AccountService.Models.DB
         public DashboardSectionType Type { get; set; }
         [Required, MaxLength(50)]
         public string Class { get; set; }
+        public int? DashboardSectionCategoryId { get; set; }
+        [ForeignKey("DashboardSectionCategoryId"), InverseProperty("DashboardSections")]
+        public DashboardSectionCategory DashboardSectionCategory { get; set; }
 
     }
 }

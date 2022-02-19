@@ -48,8 +48,8 @@ namespace Oje.Section.BaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title, ApiResultErrorCode.ValidationError);
             if (input.provinceId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Province, ApiResultErrorCode.ValidationError);
-            if (input.title.Length > 50)
-                throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars, ApiResultErrorCode.ValidationError);
+            if (input.title.Length > 100)
+                throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars, ApiResultErrorCode.ValidationError);
             if (db.Cities.Any(t => t.ProvinceId == input.provinceId && t.Title == input.title && t.Id != input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Title, ApiResultErrorCode.ValidationError);
         }

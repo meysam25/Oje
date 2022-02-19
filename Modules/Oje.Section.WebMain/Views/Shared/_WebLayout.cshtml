@@ -76,7 +76,7 @@
     @RenderSection("Styles", required: false)
     <link rel="preload" as="font" href="/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" as="font" href="/Modules/webfonts/fa-light-300.woff2" type="font/woff2" crossorigin="anonymous">
-    <link rel="icon" type="image/x-icon" href="/Modules/Assets/favicon.ico.gz" sizes="32x32">
+    <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" sizes="32x32">
     <script>
         var isLH =  @(Context.Request.IsLighthouse().ToString().ToLower())
     </script>
@@ -94,8 +94,8 @@
             <section class="topHeader">
                 <div class="myContainer">
                     <a title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
-                    <img class="mainHeaderElectronDevelopLogo" title="لوگوی مرکز توسعه تجارت الکترونیکی" src="/Modules/Assets/MainPage/electronDevelopment.png" width="85" height="77" />
-                    <img class="mainHeaderIranLogo" title="لوگوی ایران" src="/Modules/Assets/MainPage/iranlogo.png" width="85" height="77" />
+                    <img class="mainHeaderElectronDevelopLogo" title="نماد برخط" src="/Modules/Assets/barkhat.png" width="85" height="77" />
+                    <img class="mainHeaderIranLogo" title="ای نماد" src="/Modules/Assets/MainPage/namad.png" width="85" height="77" />
                     <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="@curSetting.Title" href="/">@curSetting.Title</a></h1>
                 </div>
             </section>
@@ -107,8 +107,7 @@
                         <div class="topMenuBttonLine"></div>
                     </div>
                     <div class="holderRigAndLogUser">
-                        <a class="secountBtn">ورود</a>
-                        <a href="#" title="ثبت نام" class="mainBtn">ثبت نام</a>
+                        <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i>ورود | ثبت نام</a>
                     </div>
                     <div id="topMenuHolderItems" class="headerMenuInner">
                         <div class="headerMenuItem ">
@@ -377,7 +376,7 @@
                         <div class="myContainer">
                             <div class="floatingFooterSection">
                                 <div>
-                                    <a href="#" title="ثبت نام" class="mainBtn">ثبت نام</a>
+                                    <a href="#" title="ارسال تیکت" class="mainBtn">ارسال تیکت</a>
                                     <a href="#" title="مشاوره رایگان" class="secountBtn">مشاوره رایگان</a>
                                 </div>
                                 <div class="floatingFooterSectionCenter">
@@ -423,7 +422,7 @@
                 <div class="myContainer">
                     <div class="footerSharingAndCopyRightSection">
                         <div class="footerCopyRightSection">
-                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت کارگزاری بر خط اوج می‌باشد.
+                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت کارگزاری رسمی بیمه مستقیم برخط اوج می‌باشد.
                         </div>
                         <div class="footerSharingIconSection">
                             <a href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegram.svg" /></a>
@@ -457,7 +456,12 @@
 
         $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
         localStorage.clear();
-        caches.delete('mainServiceName');
+        @{
+            if(Context.Request.IsHttps)
+            {
+                ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+            }
+        }
     </script>
     @RenderSection("FooterR", required: false)
 </body>

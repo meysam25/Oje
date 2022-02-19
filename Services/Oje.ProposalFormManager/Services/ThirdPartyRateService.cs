@@ -242,11 +242,14 @@ namespace Oje.ProposalFormService.Services
                     targetArea = targetArea
                 }).ToList();
 
-
-            if (input.showStatus == 2)
-                result = result.Where(t => t.hcd == true).ToList();
-            else if (input.showStatus == 3)
-                result = result.Where(t => t.hcd == true).ToList();
+            if(objPack.CashPayDiscounts != null)
+            {
+                if (input.showStatus == 2)
+                    result = result.Where(t => t.hcd == true).ToList();
+                else if (input.showStatus == 3)
+                    result = result.Where(t => t.hcd == true).ToList();
+            }
+            
             return new { total = result.Count, data = result };
         }
 
@@ -774,12 +777,12 @@ namespace Oje.ProposalFormService.Services
                     {
                         var listRate = ex.ThirdPartyExteraFinancialCommitments
                             .Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitmentComs.Any(tt => tt.CompanyId == inquery.CompanyId)).ToList();
-                        if (listRate.Count > 0)
+                        if (listRate.Count > 0 || ex.IsBase == true)
                         {
                             var foundWithType = listRate.OrderByDescending(t => t.Year).Where(t => t.CarSpecificationId == objPack.CarSpecification.Id).FirstOrDefault();
                             if (foundWithType == null)
                                 foundWithType = listRate.OrderByDescending(t => t.Year).FirstOrDefault();
-                            if (foundWithType != null)
+                            if (foundWithType != null || ex.IsBase == true)
                             {
                                 GlobalInquery newITem = new GlobalInquery();
                                 if (inquery.GlobalInputInqueryId.ToIntReturnZiro() > 0)
@@ -800,18 +803,24 @@ namespace Oje.ProposalFormService.Services
                                         Title = qItem.Title
                                     });
                                 }
-                                if (objPack.ThirdPartyFinancialCommitment != null)
+                                if (ex.IsBase != true)
                                 {
-                                    newITem.GlobalInquiryItems.Add(new GlobalInquiryItem()
+                                    if (objPack.ThirdPartyFinancialCommitment != null)
                                     {
-                                        CalcKey = "s2",
-                                        Price = Math.Ceiling(Convert.ToDecimal(ex.Price - objPack.ThirdPartyFinancialCommitment.Price) * foundWithType.Rate).ToLongReturnZiro(),
-                                        Title = "تعهد مالی " + ex.Title,
-                                        GlobalInquiryId = newITem.Id,
-                                        basePriceEC = foundWithType?.ThirdPartyRequiredFinancialCommitment?.Price
-                                    });
-                                    result.Add(newITem);
+                                        newITem.GlobalInquiryItems.Add(new GlobalInquiryItem()
+                                        {
+                                            CalcKey = "s2",
+                                            Price = Math.Ceiling(Convert.ToDecimal(ex.Price - objPack.ThirdPartyFinancialCommitment.Price) * foundWithType.Rate).ToLongReturnZiro(),
+                                            Title = "تعهد مالی " + ex.Title,
+                                            GlobalInquiryId = newITem.Id,
+                                            basePriceEC = foundWithType?.ThirdPartyRequiredFinancialCommitment?.Price
+                                        });
+                                        result.Add(newITem);
+                                    }
                                 }
+                                else
+                                    result.Add(newITem);
+
                             }
                         }
                     }

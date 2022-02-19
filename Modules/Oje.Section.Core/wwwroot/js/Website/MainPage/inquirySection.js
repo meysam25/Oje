@@ -37,7 +37,7 @@ $.fn.initInquiryTab = function () {
         }
 
         curElement.showLoader = function (holderSelector) {
-            holderSelector.html('<div style="height:193px;"></div>');
+            holderSelector.html('<div style="height:170px;"></div>');
             showLoader(holderSelector);
         };
 

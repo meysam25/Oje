@@ -24,9 +24,9 @@ namespace Oje.Section.WebMain
             services.AddScoped<IPageService, PageService>();
             services.AddScoped<IPageLeftRightDesignService, PageLeftRightDesignService>();
             services.AddScoped<IPageLeftRightDesignItemService, PageLeftRightDesignItemService>();
-            services.AddScoped<IProposalFormReminderService, ProposalFormReminderService>();
             services.AddScoped<IFooterExteraLinkService, FooterExteraLinkService>();
             services.AddScoped<IFooterGroupExteraLinkService, FooterGroupExteraLinkService>();
+            services.AddScoped<IContactUsService, ContactUsService>();
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "توضیحات فوتر")]
         FooterDescrption = 4,
         [Display(Name = "نماد های فوتر")]
-        FooterSymbol = 5
+        FooterSymbol = 5,
+        [Display(Name = "تماس با ما")]
+        ContactUs = 5
     }
 }

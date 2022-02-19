@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oje.Section.WebMain.Models.DB
+namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFormReminders")]
     public class ProposalFormReminder
@@ -18,11 +18,20 @@ namespace Oje.Section.WebMain.Models.DB
         public byte Ip3 { get; set; }
         public byte Ip4 { get; set; }
         public int ProposalFormId { get; set; }
+        [ForeignKey("ProposalFormId"), InverseProperty("ProposalFormReminders")]
+        public ProposalForm ProposalForm { get; set; }
         public long Mobile { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime TargetDate { get; set; }
         [MaxLength(4000)]
         public string Description { get; set; }
+        [MaxLength(100)]
+        public string PrevInsuranceImage { get; set; }
+        [MaxLength(100)]
+        public string NationalCardImage { get; set; }
+        public long? LoginUserId { get; set; }
+        [ForeignKey("LoginUserId"), InverseProperty("ProposalFormReminders")]
+        public User LoginUser { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

@@ -7,6 +7,7 @@
     border-radius: 4px;
     padding:1.6vw;
     display:flex;
+    padding-bottom:calc(1.6vw - 1rem);
 }
     .reminderSection > div {
         -webkit-flex-grow: 1;
@@ -26,6 +27,7 @@
     font-weight: bold;
     font-size: 1.4em;
     color: #2c3e50;
+    padding-bottom:20px;
 }
 .reminderSectionDescriptionTextsDescription {
     color: #34495e;

@@ -273,5 +273,39 @@ namespace Oje.FileService.Services
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
         }
+
+        public bool IsValidImageSize(IFormFile mainImage, bool isWidthCheck, decimal relatedRateStart, decimal relatedRateEnd)
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                using (Bitmap bmp = new Bitmap(mainImage.OpenReadStream()))
+                {
+                    if (bmp.Width == 0 || bmp.Height == 0)
+                        return false;
+                    if (isWidthCheck == true)
+                    {
+                        if (bmp.Width < bmp.Height)
+                            return false;
+                    }
+                    else if (bmp.Height < bmp.Width)
+                        return false;
+                    if (isWidthCheck == true)
+                    {
+                        var currRate = Convert.ToDecimal(bmp.Width) / Convert.ToDecimal(bmp.Height);
+                        if (currRate > relatedRateEnd || currRate < relatedRateStart)
+                            return false;
+                    }
+                    else
+                    {
+                        var currRate = Convert.ToDecimal(bmp.Height) / Convert.ToDecimal(bmp.Width);
+                        if (currRate > relatedRateEnd || currRate < relatedRateStart)
+                            return false;
+                    }
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

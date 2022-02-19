@@ -81,7 +81,7 @@ function getPanelTemplate(panel) {
             panel.id = uuidv4RemoveDash();
         result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel ' + (panel.class ? panel.class : 'col-md-12 col-sm-12 col-xs-12 col-lg-12 col-xl-12') + '" >';
         if (panel.title)
-            result += '<div class="myPanelTitle" style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
+            result += '<div id="' + panel.id + 'Title" class="myPanelTitle" style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
         if (panel.charts) {
             for (var i = 0; i < panel.charts.length; i++) {
                 result += getChartTemplate(panel.charts[i]);
@@ -133,6 +133,14 @@ function getPanelTemplate(panel) {
             }
             result += '</div>';
             result += '</div>';
+            result += '</div>';
+        }
+
+        if (panel && panel.panels && panel.panels.length > 0) {
+            result += '<div class="row">';
+            for (var i = 0; i < panel.panels.length; i++) {
+                result += getPanelTemplate(panel.panels[i]);
+            }
             result += '</div>';
         }
 
@@ -364,6 +372,9 @@ function getInputTemplate(ctrl) {
             case 'Content':
                 result += getContentTemplate(ctrl);
                 break;
+            case 'TabContent':
+                result += getTabContentTemplate(ctrl);
+                break;
             case 'Shortcut':
                 result += getShortcutButtonTemplate(ctrl);
                 break;
@@ -382,6 +393,9 @@ function getInputTemplate(ctrl) {
             case 'multiSelectImg':
                 result += getMultiSelectImgTemplate(ctrl);
                 break;
+            case 'map':
+                result += getMapTemplate(ctrl);
+                break;
             case 'empty':
             default:
                 break;
@@ -391,6 +405,165 @@ function getInputTemplate(ctrl) {
     }
 
     return result;
+}
+
+function getMapTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl) {
+        result += '<div style="padding:0px;" class="myCtrl mapCtrl form-check">';
+        if (ctrl.label)
+            result += '<label>' + ctrl.label + '</label>';
+
+        if (ctrl.name && ctrl.name.lat)
+            result += '<input id="' + ctrl.id + '_lat" name="' + ctrl.name.lat + '" type="hidden" />';
+        if (ctrl.name && ctrl.name.lon)
+            result += '<input id="' + ctrl.id + '_lon" name="' + ctrl.name.lon + '" type="hidden" />';
+        if (ctrl.name && ctrl.name.zoom)
+            result += '<input id="' + ctrl.id + '_zoom" name="' + ctrl.name.zoom + '" type="hidden" />';
+
+        result += '<div id="' + ctrl.id + '" style="width:' + ctrl.width + ';height:' + ctrl.height + ';margin-bottom:10px;" ></div>';
+        result += '</div>';
+
+        addOpenLayerIfNotExist();
+        functionsList.push(function () {
+            initMap(this.ctrl);
+        }.bind({ ctrl: ctrl }));
+    }
+
+    return result;
+}
+
+function initMap(ctrl) {
+    var quirySelector = $('#' + ctrl.id);
+    if (quirySelector.length > 0) {
+        quirySelector[0].tryToInit = 0;
+        quirySelector[0].updateMapAndZoomPoint = function () {
+            var curId = $(this).attr('id');
+            var lat = $('#' + curId + '_lat').val();
+            var lon = $('#' + curId + '_lon').val();
+            var zoom = $('#' + curId + '_zoom').val();
+            var fromProjection = new OpenLayers.Projection("EPSG:4326");
+            var toProjection = new OpenLayers.Projection("EPSG:900913");
+            var curMarkers = $('#' + ctrl.id)[0].markers
+            var map = $('#' + curId)[0].map;
+            if (map && lat && lon && zoom && curMarkers) {
+                var position = new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+                var size = new OpenLayers.Size(21, 25);
+                var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+                var icon = new OpenLayers.Icon('/Modules/Images/marker.png', size, offset);
+                for (var i = 0; i < curMarkers.markers.length; i++) {
+                    curMarkers.markers[i].erase()
+                }
+                curMarkers.addMarker(new OpenLayers.Marker(position, icon));
+                map.setCenter(position, zoom);
+            }
+        }
+        quirySelector[0].isInit = false;
+        quirySelector[0].initInterval = setInterval(function () {
+            var curTry = this.curThis.tryToInit;
+            if (isNaN(curTry))
+                curTry = 0;
+            if (curTry >= 100 || this.curThis.isInit) {
+                clearInterval(this.curThis.initInterval);
+                return;
+            }
+            curTry++;
+            this.curThis.tryToInit = curTry;
+            if (window['OpenLayers']) {
+                initMapInner(this.ctrl);
+                this.curThis.isInit = true;
+            }
+        }.bind({ curThis: quirySelector[0], ctrl: ctrl }), 100);
+    }
+}
+
+function initMapInner(ctrl) {
+    var map = null;
+    var markers = null;
+    OpenLayers.ImgPath = "/Modules/Assets/MapIcons/";
+    OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+        defaultHandlerOptions: {
+            'single': true,
+            'double': false,
+            'pixelTolerance': 0,
+            'stopSingle': false,
+            'stopDouble': false
+        },
+
+        initialize: function (options) {
+            this.handlerOptions = OpenLayers.Util.extend(
+                {}, this.defaultHandlerOptions
+            );
+            OpenLayers.Control.prototype.initialize.apply(
+                this, arguments
+            );
+            this.handler = new OpenLayers.Handler.Click(
+                this, {
+                'click': this.trigger
+            }, this.handlerOptions
+            );
+        },
+
+        trigger: function (e) {
+            if (!this.ctrl.readonly) {
+                var lonlat = map.getLonLatFromPixel(e.xy);
+                var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+                var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+                var position = new OpenLayers.LonLat(lonlat.lon, lonlat.lat).transform(toProjection, fromProjection);
+                $('#' + ctrl.id + '_lat').val(position.lat);
+                $('#' + ctrl.id + '_lon').val(position.lon);
+                $('#' + ctrl.id + '_zoom').val(map.zoom);
+                var size = new OpenLayers.Size(21, 25);
+                var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+                var icon = new OpenLayers.Icon('/Modules/Images/marker.png', size, offset);
+                for (var i = 0; i < markers.markers.length; i++) {
+                    markers.markers[i].erase()
+                }
+                markers.markers.splice(0);
+                markers.addMarker(new OpenLayers.Marker(lonlat, icon));
+            }
+        }.bind({ ctrl: ctrl })
+    });
+    map = new OpenLayers.Map(ctrl.id, {
+        controls: [
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.PanZoom(),
+            new OpenLayers.Control.Attribution()
+        ],
+        theme: null
+    });
+    map.addLayer(new OpenLayers.Layer.OSM(
+        "OpenStreetMap",
+        [
+            '//a.tile.openstreetmap.org/${z}/${x}/${y}.png',
+            '//b.tile.openstreetmap.org/${z}/${x}/${y}.png',
+            '//c.tile.openstreetmap.org/${z}/${x}/${y}.png'
+        ],
+        null));
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+    var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+    var position = new OpenLayers.LonLat(51.351869, 35.722938).transform(fromProjection, toProjection);
+    var zoom = 12;
+    markers = new OpenLayers.Layer.Markers("Markers");
+    map.addLayer(markers);
+    map.addLayer(new OpenLayers.Layer.OSM());
+    map.setCenter(position, zoom);
+    var click = new OpenLayers.Control.Click();
+    map.addControl(click);
+    click.activate();
+    $('#' + ctrl.id)[0].map = map;
+    $('#' + ctrl.id)[0].markers = markers;
+    $('#' + ctrl.id)[0].updateMapAndZoomPoint();
+}
+
+var isTryingLoadMapJs = false;
+
+function addOpenLayerIfNotExist() {
+    if (!window['OpenLayers'] && !isTryingLoadMapJs) {
+        loadJS("/Modules/Core/js/op.min.js.gz");
+        isTryingLoadMapJs = true;
+    }
 }
 
 function getMultiSelectImgTemplate(ctrl) {
@@ -503,7 +676,7 @@ function getCountDownButtonTemplate(ctrl) {
 function getButtonTemplateWidthLabel(ctrl) {
     var result = '';
 
-    result += '<div class="form-group ' + (ctrl.showHideClass ? ctrl.showHideClass : '') +'" >'
+    result += '<div class="form-group ' + (ctrl.showHideClass ? ctrl.showHideClass : '') + '" >'
     result += getButtonTemplate(ctrl);
     result += '</div>';
 
@@ -540,37 +713,46 @@ function getPlaqueTemplate(ctrl) {
 function getPlaqueDropdownItem(ctrl) {
     var result = '';
 
-    result += '<select style="vertical-align:top" class="fa" name="' + ctrl.name + '_2" >';
-    result += '<option value="الف">الف</option>';
-    result += '<option class="fa" value="accessible"></option>';
-    result += '<option value="ب">ب</option>';
-    result += '<option value="پ">پ</option>';
-    result += '<option value="ت">ت</option>';
-    result += '<option value="ث">ث</option>';
-    result += '<option value="ج">ج</option>';
-    result += '<option value="ح">ح</option>';
-    result += '<option value="د">د</option>';
-    result += '<option value="ر">ر</option>';
-    result += '<option value="ز">ز</option>';
-    result += '<option value="ژ">ژ</option>';
-    result += '<option value="س">س</option>';
-    result += '<option value="ش">ش</option>';
-    result += '<option value="ص">ص</option>';
-    result += '<option value="ض">ض</option>';
-    result += '<option value="ط">ط</option>';
-    result += '<option value="ظ">ظ</option>';
-    result += '<option value="ع">ع</option>';
-    result += '<option value="ف">ف</option>';
-    result += '<option value="ق">ق</option>';
-    result += '<option value="ک">ک</option>';
-    result += '<option value="گ">گ</option>';
-    result += '<option value="ل">ل</option>';
-    result += '<option value="م">م</option>';
-    result += '<option value="ن">ن</option>';
-    result += '<option value="و">و</option>';
-    result += '<option value="ه">ه</option>';
-    result += '<option value="ی">ی</option>';
-    result += '</select>';
+    result += getDropdownCTRLTemplate(
+        {
+            "id": uuidv4RemoveDash(),
+            "type": "dropDown",
+            "textfield": "title",
+            "valuefield": "title",
+            "name": ctrl.name + '_2',
+            "itemsClass": "makeFAP",
+            "values": [
+                { title: "الف" },
+                { title: "" },
+                { title: "ب" },
+                { title: "پ" },
+                { title: "ت" },
+                { title: "ث" },
+                { title: "ج" },
+                { title: "ح" },
+                { title: "د" },
+                { title: "ر" },
+                { title: "ز" },
+                { title: "ژ" },
+                { title: "س" },
+                { title: "ش" },
+                { title: "ص" },
+                { title: "ض" },
+                { title: "ط" },
+                { title: "ظ" },
+                { title: "ع" },
+                { title: "ف" },
+                { title: "ق" },
+                { title: "ک" },
+                { title: "گ" },
+                { title: "ل" },
+                { title: "م" },
+                { title: "ن" },
+                { title: "و" },
+                { title: "ه" },
+                { title: "ی" }
+            ]
+        });
 
     return result;
 }
@@ -581,6 +763,91 @@ function getShortcutButtonTemplate(ctrl) {
     if (ctrl.url && ctrl.label) {
         result += '<a style="margin-bottom:10px;" class="btn btn-primary btn-block" href="' + ctrl.url + '" >' + ctrl.label + '</a>';
     }
+
+    return result;
+}
+
+function createHolderIfNotExist(curObj) {
+    var foundRow = $(curObj).closest('.row');
+    if (foundRow.length == 0)
+        return '';
+
+    var id = uuidv4RemoveDash();
+
+    if (foundRow.find('.holderTabContentDiv').length == 0) {
+        foundRow.append('<div id="' + id + '" class="col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12 holderTabContentDiv" ></div>');
+    } else {
+        id = foundRow.find('.holderTabContentDiv').attr('id');
+    }
+
+    return id;
+}
+
+function getGridUrlFromConfig(res) {
+    if (res && res.panels) {
+        for (var i = 0; i < res.panels.length; i++) {
+            if (res.panels[i].grids && res.panels[i].grids.length > 0) {
+                return res.panels[i].grids && res.panels[i].grids[0].url;
+            }
+        }
+    }
+    return null;
+}
+
+function addUpdateNotificationCount(buttonId, total) {
+    var buttonQuery = $('#' + buttonId);
+
+    if (buttonQuery.find('notificationBoble').length == 0) {
+        buttonQuery.append('<span class="notificationBoble" >' + total +'</span>');
+    }
+    else {
+        buttonQuery.find('notificationBoble').html(total);
+    }
+}
+
+function addCountNotificationToButtonIfHasGrid(buttonId) {
+    var configUrl = $('#' + buttonId).attr('href');
+    if (configUrl) {
+        postForm(configUrl, new FormData(), function (res) {
+            var foundGridUrl = getGridUrlFromConfig(res);
+            if (foundGridUrl) {
+                var formData = new FormData();
+                formData.append('skip', 0);
+                formData.append('take', 1);
+                postForm(foundGridUrl, formData, function (gridResult) {
+                    if (gridResult)
+                        addUpdateNotificationCount(this.buttonId, gridResult.total)
+                }.bind({ buttonId: this.buttonId }));
+            }
+        }.bind({ buttonId: buttonId }), null, null);
+    }
+}
+
+function getTabContentTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl.url && ctrl.label) {
+        result += '<a id="' + ctrl.id + '" style="margin-bottom:10px;position:relative" class="btn btn-primary btn-block" href="' + ctrl.url + '" >' + ctrl.label + '</a>';
+        functionsList.push(function () {
+            //var curCtrl = this.ctrl;
+            addCountNotificationToButtonIfHasGrid(this.ctrl.id);
+
+            $('#' + this.ctrl.id).click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                var curUrl = $(this).attr('href');
+                var targetDivId = createHolderIfNotExist(this);
+                if (targetDivId) {
+                    loadJsonConfig(curUrl, targetDivId);
+                }
+
+                return false;
+            });
+        }.bind({ ctrl: ctrl }));
+    }
+
+
 
     return result;
 }
@@ -721,8 +988,11 @@ function getRadioButtonTemplate(ctrl) {
                             var isChecked = $(this).is(':checked');
                             var curValue = isChecked == true ? $(this).val() : '';
                             showAndHideCtrl(curValue, showHideCondation, $(this).attr('id'));
+                            if (!$(this)[0].isAutoChangeFProcessing)
+                                callInputChangeEventInSameRange($(this).attr('id'));
                         });
                         showAndHideCtrl('', this.showHideCondation, this.id);
+
                     }
                 }
 
@@ -730,6 +1000,21 @@ function getRadioButtonTemplate(ctrl) {
         }
     }
     return result;
+}
+
+
+function callInputChangeEventInSameRange(ctrlId) {
+    var selectQuiry = $('#' + ctrlId);
+    if (selectQuiry.length > 0) {
+        if (selectQuiry.closest('.panelSWizardHolderContentItem').length > 0) {
+            selectQuiry[0].isAutoChangeFProcessing = true;
+            selectQuiry.closest('.panelSWizardHolderContentItem').find('input,select').change();
+        } else if (selectQuiry.closest('.myPanel').length > 0) {
+            selectQuiry[0].isAutoChangeFProcessing = true;
+            selectQuiry.closest('.myPanel').find('input,select').change();
+        }
+        selectQuiry[0].isAutoChangeFProcessing = false;
+    }
 }
 
 function getDynamicCtrlsTemplate(ctrl) {
@@ -805,6 +1090,7 @@ function getDynamicFileUploadDependCtrlTemplate(ctrl) {
                     for (var i = 0; i < dataItems.length; i++) {
                         arrHtml += '<div class="col-md-3 col-sm-6 col-xs-12 col-lg-3">';
                         arrHtml += getFileCTRLTemplate({
+                            compressImage: true,
                             label: dataItems[i][this.ctrl.schema.title],
                             type: 'file',
                             name: dataItems[i][this.ctrl.schema.name].replace(/ /g, ''),
@@ -920,6 +1206,7 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
                             for (var i = 0; i < res.length; i++) {
                                 template += '<div class="' + this.ctrl.css + '">';
                                 template += getFileCTRLTemplate({
+                                    compressImage: true,
                                     label: res[i][this.ctrl.schema.title],
                                     type: 'file',
                                     name: res[i][this.ctrl.schema.name].replace(/ /g, ''),
@@ -976,6 +1263,16 @@ function getTextBoxTemplate(ctrl) {
                 }
             });
         }.bind({ id: ctrl.id, onEnter: ctrl.onEnter }));
+    }
+    if (ctrl.holderStatusId) {
+        functionsList.push(function () {
+            var holderId = this.ctrl.holderStatusId;
+            $('#' + this.ctrl.id).change(function () {
+                var label = getCtrlLabel(this);
+                var value = $(this).val();
+                updateHolderStatusValue(holderId, label, value, $(this).attr('id'));
+            });
+        }.bind({ ctrl: ctrl }));
     }
     if (ctrl.seperator) {
         functionsList.push(function () {
@@ -1128,36 +1425,43 @@ function getFileCTRLTemplate(ctrl) {
 
     result += '<div class="myCtrl form-group myFileUpload">';
 
-    result += '<div class="holderUploadImage">';
+    result += '<div style="' + (ctrl.hideImagePreview == true ? 'display:none;' : '') + '" class="holderUploadImage">';
     result += '<img data-name="' + ctrl.name + '_address" id="img_' + ctrl.id + '" src="' + (ctrl.sampleUrl ? ctrl.sampleUrl : '/Modules/Images/unknown.svg') + '" />';
     result += '</div>';
 
     if (ctrl.label) {
-        result += '<label class="btn btn-primary btn-block" style="margin-bottom:0px;text-align:center;" for="file_' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        result += '<label class="btn btn-secondary btn-block" style="margin-bottom:0px;text-align:center;" for="file_' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
+    result += '<input ' + (ctrl.compressImage ? 'data-compressImage="true"' : '') + ' id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     functionsList.push(function () {
         var imgId = 'img_' + this.id;
-        $('#file_' + this.id).change(function () {
+        var fileId = 'file_' + this.id;
+        if ($('#' + imgId).length == 0 || $('#' + fileId).length == 0)
+            return;
+
+        $('#' + fileId).change(function () {
             readFileFromInput(this, imgId);
         });
 
-        $('#file_' + this.id).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' });
+        $('#' + fileId).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' });
     }.bind({ id: ctrl.id }));
 
     return result;
 }
 
 function readFileFromInput(fileInput, imgId) {
-    if (fileInput.files && fileInput.files[0]) {
+    if (fileInput.files && fileInput.files[0] && (/image/i).test(fileInput.files[0].type)) {
         var reader = new FileReader();
-
         reader.onload = function (e) {
             $('#' + imgId).attr('src', e.target.result);
+            var img = new Image();
+            img.src = e.target.result;
+            img.onload = function () {
+                compressImageAndAddToFormData(fileInput.files[0], img, $('#' + imgId)[0]);
+            }
         }
-
         reader.readAsDataURL(fileInput.files[0]);
     }
 }
@@ -1194,6 +1498,26 @@ function setSelect2LabelAria(curId) {
     }
 }
 
+function updateHolderStatusValue(holderId, label, value, uId) {
+    var qureSelector = $('#' + holderId);
+    var isCurCtrlVisible = $('#' + uId).closest('.myCtrl').is(':visible');
+    var resultValue = (value && isCurCtrlVisible ? (value) : '');
+    var targetStatusId = 'status_' + uId;
+    if (qureSelector.length > 0) {
+        if (qureSelector.find('#' + targetStatusId).length > 0) {
+            $('#' + targetStatusId).text(resultValue);
+        } else {
+            if (resultValue) {
+                qureSelector.append('<span class="ctrlStatusIndicator" id="' + targetStatusId + '" >' + resultValue + '</span>');
+            }
+        }
+    }
+}
+
+function getCtrlLabel(curThis) {
+    return ($(curThis).closest('.myCtrl').find('label').text() + '').replace('*', '');
+}
+
 function getDropdownCTRLTemplate(ctrl) {
     var result = '';
 
@@ -1215,9 +1539,20 @@ function getDropdownCTRLTemplate(ctrl) {
     result += '</select>';
     if (ctrl.type == 'dropDown' && !ctrl.moveNameToParent) {
         result += '<div class="myDropdownText myDropdownHeight" ><span class="myDropdownHeight"></span><i ></i></div>';
-        result += '<div id="myCtrlDivHolder' + ctrl.id + '_HItems" class="myDropdownItems"></div>';
+        result += '<div id="myCtrlDivHolder' + ctrl.id + '_HItems" class="myDropdownItems ' + (ctrl.itemsClass ? ctrl.itemsClass : '') + '"></div>';
     }
     result += '</div>';
+
+    if (ctrl.holderStatusId) {
+        functionsList.push(function () {
+            var holderId = this.ctrl.holderStatusId;
+            $('#' + this.ctrl.id).change(function () {
+                var label = getCtrlLabel(this);
+                var value = $(this).find('option:selected').text();
+                updateHolderStatusValue(holderId, label, value, $(this).attr('id'));
+            });
+        }.bind({ ctrl: ctrl }));
+    }
 
     if (ctrl.type == 'dropDown')
         functionsList.push(function () {
@@ -1433,6 +1768,8 @@ function initDropDownExteraFunctions(ctrl) {
                 var showHideCondation = $(this)[0].showHideCondation;
                 var curValue = $(this).find('option:selected').attr('value');
                 showAndHideCtrl(curValue, showHideCondation, $(this).attr('id'));
+                if (!$(this)[0].isAutoChangeFProcessing)
+                    callInputChangeEventInSameRange($(this).attr('id'));
             });
             showAndHideCtrl('', this.showHideCondation, this.id);
         }.bind({ id: ctrl.id, showHideCondation: ctrl.showHideCondation }));
@@ -1569,6 +1906,8 @@ function getStepWizardTemplate(wizard) {
                 result += '<div class="swMoveBackToStepButton" onclick="moveToStepById(\'stepContent_' + wizard.steps[i].moveBackToStep + '\')" ><i class="fa fa-arrow-right" ></i></div>';
             }
             result += wizard.steps[i].title;
+            if (i > 0 && wizard.moveBackButtonToTop)
+                result += '<button class="btn btn-warning btn-sm stepButton buttonBack moveToTopSW"><i class="fa fa-chevron-right"></i>بازگشت</button>';
             result += '</span>';
         }
         result += '</div>';
@@ -1589,9 +1928,12 @@ function getStepWizardTemplate(wizard) {
             }
 
             if (!wizard.steps[i].submitUrl) {
-                result += '<div style="height:27px;" class="panelSWizardHolderContentHolderStepButton">';
-                if (i > 0)
-                    result += '<button class="btn btn-warning btn-sm stepButton buttonBack"><i class="fa fa-chevron-right"></i>بازگشت</button>';
+                result += '<div class="panelSWizardHolderContentHolderStepButton">';
+                if (i > 0) {
+                    if (!wizard.moveBackButtonToTop)
+                        result += '<button class="btn btn-warning btn-sm stepButton buttonBack"><i class="fa fa-chevron-right"></i>بازگشت</button>';
+
+                }
                 var isLastStep = (i + 1) >= wizard.steps.length;
                 if (wizard.steps[i].hideMoveNextButton != true)
                     result += '<button class="btn btn-primary btn-sm stepButton ' + (isLastStep ? 'lastStepButton' : 'buttonConfirm') + ' ">' + (isLastStep ? wizard.lastStepButtonTitle : (wizard.fistStepButtonTitle && i == 0 ? wizard.fistStepButtonTitle : 'ادامه<i class="fa fa-chevron-left"></i>')) + '</button>';
@@ -1601,6 +1943,7 @@ function getStepWizardTemplate(wizard) {
 
             result += '</div>';
         }
+
         result += '</div>';
     }
 
@@ -1906,7 +2249,7 @@ function showModal(targetModal, curElement) {
     }
 }
 
-function showEditModal(key, url, modalId, curElement, parentKey) {
+function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
     if (url && modalId) {
         var gridSelector = $(curElement).closest('.myGridCTRL');
         showLoader(gridSelector);
@@ -1920,7 +2263,7 @@ function showEditModal(key, url, modalId, curElement, parentKey) {
             if (res) {
                 var holderForm = $('#' + this.modalId);
                 clearForm(holderForm);
-                bindForm(res, holderForm);
+                bindForm(res, holderForm, ignoreChange);
                 holderForm.modal('show');
                 if (parentKey)
                     $('#' + modalId)[0].pKey = parentKey;

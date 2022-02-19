@@ -3,11 +3,11 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ProposalFormRequiredDocumentTypeMainGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ProposalFormRequiredDocumentTypeAddGridModal', this)", "type": "add", "modalId": "ProposalFormRequiredDocumentTypeAddGridModal"
             }
           ],
           "exportToExcelUrl": "/ProposalFormBaseData/ProposalFormRequiredDocumentType/Export",
@@ -21,9 +21,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ProposalFormRequiredDocumentTypeEditGridModal",
                 "url": "/ProposalFormBaseData/ProposalFormRequiredDocumentType/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalFormRequiredDocumentType/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalFormRequiredDocumentType/GetById\\', \\'ProposalFormRequiredDocumentTypeEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -81,7 +81,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "ProposalFormRequiredDocumentTypeAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -132,14 +132,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalFormRequiredDocumentType/Create')",
+              "onClick": "postModalData(this, 'ProposalFormRequiredDocumentTypeMainGrid', '/ProposalFormBaseData/ProposalFormRequiredDocumentType/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "ProposalFormRequiredDocumentTypeEditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -190,7 +190,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalFormRequiredDocumentType/Update')",
+              "onClick": "postModalData(this, 'ProposalFormRequiredDocumentTypeMainGrid', '/ProposalFormBaseData/ProposalFormRequiredDocumentType/Update')",
               "class": "btn-primary"
             }
           ]

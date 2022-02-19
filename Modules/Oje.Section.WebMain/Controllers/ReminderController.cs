@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Services;
-using Oje.Section.WebMain.Interfaces;
+using Oje.ProposalFormService.Interfaces;
+using Oje.ProposalFormService.Models.View;
 using Oje.Section.WebMain.Models.View;
 using Oje.Security.Interfaces;
 
@@ -33,7 +34,7 @@ namespace Oje.Section.WebMain.Controllers
         public ActionResult Create(ReminderCreateVM input)
         {
             BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.CreateNewProposalFormReminder, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = ProposalFormReminderService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetIpAddress());
+            var tempResult = ProposalFormReminderService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetIpAddress(), HttpContext.GetLoginUser()?.UserId);
             BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.CreateNewProposalFormReminder, Infrastructure.Enums.BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }

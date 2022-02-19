@@ -17,7 +17,7 @@ $.fn.initMainPageAboutUs = function (url) {
                     imagesSubTitleQuerySelect.eq(1).html(res.centerFileTitle);
                     imagesSubTitleQuerySelect.eq(2).html(res.leftFileTitle);
                 }
-                selectQuery.find('.aboutUsSectionTitle').html(res.title);
+                selectQuery.find('.aboutUsSectionTitle .ourPrideSectionTitle > span').html(res.title);
                 selectQuery.find('.aboutUsSectionSubTitle').html(res.subTitle);
                 selectQuery.find('.aboutUsSectionDescription').html(res.desc);
 

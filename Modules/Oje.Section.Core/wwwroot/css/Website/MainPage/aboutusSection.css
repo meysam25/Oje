@@ -19,6 +19,7 @@
     color: #746f6f;
     font-size: 1.2em;
     margin-bottom:45px;
+    font-weight:bold;
 }
 .aboutUsSectionDescription{
     width:60%;
@@ -44,7 +45,7 @@
 }
 .aboutUsSectionExteraButtons{
     padding-top:50px;
-    padding-bottom:50px;
+    padding-bottom:5px;
 }
 
 @media (max-width: 1080px){

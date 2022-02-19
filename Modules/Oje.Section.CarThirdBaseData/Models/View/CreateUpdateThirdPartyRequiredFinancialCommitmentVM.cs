@@ -15,5 +15,6 @@ namespace Oje.Section.CarThirdBaseData.Models.View
         public long? price { get; set; }
         public int? order { get; set; }
         public bool? isActive { get; set; }
+        public bool? isBase { get; set; }
     }
 }

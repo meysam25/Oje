@@ -585,5 +585,11 @@ namespace Oje.Infrastructure.Exceptions
         No_Damage = 286,
         [Display(Name = "بدون تخفیف")]
         No_Discount = 287,
+        [Display(Name = "نام نمی تواند از 100 کارکتر بیشتر باشد")]
+        FirstName_CanNot_Be_MoreThen_100_Char = 288,
+        [Display(Name = "لطفا شماره تماس را وارد کنید")]
+        Please_Enter_Tell = 289,
+        [Display(Name = "توضیحات نمی تواند بیشتر از 1000 کارکتر باشد")]
+        Description_Length_Can_Not_Be_More_Then_1000 = 290,
     }
 }

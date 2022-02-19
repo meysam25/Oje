@@ -31,7 +31,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                 Order = input.order.ToIntReturnZiro(),
                 Price = input.price.ToLongReturnZiro(),
                 Title = input.title,
-                ShortTitle = input.sTitle
+                ShortTitle = input.sTitle,
+                IsBase = input.isBase.ToBooleanReturnFalse()
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -62,7 +63,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
             if (input.sTitle.Length > 50)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
-
+            if (input.isBase == true && db.ThirdPartyRequiredFinancialCommitments.Any(t => t.IsBase == true && t.Id != input.id))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
         public ApiResult Delete(int? id)
@@ -93,7 +95,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                     order = t.Order,
                     price = t.Price,
                     title = t.Title,
-                    sTitle = t.ShortTitle
+                    sTitle = t.ShortTitle,
+                    isBase = t.IsBase == true ? true : false
                 }).FirstOrDefault();
         }
 
@@ -120,8 +123,8 @@ namespace Oje.Section.CarThirdBaseData.Services
             return new GridResultVM<ThirdPartyRequiredFinancialCommitmentMainGridResultVM>()
             {
                 total = resultQure.Count(),
-                data = resultQure.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
-                .Select(t => new 
+                data = resultQure.OrderBy(t => t.Order).Skip(searchInput.skip).Take(searchInput.take)
+                .Select(t => new
                 {
                     id = t.Id,
                     company = t.ThirdPartyRequiredFinancialCommitmentCompanies.Select(tt => tt.Company.Title).ToList(),
@@ -131,12 +134,12 @@ namespace Oje.Section.CarThirdBaseData.Services
                     isActive = t.IsActive
                 })
                 .ToList()
-                .Select(t => new ThirdPartyRequiredFinancialCommitmentMainGridResultVM 
+                .Select(t => new ThirdPartyRequiredFinancialCommitmentMainGridResultVM
                 {
                     row = ++row,
                     id = t.id,
                     company = string.Join(",", t.company),
-                    isActive = t.isActive == true? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
                     order = t.order,
                     price = t.price.ToString("###,###"),
                     title = t.title
@@ -162,6 +165,7 @@ namespace Oje.Section.CarThirdBaseData.Services
             foundItem.Price = input.price.ToLongReturnZiro();
             foundItem.Title = input.title;
             foundItem.ShortTitle = input.sTitle;
+            foundItem.IsBase = input.isBase.ToBooleanReturnFalse();
 
             if (input.cIds != null)
                 foreach (int cId in input.cIds)

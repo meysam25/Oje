@@ -28,11 +28,11 @@ namespace Oje.Section.Core.Services
                         addExteras = true;
                         content.Context.Response.Headers["Content-Type"] = "image/svg+xml";
                     }
-                    else if (content.File.Name.EndsWith(".ico.gz"))
-                    {
-                        addExteras = true;
-                        content.Context.Response.Headers["Content-Type"] = "image/x-icon";
-                    }
+                    //else if (content.File.Name.EndsWith(".ico.gz"))
+                    //{
+                    //    addExteras = true;
+                    //    content.Context.Response.Headers["Content-Type"] = "image/x-icon";
+                    //}
                     else if (content.File.Name.EndsWith(".png"))
                     {
                         content.Context.Response.Headers["Content-Type"] = "image/png";

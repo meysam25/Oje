@@ -161,6 +161,6 @@
     }
 
     .makeRTL .headerTopMenuButton {
-        float: left;
+        float: right;
     }
 }

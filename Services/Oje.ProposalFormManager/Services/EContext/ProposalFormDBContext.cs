@@ -69,6 +69,7 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<VehicleTypeCarType> VehicleTypeCarTypes { get; set; }
         public DbSet<VehicleSpec> VehicleSpecs { get; set; }
         public DbSet<CarType> CarTypes { get; set; }
+        public DbSet<ProposalFormReminder> ProposalFormReminders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +91,7 @@ namespace Oje.ProposalFormService.Services.EContext
             modelBuilder.Entity<VehicleTypeCarType>().HasKey(t => new { t.CarTypeId, t.VehicleTypeId });
             modelBuilder.Entity<VehicleSystemVehicleType>().HasKey(t => new { t.VehicleSystemId, t.VehicleTypeId });
             modelBuilder.Entity<CarSpecificationVehicleSpec>().HasKey(t => new { t.CarSpecificationId, t.VehicleSpecId });
+            modelBuilder.Entity<ProposalFormReminder>().HasKey(t => new { t.CreateDate, t.Ip1, t.Ip2, t.Ip3, t.Ip4 });
 
             base.OnModelCreating(modelBuilder);
         }

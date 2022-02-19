@@ -3,11 +3,11 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "PaymentMethoduserGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('PaymentMethodAddGridModal', this)", "type": "add", "modalId": "PaymentMethodAddGridModal"
             }
           ],
           "exportToExcelUrl": "/ProposalFormBaseData/PaymentMethod/Export",
@@ -21,9 +21,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "PaymentMethodEditModal",
                 "url": "/ProposalFormBaseData/PaymentMethod/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/PaymentMethod/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/PaymentMethod/GetById\\', \\'PaymentMethodEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -91,7 +91,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "PaymentMethodAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -189,14 +189,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/PaymentMethod/Create')",
+              "onClick": "postModalData(this, 'PaymentMethoduserGrid', '/ProposalFormBaseData/PaymentMethod/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "PaymentMethodEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -294,7 +294,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/PaymentMethod/Update')",
+              "onClick": "postModalData(this, 'PaymentMethoduserGrid', '/ProposalFormBaseData/PaymentMethod/Update')",
               "class": "btn-primary"
             }
           ]

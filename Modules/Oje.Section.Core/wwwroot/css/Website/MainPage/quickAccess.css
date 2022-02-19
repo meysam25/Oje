@@ -7,13 +7,17 @@
     border-radius: 4px;
     display: flex;
     padding: 10px;
+    position:relative;
+    z-index:1;
 }
 
-    .quickAccessSection > div {
-        -webkit-flex-grow: 1;
-        flex-grow: 1;
-        width: 50%;
-    }
+   
+
+.quickAccessSection > div {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    width: 50%;
+}
 
 .allQuckAccessItemsHolder .WebModActions > a, .allQuckAccessItemsHolder > a {
     display: inline-block;
@@ -88,6 +92,18 @@
 
 .WebModActive {
     color: #007bff;
+}
+
+.quickAccessSection, .quickAccessSection .myPanelToolbar, .WebModActions {
+    background-color: #1d2b36;
+}
+
+    .quickAccessSection * {
+        color: white !important;
+    }
+
+.TabHeaderItemActive > div {
+    color: black !important;
 }
 
 @media (max-width: 830px) {

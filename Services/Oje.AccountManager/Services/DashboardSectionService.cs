@@ -35,7 +35,8 @@ namespace Oje.AccountService.Services
                 ActionId = input.actionId.ToLongReturnZiro(),
                 Class = input.@class,
                 RoleId = input.pKey.ToIntReturnZiro(),
-                Type = input.type.Value
+                Type = input.type.Value,
+                DashboardSectionCategoryId = input.catId
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -84,7 +85,8 @@ namespace Oje.AccountService.Services
                     @class = t.Class,
                     type = t.Type,
                     actionId = t.ActionId,
-                    actionId_Title = t.Action.Title
+                    actionId_Title = t.Action.Title,
+                    catId = t.DashboardSectionCategoryId
                 })
                 .Take(1)
                 .Select(t => new
@@ -93,7 +95,8 @@ namespace Oje.AccountService.Services
                     t.@class,
                     type = (int)t.type,
                     t.actionId,
-                    t.actionId_Title
+                    t.actionId_Title,
+                    t.catId
                 })
                 .FirstOrDefault();
         }
@@ -104,6 +107,9 @@ namespace Oje.AccountService.Services
                 searchInput = new DashboardSectionGridFilters();
 
             var qureResult = db.DashboardSections.AsQueryable();
+
+            if (searchInput.pKey.ToIntReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.RoleId == searchInput.pKey);
 
             if (!string.IsNullOrEmpty(searchInput.action))
                 qureResult = qureResult.Where(t => t.Action.Title.Contains(searchInput.action));
@@ -148,6 +154,7 @@ namespace Oje.AccountService.Services
             foundItem.ActionId = input.actionId.ToLongReturnZiro();
             foundItem.Class = input.@class;
             foundItem.Type = input.type.Value;
+            foundItem.DashboardSectionCategoryId = input.catId;
 
             db.SaveChanges();
 
@@ -167,27 +174,39 @@ namespace Oje.AccountService.Services
                     type = t.Type,
                     parentCL = t.Class,
                     url = t.Action.Name,
-                    label = t.Action.Title
+                    label = t.Action.Title,
+                    gId = t.DashboardSectionCategoryId,
+                    gTitle = t.DashboardSectionCategory.Title,
+                    gcssClass = t.DashboardSectionCategory.Css
                 })
                 .ToList();
+
+            var listPanels = new List<object>();
+
+            var groupConfigs = allConfigs.GroupBy(t => t.gTitle).ToList();
+            foreach (var groupConfig in groupConfigs)
+            {
+                listPanels.Add(new
+                {
+                    @class = groupConfig.FirstOrDefault()?.gcssClass,
+                    title = groupConfig.Key,
+                    ctrls = groupConfig
+                    .Select(t => new
+                    {
+                        id = "content_" + t.id,
+                        type = t.type.ToString(),
+                        t.parentCL,
+                        label = t.label.Replace("تنظیمات ", "").Replace("صفحه ", ""),
+                        url = t.type == Infrastructure.Enums.DashboardSectionType.Content || t.type == Infrastructure.Enums.DashboardSectionType.TabContent ? t.url : putIndexAtEntOfUrl(t.url)
+                    })
+                    .ToList()
+                });
+            }
 
             return
                 JsonConvert.SerializeObject(new
                 {
-                    panels = new List<object>
-                    {
-                        new
-                        {
-                            ctrls = allConfigs.Select(t => new
-                            {
-                                id = "content_" + t.id,
-                                type = t.type.ToString(),
-                                t.parentCL,
-                                label = t.label.Replace("تنظیمات ","").Replace("صفحه ", ""),
-                                url = t.type == Infrastructure.Enums.DashboardSectionType.Content ? t.url : putIndexAtEntOfUrl( t.url)
-                            }).ToList()
-                        }
-                    }
+                    panels = listPanels
                 });
         }
 

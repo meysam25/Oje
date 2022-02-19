@@ -59,7 +59,7 @@ namespace Oje.Section.WebMain.Areas.Controllers
         [HttpPost]
         public IActionResult Get()
         {
-            return Json(PropertyService.GetBy<FooterSymbolCreateUpdateVM>(PropertyType.FooterDescrption, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(PropertyService.GetBy<FooterSymbolCreateUpdateVM>(PropertyType.FooterSymbol, SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

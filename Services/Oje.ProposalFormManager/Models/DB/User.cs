@@ -20,6 +20,7 @@ namespace Oje.ProposalFormService.Models.DB
             CreateUserProposalFilledFormCompanies = new();
             UpdateUserProposalFilledFormCompanies = new();
             ProposalFilledFormStatusLogs = new();
+            ProposalFormReminders = new();
         }
 
         [Key]
@@ -70,5 +71,7 @@ namespace Oje.ProposalFormService.Models.DB
         public List<ProposalFilledFormCompany> UpdateUserProposalFilledFormCompanies { get; set; }
         [InverseProperty("User")]
         public List<ProposalFilledFormStatusLog> ProposalFilledFormStatusLogs { get; set; }
+        [InverseProperty("LoginUser")]
+        public List<ProposalFormReminder> ProposalFormReminders { get; set; }
     }
 }

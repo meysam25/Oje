@@ -39,7 +39,7 @@ namespace Oje.ProposalFormService.Services
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
             var validComs = InquiryCompanyLimitService.GetCompanies(siteSettingId, Infrastructure.Enums.InquiryCompanyLimitType.ThirdParty);
-            var qureResult = db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitments.Any(tt => tt.IsActive == true));
+            var qureResult = db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true && (t.IsBase == true || t.ThirdPartyExteraFinancialCommitments.Any(tt => tt.IsActive == true)));
 
             if (validComs != null && validComs.Count > 0)
             {
@@ -57,7 +57,7 @@ namespace Oje.ProposalFormService.Services
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
             var validComs = InquiryCompanyLimitService.GetCompanies(siteSettingId, Infrastructure.Enums.InquiryCompanyLimitType.ThirdParty);
-            var qureResult = db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitments.Any(tt => tt.IsActive == true));
+            var qureResult = db.ThirdPartyRequiredFinancialCommitments.Where(t => t.IsActive == true && (t.IsBase == true || t.ThirdPartyExteraFinancialCommitments.Any(tt => tt.IsActive == true)));
 
             if (validComs != null && validComs.Count > 0)
             {

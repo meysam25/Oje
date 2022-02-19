@@ -111,11 +111,17 @@ body {
         text-decoration: none;
         font-weight: bold;
         font-size: 1em;
+        -webkit-text-decoration: none;
+        text-decoration: none;
     }
+        .mainHeaderCompanyName > a:hover {
+            -webkit-text-decoration: none;
+            text-decoration: none;
+        }
 
-.mainHeaderIranLogo, .mainHeaderElectronDevelopLogo {
-    float: left;
-}
+        .mainHeaderIranLogo, .mainHeaderElectronDevelopLogo {
+            float: left;
+        }
 
 .topHeader:after {
     content: ' ';
@@ -145,7 +151,7 @@ body {
 .headerMenuItem {
     display: inline-block;
     padding-left: 15px;
-    padding-right: 15px;
+    padding-right: 25px;
     line-height: 60px;
     border-bottom: 2px solid transparent;
     -moz-transition: min-width 0.4s;
@@ -181,26 +187,27 @@ body {
     transition: opacity 0.4s, max-height 0.4s;
     opacity: 0;
     z-index: 3;
+    border-bottom:1px solid silver;
 }
 
 .headerMenuItemHasArrow:after {
     content: ' ';
     position: absolute;
-    left: -16px;
+    left: -17px;
     top: 46%;
     width: 0;
     height: 0;
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
-    border-top: 7px solid #585f66;
+    border-top: 7px solid black;
     z-index: 1;
 }
 
 .headerMenuItemHasArrow:before {
     content: ' ';
     position: absolute;
-    left: -16px;
-    top: calc( 46% - 1px);
+    left: -17px;
+    top: calc( 46% - 2px);
     width: 0;
     height: 0;
     border-left: 7px solid transparent;
@@ -233,6 +240,8 @@ body {
 
     .headerMenuItemGroupItem:hover {
         color: black;
+        -webkit-text-decoration: none;
+        text-decoration: none;
     }
 
 .headerMenuItemGroupTitle {
@@ -369,11 +378,15 @@ body {
     text-decoration: none;
     padding-top: 10px;
 }
+    .leftFooterLink:hover {
+        -webkit-text-decoration: none;
+        text-decoration: none;
+    }
 
-.footerAboutUsTellNumber {
-    color: #2b2f33;
-    margin-bottom: 10px;
-}
+    .footerAboutUsTellNumber {
+        color: #2b2f33;
+        margin-bottom: 10px;
+    }
 
     .footerAboutUsTellNumber > span {
         display: inline-block;
@@ -513,16 +526,20 @@ body {
     font-size: 1.5em;
     color: black;
     display: block;
+    padding-bottom:15px;
 }
 
 .footerNavGroupItemsItem {
     color: #3d4145;
     display: block;
     cursor: pointer;
+    padding-bottom:7px;
 }
 
     .footerNavGroupItemsItem:hover {
         color: black;
+        -webkit-text-decoration: none;
+        text-decoration: none;
     }
 
 .footerWeAreMoreThenGoodSection {
@@ -594,7 +611,13 @@ body {
     .footerDownloadAppButton > img {
         vertical-align: -6px;
     }
-
+.rigAndLogIcon {
+    margin-left: 10px;
+    vertical-align: -4px;
+    font-size: 1.4em;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
 .readMoreButton {
     color: #0077db;
     cursor: pointer;
@@ -964,7 +987,7 @@ body {
     }
 
     .holderRigAndLogUser {
-        padding-top: 2px;
+        padding-top: 5px;
     }
 
     .topMenuBtton {
@@ -1153,6 +1176,8 @@ body {
 
     .logedInUserMenuItems a:hover {
         color: black;
+        -webkit-text-decoration: none;
+        text-decoration: none;
     }
 
     .logedInUserMenuItems a:last-child {

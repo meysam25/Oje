@@ -3,13 +3,13 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ProposalFormMainGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)",
+              "onClick": "showModal('ProposalFormAddGridModal', this)",
               "type": "add",
-              "modalId": "AddGridModal"
+              "modalId": "ProposalFormAddGridModal"
             }
           ],
           "exportToExcelUrl": "/ProposalFormBaseData/ProposalForm/Export",
@@ -23,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ProposalFormEditGridModal",
                 "url": "/ProposalFormBaseData/ProposalForm/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalForm/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalForm/GetById\\', \\'ProposalFormEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -90,7 +90,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "AddGridModal",
+          "id": "ProposalFormAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -177,14 +177,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalForm/Create')",
+              "onClick": "postModalData(this, 'ProposalFormMainGrid', '/ProposalFormBaseData/ProposalForm/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "editRoleModal",
+          "id": "ProposalFormEditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -271,7 +271,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalForm/Update')",
+              "onClick": "postModalData(this, 'ProposalFormMainGrid', '/ProposalFormBaseData/ProposalForm/Update')",
               "class": "btn-primary"
             }
           ]

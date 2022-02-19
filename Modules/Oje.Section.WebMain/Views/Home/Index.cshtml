@@ -2,6 +2,12 @@
     Layout = "_WebLayout";
 }
 
+@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
+
+@{
+    var curSetting = SiteSettingService.GetSiteSetting();
+}
+
 @section Styles {
 <link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz" />
 
@@ -14,19 +20,19 @@
                 <div data-json-url="/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner ">
                         <img data-src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
-                        <div> شخص ثالث</div>
+                        <div>بیمه شخص ثالث خودرو</div>
                     </div>
                 </div>
                 <div data-json-url="/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner">
                         <img data-src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
-                        <div> بدنه</div>
+                        <div>بیمه بدنه خودرو</div>
                     </div>
                 </div>
                 <div data-json-url="/ProposalFormInquiries/FireInsurance/GetJsonConfig" class="inquirySectionTabHeaderItem">
                     <div class="inquirySectionTabHeaderItemInner">
                         <img data-src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
-                        <div>آتش سوزی</div>
+                        <div>بیمه آتش سوزی منازل</div>
                     </div>
                 </div>
                 <div data-json-url="/Home/GetOtherInsuranceConfig" class="inquirySectionTabHeaderItem">
@@ -97,7 +103,7 @@
         </div>
         <div class="quickAccessSectionTabCharts">
             <div class="tabCtrl">
-                <div class="holderTabHeaderItems">
+                <div  class="holderTabHeaderItems">
                     <div class="TabHeaderItem TabHeaderItemActive">
                         <div>فروش ماهانه</div>
                     </div>
@@ -108,7 +114,7 @@
                         <div>فروش هفتگی</div>
                     </div>
                 </div>
-                <div class="holderTabContentItems">
+                <div style="background-color:white;" class="holderTabContentItems">
                     <div class="TabContentItem TabContentItemActive">
                         <div id="hiChartMonthly"></div>
                     </div>
@@ -128,7 +134,7 @@
 </script>
 <div id="holderAboutUs" class="myContainer">
     <section class="aboutUsSection animationOnScroll animationOnScrollMarginTop">
-        <div class="aboutUsSectionTitle"></div>
+        <div class="aboutUsSectionTitle"><div style="text-align:center;padding-top:15px;"><div class="ourPrideSectionTitle"><span></span></div></div></div>
         <div class="aboutUsSectionSubTitle"></div>
         <div class="aboutUsSectionDescription">
             
@@ -149,14 +155,44 @@
         </div>
         <div class="aboutUsSectionExteraButtons">
             <a href="#" class="secountBtn">مشاهده اطلاعات بیشتر</a>
-            <a href="#" class="mainBtn">تماس با ستاد بیمه</a>
+            <a href="/ContactUs" class="mainBtn">تماس با @curSetting.Title</a>
         </div>
     </section>
 </div>
 <script>
     $('#holderAboutUs').initMainPageAboutUs('/Home/GetAboutUsMainPage');
 </script>
-<div id="holderBlogs" style="display:none;" class="myContainer"></div>
+<div id="ourPrideDiv" class="myContainer">
+    <section class="ourPrideSection animationOnScroll animationOnScrollMarginTop">
+        <div class="ourPrideSectionTitle"><span></span></div>
+        <div class="ourPrideSectionItems">
+            <div class="ourPrideSectionItem">
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/noone.png" />
+                <div>
+                    <span style="display:block;" class="ourPrideSectionItemLightBoldTxt" data-target-value="1">0</span>
+                </div>
+            </div>
+            <div class="ourPrideSectionItem">
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/users.png" />
+                <div>
+                   
+                </div>
+            </div>
+            <div class="ourPrideSectionItem">
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/property.png" />
+                <div>
+                   
+                </div>
+            </div>
+            <div class="ourPrideSectionItem">
+                <img width="80" height="80" data-src="/Modules/Assets/MainPage/branch.png" />
+                <div>
+                   
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 <div id="reminderSection" class="myContainer">
     <section class="reminderSection animationOnScroll animationOnScrollOpacityFlip">
         <div class="reminderSectionDescription">
@@ -187,47 +223,8 @@
     </section>
     </div>*@
 <div id="yourQuestion" class="myContainer"></div>
-<div id="ourPrideDiv" class="myContainer">
-    <section class="ourPrideSection animationOnScroll animationOnScrollMarginTop">
-        <div class="ourPrideSectionTitle"><span>افتخارات ستاد بیمه</span></div>
-        <div class="ourPrideSectionItems">
-            <div class="ourPrideSectionItem">
-                <img width="80" height="80" data-src="/Modules/Assets/MainPage/noone.png" />
-                <div>
-                    <span style="display:block;" class="ourPrideSectionItemLightBoldTxt" data-target-value="1">0</span>
-                    اولین هلدینگ خدمات بازار سرمایه و بزرگترین کارگزاری بورس در ایران
-                </div>
-            </div>
-            <div class="ourPrideSectionItem">
-                <img width="80" height="80" data-src="/Modules/Assets/MainPage/users.png" />
-                <div>
-                    <span class="ourPrideSectionItemLightText">بیش از</span>
-                    <span class="ourPrideSectionItemLightBoldTxt" data-target-value="10">0</span>
-                    <span class="ourPrideSectionItemLightText">ملیون</span>
-                    <span style="display:block;" class="ourPrideSectionItemLightBoldTxt">کاربر</span>
-                </div>
-            </div>
-            <div class="ourPrideSectionItem">
-                <img width="80" height="80" data-src="/Modules/Assets/MainPage/property.png" />
-                <div>
-                    <span class="ourPrideSectionItemLightText">بیش از</span>
-                    <span class="ourPrideSectionItemLightBoldTxt" data-target-value="340">0</span>
-                    <span class="ourPrideSectionItemLightText">هزار ملیارد ریال</span>
-                    <span style="display:block;" class="ourPrideSectionItemLightBoldTxt">دارایی تحت مدیریت</span>
-                </div>
-            </div>
-            <div class="ourPrideSectionItem">
-                <img width="80" height="80" data-src="/Modules/Assets/MainPage/branch.png" />
-                <div>
-                    <span class="ourPrideSectionItemLightText">بیش از</span>
-                    <span class="ourPrideSectionItemLightBoldTxt" data-target-value="5000">0</span>
-                    <span class="ourPrideSectionItemLightText">نقطه ارایه خدمت</span>
-                    <span style="display:block;" class="ourPrideSectionItemLightBoldTxt">در سراسر کشور</span>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
+
+<div id="holderBlogs" style="display:none;" class="myContainer"></div>
 <script>
     $('#ourPrideDiv').loadAndBindOurPride('/Home/GetOurPrideMainPage');
     $('#holderBlogs').bindBlog('/Blog/Blog/GetMainBlog');

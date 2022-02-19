@@ -223,7 +223,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "provinceId",
+              "id": "ProposalFilledFormConfirmreprovinceId",
               "name": "provinceId",
               "type": "dropDown",
               "textfield": "title",
@@ -234,7 +234,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "cityId",
+              "id": "ProposalFilledFormConfirmrecityId",
               "name": "cityId",
               "type": "dropDown",
               "textfield": "title",
@@ -244,7 +244,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "roleId",
+              "id": "ProposalFilledFormConfirmreroleId",
               "name": "roleId",
               "type": "dropDown",
               "textfield": "title",
@@ -254,7 +254,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "companyId",
+              "id": "ProposalFilledFormConfirmrecompanyId",
               "name": "companyId",
               "type": "dropDown",
               "textfield": "title",
@@ -271,7 +271,7 @@
               "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetUsers",
               "label": "کاربران",
               "isRequired": true,
-              "exteraParameterIds": [ "roleId", "companyId", "provinceId", "cityId" ]
+              "exteraParameterIds": [ "ProposalFilledFormConfirmreroleId", "ProposalFilledFormConfirmrecompanyId", "ProposalFilledFormConfirmreprovinceId", "ProposalFilledFormConfirmrecityId" ]
             }
           ],
           "actions": [
@@ -330,7 +330,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "provinceIdAgent",
+              "id": "ProposalFilledFormConfirmprovinceIdAgent",
               "name": "provinceId",
               "type": "dropDown",
               "textfield": "title",
@@ -341,7 +341,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "cityIdAgent",
+              "id": "ProposalFilledFormConfirmcityIdAgent",
               "name": "cityId",
               "type": "dropDown",
               "textfield": "title",
@@ -351,7 +351,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "roleIdAgent",
+              "id": "ProposalFilledFormConfirmroleIdAgent",
               "name": "roleId",
               "type": "dropDown",
               "textfield": "title",
@@ -361,7 +361,7 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "id": "companyIdAgent",
+              "id": "ProposalFilledFormConfirmcompanyIdAgent",
               "name": "companyId",
               "type": "dropDown",
               "textfield": "title",
@@ -378,7 +378,7 @@
               "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetUsers",
               "label": "نماینده",
               "isRequired": true,
-              "exteraParameterIds": [ "roleIdAgent", "companyIdAgent", "provinceIdAgent", "cityIdAgent" ]
+              "exteraParameterIds": [ "ProposalFilledFormConfirmroleIdAgent", "ProposalFilledFormConfirmcompanyIdAgent", "ProposalFilledFormConfirmprovinceIdAgent", "ProposalFilledFormConfirmcityIdAgent" ]
             }
           ],
           "actions": [
@@ -1091,9 +1091,9 @@
           "title": "افزودن فرم پیشنهاد جدید",
           "ctrls": [
             {
-              "id": "ppfCatId",
+              "id": "ProposalFilledFormConfirmaddppfCatId",
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "ppfCatId",
+              "name": "ProposalFilledFormConfirmaddppfCatId",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
@@ -1107,7 +1107,7 @@
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormList",
-              "exteraParameterIds": [ "ppfCatId" ],
+              "exteraParameterIds": [ "ProposalFilledFormConfirmaddppfCatId" ],
               "label": "فرم پیشنهاد"
             }
 

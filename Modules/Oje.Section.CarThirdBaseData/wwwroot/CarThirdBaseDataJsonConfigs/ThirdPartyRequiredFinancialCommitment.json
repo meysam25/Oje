@@ -61,13 +61,6 @@
               }
             },
             {
-              "field": "order",
-              "caption": "ترتیب",
-              "search": {
-                "searchType": "text"
-              }
-            },
-            {
               "field": "price",
               "caption": "مبلغ",
               "search": {
@@ -144,6 +137,15 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isBase",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "پایه"
             }
           ],
           "actions": [
@@ -215,6 +217,15 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isBase",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "پایه"
             }
           ],
           "actions": [

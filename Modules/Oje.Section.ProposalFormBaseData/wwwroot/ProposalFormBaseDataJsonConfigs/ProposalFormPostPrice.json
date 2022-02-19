@@ -3,11 +3,11 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "ProposalFormPostPriceGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('ProposalFormPostPriceAddGridModal', this)", "type": "add", "modalId": "ProposalFormPostPriceAddGridModal"
             }
           ],
           "exportToExcelUrl": "/ProposalFormBaseData/ProposalFormPostPrice/Export",
@@ -21,9 +21,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "ProposalFormPostPriceEditModal",
                 "url": "/ProposalFormBaseData/ProposalFormPostPrice/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalFormPostPrice/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFormBaseData/ProposalFormPostPrice/GetById\\', \\'ProposalFormPostPriceEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -78,7 +78,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "ProposalFormPostPriceAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -128,14 +128,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalFormPostPrice/Create')",
+              "onClick": "postModalData(this, 'ProposalFormPostPriceGrid', '/ProposalFormBaseData/ProposalFormPostPrice/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "ProposalFormPostPriceEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -185,7 +185,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/ProposalFormBaseData/ProposalFormPostPrice/Update')",
+              "onClick": "postModalData(this, 'ProposalFormPostPriceGrid', '/ProposalFormBaseData/ProposalFormPostPrice/Update')",
               "class": "btn-primary"
             }
           ]

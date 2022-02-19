@@ -9,8 +9,8 @@
 }
 
 .panelSWizardHolderHeader {
-    padding-bottom: 10px;
     overflow: hidden;
+    height:35px;
 }
 .panelSWizardHolderHeaderItem {
     display:inline-block;
@@ -29,7 +29,7 @@
 .panelSWizardHolderHeaderItemActive {
     opacity: 1;
     width: calc(100% - 25px);
-    padding-right: 25px;
+    padding-right:20px;
 }
 .panelSWizardHolderContent{
     position:relative;
@@ -66,4 +66,24 @@
 }
 .swMoveBackToStepButton > i{
     font-size:1.5em;
+}
+.moveToTopSW {
+    float: right;
+    margin-right: 5px;
+}
+
+.panelSWizardHolderContentHolderStepButton .buttonConfirm, .panelSWizardHolderContentHolderStepButton .lastStepButton {
+    float: left;
+    margin-bottom: 10px;
+    margin-left: 0px;
+}
+
+.panelSWizardHolderContentHolderStepButton .buttonBack i, .panelSWizardHolderHeaderItem .buttonBack i {
+    margin-left: 5px;
+    vertical-align: -2px;
+}
+
+.panelSWizardHolderContentHolderStepButton .buttonConfirm i {
+    margin-right: 5px;
+    vertical-align: -2px;
 }

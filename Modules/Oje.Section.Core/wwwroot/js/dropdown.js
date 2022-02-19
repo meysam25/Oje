@@ -29,11 +29,11 @@ $.fn.initMyDropdown = function () {
             if ($(this)[0].actionTimeoutInterval)
                 clearTimeout($(this)[0].actionTimeoutInterval);
             var itemId = $(this).find('.myDropdownItems').attr('id');
-            var itemHtml = '<div id="' + itemId + '" class="myDropdownItems">' + $(this).find('.myDropdownItems').clone().html() + '</div>';
+            var itemHtml = '<div id="' + itemId + '" class="' + $(this).find('.myDropdownItems').attr('class') + '">' + $(this).find('.myDropdownItems').clone().html() + '</div>';
             $(this).find('.myDropdownItems').remove();
             $('body').append(itemHtml);
             $('#' + itemId).width($(this).width() + 11);
-            $('#' + itemId).css('top', $(this).offset().top + 37);
+            $('#' + itemId).css('top', $(this).offset().top + $(this).height() + 1);
             $('#' + itemId).css('left', $(this).offset().left);
             $(this).addClass('myDropdownMakeVisibleItems');
             $('#' + itemId).css('display', 'block').css('opacity', '1').css('z-index', '1000');
@@ -48,7 +48,7 @@ $.fn.initMyDropdown = function () {
             $(this).removeClass('myDroppdownShowItem');
             $(this)[0].actionTimeoutInterval = setTimeout(function () { $(this).removeClass('myDropdownMakeVisibleItems'); }.bind(this), 300);
             var curId = $(this).attr('id');
-            var html = '<div id="' + curId + '_HItems' + '" class="myDropdownItems">' + $('#' + curId + '_HItems').clone().html() + '</div>';
+            var html = '<div id="' + curId + '_HItems' + '" class="' + $('#' + curId + '_HItems').attr('class') +'">' + $('#' + curId + '_HItems').clone().html() + '</div>';
             $('#' + curId + '_HItems').remove();
             $(this).append(html);
             $(this)[0].updateItemFromSelect();

@@ -6,6 +6,7 @@
       "stepWizards": [
         {
           "lastStepButtonTitle": "استعلام",
+          "moveBackButtonToTop": true,
           "actionOnLastStep": [
             {
               "actionName": "showModal",
@@ -20,7 +21,7 @@
             {
               "order": 0,
               "id": "rFirstStep",
-              "title": "نحویه استعلام",
+              "title": "شرایط استعلام",
               "hideMoveNextButton": true,
               "panels": [
                 {
@@ -31,6 +32,7 @@
                       "type": "dropDown",
                       "textfield": "title",
                       "valuefield": "id",
+                      "holderStatusId": "searchPanelTitle",
                       "dataurl": "/Core/BaseData/GetNoEmpty/TypeOfInquiry",
                       "label": "نوع استعلام",
                       "name": "typeOfInquery",
@@ -90,6 +92,7 @@
                       ],
                       "clearInputsOnChange": [ "brandId", "specId" ],
                       "label": "نوع خودرو",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "vehicleTypeId",
                       "isRequired": true,
                       "childId": "carTypeId",
@@ -100,6 +103,7 @@
                       "id": "carTypeId",
                       "type": "dropDown",
                       "textfield": "title",
+                      "holderStatusId": "searchPanelTitle",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarTypeList",
                       "label": "کاربری خودرو",
@@ -123,6 +127,7 @@
               "order": 2,
               "id": "firstStep",
               "title": "شرکت بیمه نامه قبل",
+              "hideMoveNextButton": true,
               "panels": [
                 {
                   "ctrls": [
@@ -221,6 +226,13 @@
                       "label": "تاریخ اتمام بیمه نامه قبلی",
                       "isRequired": true,
                       "yearFromKnow": 0
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "ادامه",
+                      "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
                 }
@@ -230,6 +242,7 @@
               "order": 1.1,
               "id": "secoundStep",
               "title": "برند و سال ساخت",
+              "hideMoveNextButton": true,
               "panels": [
                 {
                   "ctrls": [
@@ -242,6 +255,7 @@
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarBrandList",
                       "label": "برند خودرو",
                       "name": "brandId",
+                      "holderStatusId": "searchPanelTitle",
                       "isRequired": true,
                       "exteraParameterIds": [ "vehicleTypeId" ]
                     },
@@ -253,6 +267,7 @@
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarSpecList",
                       "label": "مدل",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "specId",
                       "isRequired": true,
                       "exteraParameterIds": [ "brandId", "vehicleTypeId" ]
@@ -262,11 +277,19 @@
                       "id": "createYear",
                       "type": "dropDown",
                       "textfield": "title",
+                      "holderStatusId": "searchPanelTitle",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCreateDateList",
                       "label": "سال ساخت",
                       "name": "createYear",
                       "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "ادامه",
+                      "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
                 }
@@ -276,6 +299,7 @@
               "order": 3,
               "id": "penaltyQuestions",
               "title": "سابقه خسارت ها",
+              "hideMoveNextButton": true,
               "showCondation": [
                 {
                   "id": "havePrevInsurance",
@@ -299,6 +323,7 @@
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetThirdPartyBodyHistoryDamagePenaltyList",
                       "label": "سابقه خسارت جانی",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "bodyDamageHistoryId",
                       "isRequired": true
                     },
@@ -310,6 +335,7 @@
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetThirdPartyFinancialHistoryDamagePenaltyList",
                       "label": "سابقه خسارت مالی",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "financialDamageHistoryId",
                       "isRequired": true
                     },
@@ -321,8 +347,16 @@
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetDriverDamageHistoryList",
                       "label": "سابقه خسارت راننده",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "driverDamageHistoryId",
                       "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "ادامه",
+                      "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
                 }
@@ -332,6 +366,7 @@
               "order": 3.1,
               "id": "discountQuestions",
               "title": "درصد عدم خسارت ها",
+              "hideMoveNextButton": true,
               "showCondation": [
                 {
                   "id": "havePrevInsurance",
@@ -355,6 +390,7 @@
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetBodyNoDamageDiscountList",
                       "label": "درصد عدم خسارت جانی",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "bodyNoDamagePercentId",
                       "isRequired": true
                     },
@@ -366,8 +402,16 @@
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetDriverNoDamageDiscountHistoryList",
                       "label": "درصد عدم خسارت راننده",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "driverNoDamageDiscountHistory",
                       "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "ادامه",
+                      "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
                 }
@@ -377,6 +421,7 @@
               "order": 4,
               "id": "exteraQuestion",
               "title": "سوالات اضافی",
+              "hideMoveNextButton": true,
               "panels": [
                 {
                   "ctrls": [
@@ -388,8 +433,16 @@
                       "valuefield": "id",
                       "dataurl": "/Core/BaseData/Get/PriceDiscountStatus",
                       "label": "انتخاب روش پرداخت",
+                      "holderStatusId": "searchPanelTitle",
                       "name": "showStatus",
                       "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                      "class": "btn-primary btn-block lastStepButton",
+                      "type": "button",
+                      "title": "استعلام",
+                      "onClick": ""
                     }
                   ]
                 }

@@ -57,6 +57,16 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/js/op.min.js",
+    "inputFiles": [
+      "wwwroot/js/OpenLayers.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/js/blogs.min.js",
     "inputFiles": [
       "wwwroot/js/BlogList/blogList.js"

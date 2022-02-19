@@ -95,6 +95,10 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Main_Image);
             if (input.id.ToLongReturnZiro() <= 0 && (input.mainImageSmall == null || input.mainImageSmall.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_Main_Image);
+            if (input.mainImage != null && input.mainImage.Length > 0 && !UploadedFileService.IsValidImageSize(input.mainImage, true, 4.5m, 5.5m))
+                throw BException.GenerateNewException(BMessages.Invalid_Image_Size);
+            if (input.mainImageSmall != null && input.mainImageSmall.Length > 0 && !UploadedFileService.IsValidImageSize(input.mainImageSmall, true, 0.833m, 1.833m))
+                throw BException.GenerateNewException(BMessages.Invalid_Image_Size);
 
         }
 

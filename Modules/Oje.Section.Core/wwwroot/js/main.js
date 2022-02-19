@@ -73,8 +73,14 @@ function initTokenBox(curObj) {
     };
 }
 
-function bindingForm(selector, key, value, ignoreChanges, res) {
+function updateMappIfNeeded(curQuiry) {
+    if (curQuiry.closest('.mapCtrl').length > 0 && curQuiry.closest('.mapCtrl').find('.olMap').length > 0) {
+        var mapElement = curQuiry.closest('.mapCtrl').find('.olMap')[0]
+        mapElement.updateMapAndZoomPoint();
+    }
+}
 
+function bindingForm(selector, key, value, ignoreChanges, res) {
     if (key && key.indexOf('[') > 0 && key.indexOf(']') > 0) {
         var newKey = key.split('[')[0];
         var foundIndex = Number.parseInt(key.split('[')[1].split(']')[0]);
@@ -171,6 +177,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
                         $(this).closest('.myColorPicker').data('colorPickerByGiro_data').setValue(value)
                     }
                 }
+                updateMappIfNeeded($(this));
                 break;
             case 'checkbox':
                 if (value == 'True' || value == true || value == false || value == 'False' || value == '') {
@@ -316,6 +323,39 @@ function initDropdown(curObj, dontUseCache, parentValue) {
     }
 }
 
+function getFileInputImage(inputQuiry) {
+    if (inputQuiry && inputQuiry.closest('.myFileUpload').length > 0 && inputQuiry.closest('.myFileUpload').find('.holderUploadImage img').length > 0)
+        return inputQuiry.closest('.myFileUpload').find('.holderUploadImage img')[0];
+
+    return null;
+}
+
+function compressImageAndAddToFormData(file, img, targetImage) {
+    var canvas = document.createElement('canvas');
+    var fileName = file.name.split('.')[0];
+    var width = img.width;
+    var height = img.height;
+    var maxWith = 1000;
+    var maxHeight = 1000;
+
+    if (width > maxWith) {
+        height = Math.round(height *= maxWith / width);
+        width = maxWith;
+    } else if (height > maxHeight) {
+        width = Math.round(width *= maxHeight / height);
+        height = maxHeight;
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    canvas.toBlob(function (blob) {
+        var f2 = new File([blob], fileName + ".jpg", { type: "image/jpg" });
+        targetImage.compressUploadFile = f2;
+    }, 'image/jpeg', 0.8);
+}
+
 function getFormData(selector) {
     var postData = new FormData();
 
@@ -373,7 +413,14 @@ function getFormData(selector) {
                 case 'file':
                     var curFileObj = $(this)[0].files;
                     if (curFileObj && curFileObj.length > 0) {
-                        postData.append(name, $(this)[0].files[0])
+                        var targetImage = getFileInputImage($(this));
+                        if ($(this).attr('data-compressImage') == 'true' && (/image/i).test(curFileObj[0].type) && targetImage) {
+                            if (targetImage.compressUploadFile) {
+                                postData.append(name, targetImage.compressUploadFile)
+                            } else 
+                                postData.append(name, $(this)[0].files[0])
+                        } else
+                            postData.append(name, $(this)[0].files[0])
                     }
                     break;
                 case 'checkbox':

@@ -34,6 +34,7 @@ namespace Oje.AccountService
             services.AddScoped<IDashboardSectionService, DashboardSectionService>();
             services.AddScoped<IActionService, ActionService>();
             services.AddScoped<IPropertyService, PropertyService>();
+            services.AddScoped<IDashboardSectionCategoryService, DashboardSectionCategoryService>();
         }
     }
 }

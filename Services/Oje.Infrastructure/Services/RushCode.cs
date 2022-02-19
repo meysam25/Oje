@@ -701,6 +701,20 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static DateTime? ToDateTimeFromTick(this object input)
+        {
+            try
+            {
+                if (input == null)
+                    return null;
+                return new DateTime(input.ToLongReturnZiro());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static PaymentFactorVM GetPayModel(this string input)
         {
             try

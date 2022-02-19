@@ -37,6 +37,7 @@ $.fn.bindBlog = function (url) {
         postForm(url, new FormData(), function (res) {
             if (res && res.length > 0) {
                 var result = `<section class="blogSection ">
+                                <div style="text-align:center;padding-bottom:20px;padding-top:15px;"><div class="ourPrideSectionTitle"><span>اخبار و مقالات</span></div></div>
                                 <div class="blogSectionEntity">`;
 
                 for (var i = 0; i < res.length; i++) {

@@ -1,9 +1,16 @@
 ﻿@using Oje.Infrastructure.Services
+@using Oje.Infrastructure
 @using Oje.AccountService.Interfaces
 @inject IUserNotificationService UserNotificationService
+
+@inject ISiteSettingService SiteSettingService
+@{
+    var currSiteSetting = SiteSettingService.GetSiteSetting();
+}
 <!DOCTYPE html>
 <html lang="fa">
 <head>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
@@ -15,7 +22,7 @@
     <script asp-append-version="true" src="/Modules/Core/js/core.min.js.gz"></script>
     <script asp-append-version="true" src="/Modules/Account/js/Account.min.js.gz"></script>
 
-    <link rel="icon" type="image/x-icon" href="/Modules/Assets/favicon.ico.gz">
+    <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + currSiteSetting.Image96)">
 </head>
 <body class="makeRTL">
     <div class="mainLoaderForAdminArea">
@@ -26,12 +33,12 @@
         </div>
     </div>
     <aside class="sideMenuHolder">
-        <span class="sideMenuHeader">کارگزاری اوج</span>
+        <span class="sideMenuHeader"><i class="fa fa-arrow-right closeSideMenuButton"></i> @(currSiteSetting.Title)</span>
         <div class="sideMenu">
             <a href="/Account/Dashboard/Index" class="sideMenuItem">
                 <span class="sideMenuItemInner">
                     <span class="fa fa-home menuIcon"></span>
-                    <span>داشبرد</span>
+                    <span>داشبورد</span>
                 </span>
             </a>
             <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login" vary-by="@(Oje.Infrastructure.GlobalConfig.siteMenuCache)">
@@ -74,6 +81,9 @@
             if ($('.sideMenuHolder').length > 0 && $('.sideMenuHolder')[0].toggleSideMenu) {
                 $('.sideMenuHolder')[0].toggleSideMenu();
             }
+        });
+        $('.closeSideMenuButton').click(function() {
+            $('.sideMenuHolder')[0].closeSideMenu();
         });
         $('.loginUserSecitonHeader').click(function (e) {
             $('.notificationHolder').removeClass('showLoginMenu');

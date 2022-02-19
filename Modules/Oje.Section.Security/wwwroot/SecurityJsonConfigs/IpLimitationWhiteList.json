@@ -3,11 +3,11 @@
     {
       "grids": [
         {
-          "id": "userGrid",
+          "id": "IpLimitationWhiteListMainGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('AddGridModal', this)", "type": "add", "modalId": "AddGridModal"
+              "onClick": "showModal('IpLimitationWhiteListAddGridModal', this)", "type": "add", "modalId": "IpLimitationWhiteListAddGridModal"
             }
           ],
           "exportToExcelUrl": "/Security/IpLimitationWhiteList/Export",
@@ -21,9 +21,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editRoleModal",
+                "modalId": "IpLimitationWhiteListEditGridModal",
                 "url": "/Security/IpLimitationWhiteList/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Security/IpLimitationWhiteList/GetById\\', \\'editRoleModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Security/IpLimitationWhiteList/GetById\\', \\'IpLimitationWhiteListEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -64,7 +64,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "AddGridModal",
+          "id": "IpLimitationWhiteListAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -96,14 +96,14 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/Security/IpLimitationWhiteList/Create')",
+              "onClick": "postModalData(this, 'IpLimitationWhiteListMainGrid', '/Security/IpLimitationWhiteList/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "editRoleModal",
+          "id": "IpLimitationWhiteListEditGridModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -135,7 +135,7 @@
             },
             {
               "title": "دخیره",
-              "onClick": "postModalData(this, 'userGrid', '/Security/IpLimitationWhiteList/Update')",
+              "onClick": "postModalData(this, 'IpLimitationWhiteListMainGrid', '/Security/IpLimitationWhiteList/Update')",
               "class": "btn-primary"
             }
           ]

@@ -27,6 +27,7 @@ namespace Oje.ProposalFormService.Models.DB
         public long Price { get; set; }
         public int Order { get; set; }
         public bool IsActive { get; set; }
+        public bool? IsBase { get; set; }
 
         [InverseProperty("ThirdPartyRequiredFinancialCommitment")]
         public List<ThirdPartyRequiredFinancialCommitmentCompany> ThirdPartyRequiredFinancialCommitmentCompanies { get; set; }

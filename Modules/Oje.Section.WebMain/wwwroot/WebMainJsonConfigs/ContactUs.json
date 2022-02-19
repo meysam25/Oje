@@ -1,0 +1,66 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/ContactUs/Get",
+      "panels": [
+        {
+          "class": "col-md-6 col-sm-12 col-xs-12 col-lg-6 col-xl-6",
+          "ctrls": [
+            {
+              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+              "name": "fullname",
+              "type": "text",
+              "label": "نام و نمام خانوادگی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "tellNumber",
+              "type": "text",
+              "label": "شماره تماس",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "email",
+              "type": "text",
+              "label": "ایمیل",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "پیام شما",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+              "type": "button",
+              "onClick": "postPanel(this, '/ContactUs/Create', null, true)",
+              "title": "ارسال",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "col-md-6 col-sm-12 col-xs-12 col-lg-6 col-xl-6",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": {
+                "lat": "mapLat",
+                "lon": "mapLon",
+                "zoom": "mapZoom"
+              },
+              "readonly": true,
+              "width": "100%",
+              "height": "253px",
+              "type": "map"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

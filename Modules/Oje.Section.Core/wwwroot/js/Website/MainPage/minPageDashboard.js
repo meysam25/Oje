@@ -24,8 +24,13 @@ function showLoginUserPanelInMainPage() {
                 initShortCutItemClick();
                 $('#adminPanel .quickAccessSection').addStatusBarToElement(null, function () { location.href = "/Account/Dashboard/Index"; return true; }, null);
                 disableFloatingFooter();
+                hideOtherExteraSections();
             }
         });
+}
+function hideOtherExteraSections() {
+    $('#holderAboutUs').css('display', 'none');
+    $('#ourPrideDiv').css('display', 'none');
 }
 function disableFloatingFooter() {
     $('#floatingFooter').removeClass('floatingFooterSectionMakeFloat').addClass('makeMyContainer100')[0].disableFloating = true;

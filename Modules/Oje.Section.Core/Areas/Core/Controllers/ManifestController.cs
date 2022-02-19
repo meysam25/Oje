@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
+using Oje.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Oje.Section.Core.Areas.Core.Controllers
 {
-    public class ManifestController: Controller
+    public class ManifestController : Controller
     {
         readonly ISiteSettingService SiteSettingService = null;
         public ManifestController(ISiteSettingService SiteSettingService)

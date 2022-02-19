@@ -41,9 +41,9 @@ namespace Oje.Infrastructure.Enums
         BlogSound = 15,
         [Display(Name = "تصویر بزرگ بلاگ 600", Prompt = "Blog", Description = "600*400")]
         BlogBigImage600 = 16,
-        [Display(Name = "تصویر اصلی صفحه", Prompt = "Page", Description = "1500*300", AutoGenerateField = true)]
+        [Display(Name = "تصویر اصلی صفحه", Prompt = "Page", Description = "1500*300", AutoGenerateField = false)]
         PageMainImage = 17,
-        [Display(Name = "تصویر اصلی صفحه (کوچک)", Prompt = "Page", Description = "800*600", AutoGenerateField = true)]
+        [Display(Name = "تصویر اصلی صفحه (کوچک)", Prompt = "Page", Description = "800*600", AutoGenerateField = false)]
         PageMainImageSmall = 18,
         [Display(Name = "تصویر دیزاین چپ و راست", Prompt = "PageLeftRightDesignItem", Description = "560*373")]
         PageLeftRightDesignItem = 19,
@@ -58,6 +58,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تصویر شرکت بیمه (کوچک)", Prompt = "CompanyLogo", Description = "32*32")]
         CompanyLogo32 = 24,
         [Display(Name = "تصویر شرکت بیمه (64px)", Prompt = "CompanyLogo", Description = "64*64")]
-        CompanyLogo64 = 25
+        CompanyLogo64 = 25,
+        [Display(Name = "تصاویر یادآوری", Prompt = "ProposalFilledFormReminder", Description = "1000*1000")]
+        ProposalFilledFormReminder = 26,
     }
 }

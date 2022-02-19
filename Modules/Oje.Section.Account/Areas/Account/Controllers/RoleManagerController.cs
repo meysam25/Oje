@@ -21,12 +21,14 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         readonly IProposalFormService ProposalFormService = null;
         readonly IDashboardSectionService DashboardSectionService = null;
         readonly IActionService ActionService = null;
+        readonly IDashboardSectionCategoryService DashboardSectionCategoryService = null;
         public RoleManagerController(
                 IRoleService RoleService,
                 ISiteSettingService SiteSettingService,
                 IProposalFormService ProposalFormService,
                 IDashboardSectionService DashboardSectionService,
-                IActionService ActionService
+                IActionService ActionService,
+                IDashboardSectionCategoryService DashboardSectionCategoryService
             )
         {
             this.RoleService = RoleService;
@@ -34,6 +36,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             this.ProposalFormService = ProposalFormService;
             this.DashboardSectionService = DashboardSectionService;
             this.ActionService = ActionService;
+            this.DashboardSectionCategoryService = DashboardSectionCategoryService;
         }
 
 
@@ -159,6 +162,13 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult GetSettingList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(ActionService.GetightListForSelect2(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست گروه بندی بخش ها", Icon = "fa-list-alt")]
+        [HttpPost]
+        public IActionResult GetSectionCategoryList()
+        {
+            return Json(DashboardSectionCategoryService.GetLightList());
         }
 
     }

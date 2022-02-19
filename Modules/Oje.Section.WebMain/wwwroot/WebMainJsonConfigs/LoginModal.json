@@ -4,7 +4,7 @@
       "moduals": [
         {
           "id": "loginForgetPasswordModal",
-          "title": "ثبت نام/ورود",
+          "title": "ثبت نام | ورود",
           "autoShowModalOnFalse": "/Account/Dashboard/IsUserLogin",
           "autoShowModalOnFalseUrlCondation": [ "/Proposal/Form" ],
           "panels": [

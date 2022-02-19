@@ -12,6 +12,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "دکمه میانبور")]
         Shortcut = 1,
         [Display(Name = "محتوی")]
-        Content = 2
+        Content = 2,
+        [Display(Name = "کلید تب")]
+        TabContent = 3
     }
 }

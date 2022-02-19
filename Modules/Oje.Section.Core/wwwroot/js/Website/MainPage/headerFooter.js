@@ -171,7 +171,8 @@ $.fn.bindFooterDescription = function (url) {
 function bindFooterPhoneAndAddress() {
     postForm('/Home/GetFooterInfor', new FormData(), function (res) {
         $('#footerAddress').html(res && res.add ? res.add : '');
-        $('#footerTell2, #footerTell1').html(res && res.tell ? res.tell : '');
+        $('#footerTell2').html(res && res.tell ? res.tell : '');
+        $('#footerTell1').html(res && res.mob ? res.mob : '');
         $('#footerEmail').html(res && res.email ? res.email : '');
     });
 }
