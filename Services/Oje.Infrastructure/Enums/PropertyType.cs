@@ -20,6 +20,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "نماد های فوتر")]
         FooterSymbol = 5,
         [Display(Name = "تماس با ما")]
-        ContactUs = 5
+        ContactUs = 5,
+        [Display(Name = "ایکن های بالا سمت چپ صفحه اصلی")]
+        MainPageTopLeftIcon = 6
     }
 }

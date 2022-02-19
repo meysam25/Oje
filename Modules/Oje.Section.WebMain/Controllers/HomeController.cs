@@ -152,5 +152,10 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         {
             return Json(ProposalFormService.GetSelect2List(searchInput, ppfCatId));
         }
+
+        public ActionResult GetTopLeftIconList()
+        {
+            return Json(PropertyService.GetBy<MainPageTopLeftIconVM>(PropertyType.MainPageTopLeftIcon, SiteSettingService.GetSiteSetting()?.Id));
+        }
     }
 }

@@ -1,4 +1,46 @@
 ﻿
+function bindTopLeftIcons() {
+    var url = '/Home/GetTopLeftIconList';
+    postForm(url, new FormData(), function (res) {
+        if (res) {
+            var html = '';
+            if (res.mainFile1_address && res.title1) {
+                html += addTopLeftIcons(res.title1, res.mainFile1_address, res.description1, true);
+            }
+            if (res.mainFile2_address && res.title2) {
+                html += addTopLeftIcons(res.title2, res.mainFile2_address, res.description2);
+            }
+            if (res.mainFile3_address && res.title3) {
+                html += addTopLeftIcons(res.title3, res.mainFile3_address, res.description3);
+            }
+            $('#placeholderTopLeftIcon').replaceWith(html);
+            $('.mainHeaderIranLogo,.mainHeaderElectronDevelopLogo').each(function () {
+                var title = $(this).attr('title');
+                var desc = $(this).attr('data-des');
+                if (desc) {
+                    var modalObj = {
+                        id: uuidv4RemoveDash(),
+                        title: title,
+                        modelBody: desc,
+                        class: "makeImage100"
+                    };
+                    $(this).attr('data-modal-id', modalObj.id);
+                    $('body').append(getModualTemplate(modalObj))
+                }
+            });
+            $('.mainHeaderIranLogo[data-des],.mainHeaderElectronDevelopLogo[data-des]').click(function ()
+            {
+                var modalId = $(this).attr('data-modal-id');
+                $('#' + modalId).modal('show');
+            });
+        }
+    });
+}
+
+function addTopLeftIcons(title, imgSrc, des, isVisibleAllways) {
+    return '<img ' + (des ? 'style="cursor:pointer"' : '') + '  class="' + (isVisibleAllways ? 'mainHeaderIranLogo' : 'mainHeaderElectronDevelopLogo') + '" title="' + title + '" src="' + imgSrc + '" width="85" height="77" ' + (des ? 'data-des=\'' + des + '\'' : '') + ' />';
+}
+
 
 $.fn.loadTopMenu = function (url) {
 
@@ -71,16 +113,13 @@ $.fn.initNavResButton = function () {
             //$(this).removeClass('closeHoverMenu');
             $(this).toggleClass('openHeaderMenuItemSumMenuItems');
         });
-        $(this).find('.headerMenuMoveBackButton > .headerMenuItemLink').click(function ()
-        {
+        $(this).find('.headerMenuMoveBackButton > .headerMenuItemLink').click(function () {
             $(this).closest('.headerMenuItem').click();
         });
-        $(this).find('.headerMenuItemSumMenuItemsInner').click(function (e)
-        {
+        $(this).find('.headerMenuItemSumMenuItemsInner').click(function (e) {
             e.stopPropagation();
         });
-        $(this).find('.moveBackButtonInResponsive').click(function (e)
-        {
+        $(this).find('.moveBackButtonInResponsive').click(function (e) {
             e.stopPropagation();
             $(this).closest('.headerMenu').toggleClass('topMenuBttonOpen');
         });

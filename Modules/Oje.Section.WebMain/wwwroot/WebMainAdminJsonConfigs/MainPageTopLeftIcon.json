@@ -1,0 +1,86 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/WebMainAdmin/MainPageTopLeftIcon/Get",
+      "title": "ایکن های صفحه اصلی چپ بالا",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "title1",
+          "type": "text",
+          "label": "عنوان اول"
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "description1",
+          "type": "ck",
+          "label": "توضیحات اول"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12",
+          "name": "mainFile1",
+          "type": "file",
+          "label": "لوگوی اول (77*85)",
+          "acceptEx": ".jpg,.png,.jpeg"
+        },
+        {
+          "parentCL": "col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12",
+          "type": "empty"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "title2",
+          "type": "text",
+          "label": "عنوان دوم"
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "description2",
+          "type": "ck",
+          "label": "توضیحات دوم"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12",
+          "name": "mainFile2",
+          "type": "file",
+          "label": "لوگوی دوم (77*85)",
+          "acceptEx": ".jpg,.png,.jpeg"
+        },
+        {
+          "parentCL": "col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12",
+          "type": "empty"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "title3",
+          "type": "text",
+          "label": "عنوان سوم"
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "description3",
+          "type": "ck",
+          "label": "توضیحات سوم"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12",
+          "name": "mainFile3",
+          "type": "file",
+          "label": "لوگوی سوم (77*85)",
+          "acceptEx": ".jpg,.png,.jpeg"
+        },
+        {
+          "parentCL": "col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12",
+          "type": "empty"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/WebMainAdmin/MainPageTopLeftIcon/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

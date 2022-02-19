@@ -43,10 +43,10 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         }
 
         [CustomeAuthorizeFilter]
-        [AreaConfig(Title = "داشبرد", Icon = "fa-home", IsMainMenuItem = false)]
+        [AreaConfig(Title = "داشبورد", Icon = "fa-home", IsMainMenuItem = false)]
         public IActionResult Index()
         {
-            ViewBag.Title = "داشبرد";
+            ViewBag.Title = "داشبورد";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Dashboard", new { area = "Account" });
             return View("Index");
         }

@@ -94,11 +94,13 @@
             <section class="topHeader">
                 <div class="myContainer">
                     <a title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
-                    <img class="mainHeaderElectronDevelopLogo" title="نماد برخط" src="/Modules/Assets/barkhat.png" width="85" height="77" />
-                    <img class="mainHeaderIranLogo" title="ای نماد" src="/Modules/Assets/MainPage/namad.png" width="85" height="77" />
+                    <div id="placeholderTopLeftIcon" ></div>
                     <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="@curSetting.Title" href="/">@curSetting.Title</a></h1>
                 </div>
             </section>
+            <script>
+                bindTopLeftIcons();
+            </script>
             <nav class="headerMenu ">
                 <div class="myContainer">
                     <div class="topMenuBtton" tabindex="0">

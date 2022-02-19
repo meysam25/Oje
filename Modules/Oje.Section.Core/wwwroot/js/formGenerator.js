@@ -253,7 +253,7 @@ function getModualTemplate(modual) {
         '</button>' +
         '</div>' +
         '<div class="modal-body">' +
-        getModualTemplateCTRL(modual) +
+        (modual.modelBody ? modual.modelBody : getModualTemplateCTRL(modual)) +
         '</div>' +
         getModualTemplateActionButton(modual) +
         '</div>' +
@@ -798,7 +798,7 @@ function addUpdateNotificationCount(buttonId, total) {
     var buttonQuery = $('#' + buttonId);
 
     if (buttonQuery.find('notificationBoble').length == 0) {
-        buttonQuery.append('<span class="notificationBoble" >' + total +'</span>');
+        buttonQuery.append('<span class="notificationBoble" >' + total + '</span>');
     }
     else {
         buttonQuery.find('notificationBoble').html(total);
