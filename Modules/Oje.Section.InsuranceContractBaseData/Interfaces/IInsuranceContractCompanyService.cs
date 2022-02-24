@@ -15,7 +15,7 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         CreateUpdateInsuranceContractCompanyVM GetById(int? id);
         ApiResult Update(CreateUpdateInsuranceContractCompanyVM input);
         GridResultVM<InsuranceContractCompanyMainGridResultVM> GetList(InsuranceContractCompanyMainGrid searchInput);
-        bool Exist(int id, int? siteSettingId, List<long> childUserIds);
+        bool Exist(int id, int? siteSettingId, long? childUserIds);
         object GetLightList();
     }
 }

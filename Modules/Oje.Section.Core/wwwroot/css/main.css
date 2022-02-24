@@ -802,6 +802,9 @@ input[type=checkbox] + label, input[type=checkbox] {
 .makeImage100 img {
     width:100%;
 }
+.jq-toast-wrap{
+    display:none !important;
+}
 
 @media (max-width: 400px) {
     .select2-selection__rendered {

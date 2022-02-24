@@ -95,7 +95,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
     })
     $(selector).find('textarea[name="' + key + '"]').each(function () {
         if ($(this)[0].ckEditor) {
-            $(this)[0].ckEditor.setData(value);
+            $(this)[0].ckEditor.setData((!value ? '' : value));
         } else {
             $(this).val(value);
         }
@@ -417,7 +417,7 @@ function getFormData(selector) {
                         if ($(this).attr('data-compressImage') == 'true' && (/image/i).test(curFileObj[0].type) && targetImage) {
                             if (targetImage.compressUploadFile) {
                                 postData.append(name, targetImage.compressUploadFile)
-                            } else 
+                            } else
                                 postData.append(name, $(this)[0].files[0])
                         } else
                             postData.append(name, $(this)[0].files[0])

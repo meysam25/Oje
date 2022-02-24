@@ -45,6 +45,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         {
             ViewBag.Title = "کاربران";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserManager", new { area = "Account" });
+            //UserService.TsetRemoveMe();
             return View();
         }
 

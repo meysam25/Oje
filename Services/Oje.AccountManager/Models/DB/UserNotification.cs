@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace Oje.AccountService.Models.DB
 {
     [Table("UserNotifications")]
-    public class UserNotification
+    public class UserNotification: IEntityWithUserId<User, long>
     {
         public long UserId { get; set; }
         [ForeignKey("UserId"), InverseProperty("UserNotifications")]

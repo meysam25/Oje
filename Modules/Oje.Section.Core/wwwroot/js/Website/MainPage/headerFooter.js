@@ -41,7 +41,6 @@ function addTopLeftIcons(title, imgSrc, des, isVisibleAllways) {
     return '<img ' + (des ? 'style="cursor:pointer"' : '') + '  class="' + (isVisibleAllways ? 'mainHeaderIranLogo' : 'mainHeaderElectronDevelopLogo') + '" title="' + title + '" src="' + imgSrc + '" width="85" height="77" ' + (des ? 'data-des=\'' + des + '\'' : '') + ' />';
 }
 
-
 $.fn.loadTopMenu = function (url) {
 
     function getTopMenuTemplate(l1Item) {
@@ -224,12 +223,52 @@ function bindFooterSambole() {
     });
 }
 
+const popupCenter = ({ url, title, w, h }) => {
+    const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+    const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+
+    const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+    const systemZoom = width / window.screen.availWidth;
+    const left = (width - w) / 2 / systemZoom + dualScreenLeft
+    const top = (height - h) / 2 / systemZoom + dualScreenTop
+    const newWindow = window.open(url, title,
+        `
+      scrollbars=yes,
+      width=${w / systemZoom}, 
+      height=${h / systemZoom}, 
+      top=${top}, 
+      left=${left}
+      `
+    )
+
+    if (window.focus) newWindow.focus();
+}
+
+function openModal(linkUrl, title) {
+    if (linkUrl, title) {
+        popupCenter({ url: linkUrl, title: title, w: 580, h: 600 });
+    }
+}
+
 function bindFooterExteraLinks() {
     postForm('/Home/GetFooterExteraLink', new FormData(), function (res) {
         $('#holderfooterProductMenuItems').html('');
-        if (res && res.length > 0)
+        if (res && res.length > 0) {
             for (var i = 0; i < res.length; i++)
-                $('#holderfooterProductMenuItems').append('<a href="' + res[i].l + '" title="' + res[i].t + '" class="footerProductMenuItem">' + res[i].t + '</a>');
+                $('#holderfooterProductMenuItems').append('<a rel="nofollow sponsored" href="' + res[i].l + '" title="' + res[i].t + '" class="footerProductMenuItem">' + res[i].t + '</a>');
+            $('#holderfooterProductMenuItems').find('a').click(function (e)
+            {
+                e.stopPropagation();
+                e.preventDefault();
+
+                openModal($(this).attr('href'), $(this).text());
+
+                return false;
+            });
+        }
+            
         else
             $('#holderfooterProductMenuItems').closest('.footerProductMenu').find('.showMoreButton').css('display', 'none');
     });
@@ -244,10 +283,18 @@ function bindFooterExteraLinkGroups() {
                 var childTemplates = '';
                 if (res[i].chi && res[i].chi.length > 0)
                     for (var j = 0; j < res[i].chi.length; j++)
-                        childTemplates += '<a href="' + res[i].chi[j].l + '" title="' + res[i].chi[j].t + '" class="footerNavGroupItemsItem">' + res[i].chi[j].t + '</a>';
+                        childTemplates += '<a rel="nofollow sponsored" href="' + res[i].chi[j].l + '" title="' + res[i].chi[j].t + '" class="footerNavGroupItemsItem">' + res[i].chi[j].t + '</a>';
                 template += '<div class="footerNavGroupItems"><div class="footerNavGroupItemsTitle">' + res[i].t + '</div>' + childTemplates + '</div>';
             }
         $('#footerNavMenu').html(template);
+        $('#footerNavMenu').find('a').click(function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            openModal($(this).attr('href'), $(this).text());
+
+            return false;
+        });
     });
 }
 

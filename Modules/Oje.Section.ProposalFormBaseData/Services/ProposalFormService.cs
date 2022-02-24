@@ -50,15 +50,17 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 ProposalFormCategoryId = input.ppfCatId.Value,
                 Title = input.title,
                 Type = input.type,
-                SiteSettingId = input.siteSettingId
+                SiteSettingId = input.siteSettingId,
+                TermTemplate = input.termT
             };
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
             if (input.rules != null && input.rules.Length > 0)
-            {
                 newItem.RulesFile = UploadedFileService.UploadNewFile(FileType.ProposalFormRules, input.rules, userId, null, newItem.Id, ".pdf,.doc,.docx", false);
-            }
+            if (input.conteractFile != null && input.conteractFile.Length > 0)
+                newItem.ContractFile = UploadedFileService.UploadNewFile(FileType.ProposalFormContractRules, input.conteractFile, userId, null, newItem.Id, ".pdf,.doc,.docx", false);
+
             db.SaveChanges();
 
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
@@ -114,8 +116,10 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     siteSettingId = t.SiteSettingId,
                     ppfCatId = t.ProposalFormCategoryId,
                     ppfCatId_Title = t.ProposalFormCategory.Title,
-                    rules_address = GlobalConfig.FileAccessHandlerUrl + t.RulesFile,
-                    type = t.Type
+                    rules_address = !string.IsNullOrEmpty(t.RulesFile) ? GlobalConfig.FileAccessHandlerUrl + t.RulesFile : "",
+                    conteractFile_address = !string.IsNullOrEmpty(t.ContractFile) ? GlobalConfig.FileAccessHandlerUrl + t.ContractFile : "",
+                    type = t.Type,
+                    termT = t.TermTemplate
                 })
                 .ToList()
                 .Select(t => new GetByIdProposalFormVM
@@ -130,7 +134,9 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     ppfCatId = t.ppfCatId,
                     ppfCatId_Title = t.ppfCatId_Title,
                     rules_address = t.rules_address,
-                    type = t.type == null ? "" : ((int)t.type).ToString()
+                    conteractFile_address = t.conteractFile_address,
+                    type = t.type == null ? "" : ((int)t.type).ToString(),
+                    termT = t.termT
                 })
                 .FirstOrDefault();
         }
@@ -201,11 +207,12 @@ namespace Oje.Section.ProposalFormBaseData.Services
             foundItem.UpdateDate = DateTime.Now;
             foundItem.Type = input.type;
             foundItem.SiteSettingId = input.siteSettingId;
+            foundItem.TermTemplate = input.termT;
 
             if (input.rules != null && input.rules.Length > 0)
-            {
                 foundItem.RulesFile = UploadedFileService.UploadNewFile(FileType.ProposalFormRules, input.rules, userId, null, foundItem.Id, ".pdf,.doc,.docx", false);
-            }
+            if (input.conteractFile != null && input.conteractFile.Length > 0)
+                foundItem.ContractFile = UploadedFileService.UploadNewFile(FileType.ProposalFormContractRules, input.conteractFile, userId, null, foundItem.Id, ".pdf,.doc,.docx", false);
 
             db.SaveChanges();
 

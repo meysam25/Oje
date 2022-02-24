@@ -206,7 +206,7 @@ namespace Oje.FileService.Services
                 throw BException.GenerateNewException(BMessages.File_Is_Not_Valid, ApiResultErrorCode.NotFound);
         }
 
-        public UploadedFile GetFile(string fn, long? userId, List<long> allChildUserId)
+        public UploadedFile GetFile(string fn, long? userId)
         {
             UploadedFile result = null;
 
@@ -216,7 +216,8 @@ namespace Oje.FileService.Services
                 if (foundId > 0)
                 {
                     result = db.UploadedFiles
-                        .Where(t => t.Id == foundId).FirstOrDefault();
+                        .Where(t => t.Id == foundId)
+                        .FirstOrDefault();
                     if (result != null && result.IsFileAccessRequired == true)
                     {
                         if (userId <= 0)
@@ -226,7 +227,8 @@ namespace Oje.FileService.Services
                             if (
                                     (result.CreateByUserId != userId && !db.FileAccessRoles.Any(t => t.FileType == result.FileType && t.Role.UserRoles.Any(tt => tt.UserId == userId)))
                                     &&
-                                    (!allChildUserId.Any(t => t == result.CreateByUserId.ToLongReturnZiro()))
+                                    !db.UploadedFiles.Where(t => t.Id == result.Id).getWhereCreateByUserMultiLevelForUserOwnerShip<UploadedFile, User>(userId, false).Any()
+
                                )
                             {
                                 result = null;

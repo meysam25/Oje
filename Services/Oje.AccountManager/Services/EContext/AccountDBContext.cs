@@ -40,6 +40,9 @@ namespace Oje.AccountService.Services.EContext
             modelBuilder.Entity<UserNotification>().HasKey(t => new { t.UserId, t.CreateDate, t.Type });
             modelBuilder.Entity<Property>().HasKey(t => new { t.Name, t.SiteSettingId, t.Type });
 
+            modelBuilder.Entity<User>().Property(e => e.MapLat).HasPrecision(18, 15);
+            modelBuilder.Entity<User>().Property(e => e.MapLon).HasPrecision(18, 15);
+
             base.OnModelCreating(modelBuilder);
         }
     }

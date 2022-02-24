@@ -1,4 +1,5 @@
 ﻿using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models.DB;
 using Oje.AccountService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
@@ -14,6 +15,16 @@ namespace Oje.AccountService.Services
         public CompanyService(AccountDBContext db)
         {
             this.db = db;
+        }
+
+        public Company GetBy(string companyTitle)
+        {
+            return db.Companies.Where(t => t.Title == companyTitle).FirstOrDefault();
+        }
+
+        public int GetIdBy(string companyTitle)
+        {
+            return db.Companies.Where(t => t.Title == companyTitle).Select(t => t.Id).FirstOrDefault();
         }
 
         public object GetightList()

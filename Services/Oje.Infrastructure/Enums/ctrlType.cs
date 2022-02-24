@@ -32,7 +32,13 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ردیو باکس")]
         radio = 11,
         [Display(Name = "چند انتخابی")]
-        multiRowInput = 12
+        multiRowInput = 12,
+        [Display(Name = "سرور تمپلیت")]
+        cTemplate = 13,
+        [Display(Name = "دکمه")]
+        button = 14,
+        [Display(Name = "نقشه")]
+        map = 15
 
     }
 }

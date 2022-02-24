@@ -2,6 +2,7 @@
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.Section.InquiryBaseData.Interfaces;
+using Oje.Section.InquiryBaseData.Models.DB;
 using Oje.Section.InquiryBaseData.Services.EContext;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +10,7 @@ using System.Linq;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
-    public class InsuranceContractService: IInsuranceContractService
+    public class InsuranceContractService : IInsuranceContractService
     {
         readonly InquiryBaseDataDBContext db = null;
         readonly IUserService UserService = null;
@@ -29,9 +30,10 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            return db.InsuranceContracts.Any(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
+            return db.InsuranceContracts.Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems).Any();
         }
 
         public object GetLightList()
@@ -39,10 +41,10 @@ namespace Oje.Section.InquiryBaseData.Services
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             result.AddRange(db.InsuranceContracts
-                .Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)))
+                .Where(t => t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
                     id = t.Id,

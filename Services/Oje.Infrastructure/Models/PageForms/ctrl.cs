@@ -42,6 +42,7 @@ namespace Oje.Infrastructure.Models.PageForms
         public string ph { get; set; }
         public string bankUrl { get; set; }
         public string bindFormUrl { get; set; }
+        public MapName names { get; set; }
         public List<ctrl> ctrls { get; set; }
         public List<IdTitle> values { get; set; }
         public List<validation> validations { get; set; }
@@ -49,6 +50,7 @@ namespace Oje.Infrastructure.Models.PageForms
         public string childId { get; set; }
         public List<string> callChangeEvents { get; set; }
         public List<string> multiPlay { get; set; }
+        public List<cTemplateMaps> fieldMaps { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public string defV { get; set; }
@@ -93,13 +95,14 @@ namespace Oje.Infrastructure.Models.PageForms
                             ctrl.defV = currValue;
                     }
                 }
-            } else if (ctrl.disabled == true && ctrl.multiPlay != null && ctrl.multiPlay.Count > 0)
+            }
+            else if (ctrl.disabled == true && ctrl.multiPlay != null && ctrl.multiPlay.Count > 0)
             {
                 long resultM = 0;
-                for(var i = 0; i < ctrl.multiPlay.Count; i++)
+                for (var i = 0; i < ctrl.multiPlay.Count; i++)
                 {
                     var foundCtrl = ctrls.Where(t => t.id == ctrl.multiPlay[i]).FirstOrDefault();
-                    if(foundCtrl != null)
+                    if (foundCtrl != null)
                     {
                         var currValue = form.GetStringIfExist(foundCtrl.name).ToLongReturnZiro();
                         if (resultM == 0)
@@ -227,5 +230,16 @@ namespace Oje.Infrastructure.Models.PageForms
             }
         }
 
+        public void dublicateMapValueIfNeeded(ctrl ctrl, PageForm ppfObj)
+        {
+            if (ctrl.type == ctrlType.map && ctrl.names != null && ppfObj != null && ppfObj.panels.Count > 0)
+            {
+                if (ppfObj.panels[0].ctrls == null)
+                    ppfObj.panels[0].ctrls = new();
+                ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lat", name = ctrl.names.lat });
+                ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lon", name = ctrl.names.lon });
+                ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه zoom", name = ctrl.names.zoom });
+            }
+        }
     }
 }

@@ -52,7 +52,9 @@ namespace Oje.AccountService.Middlewares
                 if (!httpContext.Response.Headers.Keys.Contains("X-Permitted-Cross-Domain-Policies"))
                     httpContext.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
                 if (!httpContext.Response.Headers.Keys.Contains("X-FRAME-OPTIONS"))
-                    httpContext.Response.Headers.Add("X-FRAME-OPTIONS", "ALLOW-FROM http://" + foundSiteSetting.WebsiteUrl);
+                    httpContext.Response.Headers.Add("X-FRAME-OPTIONS", "SAMEORIGIN");
+                if (!httpContext.Response.Headers.Keys.Contains("Permissions-Policy"))
+                    httpContext.Response.Headers.Add("Permissions-Policy", "geolocation=(self)");
             }
 
             await next(httpContext);

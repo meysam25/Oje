@@ -18,6 +18,11 @@ namespace Oje.AccountService.Services
             this.db = db;
         }
 
+        public int? GetBy(string title)
+        {
+            return db.Provinces.Where(t => t.Title == title).Select(t => t.Id).FirstOrDefault();
+        }
+
         public object GetLightList()
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };

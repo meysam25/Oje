@@ -581,6 +581,20 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static double? ToDoubleReturnNull(this object input)
+        {
+            try
+            {
+                if (input == null)
+                    return null;
+                return Convert.ToDouble(input);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static bool IsLighthouse(this HttpRequest input)
         {
             try

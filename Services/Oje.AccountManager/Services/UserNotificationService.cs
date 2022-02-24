@@ -53,27 +53,27 @@ namespace Oje.AccountService.Services
             if (cdTick <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            var allSubUsers = UserService.GetChildsUserId(userId.ToLongReturnZiro());
-            if(allSubUsers != null)
+            var canSeeAllItems = UserService.CanSeeAllItems(userId.ToLongReturnZiro());
+            if (canSeeAllItems != true)
             {
-                if (allSubUsers.Any(t => t == idUserId) || idUserId == userId)
-                {
-                    var foundNotification = db.UserNotifications
-                        .Where(t => t.SiteSettingId == siteSettingId && t.UserId == idUserId && t.Type == type && 
-                                    t.CreateDate == dt)
-                        .FirstOrDefault();
-                    if (foundNotification == null)
-                        throw BException.GenerateNewException(BMessages.Not_Found);
+                var foundNotification = db.UserNotifications
+                    .Where(t => t.SiteSettingId == siteSettingId && t.UserId == idUserId && t.Type == type &&
+                                t.CreateDate == dt)
+                    .getWhereUserIdMultiLevelForUserOwnerShip<UserNotification, User>(userId.ToLongReturnZiro(), canSeeAllItems)
+                    .FirstOrDefault();
 
-                    if (idUserId == userId)
-                    {
-                        foundNotification.ViewDate = DateTime.Now;
-                        db.SaveChanges();
-                    }
-                   
-                    return new { description = foundNotification.Description };
+                if (foundNotification == null)
+                    throw BException.GenerateNewException(BMessages.Not_Found);
+
+                if (idUserId == userId)
+                {
+                    foundNotification.ViewDate = DateTime.Now;
+                    db.SaveChanges();
                 }
-            } else
+
+                return new { description = foundNotification.Description };
+            }
+            else
             {
                 var foundNotification = db.UserNotifications
                     .Where(t => t.SiteSettingId == siteSettingId && t.UserId == idUserId && t.Type == type &&
@@ -88,7 +88,7 @@ namespace Oje.AccountService.Services
                 }
                 return new { description = foundNotification.Description };
             }
-                
+
 
             throw BException.GenerateNewException(BMessages.Not_Found);
         }
@@ -97,12 +97,13 @@ namespace Oje.AccountService.Services
         {
             if (searchInput == null)
                 searchInput = new UserNotificationMainGrid();
-            var allSubUsers = UserService.GetChildsUserId(userId.ToLongReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(userId.ToLongReturnZiro());
             var qureResult = db.UserNotifications.Where(t => t.SiteSettingId == siteSettingId);
             if (searchInput.justMyNotification == true)
                 qureResult = qureResult.Where(t => t.UserId == userId);
             else
-                qureResult = qureResult.Where(t => allSubUsers == null || allSubUsers.Contains(t.UserId));
+                qureResult = qureResult.getWhereUserIdMultiLevelForUserOwnerShip<UserNotification, User>(userId.ToLongReturnZiro(), canSeeAllItems);
+
             if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
             {
                 var targetDate = searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;

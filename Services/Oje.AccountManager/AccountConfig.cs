@@ -17,7 +17,7 @@ namespace Oje.AccountService
 
             FileServiceConfig.Config(services);
 
-            services.AddDbContextPool<AccountDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddDbContextPool<AccountDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => { b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery); b.UseNetTopologySuite(); }));
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISectionService, SectionService>();

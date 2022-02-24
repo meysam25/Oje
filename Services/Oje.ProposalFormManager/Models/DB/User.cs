@@ -37,6 +37,8 @@ namespace Oje.ProposalFormService.Models.DB
         public bool IsDelete { get; set; }
         public DateTime CreateDate { get; set; }
         public long? ParentId { get; set; }
+        [ForeignKey("ParentId"), InverseProperty("Childs")]
+        public User Parent { get; set; }
         [MaxLength(12)]
         public string Nationalcode { get; set; }
         [MaxLength(14)]
@@ -56,7 +58,8 @@ namespace Oje.ProposalFormService.Models.DB
         public int? CityId { get; set; }
         public int? SiteSettingId { get; set; }
 
-
+        [InverseProperty("Parent")]
+        public List<User> Childs { get; set; }
         [InverseProperty("User")]
         public List<ProposalFilledFormUser> ProposalFilledFormUsers { get; set; }
         [InverseProperty("FromUser")]

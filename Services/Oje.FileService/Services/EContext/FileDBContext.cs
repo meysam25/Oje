@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.FileService.Services.EContext
 {
-    public class FileDBContext: DbContext
+    public class FileDBContext : DbContext
     {
         public FileDBContext(DbContextOptions<FileDBContext> options) : base(options)
         {
@@ -19,11 +19,11 @@ namespace Oje.FileService.Services.EContext
         public DbSet<FileAccessRole> FileAccessRoles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
         }
     }

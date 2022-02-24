@@ -81,6 +81,19 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(tempResult);
         }
 
+        public IActionResult GetTermsHtml(int? fid)
+        {
+            var foundPPF = ProposalFormService.GetById(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
+            if (foundPPF == null)
+                return NotFound();
+
+            ViewBag.ContractFile = foundPPF.ContractFile;
+            ViewBag.RulesFile = foundPPF.RulesFile;
+            ViewBag.HtmlTemplate = foundPPF.TermTemplate;
+
+            return View();
+        }
+
         [AreaConfig(Title = "لیست مدارم مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetProposalFormRequiredDocument([FromForm] int? fid)
@@ -124,11 +137,11 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "مشاهده لیست نماینده", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetAgentList([FromQuery] Select2SearchVM searchInput, [FromQuery] ProposalFormVM input, [FromQuery] ProvinceAndCityVM provinceAndCityInput)
+        public ActionResult GetAgentList([FromQuery] Select2SearchVM searchInput, [FromQuery] ProposalFormVM input, [FromQuery] ProvinceAndCityVM provinceAndCityInput, [FromQuery] string mapLat, [FromQuery] string mapLon)
         {
             return Json(
                     UserService.GetSelect2ListByPPFAndCompanyId(searchInput, SiteSettingService.GetSiteSetting()?.Id, input.fid.ToIntReturnZiro(),
-                            GlobalInqueryService.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id), provinceAndCityInput)
+                            GlobalInqueryService.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id), provinceAndCityInput, mapLat, mapLon)
                     );
         }
     }

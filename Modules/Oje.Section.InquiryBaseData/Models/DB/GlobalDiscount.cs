@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("GlobalDiscounts")]
-    public class GlobalDiscount
+    public class GlobalDiscount : EntityWithCreateUser<User, long>
     {
         public GlobalDiscount()
         {

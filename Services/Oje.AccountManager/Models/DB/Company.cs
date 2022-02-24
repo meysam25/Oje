@@ -21,6 +21,8 @@ namespace Oje.AccountService.Models.DB
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
+        [MaxLength(100)]
+        public string Name { get; set; }
 
         [InverseProperty("Company")]
         public List<UserCompany> UserCompanies { get; set; }

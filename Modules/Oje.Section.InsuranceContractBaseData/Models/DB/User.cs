@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("Users")]
-    public class User
+    public class User : EntityWithParent<User>
     {
         public User()
         {
@@ -24,6 +25,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
             InsuranceContractUsers = new();
             CreateUserInsuranceContractUsers = new();
             UpdateUserInsuranceContractUsers = new();
+            Childs = new();
         }
 
         [Key]
@@ -51,10 +53,13 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public string BankShaba { get; set; }
         public DateTime? BirthDate { get; set; }
         public bool IsActive { get; set; }
+        public long? ParentId { get; set; }
+        [ForeignKey("ParentId"), InverseProperty("Childs")]
+        public User Parent { get; set; }
 
 
-
-
+        [InverseProperty("Parent")]
+        public List<User> Childs { get; set; }
         [InverseProperty("CreateUser")]
         public List<InsuranceContractType> CreateUserInsuranceContractTypes { get; set; }
         [InverseProperty("UpdateUser")]

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.AccountService.Models.DB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,7 @@ namespace Oje.AccountService.Interfaces
     public interface ICompanyService
     {
         object GetightList();
+        int GetIdBy(string companyTitle);
+        Company GetBy(string companyTitle);
     }
 }

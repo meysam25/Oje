@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractUsers")]
-    public class InsuranceContractUser
+    public class InsuranceContractUser: EntityWithCreateUser<User,long>
     {
         public InsuranceContractUser()
         {

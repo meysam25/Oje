@@ -393,6 +393,9 @@ function getInputTemplate(ctrl) {
             case 'multiSelectImg':
                 result += getMultiSelectImgTemplate(ctrl);
                 break;
+            case 'cTemplate':
+                result += getCTemplate(ctrl);
+                break;
             case 'map':
                 result += getMapTemplate(ctrl);
                 break;
@@ -407,6 +410,65 @@ function getInputTemplate(ctrl) {
     return result;
 }
 
+function updateTemplateText(ctrl) {
+    var selectQuiry = $('#' + ctrl.id);
+    if (selectQuiry.length > 0 && ctrl.fieldMaps && ctrl.fieldMaps.length > 0) {
+        var curElement = selectQuiry[0];
+        if (curElement.templateStr) {
+            var newTemplate = `${curElement.templateStr}`;
+
+            for (var i = 0; i < ctrl.fieldMaps.length; i++) {
+                var curValue = '';
+
+                for (var j = 0; j < ctrl.fieldMaps[i].sourceCtrl.length; j++) {
+                    if (!curValue) {
+                        if ($('input[name="' + ctrl.fieldMaps[i].sourceCtrl[j] + '"]').length > 0)
+                            curValue = $('input[name="' + ctrl.fieldMaps[i].sourceCtrl[j] + '"]').val();
+                        else {
+                            curValue = $('select[name="' + ctrl.fieldMaps[i].sourceCtrl[j] + '"]').find('option:selected').text();
+                        }
+                    }
+                }
+
+                newTemplate = newTemplate.replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue)
+            }
+
+            selectQuiry.html(newTemplate);
+        }
+    }
+}
+
+function getCTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl) {
+        result += '<div data-url="' + ctrl.dataurl + '" id="' + ctrl.id + '" ></div>';
+        functionsList.push(function () {
+            var curUrl = $('#' + this.ctrl.id).attr('data-url');
+            if (curUrl) {
+                var postFormData = new FormData();
+                appendAllQueryStringToForm(postFormData);
+                postForm(curUrl, postFormData, function (res) {
+                    $('#' + this.id)[0].templateStr = res;
+                    $('#' + this.id).html(res);
+                }.bind({ id: this.ctrl.id }));
+            }
+            if (this.ctrl.fieldMaps && this.ctrl.fieldMaps.length > 0) {
+                for (var i = 0; i < this.ctrl.fieldMaps.length; i++) {
+                    var curMap = this.ctrl.fieldMaps[i];
+                    if (curMap.sourceCtrl && curMap.sourceCtrl.length > 0) {
+                        for (var j = 0; j < curMap.sourceCtrl.length; j++) {
+                            $('input[name="' + curMap.sourceCtrl[j] + '"],select[name="' + curMap.sourceCtrl[j] + '"]').change(function () { updateTemplateText(this.ctrl) }.bind({ ctrl: this.ctrl }));
+                        }
+                    }
+                }
+            }
+        }.bind({ ctrl: ctrl }));
+    }
+
+    return result;
+}
+
 function getMapTemplate(ctrl) {
     var result = '';
 
@@ -415,14 +477,14 @@ function getMapTemplate(ctrl) {
         if (ctrl.label)
             result += '<label>' + ctrl.label + '</label>';
 
-        if (ctrl.name && ctrl.name.lat)
-            result += '<input id="' + ctrl.id + '_lat" name="' + ctrl.name.lat + '" type="hidden" />';
-        if (ctrl.name && ctrl.name.lon)
-            result += '<input id="' + ctrl.id + '_lon" name="' + ctrl.name.lon + '" type="hidden" />';
-        if (ctrl.name && ctrl.name.zoom)
-            result += '<input id="' + ctrl.id + '_zoom" name="' + ctrl.name.zoom + '" type="hidden" />';
+        if (ctrl.names && ctrl.names.lat)
+            result += '<input id="' + ctrl.id + '_lat" name="' + ctrl.names.lat + '" type="hidden" />';
+        if (ctrl.names && ctrl.names.lon)
+            result += '<input id="' + ctrl.id + '_lon" name="' + ctrl.names.lon + '" type="hidden" />';
+        if (ctrl.names && ctrl.names.zoom)
+            result += '<input id="' + ctrl.id + '_zoom" name="' + ctrl.names.zoom + '" type="hidden" />';
 
-        result += '<div id="' + ctrl.id + '" style="width:' + ctrl.width + ';height:' + ctrl.height + ';margin-bottom:10px;" ></div>';
+        result += '<div id="' + ctrl.id + '" style="width:' + ctrl.width + ';height:' + ctrl.height + ';margin-bottom:17px;" ></div>';
         result += '</div>';
 
         addOpenLayerIfNotExist();
@@ -478,6 +540,79 @@ function initMap(ctrl) {
     }
 }
 
+function updateMapMarkers(dataSource, mapId) {
+    if (dataSource && mapId) {
+        var fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
+        var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+        if ($('#' + mapId).length > 0) {
+            var markers = $('#' + mapId)[0].markers;
+            if (markers) {
+                for (var i = 0; i < dataSource.length; i++) {
+                    var mapLat = dataSource[i].mapLat;
+                    var mapLng = dataSource[i].mapLng;
+                    var id = dataSource[i].id;
+                    if (id && mapLat && mapLng) {
+                        var size = new OpenLayers.Size(21, 25);
+                        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+                        var icon = new OpenLayers.Icon('/Modules/Images/markerAgent.png', size, offset);
+                        var position = new OpenLayers.LonLat(mapLng, mapLat).transform(fromProjection, toProjection);
+
+                        var newMarketer = new OpenLayers.Marker(position, icon);
+                        newMarketer.myId = id;
+                        markers.addMarker(newMarketer);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function getSelect2ValueAndRemoveAllMapItemsExcept(selectTwoCtrlId, mapCtrlId) {
+    if (selectTwoCtrlId && mapCtrlId) {
+        var s2Query = $('#' + selectTwoCtrlId);
+        var mapQuiry = $('#' + mapCtrlId);
+        if (s2Query.length > 0 && mapQuiry.length > 0) {
+            var fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
+            var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+            var selectValue = s2Query.find('option:selected').val();
+            if (selectValue) {
+                var s2Obj = s2Query.data('select2');
+                if (s2Obj) {
+                    var allData = s2Obj.data();
+                    if (allData && allData.length > 0) {
+                        var foundSelectedItem = allData.filter(function (item) { return item.id == selectValue });
+                        if (foundSelectedItem && foundSelectedItem.length > 0) {
+                            foundSelectedItem = foundSelectedItem[0];
+                            var markers = mapQuiry[0].markers;
+                            var map = mapQuiry[0].map;
+                            if (markers && map) {
+                                for (var i = 0; i < markers.markers.length; i++) {
+                                    if (markers.markers[i].myId) {
+                                        markers.markers[i].erase();
+                                    }
+                                }
+
+                                markers.markers.splice(1);
+
+                                var size = new OpenLayers.Size(21, 25);
+                                var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+                                var icon = new OpenLayers.Icon('/Modules/Images/markerAgentSelected.png', size, offset);
+                                var position = new OpenLayers.LonLat(foundSelectedItem.mapLng, foundSelectedItem.mapLat).transform(fromProjection, toProjection);
+
+                                var newMarketer = new OpenLayers.Marker(position, icon);
+                                newMarketer.myId = foundSelectedItem.id;
+                                markers.addMarker(newMarketer);
+                                map.setCenter(position, 15);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+
 function initMapInner(ctrl) {
     var map = null;
     var markers = null;
@@ -508,12 +643,17 @@ function initMapInner(ctrl) {
         trigger: function (e) {
             if (!this.ctrl.readonly) {
                 var lonlat = map.getLonLatFromPixel(e.xy);
-                var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+                var fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
                 var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
                 var position = new OpenLayers.LonLat(lonlat.lon, lonlat.lat).transform(toProjection, fromProjection);
                 $('#' + ctrl.id + '_lat').val(position.lat);
                 $('#' + ctrl.id + '_lon').val(position.lon);
                 $('#' + ctrl.id + '_zoom').val(map.zoom);
+                if (ctrl.updateAnotherMapLocation) {
+                    $('#' + ctrl.updateAnotherMapLocation + '_lat').val(position.lat);
+                    $('#' + ctrl.updateAnotherMapLocation + '_lon').val(position.lon);
+                    $('#' + ctrl.updateAnotherMapLocation + '_zoom').val(map.zoom);
+                }
                 var size = new OpenLayers.Size(21, 25);
                 var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
                 var icon = new OpenLayers.Icon('/Modules/Images/marker.png', size, offset);
@@ -544,7 +684,7 @@ function initMapInner(ctrl) {
     var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
     var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
     var position = new OpenLayers.LonLat(51.351869, 35.722938).transform(fromProjection, toProjection);
-    var zoom = 12;
+    var zoom = 15;
     markers = new OpenLayers.Layer.Markers("Markers");
     map.addLayer(markers);
     map.addLayer(new OpenLayers.Layer.OSM());
@@ -555,6 +695,7 @@ function initMapInner(ctrl) {
     $('#' + ctrl.id)[0].map = map;
     $('#' + ctrl.id)[0].markers = markers;
     $('#' + ctrl.id)[0].updateMapAndZoomPoint();
+    $('#' + ctrl.id)[0].ctrl = ctrl;
 }
 
 var isTryingLoadMapJs = false;
@@ -1190,6 +1331,21 @@ function appendAllQueryStringToForm(formData) {
     }
 }
 
+function getCurrUrlParameters() {
+    var result = '';
+    var allParams = new URLSearchParams(window.location.search);
+    var isFirst = true;
+    for (var pair of allParams.entries()) {
+        if (isFirst == true) {
+            result += '?' + pair[0] + "=" + pair[1];
+            isFirst = false;
+        }
+        else
+            result += '&' + pair[0] + "=" + pair[1];
+    }
+    return result;
+}
+
 function getDynamicFileUploadCtrlTemplate(ctrl) {
     var result = '';
 
@@ -1577,6 +1733,12 @@ function getDropdownCTRLTemplate(ctrl) {
                 placeholder: ctrl.ph ? ctrl.ph : "",
                 ajax: {
                     url: this.dataurl,
+                    processResults: function (data) {
+                        if (this.ctrl && this.ctrl.updateMapMarker && data) {
+                            updateMapMarkers(data.results, this.ctrl.updateMapMarker);
+                        }
+                        return data;
+                    }.bind({ ctrl: ctrl }),
                     data: function (params) {
                         addExteraParameterFromCtrls(this.exteraParameterIds, this.exParam)
                         this.exParam.search = params.term;
@@ -2075,6 +2237,13 @@ function moveToNextStepForSW(curItem) {
     }
 }
 
+function refreshMapIfExist(quirySelector) {
+    if ($(quirySelector).find('.olMap').length > 0 && $(quirySelector).find('.olMap')[0].ctrl) {
+        $(quirySelector).find('.olMap').html('');
+        initMapInner($(quirySelector).find('.olMap')[0].ctrl);
+    }
+}
+
 function initSWFunctions(curId, actionOnLastStep) {
     if ($('#' + curId).length > 0) {
         $('#' + curId)[0].moveNext = function () {
@@ -2094,6 +2263,7 @@ function initSWFunctions(curId, actionOnLastStep) {
                 $(this).find('.panelSWizardHolderContentItemActive').removeClass('panelSWizardHolderContentItemActive');
                 nextContent.addClass('panelSWizardHolderContentItemActive');
                 $(nextContent).find('select').change();
+                refreshMapIfExist($(nextContent));
             }
         };
         $('#' + curId)[0].moveToStepById = function (targetId) {
@@ -2247,6 +2417,10 @@ function showModal(targetModal, curElement) {
                 $('#' + targetModal)[0].pKey = pKey;
         }
     }
+    if ($('#' + targetModal).find('.olMap').length > 0 && $('#' + targetModal).find('.olMap')[0].ctrl) {
+        $('#' + targetModal).find('.olMap').html('');
+        initMapInner($('#' + targetModal).find('.olMap')[0].ctrl);
+    }
 }
 
 function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
@@ -2263,8 +2437,12 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
             if (res) {
                 var holderForm = $('#' + this.modalId);
                 clearForm(holderForm);
-                bindForm(res, holderForm, ignoreChange);
                 holderForm.modal('show');
+                if ($('#' + modalId).find('.olMap').length > 0 && $('#' + modalId).find('.olMap')[0].ctrl) {
+                    $('#' + modalId).find('.olMap').html('');
+                    initMapInner($('#' + modalId).find('.olMap')[0].ctrl);
+                }
+                bindForm(res, holderForm, ignoreChange);
                 if (parentKey)
                     $('#' + modalId)[0].pKey = parentKey;
                 else
@@ -2275,6 +2453,7 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
                         $(this)[0].refreshData();
                     })
                 }
+
             }
         }.bind({ modalId }), null, function () { hideLoader(gridSelector); });
     } else if (modalId) {
@@ -2288,6 +2467,8 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
             }
         }
     }
+
+
 }
 
 function simpleAjax(key, url, curElement) {

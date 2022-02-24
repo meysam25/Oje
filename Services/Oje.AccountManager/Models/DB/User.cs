@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Oje.AccountService.Models.DB
 {
     [Table("Users")]
-    public class User
+    public class User : IEntityWithId<User, long>, EntityWithParent<User>
     {
         public User()
         {
@@ -96,6 +97,10 @@ namespace Oje.AccountService.Models.DB
         public City City { get; set; }
         public int? CountInvalidPass { get; set; }
         public DateTime? TemproryLockDate { get; set; }
+        public decimal? MapLat { get; set; }
+        public decimal? MapLon { get; set; }
+        public byte? MapZoom { get; set; }
+        public NetTopologySuite.Geometries.Point MapLocation { get; set; }
         public int? SiteSettingId { get; set; }
 
 

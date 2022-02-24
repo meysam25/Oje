@@ -43,5 +43,8 @@ namespace Oje.AccountService.Models.View
         public List<int> cIds { get; set; }
         public int? provinceId { get; set; }
         public int? cityId { get; set; }
+        public decimal? mapLat { get; set; }
+        public decimal? mapLon { get; set; }
+        public byte? mapZoom { get; set; }
     }
 }

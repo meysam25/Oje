@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services.EContext
 {
-    public class ProposalFormReportDBContext: DbContext
+    public class ProposalFormReportDBContext : DbContext
     {
         public ProposalFormReportDBContext(DbContextOptions<ProposalFormReportDBContext> options) : base(options)
         {
@@ -25,6 +25,4 @@ namespace Oje.ProposalFormService.Services.EContext
             base.OnModelCreating(modelBuilder);
         }
     }
-
-    
 }

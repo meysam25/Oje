@@ -47,15 +47,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             var loginUserId = UserService.GetLoginUser();
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            var childUserIds = UserService.CanSeeAllItems(loginUserId.UserId.ToLongReturnZiro());
             int roleId = RoleService.CreateOrGetRole("بیمه شدگان گروهی", "InsuranceContractUsers", 1);
             long? parentId = null;
 
-            CreateValidation(input, status, siteSettingId, loginUserId?.UserId, childUserIds);
+            CreateValidation(input, status, siteSettingId, loginUserId?.UserId);
 
             if (input.familyRelation != InsuranceContractUserFamilyRelation.Self)
             {
-                parentId = getParentId(input.mainPersonNationalCode, input.eCode, siteSettingId, childUserIds, input.insuranceContractId);
+                parentId = getParentId(input.mainPersonNationalCode, input.eCode, siteSettingId, loginUserId?.UserId, input.insuranceContractId);
                 if (parentId.ToLongReturnZiro() <= 0)
                     throw BException.GenerateNewException(BMessages.Invalid_NationalCode_Or_InsuranceECode);
             }
@@ -83,7 +83,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             catch (Exception)
             {
                 foundUserId = UserService.GetUserIdByNationalEmailMobleEcode(input.nationalCode, input.mobile, input.email, input.eCode,
-                    childUserIds.Select(t => t as long?).ToList(), siteSettingId);
+                    loginUserId?.UserId, siteSettingId);
                 if (foundUserId <= 0)
                     throw;
             }
@@ -129,18 +129,20 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private long? getParentId(string mainPersonNationalCode, string eCode, int? siteSettingId, List<long> childUserIds, int? insuranceContractId)
+        private long? getParentId(string mainPersonNationalCode, string eCode, int? siteSettingId, long? loginUserId, int? insuranceContractId)
         {
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
             return db.InsuranceContractUsers
-                .Where(t => t.InsuranceContractId == insuranceContractId && t.SiteSettingId == siteSettingId &&
-                            (childUserIds == null || childUserIds.Contains(t.CreateUserId)) && t.UserId > 0 &&
+                .Where(t => t.InsuranceContractId == insuranceContractId && t.SiteSettingId == siteSettingId
+                            && t.UserId > 0 &&
                             (t.User.Nationalcode == mainPersonNationalCode || t.User.InsuranceECode == eCode))
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(loginUserId, canSeeAllItems)
                 .Select(t => t.Id).FirstOrDefault();
         }
 
         private void CreateValidation(
                 CreateUpdateInsuranceContractUserVM input, InsuranceContractUserStatus status,
-                int? siteSettingId, long? loginUserId, List<long> childUserIds
+                int? siteSettingId, long? loginUserId
             )
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
@@ -161,7 +163,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);
             if (!input.nationalCode.IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, childUserIds))
+            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (input.familyRelation == null)
                 throw BException.GenerateNewException(BMessages.Please_Select_FamilyRelation);
@@ -175,35 +177,43 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Clear_Main_Person_ECode);
             if (!string.IsNullOrEmpty(input.mainPersonNationalCode) && !input.mainPersonNationalCode.IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (!string.IsNullOrEmpty(input.mainPersonNationalCode) && !existByNationalCode(input.id, siteSettingId, childUserIds, input.mainPersonNationalCode, input.insuranceContractId))
+            if (!string.IsNullOrEmpty(input.mainPersonNationalCode) && !existByNationalCode(input.id, siteSettingId, loginUserId, input.mainPersonNationalCode, input.insuranceContractId))
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (!string.IsNullOrEmpty(input.mainPersonECode) && !existByECode(input.id, siteSettingId, input.mainPersonECode, input.insuranceContractId, childUserIds))
+            if (!string.IsNullOrEmpty(input.mainPersonECode) && !existByECode(input.id, siteSettingId, input.mainPersonECode, input.insuranceContractId, loginUserId))
                 throw BException.GenerateNewException(BMessages.Main_Person_Code_Is_Not_Valid);
         }
 
-        private bool existByNationalCode(long? id, int? siteSettingId, List<long> childUserIds, string nationalCode, int? insuranceContractId)
+        private bool existByNationalCode(long? id, int? siteSettingId, long? loginUserId, string nationalCode, int? insuranceContractId)
         {
-            return db.InsuranceContractUsers.Any(t => t.Id != id && t.SiteSettingId == siteSettingId && t.InsuranceContractId == insuranceContractId &&
-            t.UserId > 0 && t.User.Nationalcode == nationalCode && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
+            return db.InsuranceContractUsers.Where(t => t.Id != id && t.SiteSettingId == siteSettingId && t.InsuranceContractId == insuranceContractId &&
+            t.UserId > 0 && t.User.Nationalcode == nationalCode)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(loginUserId, canSeeAllItems).Any()
+                ;
         }
 
-        private bool existByECode(long? id, int? siteSettingId, string eCode, int? insuranceContractId, List<long> childUserIds)
+        private bool existByECode(long? id, int? siteSettingId, string eCode, int? insuranceContractId, long? loginUserId)
         {
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
             return db.InsuranceContractUsers
-                .Any(t => t.Id != id && t.SiteSettingId == siteSettingId && t.UserId > 0 && t.User.InsuranceECode == eCode &&
-                          t.InsuranceContractId == insuranceContractId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
+                .Where(t => t.Id != id && t.SiteSettingId == siteSettingId && t.UserId > 0 && t.User.InsuranceECode == eCode &&
+                          t.InsuranceContractId == insuranceContractId )
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(loginUserId, canSeeAllItems).Any();
         }
 
         public ApiResult Delete(long? id, InsuranceContractUserStatus status)
         {
             var loginUserId = UserService.GetLoginUser();
+            var tempLong = loginUserId?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
-            var foundItem = db.InsuranceContractUsers.Include(t => t.Childs).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == status && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.UserId.ToLongReturnZiro());
+            var foundItem = db.InsuranceContractUsers.Include(t => t.Childs).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == status)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(tempLong, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
-            UserService.DeleteFlag(foundItem.UserId, siteSettingId, childUserIds);
+            UserService.DeleteFlag(foundItem.UserId, siteSettingId, tempLong);
 
             if (foundItem.Childs != null)
                 foreach (var item in foundItem.Childs)
@@ -217,11 +227,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public CreateUpdateInsuranceContractUserVM GetById(long? id, InsuranceContractUserStatus status)
         {
             var loginUserId = UserService.GetLoginUser();
+            var tempId = loginUserId?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.UserId.ToLongReturnZiro());
             return
                 db.InsuranceContractUsers
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == status && (childUserIds == null || childUserIds.Contains(t.CreateUserId)) && t.UserId > 0)
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == status && t.UserId > 0)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(tempId, canSeeAllItems)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -280,9 +292,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             var loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            var qureResult = db.InsuranceContractUsers.Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)) && t.Status == status);
+            var qureResult = db.InsuranceContractUsers.Where(t => t.SiteSettingId == siteSettingId && t.Status == status).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(loginUserId, canSeeAllItems);
 
             if (searchInput.contract.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.InsuranceContractId == searchInput.contract);
@@ -354,18 +366,21 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             var loginUserId = UserService.GetLoginUser();
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.UserId.ToLongReturnZiro());
             long? parentId = null;
+            var tempId = loginUserId?.UserId;
 
-            CreateValidation(input, status, siteSettingId, loginUserId?.UserId, childUserIds);
+            CreateValidation(input, status, siteSettingId, loginUserId?.UserId);
 
-            var foundItem = db.InsuranceContractUsers.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && t.Status == status && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
+            var foundItem = db.InsuranceContractUsers.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && t.Status == status)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(tempId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
             if (input.familyRelation != InsuranceContractUserFamilyRelation.Self)
             {
-                parentId = getParentId(input.mainPersonNationalCode, input.mainPersonECode, siteSettingId, childUserIds, input.insuranceContractId);
+                parentId = getParentId(input.mainPersonNationalCode, input.mainPersonECode, siteSettingId, tempId, input.insuranceContractId);
                 if (parentId.ToLongReturnZiro() <= 0)
                     throw BException.GenerateNewException(BMessages.Invalid_NationalCode_Or_InsuranceECode);
             }
@@ -420,9 +435,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public ApiResult ChangeStatus(long? id, InsuranceContractUserStatus fromStatus, InsuranceContractUserStatus toStatus)
         {
             var loginUserId = UserService.GetLoginUser();
+            var tempId = loginUserId?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.UserId.ToLongReturnZiro());
-            var foundItem = db.InsuranceContractUsers.Include(t => t.Childs).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == fromStatus && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.UserId.ToLongReturnZiro());
+            var foundItem = db.InsuranceContractUsers.Include(t => t.Childs).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.Status == fromStatus)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(tempId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

@@ -1,6 +1,7 @@
 ﻿@using Oje.Infrastructure
 @using Oje.Infrastructure.Services
 @inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
+@inject Oje.AccountService.Interfaces.IPropertyService PropertyService
 @{
     var curSetting = SiteSettingService.GetSiteSetting();
     if (curSetting == null)
@@ -19,11 +20,18 @@
     <meta name="robots" content="index, follow" />
     <meta name="format-detection" content="telephone=no" />
     <meta property="og:locale" content="fa_IR" />
-    <meta property="og:site_name" content="ستاد بیمه" />
+    <meta property="og:site_name" content="@(curSetting.Title)" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>@ViewBag.Title</title>
     <meta name="twitter:title" content="@ViewData["Title"]" />
     <meta property="og:title" content="@ViewData["Title"]" />
+    @{
+        var exteraMetaTag = PropertyService.GetBy<Oje.Section.WebMain.Models.View.GlobalMetaTagCreateUpdateVM>(Oje.Infrastructure.Enums.PropertyType.GlobalMetaTag, SiteSettingService.GetSiteSetting()?.Id);
+        if (exteraMetaTag != null)
+        {
+            ViewContext.Writer.Write(exteraMetaTag.tag1);
+        }
+    }
 
 
     @{
@@ -94,7 +102,7 @@
             <section class="topHeader">
                 <div class="myContainer">
                     <a title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
-                    <div id="placeholderTopLeftIcon" ></div>
+                    <div id="placeholderTopLeftIcon"></div>
                     <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="@curSetting.Title" href="/">@curSetting.Title</a></h1>
                 </div>
             </section>
@@ -459,7 +467,7 @@
         $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
         localStorage.clear();
         @{
-            if(Context.Request.IsHttps)
+            if (Context.Request.IsHttps)
             {
                 ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
             }

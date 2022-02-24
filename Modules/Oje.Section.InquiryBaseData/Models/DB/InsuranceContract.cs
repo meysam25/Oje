@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("InsuranceContracts")]
-    public class InsuranceContract
+    public class InsuranceContract : EntityWithCreateUser<User, long>
     {
         public InsuranceContract()
         {
@@ -26,6 +27,8 @@ namespace Oje.Section.InquiryBaseData.Models.DB
         [InverseProperty("InsuranceContracts")]
         public ProposalForm ProposalForm { get; set; }
         public long CreateUserId { get; set; }
+        [ForeignKey("CreateUserId"), InverseProperty("InsuranceContracts")]
+        public User CreateUser { get; set; }
         public int SiteSettingId { get; set; }
 
         [InverseProperty("InsuranceContract")]

@@ -22,6 +22,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تماس با ما")]
         ContactUs = 5,
         [Display(Name = "ایکن های بالا سمت چپ صفحه اصلی")]
-        MainPageTopLeftIcon = 6
+        MainPageTopLeftIcon = 6,
+        [Display(Name = "متا تگ عمومی")]
+        GlobalMetaTag = 7
     }
 }

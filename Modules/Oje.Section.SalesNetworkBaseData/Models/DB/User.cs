@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Oje.Section.SalesNetworkBaseData.Models.DB
 {
     [Table("Users")]
-    public class User
+    public class User : EntityWithParent<User>
     {
         public User()
         {
@@ -29,7 +30,12 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         [Required]
         [MaxLength(50)]
         public string Lastname { get; set; }
+        public long? ParentId { get; set; }
+        [ForeignKey("ParentId"), InverseProperty("Childs")]
+        public User Parent { get; set; }
 
+        [InverseProperty("Parent")]
+        public List<User> Childs { get; set; }
         [InverseProperty("CreateUser")]
         public List<SalesNetwork> CreateUserSalesNetworks { get; set; }
         [InverseProperty("UpdateUser")]

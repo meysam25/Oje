@@ -1,0 +1,23 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/WebMainAdmin/GlobalMetaTag/Get",
+      "title": "درباره ما صفحه اصلی",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "tag1",
+          "type": "text",
+          "label": "تگ 1"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/WebMainAdmin/GlobalMetaTag/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

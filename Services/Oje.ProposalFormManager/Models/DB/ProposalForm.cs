@@ -41,6 +41,10 @@ namespace Oje.ProposalFormService.Models.DB
         public bool? IsActive { get; set; }
         [MaxLength(100)]
         public string RulesFile { get; set; }
+        [MaxLength(100)]
+        public string ContractFile { get; set; }
+        [MaxLength(4000)]
+        public string TermTemplate { get; set; }
         public ProposalFormType? Type { get; set; }
         public int ProposalFormCategoryId { get; set; }
         [ForeignKey("ProposalFormCategoryId"), InverseProperty("ProposalForms")]

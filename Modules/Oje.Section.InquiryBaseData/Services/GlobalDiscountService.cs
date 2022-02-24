@@ -110,9 +110,11 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
+            GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -130,10 +132,11 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
             return db.GlobalDiscounts
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)))
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
                     cIds = t.GlobalDiscountCompanies.Select(tt => tt.CompanyId).ToList(),
@@ -181,9 +184,9 @@ namespace Oje.Section.InquiryBaseData.Services
 
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            var qureResult = db.GlobalDiscounts.Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
+            var qureResult = db.GlobalDiscounts.Where(t => t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems);
 
             if (searchInput.company.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.GlobalDiscountCompanies.Any(tt => tt.CompanyId == searchInput.company));
@@ -251,10 +254,12 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUserIds = UserService.GetChildsUserId(loginUserId.Value);
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
             CreateValidation(input, siteSettingId, loginUserId);
 
-            GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
+            GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

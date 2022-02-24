@@ -139,13 +139,7 @@
               "dataurl": "/ProposalFormBaseData/ProposalForm/GetSiteList",
               "label": "وب سایت"
             },
-            {
-              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
-              "name": "rules",
-              "type": "file",
-              "label": "فایل قوانین",
-              "acceptEx": ".pdf,.doc,.docx"
-            },
+
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "type",
@@ -167,6 +161,28 @@
               "name": "description",
               "type": "textarea",
               "label": "توضیحات"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "termT",
+              "type": "ck",
+              "label": "متن شرایط فرم ({{firstName}} {{lastName}} {{nationalCode}} {{agent}} {{date}} {{time}})"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "rules",
+              "type": "file",
+              "label": "فایل قوانین",
+              "acceptEx": ".pdf,.doc,.docx",
+              "hideImagePreview": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "conteractFile",
+              "type": "file",
+              "label": "متن قرارداد",
+              "acceptEx": ".pdf,.doc,.docx",
+              "hideImagePreview": true
             }
           ],
           "actions": [
@@ -235,13 +251,6 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
-              "name": "rules",
-              "type": "file",
-              "label": "فایل قوانین",
-              "acceptEx": ".pdf,.doc,.docx"
-            },
-            {
-              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
@@ -261,6 +270,28 @@
               "name": "description",
               "type": "textarea",
               "label": "توضیحات"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "termT",
+              "type": "ck",
+              "label": "متن شرایط فرم ({{firstName}} {{lastName}} {{nationalCode}} {{agent}} {{date}} {{time}})"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "rules",
+              "type": "file",
+              "label": "فایل قوانین",
+              "acceptEx": ".pdf,.doc,.docx",
+              "hideImagePreview": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "conteractFile",
+              "type": "file",
+              "label": "متن قرارداد",
+              "acceptEx": ".pdf,.doc,.docx",
+              "hideImagePreview": true
             }
           ],
           "actions": [

@@ -63,6 +63,13 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
             return Json(UserService.CreateForUser(input, HttpContext.GetLoginUser()?.UserId, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
+        [AreaConfig(Title = "افزودن کاربر جدید از جی سان", Icon = "fa-plus")]
+        [HttpPost]
+        public IActionResult CreateFromJson([FromForm] GlobalExcelFile input)
+        {
+            return Json(UserService.CreateForUserFromJson(input, HttpContext.GetLoginUser()?.UserId, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.WebsiteUrl));
+        }
+
         [AreaConfig(Title = "حذف کاربر", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)

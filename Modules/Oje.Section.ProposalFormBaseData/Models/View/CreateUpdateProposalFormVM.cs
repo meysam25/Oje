@@ -14,11 +14,14 @@ namespace Oje.Section.ProposalFormBaseData.Models.View
         [IgnoreStringEncode]
         public MyHtmlString jsonStr { get; set; }
         public string description { get; set; }
+        [IgnoreStringEncode]
+        public MyHtmlString termT { get; set; }
         public bool? isActive { get; set; }
         public int? siteSettingId { get; set; }
         public string ppfCatId_Title { get; set; }
         public string rules_address { get; set; }
         public IFormFile rules { get; set; }
+        public IFormFile conteractFile { get; set; }
         public ProposalFormType? type { get; set; }
 
     }

@@ -16,6 +16,7 @@ namespace Oje.ProposalFormService.Models.DB.Reports
             ProposalFilledFormUsers = new();
             FromUserProposalFilledFormUsers = new();
             UserRoles = new();
+            Childs = new();
         }
 
         [Key]
@@ -27,8 +28,13 @@ namespace Oje.ProposalFormService.Models.DB.Reports
         [Required, MaxLength(50)]
         public string Lastname { get; set; }
         public int? SiteSettingId { get; set; }
+        public long? ParentId { get; set; }
+        [ForeignKey("ParentId"), InverseProperty("Childs")]
+        public User Parent { get; set; }
 
 
+        [InverseProperty("Parent")]
+        public List<User> Childs { get; set; }
         [InverseProperty("User")]
         public List<ProposalFilledFormUser> ProposalFilledFormUsers { get; set; }
         [InverseProperty("FromUser")]

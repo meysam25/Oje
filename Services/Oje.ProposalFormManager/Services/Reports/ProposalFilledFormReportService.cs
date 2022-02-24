@@ -25,10 +25,26 @@ namespace Oje.ProposalFormService.Services.Reports
 
         IQueryable<ProposalFilledForm> getBaseQueiry(int? siteSettingId, long? userId)
         {
-            var allChildUserId = UserService.GetChildsUserId(userId.ToLongReturnZiro());
+            var allChildUserId = UserService.CanSeeAllItems(userId.ToLongReturnZiro());
             var resultObjQoury = db.ProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true);
-            if (allChildUserId != null)
-                resultObjQoury = resultObjQoury.Where(t => t.ProposalFilledFormUsers.Any(tt => allChildUserId.Contains(tt.UserId)));
+            resultObjQoury = resultObjQoury
+                .Where(t =>
+                    (
+                    allChildUserId == true ||
+                    t.ProposalFilledFormUsers.Any
+                     (tt => tt.UserId == userId ||
+                        tt.User.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId
+                     )
+                  )
+                );
             return resultObjQoury;
         }
 

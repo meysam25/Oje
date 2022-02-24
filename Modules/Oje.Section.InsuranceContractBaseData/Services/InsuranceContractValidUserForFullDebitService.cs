@@ -39,9 +39,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
 
-            CreateValidation(input, siteSettingId, loginUserId, userChilds);
+            CreateValidation(input, siteSettingId, loginUserId);
 
             db.Entry(new InsuranceContractValidUserForFullDebit()
             {
@@ -59,7 +58,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateValidation(CreateUpdateInsuranceContractValidUserForFullDebitVM input, int? siteSettingId, long? loginUserId, List<long> userChilds)
+        private void CreateValidation(CreateUpdateInsuranceContractValidUserForFullDebitVM input, int? siteSettingId, long? loginUserId)
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
@@ -69,7 +68,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (input.insuranceContractId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
-            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, userChilds))
+            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (string.IsNullOrEmpty(input.mobile))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
@@ -101,9 +100,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
-            var foundItem = db.InsuranceContractValidUserForFullDebits.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (userChilds == null || userChilds.Contains(t.CreateUserId))).FirstOrDefault();
+            var foundItem = db.InsuranceContractValidUserForFullDebits.Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractValidUserForFullDebit, User>(loginUserId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -117,10 +118,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
             return db.InsuranceContractValidUserForFullDebits
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (userChilds == null || userChilds.Contains(t.CreateUserId)))
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractValidUserForFullDebit, User>(loginUserId, canSeeAllItems)
                 .Select(t => new CreateUpdateInsuranceContractValidUserForFullDebitVM
                 {
                     countUse = t.CountUse,
@@ -139,9 +141,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 searchInput = new InsuranceContractValidUserForFullDebitMainGrid();
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
-            var qureResult = db.InsuranceContractValidUserForFullDebits.Where(t => t.SiteSettingId == siteSettingId && (userChilds == null || userChilds.Contains(t.CreateUserId)));
+            var qureResult = db.InsuranceContractValidUserForFullDebits.Where(t => t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractValidUserForFullDebit, User>(loginUserId, canSeeAllItems);
 
             if (searchInput.contract.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.InsuranceContractId == searchInput.contract);
@@ -155,7 +157,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (!string.IsNullOrEmpty(searchInput.createUser))
                 qureResult = qureResult.Where(t => (t.CreateUser.Firstname + " " + t.CreateUser.Lastname).Contains(searchInput.createUser));
-            if(!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
+            if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
             {
                 var targetDate = searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
                 qureResult = qureResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
@@ -199,11 +201,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            List<long> userChilds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
-            CreateValidation(input, siteSettingId, loginUserId, userChilds);
+            CreateValidation(input, siteSettingId, loginUserId);
 
-            var foundItem = db.InsuranceContractValidUserForFullDebits.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && (userChilds == null || userChilds.Contains(t.CreateUserId))).FirstOrDefault();
+            var foundItem = db.InsuranceContractValidUserForFullDebits.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractValidUserForFullDebit, User>(loginUserId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

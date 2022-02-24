@@ -27,7 +27,9 @@ namespace Oje.Section.Account
         {
             AccountConfig.Config(services);
 
-            services.BuildServiceProvider().GetService<ISectionService>().UpdateModuals();
+            var sBuilder = services.BuildServiceProvider();
+            sBuilder.GetService<ISectionService>().UpdateModuals();
+            sBuilder.GetService<IUserService>().SetFlagForGooglePointPerformanceProblem();
         }
     }
 }

@@ -73,9 +73,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
-            var foundItem = db.InsuranceContractTypes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
+            var foundItem = db.InsuranceContractTypes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -89,10 +91,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.ToIntReturnZiro());
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
             return db.InsuranceContractTypes
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)))
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
                 .Select(t => new CreateUpdateInsuranceContractTypeVM
                 {
                     id = t.Id,
@@ -107,15 +110,16 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 searchInput = new InsuranceContractTypeMainGrid();
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.Value);
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            var qureResult = db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
+            var qureResult = db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (!string.IsNullOrEmpty(searchInput.createUser))
                 qureResult = qureResult.Where(t => (t.CreateUser.Firstname + " " + t.CreateUser.Lastname).Contains(searchInput.createUser));
-            if(!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
+            if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
             {
                 DateTime targetDate = searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
                 qureResult = qureResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
@@ -156,10 +160,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, loginUserId, siteSettingId);
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            List<long> childUserIds = UserService.GetChildsUserId(loginUserId.Value);
-
-            var foundItem = db.InsuranceContractTypes.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId))).FirstOrDefault();
+            var foundItem = db.InsuranceContractTypes.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -178,20 +183,23 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var childUsers = UserService.GetChildsUserId(loginUserId.Value);
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId && (childUsers == null || childUsers.Contains(t.CreateUserId))).Select(t => new
-            {
-                id = t.Id,
-                title = t.Title
-            }).ToList());
+            result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title
+                }).ToList());
 
             return result;
         }
 
-        public bool Exist(int id, int? siteSettingId, List<long> childUserIds)
+        public bool Exist(int id, int? siteSettingId, long? loginUserId)
         {
-            return db.InsuranceContractTypes.Any(t => t.Id == id && t.SiteSettingId == siteSettingId && (childUserIds == null || childUserIds.Contains(t.CreateUserId)));
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
+            return db.InsuranceContractTypes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems).Any();
         }
     }
 }

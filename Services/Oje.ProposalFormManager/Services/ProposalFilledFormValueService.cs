@@ -48,7 +48,7 @@ namespace Oje.ProposalFormService.Services
                             ctrl.type == ctrlType.dropDown ||
                             ctrl.type == ctrlType.checkBox ||
                             ctrl.type == ctrlType.radio ||
-                            ctrl.type == ctrlType.persianDateTime
+                            ctrl.type == ctrlType.persianDateTime 
                         )
                         {
                             string currValue = "";

@@ -19,34 +19,35 @@ namespace Oje.Section.SalesNetworkBaseData.Services
     {
         readonly SalesNetworkBaseDataDBContext db = null;
         readonly Interfaces.IProposalFormService ProposalFormService = null;
-        readonly ISiteInfoService SiteInfoService = null;
         readonly IUserService UserService = null;
+        readonly ISiteSettingService SiteSettingService = null;
         public SalesNetworkService(
                 SalesNetworkBaseDataDBContext db,
-                ISiteInfoService SiteInfoService,
                 Interfaces.IProposalFormService ProposalFormService,
-                IUserService UserService
+                IUserService UserService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.db = db;
-            this.SiteInfoService = SiteInfoService;
             this.ProposalFormService = ProposalFormService;
             this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         public ApiResult Create(CreateUpdateSalesNetworkVM input)
         {
-            var siteInfo = SiteInfoService.GetInfo();
-            createValidation(input, siteInfo.siteSettingId, siteInfo.loginUserId, siteInfo.childUserIds);
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var loginUserId = UserService.GetLoginUser()?.UserId;
+            createValidation(input, siteSettingId, loginUserId);
 
             SalesNetwork newItem = new SalesNetwork()
             {
                 CalceType = input.calceType.Value,
                 CreateDate = DateTime.Now,
-                CreateUserId = siteInfo.loginUserId.Value,
+                CreateUserId = loginUserId.Value,
                 Description = input.description,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteInfo.siteSettingId.Value,
+                SiteSettingId = siteSettingId.Value,
                 Title = input.title,
                 Type = input.type.Value
             };
@@ -68,7 +69,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidation(CreateUpdateSalesNetworkVM input, int? siteSettingId, long? loginUserId, List<long> childUserIds)
+        private void createValidation(CreateUpdateSalesNetworkVM input, int? siteSettingId, long? loginUserId)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -94,20 +95,20 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_One_User);
-            if (!UserService.IsValidUser(input.userId.ToLongReturnZiro(), siteSettingId, childUserIds, RoleType.Marketer))
-                throw BException.GenerateNewException(BMessages.User_Not_Found);
             if (db.SalesNetworkMarketers.Any(t => t.SalesNetworkId == input.id && t.UserId == input.userId && t.ParentId != null))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
         public ApiResult Delete(int? id)
         {
-            var siteInfo = SiteInfoService.GetInfo();
-
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var loginUserId = UserService.GetLoginUser()?.UserId;
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
             var foundItem = db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
                 .Include(t => t.SalesNetworkProposalForms)
-                .Where(t => t.Id == id && t.SiteSettingId == siteInfo.siteSettingId && (siteInfo.childUserIds == null || siteInfo.childUserIds.Contains(t.CreateUserId)))
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
 
             if (foundItem == null)
@@ -121,12 +122,14 @@ namespace Oje.Section.SalesNetworkBaseData.Services
 
         public object GetById(int? id)
         {
-            var siteInfo = SiteInfoService.GetInfo();
-
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var loginUserId = UserService.GetLoginUser()?.UserId;
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
             return db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
                 .Include(t => t.SalesNetworkProposalForms)
-                .Where(t => t.Id == id && t.SiteSettingId == siteInfo.siteSettingId && (siteInfo.childUserIds == null || siteInfo.childUserIds.Contains(t.CreateUserId)))
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
                     userId = t.SalesNetworkMarketers.Where(tt => tt.ParentId == null).OrderBy(tt => t.Id).Select(t => t.UserId).FirstOrDefault(),
@@ -147,9 +150,11 @@ namespace Oje.Section.SalesNetworkBaseData.Services
         {
             if (searchInput == null)
                 searchInput = new SalesNetworkMainGrid();
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var loginUserId = UserService.GetLoginUser()?.UserId;
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            var siteInfo = SiteInfoService.GetInfo();
-            var qureResullt = db.SalesNetworks.Where(t => t.SiteSettingId == siteInfo.siteSettingId && (siteInfo.childUserIds == null || siteInfo.childUserIds.Contains(t.CreateUserId)));
+            var qureResullt = db.SalesNetworks.Where(t => t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResullt = qureResullt.Where(t => t.Title.Contains(searchInput.title));
@@ -209,14 +214,17 @@ namespace Oje.Section.SalesNetworkBaseData.Services
 
         public ApiResult Update(CreateUpdateSalesNetworkVM input)
         {
-            var siteInfo = SiteInfoService.GetInfo();
+            var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var loginUserId = UserService.GetLoginUser()?.UserId;
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            createValidation(input, siteInfo.siteSettingId, siteInfo.loginUserId, siteInfo.childUserIds);
+            createValidation(input, siteSettingId, loginUserId);
 
             var foundItem = db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
                 .Include(t => t.SalesNetworkProposalForms)
-                .Where(t => t.Id == input.id && t.SiteSettingId == siteInfo.siteSettingId && (siteInfo.childUserIds == null || siteInfo.childUserIds.Contains(t.CreateUserId)))
+                .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
 
             if (foundItem == null)
@@ -244,7 +252,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
 
             foundItem.CalceType = input.calceType.Value;
             foundItem.UpdateDate = DateTime.Now;
-            foundItem.UpdateUserId = siteInfo.loginUserId.Value;
+            foundItem.UpdateUserId = loginUserId.Value;
             foundItem.Description = input.description;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;

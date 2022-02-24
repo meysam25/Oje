@@ -49,8 +49,7 @@ namespace Oje.Section.Core.Areas.Controllers
 
             var loginUserId = HttpContext.GetLoginUser()?.UserId;
 
-            var allChildUserId = UserService.GetChildsUserId(loginUserId.ToLongReturnZiro());
-            var foundFile = UploadedFileService.GetFile(fn, loginUserId.ToLongReturnZiro(), allChildUserId);
+            var foundFile = UploadedFileService.GetFile(fn, loginUserId.ToLongReturnZiro());
             if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || string.IsNullOrEmpty(foundFile.FileContentType))
                 return Content("File Not Found");
 

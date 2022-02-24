@@ -16,12 +16,15 @@ namespace Oje.Section.ProposalFormBaseData.Models.View
         public string name { get; set; }
         [IgnoreStringEncode]
         public MyHtmlString jsonStr { get; set; }
+        [IgnoreStringEncode]
+        public MyHtmlString termT { get; set; }
         public string description { get; set; }
         public bool isActive { get; set; }
         public int? siteSettingId { get; set; }
         public int ppfCatId { get; set; }
         public string ppfCatId_Title { get; set; }
         public string rules_address { get; set; }
+        public string conteractFile_address { get; set; }
         public string type { get; set; }
     }
 }

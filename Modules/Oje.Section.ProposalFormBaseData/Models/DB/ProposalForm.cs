@@ -45,6 +45,10 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public DateTime? UpdateDate { get; set; }
         [MaxLength(100)]
         public string RulesFile { get; set; }
+        [MaxLength(100)]
+        public string ContractFile { get; set; }
+        [MaxLength(4000)]
+        public string TermTemplate { get; set; }
         public ProposalFormType? Type { get; set; }
         public int? SiteSettingId { get; set; }
         [ForeignKey("SiteSettingId")]

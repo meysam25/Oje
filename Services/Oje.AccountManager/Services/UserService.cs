@@ -15,6 +15,9 @@ using System.Linq;
 using Oje.AccountService.Services.EContext;
 using Oje.AccountService.Models.View;
 using Oje.FileService.Interfaces;
+using System.IO;
+using Newtonsoft.Json;
+using NetTopologySuite.Geometries;
 
 namespace Oje.AccountService.Services
 {
@@ -25,12 +28,18 @@ namespace Oje.AccountService.Services
         readonly IUploadedFileService uploadedFileService = null;
         readonly IRoleService RoleService = null;
         readonly ISiteSettingService SiteSettingService = null;
+        readonly IProvinceService ProvinceService = null;
+        readonly ICityService CityService = null;
+        readonly ICompanyService CompanyService = null;
         public UserService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor,
                 IUploadedFileService uploadedFileService,
                 IRoleService RoleService,
-                ISiteSettingService SiteSettingService
+                ISiteSettingService SiteSettingService,
+                IProvinceService ProvinceService,
+                ICityService CityService,
+                ICompanyService CompanyService
             )
         {
             this.db = db;
@@ -38,6 +47,9 @@ namespace Oje.AccountService.Services
             this.uploadedFileService = uploadedFileService;
             this.RoleService = RoleService;
             this.SiteSettingService = SiteSettingService;
+            this.CompanyService = CompanyService;
+            this.ProvinceService = ProvinceService;
+            this.CityService = CityService;
         }
 
         private void LoginValidation(LoginVM input)
@@ -51,6 +63,8 @@ namespace Oje.AccountService.Services
             //if (Captcha.ValidateCaptchaCode(input.sCode, input.sCodeGuid) == false)
             //    throw BException.GenerateNewException(BMessages.Invalid_Captcha, ApiResultErrorCode.InvalidCaptcha);
         }
+
+
 
         public ApiResult Login(LoginVM input, int? siteSettingId)
         {
@@ -541,16 +555,9 @@ namespace Oje.AccountService.Services
             return db.Users.Where(t => t.UserRoles.Any(tt => roleIds.Contains(tt.RoleId))).Select(t => t.Id).ToList();
         }
 
-        public List<long> GetChildsUserId(long userId)
+        public bool CanSeeAllItems(long userId)
         {
-            if (db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserRoles).Any(t => t.Role.DisabledOnlyMyStuff == true))
-                return null;
-            var childUserIds = db.ChildUserIds.FromSqlRaw<ChildUserId>("dbo.GetChildUserIds @userId = {0}", userId).ToList();
-
-            if (childUserIds != null && childUserIds.Count > 0)
-                return childUserIds.Select(t => t.Id).ToList();
-
-            return new List<long>() { userId };
+            return db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserRoles).Any(t => t.Role.DisabledOnlyMyStuff == true);
         }
 
         public ApiResult CreateForUser(CreateUpdateUserForUserVM input, long? loginUserId, LoginUserVM loginUserVM, int? siteSettingId)
@@ -585,6 +592,15 @@ namespace Oje.AccountService.Services
             newUser.InsuranceECode = input.insuranceECode;
             newUser.ProvinceId = input.provinceId;
             newUser.CityId = input.cityId;
+            newUser.MapLon = input.mapLon;
+            newUser.MapLat = input.mapLat;
+            newUser.MapZoom = input.mapZoom;
+            if (input.mapLon != null && input.mapLon != null)
+            {
+                newUser.MapLocation = new Point(input.mapLat.ToDoubleReturnNull().Value, input.mapLon.ToDoubleReturnNull().Value) { SRID = 4326 };
+                if (!newUser.MapLocation.IsValid)
+                    throw BException.GenerateNewException(BMessages.Validation_Error);
+            }
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -677,6 +693,10 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Dublicate_Electronic_Code, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.nationalCode) && db.Users.Any(t => t.Nationalcode == input.nationalCode && t.Id != input.id && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_NationalCode);
+            if (input.mapLat != null && (input.mapLat < -90 || input.mapLon > 90))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (input.mapLat != null && (input.mapLon < -90 || input.mapLon > 90))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
 
             var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
             foreach (var rid in input.roleIds)
@@ -690,8 +710,9 @@ namespace Oje.AccountService.Services
         public ApiResult DeleteForUser(long? id, LoginUserVM loginUserVM, int? siteSettingId)
         {
             MyValidations.SiteSettingValidation(loginUserVM?.siteSettingId, siteSettingId);
-            var childIds = GetChildsUserId(loginUserVM.UserId);
-            var foundItem = db.Users.Where(t => t.Id == id && (childIds == null || childIds.Contains(t.Id)) && t.SiteSettingId == siteSettingId).Include(t => t.UserRoles).FirstOrDefault();
+            var canSeeAllItem = CanSeeAllItems(loginUserVM.UserId);
+            long loginUserId = loginUserVM.UserId;
+            var foundItem = db.Users.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem).Include(t => t.UserRoles).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -719,8 +740,8 @@ namespace Oje.AccountService.Services
         public CreateUpdateUserForUserVM GetByIdForUser(long? id, LoginUserVM loginUserVM, int? siteSettingId)
         {
             MyValidations.SiteSettingValidation(loginUserVM?.siteSettingId, siteSettingId);
-            var childIds = GetChildsUserId(loginUserVM.UserId);
-            return db.Users.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (childIds == null || childIds.Contains(t.Id)))
+            var canSeeAllItem = CanSeeAllItems(loginUserVM.UserId);
+            return db.Users.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserVM.UserId, canSeeAllItem)
                 .OrderByDescending(t => t.Id)
                 .Select(t => new
                 {
@@ -748,8 +769,11 @@ namespace Oje.AccountService.Services
                     birthDate = t.BirthDate,
                     insuranceECode = t.InsuranceECode,
                     provinceId = t.ProvinceId,
-                    cityId = t.CityId
-
+                    cityId = t.CityId,
+                    t.MapZoom,
+                    t.MapLon,
+                    t.MapLat,
+                    t.MapLocation
                 })
                 .Take(1)
                 .ToList()
@@ -779,7 +803,10 @@ namespace Oje.AccountService.Services
                     birthDate = t.birthDate.ToFaDate(),
                     insuranceECode = t.insuranceECode,
                     provinceId = t.provinceId,
-                    cityId = t.cityId
+                    cityId = t.cityId,
+                    mapLat = t.MapLocation != null ? (decimal)t.MapLocation.X : null,
+                    mapLon = t.MapLocation != null ? (decimal)t.MapLocation.Y : null,
+                    mapZoom = t.MapZoom
                 })
                 .FirstOrDefault();
         }
@@ -788,14 +815,14 @@ namespace Oje.AccountService.Services
         {
             creatCreateForUserValidation(input, loginUserId, loginUserVM, siteSettingId);
             createForUserPasswordValidation2(input);
-            var childIds = GetChildsUserId(loginUserVM.UserId);
+            var canSeeAllItem = CanSeeAllItems(loginUserVM.UserId);
 
             using (var tr = db.Database.BeginTransaction())
             {
                 try
                 {
                     var foundItem = db.Users
-                        .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && (childIds == null || childIds.Contains(t.Id)))
+                        .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem)
                         .Include(t => t.UserRoles)
                         .Include(t => t.UserCompanies)
                         .FirstOrDefault();
@@ -825,6 +852,11 @@ namespace Oje.AccountService.Services
                     foundItem.InsuranceECode = input.insuranceECode;
                     foundItem.ProvinceId = input.provinceId;
                     foundItem.CityId = input.cityId;
+                    foundItem.MapLon = input.mapLon;
+                    foundItem.MapLat = input.mapLat;
+                    foundItem.MapZoom = input.mapZoom;
+                    if (input.mapLon != null && input.mapLon != null)
+                        foundItem.MapLocation = new Point(input.mapLat.ToDoubleReturnNull().Value, input.mapLon.ToDoubleReturnNull().Value) { SRID = 4326 };
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.Encrypt();
@@ -860,9 +892,12 @@ namespace Oje.AccountService.Services
                 searchInput = new UserServiceForUserMainGrid();
 
             MyValidations.SiteSettingValidation(loginUserVM?.siteSettingId, siteSettingId);
-            var childIds = GetChildsUserId(loginUserVM.UserId);
+            var canSeeAllItem = CanSeeAllItems(loginUserVM.UserId);
 
-            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && (childIds == null || childIds.Contains(t.Id)));
+            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId);
+
+            if (canSeeAllItem != true)
+                qureResult = qureResult.getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserVM?.UserId, canSeeAllItem);
 
             if (!string.IsNullOrEmpty(searchInput.fistname))
                 qureResult = qureResult.Where(t => t.Firstname.Contains(searchInput.fistname));
@@ -918,20 +953,23 @@ namespace Oje.AccountService.Services
             }).FirstOrDefault();
         }
 
-        public long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string email, string eCode, List<long?> childUserIds, int? siteSettingId)
+        public long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string email, string eCode, long? loginUserId, int? siteSettingId)
         {
+            var canSeeAllItem = CanSeeAllItems(loginUserId.ToLongReturnZiro());
             return db.Users
                 .Where(t =>
                     t.Nationalcode == nationalCode && t.Mobile == mobile && t.Email == email && t.InsuranceECode == eCode && t.SiteSettingId == siteSettingId &&
-                    t.CreateByUserId != null && (childUserIds == null || childUserIds.Contains(t.CreateByUserId)))
+                    t.CreateByUserId != null
+                    )
+                .getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem)
                 .Select(t => t.Id)
                 .FirstOrDefault();
         }
 
-        public void DeleteFlag(long userId, int? siteSettingId, List<long> childUserIds)
+        public void DeleteFlag(long userId, int? siteSettingId, long? loginUserId)
         {
-            List<long?> childUserIdsNull = childUserIds == null ? null : childUserIds.Select(t => t as long?).ToList();
-            var foundItem = db.Users.Where(t => t.Id == userId && t.SiteSettingId == siteSettingId && (childUserIdsNull == null || childUserIdsNull.Contains(t.CreateByUserId))).FirstOrDefault();
+            var canSeeAllItem = CanSeeAllItems(loginUserId.ToLongReturnZiro());
+            var foundItem = db.Users.Where(t => t.Id == userId && t.SiteSettingId == siteSettingId).getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.User_Not_Found);
 
@@ -953,11 +991,7 @@ namespace Oje.AccountService.Services
             List<object> result = new List<object>();
             long? loginUserId = GetLoginUser()?.UserId;
 
-            var si = new
-            {
-                childUserIds = GetChildsUserId(loginUserId.ToLongReturnZiro()),
-                siteSettingId = SiteSettingService.GetSiteSetting()?.Id
-            };
+            var canSeeAllItem = CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             var hasPagination = false;
             int take = 50;
@@ -967,14 +1001,12 @@ namespace Oje.AccountService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            int? siteSettingId = si.siteSettingId;
-            List<long?> childUserIds = null;
-            if (si.childUserIds != null)
-                childUserIds = si.childUserIds.Select(t => t as long?).ToList();
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.Users.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId && t.UserRoles.Any(tt => tt.Role.Type == rType));
-            if (childUserIds != null)
-                qureResult = qureResult.Where(t => childUserIds.Contains(t.CreateByUserId));
+
+            if (canSeeAllItem != true)
+                qureResult = qureResult.getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => (t.Firstname + " " + t.Lastname).Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
@@ -986,19 +1018,23 @@ namespace Oje.AccountService.Services
             return new { results = result, pagination = new { more = hasPagination } };
         }
 
-        public object GetSelect2ListByPPFAndCompanyId(Select2SearchVM searchInput, int? siteSettingId, int proposalFormId, int companyId, ProvinceAndCityVM provinceAndCityInput)
+        public object GetSelect2ListByPPFAndCompanyId(Select2SearchVM searchInput, int? siteSettingId, int proposalFormId, int companyId, ProvinceAndCityVM provinceAndCityInput, string mapLat, string mapLon)
         {
             List<object> result = new List<object>();
 
             var hasPagination = false;
-            int take = 50;
+            int take = 5;
+            Point gm = null;
 
             if (searchInput == null)
                 searchInput = new Select2SearchVM();
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Users.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId && !t.UserRoles.Any(tt => tt.Role.Name == "user") && t.IsActive == true && t.IsDelete != true);
+            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.IsDelete != true);
+
+
+
 
             if (companyId > 0)
                 qureResult = qureResult.Where(t => t.UserCompanies.Any(tt => tt.CompanyId == companyId));
@@ -1011,11 +1047,40 @@ namespace Oje.AccountService.Services
 
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + t.Address + ")"))).Contains(searchInput.search));
-            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
-            if (qureResult.Count() >= 50)
-                hasPagination = true;
 
-            result.AddRange(qureResult.Select(t => new { id = t.Id, text = (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + t.Address + ")"))) }).ToList());
+            //if (qureResult.Count() >= take)
+            //    hasPagination = false;
+
+            if (!string.IsNullOrEmpty(mapLat) && !string.IsNullOrEmpty(mapLon) && mapLat.ToDoubleReturnNull() != null && mapLon.ToDoubleReturnNull() != null)
+            {
+                var x = mapLat.ToDoubleReturnNull().Value;
+                var y = mapLon.ToDoubleReturnNull().Value;
+                if (x < 90 && x > -90 && y < 90 && y > -90)
+                {
+                    gm = new Point(x, y) { SRID = 4326 };
+                    qureResult = qureResult.Where(t => t.MapLocation != null).OrderBy(t => t.MapLocation.Distance(gm));
+                }
+            }
+
+            qureResult = qureResult.Take(take);
+
+            var tempResult = qureResult.Select(t => new
+            {
+                t.Id,
+                t.Firstname,
+                t.Lastname,
+                t.Address,
+                t.MapLocation,
+                d = gm != null ? t.MapLocation.Distance(gm) : 0
+            }).ToList();
+
+            result.AddRange(tempResult.Select(t => new
+            {
+                id = t.Id,
+                text = (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + t.Address + ")")) + (gm == null ? "" : "-(" + (Convert.ToInt32(t.d)) + " متر)")),
+                mapLat = t.MapLocation != null ? t.MapLocation.X : 0,
+                mapLng = t.MapLocation != null ? t.MapLocation.Y : 0,
+            }).ToList()); ;
 
             return new { results = result, pagination = new { more = hasPagination } };
         }
@@ -1089,7 +1154,7 @@ namespace Oje.AccountService.Services
         {
             return db.Users
                 .Where(t => t.Id == userId)
-                .Select(t => new 
+                .Select(t => new
                 {
                     tell = t.Tell,
                     add = t.Address,
@@ -1097,6 +1162,136 @@ namespace Oje.AccountService.Services
                     mob = t.Mobile
                 })
                 .FirstOrDefault();
+        }
+
+        public object CreateForUserFromJson(GlobalExcelFile input, long? userId, LoginUserVM loginUserVM, int? siteSettingId, string websiteUrl)
+        {
+            string resultText = "";
+
+            var excelFile = input?.excelFile;
+
+            if (excelFile == null || excelFile.Length == 0)
+                return ApiResult.GenerateNewResult(false, BMessages.Please_Select_File);
+
+            string tempStr = "";
+            using (var reader = new StreamReader(input.excelFile.OpenReadStream()))
+            {
+                tempStr = reader.ReadToEnd();
+            }
+
+            List<JsonAgentVM> models = null;
+            try
+            {
+                models = JsonConvert.DeserializeObject<List<JsonAgentVM>>(tempStr);
+            }
+            catch
+            {
+
+            }
+            if (models != null && models.Count > 0)
+            {
+                for (var i = 0; i < models.Count; i++)
+                {
+                    var model = models[i];
+                    var pass = RandomService.GeneratePassword(20);
+                    string companyTitle = JsonAgentVM.getCompanyTitle(model.CmpCod + "");
+                    var foundCompany = CompanyService.GetBy(companyTitle);
+                    try
+                    {
+                        if (foundCompany == null)
+                            throw BException.GenerateNewException(BMessages.No_Company_Exist);
+
+                        int roleId = RoleService.CreateOrGetRole("نماینده", "agent", 1000);
+
+                        var restNumber = "";
+                        if (!string.IsNullOrWhiteSpace(model.Tel))
+                        {
+                            if (model.Tel.Length > 9)
+                                restNumber = model.Tel.Substring(0, 9);
+                            else
+                                restNumber = model.Tel.Substring(0, model.Tel.Length - 1);
+                        }
+                        if (restNumber.Length < 9)
+                            restNumber = restNumber + RandomService.GenerateRandomNumber(9 - restNumber.Length);
+                        var provinceId = ProvinceService.GetBy(model.PrvnNam.Replace("ي", "ی"));
+                        var cityId = CityService.GetIdBy(model.CtyName.Replace("ي", "ی"));
+
+                        if (provinceId > 0 && cityId <= 0)
+                            cityId = CityService.Create(provinceId, model.CtyName.Replace("ي", "ی"), true);
+
+                        CreateForUser(new CreateUpdateUserForUserVM()
+                        {
+                            username = model.Tel,
+                            firstname = !string.IsNullOrEmpty(model.AgentFullName) && model.AgentFullName.IndexOf(" ") > -1 ? model.AgentFullName.Split(' ')[0].Trim() : "",
+                            lastname = !string.IsNullOrEmpty(model.AgentFullName) && model.AgentFullName.IndexOf(" ") > -1 ? model.AgentFullName.Replace(model.AgentFullName.Split(' ')[0], "").Trim() : "",
+                            email = "agent" + foundCompany.Name + model.mapAgnc + "@" + websiteUrl,
+                            mobile = "09" + restNumber,
+                            password = pass,
+                            confirmPassword = pass,
+                            tell = model.Tel,
+                            agentCode = model.mapAgnc.ToLongReturnZiro() > 0 ? model.mapAgnc.ToLongReturnZiro() : null,
+                            companyTitle = "نماینده شرکت " + companyTitle,
+                            isActive = true,
+                            provinceId = ProvinceService.GetBy(model.PrvnNam.Replace("ي", "ی")),
+                            cityId = CityService.GetIdBy(model.CtyName.Replace("ي", "ی")),
+                            address = model.Adress,
+                            cIds = new List<int>() { foundCompany.Id },
+                            roleIds = new List<int>() { roleId },
+                            mapLat = model.Lat.ToDecimalZiro(),
+                            mapLon = model.Lng.ToDecimalZiro(),
+                            mapZoom = model.Zoom.ToByteReturnZiro()
+                        }, userId, loginUserVM, siteSettingId);
+
+                    }
+                    catch (BException be)
+                    {
+                        resultText += "ردیف " + (i + 1) + " " + be.Message + Environment.NewLine;
+                    }
+                    catch (Exception e)
+                    {
+                        resultText += "ردیف " + (i + 1) + " " + "خطای نامشخص " + e.Message + Environment.NewLine;
+                    }
+                }
+            }
+            else
+            {
+                return ApiResult.GenerateNewResult(false, BMessages.No_Row_Detected);
+            }
+
+            return ApiResult.GenerateNewResult(
+                    true,
+                    (string.IsNullOrEmpty(resultText) ? BMessages.Operation_Was_Successfull : BMessages.Some_Operation_Was_Successfull),
+                    resultText,
+                    string.IsNullOrEmpty(resultText) ? null : "reportResult.txt"
+                );
+        }
+
+        public void CreateTempTable()
+        {
+            db.Database.ExecuteSqlRaw("IF OBJECT_ID(N'tempdb..##tempUserParentChild') IS NOT NULL BEGIN DROP TABLE ##tempUserParentChild END select * into ##tempUserParentChild from  [UserParentChild]");
+        }
+
+        public void SetFlagForGooglePointPerformanceProblem()
+        {
+            db.Database.ExecuteSqlRaw("DBCC TRACEON (4326);DBCC TRACESTATUS;");
+        }
+
+        public void TsetRemoveMe()
+        {
+            var allUsers = db.Users.ToList();
+            foreach (var user in allUsers)
+            {
+                if (user.MapLat != null && user.MapLon != null)
+                {
+                    var gm = new Point(Convert.ToDouble(user.MapLat.Value), Convert.ToDouble(user.MapLon)) { SRID = 4326 };
+                    if (gm.IsValid)
+                    {
+                        user.MapLocation = gm;
+                        user.UpdateDate = DateTime.Now;
+                    }
+                }
+            }
+            db.SaveChanges();
         }
     }
 }

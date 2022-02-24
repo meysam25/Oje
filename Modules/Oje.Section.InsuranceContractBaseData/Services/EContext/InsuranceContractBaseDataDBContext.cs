@@ -25,5 +25,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services.EContext
         public DbSet<InsuranceContract> InsuranceContracts { get; set; }
         public DbSet<InsuranceContractValidUserForFullDebit> InsuranceContractValidUserForFullDebits { get; set; }
         public DbSet<InsuranceContractUser> InsuranceContractUsers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

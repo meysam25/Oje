@@ -9,5 +9,6 @@ namespace Oje.AccountService.Interfaces
     public interface IProvinceService
     {
         object GetLightList();
+        int? GetBy(string title);
     }
 }

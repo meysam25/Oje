@@ -25,9 +25,25 @@ namespace Oje.ProposalFormService.Services
 
         public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId)
         {
-            var allChildUserId = UserService.GetChildsUserId(userId.ToLongReturnZiro());
+            var allChildUserId = UserService.CanSeeAllItems(userId.ToLongReturnZiro());
             return db.ProposalFilledForms
-                .Where(t => t.IsDelete != true && t.SiteSettingId == siteSettingId && (allChildUserId == null || t.ProposalFilledFormUsers.Any(tt => allChildUserId.Contains(tt.UserId))));
+                .Where(t => t.IsDelete != true && t.SiteSettingId == siteSettingId &&
+                (
+                    allChildUserId == true || 
+                    t.ProposalFilledFormUsers.Any
+                     (tt => tt.UserId == userId || 
+                        tt.User.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId ||
+                        tt.User.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Id == userId
+                     )
+                )
+                );
         }
 
         public string getControllerNameByStatus(ProposalFilledFormStatus status)

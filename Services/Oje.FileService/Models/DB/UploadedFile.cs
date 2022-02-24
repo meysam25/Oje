@@ -1,19 +1,14 @@
 ﻿using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Microsoft.AspNetCore.StaticFiles;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Interfac;
 
 namespace Oje.FileService.Models.DB
 {
     [Table("UploadedFiles")]
-    public class UploadedFile
+    public class UploadedFile: EntityWithCreateByUser<User, long>
     {
         [Key]
         public long Id { get; set; }
@@ -22,6 +17,8 @@ namespace Oje.FileService.Models.DB
         public string FileName { get; set; }
         public FileType FileType { get; set; }
         public long? CreateByUserId { get; set; }
+        [ForeignKey("CreateByUserId"), InverseProperty("UploadedFiles")]
+        public User CreateByUser { get; set; }
         public bool? IsFileAccessRequired { get; set; }
         public long? ObjectId { get; set; }
         [MaxLength(50)]
