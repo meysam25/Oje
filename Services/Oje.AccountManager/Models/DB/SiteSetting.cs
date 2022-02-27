@@ -36,6 +36,8 @@ namespace Oje.AccountService.Models.DB
         public string Image192 { get; set; }
         [MaxLength(200)]
         public string Image512 { get; set; }
+        [MaxLength(200)]
+        public string ImageText { get; set; }
 
         [InverseProperty("SiteSetting")]
         public List<Role> Roles { get; set; }

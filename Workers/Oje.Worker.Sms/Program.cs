@@ -11,8 +11,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         GlobalConfig.Configuration = hostContext.Configuration;
-        services.AddScoped<IHttpContextAccessor, FakeIHttpContextAccessor>();
-        SmsConfig.Config(services);
+        services.AddSingleton<IHttpContextAccessor, FakeIHttpContextAccessor>();
+        SmsConfig.ConfigForWorker(services);
         services.AddHostedService<Worker>();
     })
     .Build();

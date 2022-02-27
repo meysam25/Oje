@@ -474,5 +474,10 @@ namespace Oje.AccountService.Services
         {
             return db.UserRoles.Any(t => loginUserId == t.UserId && t.Role.Name.ToLower() == roleName.ToLower());
         }
+
+        public List<int> GetRoleIdsByProposalFormId(int proposalFormId)
+        {
+            return db.Roles.Where(t => t.RoleProposalForms.Any(tt => tt.ProposalFormId == proposalFormId)).Select(t => t.Id).ToList();
+        }
     }
 }

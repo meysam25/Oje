@@ -29,6 +29,26 @@ namespace Oje.Sms
             cacheServices = services;
         }
 
+        public static void ConfigForWorker(IServiceCollection services)
+        {
+            services.AddHttpClient();
+
+            services.AddDbContext<SmsDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+
+            services.AddSingleton<ISmsConfigService, SmsConfigService>();
+            services.AddSingleton<ISmsTrigerService, SmsTrigerService>();
+            services.AddSingleton<ISmsTemplateService, SmsTemplateService>();
+            services.AddSingleton<ISmsSendingQueueService, SmsSendingQueueService>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IRoleService, RoleService>();
+            services.AddSingleton<IMagfaSMSSenderService, MagfaSMSSenderService>();
+            services.AddSingleton<ISmsSenderService, SmsSenderService>();
+            services.AddSingleton<ISmsSendingQueueErrorService, SmsSendingQueueErrorService>();
+            services.AddSingleton<ISmsValidationHistoryService, SmsValidationHistoryService>();
+
+            cacheServices = services;
+        }
+
         public static IServiceCollection cacheServices { get; set; }
     }
 }

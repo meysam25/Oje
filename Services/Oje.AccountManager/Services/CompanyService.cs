@@ -39,5 +39,10 @@ namespace Oje.AccountService.Services
 
             return result;
         }
+
+        public string GetTitle(int id)
+        {
+            return db.Companies.Where(t => t.Id == id).Select(t => t.Title).FirstOrDefault();
+        }
     }
 }

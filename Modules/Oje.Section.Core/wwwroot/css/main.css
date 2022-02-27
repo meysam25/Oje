@@ -803,11 +803,14 @@ input[type=checkbox] + label, input[type=checkbox] {
     width:100%;
 }
 .jq-toast-wrap{
-    display:none !important;
+    width:calc(100vw - 50px);
 }
+    .jq-toast-wrap h2 {
+        display:none;
+    }
 
-@media (max-width: 400px) {
-    .select2-selection__rendered {
+    @media (max-width: 400px) {
+        .select2-selection__rendered {
         white-space: unset !important;
         height: 36px !important;
     }

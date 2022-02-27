@@ -1,4 +1,4 @@
-
+﻿
 @font-face {
     font-family: Vazir;
     src: url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.eot');
@@ -51,8 +51,8 @@ body {
         background: url("/Modules/Assets/MainPage/bgp.png");
         margin-right: 0px !important;
         margin-left: 0px !important;
-        width: 100vw;
-        overflow-x: hidden;
+        width: 100%;
+        overflow: hidden;
     }
 
         .wrapper > main > div > section {
@@ -86,7 +86,7 @@ body {
     }
 
 .myContainerEffect1Active {
-    max-height: 600px;
+    max-height: 1500px;
     margin-top: 0px;
 }
 
@@ -114,15 +114,16 @@ body {
         -webkit-text-decoration: none;
         text-decoration: none;
     }
+
         .mainHeaderCompanyName > a:hover {
             -webkit-text-decoration: none;
             text-decoration: none;
         }
 
-        .mainHeaderIranLogo, .mainHeaderElectronDevelopLogo {
-            float: left;
-            margin-left:5px;
-        }
+.mainHeaderIranLogo, .mainHeaderElectronDevelopLogo {
+    float: left;
+    margin-left: 5px;
+}
 
 .topHeader:after {
     content: ' ';
@@ -188,7 +189,7 @@ body {
     transition: opacity 0.4s, max-height 0.4s;
     opacity: 0;
     z-index: 3;
-    border-bottom:1px solid silver;
+    border-bottom: 1px solid silver;
 }
 
 .headerMenuItemHasArrow:after {
@@ -314,6 +315,10 @@ body {
     border-bottom: 1px solid #e5e5e5;
 }
 
+    .footerSection:last-child {
+        border-bottom: none;
+    }
+
 .footerSharingAndCopyRightSection {
     display: flex;
     -ms-flex-direction: row;
@@ -323,6 +328,10 @@ body {
     -webkit-align-items: center;
     align-items: center;
 }
+
+    .footerSharingAndCopyRightSection > div {
+        padding-bottom: 20px;
+    }
 
 .footerSharingIconSection {
     text-align: left;
@@ -379,15 +388,16 @@ body {
     text-decoration: none;
     padding-top: 10px;
 }
+
     .leftFooterLink:hover {
         -webkit-text-decoration: none;
         text-decoration: none;
     }
 
-    .footerAboutUsTellNumber {
-        color: #2b2f33;
-        margin-bottom: 10px;
-    }
+.footerAboutUsTellNumber {
+    color: #2b2f33;
+    margin-bottom: 10px;
+}
 
     .footerAboutUsTellNumber > span {
         display: inline-block;
@@ -527,14 +537,14 @@ body {
     font-size: 1.5em;
     color: black;
     display: block;
-    padding-bottom:15px;
+    padding-bottom: 15px;
 }
 
 .footerNavGroupItemsItem {
     color: #3d4145;
     display: block;
     cursor: pointer;
-    padding-bottom:7px;
+    padding-bottom: 7px;
 }
 
     .footerNavGroupItemsItem:hover {
@@ -612,6 +622,7 @@ body {
     .footerDownloadAppButton > img {
         vertical-align: -6px;
     }
+
 .rigAndLogIcon {
     margin-left: 10px;
     vertical-align: -4px;
@@ -619,6 +630,7 @@ body {
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
 }
+
 .readMoreButton {
     color: #0077db;
     cursor: pointer;
@@ -704,6 +716,36 @@ body {
     left: 0px;
     width: 100%;
     background-color: white;
+}
+
+.floatingTopSectionMakeFloat {
+    position: fixed !important;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 4;
+}
+
+.removeInquirySectionMarginTop {
+    margin-top: 105px !important;
+    -moz-transition: 0s;
+    -o-transition: 0s;
+    -webkit-transition: 0s;
+    transition: 0s;
+    background-color: white;
+}
+
+    .removeInquirySectionMarginTop .inquirySection {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        -moz-transition: 0s;
+        -o-transition: 0s;
+        -webkit-transition: 0s;
+        transition: 0s;
+    }
+
+.makeZIndex5 {
+    z-index: 5 !important;
 }
 
 .plaqueLeftPart > div:nth-child(2n) {
@@ -887,6 +929,19 @@ body {
         box-sizing: content-box;
     }
 
+.topHeaderMobile {
+    display: none;
+    margin: 0px !important;
+}
+
+    .topHeaderMobile > .myContainer {
+        text-align: center;
+    }
+
+.footerCenterSection {
+    display: none;
+}
+
 
 
 @media (max-width: 380px) {
@@ -956,20 +1011,77 @@ body {
     }
 
     .footerSharingAndCopyRightSection {
-        -ms-flex-direction: column;
-        -webkit-flex-direction: column;
-        flex-direction: column;
+        -ms-flex-direction: column-reverse;
+        -webkit-flex-direction: column-reverse;
+        flex-direction: column-reverse;
     }
 
     section {
         margin: 20px 5px !important;
+    }
+
+    .footerTextSiteLogo {
+        display: none;
+    }
+
+    .footerCenterSection {
+        display: block;
+    }
+
+    .footerNavMenue {
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        text-align:right !important;
+        padding:10px;
+        padding-top:0px;
+        text-align:right;
+    }
+    .footerNavGroupItems {
+        max-height: 30px;
+        overflow: hidden;
+        cursor: pointer;
+        -moz-transition: 0.3s;
+        -o-transition: 0.3s;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+        margin-top:20px;
+        margin-bottom:15px;
+        position:relative;
+    }
+        .footerNavGroupItems:before {
+            content: "";
+            font-family: 'Font Awesome 5 Pro';
+            position:absolute;
+            left: 0px;
+            top: -6px;
+            font-size: 2em;
+        }
+        .footerNavGroupItemsOpen {
+            max-height:500px;
+        }
+            .footerNavGroupItemsOpen:before {
+                content: "";
+            }
+    .footerNavGroupItemsTitle{
+        padding-left:20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .topHeader {
+        display: none;
+    }
+
+    .topHeaderMobile {
+        display: block;
     }
 }
 
 @media (min-width: 850px) {
     .headerMenuItem:hover .headerMenuItemSumMenuItems {
         height: auto;
-        top:63px;
+        top: 63px;
         opacity: 1;
     }
 }
@@ -1041,13 +1153,15 @@ body {
         line-height: 10px;
         padding-right: 20px;
     }
-    .closeSubMenuItemButton{
-        font-size:1.5em;
-        vertical-align:-6px;
-        margin-left:10px;
+
+    .closeSubMenuItemButton {
+        font-size: 1.5em;
+        vertical-align: -6px;
+        margin-left: 10px;
     }
+
     .headerMenuItem:not(.closeHoverMenu):hover .headerMenuItemSumMenuItems {
-        height: calc( 100vh - 200px);
+        height: 100vh;
         opacity: 1;
     }
 
@@ -1142,6 +1256,7 @@ body {
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     cursor: pointer;
+    text-align:left;
 }
 
 .logedInUserMenuItems {
@@ -1185,6 +1300,15 @@ body {
         border-bottom: none;
     }
 
-    .btn {
-        line-height:25px !important;
-    }
+.btn {
+    line-height: 25px !important;
+}
+
+.noPadding {
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.footerSection:last-child {
+    margin-bottom: 0px !important;
+}

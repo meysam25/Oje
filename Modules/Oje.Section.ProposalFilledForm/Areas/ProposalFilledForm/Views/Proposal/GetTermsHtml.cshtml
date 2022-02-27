@@ -26,7 +26,7 @@
             {
                 <div>
                     @{
-                        ViewContext.Writer.Write((ViewBag.HtmlTemplate + "").Replace("{{date}}", DateTime.Now.ToFaDate()).Replace("{{time}}", DateTime.Now.ToString("HH:mm")));
+                        ViewContext.Writer.Write((ViewBag.HtmlTemplate + "").Replace("{{company}}",ViewBag.companyTitle).Replace("{{date}}", DateTime.Now.ToFaDate()).Replace("{{time}}", DateTime.Now.ToString("HH:mm")));
                     }
                 </div>
             }

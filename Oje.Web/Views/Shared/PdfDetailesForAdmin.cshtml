@@ -118,7 +118,7 @@
     }
  
     <div class="pdfFooterSection">
-        <div>محل امضا بیمه گزار (@(Model.createUserFullname))</div>
+        <div>محل امضا بیمه گزار @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : ""))</div>
     </div>
 
     @{

@@ -1039,7 +1039,12 @@ namespace Oje.AccountService.Services
             if (companyId > 0)
                 qureResult = qureResult.Where(t => t.UserCompanies.Any(tt => tt.CompanyId == companyId));
             if (proposalFormId > 0)
-                qureResult = qureResult.Where(t => t.UserRoles.Any(tt => tt.Role.RoleProposalForms.Any(ttt => ttt.ProposalFormId == proposalFormId)));
+            {
+                var ppfRoleId = RoleService.GetRoleIdsByProposalFormId(proposalFormId);
+                if (ppfRoleId != null && ppfRoleId.Count > 0)
+                    qureResult = qureResult.Where(t => t.UserRoles.Any(tt => ppfRoleId.Contains(tt.RoleId)));
+
+            }
             if (provinceAndCityInput != null && provinceAndCityInput.provinceId.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.ProvinceId == provinceAndCityInput.provinceId);
             if (provinceAndCityInput != null && provinceAndCityInput.cityId.ToIntReturnZiro() > 0)
@@ -1067,6 +1072,8 @@ namespace Oje.AccountService.Services
             var tempResult = qureResult.Select(t => new
             {
                 t.Id,
+                t.AgentCode,
+                t.Tell,
                 t.Firstname,
                 t.Lastname,
                 t.Address,
@@ -1074,10 +1081,19 @@ namespace Oje.AccountService.Services
                 d = gm != null ? t.MapLocation.Distance(gm) : 0
             }).ToList();
 
+            string companyTitle = "";
+
+            if (companyId.ToIntReturnZiro() > 0)
+            {
+                var foundCompanyTitle = CompanyService.GetTitle(companyId.ToIntReturnZiro());
+                if (!string.IsNullOrEmpty(foundCompanyTitle))
+                    companyTitle = "نمایندگی " + foundCompanyTitle + " ";
+            }
+
             result.AddRange(tempResult.Select(t => new
             {
                 id = t.Id,
-                text = (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + t.Address + ")")) + (gm == null ? "" : "-(" + (Convert.ToInt32(t.d)) + " متر)")),
+                text = companyTitle + " با کد " + t.AgentCode + " " + (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.d)) + " متر فاصله با شما)")),
                 mapLat = t.MapLocation != null ? t.MapLocation.X : 0,
                 mapLng = t.MapLocation != null ? t.MapLocation.Y : 0,
             }).ToList()); ;

@@ -144,6 +144,13 @@
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "امن"
             },
+
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "seo",
+              "type": "textarea",
+              "label": "توضیحات سه او صفحه اصلی"
+            },
             {
               "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
               "name": "minPic",
@@ -152,10 +159,11 @@
               "acceptEx": ".jpg,.png,.jpeg"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "seo",
-              "type": "textarea",
-              "label": "توضیحات سه او صفحه اصلی"
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "textPic",
+              "type": "file",
+              "label": "لوگوی متنی(300 * 113)",
+              "acceptEx": ".jpg,.png,.jpeg"
             }
           ],
           "actions": [
@@ -229,6 +237,13 @@
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "امن"
             },
+
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "seo",
+              "type": "textarea",
+              "label": "توضیحات سه او صفحه اصلی"
+            },
             {
               "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
               "name": "minPic",
@@ -237,10 +252,11 @@
               "acceptEx": ".jpg,.png,.jpeg"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "seo",
-              "type": "textarea",
-              "label": "توضیحات سه او صفحه اصلی"
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "textPic",
+              "type": "file",
+              "label": "لوگوی متنی(300 * 113)",
+              "acceptEx": ".jpg,.png,.jpeg"
             }
           ],
           "actions": [

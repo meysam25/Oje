@@ -1,6 +1,7 @@
 ﻿{
   "panels": [
     {
+      "class": "noPadding",
       "moduals": [
         {
           "id": "loginForgetPasswordModal",

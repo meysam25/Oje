@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Oje.Infrastructure
+@{
     Layout = "_WebLayout";
 }
 
@@ -9,57 +10,64 @@
 }
 
 @section Styles {
-<link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz" />
+<link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
 
 }
 
-<div class="myContainer">
-    <section class="inquirySection animationOnScroll animationOnScrollOpacity">
-        <div class="inquirySectionTab">
-            <div class="inquirySectionTabHeaderItems">
-                <div data-json-url="/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner ">
-                        <img data-src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
-                        <div>بیمه شخص ثالث خودرو</div>
+<div id="holderInquirySection">
+    <div class="myContainer">
+        <section class="inquirySection animationOnScroll animationOnScrollOpacity">
+            <div class="inquirySectionTab">
+                <div class="inquirySectionTabHeaderItems">
+                    <div data-json-url="/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
+                        <div class="inquirySectionTabHeaderItemInner ">
+                            <img data-src="/Modules/Assets/MainPage/salecIcon.png" width="64" height="64" title="ای کن استعلام ثالث" />
+                            <div>بیمه شخص ثالث خودرو</div>
+                        </div>
+                    </div>
+                    <div data-json-url="/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
+                        <div class="inquirySectionTabHeaderItemInner">
+                            <img data-src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
+                            <div>بیمه بدنه خودرو</div>
+                        </div>
+                    </div>
+                    <div data-json-url="/ProposalFormInquiries/FireInsurance/GetJsonConfig" class="inquirySectionTabHeaderItem">
+                        <div class="inquirySectionTabHeaderItemInner">
+                            <img data-src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
+                            <div>بیمه آتش سوزی منازل</div>
+                        </div>
+                    </div>
+                    <div data-json-url="/Home/GetOtherInsuranceConfig" class="inquirySectionTabHeaderItem">
+                        <div class="inquirySectionTabHeaderItemInner">
+                            <img data-src="/Modules/Assets/MainPage/form.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
+                            <div>سایر بیمه نامه ها</div>
+                        </div>
                     </div>
                 </div>
-                <div data-json-url="/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/badane.png" width="64" height="64" title="ای کن استعلام بدنه" />
-                        <div>بیمه بدنه خودرو</div>
-                    </div>
-                </div>
-                <div data-json-url="/ProposalFormInquiries/FireInsurance/GetJsonConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/atashsozi.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
-                        <div>بیمه آتش سوزی منازل</div>
-                    </div>
-                </div>
-                <div data-json-url="/Home/GetOtherInsuranceConfig" class="inquirySectionTabHeaderItem">
-                    <div class="inquirySectionTabHeaderItemInner">
-                        <img data-src="/Modules/Assets/MainPage/form.png" width="64" height="64" title="ای کن استعلام آتش سوزی" />
-                        <div>سایر بیمه نامه ها</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="inquirySectionTabBodyItems">
-                <div class="inquirySectionTabBodyItem ">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
-                </div>
-                <div class="inquirySectionTabBodyItem">
+                <div class="inquirySectionTabBodyItems">
+                    <div class="inquirySectionTabBodyItem ">
+                    </div>
+                    <div class="inquirySectionTabBodyItem">
+                    </div>
+                    <div class="inquirySectionTabBodyItem">
+                    </div>
+                    <div class="inquirySectionTabBodyItem">
+                    </div>
+                    <div class="inquirySectionTabBodyItem">
+                    </div>
+                    <div class="inquirySectionTabBodyItem">
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </div>
+<div id="holderInquirySectionDestination"></div>
+<script>
+    if($(document).width() <= 650)
+        $('#holderInquirySection').initFloatingTop('holderInquirySectionDestination', 'removeInquirySectionMarginTop');
+</script>
 @*<div class="myContainer">
     <section class="setadbimePlusSection animationOnScroll animationOnScrollMarginTop">
     <div class="setadbimePlusSectionInner">
@@ -103,7 +111,7 @@
         </div>
         <div class="quickAccessSectionTabCharts">
             <div class="tabCtrl">
-                <div  class="holderTabHeaderItems">
+                <div class="holderTabHeaderItems">
                     <div class="TabHeaderItem TabHeaderItemActive">
                         <div>فروش ماهانه</div>
                     </div>
@@ -137,7 +145,6 @@
         <div class="aboutUsSectionTitle"><div style="text-align:center;padding-top:15px;"><div class="ourPrideSectionTitle"><span></span></div></div></div>
         <div class="aboutUsSectionSubTitle"></div>
         <div class="aboutUsSectionDescription">
-            
         </div>
         <div class="aboutUsSectionAbilityIcons">
             <div class="aboutUsSectionAbilityIcon">
@@ -145,11 +152,11 @@
                 <div></div>
             </div>
             <div class="aboutUsSectionAbilityIcon">
-                <img  width="80" height="80" />
+                <img width="80" height="80" />
                 <div></div>
             </div>
             <div class="aboutUsSectionAbilityIcon">
-                <img  width="80" height="80" />
+                <img width="80" height="80" />
                 <div></div>
             </div>
         </div>
@@ -175,19 +182,16 @@
             <div class="ourPrideSectionItem">
                 <img width="80" height="80" data-src="/Modules/Assets/MainPage/users.png" />
                 <div>
-                   
                 </div>
             </div>
             <div class="ourPrideSectionItem">
                 <img width="80" height="80" data-src="/Modules/Assets/MainPage/property.png" />
                 <div>
-                   
                 </div>
             </div>
             <div class="ourPrideSectionItem">
                 <img width="80" height="80" data-src="/Modules/Assets/MainPage/branch.png" />
                 <div>
-                   
                 </div>
             </div>
         </div>
@@ -196,7 +200,7 @@
 <div id="reminderSection" class="myContainer">
     <section class="reminderSection animationOnScroll animationOnScrollOpacityFlip">
         <div class="reminderSectionDescription">
-            <img class="reminderMainLogo" width="64" height="64"  />
+            <img class="reminderMainLogo" width="64" height="64" />
             <div class="reminderSectionDescriptionTexts">
                 <div class="reminderSectionDescriptionTextsTitle"></div>
                 <div class="reminderSectionDescriptionTextsDescription"></div>

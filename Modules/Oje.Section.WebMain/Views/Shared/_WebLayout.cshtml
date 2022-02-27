@@ -76,11 +76,11 @@
 
     <script src="/Modules/Core/js/jquery.min.js.gz"></script>
 
-    <script src="/Modules/Core/js/websiteCor.min.js.gz"></script>
-    <script src="/Modules/Core/js/mainPage.min.js.gz"></script>
+    <script src="/Modules/Core/js/websiteCor.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
+    <script src="/Modules/Core/js/mainPage.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
 
-    <link rel="stylesheet" href="/Modules/Core/css/master.min.css.gz" />
-    <link rel="stylesheet" href="/Modules/Core/css/websiteCore.min.css.gz" />
+    <link rel="stylesheet" href="/Modules/Core/css/master.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+    <link rel="stylesheet" href="/Modules/Core/css/websiteCore.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
     @RenderSection("Styles", required: false)
     <link rel="preload" as="font" href="/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2" type="font/woff2" crossorigin="anonymous">
     <link rel="preload" as="font" href="/Modules/webfonts/fa-light-300.woff2" type="font/woff2" crossorigin="anonymous">
@@ -98,17 +98,30 @@
 </head>
 <body dir="rtl" class="makeRTL">
     <div class="wrapper">
-        <header>
+        <header id="headerTagHolder">
             <section class="topHeader">
                 <div class="myContainer">
                     <a title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
                     <div id="placeholderTopLeftIcon"></div>
                     <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="@curSetting.Title" href="/">@curSetting.Title</a></h1>
                 </div>
+
             </section>
             <script>
                 bindTopLeftIcons();
             </script>
+            <section class="topHeaderMobile">
+                <div class="myContainer">
+                    @{
+                        if (!string.IsNullOrEmpty(curSetting.ImageText))
+                        {
+                            <a title="@(curSetting.Title)" class="leftFooterLink" href="/">
+                                <img alt="@(curSetting.Title)" width="100" height="37" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
+                            </a>
+                        }
+                    }
+                </div>
+            </section>
             <nav class="headerMenu ">
                 <div class="myContainer">
                     <div class="topMenuBtton" tabindex="0">
@@ -343,6 +356,11 @@
                 </div>
             </nav>
         </header>
+        <div id="headerTagHolderDesctination"></div>
+        <script>
+            if($(document).width() <= 650)
+                $('#headerTagHolder').initFloatingTop('headerTagHolderDesctination');
+        </script>
         <main>
             @RenderBody()
         </main>
@@ -419,7 +437,18 @@
                             </div>
                         </div>
                         <div class="footerAboutUsSectionLeft">
-                            <a class="leftFooterLink" href="@(Context.Request.IsHttps ? "https" : "http")://@(Context.Request.Host)">@(Context.Request.Host)</a>
+                            @{
+                                if (!string.IsNullOrEmpty(curSetting.ImageText))
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo" href="/">
+                                        <img alt="@(curSetting.Title)" width="200" height="75" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo" href="/">@(Context.Request.Host)</a>
+                                }
+                            }
                             <span class="footerAboutUsTellNumber  ">تلفن پشتیبانی :<span id="footerTell2">021-43900000 | 021-49275000</span></span>
                             <span class="footerAboutUsTellNumber ">دفتر فروش :<span id="footerAddress"> قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span></span>
                             <div id="footerSharingIconSection" class="footerLeftTrophyIcons">
@@ -434,6 +463,20 @@
                         <div class="footerCopyRightSection">
                             کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت کارگزاری رسمی بیمه مستقیم برخط اوج می‌باشد.
                         </div>
+                        <div class="footerCenterSection">
+                             @{
+                                if (!string.IsNullOrEmpty(curSetting.ImageText))
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo2" href="/">
+                                        <img alt="@(curSetting.Title)" width="100" height="37" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo2" href="/">@(Context.Request.Host)</a>
+                                }
+                            }
+                        </div>
                         <div class="footerSharingIconSection">
                             <a href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegram.svg" /></a>
                             <a href="#"><img width="32" height="32" alt="تویتر" data-src="/Modules/Assets/MainPage/twitter.svg" /></a>
@@ -445,7 +488,7 @@
             </section>
         </footer>
     </div>
-    <script src="/Modules/Core/js/registerServices.min.js.gz"></script>
+    <script src="/Modules/Core/js/registerServices.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
     <script>
         bindFooterExteraLinks();
         bindFooterExteraLinkGroups();
@@ -454,7 +497,8 @@
         $('img[data-src]').loadImageOnScroll();
          if(isLH == false)
          {
-            $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
+             if($(document).width() > 450)
+                $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
             $('.animationOnScroll').initScrollAnimation();
          }
         else

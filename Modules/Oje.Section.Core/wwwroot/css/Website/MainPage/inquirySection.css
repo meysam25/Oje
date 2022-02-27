@@ -156,6 +156,13 @@
             width: 32px;
             height: 32px;
         }
+    .removeInquirySectionMarginTop .inquirySectionTabHeaderItem {
+        width:auto;
+        border:none !important;
+    }
+    .removeInquirySectionMarginTop .inquirySectionTabHeaderItemInner > div {
+        display: none;
+    }
 
     .inquirySectionTabBodyItems {
         width: 100vw;

@@ -32,5 +32,6 @@ namespace Oje.AccountService.Interfaces
 
         Role CreateGet(string name, string title, int value, RoleType type);
         bool IsUserInRole(long? loginUserId, string roleName);
+        List<int> GetRoleIdsByProposalFormId(int proposalFormId);
     }
 }

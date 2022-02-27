@@ -90,6 +90,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             ViewBag.ContractFile = foundPPF.ContractFile;
             ViewBag.RulesFile = foundPPF.RulesFile;
             ViewBag.HtmlTemplate = foundPPF.TermTemplate;
+            ViewBag.companyTitle = SiteSettingService.GetSiteSetting()?.Title;
 
             return View();
         }

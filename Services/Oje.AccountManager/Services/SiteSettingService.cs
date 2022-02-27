@@ -108,20 +108,21 @@ namespace Oje.AccountService.Services
         {
             string result = "const mainServiceName = 'mainServiceName';" + Environment.NewLine;
 
+            var curVer = GlobalConfig.GetAppVersion();
+
             result += "const assets = [";
             result += "'/',";
-            result += "'/Modules/Core/css/master.min.css.gz',";
-            result += "'/Modules/Core/css/websiteCore.min.css.gz',";
-            result += "'/Modules/Core/css/mainPage.min.css.gz',";
-            result += "'/Modules/Core/js/jquery.min.js.gz',";
-            result += "'/Modules/Core/js/websiteCor.min.js.gz',";
-            result += "'/Modules/Core/js/mainPage.min.js.gz',";
-            result += "'/Modules/Core/js/registerServices.min.js.gz',";
-            result += "'/Modules/Core/js/chart.min.js.gz',";
+            result += "'/Modules/Core/css/master.min.css.gz?v="+ curVer + "',";
+            result += "'/Modules/Core/css/websiteCore.min.css.gz?v=" + curVer + "',";
+            result += "'/Modules/Core/css/mainPage.min.css.gz?v=" + curVer + "',";
+            result += "'/Modules/Core/js/jquery.min.js.gz?v=" + curVer + "',";
+            result += "'/Modules/Core/js/websiteCor.min.js.gz?v=" + curVer + "',";
+            result += "'/Modules/Core/js/mainPage.min.js.gz?v=" + curVer + "',";
+            result += "'/Modules/Core/js/registerServices.min.js.gz?v=" + curVer + "',";
+            result += "'/Modules/Core/js/chart.min.js.gz?v=" + curVer + "',";
             result += "'/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2',";
             result += "'/Modules/webfonts/fa-light-300.woff2',";
             result += "'/Modules/Assets/MainPage/electronDevelopment.png',";
-            result += "'/Modules/Assets/MainPage/iranlogo.png',";
             result += "'/Modules/Assets/MainPage/bgp.png',";
             result += "'/Modules/Assets/MainPage/salecIcon.png',";
             result += "'/Modules/Assets/MainPage/badane.png',";

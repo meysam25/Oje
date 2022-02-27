@@ -62,6 +62,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تصاویر یادآوری", Prompt = "ProposalFilledFormReminder", Description = "1000*1000")]
         ProposalFilledFormReminder = 26,
         [Display(Name = "متن قرارداد", Prompt = "ProposalFormContract")]
-        ProposalFormContractRules = 27
+        ProposalFormContractRules = 27,
+        [Display(Name = "لوگوی سایت متنی", Prompt = "MainLogo", Description = "300*113", AutoGenerateFilter = true)]
+        MainLogoWithText = 28
     }
 }

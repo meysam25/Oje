@@ -57,12 +57,14 @@ namespace Oje.Section.BaseData.Services
                     db.Entry(newItem).State = EntityState.Added;
                     db.SaveChanges();
 
-                    if(input.minPic != null && input.minPic.Length > 0)
+                    if (input.minPic != null && input.minPic.Length > 0)
                     {
                         newItem.Image96 = UploadedFileService.UploadNewFile(FileType.MainLogo96, input.minPic, userId, null, newItem.Id, ".jpg,.png,.jpeg", false, null);
                         newItem.Image192 = UploadedFileService.UploadNewFile(FileType.MainLogo192, input.minPic, userId, null, newItem.Id, ".jpg,.png,.jpeg", false, null);
                         newItem.Image512 = UploadedFileService.UploadNewFile(FileType.MainLogo512, input.minPic, userId, null, newItem.Id, ".jpg,.png,.jpeg", false, null);
                     }
+                    if (input.textPic != null && input.textPic.Length > 0)
+                        newItem.ImageText = UploadedFileService.UploadNewFile(FileType.MainLogoWithText, input.textPic, userId, null, newItem.Id, ".jpg,.png,.jpeg", false, null);
 
                     var foundTargetUser = db.Users.Where(t => t.Id == input.userId).FirstOrDefault();
                     if (foundTargetUser == null)
@@ -137,7 +139,8 @@ namespace Oje.Section.BaseData.Services
                 isHttps = t.IsHttps,
                 isActive = t.IsActive,
                 seo = t.SeoMainPage,
-                minPic_address = GlobalConfig.FileAccessHandlerUrl + t.Image512
+                minPic_address = !string.IsNullOrEmpty(t.Image512) ? GlobalConfig.FileAccessHandlerUrl + t.Image512 : "",
+                textPic_address = !string.IsNullOrEmpty(t.ImageText) ? GlobalConfig.FileAccessHandlerUrl + t.ImageText : ""
             }).FirstOrDefault();
         }
 
@@ -224,6 +227,8 @@ namespace Oje.Section.BaseData.Services
                         editItem.Image192 = UploadedFileService.UploadNewFile(FileType.MainLogo192, input.minPic, userId, null, editItem.Id, ".jpg,.png,.jpeg", false, null);
                         editItem.Image512 = UploadedFileService.UploadNewFile(FileType.MainLogo512, input.minPic, userId, null, editItem.Id, ".jpg,.png,.jpeg", false, null);
                     }
+                    if (input.textPic != null && input.textPic.Length > 0)
+                        editItem.ImageText = UploadedFileService.UploadNewFile(FileType.MainLogoWithText, input.textPic, userId, null, editItem.Id, ".jpg,.png,.jpeg", false, null);
 
                     var foundTargetUser = db.Users.Where(t => t.Id == input.userId).FirstOrDefault();
                     if (foundTargetUser == null)

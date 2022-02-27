@@ -12,5 +12,6 @@ namespace Oje.AccountService.Interfaces
         object GetightList();
         int GetIdBy(string companyTitle);
         Company GetBy(string companyTitle);
+        string GetTitle(int id);
     }
 }

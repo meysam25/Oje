@@ -25,6 +25,11 @@ namespace Oje.Infrastructure
             return Configuration.GetSection("appSettings").Get<WebAppSettings>();
         }
 
+        public static string GetAppVersion()
+        {
+            return Configuration.GetSection("ver").Get<string>();
+        }
+
         public static string GetJsonConfigFile(string area, string controller)
         {
             return WebHostEnvironment.WebRootPath + "\\Modules\\" + area + "JsonConfigs\\" + controller + ".json";
