@@ -40,16 +40,16 @@
                       "showHideCondation": [
                         {
                           "value": "",
-                          "classHide": [ "normalInquiry" ],
+                          "classHide": [ "plaqueInput" ],
                           "isDefault": true
                         },
                         {
-                          "value": "1",
+                          "value": "2",
                           "classShow": [ "plaqueInput" ],
                           "classHide": [ "normalInquiry" ]
                         },
                         {
-                          "value": "2",
+                          "value": "1",
                           "classShow": [ "normalInquiry" ],
                           "classHide": [ "plaqueInput" ]
                         }

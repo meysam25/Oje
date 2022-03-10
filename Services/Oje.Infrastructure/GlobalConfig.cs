@@ -37,7 +37,7 @@ namespace Oje.Infrastructure
 
         public static string GetUploadImageDirectory(string cPath)
         {
-            var result = Path.Combine(WebHostEnvironment.WebRootPath, UploadImageFolderName);
+            var result = Path.Combine(WebHostEnvironment.ContentRootPath, UploadImageFolderName);
             if (!string.IsNullOrEmpty(cPath))
                 result = Path.Combine(result, cPath);
             if (Directory.Exists(result) == false)

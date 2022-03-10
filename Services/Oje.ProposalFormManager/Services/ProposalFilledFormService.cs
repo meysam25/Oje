@@ -188,15 +188,12 @@ namespace Oje.ProposalFormService.Services
                     ctrl.navionalCodeValidation(ctrl, form);
                     ctrl.validateAndUpdateCtrl(ctrl, form, allCtrls);
                     ctrl.validateAndUpdateMultiRowInputCtrl(ctrl, form, ppfObj);
-                    ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj);
+                    ctrl.validateMinAndMaxDayForDateInput(ctrl, form);
+                    ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form);
                 }
                 validateFileUpload(ctrl, allRequiredFileUpload, form);
-
             }
         }
-
-
-
 
 
         private void validateCompanyAndAgent(PageForm ppfObj, IFormCollection form, int? siteSettingId, int companyId)
@@ -294,10 +291,6 @@ namespace Oje.ProposalFormService.Services
                 }
             }
         }
-
-
-
-
 
         private void createValidation(int? siteSettingId, IFormCollection form)
         {

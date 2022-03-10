@@ -70,7 +70,7 @@ namespace Oje.AccountService.Services
         {
             LoginValidation(input);
 
-            var foundUser = db.Users.Include(t => t.UserRoles).ThenInclude(t => t.Role).Where(t => t.Username.ToLower() == input.username.ToLower()).FirstOrDefault();
+            var foundUser = db.Users.Include(t => t.UserRoles).ThenInclude(t => t.Role).Where(t => t.Username.ToLower() == input.username.ToLower() && t.SiteSettingId == siteSettingId).FirstOrDefault();
 
             if (foundUser != null && foundUser.TemproryLockDate != null)
             {
@@ -1031,9 +1031,7 @@ namespace Oje.AccountService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.IsDelete != true);
-
-
+            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true);
 
 
             if (companyId > 0)
@@ -1069,17 +1067,24 @@ namespace Oje.AccountService.Services
 
             qureResult = qureResult.Take(take);
 
-            var tempResult = qureResult.Select(t => new
+            var tempResult = qureResult.Select(t => new User
             {
-                t.Id,
-                t.AgentCode,
-                t.Tell,
-                t.Firstname,
-                t.Lastname,
-                t.Address,
-                t.MapLocation,
-                d = gm != null ? t.MapLocation.Distance(gm) : 0
+                Id = t.Id,
+                IsActive = t.IsActive,
+                AgentCode = t.AgentCode,
+                Tell = t.Tell,
+                Firstname = t.Firstname,
+                Lastname = t.Lastname,
+                Address = t.Address,
+                MapLocation = t.MapLocation,
+                distance = gm != null ? t.MapLocation.Distance(gm) : 0
             }).ToList();
+
+            if (!tempResult.Any(t => t.IsActive == true))
+            {
+                var fondUser = GetMainUser(siteSettingId, gm);
+                tempResult.Insert(0, fondUser);
+            }
 
             string companyTitle = "";
 
@@ -1093,12 +1098,29 @@ namespace Oje.AccountService.Services
             result.AddRange(tempResult.Select(t => new
             {
                 id = t.Id,
-                text = companyTitle + " با کد " + t.AgentCode + " " + (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.d)) + " متر فاصله با شما)")),
+                text = companyTitle + " با کد " + t.AgentCode + " " + (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.distance)) + " متر فاصله با شما)")),
                 mapLat = t.MapLocation != null ? t.MapLocation.X : 0,
                 mapLng = t.MapLocation != null ? t.MapLocation.Y : 0,
+                isA = t.IsActive
             }).ToList()); ;
 
             return new { results = result, pagination = new { more = hasPagination } };
+        }
+
+        User GetMainUser(int? siteSettingId, Point gm)
+        {
+            return db.Users.Where(t => t.SiteSettingId == siteSettingId && t.SiteSettings.Any(tt => tt.Id == siteSettingId)).Select(t => new User
+            {
+                Id = t.Id,
+                IsActive = t.IsActive,
+                AgentCode = t.AgentCode,
+                Tell = t.Tell,
+                Firstname = t.Firstname,
+                Lastname = t.Lastname,
+                Address = t.Address,
+                MapLocation = t.MapLocation,
+                distance = gm != null && t.MapLocation != null ? t.MapLocation.Distance(gm) : 0
+            }).FirstOrDefault();
         }
 
         public bool IsValidAgent(long id, int? siteSettingId, int proposalFormId, int companyId)

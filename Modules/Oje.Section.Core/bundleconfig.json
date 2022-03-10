@@ -15,6 +15,7 @@
       "wwwroot/js/validation.js",
       "wwwroot/js/dropdown.js",
       "wwwroot/js/countDown.js",
+      "wwwroot/js/cImage.js",
       "wwwroot/js/formGenerator.js",
       "wwwroot/js/notificationHob.js"
     ],
@@ -173,10 +174,12 @@
       "wwwroot/css/treeView.css",
       "wwwroot/css/main.css",
       "wwwroot/css/makeRTL.css",
+      "wwwroot/css/adminFont.css",
       "wwwroot/css/JalaliDatePicker.css",
       "wwwroot/css/stepWizard.css",
       "wwwroot/css/validation.css",
       "wwwroot/css/dropdown.css",
+      "wwwroot/css/cImage.css",
       "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css"
     ],
     "minify": {

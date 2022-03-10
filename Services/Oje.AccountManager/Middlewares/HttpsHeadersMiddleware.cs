@@ -42,7 +42,7 @@ namespace Oje.AccountService.Middlewares
                 if (!httpContext.Response.Headers.Keys.Contains("Content-Security-Policy"))
                     httpContext.Response.Headers.Add("Content-Security-Policy",
                         "default-src wss: 'self' data: " + domainUrl + " https:;style-src 'unsafe-inline' 'self' " +
-                        domainUrl + " https:;script-src 'self' " + domainUrl + " 'unsafe-inline' 'unsafe-eval' https:; img-src " + domainUrl + " data: https:");
+                        domainUrl + " https:;script-src 'self' " + domainUrl + " 'unsafe-inline' 'unsafe-eval' https:; img-src " + domainUrl + " blob: data: https:");
                 if (!httpContext.Response.Headers.Keys.Contains("X-Content-Type-Options"))
                     httpContext.Response.Headers.Add("X-Content-Type-Options", "nosniff");
                 if (!httpContext.Response.Headers.Keys.Contains("X-XSS-Protection"))

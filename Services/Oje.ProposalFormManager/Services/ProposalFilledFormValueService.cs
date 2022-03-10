@@ -29,7 +29,7 @@ namespace Oje.ProposalFormService.Services
                 ProposalFilledFormId = proposalFilledFormId,
                 ProposalFilledFormKeyId = keyId,
                 Value = currValue
-            }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            }).State = EntityState.Added;
             db.SaveChanges();
         }
 

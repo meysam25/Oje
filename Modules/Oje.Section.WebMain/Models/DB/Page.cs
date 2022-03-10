@@ -22,6 +22,8 @@ namespace Oje.Section.WebMain.Models.DB
         public string Title { get; set; }
         [MaxLength(200)]
         public string SubTitle { get; set; }
+        [MaxLength(20)]
+        public string TitleAndSubtitleColorCode { get; set; }
         [Required, MaxLength(1000)]
         public string Summery { get; set; }
         [Required, MaxLength(200)]

@@ -5,11 +5,11 @@ $.fn.initSideMenu = function () {
             if ($(this).hasClass('sideSumMenuItemShow')) {
                 $(this).removeClass('sideSumMenuItemShow');
                 $(this).find('.sideSumMenuItems').slideUp();
-                $(this).find('.sideMenuSubIcon').removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                $(this).find('.sideMenuSubIcon').removeClass('fa-chevron-down').addClass('fa-chevron-left');
             } else {
                 $(this).addClass('sideSumMenuItemShow');
                 $(this).find('.sideSumMenuItems').slideDown();
-                $(this).find('.sideMenuSubIcon').removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                $(this).find('.sideMenuSubIcon').removeClass('fa-chevron-left').addClass('fa-chevron-down');
             }
         });
         $(this).find('.sideSumMenuItems').hide();

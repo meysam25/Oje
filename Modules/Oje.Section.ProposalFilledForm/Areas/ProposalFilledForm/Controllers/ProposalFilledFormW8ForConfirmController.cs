@@ -173,7 +173,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpGet]
         public ActionResult GetUsers([FromQuery] Select2SearchVM searchInput, [FromQuery] int? roleId, [FromQuery] int? companyId, [FromQuery] int? provinceId, [FromQuery] int? cityId)
         {
-            return Json(UserService.GetSelect2List(searchInput, roleId, companyId, provinceId, cityId));
+            return Json(UserService.GetSelect2List(searchInput, roleId, companyId, provinceId, cityId, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربران ارجاع داده شده فرم پیشنهاد در انتظار تایید", Icon = "fa-eye")]

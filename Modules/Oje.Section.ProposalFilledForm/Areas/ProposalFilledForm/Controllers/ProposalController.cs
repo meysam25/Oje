@@ -81,6 +81,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(tempResult);
         }
 
+        [HttpPost]
         public IActionResult GetTermsHtml(int? fid)
         {
             var foundPPF = ProposalFormService.GetById(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);

@@ -1,0 +1,113 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
+using Oje.Infrastructure;
+using Oje.Infrastructure.Filters;
+using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Services;
+using Oje.Section.RegisterForm.Interfaces;
+using Oje.Section.RegisterForm.Models.View;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
+{
+    [Area("RegisterFormAdmin")]
+    [Route("[Area]/[Controller]/[Action]")]
+    [AreaConfig(ModualTitle = "ثبت نام کاربر", Icon = "fa-users", Title = "کاربران ثبت نام کرده")]
+    [CustomeAuthorizeFilter]
+    public class UserFilledRegisterFormController : Controller
+    {
+        readonly IUserFilledRegisterFormService UserFilledRegisterFormService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly Interfaces.IRoleService RoleService = null;
+        public UserFilledRegisterFormController
+            (
+                IUserFilledRegisterFormService UserFilledRegisterFormService,
+                ISiteSettingService SiteSettingService,
+                Interfaces.IRoleService RoleService
+            )
+        {
+            this.UserFilledRegisterFormService = UserFilledRegisterFormService;
+            this.SiteSettingService = SiteSettingService;
+            this.RoleService = RoleService;
+        }
+
+        [AreaConfig(Title = "کاربران ثبت نام کرده", Icon = "fa-user", IsMainMenuItem = true)]
+        [HttpGet]
+        public IActionResult Index()
+        {
+            ViewBag.Title = "کاربران ثبت نام کرده";
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserFilledRegisterForm", new { area = "RegisterFormAdmin" });
+            return View();
+        }
+
+        [AreaConfig(Title = "تنظیمات صفحه کاربران ثبت نام کرده", Icon = "fa-cog")]
+        [HttpPost]
+        public IActionResult GetJsonConfig()
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("RegisterFormAdmin", "UserFilledRegisterForm")));
+        }
+
+        [AreaConfig(Title = "افزودن فرم ثبت نام کاربر جدید", Icon = "fa-plus")]
+        [HttpPost]
+        public IActionResult CreateUser([FromForm] long? pKey, [FromForm] List<int> roleIds)
+        {
+            return Json(UserFilledRegisterFormService.CreateNewUser(pKey, SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.UserId, roleIds));
+        }
+
+        [AreaConfig(Title = "مشاهده اسناد کاربران ثبت نام کرده", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(UserFilledRegisterFormService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده یک کاربران ثبت نام کرده", Icon = "fa-eye")]
+        [HttpGet]
+        public IActionResult GetById([FromQuery] GlobalLongId input)
+        {
+            ViewBag.targetLayout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+            return View("~/Views/Register/Details.cshtml", UserFilledRegisterFormService.PdfDetailes(input?.id, SiteSettingService.GetSiteSetting()?.Id, null));
+        }
+
+        [AreaConfig(Title = "حذف کاربران ثبت نام کرده", Icon = "fa-trash-o")]
+        [HttpPost]
+        public IActionResult Delete([FromForm] GlobalLongId input)
+        {
+            return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست کاربران ثبت نام کرده", Icon = "fa-list-alt ")]
+        [HttpPost]
+        public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
+        {
+            return Json(UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
+        [HttpPost]
+        public ActionResult Export([FromForm] UserFilledRegisterFormMainGrid searchInput)
+        {
+            var result = UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
+            if (result == null || result.data == null || result.data.Count == 0)
+                return NotFound();
+            var byteResult = ExportToExcel.Export(result.data);
+            if (byteResult == null || byteResult.Length == 0)
+                return NotFound();
+
+            return Json(Convert.ToBase64String(byteResult));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt ")]
+        [HttpGet]
+        public ActionResult GetRoleList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(RoleService.GetList(SiteSettingService.GetSiteSetting()?.Id, searchInput));
+        }
+    }
+}

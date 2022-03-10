@@ -15,6 +15,7 @@ namespace Oje.Security.Models.DB
         public byte Ip2 { get; set; }
         public byte Ip3 { get; set; }
         public byte Ip4 { get; set; }
+        [Column(TypeName = "datetime")]
         public DateTime CreateDate { get; set; }
         public int CreateYear { get; set; }
         public int CreateMonth { get; set; }

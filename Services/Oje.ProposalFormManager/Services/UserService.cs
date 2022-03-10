@@ -66,7 +66,7 @@ namespace Oje.ProposalFormService.Services
             return newUser.Id;
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput, int? roleId, int? companyId, int? provinceId, int? cityId)
+        public object GetSelect2List(Select2SearchVM searchInput, int? roleId, int? companyId, int? provinceId, int? cityId, int? siteSettingId)
         {
             List<object> result = new List<object>();
 
@@ -78,14 +78,14 @@ namespace Oje.ProposalFormService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Users.AsQueryable();
+            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId);
             if (roleId > 0)
                 qureResult = qureResult.Where(t => t.UserRoles.Any(tt => tt.RoleId == roleId));
             if (companyId > 0)
                 qureResult = qureResult.Where(t => t.UserCompanies.Any(tt => tt.CompanyId == companyId));
             if (provinceId > 0)
                 qureResult = qureResult.Where(t => t.ProvinceId == provinceId);
-            if(cityId > 0)
+            if (cityId > 0)
                 qureResult = qureResult.Where(t => t.CityId == cityId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => (t.Firstname + " " + t.Lastname + "(" + t.Username + ")").Contains(searchInput.search));

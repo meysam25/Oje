@@ -110,14 +110,17 @@
     font-size: 1.1em;
     padding-bottom: 30px;
 }
+    .pageLRDesignDescription > p {
+        text-align:justify;
+    }
 
-.pageLRDesignItems {
-    display: flex;
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    padding-top: 20px;
-}
+    .pageLRDesignItems {
+        display: flex;
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        padding-top: 20px;
+    }
 
 .pageLRDesignItem {
     display: flex;
@@ -153,9 +156,13 @@
     margin-top: -50px;
 }
 
-.pageLRDesignItemImageSide {
-    text-align: center;
-}
+    .pageLRDesignItemTextSide > p {
+        text-align:justify;
+    }
+
+    .pageLRDesignItemImageSide {
+        text-align: center;
+    }
 
 @media (max-width: 1100px) {
     .pageLRDesignItemTextSide {

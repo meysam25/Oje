@@ -24,6 +24,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ایکن های بالا سمت چپ صفحه اصلی")]
         MainPageTopLeftIcon = 6,
         [Display(Name = "متا تگ عمومی")]
-        GlobalMetaTag = 7
+        GlobalMetaTag = 7,
+        [Display(Name = "شبکه های اجتماعی فوتر")]
+        FooterIcon = 8
     }
 }

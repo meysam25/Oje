@@ -27,6 +27,26 @@ namespace Oje.Security
             cacheServices = services;
         }
 
+        public static void ConfigForWorker(IServiceCollection services)
+        {
+            services.AddDbContext<SecurityDBContext>(options =>
+                    options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"],
+                    b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
+                    , ServiceLifetime.Singleton
+            );
+
+            services.AddSingleton<IIpLimitationWhiteListService, IpLimitationWhiteListService>();
+            services.AddSingleton<IIpLimitationBlackListService, IpLimitationBlackListService>();
+            services.AddSingleton<IFileAccessRoleService, FileAccessRoleService>();
+            services.AddSingleton<IRoleService, RoleService>();
+            services.AddSingleton<IBlockClientConfigService, BlockClientConfigService>();
+            services.AddSingleton<IBlockAutoIpService, BlockAutoIpService>();
+            services.AddSingleton<IBlockFirewallIpService, BlockFirewallIpService>();
+
+            cacheServices = services;
+        }
+
+
         public static IServiceCollection cacheServices { get; set; }
     }
 }

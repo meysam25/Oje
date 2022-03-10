@@ -3,6 +3,7 @@
 }
 
 @model Oje.Section.Blog.Models.View.BlogVM
+@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
 
 @section Styles {
 <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/blog.min.css.gz" />
@@ -13,7 +14,7 @@
         <div class="articleDescription">
             <div class="articleDescriptionInner">
                 <ul class="breadcrumb">
-                    <li><a href="/">ستاد بیمه</a></li>
+                    <li><a href="/">@(SiteSettingService.GetSiteSetting().Title)</a></li>
                     <li><a href="/Blogs">مقالات</a></li>
                     <li>@Model.title</li>
                 </ul>

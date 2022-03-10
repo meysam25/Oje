@@ -3,6 +3,7 @@
 }
 
 @model Oje.Section.WebMain.Models.View.PageWebVM
+@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
 
 @section Styles {
 <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/page.min.css.gz" />
@@ -11,23 +12,23 @@
 <div class="pageG">
     <div class="pageGSocial removeBoxShadow">
         <a href="#">
-            <img width="32" height="32" src="/Modules/Assets/MainPage/telegram.svg" />
+            <img width="32" height="32" alt="تلگرام" src="/Modules/Assets/MainPage/telegramsilver.svg"  data-alt-src="/Modules/Assets/MainPage/telegram.svg"  />
         </a>
         <a href="#">
-            <img width="32" height="32" src="/Modules/Assets/MainPage/instagram.svg" />
+            <img width="32" height="32" alt="اینتساگرام" src="/Modules/Assets/MainPage/instagramsilver.svg"  data-alt-src="/Modules/Assets/MainPage/instagram.svg" />
         </a>
         <a href="#">
-            <img width="32" height="32" src="/Modules/Assets/MainPage/twitter.svg" />
+            <img width="32" height="32" alt="تویتر" src="/Modules/Assets/MainPage/twittersilver.svg"  data-alt-src="/Modules/Assets/MainPage/twitter.svg" />
         </a>
     </div>
     <div class="pageGHolderMainImage">
         <div class="myContainer HolderPageGTitleButton removeBoxShadow">
             <div class="PageGTitleButton">
-                <h1>@Model.title</h1>
+                <h1 @{ ViewContext.Writer.Write(!string.IsNullOrEmpty(Model.stColorCode) ? "style:color:"+ Model.stColorCode +";": ""); }>@Model.title</h1>
                 @{
                     if (!string.IsNullOrEmpty(Model.subTitle))
                     {
-                        <h2>@Model.subTitle</h2>
+                        <h2 @{ ViewContext.Writer.Write(!string.IsNullOrEmpty(Model.stColorCode) ? "style:color:"+ Model.stColorCode +";": ""); } >@Model.subTitle</h2>
                     }
                     if (!string.IsNullOrEmpty(Model.bLink) && !string.IsNullOrEmpty(Model.bTitle))
                     {
@@ -40,21 +41,21 @@
         <img alt="@Model.title" class="pageGMainImageMP8" width="2000" height="600" src="@Model.mainImage" />
         <img alt="@Model.title" class="pageGMainImageMM8" width="800" height="600" src="@Model.mainImageSmall" />
         <div class="myContainer removeBoxShadow">
-             <ul style="border-bottom:none;" class="breadcrumb">
-                <li><a href="/">ستاد بیمه</a></li>
+            <ul style="border-bottom:none;" class="breadcrumb">
+                <li><a href="/">@(SiteSettingService.GetSiteSetting().Title)</a></li>
                 <li>@Model.title</li>
             </ul>
         </div>
     </div>
     @{
         var sorrtedItem = Model.Items.OrderBy(t => t.order).ToList();
-        foreach(var item in sorrtedItem)
+        foreach (var item in sorrtedItem)
         {
-            if(item.type == Oje.Infrastructure.Enums.PageWebItemType.LeftAndRight)
+            if (item.type == Oje.Infrastructure.Enums.PageWebItemType.LeftAndRight)
             {
                 Html.RenderPartial("pageLeftAndRightDesign", item);
             }
         }
     }
-    
+
 </div>

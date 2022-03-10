@@ -1,0 +1,41 @@
+﻿@using Oje.Infrastructure.Services
+@{
+    Layout = null;
+}
+
+<style>
+    .termsTitle {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    .termsSubTitle {
+        padding-top: 20px;
+        font-weight: bold;
+    }
+</style>
+
+<div>
+    <div style="padding-bottom:20px;padding-top:10px;">
+        @{
+            if (!string.IsNullOrEmpty(ViewBag.HtmlTemplate))
+            {
+                <div>
+                    @{
+                        ViewContext.Writer.Write((ViewBag.HtmlTemplate + "").Replace("{{company}}",ViewBag.companyTitle).Replace("{{date}}", DateTime.Now.ToFaDate()).Replace("{{time}}", DateTime.Now.ToString("HH:mm")));
+                    }
+                </div>
+            }
+        }
+    </div>
+    <div>
+        <div>
+            @{
+                if (!string.IsNullOrEmpty(ViewBag.RulesFile))
+                {
+                    <div class="form-check form-switch myCtrl"><input class="form-check-input" data-validation-required="true" data-validation-required-msg="لطفا شرایط عمومی قرارداد را مطالعه کرده و انتخاب کنید" type="checkbox" id="id_e5b2c52b82d9-46eb"><label style="padding-right:20px;" class="form-check-label" for="id_e5b2c52b82d9-46eb"><a title="شرایط عمومی بیمه نامه" target="_blank" href="@(Oje.Infrastructure.GlobalConfig.FileAccessHandlerUrl)@ViewBag.RulesFile">شرایط عمومی بیمه نامه</a> را مطالعه نموده و قبول دارم</label></div>
+                }
+            }
+        </div>
+    </div>
+</div>

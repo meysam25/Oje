@@ -1,0 +1,96 @@
+.cImageCtrl {
+    width: 100%;
+    position: relative;
+}
+
+    .cImageCtrl .bgImage {
+        width: 100%;
+        height: auto;
+    }
+
+    .cImageCtrl .siLeftTop, .cImageCtrl .siRightTop, .cImageCtrl .siLeftBottom, .cImageCtrl .siRightBottom {
+        width: 15px;
+        height: 15px;
+        background-color: rgba(0,0,0, 0.4);
+        border: 1px solid #303030;
+        cursor: pointer;
+        outline: 1px solid white;
+        z-index: 2;
+    }
+
+    .cImageCtrl .siLeftTop {
+        position: absolute;
+        top: 50px;
+        left: 50px;
+    }
+
+    .cImageCtrl .siRightTop {
+        position: absolute;
+        top: 50px;
+        left: calc(100% - 67px);
+    }
+
+    .cImageCtrl .siLeftBottom {
+        position: absolute;
+        top: calc(100% - 67px); 
+        left: 50px;
+    }
+
+    .cImageCtrl .siRightBottom {
+        position: absolute;
+        top: calc(100% - 67px);
+        left: calc(100% - 67px);
+    }
+
+    .cImageCtrl .siLeftShado, .cImageCtrl .siRightShado, .cImageCtrl .siTopShado, .cImageCtrl .siBottomShado {
+        background-color: rgba(0,0,0,0.8);
+        position: absolute;
+    }
+
+.invalidCImageCtrl .siLeftShado, .invalidCImageCtrl .siRightShado, .invalidCImageCtrl .siTopShado, .invalidCImageCtrl .siBottomShado {
+    background-color: red;
+}
+
+.cImageCtrl .siLeftShado {
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    right: calc(100% - 50px);
+}
+
+    .cImageCtrl .siRightShado {
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        left: calc(100% - 50px);
+    }
+
+    .cImageCtrl .siTopShado {
+        right: 0px;
+        top: 0px;
+        bottom: calc(100% - 50px);
+        left: 0px;
+    }
+
+    .cImageCtrl .siBottomShado {
+        right: 0px;
+        top: calc(100% - 50px);
+        bottom: 0px;
+        left: 0px;
+    }
+
+    .cImageCtrl .mouseMoveDetector {
+        position:absolute;
+        left:0px;
+        top:0px;
+        bottom:0px;
+        right:0px;
+    }
+    .cImageCtrl * {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently*/
+    }

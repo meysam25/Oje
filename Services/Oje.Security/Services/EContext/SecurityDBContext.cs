@@ -19,9 +19,11 @@ namespace Oje.Security.Services.EContext
         public DbSet<BlockAutoIp> BlockAutoIps { get; set; }
         public DbSet<BlockFirewallIp> BlockFirewallIps { get; set; }
 
+         
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BlockAutoIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate });
+            modelBuilder.Entity<BlockAutoIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate, t.BlockClientConfigType });
             modelBuilder.Entity<BlockFirewallIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4 });
 
             base.OnModelCreating(modelBuilder);

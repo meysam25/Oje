@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Oje.Infrastructure.Enums;
@@ -42,6 +43,9 @@ namespace Oje.Infrastructure.Models.PageForms
         public string ph { get; set; }
         public string bankUrl { get; set; }
         public string bindFormUrl { get; set; }
+        public int? minDateValidation { get; set; }
+        public int? maxDateValidation { get; set; }
+        public int? maxLengh { get; set; }
         public MapName names { get; set; }
         public List<ctrl> ctrls { get; set; }
         public List<IdTitle> values { get; set; }
@@ -70,6 +74,11 @@ namespace Oje.Infrastructure.Models.PageForms
                                         )
                                 );
 
+            if (ctrl.maxLengh != null && ctrl.maxLengh > 0)
+                if (form.Keys.Contains(ctrl.name) && !string.IsNullOrEmpty(form.GetStringIfExist(ctrl.name)) && form.GetStringIfExist(ctrl.name).Length > ctrl.maxLengh)
+                    throw BException.GenerateNewException(BMessages.Validation_Error);
+
+
         }
 
         public static void validateAndUpdateCtrl(ctrl ctrl, IFormCollection form, List<ctrl> ctrls)
@@ -77,7 +86,7 @@ namespace Oje.Infrastructure.Models.PageForms
             if (ctrl.type == ctrlType.checkBox)
             {
                 string currValue = form.GetStringIfExist(ctrl.name);
-                if (!string.IsNullOrEmpty(currValue) && currValue != ctrl.defValue)
+                if (!string.IsNullOrEmpty(currValue) && !string.IsNullOrEmpty(ctrl.defValue) && currValue != ctrl.defValue)
                     throw BException.GenerateNewException(BMessages.Validation_Error);
                 else if (!string.IsNullOrEmpty(currValue) && currValue == ctrl.defValue)
                     ctrl.defV = ctrl.defValue;
@@ -230,15 +239,55 @@ namespace Oje.Infrastructure.Models.PageForms
             }
         }
 
-        public void dublicateMapValueIfNeeded(ctrl ctrl, PageForm ppfObj)
+        public static void dublicateMapValueIfNeeded(ctrl ctrl, PageForm ppfObj, IFormCollection form)
         {
             if (ctrl.type == ctrlType.map && ctrl.names != null && ppfObj != null && ppfObj.panels.Count > 0)
             {
                 if (ppfObj.panels[0].ctrls == null)
                     ppfObj.panels[0].ctrls = new();
-                ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lat", name = ctrl.names.lat });
-                ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lon", name = ctrl.names.lon });
-                ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه zoom", name = ctrl.names.zoom });
+
+                double? lat = form.GetStringIfExist(ctrl.names.lat).ToDoubleReturnNull();
+                double? lon = form.GetStringIfExist(ctrl.names.lon).ToDoubleReturnNull();
+                int? zoom = form.GetStringIfExist(ctrl.names.zoom).ToIntReturnZiro();
+
+                if(lat != null && lon != null && zoom > 0)
+                {
+                    var tempPoint = new Point(lat.Value, lon.Value);
+                    if (!tempPoint.IsValid)
+                        throw BException.GenerateNewException(BMessages.Validation_Error);
+
+                    ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lat", name = ctrl.names.lat });
+                    ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lon", name = ctrl.names.lon });
+                    ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه zoom", name = ctrl.names.zoom });
+                }
+            }
+        }
+
+        public static void validateMinAndMaxDayForDateInput(ctrl ctrl, IFormCollection form)
+        {
+            if (ctrl.type == ctrlType.persianDateTime && ctrl.minDateValidation != null)
+            {
+                var curCTRLValue = form.Keys.Any(t => t == ctrl.name) ? form.GetStringIfExist(ctrl.name) : "";
+                if (!string.IsNullOrEmpty(curCTRLValue))
+                {
+                    var enDate = curCTRLValue.ToEnDate();
+                    if (enDate == null)
+                        throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
+                    if (enDate.Value <= DateTime.Now.AddDays(ctrl.minDateValidation.Value).AddDays(-1))
+                        throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
+                }
+            }
+            else if (ctrl.type == ctrlType.persianDateTime && ctrl.maxDateValidation != null)
+            {
+                var curCTRLValue = form.Keys.Any(t => t == ctrl.name) ? form.GetStringIfExist(ctrl.name) : "";
+                if (!string.IsNullOrEmpty(curCTRLValue))
+                {
+                    var enDate = curCTRLValue.ToEnDate();
+                    if (enDate == null)
+                        throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
+                    if (enDate.Value >= DateTime.Now.AddDays(ctrl.maxDateValidation.Value).AddDays(1))
+                        throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,6 @@ namespace Oje.AccountService.Interfaces
         object GetLightList(int? provinceId);
         int? GetIdBy(string title);
         int? Create(int? provinceId, string title, bool isActive);
+        object GetSelect2List(int? provinceId, Select2SearchVM searchInput);
     }
 }

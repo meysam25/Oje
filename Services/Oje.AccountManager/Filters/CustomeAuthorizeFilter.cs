@@ -37,7 +37,14 @@ namespace Oje.AccountService.Filters
                 loginUser = loginCValue.Decrypt2AndGetUserVM();
                 if (loginUser != null)
                 {
-                    if (loginUser.Ip == context.HttpContext.GetIpAddress()?.ToString() && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
+                    bool ignoreIp = false;
+
+                    if (context.HttpContext.Request.Cookies.ContainsKey("ignoreCIP"))
+                    {
+                        try { var tempResultX = context.HttpContext.Request.Cookies["ignoreCIP"]; ignoreIp = tempResultX.Decrypt2() == "true" ? true : false; } catch { }
+                    }
+
+                    if ((ignoreIp == true || loginUser.Ip == context.HttpContext.GetIpAddress()?.ToString()) && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
                     {
                         if (!UserAccessCaches.Any(t => t.UserId == loginUser.UserId) ||
                             UserAccessCaches.Where(t => t.UserId == loginUser.UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)

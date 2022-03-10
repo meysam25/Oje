@@ -9,9 +9,9 @@ namespace Oje.Infrastructure.Enums
 {
     public enum TypeOfInquiry
     {
-        [Display(Name = "با شماره پلاک")]
-        WithPlaque = 1,
         [Display(Name = "بدون شماره پلاک")]
-        widthOutPlaque = 2
+        widthOutPlaque = 1,
+        [Display(Name = "با شماره پلاک")]
+        WithPlaque = 2
     }
 }

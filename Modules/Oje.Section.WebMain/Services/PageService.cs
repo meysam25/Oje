@@ -47,7 +47,8 @@ namespace Oje.Section.WebMain.Services
                 SubTitle = input.subTitle,
                 Summery = input.summery,
                 MainImage = " ",
-                MainImageSmall = " "
+                MainImageSmall = " ",
+                TitleAndSubtitleColorCode = input.stColor
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -128,7 +129,8 @@ namespace Oje.Section.WebMain.Services
                     bTitle = t.ButtonTitle,
                     bLink = t.ButtonLink,
                     mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.MainImage,
-                    mainImageSmall_address = GlobalConfig.FileAccessHandlerUrl + t.MainImageSmall
+                    mainImageSmall_address = GlobalConfig.FileAccessHandlerUrl + t.MainImageSmall,
+                    stColor = t.TitleAndSubtitleColorCode
                 })
                 .FirstOrDefault();
         }
@@ -191,6 +193,7 @@ namespace Oje.Section.WebMain.Services
             fopundItem.ButtonTitle = input.bTitle;
             fopundItem.SubTitle = input.subTitle;
             fopundItem.Summery = input.summery;
+            fopundItem.TitleAndSubtitleColorCode = input.stColor;
 
             if (input.mainImage != null && input.mainImage.Length > 0)
                 fopundItem.MainImage = UploadedFileService.UploadNewFile(FileType.PageMainImage, input.mainImage, null, siteSettingId, fopundItem.Id, ".png,.jpg,.jpeg", false);
@@ -243,6 +246,7 @@ namespace Oje.Section.WebMain.Services
                 bTitle = foundPage.ButtonTitle,
                 subTitle = foundPage.SubTitle,
                 summery = foundPage.Summery,
+                stColorCode = foundPage.TitleAndSubtitleColorCode,
                 title = foundPage.Title,
                 mainImage = GlobalConfig.FileAccessHandlerUrl + foundPage.MainImage,
                 mainImageSmall = GlobalConfig.FileAccessHandlerUrl + foundPage.MainImageSmall,

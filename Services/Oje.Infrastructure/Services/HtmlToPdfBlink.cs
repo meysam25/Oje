@@ -28,6 +28,8 @@ namespace Oje.Infrastructure.Services
                 }
             }
 
+            settings.Cookies.Add("ignoreCIP", "true".Encrypt2());
+
             //Set the BlinkBinaries folder path 
             settings.BlinkPath = Path.Combine(GlobalConfig.WebHostEnvironment.ContentRootPath, "BlinkBinariesWindows");
 

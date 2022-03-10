@@ -103,6 +103,9 @@ namespace Oje.AccountService.Models.DB
         public NetTopologySuite.Geometries.Point MapLocation { get; set; }
         public int? SiteSettingId { get; set; }
 
+        [NotMapped]
+        public double distance { get; set; }
+
 
         [InverseProperty("User")]
         public List<UserRole> UserRoles { get; set; }

@@ -11,9 +11,11 @@ namespace Oje.Worker.Firewall
         public bool isRegister { get; set; }
         public bool checkIp { get; set; }
         public long timePass { get; set; }
+        readonly IBlockFirewallIpService BlockFirewallIpService = null;
 
-        public Worker()
+        public Worker(IBlockFirewallIpService BlockFirewallIpService)
         {
+            this.BlockFirewallIpService = BlockFirewallIpService;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -30,11 +32,11 @@ namespace Oje.Worker.Firewall
                 if (checkIp == true)
                 {
                     checkIp = false;
-                    await SecurityConfig.cacheServices?.BuildServiceProvider()?.GetService<IBlockFirewallIpService>().RegisterInFirewall();
+                    await BlockFirewallIpService.RegisterInFirewall();
                 }
                 timePass += 1000;
                 if (timePass % 60000 == 0)
-                    await SecurityConfig.cacheServices?.BuildServiceProvider()?.GetService<IBlockFirewallIpService>().RegisterInFirewall();
+                    await BlockFirewallIpService.RegisterInFirewall();
 
                 await Task.Delay(1000, stoppingToken);
             }

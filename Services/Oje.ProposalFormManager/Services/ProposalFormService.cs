@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Oje.ProposalFormService.Services
 {
-    public class ProposalFormService: IProposalFormService
+    public class ProposalFormService : IProposalFormService
     {
         readonly ProposalFormDBContext db = null;
         public ProposalFormService(ProposalFormDBContext db)
@@ -49,7 +49,7 @@ namespace Oje.ProposalFormService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.ProposalForms.AsQueryable();
+            var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).AsQueryable();
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             if (proposalFormCategoryId != null)

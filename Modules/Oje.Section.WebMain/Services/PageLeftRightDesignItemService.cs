@@ -93,11 +93,11 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetById(int? id, int? siteSettingId)
+        public PageLeftRightDesignItemCreateUpdateVM GetById(int? id, int? siteSettingId)
         {
             return db.PageLeftRightDesignItems
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
-                .Select(t => new
+                .Select(t => new PageLeftRightDesignItemCreateUpdateVM
                 {
                     id = t.Id,
                     dId = t.PageLeftRightDesignId,

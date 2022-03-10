@@ -51,6 +51,7 @@ namespace Oje.ProposalFormService.Models.DB
         public string Tell { get; set; }
         [MaxLength(12)]
         public string PostalCode { get; set; }
+        public long? AgentCode { get; set;}
         [MaxLength(1000)]
         public string Address { get; set; }
         public long? CreateByUserId { get; set; }

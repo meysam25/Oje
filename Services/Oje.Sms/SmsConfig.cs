@@ -33,7 +33,7 @@ namespace Oje.Sms
         {
             services.AddHttpClient();
 
-            services.AddDbContext<SmsDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddDbContext<SmsDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)), ServiceLifetime.Singleton);
 
             services.AddSingleton<ISmsConfigService, SmsConfigService>();
             services.AddSingleton<ISmsTrigerService, SmsTrigerService>();

@@ -33,7 +33,7 @@ namespace Oje.ProposalFormService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.ProposalFormCategories.AsQueryable();
+            var qureResult = db.ProposalFormCategories.OrderByDescending(t => t.Id).AsQueryable();
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

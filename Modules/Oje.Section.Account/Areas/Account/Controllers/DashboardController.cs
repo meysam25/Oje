@@ -72,6 +72,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.LoginWithPassword, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             var tempResult = UserService.Login(input, SiteSettingService.GetSiteSetting()?.Id);
             BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.LoginWithPassword, Infrastructure.Enums.BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+
             return Json(tempResult);
         }
 

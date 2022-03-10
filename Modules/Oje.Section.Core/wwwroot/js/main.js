@@ -171,6 +171,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
         switch (type) {
             case 'hidden':
             case 'text':
+            case 'color':
                 if ($(this).closest('.tokenBox').length == 0) {
                     $(this).val(value);
                     if ($(this).closest('.myColorPicker').length > 0) {
@@ -408,6 +409,7 @@ function getFormData(selector) {
                 case 'password':
                 case 'text':
                 case 'hidden':
+                case 'color':
                     postData.append(name, $(this).val())
                     break;
                 case 'file':
@@ -421,6 +423,11 @@ function getFormData(selector) {
                                 postData.append(name, $(this)[0].files[0])
                         } else
                             postData.append(name, $(this)[0].files[0])
+                    } else {
+                        var targetImage = getFileInputImage($(this));
+                        if (targetImage.compressUploadFile && targetImage.useWithouFile) {
+                            postData.append(name, targetImage.compressUploadFile)
+                        }
                     }
                     break;
                 case 'checkbox':
@@ -518,9 +525,9 @@ function postForm(url, postData, success, error, completeEvent) {
                             $.toast({
                                 heading: res.isSuccess == false ? 'خطا' : 'موفقیت',
                                 text: res.message,
-                                textAlign: 'left',
-                                position: 'bottom-left',
-                                showHideTransition: 'fade',
+                                textAlign: 'right',
+                                position: 'bottom-right',
+                                showHideTransition: 'slide',
                                 icon: res.isSuccess == false ? 'error' : 'success'
                             })
                             if (res.errorCode == 5) {
@@ -550,10 +557,10 @@ function postForm(url, postData, success, error, completeEvent) {
                 if (xhr.status == 403) {
                     $.toast({
                         heading: 'عدم دسترسی',
-                        position: 'bottom-left',
-                        textAlign: 'left',
+                        position: 'bottom-right',
+                        textAlign: 'right',
                         text: 'دسترسی شما به این بخش محدود می باشد',
-                        showHideTransition: 'fade',
+                        showHideTransition: 'slide',
                         icon: 'error'
                     });
                     return;
@@ -561,10 +568,10 @@ function postForm(url, postData, success, error, completeEvent) {
 
                 $.toast({
                     heading: 'خطا',
-                    position: 'bottom-left',
-                    textAlign: 'left',
+                    position: 'bottom-right',
+                    textAlign: 'right',
                     text: 'خطای غیر قابل پیشبینی لطفا با بخش ادمین تماس حاصل کنید',
-                    showHideTransition: 'fade',
+                    showHideTransition: 'slide',
                     icon: 'error'
                 });
             },
@@ -601,6 +608,7 @@ function clearForm(selector) {
     $(selector).find('img[data-name]').attr('src', '/Modules/Images/unknown.svg');
     $(selector).find('input[type="text"]').not('[data-no-clear]').val('');
     $(selector).find('input[type="hidden"]').not('[data-no-clear]').val('');
+    $(selector).find('input[type="color"]').not('[data-no-clear]').val('');
     $(selector).find('input[type="radio"]').prop('checked', false);
     $(selector).find('input[type="checkbox"]').prop('checked', false);
     $(selector).find('input[type="file"]').not('[data-no-clear]').val(null);

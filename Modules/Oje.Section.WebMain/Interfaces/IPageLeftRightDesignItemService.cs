@@ -12,7 +12,7 @@ namespace Oje.Section.WebMain.Interfaces
     {
         ApiResult Create(PageLeftRightDesignItemCreateUpdateVM input, int? siteSettingId);
         ApiResult Update(PageLeftRightDesignItemCreateUpdateVM input, int? siteSettingId);
-        object GetById(int? id, int? siteSettingId);
+        PageLeftRightDesignItemCreateUpdateVM GetById(int? id, int? siteSettingId);
         ApiResult Delete(long? id, int? siteSettingId);
         GridResultVM<PageLeftRightDesignItemMainGridResultVM> GetList(PageLeftRightDesignItemMainGrid searchInput, int? siteSettingId);
     }

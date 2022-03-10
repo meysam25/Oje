@@ -31,7 +31,7 @@ namespace Oje.FileService.Models.DB
             get
             {
                 if (!string.IsNullOrEmpty(FileName))
-                    return GlobalConfig.WebHostEnvironment.WebRootPath + FileName.Replace("/", "\\");
+                    return GlobalConfig.WebHostEnvironment.ContentRootPath + FileName.Replace("/", "\\");
 
                 return null;
             }

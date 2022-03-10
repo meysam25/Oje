@@ -36,6 +36,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "عدم پیدا کردن صفحه")]
         PageNotFound = 15,
         [Display(Name = "تماس با ما")]
-        ContactUs = 16
+        ContactUs = 16,
+        [Display(Name = "پیش ثبت نام کاربر")]
+        CreateUserPreRegister = 17
     }
 }

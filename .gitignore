@@ -364,6 +364,6 @@ FodyWeavers.xsd
 
 # For Temp Files
 *.gz
-UploadImages/
+Oje.Web/UploadImages/
 Oje.Web/wwwroot
 BlinkBinariesWindows

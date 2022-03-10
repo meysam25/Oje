@@ -2,6 +2,7 @@
 using Oje.AccountService.Models.DB;
 using Oje.AccountService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {
-    public class CityService: ICityService
+    public class CityService : ICityService
     {
         readonly AccountDBContext db = null;
         public CityService(AccountDBContext db)
@@ -21,7 +22,7 @@ namespace Oje.AccountService.Services
 
         public int? Create(int? provinceId, string title, bool isActive)
         {
-            var newItem = new City() 
+            var newItem = new City()
             {
                 IsActive = isActive,
                 ProvinceId = provinceId.Value,
@@ -45,6 +46,30 @@ namespace Oje.AccountService.Services
             result.AddRange(db.Cities.Where(t => t.ProvinceId == provinceId).Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
+        }
+
+        public object GetSelect2List(int? provinceId, Select2SearchVM searchInput)
+        {
+            List<object> result = new List<object>();
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.Cities.OrderByDescending(t => t.Id).Where(t => t.ProvinceId == provinceId);
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => (t.Title).Contains(searchInput.search));
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Title }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
         }
     }
 }

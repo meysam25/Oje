@@ -64,6 +64,12 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "متن قرارداد", Prompt = "ProposalFormContract")]
         ProposalFormContractRules = 27,
         [Display(Name = "لوگوی سایت متنی", Prompt = "MainLogo", Description = "300*113", AutoGenerateFilter = true)]
-        MainLogoWithText = 28
+        MainLogoWithText = 28,
+        [Display(Name = "متن قرارداد ثبت نام کاربر", Prompt = "UserRegisterFormRules")]
+        UserRegisterFormRules = 29,
+        [Display(Name = "نمونه اسنداد مورد نیاز ثبت نام", Prompt = "RegisterDownloadSampleDocuments")]
+        RegisterDownloadSampleDocuments = 30,
+        [Display(Name = "اسناد بارگزاری شده توسط کاربر جهت ثبت نام", Prompt = "RegisterUploadedDocuments", Description = "~1000*1000")]
+        RegisterUploadedDocuments = 31
     }
 }

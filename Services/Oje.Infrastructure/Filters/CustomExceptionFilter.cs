@@ -40,6 +40,8 @@ namespace Oje.Infrastructure.Filters
             }
             else
             {
+
+                //context.Result = new JsonResult(new ApiResult() { errorCode = ApiResultErrorCode.UnknownError, message = context.Exception.Message + " " + context.Exception?.InnerException?.Message + " " + context.Exception?.InnerException?.InnerException?.Message});
                 if (be == null)
                     context.Result = new JsonResult(new ApiResult() { errorCode = ApiResultErrorCode.UnknownError, message = "خطا در انجام عملیات" });
                 else

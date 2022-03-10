@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Oje.FileService.Interfaces;
+using Oje.Infrastructure.Models;
 
 namespace Oje.Section.Core.Areas.Controllers
 {
@@ -86,6 +87,12 @@ namespace Oje.Section.Core.Areas.Controllers
         public IActionResult GetCityList([FromQuery] int? id)
         {
             return Json(CityService.GetLightList(id));
+        }
+
+        [HttpGet]
+        public IActionResult GetCityList2([FromQuery] int? provinceId, [FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(CityService.GetSelect2List(provinceId, searchInput));
         }
 
         [HttpGet]

@@ -7,7 +7,7 @@
           "id": "loginForgetPasswordModal",
           "title": "ثبت نام | ورود",
           "autoShowModalOnFalse": "/Account/Dashboard/IsUserLogin",
-          "autoShowModalOnFalseUrlCondation": [ "/Proposal/Form" ],
+          "autoShowModalOnFalseUrlCondation": [ "/Proposal/Form", "/Register/Users/RegisterInsuranceAgents" ],
           "panels": [
             {
               "stepWizards": [

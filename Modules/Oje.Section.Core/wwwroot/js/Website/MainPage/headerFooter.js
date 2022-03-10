@@ -36,6 +36,35 @@ function bindTopLeftIcons() {
     });
 }
 
+function bindFooterIcons() {
+    postForm('/home/GetFooterSocialUrl', new FormData(), function (res)
+    {
+        if (res) {
+            if (res.linkIn)
+                $('#aLinkin').attr('href', res.linkIn);
+            else
+                $('#aLinkin').css('display', 'none');
+            if (res.instageram)
+                $('#aInestageram').attr('href', res.instageram);
+            else
+                $('#aInestageram').css('display', 'none');
+            if (res.watapp)
+                $('#aWhatapp').attr('href', res.watapp);
+            else
+                $('#aWhatapp').css('display', 'none');
+            if (res.telegeram)
+                $('#aTelegeram').attr('href', res.telegeram);
+            else
+                $('#aTelegeram').css('display', 'none');
+        } else {
+            $('#aTelegeram').css('display', 'none');
+            $('#aWhatapp').css('display', 'none');
+            $('#aInestageram').css('display', 'none');
+            $('#aLinkin').css('display', 'none');
+        }
+    });
+}
+
 function addTopLeftIcons(title, imgSrc, des, isVisibleAllways) {
     return '<img ' + (des ? 'style="cursor:pointer"' : '') + '  class="' + (isVisibleAllways ? 'mainHeaderIranLogo' : 'mainHeaderElectronDevelopLogo') + '" title="' + title + '" src="' + imgSrc + '" width="85" height="77" ' + (des ? 'data-des=\'' + des + '\'' : '') + ' />';
 }
@@ -81,7 +110,7 @@ $.fn.loadTopMenu = function (url) {
     }
     return this.each(function () {
         postForm(url, new FormData(), function (res) {
-            var template = '';
+            var template = '<img class="floatingIcon" width="50" height="50" alt="' + $('#mainSiteLogoIcon').attr('title') + '" src="' + $('#mainSiteLogoIcon').find('img').attr('src') + '" />';
             if (res && res.length > 0) {
                 template += '<i class="moveBackButtonInResponsive fa fa-arrow-right" ></i>';
                 for (var i = 0; i < res.length; i++) {
@@ -120,8 +149,7 @@ $.fn.initNavResButton = function () {
         $(this).find('.headerMenuItemSumMenuItemsInner').click(function (e) {
             e.stopPropagation();
         });
-        $(this).find('.headerMenuItemSumMenuItems').click(function (e)
-        {
+        $(this).find('.headerMenuItemSumMenuItems').click(function (e) {
             e.preventDefault();
             e.stopPropagation();
         });
@@ -362,3 +390,20 @@ function onVisibilityChange(el, callback, isFalseVisbleNeeded) {
         }
     }
 }
+
+$(document).ready(function () {
+    $('img[data-alt-src]').mouseenter(function () {
+        var src = $(this).attr('src');
+        var altSrc = $(this).attr('data-alt-src');
+        if (src && altSrc) {
+            $(this)[0].prevSrc = src;
+            $(this).attr('src', altSrc);
+        }
+    });
+    $('img[data-alt-src]').mouseleave(function () {
+        var src = $(this)[0].prevSrc;
+        if (src) {
+            $(this).attr('src', src);
+        }
+    });
+})

@@ -10,6 +10,8 @@ namespace Oje.Infrastructure.Enums
     public enum BankAccountFactorType
     {
         [Display(Name = "فرم پیشنهاد")]
-        ProposalFilledForm = 1
+        ProposalFilledForm = 1,
+        [Display(Name = "ثبت نام کاربر")]
+        UserRegister = 2
     }
 }

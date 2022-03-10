@@ -127,7 +127,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_Percent = 57,
         [Display(Name = "درصد وارد شده مجاز نمی باشد")]
         Invalid_Percent = 58,
-        [Display(Name = "لطفا فرم پیشنهاد را انتخاب کنید")]
+        [Display(Name = "لطفا فرم را انتخاب کنید")]
         Please_Select_ProposalForm = 59,
         [Display(Name = "لطفا حداقل یک شرکت انتخاب کنید")]
         Please_Select_Company = 60,
@@ -301,7 +301,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_Driver_NoDamage_Discount_Percent = 144,
         [Display(Name = "لطفا سال ساخت را انتخاب کنید")]
         Please_Enter_Car_CreateDate = 145,
-        [Display(Name = "فرم پیشنهاد یافت نشد")]
+        [Display(Name = "فرم یافت نشد")]
         ProposalForm_Not_Founded = 146,
         [Display(Name = "هیچ شرکت بیمه ای یافت نشد")]
         No_Company_Exist = 147,

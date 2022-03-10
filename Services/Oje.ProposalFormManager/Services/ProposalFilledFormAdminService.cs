@@ -446,6 +446,14 @@ namespace Oje.ProposalFormService.Services
                    t.PaymentTraceCode,
                    ppfTitle = t.ProposalForm.Title,
                    createUserFullname = t.ProposalFilledFormUsers.Where(t => t.Type == ProposalFilledFormUserType.OwnerUser).Select(t => t.User.Firstname + " " + t.User.Lastname).FirstOrDefault(),
+                   selectAgent = t.ProposalFilledFormUsers.Where(t => t.Type == ProposalFilledFormUserType.Agent).Select(t => new
+                   {
+                       t.User.Firstname,
+                       t.User.Lastname,
+                       t.User.AgentCode,
+                       t.User.Address
+                   })
+                   .FirstOrDefault(),
                    values = t.ProposalFilledFormValues.Select(tt => new
                    {
                        tt.Value,
@@ -518,7 +526,15 @@ namespace Oje.ProposalFormService.Services
                         listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = step.title, ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupItems });
                 }
             }
+            if (foundItem.selectAgent != null)
+            {
+                List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupPaymentItems = new();
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام ", value = foundItem.selectAgent.Firstname + " " + foundItem.selectAgent.Lastname });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ", value = foundItem.selectAgent.AgentCode + "" });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12", title = "آدرس ", value = foundItem.selectAgent.Address + "" });
 
+                listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "نماینده", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
+            }
 
 
             result.proposalFilledFormId = foundItem.Id;

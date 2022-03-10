@@ -12,8 +12,10 @@ namespace Oje.Worker.Sms
         public bool checkSms { get; set; }
         public long timePass { get; set; }
 
-        public Worker()
+        readonly ISmsSendingQueueService SmsSendingQueueService = null;
+        public Worker(ISmsSendingQueueService SmsSendingQueueService)
         {
+            this.SmsSendingQueueService = SmsSendingQueueService;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -30,11 +32,11 @@ namespace Oje.Worker.Sms
                 if (checkSms == true)
                 {
                     checkSms = false;
-                    await SmsConfig.cacheServices?.BuildServiceProvider()?.GetService<ISmsSendingQueueService>().SendSms();
+                    await SmsSendingQueueService.SendSms();
                 }
                 timePass += 1000;
                 if (timePass % 60000 == 0)
-                    await SmsConfig.cacheServices?.BuildServiceProvider()?.GetService<ISmsSendingQueueService>().SendSms();
+                    await SmsSendingQueueService.SendSms();
 
                 await Task.Delay(1000, stoppingToken);
             }

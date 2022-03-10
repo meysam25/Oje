@@ -12,6 +12,7 @@ namespace Oje.Section.WebMain.Models.View
         public long? id { get; set; }
         public string title { get; set; }
         public string subTitle { get; set; }
+        public string stColor { get; set; }
         public string summery { get; set; }
         public IFormFile mainImage { get; set; }
         public IFormFile mainImageSmall { get; set; }

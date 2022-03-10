@@ -24,11 +24,13 @@ namespace Oje.Web
                     webBuilder.UseKestrel(options => 
                     {
                         options.AddServerHeader = false;
+
                         //options.Listen(IPAddress.Any, 80);
                         //options.Listen(IPAddress.Any, 443, listenOptions =>
                         //{
-                        //    //listenOptions.UseHttps("certificate.pfx", "1");
+                        //    listenOptions.UseHttps("certificate.pfx", "1");
                         //});
+
                     });
                     webBuilder.UseUrls("https://localhost:5001");
                     webBuilder.UseIISIntegration();

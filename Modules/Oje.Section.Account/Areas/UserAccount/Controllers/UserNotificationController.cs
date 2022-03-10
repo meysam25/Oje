@@ -16,7 +16,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
 {
     [Area("UserAccount")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "نوتیفیکیشن")]
+    [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "پیام های ضروری")]
     [CustomeAuthorizeFilter]
     public class UserNotificationController : Controller
     {
@@ -32,16 +32,16 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
-        [AreaConfig(Title = "نوتیفیکیشن", Icon = "fa-info", IsMainMenuItem = true)]
+        [AreaConfig(Title = "پیام های ضروری", Icon = "fa-info", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "نوتیفیکیشن";
+            ViewBag.Title = "پیام های ضروری";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserNotification", new { area = "UserAccount" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست نوتیفیکیشن", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست پیام های ضروری", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -49,14 +49,14 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "UserNotification")));
         }
 
-        [AreaConfig(Title = "مشاهده نوتیفیکیشن", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده پیام های ضروری", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetById([FromForm] string id)
         {
             return Json(UserNotificationService.GetBy(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نوتیفیکیشن", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست پیام های ضروری", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserNotificationMainGrid searchInput)
         {

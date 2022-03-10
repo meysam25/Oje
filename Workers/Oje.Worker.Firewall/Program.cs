@@ -12,7 +12,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         GlobalConfig.Configuration = hostContext.Configuration;
         services.AddScoped<IHttpContextAccessor, FakeIHttpContextAccessor>();
-        SecurityConfig.Config(services);
+        SecurityConfig.ConfigForWorker(services);
         services.AddHostedService<Worker>();
     })
     .Build();

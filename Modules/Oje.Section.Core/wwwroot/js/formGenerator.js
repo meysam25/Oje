@@ -28,9 +28,115 @@ function generateForm(res, targetId) {
 }
 
 
-$.fn.addStatusBarToElement = function (onClose, onMax, onMin, option) {
+function getInputTemplate(ctrl) {
+    var result = '';
+    if (ctrl) {
+        if (ctrl.onChange)
+            ctrl.onChange = ctrl.onChange.replace(/&#39;/g, '\'');
+        if (!ctrl.id)
+            ctrl.id = uuidv4RemoveDash();
+        if (ctrl.type != 'hidden')
+            result += '<div class="' + ctrl.parentCL + '">';
+        switch (ctrl.type) {
+            case 'hidden':
+                result += '<input autocomplete="off" type="hidden" name="' + ctrl.name + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' />';
+                break;
+            case 'text':
+            case 'password':
+            case 'persianDateTime':
+            case 'color':
+                result += getTextBoxTemplate(ctrl);
+                break;
+            case 'dropDown':
+            case 'dropDown2':
+                result += getDropdownCTRLTemplate(ctrl);
+                break;
+            case 'tokenBox':
+            case 'tokenBox2':
+                result += getTokennCTRLTemplate(ctrl);
+                break;
+            case 'radio':
+                result += getRadioButtonTemplate(ctrl);
+                break;
+            case 'checkBox':
+                result += getCheckboxButtonTemplate(ctrl);
+                break;
+            case 'file':
+                result += getFileCTRLTemplate(ctrl);
+                break;
+            case 'dynamicFileUpload':
+                result += getDynamicFileUploadCtrlTemplate(ctrl);
+                break;
+            case 'dynamicFileUploadDepend':
+                result += getDynamicFileUploadDependCtrlTemplate(ctrl);
+                break;
+            case 'textarea':
+                result += getTextAreaTemplate(ctrl);
+                break;
+            case 'ck':
+                result += getCkEditorTemplate(ctrl);
+                break;
+            case 'dynamiCtrls':
+                result += getDynamicCtrlsTemplate(ctrl);
+                break;
+            case 'chkCtrlBox':
+                result += getChkCtrlBoxTemplateCtrl(ctrl);
+                break;
+            case 'multiRowInput':
+                result += getMultiRowInputTemplate(ctrl);
+                break;
+            case 'Content':
+                result += getContentTemplate(ctrl);
+                break;
+            case 'TabContent':
+                result += getTabContentTemplate(ctrl);
+                break;
+            case 'Shortcut':
+                result += getShortcutButtonTemplate(ctrl);
+                break;
+            case 'carPlaque':
+                result += getPlaqueTemplate(ctrl);
+                break;
+            case 'button':
+                result += getButtonTemplateWidthLabel(ctrl);
+                break;
+            case 'countDownButton':
+                result += getCountDownButtonTemplate(ctrl);
+                break;
+            case 'multiSelectLine':
+                result += getMultiSelectLineTemplate(ctrl);
+                break;
+            case 'multiSelectImg':
+                result += getMultiSelectImgTemplate(ctrl);
+                break;
+            case 'cTemplate':
+                result += getCTemplate(ctrl);
+                break;
+            case 'map':
+                result += getMapTemplate(ctrl);
+                break;
+            case 'empty':
+            default:
+                break;
+        }
+        if (ctrl.type != 'hidden')
+            result += '</div>';
+    }
+
+    return result;
+}
+
+
+$.fn.addStatusBarToElement = function (onClose, onMax, onMin, option, cButtons) {
     var getToobarTemplate = function () {
-        return '<div class="myPanelToolbar" style=""><i style="' + (option && option.close == 'hide' ? 'display:none;' : '') + '"  class="fa fa-times toolbarCloseButton"></i><i class="fa fa-arrows toolBarMaxMin"></i></div>';
+        var htmlResult = '<div class="myPanelToolbar" style=""><i style="' + (option && option.close == 'hide' ? 'display:none;' : '') + '"  class="fa fa-times toolbarCloseButton"></i><i class="fa fa-arrows toolBarMaxMin"></i>';
+        if (cButtons && cButtons.length > 0) {
+            for (var i = 0; i < cButtons.length; i++) {
+                var cButton = cButtons[i];
+                htmlResult += '<i class="fa ' + cButton.icon + ' "></i>';
+            }
+        }
+        return htmlResult + '</div>';
     };
 
     this.each(function () {
@@ -41,6 +147,17 @@ $.fn.addStatusBarToElement = function (onClose, onMax, onMin, option) {
                 onClose();
             $(this).closest('.holderMyToolbar').remove();
         });
+        if (cButtons && cButtons.length > 0) {
+            for (var i = 0; i < cButtons.length; i++) {
+                var cButton = cButtons[i];
+                if (cButton.icon && cButton.onClick) {
+                    $(this).find('.' + cButton.icon).click(function () {
+                        if (this.onClick)
+                            this.onClick();
+                    }.bind({ onClick: cButton.onClick }));
+                }
+            }
+        }
         $(this).find('.toolBarMaxMin').click(function () {
             if ($(this).hasClass('fa-arrows')) {
                 if (onMax) {
@@ -313,102 +430,6 @@ function getModualTemplateCTRL(modual) {
 
     return result;
 }
-function getInputTemplate(ctrl) {
-    var result = '';
-    if (ctrl) {
-        if (ctrl.onChange)
-            ctrl.onChange = ctrl.onChange.replace(/&#39;/g, '\'');
-        if (!ctrl.id)
-            ctrl.id = uuidv4RemoveDash();
-        if (ctrl.type != 'hidden')
-            result += '<div class="' + ctrl.parentCL + '">';
-        switch (ctrl.type) {
-            case 'hidden':
-                result += '<input autocomplete="off" type="hidden" name="' + ctrl.name + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' />';
-                break;
-            case 'text':
-            case 'password':
-            case 'persianDateTime':
-                result += getTextBoxTemplate(ctrl);
-                break;
-            case 'dropDown':
-            case 'dropDown2':
-                result += getDropdownCTRLTemplate(ctrl);
-                break;
-            case 'tokenBox':
-            case 'tokenBox2':
-                result += getTokennCTRLTemplate(ctrl);
-                break;
-            case 'radio':
-                result += getRadioButtonTemplate(ctrl);
-                break;
-            case 'checkBox':
-                result += getCheckboxButtonTemplate(ctrl);
-                break;
-            case 'file':
-                result += getFileCTRLTemplate(ctrl);
-                break;
-            case 'dynamicFileUpload':
-                result += getDynamicFileUploadCtrlTemplate(ctrl);
-                break;
-            case 'dynamicFileUploadDepend':
-                result += getDynamicFileUploadDependCtrlTemplate(ctrl);
-                break;
-            case 'textarea':
-                result += getTextAreaTemplate(ctrl);
-                break;
-            case 'ck':
-                result += getCkEditorTemplate(ctrl);
-                break;
-            case 'dynamiCtrls':
-                result += getDynamicCtrlsTemplate(ctrl);
-                break;
-            case 'chkCtrlBox':
-                result += getChkCtrlBoxTemplateCtrl(ctrl);
-                break;
-            case 'multiRowInput':
-                result += getMultiRowInputTemplate(ctrl);
-                break;
-            case 'Content':
-                result += getContentTemplate(ctrl);
-                break;
-            case 'TabContent':
-                result += getTabContentTemplate(ctrl);
-                break;
-            case 'Shortcut':
-                result += getShortcutButtonTemplate(ctrl);
-                break;
-            case 'carPlaque':
-                result += getPlaqueTemplate(ctrl);
-                break;
-            case 'button':
-                result += getButtonTemplateWidthLabel(ctrl);
-                break;
-            case 'countDownButton':
-                result += getCountDownButtonTemplate(ctrl);
-                break;
-            case 'multiSelectLine':
-                result += getMultiSelectLineTemplate(ctrl);
-                break;
-            case 'multiSelectImg':
-                result += getMultiSelectImgTemplate(ctrl);
-                break;
-            case 'cTemplate':
-                result += getCTemplate(ctrl);
-                break;
-            case 'map':
-                result += getMapTemplate(ctrl);
-                break;
-            case 'empty':
-            default:
-                break;
-        }
-        if (ctrl.type != 'hidden')
-            result += '</div>';
-    }
-
-    return result;
-}
 
 function updateTemplateText(ctrl) {
     var selectQuiry = $('#' + ctrl.id);
@@ -473,7 +494,7 @@ function getMapTemplate(ctrl) {
     var result = '';
 
     if (ctrl) {
-        result += '<div style="padding:0px;" class="myCtrl mapCtrl form-check">';
+        result += '<div style="padding:0px;position:relative;z-index:2;" class="myCtrl mapCtrl form-check">';
         if (ctrl.label)
             result += '<label>' + ctrl.label + '</label>';
 
@@ -970,7 +991,6 @@ function getTabContentTemplate(ctrl) {
     if (ctrl.url && ctrl.label) {
         result += '<a id="' + ctrl.id + '" style="margin-bottom:10px;position:relative" class="btn btn-primary btn-block" href="' + ctrl.url + '" >' + ctrl.label + '</a>';
         functionsList.push(function () {
-            //var curCtrl = this.ctrl;
             addCountNotificationToButtonIfHasGrid(this.ctrl.id);
 
             $('#' + this.ctrl.id).click(function (e) {
@@ -1090,10 +1110,28 @@ function getCheckboxButtonTemplate(ctrl) {
     var result = '';
 
     if (ctrl) {
-        result += '<div class="form-check form-switch myCtrl">';
-        result += '<input class="form-check-input" name="' + ctrl.name + '" type="checkbox" value="' + (ctrl.defValue ? ctrl.defValue : 'true') + '" id="' + ctrl.id + '" />';
+        result += '<div class="form-check form-switch myCtrl ">';
+        result += '<input ' + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + ' class="form-check-input ' + (ctrl.class ? ctrl.class : '') + '" name="' + ctrl.name + '" type="checkbox" value="' + (ctrl.defValue ? ctrl.defValue : 'true') + '" id="' + ctrl.id + '" />';
         result += '<label style="padding-right:20px;" class="form-check-label" for="' + ctrl.id + '">' + ctrl.label + '</label>';
         result += '</div>';
+
+        if (ctrl.fileDownloadConfig) {
+            functionsList.push(function () {
+                if (this.ctrl.fileDownloadConfig.url && this.ctrl.fileDownloadConfig.text && this.ctrl.id) {
+                    var formData = new FormData();
+                    appendAllQueryStringToForm(formData);
+                    postForm(this.ctrl.fileDownloadConfig.url, formData, function (res) {
+                        if (res) {
+                            var foundLabel = $('#' + this.ctrl.id).closest('.myCtrl').find('label');
+                            if (foundLabel.length > 0 && foundLabel.text()) {
+                                var aTag = '<a target="_blank" href="' + res + '" title="' + this.ctrl.fileDownloadConfig.text + '" >' + this.ctrl.fileDownloadConfig.text + '</a>';
+                                foundLabel.html(foundLabel.text().replace(this.ctrl.fileDownloadConfig.text, aTag));
+                            }
+                        }
+                    }.bind({ ctrl: this.ctrl }))
+                }
+            }.bind({ ctrl: ctrl }));
+        }
     }
 
     return result;
@@ -1384,6 +1422,19 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
     return result;
 }
 
+function getDateTimeMinMaxValueValidation(ctrl) {
+    var result = '';
+
+    if (ctrl.type == 'persianDateTime') {
+        if (ctrl.minDateValidation)
+            result += ' data-jdp-min-date="' + getLastDayFromToday(ctrl.minDateValidation) + '" ';
+        if (ctrl.maxDateValidation)
+            result += ' data-jdp-max-date="' + getLastDayFromToday(ctrl.maxDateValidation) + '" ';
+    }
+
+    return result;
+}
+
 function getTextBoxTemplate(ctrl) {
     if (!ctrl.id)
         ctrl.id = uuidv4RemoveDash();
@@ -1392,13 +1443,13 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input autocomplete="off" ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     functionsList.push(function () {
         setTimeout(function () {
             $('#' + this.id).attr('type', (this.type == 'persianDateTime' ? 'text' : this.type));
-        }.bind(this), 300);
+        }.bind(this), 350);
         inputNewLabelEventHandler(this.id);
     }.bind({ id: ctrl.id, type: ctrl.type }));
 
@@ -1442,7 +1493,9 @@ function getTextBoxTemplate(ctrl) {
                     separatorChar: "/",
                     changeMonthRotateYear: true,
                     showTodayBtn: true,
-                    showEmptyBtn: true
+                    showEmptyBtn: true,
+                    minDate: "attr",
+                    maxDate: "attr"
                 });
             }.bind({ id: this.id }), 100);
         }.bind({ id: ctrl.id }));
@@ -1572,6 +1625,53 @@ function getTextAreaTemplate(ctrl) {
     return result;
 }
 
+function showCopModal(imageQuiry, min, max) {
+    var modalId = imageQuiry.attr('id') + '_cropModal';
+    var cropperModalId = modalId + '_cpCtrl';
+    var localModalObj = {
+        id: modalId,
+        class: 'modal-xl',
+        title: 'ویرایش تصویر',
+        modelBody: '<div id="' + cropperModalId + '" class="cImageCtrl"></div>',
+        actions: [
+            {
+                title: 'بستن',
+                onClick: 'closeThisModal(this)',
+                class: 'btn-secondary'
+            },
+            {
+                title: 'ذخیره',
+                onClick: 'saveCropImage(\'' + imageQuiry.attr('id') + '\', this)',
+                class: 'btn-primary'
+            }
+        ]
+    };
+
+    if ($('#' + modalId).length == 0) {
+        $('body').append(getModualTemplate(localModalObj));
+        executeArrFunctions();
+    }
+    $('#' + cropperModalId).initImageCrapper(imageQuiry.attr('src'), min, max);
+    $('#' + modalId).modal('show');
+}
+
+function saveCropImage(imgId, curThis) {
+    if ($('#tempCanvas').length > 0 && $('#' + imgId).length > 0) {
+        var canvas = $('#tempCanvas')[0];
+        var targetImage = $('#' + imgId)[0];
+        var fileName = 'cropImage';
+        canvas.toBlob(function (blob) {
+            var f2 = new File([blob], fileName + ".jpg", { type: "image/jpg" });
+            targetImage.compressUploadFile = f2;
+            targetImage.useWithouFile = true;
+            var urlCreator = window.URL || window.webkitURL;
+            var imageUrl = urlCreator.createObjectURL(blob);
+            targetImage.src = imageUrl;
+        }, 'image/jpeg', 0.8);
+        closeThisModal(curThis);
+    }
+}
+
 
 function getFileCTRLTemplate(ctrl) {
     var result = '';
@@ -1600,9 +1700,12 @@ function getFileCTRLTemplate(ctrl) {
         $('#' + fileId).change(function () {
             readFileFromInput(this, imgId);
         });
-
-        $('#' + fileId).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' });
-    }.bind({ id: ctrl.id }));
+        if (this.ctrl.cropper) {
+            $('#' + fileId).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' }, [{ icon: 'fa-crop', onClick: function () { showCopModal($('#' + imgId), this.ctrl.cropperValidation ? this.ctrl.cropperValidation.min : null, this.ctrl.cropperValidation ? this.ctrl.cropperValidation.max : null) }.bind({ ctrl: this.ctrl }) }]);
+        } else {
+            $('#' + fileId).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' });
+        }
+    }.bind({ id: ctrl.id, ctrl: ctrl }));
 
     return result;
 }
@@ -1747,6 +1850,15 @@ function getDropdownCTRLTemplate(ctrl) {
                     }.bind({ exParam: exteraSelect2Parameters, exteraParameterIds: this.exteraParameterIds })
                 }
             };
+            if (this.ctrl.disableCondationStyleOnly) {
+
+                select2Option.templateResult = function (item) {
+                    if (!item[this.tProp]) {
+                        return $('<span style="color:silver;" >' + item.text + '</span>');
+                    }
+                    return item.text;
+                }.bind({ tProp: this.ctrl.disableCondationStyleOnly });
+            }
             $('#' + this.id).select2(select2Option);
             setSelect2LabelAria(this.id);
             if (this.exteraParameterIds) {
@@ -1759,6 +1871,11 @@ function getDropdownCTRLTemplate(ctrl) {
                         }
                     }.bind({ id: this.id }));
                 }
+            }
+            if (this.ctrl.showModalCondation) {
+                $('#' + this.id).change(function () {
+                    showModalOnDynamiCondation(this.ctrl.id, this.ctrl.showModalCondation);
+                }.bind({ ctrl: this.ctrl }));
             }
             if (this.onChange) {
                 $('#' + this.id).change(function () {
@@ -1774,7 +1891,7 @@ function getDropdownCTRLTemplate(ctrl) {
                 }
                 return false;
             });
-        }.bind({ id: ctrl.id, dataurl: ctrl.dataurl, exteraParameterIds: ctrl.exteraParameterIds, onChange: ctrl.onChange }));
+        }.bind({ id: ctrl.id, dataurl: ctrl.dataurl, exteraParameterIds: ctrl.exteraParameterIds, onChange: ctrl.onChange, ctrl: ctrl }));
         functionsList.push(function () {
             var querySelector = $('#' + this.id);
             $(querySelector)[0].updateStatus = function () {
@@ -1799,10 +1916,29 @@ function getDropdownCTRLTemplate(ctrl) {
         }.bind({ id: ctrl.id }));
     }
 
-
     initDropDownExteraFunctions(ctrl);
 
     return result;
+}
+
+function showModalOnDynamiCondation(ctrlId, showModalCondation) {
+    var s2Obj = $('#' + ctrlId).data('select2');
+    if (s2Obj) {
+        var selectDataResult = $('#' + ctrlId).select2('data');
+        if (selectDataResult && selectDataResult.length > 0) {
+            if (!selectDataResult[0][showModalCondation['propName']]) {
+                var mId = uuidv4RemoveDash();
+                var newModalHtml =
+                    getModualTemplate({
+                        id: mId,
+                        title: showModalCondation.title,
+                        modelBody: showModalCondation.message
+                    });
+                $('body').append(newModalHtml);
+                $('#' + mId).modal('show');
+            }
+        }
+    }
 }
 
 function addExteraParameterFromCtrls(exteraParameterIds, exteraSelect2Parameters) {
@@ -2119,7 +2255,16 @@ function getStepWizardTemplate(wizard) {
 
 function convertToPerisanDate(curDate) {
     try {
-        return curDate.toLocaleDateString('fa-IR').replace(/([۰-۹])/g, token => String.fromCharCode(token.charCodeAt(0) - 1728))
+        var result = curDate.toLocaleDateString('fa-IR').replace(/([۰-۹])/g, token => String.fromCharCode(token.charCodeAt(0) - 1728));
+        var partSplit = result.split('/');
+        result = '';
+        for (var i = 0; i < partSplit.length; i++) {
+            if (partSplit[i].length == 1)
+                result += ('0' + partSplit[i] + (i < 2 ? '/' : ''));
+            else
+                result += (partSplit[i] + (i < 2 ? '/' : ''));
+        }
+        return result;
     }
     catch {
         return '';
@@ -2129,6 +2274,12 @@ function convertToPerisanDate(curDate) {
 function getLastYearFromToday(yearCount) {
     var date = new Date();
     date.setFullYear(date.getFullYear() + yearCount);
+    return convertToPerisanDate(date);
+}
+
+function getLastDayFromToday(dayCount) {
+    var date = new Date();
+    date.setDate(date.getDate() + dayCount);
     return convertToPerisanDate(date);
 }
 

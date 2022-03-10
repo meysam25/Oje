@@ -101,16 +101,15 @@
         <header id="headerTagHolder">
             <section class="topHeader">
                 <div class="myContainer">
-                    <a title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
+                    <a id="mainSiteLogoIcon" title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
                     <div id="placeholderTopLeftIcon"></div>
                     <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="@curSetting.Title" href="/">@curSetting.Title</a></h1>
                 </div>
-
             </section>
             <script>
                 bindTopLeftIcons();
             </script>
-            <section class="topHeaderMobile">
+            <section id="headerTagHolderS1"  class="topHeaderMobile">
                 <div class="myContainer">
                     @{
                         if (!string.IsNullOrEmpty(curSetting.ImageText))
@@ -122,7 +121,8 @@
                     }
                 </div>
             </section>
-            <nav class="headerMenu ">
+            <div id="headerTagHolderS1Desctination"></div>
+            <nav id="headerMenu" class="headerMenu">
                 <div class="myContainer">
                     <div class="topMenuBtton" tabindex="0">
                         <div class="topMenuBttonLine"></div>
@@ -130,224 +130,9 @@
                         <div class="topMenuBttonLine"></div>
                     </div>
                     <div class="holderRigAndLogUser">
-                        <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i>ورود | ثبت نام</a>
+                        <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText" >ورود | ثبت نام</span></a>
                     </div>
                     <div id="topMenuHolderItems" class="headerMenuInner">
-                        <div class="headerMenuItem ">
-                            <div class="headerMenuItemInner headerMenuItemHasArrow">
-                                <span class="headerMenuItemLink">معرفی بیمه</span>
-                            </div>
-                            <div class="headerMenuItemSumMenuItems">
-                                <div class="myContainer">
-                                    <div class="headerMenuItemSumMenuItemsInner">
-                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
-                                            <span class="headerMenuItemLink">معرفی بیمه</span>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">از کجا شروع کنم ؟</div>
-                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
-                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
-                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
-                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="headerMenuItem ">
-                            <div class="headerMenuItemInner headerMenuItemHasArrow">
-                                <span class="headerMenuItemLink">استعلام برخط</span>
-                            </div>
-                            <div class="headerMenuItemSumMenuItems">
-                                <div class="myContainer">
-                                    <div class="headerMenuItemSumMenuItemsInner">
-                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
-                                            <span class="headerMenuItemLink">استعلام برخط</span>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">از کجا شروع نکنم ؟</div>
-                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
-                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
-                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
-                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="headerMenuItem ">
-                            <div class="headerMenuItemInner headerMenuItemHasArrow">
-                                <span class="headerMenuItemLink">درباره اوج</span>
-                            </div>
-                            <div class="headerMenuItemSumMenuItems">
-                                <div class="myContainer">
-                                    <div class="headerMenuItemSumMenuItemsInner">
-                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
-                                            <span class="headerMenuItemLink">درباره اوج</span>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">از کجا شروع نمی کنم ؟</div>
-                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
-                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
-                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
-                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="headerMenuItem ">
-                            <div class="headerMenuItemInner headerMenuItemHasArrow">
-                                <span class="headerMenuItemLink">خدمات سازمانی</span>
-                            </div>
-                            <div class="headerMenuItemSumMenuItems">
-                                <div class="myContainer">
-                                    <div class="headerMenuItemSumMenuItemsInner">
-                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
-                                            <span class="headerMenuItemLink">خدمات سازمانی</span>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">از کجا شروع کردم ؟</div>
-                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
-                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
-                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
-                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="headerMenuItem ">
-                            <div class="headerMenuItemInner headerMenuItemHasArrow">
-                                <span class="headerMenuItemLink">آموزش | راهنما</span>
-                            </div>
-                            <div class="headerMenuItemSumMenuItems">
-                                <div class="myContainer">
-                                    <div class="headerMenuItemSumMenuItemsInner">
-                                        <div class="headerMenuItemGroup headerMenuMoveBackButton">
-                                            <span class="headerMenuItemLink">آموزش | راهنما</span>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">از کجا شروع کردم ؟</div>
-                                            <a href="#" class="headerMenuItemGroupItem">شروع سرمایه گذاری</a>
-                                            <a href="#" class="headerMenuItemGroupItem">راهکار های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">صندوق های سرمایه گذاری در یک نگاه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">درخواست مشاوره</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سوالات متداول</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">راهکار های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری کم ریسک</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری با تقسیم سود ماهانه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری وجوه بیکار برای دوره های کوتاه مدن</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری تدریجی با مبالغ کم</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری اختصاصی شما</a>
-                                            <a href="#" class="headerMenuItemGroupItem">سرمایه گذاری در طلا</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup">
-                                            <div class="headerMenuItemGroupTitle">صندوق های سرمایه گذاری</div>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">ممتاز</a>
-                                            <a href="#" class="headerMenuItemGroupItem">پیشرو</a>
-                                            <a href="#" class="headerMenuItemGroupItem">امید توسعه</a>
-                                            <a href="#" class="headerMenuItemGroupItem">حاملی</a>
-                                            <a href="#" class="headerMenuItemGroupItem">نامی</a>
-                                        </div>
-                                        <div class="headerMenuItemGroup headerMenuItemGroupVerticalCenter">
-                                            <img title="سرماهی گذاری بورس" data-src="/Modules/Assets/MainPage/borse.png" width="159" height="191" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <script>
                         $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
@@ -355,11 +140,15 @@
                     </script>
                 </div>
             </nav>
+            <div id="headerMenuDesctination"></div>
         </header>
         <div id="headerTagHolderDesctination"></div>
         <script>
             if($(document).width() <= 650)
-                $('#headerTagHolder').initFloatingTop('headerTagHolderDesctination');
+                $('#headerTagHolderS1').initFloatingTop('headerTagHolderS1Desctination');
+            else
+            if ($(document).width() > 850)
+                $('#headerMenu').initFloatingTop('headerMenuDesctination', 'makeHeaderFloot2');
         </script>
         <main>
             @RenderBody()
@@ -464,7 +253,7 @@
                             کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت کارگزاری رسمی بیمه مستقیم برخط اوج می‌باشد.
                         </div>
                         <div class="footerCenterSection">
-                             @{
+                            @{
                                 if (!string.IsNullOrEmpty(curSetting.ImageText))
                                 {
                                     <a title="@(curSetting.Title)" class="footerTextSiteLogo2" href="/">
@@ -478,11 +267,14 @@
                             }
                         </div>
                         <div class="footerSharingIconSection">
-                            <a href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegram.svg" /></a>
-                            <a href="#"><img width="32" height="32" alt="تویتر" data-src="/Modules/Assets/MainPage/twitter.svg" /></a>
-                            <a href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagram.svg" /></a>
-                            <a href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
+                            <a id="aTelegeram" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>
+                            <a id="aWhatapp" href="#"><img width="28" height="28" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
+                            <a id="aInestageram" href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagramsilver.svg" data-alt-src="/Modules/Assets/MainPage/instagram.svg" /></a>
+                            <a id="aLinkin" href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedinsilver.svg" data-alt-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
                         </div>
+                        <script>
+                            bindFooterIcons();
+                        </script>
                     </div>
                 </div>
             </section>

@@ -802,15 +802,14 @@ input[type=checkbox] + label, input[type=checkbox] {
 .makeImage100 img {
     width:100%;
 }
-.jq-toast-wrap{
-    width:calc(100vw - 50px);
-}
-    .jq-toast-wrap h2 {
-        display:none;
-    }
 
-    @media (max-width: 400px) {
-        .select2-selection__rendered {
+.jq-toast-wrap.bottom-right {
+    right: 5px !important;
+    bottom: 0px !important;
+}
+
+@media (max-width: 400px) {
+    .select2-selection__rendered {
         white-space: unset !important;
         height: 36px !important;
     }

@@ -46,20 +46,20 @@ namespace Oje.ProposalFormService.Services
                 {
                     if (proposalFilledFormPdfGroupVMs == null)
                         proposalFilledFormPdfGroupVMs = new();
-                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جییات استعلام", ProposalFilledFormPdfGroupItems = new() };
+                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات استعلام", ProposalFilledFormPdfGroupItems = new() };
                     foreach (var item in foundItem.inquiryItems)
-                        newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value.ToString("###,###"), cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12" });
+                        newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value.ToString("###,###") + " ریال", cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
                     proposalFilledFormPdfGroupVMs.Add(newGroupItem);
                 }
                 if (foundItem != null && foundItem.inputItems.Count > 0)
                 {
                     if (proposalFilledFormPdfGroupVMs == null)
                         proposalFilledFormPdfGroupVMs = new();
-                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "مقادیر استعلام", ProposalFilledFormPdfGroupItems = new() };
+                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات محاسبه استعلام حق بیمه", ProposalFilledFormPdfGroupItems = new() };
                     foreach (var item in foundItem.inputItems)
                     {
                         if (!foundItem.inputItems.Any(t => !string.IsNullOrEmpty(t.key) && t.key != item.key && t.key.StartsWith(item.key)) && item.value.IndexOf("tem.Collections.Generic.Lis") == -1)
-                            newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12" });
+                            newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
 
                     }
                     proposalFilledFormPdfGroupVMs.Add(newGroupItem);

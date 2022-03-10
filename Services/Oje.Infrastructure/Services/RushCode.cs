@@ -629,9 +629,9 @@ namespace Oje.Infrastructure.Services
         {
             try
             {
-                var  currPath = new Uri(input.Headers["Referer"][0]);
+                var currPath = new Uri(input.Headers["Referer"][0]);
 
-                return currPath.Host ;
+                return currPath.Host;
             }
             catch
             {
@@ -778,7 +778,7 @@ namespace Oje.Infrastructure.Services
                     result = Math.Floor(defDate.TotalDays) + " روز " + suffix;
                 else if (defDate.TotalDays >= 32 && defDate.TotalDays < 367)
                     result = Math.Floor(defDate.TotalDays / Convert.ToDouble(31)) + " ماه " + suffix;
-                else 
+                else
                     result = Math.Floor(defDate.TotalDays / Convert.ToDouble(365)) + " سال " + suffix;
 
                 if (string.IsNullOrWhiteSpace(result))
@@ -789,7 +789,7 @@ namespace Oje.Infrastructure.Services
             catch
             {
                 return input.ToFaDate() + " " + input.ToString("HH:mm:ss");
-             }
+            }
         }
 
         public static long ToLongReturnZiro(this object input)
@@ -1037,6 +1037,36 @@ namespace Oje.Infrastructure.Services
             return result;
         }
 
+        public static LoginUserVM Decrypt2AndGetUserVMT(this string input)
+        {
+            LoginUserVM result = null;
+
+            try
+            {
+                if (string.IsNullOrEmpty(input))
+                    return result;
+                string dycriptText = input.Decrypt2();
+                string[] dycriptTextArr = dycriptText.Split(',');
+                result = new LoginUserVM();
+
+                result.UserId = Convert.ToInt64(dycriptTextArr[0]);
+                result.siteSettingId = string.IsNullOrEmpty(dycriptTextArr[1]) ? null : dycriptTextArr[1].ToIntReturnZiro();
+                DateTime? exDate = dycriptTextArr[2].ToDateTime();
+                result.Ip = dycriptTextArr[3];
+
+                if (exDate == null)
+                    return null;
+                if (exDate.Value <= DateTime.Now)
+                    return null;
+            }
+            catch
+            {
+                return null;
+            }
+
+            return result;
+        }
+
         public static IpSections GetIpSections(this string input)
         {
             try
@@ -1068,6 +1098,23 @@ namespace Oje.Infrastructure.Services
                 if (input.Request.Cookies.ContainsKey("login"))
                 {
                     loginUser = input.Request.Cookies["login"].Decrypt2AndGetUserVM();
+                }
+                return loginUser;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static LoginUserVM GetTLoginUser(this HttpContext input)
+        {
+            try
+            {
+                LoginUserVM loginUser = null;
+                if (input.Request.Cookies.ContainsKey("tLogin"))
+                {
+                    loginUser = input.Request.Cookies["tLogin"].Decrypt2AndGetUserVMT();
                 }
                 return loginUser;
             }

@@ -141,21 +141,32 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             return Json(FooterGroupExteraLinkService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
         }
 
+        [Route("[Controller]/[Action]")]
         [HttpGet]
         public ActionResult GetProposalFormCategoryList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(ProposalFormCategoryService.GetSelect2List(searchInput));
         }
 
+        [Route("[Controller]/[Action]")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? ppfCatId)
         {
             return Json(ProposalFormService.GetSelect2List(searchInput, ppfCatId));
         }
 
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
         public ActionResult GetTopLeftIconList()
         {
             return Json(PropertyService.GetBy<MainPageTopLeftIconVM>(PropertyType.MainPageTopLeftIcon, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
+        public ActionResult GetFooterSocialUrl()
+        {
+            return Json(PropertyService.GetBy<FooterSocialIconCreateUpdateVM>(PropertyType.FooterIcon, SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

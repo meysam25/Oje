@@ -47,7 +47,7 @@ namespace Oje.Section.WebMain.Controllers
 
         [HttpGet]
         [Route("[Controller]/[Action]")]
-        public IActionResult Detaile([FromQuery] int id, [FromQuery] bool isPrint = false)
+        public IActionResult Detaile([FromQuery] long id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
             ViewBag.newLayoutName = "_WebLayout";
