@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Oje.Web
@@ -14,26 +16,54 @@ namespace Oje.Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
+            CreateHostBuilder(args, config).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args, IConfigurationRoot config) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel(options => 
+
+                    webBuilder.UseKestrel(options =>
                     {
                         options.AddServerHeader = false;
 
-                        //options.Listen(IPAddress.Any, 80);
-                        //options.Listen(IPAddress.Any, 443, listenOptions =>
-                        //{
-                        //    listenOptions.UseHttps("certificate.pfx", "1");
-                        //});
+                        options.Listen(IPAddress.Any, 80);
+                        var allUrls = config.GetSection("httpsUrls").Get<List<string>>();
+                        if(allUrls != null && allUrls.Count > 0)
+                        {
+                            options.Listen(IPAddress.Any, config.GetSection("httpsPort").Get<int>(), listenOptions =>
+                            {
+                                listenOptions.UseHttps(httpsOptions =>
+                                {
 
+                                    var certs = new Dictionary<string, X509Certificate2>(StringComparer.OrdinalIgnoreCase);
+                                    if (allUrls != null && allUrls.Count > 0)
+                                    {
+                                        foreach (var url in allUrls)
+                                        {
+                                            var foundCert = CertificateLoader.LoadFromStoreCert(url, "My", StoreLocation.LocalMachine, false);
+                                            certs.Add(url, foundCert);
+                                        }
+                                    }
+
+                                    httpsOptions.ServerCertificateSelector = (connectionContext, name) =>
+                                    {
+                                        if (name is not null && certs.TryGetValue(name, out var cert))
+                                        {
+                                            return cert;
+                                        }
+
+                                        return null;
+                                    };
+                                });
+                            });
+                        }
+                      
                     });
-                    webBuilder.UseUrls("https://localhost:5001");
-                    webBuilder.UseIISIntegration();
+                    webBuilder.UseUrls();
+                    //webBuilder.UseIISIntegration();
                     webBuilder.UseStartup<Startup>();
                 });
     }

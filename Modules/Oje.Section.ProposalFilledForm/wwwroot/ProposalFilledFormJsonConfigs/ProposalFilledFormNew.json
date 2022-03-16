@@ -276,7 +276,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/CreateUserRefer')",
               "class": "btn-primary"
             }
@@ -308,7 +308,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateCompanies')",
               "class": "btn-primary"
             }
@@ -383,7 +383,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateAgent')",
               "class": "btn-primary"
             }
@@ -545,7 +545,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNewpriceGrid', '/ProposalFilledForm/ProposalFilledFormNew/CreatePricingCompany')",
               "class": "btn-primary"
             }
@@ -593,7 +593,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNewpriceGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdatePricingCompany')",
               "class": "btn-primary"
             }
@@ -659,7 +659,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNewimageGrid', '/ProposalFilledForm/ProposalFilledFormNew/UploadNewFile')",
               "class": "btn-primary"
             }
@@ -848,7 +848,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNewdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNew/CreateDocument')",
               "class": "btn-primary"
             }
@@ -930,7 +930,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNewdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateDocument')",
               "class": "btn-primary"
             }
@@ -968,7 +968,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNew/UpdateStatus')",
               "class": "btn-primary"
             }

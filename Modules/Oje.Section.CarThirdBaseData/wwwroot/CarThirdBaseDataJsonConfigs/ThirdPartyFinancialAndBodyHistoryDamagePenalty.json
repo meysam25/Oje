@@ -120,7 +120,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyFinancialAndBodyHistoryDamagePenaltyGrid', '/CarThirdBaseData/ThirdPartyFinancialAndBodyHistoryDamagePenalty/Create')",
               "class": "btn-primary"
             }
@@ -175,7 +175,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyFinancialAndBodyHistoryDamagePenaltyGrid', '/CarThirdBaseData/ThirdPartyFinancialAndBodyHistoryDamagePenalty/Update')",
               "class": "btn-primary"
             }

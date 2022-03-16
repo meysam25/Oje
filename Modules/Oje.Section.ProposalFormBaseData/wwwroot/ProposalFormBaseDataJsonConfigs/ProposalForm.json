@@ -192,7 +192,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFormMainGrid', '/ProposalFormBaseData/ProposalForm/Create')",
               "class": "btn-primary"
             }
@@ -301,7 +301,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFormMainGrid', '/ProposalFormBaseData/ProposalForm/Update')",
               "class": "btn-primary"
             }

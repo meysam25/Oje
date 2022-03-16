@@ -24,11 +24,11 @@
     <div class="pageGHolderMainImage">
         <div class="myContainer HolderPageGTitleButton removeBoxShadow">
             <div class="PageGTitleButton">
-                <h1 @{ ViewContext.Writer.Write(!string.IsNullOrEmpty(Model.stColorCode) ? "style:color:"+ Model.stColorCode +";": ""); }>@Model.title</h1>
+                <h1 @{ ViewContext.Writer.Write(!string.IsNullOrEmpty(Model.stColorCode) ? "style=\"color:"+ Model.stColorCode +";\"": ""); }>@Model.title</h1>
                 @{
                     if (!string.IsNullOrEmpty(Model.subTitle))
                     {
-                        <h2 @{ ViewContext.Writer.Write(!string.IsNullOrEmpty(Model.stColorCode) ? "style:color:"+ Model.stColorCode +";": ""); } >@Model.subTitle</h2>
+                        <h2 @{ ViewContext.Writer.Write(!string.IsNullOrEmpty(Model.stColorCode) ? "style=\"color:"+ Model.stColorCode +";\"": ""); } >@Model.subTitle</h2>
                     }
                     if (!string.IsNullOrEmpty(Model.bLink) && !string.IsNullOrEmpty(Model.bTitle))
                     {

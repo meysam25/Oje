@@ -6,11 +6,6 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Areas.WebMain.Controllers
 {
@@ -23,6 +18,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         readonly IFooterGroupExteraLinkService FooterGroupExteraLinkService = null;
         readonly ProposalFormService.Interfaces.IProposalFormCategoryService ProposalFormCategoryService = null;
         readonly ProposalFormService.Interfaces.IProposalFormService ProposalFormService = null;
+        readonly IOurObjectService OurObjectService = null;
         public HomeController
             (
                 IPropertyService PropertyService,
@@ -31,7 +27,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 IFooterExteraLinkService FooterExteraLinkService,
                 IFooterGroupExteraLinkService FooterGroupExteraLinkService,
                 ProposalFormService.Interfaces.IProposalFormCategoryService ProposalFormCategoryService,
-                ProposalFormService.Interfaces.IProposalFormService ProposalFormService
+                ProposalFormService.Interfaces.IProposalFormService ProposalFormService,
+                IOurObjectService OurObjectService
             )
         {
             this.PropertyService = PropertyService;
@@ -41,6 +38,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.FooterGroupExteraLinkService = FooterGroupExteraLinkService;
             this.ProposalFormCategoryService = ProposalFormCategoryService;
             this.ProposalFormService = ProposalFormService;
+            this.OurObjectService = OurObjectService;
         }
 
         [Route("/")]
@@ -167,6 +165,20 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         public ActionResult GetFooterSocialUrl()
         {
             return Json(PropertyService.GetBy<FooterSocialIconCreateUpdateVM>(PropertyType.FooterIcon, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
+        public ActionResult GetOurCustomerList()
+        {
+            return Json(OurObjectService.GetListWeb(SiteSettingService.GetSiteSetting()?.Id, OurObjectType.OurCustomers));
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
+        public ActionResult GetOurCompanyList()
+        {
+            return Json(OurObjectService.GetListWeb(SiteSettingService.GetSiteSetting()?.Id, OurObjectType.OurContractCompanies));
         }
     }
 }

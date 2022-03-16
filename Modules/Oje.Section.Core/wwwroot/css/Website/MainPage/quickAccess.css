@@ -43,6 +43,7 @@
 
 .tabCtrl .TabContentItem {
     min-height: 450px;
+    position:relative;
 }
 
 .quickAccessSection > div .tabCtrl {
@@ -56,9 +57,9 @@
 .WebMod {
     display: inline-block;
     height: 38px;
-    width: 280px;
-    position: relative;
+    width: 250px;
     cursor: pointer;
+    vertical-align:top;
 }
 
     .WebMod > i {
@@ -71,7 +72,8 @@
     background-color: white;
     right: 0px;
     left: 0px;
-    top: 37px;
+    top: 0px;
+    bottom:0px;
     max-height: 0px;
     overflow: hidden;
     -moz-transition: 0.3s;
@@ -79,15 +81,23 @@
     -webkit-transition: 0.3s;
     transition: 0.3s;
     border: 1px solid transparent;
+    cursor:default;
 }
 
-.WebModActive .WebModActions {
-    max-height: 500px;
+.WebModActive > .WebModActions {
+    max-height: 100%;
     overflow-y: auto;
     padding: 10px;
     opacity: 1;
     z-index: 1;
     border: 1px solid silver;
+}
+.closeButtonQA {
+    position: absolute;
+    left: 6px;
+    top: 5px;
+    font-size: 1.5em;
+    cursor:pointer;
 }
 
 .WebModActive {

@@ -111,7 +111,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyBodyNoDamageDiscountHistoryGrid', '/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/Create')",
               "class": "btn-primary"
             }
@@ -157,7 +157,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyBodyNoDamageDiscountHistoryGrid', '/CarThirdBaseData/ThirdPartyBodyNoDamageDiscountHistory/Update')",
               "class": "btn-primary"
             }

@@ -1,16 +1,11 @@
 ﻿using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
-using Oje.AccountService.Models;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
@@ -45,7 +40,6 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         {
             ViewBag.Title = "کاربران";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserManager", new { area = "Account" });
-            //UserService.TsetRemoveMe();
             return View();
         }
 

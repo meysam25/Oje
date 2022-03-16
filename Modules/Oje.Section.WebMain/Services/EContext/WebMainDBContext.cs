@@ -17,6 +17,7 @@ namespace Oje.Section.WebMain.Services.EContext
         public DbSet<FooterExteraLink> FooterExteraLinks { get; set; }
         public DbSet<FooterGroupExteraLink> FooterGroupExteraLinks { get; set; }
         public DbSet<ContactUs> ContactUses { get; set; }
+        public DbSet<OurObject> OurObjects { get; set; }
 
         public WebMainDBContext(DbContextOptions<WebMainDBContext> options) : base(options)
         {

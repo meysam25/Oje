@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,7 @@ namespace Oje.AccountService.Models.View
         public int? id { get; set; }
         public string title { get; set; }
         public string cssClass { get; set; }
+        public DashboardSectionCategoryType? type { get; set; }
+        public int? order { get; set; }
     }
 }

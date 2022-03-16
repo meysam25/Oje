@@ -70,6 +70,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "نمونه اسنداد مورد نیاز ثبت نام", Prompt = "RegisterDownloadSampleDocuments")]
         RegisterDownloadSampleDocuments = 30,
         [Display(Name = "اسناد بارگزاری شده توسط کاربر جهت ثبت نام", Prompt = "RegisterUploadedDocuments", Description = "~1000*1000")]
-        RegisterUploadedDocuments = 31
+        RegisterUploadedDocuments = 31,
+        [Display(Name = "مشتریان ما یا شرکت های طرف قرارداد", Prompt = "OurObject", Description = "300*300")]
+        OurObject = 32
     }
 }

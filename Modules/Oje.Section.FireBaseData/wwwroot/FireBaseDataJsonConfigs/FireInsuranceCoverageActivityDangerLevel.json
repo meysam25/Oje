@@ -127,7 +127,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceCoverageActivityDangerLevelGrid', '/FireBaseData/FireInsuranceCoverageActivityDangerLevel/Create')",
               "class": "btn-primary"
             }
@@ -182,7 +182,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceCoverageActivityDangerLevelGrid', '/FireBaseData/FireInsuranceCoverageActivityDangerLevel/Update')",
               "class": "btn-primary"
             }

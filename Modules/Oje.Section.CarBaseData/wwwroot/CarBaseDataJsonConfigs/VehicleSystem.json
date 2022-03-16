@@ -131,7 +131,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'VehicleSystemGrid', '/CarBaseData/VehicleSystem/Create')",
               "class": "btn-primary"
             }
@@ -187,7 +187,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'VehicleSystemGrid', '/CarBaseData/VehicleSystem/Update')",
               "class": "btn-primary"
             }

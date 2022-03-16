@@ -81,7 +81,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.VehicleSpecsService = VehicleSpecsService;
         }
 
-        [AreaConfig(Title = "استعلام ثالث", Icon = "fa-car", IsMainMenuItem = true)]
+        [AreaConfig(Title = "استعلام ثالث", Icon = "fa-car-crash", IsMainMenuItem = true)]
         [HttpGet]
         [CustomeAuthorizeFilter]
         public IActionResult Index()

@@ -199,6 +199,10 @@ function getPanelTemplate(panel) {
         result += '<div id="' + panel.id + '" ' + (panel.loadUrl ? 'data-url="' + panel.loadUrl + '"' : '') + '  class="myPanel ' + (panel.class ? panel.class : 'col-md-12 col-sm-12 col-xs-12 col-lg-12 col-xl-12') + '" >';
         if (panel.title)
             result += '<div id="' + panel.id + 'Title" class="myPanelTitle" style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
+
+        if (panel.type == 'TabCtrl')
+            result += getTabCtrlTemplate(panel);
+
         if (panel.charts) {
             for (var i = 0; i < panel.charts.length; i++) {
                 result += getChartTemplate(panel.charts[i]);
@@ -266,6 +270,38 @@ function getPanelTemplate(panel) {
         }.bind({ panelId: panel.id }));
         result += '</div>';
     }
+    return result;
+}
+
+function getTabCtrlTemplate(panel) {
+    var result = '';
+
+    if (panel && panel.ctrls && panel.ctrls.length > 0) {
+        var newId = uuidv4RemoveDash();
+        result += '<div id="' + newId + '" class="inquirySectionTab"><div class="inquirySectionTabHeaderItems">';
+        for (var i = 0; i < panel.ctrls.length; i++) {
+            result += '<div data-json-url="' + panel.ctrls[i].url + '" class="inquirySectionTabHeaderItem">';
+            result += '<div class="inquirySectionTabHeaderItemInner ">';
+            result += '<i class="fa ' + panel.ctrls[i].icon + ' imageIcon"></i>';
+            result += '<div>' + panel.ctrls[i].label + '</div>';
+            result += '</div>';
+            result += '</div>';
+        }
+        result += '</div>';
+
+        result += '<div class="inquirySectionTabBodyItems">';
+        for (var i = 0; i < panel.ctrls.length; i++) {
+            result += '<div class="inquirySectionTabBodyItem "></div>';
+        }
+        result += '</div>';
+
+        result += '</div>';
+
+        functionsList.push(function () {
+            $('#' + this.id).initInquiryTab();
+        }.bind({ id: newId }));
+    }
+
     return result;
 }
 

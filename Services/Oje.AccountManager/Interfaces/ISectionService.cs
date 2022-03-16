@@ -2,11 +2,7 @@
 using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Interfaces
 {
@@ -14,10 +10,12 @@ namespace Oje.AccountService.Interfaces
     {
         void UpdateModuals();
         List<Section> GetSideMenu(long? userId);
+        List<SiteMenueVM> GetSideMenuWidthCategory(long? userId);
         object GetSideMenuAjax(long? userId);
         object GetListForTreeView(int? id);
         ApiResult UpdateAccess(CreateUpdateRoleAccessVM input);
         List<AccessTreeViewUser> GetListForTreeViewForUser(int? id, LoginUserVM loginUserVM, int? siteSettingId);
         object UpdateAccessForUser(CreateUpdateRoleAccessVM input, LoginUserVM loginUserVM, int? siteSettingId);
+        object GetSelect2List(Select2SearchVM searchInput);
     }
 }

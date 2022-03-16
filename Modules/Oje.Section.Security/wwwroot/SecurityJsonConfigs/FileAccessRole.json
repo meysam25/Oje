@@ -100,7 +100,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FileAccessRoleMainGrid', '/Security/FileAccessRole/Create')",
               "class": "btn-primary"
             }
@@ -141,7 +141,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FileAccessRoleMainGrid', '/Security/FileAccessRole/Update')",
               "class": "btn-primary"
             }

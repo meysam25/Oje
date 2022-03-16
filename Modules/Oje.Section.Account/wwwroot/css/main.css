@@ -84,14 +84,21 @@ a:hover {
     color: #e6e6e6;
 }
 
-.sideMenuItemInner {
-    padding-left: 10px;
-}
+    .sideMenuItem .sideMenuItem {
+        padding-right:10px;
+    }
 
-.sideMenuItem:hover, .sideSumMenuItemShow {
-    background-color: #162029;
-    color: white;
-}
+    .sideMenuItemInner {
+        padding-left: 10px;
+    }
+    .sideMenuItemInner > .sideSumMenuItems {
+        display:none;
+    }
+
+    .sideMenuItem:hover, .sideSumMenuItemShow {
+        background-color: #162029;
+        color: white;
+    }
 
 .sideSumMenuItems {
     display: block;

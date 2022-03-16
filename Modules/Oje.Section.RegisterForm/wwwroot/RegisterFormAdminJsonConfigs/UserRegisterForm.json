@@ -166,7 +166,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'UserRegisterFormGrid', '/RegisterFormAdmin/UserRegisterForm/Create')",
               "class": "btn-primary"
             }
@@ -257,7 +257,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'UserRegisterFormGrid', '/RegisterFormAdmin/UserRegisterForm/Update')",
               "class": "btn-primary"
             }

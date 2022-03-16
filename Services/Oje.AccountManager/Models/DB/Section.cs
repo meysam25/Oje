@@ -13,7 +13,8 @@ namespace Oje.AccountService.Models.DB
     {
         public Section()
         {
-            Controllers = new List<Controller>();
+            Controllers = new ();
+            SectionCategorySections = new();
         }
 
         [Key]
@@ -30,5 +31,7 @@ namespace Oje.AccountService.Models.DB
 
         [InverseProperty("Section")]
         public List<Controller> Controllers { get; set; }
+        [InverseProperty("Section")]
+        public List<SectionCategorySection> SectionCategorySections { get; set; }
     }
 }

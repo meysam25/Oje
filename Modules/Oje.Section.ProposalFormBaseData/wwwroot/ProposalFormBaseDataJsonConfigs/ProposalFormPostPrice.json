@@ -127,7 +127,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFormPostPriceGrid', '/ProposalFormBaseData/ProposalFormPostPrice/Create')",
               "class": "btn-primary"
             }
@@ -184,7 +184,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFormPostPriceGrid', '/ProposalFormBaseData/ProposalFormPostPrice/Update')",
               "class": "btn-primary"
             }

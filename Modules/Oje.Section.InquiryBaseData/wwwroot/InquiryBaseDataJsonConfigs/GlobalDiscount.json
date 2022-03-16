@@ -216,7 +216,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'GlobalDiscountGrid', '/InquiryBaseData/GlobalDiscount/Create')",
               "class": "btn-primary"
             }
@@ -329,7 +329,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'GlobalDiscountGrid', '/InquiryBaseData/GlobalDiscount/Update')",
               "class": "btn-primary"
             }

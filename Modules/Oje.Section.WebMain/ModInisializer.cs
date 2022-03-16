@@ -27,6 +27,7 @@ namespace Oje.Section.WebMain
             services.AddScoped<IFooterExteraLinkService, FooterExteraLinkService>();
             services.AddScoped<IFooterGroupExteraLinkService, FooterGroupExteraLinkService>();
             services.AddScoped<IContactUsService, ContactUsService>();
+            services.AddScoped<IOurObjectService, OurObjectService>();
         }
     }
 }

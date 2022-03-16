@@ -188,7 +188,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyExteraFinancialCommitmentGrid', '/CarThirdBaseData/ThirdPartyExteraFinancialCommitment/Create')",
               "class": "btn-primary"
             }
@@ -271,7 +271,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyExteraFinancialCommitmentGrid', '/CarThirdBaseData/ThirdPartyExteraFinancialCommitment/Update')",
               "class": "btn-primary"
             }

@@ -229,7 +229,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, '', '/WebMainAdmin/TopMenu/Create')",
               "class": "btn-primary"
             }
@@ -280,7 +280,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, '', '/WebMainAdmin/TopMenu/Update')",
               "class": "btn-primary"
             }

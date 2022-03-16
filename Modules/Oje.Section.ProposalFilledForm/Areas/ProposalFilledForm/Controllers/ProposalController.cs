@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountService.Filters;
 using Oje.AccountService.Models.View;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;

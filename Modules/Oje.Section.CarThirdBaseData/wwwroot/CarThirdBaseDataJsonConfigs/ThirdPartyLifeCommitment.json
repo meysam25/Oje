@@ -126,7 +126,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyLifeCommitmentGrid', '/CarThirdBaseData/ThirdPartyLifeCommitment/Create')",
               "class": "btn-primary"
             }
@@ -180,7 +180,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyLifeCommitmentGrid', '/CarThirdBaseData/ThirdPartyLifeCommitment/Update')",
               "class": "btn-primary"
             }

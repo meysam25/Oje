@@ -1,0 +1,55 @@
+﻿{
+  "panels": [
+    {
+      "id": "searchPanel",
+      "title": "ثبت فرم پیشنهاد",
+      "stepWizards": [
+        {
+          "lastStepButtonTitle": "شروع",
+          "moveBackButtonToTop": true,
+          "steps": [
+            {
+              "order": 1,
+              "id": "provinceAndCity",
+              "title": "انتخاب فرم پیشنهاد",
+              "hideMoveNextButton": true,
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "id": "ppfCatId",
+                      "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+                      "name": "ppfCatId",
+                      "type": "dropDown2",
+                      "textfield": "text",
+                      "valuefield": "id",
+                      "dataurl": "/Home/GetProposalFormCategoryList",
+                      "label": "گروه بندی"
+                    },
+                    {
+                      "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+                      "name": "fid",
+                      "type": "dropDown2",
+                      "textfield": "text",
+                      "valuefield": "id",
+                      "dataurl": "/Home/GetProposalFormList",
+                      "exteraParameterIds": [ "ppfCatId" ],
+                      "label": "فرم پیشنهاد"
+                    },
+                    {
+                      "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+                      "type": "button",
+                      "class": "btn-block btn-primary",
+                      "onClick": "openNewLink('searchPanel', '/ProposalFilledForm/Proposal/Form')",
+                      "title": "شروع"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

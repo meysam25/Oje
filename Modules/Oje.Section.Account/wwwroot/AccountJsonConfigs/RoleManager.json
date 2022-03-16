@@ -361,6 +361,12 @@
               "valuefield": "id",
               "dataurl": "/Account/RoleManager/GetSectionCategoryList",
               "label": "گروه بندی"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب"
             }
           ],
           "actions": [
@@ -419,6 +425,12 @@
               "valuefield": "id",
               "dataurl": "/Account/RoleManager/GetSectionCategoryList",
               "label": "گروه بندی"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب"
             }
           ],
           "actions": [

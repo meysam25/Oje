@@ -127,7 +127,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceCoverageCityDangerLevelGrid', '/FireBaseData/FireInsuranceCoverageCityDangerLevel/Create')",
               "class": "btn-primary"
             }
@@ -182,7 +182,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceCoverageCityDangerLevelGrid', '/FireBaseData/FireInsuranceCoverageCityDangerLevel/Update')",
               "class": "btn-primary"
             }

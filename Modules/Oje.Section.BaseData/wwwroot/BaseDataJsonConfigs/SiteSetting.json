@@ -173,7 +173,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'baseDataSiteSettingGrid', '/BaseData/SiteSetting/Create')",
               "class": "btn-primary"
             }
@@ -266,7 +266,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'baseDataSiteSettingGrid', '/BaseData/SiteSetting/Update')",
               "class": "btn-primary"
             }

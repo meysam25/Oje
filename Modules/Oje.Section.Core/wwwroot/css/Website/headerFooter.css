@@ -199,13 +199,9 @@ body {
     background-color: white;
     height: 0px;
     overflow: hidden;
-    -moz-transition: opacity 0.4s, max-height 0.4s;
-    -o-transition: opacity 0.4s, max-height 0.4s;
-    -webkit-transition: opacity 0.4s, max-height 0.4s;
-    transition: opacity 0.4s, max-height 0.4s;
     opacity: 0;
     z-index: 3;
-    border-bottom: 1px solid silver;
+    border-bottom: 2px solid #084aa4;
 }
 
 .headerMenuItemHasArrow:after {
@@ -435,7 +431,6 @@ body {
 
         .footerLeftTrophyIcons > a > img {
             padding: 10px;
-            border: 1px solid #e5e5e5;
             -moz-border-radius: 15px;
             -webkit-border-radius: 15px;
             border-radius: 15px;
@@ -444,8 +439,8 @@ body {
 
 .footerProductMenuItem {
     display: inline-block;
-    -webkit-text-decoration: none;
-    text-decoration: none;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
     color: #6c7684;
     margin-left: 10px;
 }
@@ -975,6 +970,9 @@ body {
     .footerNavGroupItems {
         margin-bottom: 15px;
     }
+    .mainHeaderIranLogo{
+        display:none !important;
+    }
 }
 
 @media (max-width: 450px) {
@@ -1114,6 +1112,10 @@ body {
         height: auto;
         top: 63px;
         opacity: 1;
+        -moz-transition: opacity 0.4s, max-height 0.4s;
+        -o-transition: opacity 0.4s, max-height 0.4s;
+        -webkit-transition: opacity 0.4s, max-height 0.4s;
+        transition: opacity 0.4s, max-height 0.4s;
     }
 }
 

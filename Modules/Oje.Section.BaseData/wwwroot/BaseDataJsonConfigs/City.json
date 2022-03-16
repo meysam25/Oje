@@ -125,7 +125,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'baseDataCityGrid', '/BaseData/City/Create')",
               "class": "btn-primary"
             }
@@ -182,7 +182,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'baseDataCityGrid', '/BaseData/City/Update')",
               "class": "btn-primary"
             }

@@ -1,24 +1,41 @@
 
 $.fn.initSideMenu = function () {
     return this.each(function () {
-        $(this).find('.sideMenuItem').click(function () {
+
+        $(this).find('.sideMenuItem').click(function (e) {
+            e.stopPropagation();
             if ($(this).hasClass('sideSumMenuItemShow')) {
                 $(this).removeClass('sideSumMenuItemShow');
-                $(this).find('.sideSumMenuItems').slideUp();
-                $(this).find('.sideMenuSubIcon').removeClass('fa-chevron-down').addClass('fa-chevron-left');
+                $(this).find('> .sideMenuItemInner > .sideSumMenuItems').slideUp();
+                $(this).find('> .sideMenuItemInner > .sideMenuSubIcon').removeClass('fa-chevron-down').addClass('fa-chevron-left');
             } else {
                 $(this).addClass('sideSumMenuItemShow');
-                $(this).find('.sideSumMenuItems').slideDown();
-                $(this).find('.sideMenuSubIcon').removeClass('fa-chevron-left').addClass('fa-chevron-down');
+                $(this).find('> .sideMenuItemInner > .sideSumMenuItems').slideDown();
+                $(this).find('> .sideMenuItemInner > .sideMenuSubIcon').removeClass('fa-chevron-left').addClass('fa-chevron-down');
             }
         });
-        $(this).find('.sideSumMenuItems').hide();
+
         var curURL = location.pathname;
         var hasFound = false;
-        $(this).find('.sideSumMenuItems .sideSumMenuItem').each(function () {
+        var openMenuInterval = null;
+        $(this).find('a').each(function () {
             if ($(this).attr('href') == curURL) {
-                $(this).closest('.sideMenuItem').click();
+                var arrObj = [];
+                var targetQuery = $(this).parent().closest('.sideMenuItem');
+                while (targetQuery.length > 0) {
+                    arrObj.push(targetQuery[0]);
+                    targetQuery = targetQuery.parent().closest('.sideMenuItem');
+                }
                 $(this).addClass('sideSumMenuItemActive');
+                openMenuInterval = setInterval(function ()
+                {
+                    if (arrObj.length > 0) {
+                        var lastObj = arrObj.pop();
+                        $(lastObj).click();
+                    } else {
+                        clearInterval(openMenuInterval);
+                    }
+                }, 300);
                 hasFound = true;
             }
         });
@@ -26,19 +43,25 @@ $.fn.initSideMenu = function () {
             var allParts = curURL.split('/');
             allParts.pop();
             curURL = allParts.join('/');
-            $(this).find('.sideSumMenuItems .sideSumMenuItem').each(function () {
+            $(this).find('a').each(function () {
                 if ($(this).attr('href')) {
                     var allPartsCur = $(this).attr('href').split('/');
                     allPartsCur.pop();
                     var newCurUrl = allPartsCur.join('/');
                     if (newCurUrl == curURL) {
-                        $(this).closest('.sideMenuItem').click();
+                        var targetQuery = $(this).parent().closest('.sideMenuItem');
+                        while (targetQuery.length > 0) {
+                            targetQuery.click();
+                            targetQuery = targetQuery.parent().closest('.sideMenuItem');
+                        }
                         $(this).addClass('sideSumMenuItemActive');
                         hasFound = true;
                     }
                 }
             });
         }
+
+
         $(this)[0].openSideMenu = function () {
             $('body').removeClass('closeSideMenu');
         }

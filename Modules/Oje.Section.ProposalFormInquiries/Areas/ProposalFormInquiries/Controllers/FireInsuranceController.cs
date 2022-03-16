@@ -67,7 +67,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.BlockAutoIpService = BlockAutoIpService;
         }
 
-        [AreaConfig(Title = "استعلام آتش سوزی", Icon = "fa-fire", IsMainMenuItem = true)]
+        [AreaConfig(Title = "استعلام آتش سوزی", Icon = "fa-house-damage", IsMainMenuItem = true)]
         [HttpGet]
         [CustomeAuthorizeFilter]
         public IActionResult Index()

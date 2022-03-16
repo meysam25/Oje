@@ -15,5 +15,6 @@ namespace Oje.AccountService.Models.View
         public DashboardSectionType? type { get; set; }
         public long? actionId { get; set; }
         public int? catId { get; set; }
+        public int? order { get; set; }
     }
 }

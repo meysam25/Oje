@@ -1,39 +1,53 @@
 ﻿@inject Oje.AccountService.Interfaces.ISectionService ModulService
 @using Oje.Infrastructure.Services
 
+
 @{
-    var moduals = ModulService.GetSideMenu(Context.GetLoginUser()?.UserId);
+    void sideMenuTemplate(Oje.AccountService.Models.View.SiteMenueVM input)
+    {
+        if (string.IsNullOrEmpty(input.url))
+        {
+            <div class="sideMenuItem">
+                <div class="sideMenuItemInner">
+                    <span class="fa @(input.icon) menuIcon"></span>
+                    <span title="@(input.title)" class="sMenuTitle">@(input.title)</span>
+                    @{
+                        if (input.childs != null && input.childs.Count > 0)
+                        {
+                            <span class="fa fa-chevron-left sideMenuSubIcon"></span>
+                            <div class="sideSumMenuItems">
+                                @{
+                                    foreach (var cItem in input.childs)
+                                    {
+                                        sideMenuTemplate(cItem);
+                                    }
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <a href="@(input.url)" class="sideMenuItem">
+                <span class="sideMenuItemInner">
+                    <span class="fa @(input.icon) menuIcon"></span>
+                    <span title="@(input.title)" class="sMenuTitle">@(input.title)</span>
+                </span>
+            </a>
+        }
+    }
+}
+
+@{
+    var moduals = ModulService.GetSideMenuWidthCategory(Context.GetLoginUser()?.UserId);
     if (moduals != null && moduals.Count > 0)
     {
         foreach (var item in moduals)
         {
-            <span class="sideMenuItem ">
-                <span class="sideMenuItemInner">
-                    <span class="fa @(item.Icon) menuIcon"></span>
-                    <span title="@(item.Title)" class="sMenuTitle">@(item.Title)</span>
-                    <span class="fa fa-chevron-left sideMenuSubIcon"></span>
-                    <span class="sideSumMenuItems">
-                        @{
-                            foreach (var subItem in item.Controllers)
-                            {
-                                if (subItem.Actions != null && subItem.Actions.Count > 0)
-                                {
-                                    foreach (var action in subItem.Actions)
-                                    {
-                                        <a href="@(action.Name)" class="sideSumMenuItem">
-                                            <span class="sideMenuItemInner">
-                                                <span class="fa @(action.Icon) menuIcon"></span>
-                                                <span title="@(action.Title)" class="subItemTitle" >@(action.Title)</span>
-                                            </span>
-                                        </a>
-                                    }
-                                }
+            sideMenuTemplate(item);
 
-                            }
-                        }
-                    </span>
-                </span>
-            </span>
         }
     }
 }

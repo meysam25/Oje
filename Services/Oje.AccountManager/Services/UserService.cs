@@ -949,7 +949,8 @@ namespace Oje.AccountService.Services
                 firstname = t.Firstname.Trim(),
                 lastname = t.Lastname.Trim(),
                 username = t.Username.Trim(),
-                pic = GlobalConfig.FileAccessHandlerUrl + t.UserPic
+                pic = !string.IsNullOrEmpty(t.UserPic) ? GlobalConfig.FileAccessHandlerUrl + t.UserPic : "",
+                isUser = t.UserRoles.Any(tt => tt.Role.Name == "user")
             }).FirstOrDefault();
         }
 

@@ -125,7 +125,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceBuildingAgeGrid', '/FireBaseData/FireInsuranceBuildingAge/Create')",
               "class": "btn-primary"
             }
@@ -185,7 +185,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceBuildingAgeGrid', '/FireBaseData/FireInsuranceBuildingAge/Update')",
               "class": "btn-primary"
             }

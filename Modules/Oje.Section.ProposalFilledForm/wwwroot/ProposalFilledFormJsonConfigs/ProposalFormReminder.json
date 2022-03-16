@@ -158,7 +158,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFormReminderGrid', '/ProposalFilledForm/ProposalFormReminder/Create')",
               "class": "btn-primary"
             }
@@ -254,7 +254,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFormReminderGrid', '/ProposalFilledForm/ProposalFormReminder/Update')",
               "class": "btn-primary"
             }

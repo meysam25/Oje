@@ -118,7 +118,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'baseDataCompanyGrid', '/BaseData/Company/Create')",
               "class": "btn-primary"
             }
@@ -171,7 +171,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'baseDataCompanyGrid', '/BaseData/Company/Update')",
               "class": "btn-primary"
             }

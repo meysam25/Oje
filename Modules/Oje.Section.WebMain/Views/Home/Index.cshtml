@@ -48,7 +48,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="inquirySectionTabBodyItems">
                     <div class="inquirySectionTabBodyItem ">
                     </div>
@@ -233,7 +232,58 @@
 <div id="yourQuestion" class="myContainer"></div>
 
 <div id="holderBlogs" style="display:none;" class="myContainer"></div>
+
+<div id="ourCustomers" class="myContainer">
+    <section class="ourPrideSection">
+        <div class="ourPrideSectionTitle"><span>مشتریان ما</span></div>
+        <div>
+            <div class="mySlider"></div>
+        </div>
+    </section>
+</div>
+
+<div id="ourCompany" class="myContainer">
+    <section class="ourPrideSection">
+        <div class="ourPrideSectionTitle"><span>شرکت های طرف قرارداد</span></div>
+        <div>
+            <div class="mySlider"></div>
+        </div>
+    </section>
+</div>
 <script>
+    postForm('/Home/GetOurCustomerList', new FormData(), function(res)
+    {
+        if(res && res.length > 0){
+            $('#ourCustomers .mySlider').initSlider({
+                bigCount: 7,
+                normalCount: 2,
+                smallCount: 1,
+                autoStart:3000,
+                data: res
+            });
+            
+        }
+         else
+            $('#ourCustomers').css('display','none');
+
+    }, function() {$('#ourCustomers').css('display','none')});
+
+    postForm('/Home/GetOurCompanyList', new FormData(), function(res)
+    {
+        if(res && res.length > 0) {
+            $('#ourCompany .mySlider').initSlider({
+                bigCount: 7,
+                normalCount: 2,
+                smallCount: 1,
+                autoStart:3000,
+                data: res
+            });
+        }
+         else
+            $('#ourCompany').css('display','none');
+
+    }, function() {$('#ourCompany').css('display','none')});
+
     $('#ourPrideDiv').loadAndBindOurPride('/Home/GetOurPrideMainPage');
     $('#holderBlogs').bindBlog('/Blog/Blog/GetMainBlog');
     document.addEventListener("DOMContentLoaded", function(event) {

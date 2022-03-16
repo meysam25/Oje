@@ -103,7 +103,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'CarTypeGrid', '/CarBaseData/CarType/Create')",
               "class": "btn-primary"
             }
@@ -148,7 +148,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'CarTypeGrid', '/CarBaseData/CarType/Update')",
               "class": "btn-primary"
             }

@@ -71,7 +71,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.BlockAutoIpService = BlockAutoIpService;
         }
 
-        [AreaConfig(Title = "استعلام بدنه", Icon = "fa-car-crash", IsMainMenuItem = true)]
+        [AreaConfig(Title = "استعلام بدنه", Icon = "fa-car-tilt", IsMainMenuItem = true)]
         [HttpGet]
         [CustomeAuthorizeFilter]
         public IActionResult Index()

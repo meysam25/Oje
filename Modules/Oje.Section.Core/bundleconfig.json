@@ -17,7 +17,8 @@
       "wwwroot/js/countDown.js",
       "wwwroot/js/cImage.js",
       "wwwroot/js/formGenerator.js",
-      "wwwroot/js/notificationHob.js"
+      "wwwroot/js/notificationHob.js",
+      "wwwroot/js/Website/MainPage/inquirySection.js"
     ],
     "minify": {
       "enabled": true,
@@ -100,7 +101,8 @@
       "wwwroot/js/Website/MainPage/minPageDashboard.js",
       "wwwroot/js/Website/MainPage/bindRemindUs.js",
       "wwwroot/js/Website/animationOnScroll.js",
-      "wwwroot/js/Website/lazyLoadOnScroll.js"
+      "wwwroot/js/Website/lazyLoadOnScroll.js",
+      "wwwroot/js/Website/mySlider.js"
     ],
     "minify": {
       "enabled": true,
@@ -180,7 +182,8 @@
       "wwwroot/css/validation.css",
       "wwwroot/css/dropdown.css",
       "wwwroot/css/cImage.css",
-      "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css"
+      "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css",
+      "wwwroot/css/Website/MainPage/inquirySection.css"
     ],
     "minify": {
       "enabled": true,
@@ -217,7 +220,8 @@
     "inputFiles": [
       "wwwroot/css/Website/headerFooter.css",
       "wwwroot/css/Website/ctrls.css",
-      "wwwroot/css/Website/scrollAnimation.css"
+      "wwwroot/css/Website/scrollAnimation.css",
+      "wwwroot/css/Website/mySlider.css"
     ],
     "minify": {
       "enabled": true,

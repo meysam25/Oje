@@ -100,7 +100,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult GetLoginUserSideMenu()
         {
-            return Json(SectionService.GetSideMenuAjax(HttpContext.GetLoginUser()?.UserId));
+            return Json(SectionService.GetSideMenuWidthCategory(HttpContext.GetLoginUser()?.UserId));
         }
 
         [HttpPost]

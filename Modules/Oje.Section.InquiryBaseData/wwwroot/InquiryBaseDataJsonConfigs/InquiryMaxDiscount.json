@@ -148,7 +148,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InquiryMaxDiscountGrid', '/InquiryBaseData/InquiryMaxDiscount/Create')",
               "class": "btn-primary"
             }
@@ -214,7 +214,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InquiryMaxDiscountGrid', '/InquiryBaseData/InquiryMaxDiscount/Update')",
               "class": "btn-primary"
             }

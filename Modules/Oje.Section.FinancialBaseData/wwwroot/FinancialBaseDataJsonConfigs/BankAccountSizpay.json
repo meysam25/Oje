@@ -133,7 +133,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'BankAccountSizpayGrid', '/FinancialBaseData/BankAccountSizpay/Create')",
               "class": "btn-primary"
             }
@@ -198,7 +198,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'BankAccountSizpayGrid', '/FinancialBaseData/BankAccountSizpay/Update')",
               "class": "btn-primary"
             }

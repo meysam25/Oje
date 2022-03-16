@@ -161,7 +161,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyRateGrid', '/CarThirdBaseData/ThirdPartyRate/Create')",
               "class": "btn-primary"
             }
@@ -233,7 +233,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ThirdPartyRateGrid', '/CarThirdBaseData/ThirdPartyRate/Update')",
               "class": "btn-primary"
             }

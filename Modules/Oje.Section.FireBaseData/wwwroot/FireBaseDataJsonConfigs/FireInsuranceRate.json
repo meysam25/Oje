@@ -201,7 +201,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceRateGrid', '/FireBaseData/FireInsuranceRate/Create')",
               "class": "btn-primary"
             }
@@ -293,7 +293,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceRateGrid', '/FireBaseData/FireInsuranceRate/Update')",
               "class": "btn-primary"
             }

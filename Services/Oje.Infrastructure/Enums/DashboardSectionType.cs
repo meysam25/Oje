@@ -14,6 +14,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "محتوی")]
         Content = 2,
         [Display(Name = "کلید تب")]
-        TabContent = 3
+        TabContent = 3,
+        [Display(Name = "تب")]
+        Tab = 4
     }
 }

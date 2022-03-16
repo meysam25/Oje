@@ -97,7 +97,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'blogAdminBlogCategoryGrid', '/BlogAdmin/BlogCategory/Create')",
               "class": "btn-primary"
             }
@@ -136,7 +136,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'blogAdminBlogCategoryGrid', '/BlogAdmin/BlogCategory/Update')",
               "class": "btn-primary"
             }

@@ -167,7 +167,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'CarSpecificationAmountGrid', '/CarBodyBaseData/CarSpecificationAmount/Create')",
               "class": "btn-primary"
             }
@@ -248,7 +248,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'CarSpecificationAmountGrid', '/CarBodyBaseData/CarSpecificationAmount/Update')",
               "class": "btn-primary"
             }

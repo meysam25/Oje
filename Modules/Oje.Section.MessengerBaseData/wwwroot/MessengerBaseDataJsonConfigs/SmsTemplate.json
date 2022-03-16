@@ -124,7 +124,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'SmsTemplateGrid', '/MessengerBaseData/SmsTemplate/Create')",
               "class": "btn-primary"
             }
@@ -180,7 +180,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'SmsTemplateGrid', '/MessengerBaseData/SmsTemplate/Update')",
               "class": "btn-primary"
             }

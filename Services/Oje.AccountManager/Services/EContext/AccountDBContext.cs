@@ -32,6 +32,10 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<DashboardSection> DashboardSections { get; set; }
         public DbSet<Property> Properties { get; set; }
         public DbSet<DashboardSectionCategory> DashboardSectionCategories { get; set; }
+        public DbSet<SectionCategory> SectionCategories { get; set; }
+        public DbSet<SectionCategorySection> SectionCategorySections { get; set; }
+        public DbSet<ControllerCategory> ControllerCategories { get; set; }
+        public DbSet<ControllerCategoryController> ControllerCategoryControllers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +43,8 @@ namespace Oje.AccountService.Services.EContext
             modelBuilder.Entity<UserCompany>().HasKey(t => new { t.UserId, t.CompanyId });
             modelBuilder.Entity<UserNotification>().HasKey(t => new { t.UserId, t.CreateDate, t.Type });
             modelBuilder.Entity<Property>().HasKey(t => new { t.Name, t.SiteSettingId, t.Type });
+            modelBuilder.Entity<SectionCategorySection>().HasKey(t => new { t.SectionId, t.SectionCategoryId });
+            modelBuilder.Entity<ControllerCategoryController>().HasKey(t => new { t.ControllerId, t.ControllerCategoryId });
 
             modelBuilder.Entity<User>().Property(e => e.MapLat).HasPrecision(18, 15);
             modelBuilder.Entity<User>().Property(e => e.MapLon).HasPrecision(18, 15);

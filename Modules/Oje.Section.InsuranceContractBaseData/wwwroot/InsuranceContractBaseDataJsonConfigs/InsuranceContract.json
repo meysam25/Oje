@@ -207,7 +207,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InsuranceContractGrid', '/InsuranceContractBaseData/InsuranceContract/Create')",
               "class": "btn-primary"
             }
@@ -315,7 +315,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InsuranceContractGrid', '/InsuranceContractBaseData/InsuranceContract/Update')",
               "class": "btn-primary"
             }

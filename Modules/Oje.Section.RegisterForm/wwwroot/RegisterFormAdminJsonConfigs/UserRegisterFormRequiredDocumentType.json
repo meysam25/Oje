@@ -112,7 +112,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'UserRegisterFormRequiredDocumentTypeMainGrid', '/RegisterFormAdmin/UserRegisterFormRequiredDocumentType/Create')",
               "class": "btn-primary"
             }
@@ -161,7 +161,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'UserRegisterFormRequiredDocumentTypeMainGrid', '/RegisterFormAdmin/UserRegisterFormRequiredDocumentType/Update')",
               "class": "btn-primary"
             }

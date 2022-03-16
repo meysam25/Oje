@@ -276,7 +276,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/CreateUserRefer')",
               "class": "btn-primary"
             }
@@ -308,7 +308,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/UpdateCompanies')",
               "class": "btn-primary"
             }
@@ -383,7 +383,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/UpdateAgent')",
               "class": "btn-primary"
             }
@@ -545,7 +545,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistpriceGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/CreatePricingCompany')",
               "class": "btn-primary"
             }
@@ -593,7 +593,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistpriceGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/UpdatePricingCompany')",
               "class": "btn-primary"
             }
@@ -659,7 +659,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistimageGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/UploadNewFile')",
               "class": "btn-primary"
             }
@@ -848,7 +848,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/CreateDocument')",
               "class": "btn-primary"
             }
@@ -930,7 +930,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/UpdateDocument')",
               "class": "btn-primary"
             }
@@ -968,7 +968,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialist/UpdateStatus')",
               "class": "btn-primary"
             }

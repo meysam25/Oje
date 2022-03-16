@@ -19,22 +19,22 @@ function bindIfUserAreadyLogin() {
         if (res) {
             var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
             localStorage.setItem('curLogin', JSON.stringify(res));
-            userLoginWeb(userFullname);
+            userLoginWeb(userFullname, res.isUser);
         }
     });
 }
 
-function userLoginWeb(userfullname) {
+function userLoginWeb(userfullname, isUser) {
     $('.holderRigAndLogUser').find('a').css('display', 'none');
-    $('.holderRigAndLogUser').append(getLoginUserMenuTemplate(userfullname));
+    $('.holderRigAndLogUser').append(getLoginUserMenuTemplate(userfullname, isUser));
 }
 
-function getLoginUserMenuTemplate(userfullanme) {
+function getLoginUserMenuTemplate(userfullanme, isUser) {
     return `
     <div class="logedInUserMenu">
         <span class="logedInUserMenuFullname" ><img src="" />${userfullanme}<i style="font-size:2em;vertical-align:-9px;margin-right:10px;" class="fa fa-angle-down" ></i><i style="font-size:2em;vertical-align:-9px;margin-right:10px;" class="fa fa-user-circle" ></i></span>
         <div class="logedInUserMenuItems">
-            <a href="#" >داشبورد</a>
+            <a href="${(isUser ? '/Dashboard' : '/Account/Dashboard/Index')}" >داشبورد</a>
             <a href="/Account/Dashboard/Logout" >خروج</a>
         </div>
     </div>

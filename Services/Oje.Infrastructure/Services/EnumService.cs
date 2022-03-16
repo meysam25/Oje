@@ -4,10 +4,7 @@ using Oje.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Services
 {
@@ -30,7 +27,15 @@ namespace Oje.Infrastructure.Services
                 string displayName = value.GetAttribute<DisplayAttribute>()?.Name;
                 var propValue = value.GetAttribute<DisplayAttribute>()?.Prompt;
 
-                string id = ((int)value) + "";
+                string id = "";
+                try
+                {
+                    id = ((int)value) + "";
+                }
+                catch
+                {
+                    id = ((byte)value) + "";
+                }
                 if (!string.IsNullOrEmpty(propValue))
                     id = propValue;
 

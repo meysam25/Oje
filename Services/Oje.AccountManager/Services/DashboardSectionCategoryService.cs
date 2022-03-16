@@ -32,7 +32,9 @@ namespace Oje.AccountService.Services
             db.Entry(new DashboardSectionCategory()
             {
                 Css = input.cssClass,
-                Title = input.title
+                Title = input.title,
+                Type = input.type,
+                Order = input.order,
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -69,7 +71,9 @@ namespace Oje.AccountService.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    cssClass = t.Css
+                    cssClass = t.Css,
+                    type = t.Type,
+                    order = t.Order
                 })
                 .FirstOrDefault();
         }
@@ -123,6 +127,8 @@ namespace Oje.AccountService.Services
 
             foundItem.Title = input.title;
             foundItem.Css = input.cssClass;
+            foundItem.Type = input.type;
+            foundItem.Order = input.order;
 
             db.SaveChanges();
 

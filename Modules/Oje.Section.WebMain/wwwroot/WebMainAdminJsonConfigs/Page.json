@@ -156,7 +156,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'WebMainAdminPageGrid', '/WebMainAdmin/Page/Create')",
               "class": "btn-primary"
             }
@@ -249,7 +249,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'WebMainAdminPageGrid', '/WebMainAdmin/Page/Update')",
               "class": "btn-primary"
             }

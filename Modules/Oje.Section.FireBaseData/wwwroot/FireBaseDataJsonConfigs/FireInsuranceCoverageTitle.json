@@ -123,7 +123,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceCoverageTitleGrid', '/FireBaseData/FireInsuranceCoverageTitle/Create')",
               "class": "btn-primary"
             }
@@ -178,7 +178,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'FireInsuranceCoverageTitleGrid', '/FireBaseData/FireInsuranceCoverageTitle/Update')",
               "class": "btn-primary"
             }

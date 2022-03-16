@@ -1,5 +1,4 @@
 ﻿using Oje.AccountService.Interfaces;
-using Oje.AccountService.Models;
 using Oje.AccountService.Models.DB;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -13,8 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Oje.AccountService.Models.View;
 using Oje.AccountService.Services.EContext;
 using Oje.AccountService.Filters;
@@ -340,12 +337,12 @@ namespace Oje.AccountService.Services
 
         void removeWithAccessIfNotExisted(List<string> prevSections, List<string> prevSectionsControllers, List<string> prevActions, List<string> currSections, List<string> currSectionsControllers, List<string> currActions)
         {
-            foreach(var action in prevActions)
+            foreach (var action in prevActions)
             {
-                if(!currActions.Any(t => t == action))
+                if (!currActions.Any(t => t == action))
                 {
                     var foundAction = db.Actions.Include(t => t.RoleActions).Where(t => t.Name == action).FirstOrDefault();
-                    if(foundAction != null)
+                    if (foundAction != null)
                     {
                         if (foundAction.RoleActions != null)
                             foreach (var temp1 in foundAction.RoleActions)
@@ -362,15 +359,15 @@ namespace Oje.AccountService.Services
                     var foundController = db.Controllers.Include(t => t.Actions).ThenInclude(t => t.RoleActions).Where(t => t.Name == controllerX).FirstOrDefault();
                     if (foundController != null)
                     {
-                        if(foundController.Actions != null)
-                            foreach(var tempAction in foundController.Actions)
+                        if (foundController.Actions != null)
+                            foreach (var tempAction in foundController.Actions)
                             {
                                 if (tempAction.RoleActions != null)
                                     foreach (var temp1 in tempAction.RoleActions)
                                         db.Entry(temp1).State = EntityState.Deleted;
                                 db.Entry(tempAction).State = EntityState.Deleted;
                             }
-                      
+
                         db.Entry(foundController).State = EntityState.Deleted;
                     }
                 }
@@ -383,8 +380,8 @@ namespace Oje.AccountService.Services
                     var foundSection = db.Sections.Include(t => t.Controllers).ThenInclude(t => t.Actions).ThenInclude(t => t.RoleActions).Where(t => t.Name == sectionX).FirstOrDefault();
                     if (foundSection != null)
                     {
-                        if(foundSection.Controllers != null) 
-                            foreach(var foundController in foundSection.Controllers)
+                        if (foundSection.Controllers != null)
+                            foreach (var foundController in foundSection.Controllers)
                             {
                                 if (foundController.Actions != null)
                                     foreach (var tempAction in foundController.Actions)
@@ -462,5 +459,184 @@ namespace Oje.AccountService.Services
             return newParentModalSection;
         }
 
+        public object GetSelect2List(Select2SearchVM searchInput)
+        {
+            List<object> result = new List<object>();
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.Sections.OrderByDescending(t => t.Id).AsQueryable();
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => (t.Title).Contains(searchInput.search));
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Title }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
+        }
+
+        public List<SiteMenueVM> GetSideMenuWidthCategory(long? userId)
+        {
+            var listRoleIds = db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserRoles).Select(t => t.RoleId).ToList();
+            List<SiteMenueVM> result = new List<SiteMenueVM>();
+
+            var groupResult = db.Sections
+                .Select(t => new
+                {
+                    catOrder = t.SectionCategorySections.Select(tt => tt.SectionCategory.Order).FirstOrDefault(),
+                    catTitle = t.SectionCategorySections.Select(tt => tt.SectionCategory.Title).FirstOrDefault(),
+                    catIcon = t.SectionCategorySections.Select(tt => tt.SectionCategory.Icon).FirstOrDefault(),
+                    catIsActive = t.SectionCategorySections.Select(tt => tt.SectionCategory.IsActive).FirstOrDefault(),
+                    Icon = t.Icon,
+                    Title = t.Title,
+                    Controllers = t.Controllers.Select(tt => new
+                    {
+                        catOrder = tt.ControllerCategoryControllers.Select(ttt => ttt.ControllerCategory.Order).FirstOrDefault(),
+                        catTitle = tt.ControllerCategoryControllers.Select(ttt => ttt.ControllerCategory.Title).FirstOrDefault(),
+                        catIcon = tt.ControllerCategoryControllers.Select(ttt => ttt.ControllerCategory.Icon).FirstOrDefault(),
+                        catIsActive = tt.ControllerCategoryControllers.Select(ttt => ttt.ControllerCategory.IsActive).FirstOrDefault(),
+                        Icon = tt.Icon,
+                        Title = tt.Title,
+                        Actions = tt.Actions.Where(ttt => ttt.IsMainMenuItem == true && ttt.RoleActions.Any(tttt => listRoleIds.Contains(tttt.RoleId))).Select(ttt => new
+                        {
+                            Icon = ttt.Icon,
+                            Id = ttt.Id,
+                            IsMainMenuItem = ttt.IsMainMenuItem,
+                            Title = ttt.Title,
+                            Name = ttt.Name
+                        }).ToList()
+                    }).Where(t => t.Actions.Any()).ToList()
+                }).ToList().Where(t => t.Controllers.Any(tt => tt.Actions.Any())).ToList();
+
+            var groupBySectionCat = groupResult.OrderBy(t => t.catOrder == 0 ? 999 : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
+
+            foreach (var group in groupBySectionCat)
+            {
+
+                if (!string.IsNullOrEmpty(group.Key.catTitle) && !string.IsNullOrEmpty(group.Key.catIcon))
+                {
+                    SiteMenueVM newItem = new SiteMenueVM()
+                    {
+                        icon = group.Key.catIcon,
+                        title = group.Key.catTitle
+                    };
+
+                    List<SiteMenueVM> childList = new List<SiteMenueVM>();
+                    foreach (var modal in group.ToList())
+                    {
+                        SiteMenueVM newChil1Item = new SiteMenueVM()
+                        {
+                            icon = modal.Icon,
+                            title = modal.Title
+                        };
+
+                        var controllerGroupItems = modal.Controllers.OrderBy(t => t.catOrder == 0 ? 999 : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
+                        List<SiteMenueVM> controllerChildList = new List<SiteMenueVM>();
+                        foreach (var controllerGroup in controllerGroupItems)
+                        {
+                            if (!string.IsNullOrEmpty(controllerGroup.Key.catTitle) && !string.IsNullOrEmpty(controllerGroup.Key.catIcon))
+                            {
+                                SiteMenueVM newCatItem = new SiteMenueVM()
+                                {
+                                    title = controllerGroup.Key.catTitle,
+                                    icon = controllerGroup.Key.catIcon
+                                };
+                                foreach (var allCtrl in controllerGroup.ToList())
+                                {
+                                    newCatItem.childs.Add(new SiteMenueVM()
+                                    {
+                                        title = allCtrl.Actions.FirstOrDefault()?.Title,
+                                        icon = allCtrl.Actions.FirstOrDefault()?.Icon,
+                                        url = allCtrl.Actions.FirstOrDefault()?.Name
+                                    });
+                                }
+                                controllerChildList.Add(newCatItem);
+                            }
+                            else
+                            {
+                                foreach (var controllerItem in controllerGroup.ToList())
+                                {
+                                    SiteMenueVM newCatItem = new SiteMenueVM()
+                                    {
+                                        title = controllerItem.Actions.FirstOrDefault()?.Title,
+                                        icon = controllerItem.Actions.FirstOrDefault()?.Icon,
+                                        url = controllerItem.Actions.FirstOrDefault()?.Name
+                                    };
+                                    
+                                    controllerChildList.Add(newCatItem);
+                                }
+                            }
+                        }
+                        newChil1Item.childs = controllerChildList;
+                        childList.Add(newChil1Item);
+                    }
+                    newItem.childs = childList;
+
+                    result.Add(newItem);
+                }
+                else
+                {
+                    foreach (var item in group.ToList())
+                    {
+                        SiteMenueVM newChil1Item = new SiteMenueVM()
+                        {
+                            icon = item.Icon,
+                            title = item.Title
+                        };
+
+                        List<SiteMenueVM> controllerList = new List<SiteMenueVM>();
+
+                        var groupControllers = item.Controllers.OrderBy(t => t.catOrder == 0 ? 999 : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
+                        foreach (var gITem in groupControllers)
+                        {
+                            if (!string.IsNullOrEmpty(gITem.Key.catTitle) && !string.IsNullOrEmpty(gITem.Key.catIcon))
+                            {
+                                SiteMenueVM tempX = new SiteMenueVM()
+                                {
+                                    title = gITem.Key.catTitle,
+                                    icon = gITem.Key.catIcon
+                                };
+                                foreach (var chilCtrlTempX in gITem.ToList())
+                                {
+                                    tempX.childs.Add(new SiteMenueVM()
+                                    {
+                                        title = chilCtrlTempX.Actions.FirstOrDefault()?.Title,
+                                        icon = chilCtrlTempX.Actions.FirstOrDefault()?.Icon,
+                                        url = chilCtrlTempX.Actions.FirstOrDefault()?.Name
+                                    });
+                                }
+                                controllerList.Add(tempX);
+                            }
+                            else
+                            {
+                                foreach(var tempX2 in gITem.ToList())
+                                {
+                                    SiteMenueVM tempX = new SiteMenueVM()
+                                    {
+                                        title = tempX2.Actions.FirstOrDefault()?.Title,
+                                        icon = tempX2.Actions.FirstOrDefault()?.Icon,
+                                        url = tempX2.Actions.FirstOrDefault()?.Name
+                                    };
+                                    controllerList.Add(tempX);
+                                }
+                            }
+                        }
+
+                        newChil1Item.childs = controllerList;
+                        result.Add(newChil1Item);
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }

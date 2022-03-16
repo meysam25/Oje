@@ -167,7 +167,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InsuranceContractValidUserForFullDebitGrid', '/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/Create')",
               "class": "btn-primary"
             }
@@ -230,7 +230,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InsuranceContractValidUserForFullDebitGrid', '/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/Update')",
               "class": "btn-primary"
             }

@@ -117,7 +117,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InquiryCompanyLimitGrid', '/InquiryBaseData/InquiryCompanyLimit/Create')",
               "class": "btn-primary"
             }
@@ -160,7 +160,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'InquiryCompanyLimitGrid', '/InquiryBaseData/InquiryCompanyLimit/Update')",
               "class": "btn-primary"
             }

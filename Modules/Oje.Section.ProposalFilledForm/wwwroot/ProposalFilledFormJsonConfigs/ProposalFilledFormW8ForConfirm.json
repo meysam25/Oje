@@ -276,7 +276,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/CreateUserRefer')",
               "class": "btn-primary"
             }
@@ -308,7 +308,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateCompanies')",
               "class": "btn-primary"
             }
@@ -383,7 +383,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateAgent')",
               "class": "btn-primary"
             }
@@ -545,7 +545,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormW8ForConfirmpriceGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/CreatePricingCompany')",
               "class": "btn-primary"
             }
@@ -593,7 +593,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormW8ForConfirmpriceGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdatePricingCompany')",
               "class": "btn-primary"
             }
@@ -659,7 +659,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormW8ForConfirmimageGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UploadNewFile')",
               "class": "btn-primary"
             }
@@ -848,7 +848,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormW8ForConfirmdocumentGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/CreateDocument')",
               "class": "btn-primary"
             }
@@ -930,7 +930,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormW8ForConfirmdocumentGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateDocument')",
               "class": "btn-primary"
             }
@@ -968,7 +968,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateStatus')",
               "class": "btn-primary"
             }

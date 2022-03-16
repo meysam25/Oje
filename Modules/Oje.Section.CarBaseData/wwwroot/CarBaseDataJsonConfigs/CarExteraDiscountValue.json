@@ -114,7 +114,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'CarExteraDiscountValueGrid', '/CarBaseData/CarExteraDiscountValue/Create')",
               "class": "btn-primary"
             }
@@ -163,7 +163,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'CarExteraDiscountValueGrid', '/CarBaseData/CarExteraDiscountValue/Update')",
               "class": "btn-primary"
             }

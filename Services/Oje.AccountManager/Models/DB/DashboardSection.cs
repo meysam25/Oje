@@ -1,11 +1,6 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
@@ -26,6 +21,7 @@ namespace Oje.AccountService.Models.DB
         public int? DashboardSectionCategoryId { get; set; }
         [ForeignKey("DashboardSectionCategoryId"), InverseProperty("DashboardSections")]
         public DashboardSectionCategory DashboardSectionCategory { get; set; }
+        public int? Order { get; set; }
 
     }
 }

@@ -36,7 +36,8 @@ namespace Oje.AccountService.Services
                 Class = input.@class,
                 RoleId = input.pKey.ToIntReturnZiro(),
                 Type = input.type.Value,
-                DashboardSectionCategoryId = input.catId
+                DashboardSectionCategoryId = input.catId,
+                Order = input.order
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -86,7 +87,8 @@ namespace Oje.AccountService.Services
                     type = t.Type,
                     actionId = t.ActionId,
                     actionId_Title = t.Action.Title,
-                    catId = t.DashboardSectionCategoryId
+                    catId = t.DashboardSectionCategoryId,
+                    order = t.Order
                 })
                 .Take(1)
                 .Select(t => new
@@ -96,7 +98,8 @@ namespace Oje.AccountService.Services
                     type = (int)t.type,
                     t.actionId,
                     t.actionId_Title,
-                    t.catId
+                    t.catId,
+                    t.order
                 })
                 .FirstOrDefault();
         }
@@ -155,6 +158,7 @@ namespace Oje.AccountService.Services
             foundItem.Class = input.@class;
             foundItem.Type = input.type.Value;
             foundItem.DashboardSectionCategoryId = input.catId;
+            foundItem.Order = input.order;
 
             db.SaveChanges();
 
@@ -175,29 +179,35 @@ namespace Oje.AccountService.Services
                     parentCL = t.Class,
                     url = t.Action.Name,
                     label = t.Action.Title,
+                    icon = t.Action.Controller.Actions.Where(tt => tt.IsMainMenuItem == true).Select(tt => tt.Icon).FirstOrDefault(),
                     gId = t.DashboardSectionCategoryId,
                     gTitle = t.DashboardSectionCategory.Title,
-                    gcssClass = t.DashboardSectionCategory.Css
+                    gType = t.DashboardSectionCategory.Type,
+                    gOrder = t.DashboardSectionCategory.Order,
+                    gcssClass = t.DashboardSectionCategory.Css,
+                    order = t.Order
                 })
                 .ToList();
 
             var listPanels = new List<object>();
 
-            var groupConfigs = allConfigs.GroupBy(t => t.gTitle).ToList();
+            var groupConfigs = allConfigs.GroupBy(t => new { t.gTitle, t.gType, t.gOrder }).OrderBy(t => t.Key.gOrder).ToList();
             foreach (var groupConfig in groupConfigs)
             {
                 listPanels.Add(new
                 {
                     @class = groupConfig.FirstOrDefault()?.gcssClass,
-                    title = groupConfig.Key,
-                    ctrls = groupConfig
+                    title = groupConfig.Key.gTitle,
+                    type = groupConfig.Key.gType != null ? groupConfig.Key.gType.Value.ToString() : null,
+                    ctrls = groupConfig.OrderBy(tt => tt.order)
                     .Select(t => new
                     {
                         id = "content_" + t.id,
                         type = t.type.ToString(),
                         t.parentCL,
                         label = t.label.Replace("تنظیمات ", "").Replace("صفحه ", ""),
-                        url = t.type == Infrastructure.Enums.DashboardSectionType.Content || t.type == Infrastructure.Enums.DashboardSectionType.TabContent ? t.url : putIndexAtEntOfUrl(t.url)
+                        url = t.type == Infrastructure.Enums.DashboardSectionType.Content || t.type == Infrastructure.Enums.DashboardSectionType.TabContent || t.type == Infrastructure.Enums.DashboardSectionType.Tab ? t.url : putIndexAtEntOfUrl(t.url),
+                        icon = t.icon
                     })
                     .ToList()
                 });

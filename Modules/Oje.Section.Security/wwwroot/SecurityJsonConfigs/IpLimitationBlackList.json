@@ -95,7 +95,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'IpLimitationBlackListMainGrid', '/Security/IpLimitationBlackList/Create')",
               "class": "btn-primary"
             }
@@ -134,7 +134,7 @@
               "class": "btn-secondary"
             },
             {
-              "title": "دخیره",
+              "title": "ذخیره",
               "onClick": "postModalData(this, 'IpLimitationBlackListMainGrid', '/Security/IpLimitationBlackList/Update')",
               "class": "btn-primary"
             }
