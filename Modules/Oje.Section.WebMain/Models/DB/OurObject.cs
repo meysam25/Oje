@@ -14,7 +14,7 @@ namespace Oje.Section.WebMain.Models.DB
     {
         [Key]
         public int Id { get; set; }
-        [Required, MaxLength(100)]
+        [MaxLength(100)]
         public string Title { get; set; }
         [MaxLength(100)]
         public string Subtitle { get; set; }

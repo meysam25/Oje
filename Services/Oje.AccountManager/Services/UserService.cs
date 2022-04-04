@@ -1,6 +1,5 @@
 ﻿using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.DB;
-using Oje.AccountService.Models.SP;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -1331,6 +1330,21 @@ namespace Oje.AccountService.Services
                 }
             }
             db.SaveChanges();
+        }
+
+        public PPFUserTypes GetUserTypePPFInfo(long? loginUserId, ProposalFilledFormUserType resultType)
+        {
+            return db.Users
+                .Where(t => t.Id == loginUserId)
+                .Select(t => new PPFUserTypes 
+                {
+                    emaile = t.Email,
+                    fullUserName = t.Firstname + " " + t.Lastname,
+                    mobile = t.Mobile,
+                    userId = t.Id,
+                    ProposalFilledFormUserType = resultType
+                })
+                .FirstOrDefault();
         }
     }
 }

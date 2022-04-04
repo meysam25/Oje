@@ -64,6 +64,82 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             return View();
         }
 
+        [Route("Reminder")]
+        [HttpGet]
+        public IActionResult Reminder()
+        {
+
+            GlobalServices.FillSeoInfo(
+                  ViewData,
+                   "یادآوری",
+                   "با درج اطلاعات خود در قسمت یادآوری دیگر نگران فراموش کردن موعد تمدید بیمه یا اقساط بیمه نامه خود نباشید.",
+                   Request.Scheme + "://" + Request.Host + "/Reminder",
+                   Request.Scheme + "://" + Request.Host + "/Reminder",
+                   WebSiteTypes.website,
+                   Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
+                   null
+                   );
+
+            return View();
+        }
+
+        [Route("CarThirdPartyInquiry")]
+        [HttpGet]
+        public IActionResult CarThirdPartyInquiry()
+        {
+
+            GlobalServices.FillSeoInfo(
+                  ViewData,
+                   "خرید بیمه نامه شخص ثالث خودرو",
+                   "بیمه نامه شخص ثالث خودرو را در این بخش ارزان تر از همه جا تهیه کنید",
+                   Request.Scheme + "://" + Request.Host + "/CarThirdPartyInquiry",
+                   Request.Scheme + "://" + Request.Host + "/CarThirdPartyInquiry",
+                   WebSiteTypes.website,
+                   Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
+                   null
+                   );
+
+            return View();
+        }
+
+        [Route("CarBodyInquiry")]
+        [HttpGet]
+        public IActionResult CarBodyInquiry()
+        {
+
+            GlobalServices.FillSeoInfo(
+                  ViewData,
+                   "خرید بیمه نامه بدنه خودرو",
+                   "بیمه نامه بدنه خودرو را در این بخش ارزان تر از همه جا تهیه کنید",
+                   Request.Scheme + "://" + Request.Host + "/CarBodyInquiry",
+                   Request.Scheme + "://" + Request.Host + "/CarBodyInquiry",
+                   WebSiteTypes.website,
+                   Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
+                   null
+                   );
+
+            return View();
+        }
+
+        [Route("FireInsurance")]
+        [HttpGet]
+        public IActionResult FireInsurance()
+        {
+
+            GlobalServices.FillSeoInfo(
+                  ViewData,
+                   "خرید بیمه نامه آتش سوزی",
+                   "بیمه نامه آتش سوزی را در این بخش ارزان تر از همه جا تهیه کنید",
+                   Request.Scheme + "://" + Request.Host + "/FireInsurance",
+                   Request.Scheme + "://" + Request.Host + "/FireInsurance",
+                   WebSiteTypes.website,
+                   Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
+                   null
+                   );
+
+            return View();
+        }
+
         [Route("[Controller]/[Action]")]
         [HttpPost]
         public IActionResult GetLoginModalConfig()

@@ -244,7 +244,6 @@ namespace Oje.Sms.Services
                                     }, siteSettingId, GlobalConfig.GetSmsLimitFromConfig(), HttpContextAccessor.HttpContext?.GetLoginUser()?.roles?.Any(t => t == "user"));
                                 }
                             }
-
                         }
                     }
                 }
@@ -268,7 +267,7 @@ namespace Oje.Sms.Services
                                 SiteSettingId = siteSettingId.Value,
                                 Type = type,
                                 ToUserId = foundTargetUser.userId,
-                            }, siteSettingId, GlobalConfig.GetSmsLimitFromConfig(), HttpContextAccessor.HttpContext?.GetLoginUser()?.roles?.Any(t => t == "user"));
+                            }, siteSettingId, GlobalConfig.GetSmsLimitFromConfig(),  HttpContextAccessor.HttpContext?.GetLoginUser()?.roles?.Any(t => t == "user"));
                         }
                     }
                 }

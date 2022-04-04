@@ -42,7 +42,7 @@ namespace Oje.AccountService.Interfaces
         void UpdatePassword(User user, string password);
         object CreateForUserFromJson(GlobalExcelFile input, long? userId, LoginUserVM loginUserVM, int? siteSettingId, string websiteUrl);
         object GetUserInfoBy(long? userId);
-
         void CreateTempTable();
+        PPFUserTypes GetUserTypePPFInfo(long? loginUserId, ProposalFilledFormUserType resultType);
     }
 }

@@ -93,7 +93,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public IActionResult UpdatePrice([FromForm] InsuranceContractProposalFilledFormChangePriceVM input)
         {
-            return Json(InsuranceContractProposalFilledFormService.UpdatePrice(input, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFilledFormService.UpdatePrice(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "دانلود پی دی اف فرم پیشنهاد", Icon = "fa-download")]

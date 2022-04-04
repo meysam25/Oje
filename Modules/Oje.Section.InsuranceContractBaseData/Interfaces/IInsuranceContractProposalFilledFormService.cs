@@ -13,7 +13,7 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         object GetPPFImageList(GlobalGridParentLong input, int? siteSettingId);
         object GetStatus(long? id, int? siteSettingId);
         ApiResult UpdateStatus(InsuranceContractProposalFilledFormChangeStatusVM input, int? siteSettingId, long? loginUserId);
-        ApiResult UpdatePrice(InsuranceContractProposalFilledFormChangePriceVM input, int? siteSettingId);
+        ApiResult UpdatePrice(InsuranceContractProposalFilledFormChangePriceVM input, int? siteSettingId, long? loginUserId);
         object GetPrice(long? id, int? siteSettingId);
     }
 }

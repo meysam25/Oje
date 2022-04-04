@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Oje.AccountService.Interfaces;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
+using Oje.JoinServices.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.DB;
 using Oje.Section.InsuranceContractBaseData.Models.View;
@@ -25,6 +28,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractProposalFilledFormValueService InsuranceContractProposalFilledFormValueService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService = null;
+        readonly IUserNotifierService UserNotifierService = null;
+        readonly IUserService UserService = null;
 
         const int year18DaysCount = 365 * 18; //6570
         const int maxInputUsers = 21;
@@ -37,7 +42,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IInsuranceContractProposalFilledFormUserService InsuranceContractProposalFilledFormUserService,
                 IInsuranceContractProposalFilledFormValueService InsuranceContractProposalFilledFormValueService,
                 IUploadedFileService UploadedFileService,
-                IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService
+                IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService,
+                IUserNotifierService UserNotifierService,
+                IUserService UserService
             )
         {
             this.db = db;
@@ -47,6 +54,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.InsuranceContractProposalFilledFormValueService = InsuranceContractProposalFilledFormValueService;
             this.UploadedFileService = UploadedFileService;
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
+            this.UserNotifierService = UserNotifierService;
+            this.UserService = UserService;
         }
 
         public ApiResult Create(long? loginUserId, int? siteSettingId, IFormCollection form)
@@ -59,7 +68,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 mobile = form.GetStringIfExist("mobile")
             };
 
-            (PageForm ppfObj, List<IdTitle> familyRelations, List<IdTitle> familyCTypes, int contractId, string jsonConfigStr) =
+            (PageForm ppfObj, List<IdTitle> familyRelations, List<IdTitle> familyCTypes, IdTitle contract, string jsonConfigStr) =
                 createValidation(loginUserId, siteSettingId, form, contractInfo);
 
             long newFormId = 0;
@@ -68,7 +77,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             {
                 try
                 {
-                    InsuranceContractProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, contractId, loginUserId);
+                    InsuranceContractProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, contract.id.ToIntReturnZiro(), loginUserId);
                     InsuranceContractProposalFilledFormJsonService.Create(newForm.Id, jsonConfigStr);
                     InsuranceContractProposalFilledFormUserService.Create(familyRelations, familyCTypes, newForm.Id);
                     InsuranceContractProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form);
@@ -77,6 +86,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     tr.Commit();
 
                     newFormId = newForm.Id;
+
+                    UserNotifierService.Notify(loginUserId, UserNotificationType.CreateNewDamageClime, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.CreateUser) } , newForm.Id, contract.title, siteSettingId, "/InsuranceContractBaseData/InsuranceContractProposalFilledForm/Detaile?id=" + newForm.Id);
                 }
                 catch (Exception)
                 {
@@ -110,7 +121,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return newItem;
         }
 
-        private (PageForm, List<IdTitle>, List<IdTitle>, int, string) createValidation(long? loginUserId, int? siteSettingId, IFormCollection form, contractUserInput contractInfo)
+        private (PageForm, List<IdTitle>, List<IdTitle>, IdTitle, string) createValidation(long? loginUserId, int? siteSettingId, IFormCollection form, contractUserInput contractInfo)
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
@@ -183,11 +194,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     throw BException.GenerateNewException(BMessages.Validation_Error);
 
 
-            var contractId = InsuranceContractService.GetIdBy(contractInfo, siteSettingId);
-            if (contractId <= 0)
+            var contract = InsuranceContractService.GetIdTitleBy(contractInfo, siteSettingId);
+            if (contract == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
-            return (ppfObj, inputFamilyRelations, inputFamilyCTypes, contractId, tempJsonconfig);
+            return (ppfObj, inputFamilyRelations, inputFamilyCTypes, contract, tempJsonconfig);
         }
 
         private List<IdTitle> getArrItems(IFormCollection form, string keyPart1, string keyPart2)
@@ -413,6 +424,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             var foundItem =
             db.InsuranceContractProposalFilledForms
+            .Include(t => t.InsuranceContract)
             .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && t.IsDelete != true)
             .FirstOrDefault();
 
@@ -430,10 +442,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             InsuranceContractProposalFilledFormStatusLogService.Create(input.id, input.status, DateTime.Now, loginUserId, input.description);
 
+            UserNotifierService.Notify(loginUserId, UserNotificationType.DamageClimeStatusChange, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(foundItem.CreateUserId, ProposalFilledFormUserType.CreateUser) }, foundItem.Id, foundItem.InsuranceContract?.Title, siteSettingId, "/InsuranceContractBaseData/InsuranceContractProposalFilledForm/Detaile?id=" + foundItem.Id);
+
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public ApiResult UpdatePrice(InsuranceContractProposalFilledFormChangePriceVM input, int? siteSettingId)
+        public ApiResult UpdatePrice(InsuranceContractProposalFilledFormChangePriceVM input, int? siteSettingId, long? loginUserId)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -448,6 +462,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             foundItem.Price = input.price;
             db.SaveChanges();
+
+            UserNotifierService.Notify(loginUserId, UserNotificationType.DamageClimeSetPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(foundItem.CreateUserId, ProposalFilledFormUserType.CreateUser) }, foundItem.Id, foundItem.InsuranceContract?.Title, siteSettingId, "/InsuranceContractBaseData/InsuranceContractProposalFilledForm/Detaile?id=" + foundItem.Id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

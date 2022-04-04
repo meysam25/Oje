@@ -1,0 +1,28 @@
+﻿@using Oje.Infrastructure
+@{
+    Layout = "_WebLayout";
+}
+
+
+
+@section Styles {
+<link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+
+}
+
+<div id="reminderSection" class="myContainer">
+    <section class="reminderSection animationOnScroll animationOnScrollOpacityFlip">
+        <div class="reminderSectionDescription">
+            <img class="reminderMainLogo" width="64" height="64" />
+            <div class="reminderSectionDescriptionTexts">
+                <div class="reminderSectionDescriptionTextsTitle"></div>
+                <div class="reminderSectionDescriptionTextsDescription"></div>
+            </div>
+        </div>
+        <div class="reminderSectionInput "></div>
+    </section>
+</div>
+<script>
+    loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'));
+    $('#reminderSection').loadAndBindRemindUsSection('/Reminder/GetMainPageDescription');
+</script>

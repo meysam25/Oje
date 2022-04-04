@@ -490,11 +490,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return InsuranceContractTypeRequiredDocumentService.GetRequiredDocuments(foundType?.id, foundType?.tId, siteSettingId, foundType?.desc);
         }
 
-        public int GetIdBy(contractUserInput contractInfo, int? siteSettingId)
+        public IdTitle GetIdTitleBy(contractUserInput contractInfo, int? siteSettingId)
         {
             return db.InsuranceContracts
                 .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId && t.Code == contractInfo.contractCode)
-                .Select(t => t.Id)
+                .Select(t => new IdTitle { id = t.Id.ToString(), title = t.Title })
                 .FirstOrDefault();
         }
     }

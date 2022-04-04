@@ -52,6 +52,12 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ثبت نام موفقیت آمیز")]
         RegisterSuccessFull = 21,
         [Display(Name = "فراموشی کلمه عبور")]
-        ForgetPassword = 22
+        ForgetPassword = 22,
+        [Display(Name = "ثبت اعلام خسارت جدید")]
+        CreateNewDamageClime = 23,
+        [Display(Name = "تغییر وضعیت اعلام خسارت")]
+        DamageClimeStatusChange = 24,
+        [Display(Name = "تغییر قیمت اعلام خسارت")]
+        DamageClimeSetPrice = 25
     }
 }

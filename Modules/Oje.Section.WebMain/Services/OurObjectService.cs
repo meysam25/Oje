@@ -59,9 +59,9 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
-            if (string.IsNullOrEmpty(input.title))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Title);
-            if (input.title.Length > 100)
+            //if (string.IsNullOrEmpty(input.title))
+            //    throw BException.GenerateNewException(BMessages.Please_Enter_Title);
+            if (!string.IsNullOrEmpty(input.title) && input.title.Length > 100)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.id.ToIntReturnZiro() <= 0 && (input.mainImage == null || input.mainImage.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_Image);
