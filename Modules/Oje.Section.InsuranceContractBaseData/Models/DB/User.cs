@@ -26,6 +26,8 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
             CreateUserInsuranceContractUsers = new();
             UpdateUserInsuranceContractUsers = new();
             Childs = new();
+            InsuranceContractProposalFilledForms = new();
+            InsuranceContractProposalFilledFormStatusLogs = new();
         }
 
         [Key]
@@ -82,6 +84,10 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public List<InsuranceContractUser> CreateUserInsuranceContractUsers { get; set; }
         [InverseProperty("UpdateUser")]
         public List<InsuranceContractUser> UpdateUserInsuranceContractUsers { get; set; }
+        [InverseProperty("CreateUser")]
+        public List<InsuranceContractProposalFilledForm> InsuranceContractProposalFilledForms { get; set; }
+        [InverseProperty("User")]
+        public List<InsuranceContractProposalFilledFormStatusLog> InsuranceContractProposalFilledFormStatusLogs { get; set; }
 
     }
 }

@@ -1030,7 +1030,7 @@
         },
         {
           "id": "ProposalFilledFormConfirmviewPPFStatusHistory",
-          "title": "اسناد فرم پیشنهاد",
+          "title": "تاریخچه وضعیت فرم پیشنهاد",
           "class": "modal-xl",
           "panels": [
             {

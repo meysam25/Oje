@@ -38,6 +38,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تماس با ما")]
         ContactUs = 16,
         [Display(Name = "پیش ثبت نام کاربر")]
-        CreateUserPreRegister = 17
+        CreateUserPreRegister = 17,
+        [Display(Name = "استعلام ثبت خسارت")]
+        ContractValidationCheck = 18,
+        [Display(Name = "ثبت اعلام خسارت در وبسایت")]
+        ContractCreate = 19
     }
 }

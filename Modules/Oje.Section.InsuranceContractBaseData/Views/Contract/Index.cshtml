@@ -1,0 +1,14 @@
+﻿@using Oje.Infrastructure
+@{
+    Layout = "_WebLayout";
+}
+
+
+
+<div class="myContainer">
+    <section class="globalSection" id="holderContractSection"></section>
+</div>
+
+<script>
+    loadJsonConfig('/Contract/GetStep1Config','holderContractSection');
+</script>

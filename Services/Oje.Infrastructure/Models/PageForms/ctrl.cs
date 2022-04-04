@@ -203,7 +203,7 @@ namespace Oje.Infrastructure.Models.PageForms
                         {
                             var curChildCTrl = newClones[i];
                             curChildCTrl.name = baseName + "[" + (startIndex - 1) + "]." + curChildCTrl.name;
-                            curChildCTrl.defV = form.GetStringIfExist(curChildCTrl.name);
+                            curChildCTrl.defV = !string.IsNullOrEmpty( form.GetStringIfExist(curChildCTrl.name + "_Title")) ? form.GetStringIfExist(curChildCTrl.name + "_Title") : form.GetStringIfExist(curChildCTrl.name);
                             if (ppfObj.panels.FirstOrDefault().ctrls == null)
                                 ppfObj.panels.FirstOrDefault().ctrls = new List<ctrl>();
                             ppfObj.panels.FirstOrDefault().ctrls.Add(curChildCTrl);

@@ -2,7 +2,7 @@
   "panels": [
     {
       "id": "searchPanel",
-      "title": "استعلام بدنه",
+      "title": "استعلام حق بیمه بدنه خودرو",
       "stepWizards": [
         {
           "lastStepButtonTitle": "استعلام",

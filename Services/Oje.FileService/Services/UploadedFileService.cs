@@ -309,5 +309,30 @@ namespace Oje.FileService.Services
 
             return false;
         }
+
+        public int GetCountBy(long objectId, FileType fileType, int? siteSettingId)
+        {
+            return db.UploadedFiles.Count(t => t.ObjectId == objectId && t.FileType == fileType && t.SiteSettingId == siteSettingId);
+        }
+
+        public object GetListBy(long objectId, FileType fileType, int skip, int take, int? siteSettingId)
+        {
+            return db.UploadedFiles.OrderByDescending(t => t.Id)
+               .Where(t => t.ObjectId == objectId && t.FileType == fileType && t.SiteSettingId == siteSettingId)
+               .Skip(skip).Take(take)
+               .Select(t => new
+               {
+                   id = t.Id,
+                   src = t.FileName
+               })
+               .ToList()
+               .Select(t => new
+               {
+                   t.id,
+                   src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg"
+               })
+               .ToList()
+               ;
+        }
     }
 }

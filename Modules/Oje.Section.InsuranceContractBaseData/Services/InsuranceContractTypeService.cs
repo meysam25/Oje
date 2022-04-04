@@ -44,7 +44,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 CreateDate = DateTime.Now,
                 CreateUserId = loginUserId.Value,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = siteSettingId.Value,
+                Description = input.desc
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -67,6 +68,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
             if (db.InsuranceContractTypes.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Title == input.title))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
+            if (!string.IsNullOrEmpty(input.desc) && input.desc.Length > 4000)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
         public ApiResult Delete(int? id)
@@ -100,7 +103,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    desc = t.Description
                 }).FirstOrDefault();
         }
 
@@ -172,6 +176,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.UpdateDate = DateTime.Now;
             foundItem.UpdateUserId = loginUserId.Value;
+            foundItem.Description = input.desc;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -196,10 +201,31 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return result;
         }
 
-        public bool Exist(int id, int? siteSettingId, long? loginUserId)
+        public bool Exist(List<int> ids, int? siteSettingId, long? loginUserId)
         {
+            if (ids == null)
+                ids = new();
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
-            return db.InsuranceContractTypes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems).Any();
+            return db.InsuranceContractTypes.Where(t => ids.Contains(t.Id) && t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems).Count() == ids.Count;
+        }
+
+        public object GetLightList(int? contractId)
+        {
+            List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
+
+            long? loginUserId = UserService.GetLoginUser()?.UserId;
+            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
+
+            result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId && t.InsuranceContractInsuranceContractTypes.Any(tt => tt.InsuranceContractId == contractId))
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title
+                }).ToList());
+
+            return result;
         }
     }
 }

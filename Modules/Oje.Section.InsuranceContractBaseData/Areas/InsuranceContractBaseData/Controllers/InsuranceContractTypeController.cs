@@ -57,7 +57,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractTypeService.Delete(input?.id));
         }
 
-        [AreaConfig(Title = "مشاهده  یک نوع قراردادها", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک نوع قراردادها", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {

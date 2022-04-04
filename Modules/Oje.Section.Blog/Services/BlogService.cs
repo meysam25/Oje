@@ -335,7 +335,7 @@ namespace Oje.Section.Blog.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Blogs.OrderByDescending(t => t.Id).AsQueryable();
+            var qureResult = db.Blogs.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
@@ -350,7 +350,7 @@ namespace Oje.Section.Blog.Services
         public object GetTopBlogs(int count, int? siteSettingId)
         {
             return db.Blogs
-                .Where(t => t.IsActive == true && t.PublisheDate <= DateTime.Now)
+                .Where(t => t.IsActive == true && t.PublisheDate <= DateTime.Now && t.SiteSettingId == siteSettingId)
                 .OrderByDescending(t => t.Id)
                 .Take(count)
                 .Select(t => new

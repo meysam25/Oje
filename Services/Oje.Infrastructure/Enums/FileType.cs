@@ -72,6 +72,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "اسناد بارگزاری شده توسط کاربر جهت ثبت نام", Prompt = "RegisterUploadedDocuments", Description = "~1000*1000")]
         RegisterUploadedDocuments = 31,
         [Display(Name = "مشتریان ما یا شرکت های طرف قرارداد", Prompt = "OurObject", Description = "300*300")]
-        OurObject = 32
+        OurObject = 32,
+        [Display(Name = "مدارک نمونه فایل های انتخابی ثبت فرم تفاهم نامه", Prompt = "ContractUploadFileSample")]
+        ContractUploadFileSample = 33,
+        [Display(Name = "مدارک فرم پیشنهاد قرارداد", Prompt = "InsuranceContractProposalFilledForm", Description = "~1000*1000")]
+        InsuranceContractProposalFilledForm = 34
     }
 }

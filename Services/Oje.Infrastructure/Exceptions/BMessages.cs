@@ -591,5 +591,13 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_Tell = 289,
         [Display(Name = "توضیحات نمی تواند بیشتر از 1000 کارکتر باشد")]
         Description_Length_Can_Not_Be_More_Then_1000 = 290,
+        [Display(Name = "نام نمی تواند بیشتر از 100 کارکتر باشد")]
+        Name_Can_Not_Be_More_Then_100_chars = 291,
+        [Display(Name = "لطفا کد قرارداد را وارد کنید")]
+        Please_Enter_Contract_Code = 292,
+        [Display(Name = "لطفا تاریخ تولد را وارد کنید")]
+        Please_Enter_BirthDate = 293,
+        [Display(Name = "لطفا اطلاعات تمامی اعضای خانواده را وارد کنید")]
+        Please_Enter_All_Family_Memebers = 294,
     }
 }

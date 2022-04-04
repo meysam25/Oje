@@ -1,0 +1,248 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "InsuranceContractTypeRequiredDocumentMainGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('InsuranceContractTypeRequiredDocumentAddGridModal', this)", "type": "add", "modalId": "InsuranceContractTypeRequiredDocumentAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "InsuranceContractTypeRequiredDocumentEditModal",
+                "url": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetById\\', \\'InsuranceContractTypeRequiredDocumentEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "cid",
+              "caption": "قرارداد",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "ctId",
+              "caption": "نوع قرارداد",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "isRequired",
+              "caption": "وضعیت اجباری",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "InsuranceContractTypeRequiredDocumentAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractList",
+              "label": "قرارداد",
+              "childId": "InsuranceContractTypeRequiredDocumentCTID"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractTypeRequiredDocumentCTID",
+              "name": "ctId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractTypeList",
+              "label": "نوع قرارداد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isRequired",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "وضعیت اجباری"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "downloadFile",
+              "type": "file",
+              "label": "نمونه (۶۰۰ * ۱۰۰۰)",
+              "acceptEx": ".jpg,.png,.jpeg"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractTypeRequiredDocumentMainGrid', '/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "InsuranceContractTypeRequiredDocumentEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractList",
+              "label": "قرارداد",
+              "childId": "InsuranceContractTypeRequiredDocumentCTIDEdit"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractTypeRequiredDocumentCTIDEdit",
+              "name": "ctId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractTypeList",
+              "label": "نوع قرارداد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isRequired",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "وضعیت اجباری"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "downloadFile",
+              "type": "file",
+              "label": "نمونه (۶۰۰ * ۱۰۰۰)",
+              "acceptEx": ".jpg,.png,.jpeg"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractTypeRequiredDocumentMainGrid', '/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

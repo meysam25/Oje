@@ -2,7 +2,7 @@
   "panels": [
     {
       "id": "searchPanel",
-      "title": "استعلام آتش سوزی",
+      "title": "استعلام حق بیمه منازل مسکونی",
       "stepWizards": [
         {
           "lastStepButtonTitle": "استعلام",

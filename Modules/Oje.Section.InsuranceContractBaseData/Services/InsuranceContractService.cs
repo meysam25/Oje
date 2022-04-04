@@ -22,28 +22,35 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly InsuranceContractBaseDataDBContext db = null;
         readonly IInsuranceContractCompanyService InsuranceContractCompanyService = null;
         readonly IInsuranceContractTypeService InsuranceContractTypeService = null;
-        readonly Interfaces.IProposalFormService ProposalFormService = null;
         readonly IUserService UserService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly IUploadedFileService uploadedFileService = null;
+        readonly IInsuranceContractProposalFormService InsuranceContractProposalFormService = null;
+        readonly Interfaces.IProposalFormService ProposalFormService = null;
+        readonly IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService = null;
+
         public InsuranceContractService
             (
                 InsuranceContractBaseDataDBContext db,
                 IUserService UserService,
                 ISiteSettingService SiteSettingService,
-                Interfaces.IProposalFormService ProposalFormService,
                 IInsuranceContractTypeService InsuranceContractTypeService,
                 IInsuranceContractCompanyService InsuranceContractCompanyService,
-                IUploadedFileService uploadedFileService
+                IUploadedFileService uploadedFileService,
+                IInsuranceContractProposalFormService InsuranceContractProposalFormService,
+                Interfaces.IProposalFormService ProposalFormService,
+                IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService
             )
         {
             this.db = db;
             this.UserService = UserService;
             this.SiteSettingService = SiteSettingService;
-            this.ProposalFormService = ProposalFormService;
             this.InsuranceContractTypeService = InsuranceContractTypeService;
             this.InsuranceContractCompanyService = InsuranceContractCompanyService;
             this.uploadedFileService = uploadedFileService;
+            this.InsuranceContractProposalFormService = InsuranceContractProposalFormService;
+            this.ProposalFormService = ProposalFormService;
+            this.InsuranceContractTypeRequiredDocumentService = InsuranceContractTypeRequiredDocumentService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractVM input)
@@ -60,23 +67,26 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 Description = input.description,
                 FromDate = input.fromDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value,
                 InsuranceContractCompanyId = input.insuranceContractCompanyId.Value,
-                InsuranceContractTypeId = input.insuranceContractTypeId.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 MonthlyPrice = input.monthlyPrice.ToLongReturnZiro(),
-                ProposalFormId = input.proposalFormId.Value,
+                InsuranceContractProposalFormId = input.proposalFormId.Value,
                 SiteSettingId = siteSettingId.Value,
                 Title = input.title,
-                ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value
+                ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value,
+                ProposalFormId = input.rPFId
             };
 
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
+            if (input.insuranceContractTypeIds != null && input.insuranceContractTypeIds.Any())
+                foreach (var id in input.insuranceContractTypeIds)
+                    db.Entry(new InsuranceContractInsuranceContractType() { InsuranceContractId = newItem.Id, InsuranceContractTypeId = id }).State = EntityState.Added;
+
             if (input.contractDocument != null && input.contractDocument.Length > 0)
-            {
                 newItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, newItem.Id, ".pdf,.doc,.docx,.xlsx", false);
-                db.SaveChanges();
-            }
+
+            db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -95,19 +105,21 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.code.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Code);
-            if (input.insuranceContractTypeId.ToIntReturnZiro() <= 0)
+            if (input.insuranceContractTypeIds == null || input.insuranceContractTypeIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract_Type);
-            if (!InsuranceContractTypeService.Exist(input.insuranceContractTypeId.ToIntReturnZiro(), siteSettingId, loginUserId))
+            if (!InsuranceContractTypeService.Exist(input.insuranceContractTypeIds, siteSettingId, loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract_Type);
             if (input.insuranceContractCompanyId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Legal_Company);
             if (!InsuranceContractCompanyService.Exist(input.insuranceContractCompanyId.ToIntReturnZiro(), siteSettingId, loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Legal_Company);
-            if (input.proposalFormId.ToIntReturnZiro() <= 0)
+            if (input.proposalFormId.ToIntReturnZiro() <= 0 && input.rPFId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (!string.IsNullOrEmpty(input.description) && input.description.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
-            if (!ProposalFormService.Exist(input.proposalFormId.ToIntReturnZiro(), siteSettingId))
+            if ((input.proposalFormId.ToIntReturnZiro() > 0 && !InsuranceContractProposalFormService.Exist(input.proposalFormId.ToIntReturnZiro(), siteSettingId)))
+                throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
+            if (input.rPFId.ToIntReturnZiro() > 0 && !ProposalFormService.Exist(input.rPFId.ToIntReturnZiro(), siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.monthlyPrice != null && input.monthlyPrice < 0)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
@@ -156,11 +168,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     fromDate = t.FromDate,
                     id = t.Id,
                     insuranceContractCompanyId = t.InsuranceContractCompanyId,
-                    insuranceContractTypeId = t.InsuranceContractTypeId,
+                    insuranceContractTypeIds = t.InsuranceContractInsuranceContractTypes.Select(tt => tt.InsuranceContractTypeId).ToList(),
                     isActive = t.IsActive,
                     monthlyPrice = t.MonthlyPrice,
-                    proposalFormId = t.ProposalFormId,
-                    proposalFormId_Title = t.ProposalForm.Title,
+                    proposalFormId = t.InsuranceContractProposalFormId,
+                    proposalFormId_Title = t.InsuranceContractProposalForm.Title,
+                    rPFId = t.ProposalFormId,
+                    rPFId_Title = t.ProposalForm.Title,
                     title = t.Title,
                     toDate = t.ToDate,
                     contractDocument_address = GlobalConfig.FileAccessHandlerUrl + t.ContractDocumentUrl
@@ -174,11 +188,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     fromDate = t.fromDate.ToFaDate(),
                     id = t.id,
                     insuranceContractCompanyId = t.insuranceContractCompanyId,
-                    insuranceContractTypeId = t.insuranceContractTypeId,
+                    insuranceContractTypeIds = t.insuranceContractTypeIds,
                     isActive = t.isActive,
                     monthlyPrice = t.monthlyPrice,
-                    proposalFormId = t.proposalFormId,
-                    proposalFormId_Title = t.proposalFormId_Title,
+                    proposalFormId = t.proposalFormId == null ? 0 : t.proposalFormId,
+                    proposalFormId_Title = !string.IsNullOrEmpty(t.proposalFormId_Title) ? t.proposalFormId_Title : "",
+                    rPFId = t.rPFId == null ? 0 : t.rPFId,
+                    rPFId_Title = string.IsNullOrEmpty(t.rPFId_Title) ? "" : t.rPFId_Title,
                     title = t.title,
                     toDate = t.toDate.ToFaDate(),
                     contractDocument_address = t.contractDocument_address
@@ -201,9 +217,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (searchInput.contractCompany.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.InsuranceContractCompanyId == searchInput.contractCompany);
             if (searchInput.contractType.ToIntReturnZiro() > 0)
-                qureResult = qureResult.Where(t => t.InsuranceContractTypeId == searchInput.contractType);
+                qureResult = qureResult.Where(t => t.InsuranceContractInsuranceContractTypes.Any(tt => tt.InsuranceContractTypeId == searchInput.contractType));
             if (!string.IsNullOrEmpty(searchInput.ppfTitle))
-                qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.ppfTitle));
+                qureResult = qureResult.Where(t => t.InsuranceContractProposalForm.Title.Contains(searchInput.ppfTitle));
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (searchInput.code.ToLongReturnZiro() > 0)
@@ -242,7 +258,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     fromDate = t.FromDate,
                     id = t.Id,
                     isActive = t.IsActive,
-                    ppfTitle = t.ProposalForm.Title,
+                    ppfTitle = t.InsuranceContractProposalForm.Title,
                     title = t.Title,
                     toDate = t.ToDate,
                     createDate = t.CreateDate,
@@ -276,7 +292,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             CreateValidation(input, loginUserId, siteSettingId);
 
-            var foundItem = db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id)
+            var foundItem = db.InsuranceContracts.Include(t => t.InsuranceContractInsuranceContractTypes).Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
             if (foundItem == null)
@@ -291,13 +307,22 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.Description = input.description;
             foundItem.FromDate = input.fromDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.InsuranceContractCompanyId = input.insuranceContractCompanyId.Value;
-            foundItem.InsuranceContractTypeId = input.insuranceContractTypeId.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.MonthlyPrice = input.monthlyPrice.ToLongReturnZiro();
-            foundItem.ProposalFormId = input.proposalFormId.Value;
+            foundItem.InsuranceContractProposalFormId = input.proposalFormId.Value;
             foundItem.SiteSettingId = siteSettingId.Value;
             foundItem.Title = input.title;
             foundItem.ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
+            foundItem.ProposalFormId = input.rPFId;
+
+            if (foundItem.InsuranceContractInsuranceContractTypes != null)
+                foreach (var item in foundItem.InsuranceContractInsuranceContractTypes)
+                    db.Entry(item).State = EntityState.Deleted;
+
+
+            if (input.insuranceContractTypeIds != null && input.insuranceContractTypeIds.Any())
+                foreach (var id in input.insuranceContractTypeIds)
+                    db.Entry(new InsuranceContractInsuranceContractType() { InsuranceContractId = foundItem.Id, InsuranceContractTypeId = id }).State = EntityState.Added;
 
             db.SaveChanges();
 
@@ -307,7 +332,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public bool Exist(int id, int? siteSettingId, long? loginUserId)
         {
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
-            return db.InsuranceContracts.Where(t => t.Id == id && t.SiteSettingId == siteSettingId ).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems).Any();
+            return db.InsuranceContracts.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems).Any();
         }
 
         public object GetLightList()
@@ -328,6 +353,149 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .ToList());
 
             return result;
+        }
+
+        public ApiResult IsValid(contractUserInput input, int? siteSettingId)
+        {
+            isValidValidation(input, siteSettingId);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        private void isValidValidation(contractUserInput input, int? siteSettingId)
+        {
+            if (siteSettingId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (string.IsNullOrEmpty(input.mobile))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
+            if (!input.mobile.IsMobile())
+                throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
+            if (string.IsNullOrEmpty(input.nationalCode))
+                throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);
+            if (!input.nationalCode.IsCodeMeli())
+                throw BException.GenerateNewException(BMessages.Invalid_NationaCode);
+            if (input.contractCode.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Enter_Contract_Code);
+            if (string.IsNullOrEmpty(input.birthDate))
+                throw BException.GenerateNewException(BMessages.Please_Enter_BirthDate);
+            if (input.birthDate.ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            var birthDateEn = input.birthDate.ToEnDate();
+            if (!db.InsuranceContracts.Any(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
+                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
+                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode)))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+        }
+
+        public string GetFormJsonConfig(contractUserInput input, int? siteSettingId)
+        {
+            isValidValidation(input, siteSettingId);
+            var birthDateEn = input.birthDate.ToEnDate();
+
+            return db.InsuranceContracts.Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
+                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
+                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode)).Select(t => t.InsuranceContractProposalForm.JsonConfig).FirstOrDefault();
+        }
+
+        public InsuranceContract GetByCode(long? code, int? siteSettingId)
+        {
+            return db.InsuranceContracts.Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId && t.Code == code).FirstOrDefault();
+        }
+
+        public ContractTermsInfo GetTermsInfo(contractUserInput input, int? siteSettingId)
+        {
+            isValidValidation(input, siteSettingId);
+            var birthDateEn = input.birthDate.ToEnDate();
+
+            return db.InsuranceContracts
+                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
+                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
+                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode))
+                        .Select(t => new ContractTermsInfo()
+                        {
+                            termsDescription = t.InsuranceContractProposalForm.TermTemplate,
+                            firstName = t.InsuranceContractUsers.Where(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
+                                                                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode).Select(tt => tt.User.Firstname).FirstOrDefault(),
+                            lastName = t.InsuranceContractUsers.Where(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
+                                                                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode).Select(tt => tt.User.Lastname).FirstOrDefault(),
+                            nationalCode = input.nationalCode,
+                            mobile = input.mobile,
+                            contractDocumentUrl = !string.IsNullOrEmpty(t.ContractDocumentUrl) ? (GlobalConfig.FileAccessHandlerUrl + t.ContractDocumentUrl) : ""
+                        })
+                        .FirstOrDefault();
+        }
+
+        public List<IdTitle> GetFamilyMemberList(contractUserInput input, int? siteSettingId)
+        {
+            isValidValidation(input, siteSettingId);
+
+            var birthDateEn = input.birthDate.ToEnDate();
+            var contractUserId = db.InsuranceContracts
+                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId)
+                .SelectMany(t => t.InsuranceContractUsers)
+                .Where(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
+                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode)
+                .Select(t => t.Id)
+                .FirstOrDefault();
+
+            return
+                new List<IdTitle>() { new IdTitle() { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } }
+                .Union(
+                    db.InsuranceContractUsers
+                    .Where(t => t.Id == contractUserId).Select(t => new { id = t.Id, title = t.User.Firstname + " " + t.User.Lastname }).Select(t => new IdTitle() { id = t.id + "", title = t.title })
+                    .ToList()
+                        .Union(
+                              db.InsuranceContractUsers
+                            .Where(t => t.ParentId == contractUserId).Select(t => new { id = t.Id, title = t.User.Firstname + " " + t.User.Lastname }).Select(t => new IdTitle() { id = t.id + "", title = t.title })
+                            .ToList()
+                        )
+                )
+                .ToList()
+                ;
+        }
+
+        public List<IdTitle> GetContractTypeList(contractUserInput input, int? siteSettingId)
+        {
+            isValidValidation(input, siteSettingId);
+
+            var birthDateEn = input.birthDate.ToEnDate();
+            return
+                new List<IdTitle>() { new IdTitle() { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } }
+                .Union(
+                    db.InsuranceContracts
+                    .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId)
+                    .SelectMany(t => t.InsuranceContractInsuranceContractTypes)
+                    .Select(t => t.InsuranceContractType)
+                    .Select(t => new { t.Id, t.Title })
+                    .Select(t => new IdTitle { id = t.Id + "", title = t.Title })
+                    .ToList()
+                )
+                .ToList()
+                ;
+        }
+
+        public RequiredDocumentVM GetRequiredDocuments(contractUserInput input, int? insuranceContractTypeId, int? siteSettingId)
+        {
+            var foundType = db.InsuranceContracts
+                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId && t.Code == input.contractCode)
+                .SelectMany(t => t.InsuranceContractInsuranceContractTypes)
+                .Where(t => t.InsuranceContractTypeId == insuranceContractTypeId)
+                .Select(t => new { id = t.InsuranceContractId, tId = t.InsuranceContractTypeId, desc = t.InsuranceContractType.Description })
+                .FirstOrDefault();
+
+
+            return InsuranceContractTypeRequiredDocumentService.GetRequiredDocuments(foundType?.id, foundType?.tId, siteSettingId, foundType?.desc);
+        }
+
+        public int GetIdBy(contractUserInput contractInfo, int? siteSettingId)
+        {
+            return db.InsuranceContracts
+                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId && t.Code == contractInfo.contractCode)
+                .Select(t => t.Id)
+                .FirstOrDefault();
         }
     }
 }

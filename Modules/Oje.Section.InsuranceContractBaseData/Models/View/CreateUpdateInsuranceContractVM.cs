@@ -12,7 +12,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
         public int? id { get; set; }
         public string title { get; set; }
         public long? code { get; set; }
-        public int? insuranceContractTypeId { get; set; }
+        public List<int> insuranceContractTypeIds { get; set; }
         public int? insuranceContractCompanyId { get; set; }
         public int? proposalFormId { get; set; }
         public string proposalFormId_Title { get; set; }
@@ -23,5 +23,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
         public string contractDocument_address { get; set; }
         public bool? isActive { get; set; }
         public string description { get; set; }
+        public int? rPFId { get; set; }
+        public string rPFId_Title { get; set; }
     }
 }

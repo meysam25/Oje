@@ -1,0 +1,36 @@
+﻿@using Oje.Infrastructure
+@{
+    Layout = "_WebLayout";
+}
+
+<div class="myContainer">
+    <section class="globalSection" id="holderContractSection"></section>
+</div>
+
+<script>
+    @{
+        if (ViewBag.exteraParameters != null)
+        {
+            ViewContext.Writer.Write("var exteraModelParams = JSON.parse('" + Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.exteraParameters) + "');");
+        }
+    }
+    loadJsonConfig('/Contract/GetJsonConfig','holderContractSection');
+    function updateRequiredDocumentInputs(targetId) {
+        var sv = $('#' + targetId).find('option:selected').attr('value');
+        var formData = new FormData();
+        formData.append('ctId', sv);
+        for(var item in exteraModelParams)
+            formData.append(item, exteraModelParams[item]);
+
+        showLoader($('#' + targetId).closest('.MultiRowInputRow'));
+        postForm('/Contract/GetRequiredDocuments',formData , function(res)
+        {
+            var gQuiry = $('#' + targetId).closest('.MultiRowInputRow');
+            var sQuiry = gQuiry.find('.debitFileUploader');
+            if(sQuiry.length > 0) {
+                sQuiry[0].addNewRow(res.items);
+                gQuiry.find('.holderDescription').html(res.desc);
+            }
+        }, null, function() { hideLoader($('#' + targetId).closest('.MultiRowInputRow')); });
+    }
+</script>

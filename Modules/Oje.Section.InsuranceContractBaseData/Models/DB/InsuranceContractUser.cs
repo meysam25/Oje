@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractUsers")]
-    public class InsuranceContractUser: EntityWithCreateUser<User,long>
+    public class InsuranceContractUser : EntityWithCreateUser<User, long>
     {
         public InsuranceContractUser()
         {
             Childs = new();
+            InsuranceContractProposalFilledFormUsers = new();
         }
         [Key]
         public long Id { get; set; }
@@ -55,6 +56,9 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public DateTime? UpdateDate { get; set; }
         public bool HasConfilictWithUser { get; set; }
         public int SiteSettingId { get; set; }
+
+        [InverseProperty("InsuranceContractUser")]
+        public List<InsuranceContractProposalFilledFormUser> InsuranceContractProposalFilledFormUsers { get; set; }
 
     }
 }

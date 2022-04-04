@@ -1525,15 +1525,18 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.type == "persianDateTime") {
         functionsList.push(function () {
             setTimeout(function () {
-                jalaliDatepicker.startWatch({
+                var jdtOption = {
                     separatorChar: "/",
                     changeMonthRotateYear: true,
                     showTodayBtn: true,
-                    showEmptyBtn: true,
-                    minDate: "attr",
-                    maxDate: "attr"
-                });
-            }.bind({ id: this.id }), 100);
+                    showEmptyBtn: true
+                };
+                if (this.ctrl.minDateValidation)
+                    jdtOption.minDate = "attr";
+                if (this.ctrl.maxDateValidation)
+                    jdtOption.maxDate = "attr";
+                jalaliDatepicker.startWatch(jdtOption);
+            }.bind({ id: this.id, ctrl: ctrl }), 100);
         }.bind({ id: ctrl.id }));
     }
     if (ctrl.multiPlay) {
@@ -1856,8 +1859,11 @@ function getDropdownCTRLTemplate(ctrl) {
             initDropdown($('#' + this.id));
             if (this.onChange) {
                 $('#' + this.id).change(function () {
-                    eval(this.sOnChange);
-                }.bind({ sOnChange: this.onChange }));
+                    var tempOnChange = this.sOnChange;
+                    if (tempOnChange.indexOf('{{currentIdHolder}}') > -1)
+                        tempOnChange = tempOnChange.replace('{{currentIdHolder}}', this.id);
+                    eval(tempOnChange);
+                }.bind({ sOnChange: this.onChange, id: this.id }));
             }
         }.bind({ id: ctrl.id, moveNameToParent: ctrl.moveNameToParent, onChange: ctrl.onChange }));
     else {

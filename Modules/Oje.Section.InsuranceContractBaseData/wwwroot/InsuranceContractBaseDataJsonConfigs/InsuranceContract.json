@@ -65,7 +65,7 @@
             },
             {
               "field": "ppfTitle",
-              "caption": "فرم پیشنهاد",
+              "caption": "فرم پیشنهاد نمایشی",
               "search": {
                 "searchType": "text"
               }
@@ -126,21 +126,21 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "insuranceContractTypeId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractTypeList",
-              "label": "نوع قرارداد",
-              "isRequired": true
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "proposalFormId",
               "type": "dropDown2",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormList",
+              "label": "فرم پیشنهاد نمایشی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "rPFId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormRList",
               "label": "فرم پیشنهاد",
               "isRequired": true
             },
@@ -180,18 +180,29 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "contractDocument",
-              "type": "file",
-              "label": "تعهدات قرارداد"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "contractDocument",
+              "type": "file",
+              "hideImagePreview": true,
+              "label": "تعهدات قرارداد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "insuranceContractTypeIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractTypeList",
+              "label": "نوع قرارداد",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -234,21 +245,21 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "insuranceContractTypeId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractTypeList",
-              "label": "نوع قرارداد",
-              "isRequired": true
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "proposalFormId",
               "type": "dropDown2",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormList",
+              "label": "فرم پیشنهاد نمایشی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "rPFId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormRList",
               "label": "فرم پیشنهاد",
               "isRequired": true
             },
@@ -288,18 +299,29 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "contractDocument",
-              "type": "file",
-              "label": "تعهدات قرارداد"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "contractDocument",
+              "type": "file",
+              "hideImagePreview": true,
+              "label": "تعهدات قرارداد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "insuranceContractTypeIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractTypeList",
+              "label": "نوع قرارداد",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

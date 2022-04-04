@@ -1,0 +1,83 @@
+﻿{
+  "panels": [
+    {
+      "id": "ContractSearchPanel",
+      "title": "ثبت خسارت",
+      "stepWizards": [
+        {
+          "lastStepButtonTitle": "برسی",
+          "moveBackButtonToTop": true,
+          "steps": [
+            {
+              "order": 1,
+              "id": "provinceAndCity",
+              "title": "لطفا اطلاعات زیر را وارد کنید",
+              "hideMoveNextButton": true,
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "mobile",
+                      "type": "text",
+                      "label": "شماره همراه(نام کاربری)",
+                      "isRequired": true,
+                      "validations": [
+                        {
+                          "reg": "^[0-9]*$",
+                          "msg": "لطفا فقط عدد وارد کنید"
+                        },
+                        {
+                          "reg": "^([0-9]){11}$",
+                          "msg": "شماره همراه باید ۱۱ عدد باشد"
+                        },
+                        {
+                          "reg": "^(09)",
+                          "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                        }
+                      ]
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "nationalCode",
+                      "type": "text",
+                      "label": "کد ملی",
+                      "isRequired": true,
+                      "nationalCodeValidation": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "contractCode",
+                      "type": "text",
+                      "label": "کد تفاهم نامه",
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "birthDate",
+                      "type": "persianDateTime",
+                      "label": "تاریخ تولد",
+                      "isRequired": true,
+                      "nationalCodeValidation": true
+                    },
+                    {
+                      "parentCL": "col-md-8 col-sm-6 col-xs-12 col-lg-9",
+                      "type": "empty"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "type": "button",
+                      "class": "btn-block btn-primary",
+                      "onClick": "openNewLink('ContractSearchPanel', '/Contract/Create', '/Contract/IsValid')",
+                      "title": "برسی"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

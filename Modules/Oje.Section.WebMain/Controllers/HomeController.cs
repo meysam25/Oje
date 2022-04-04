@@ -50,8 +50,6 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             if (curSetting == null)
                 return NotFound();
 
-            ViewBag.Title = curSetting.Title;
-
             GlobalServices.FillSeoInfo(
                   ViewData,
                    curSetting.Title,

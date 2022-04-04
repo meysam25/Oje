@@ -51,7 +51,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int roleId = RoleService.CreateOrGetRole("بیمه شدگان گروهی", "InsuranceContractUsers", 1);
             long? parentId = null;
 
-            CreateValidation(input, status, siteSettingId, loginUserId?.UserId);
+            CreateValidation(input, siteSettingId, loginUserId?.UserId);
 
             if (input.familyRelation != InsuranceContractUserFamilyRelation.Self)
             {
@@ -141,8 +141,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         }
 
         private void CreateValidation(
-                CreateUpdateInsuranceContractUserVM input, InsuranceContractUserStatus status,
-                int? siteSettingId, long? loginUserId
+                CreateUpdateInsuranceContractUserVM input, int? siteSettingId, long? loginUserId
             )
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
@@ -370,7 +369,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             long? parentId = null;
             var tempId = loginUserId?.UserId;
 
-            CreateValidation(input, status, siteSettingId, loginUserId?.UserId);
+            CreateValidation(input, siteSettingId, loginUserId?.UserId);
 
             var foundItem = db.InsuranceContractUsers.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && t.Status == status)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractUser, User>(tempId, canSeeAllItems)

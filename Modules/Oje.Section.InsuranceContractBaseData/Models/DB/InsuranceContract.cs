@@ -16,6 +16,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         {
             InsuranceContractValidUserForFullDebits = new ();
             InsuranceContractUsers = new();
+            InsuranceContractProposalFilledForms = new();
         }
 
         [Key]
@@ -24,17 +25,15 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         [MaxLength(100)]
         public string Title { get; set; }
         public long Code { get; set; }
-        public int InsuranceContractTypeId { get; set; }
-        [ForeignKey("InsuranceContractTypeId")]
-        [InverseProperty("InsuranceContracts")]
-        public InsuranceContractType InsuranceContractType { get; set; }
         public int InsuranceContractCompanyId { get; set; }
         [ForeignKey("InsuranceContractCompanyId")]
         [InverseProperty("InsuranceContracts")]
         public InsuranceContractCompany InsuranceContractCompany { get; set; }
-        public int ProposalFormId { get; set; }
-        [ForeignKey("ProposalFormId")]
-        [InverseProperty("InsuranceContracts")]
+        public int? InsuranceContractProposalFormId { get; set; }
+        [ForeignKey("InsuranceContractProposalFormId"), InverseProperty("InsuranceContracts")]
+        public InsuranceContractProposalForm InsuranceContractProposalForm { get; set; }
+        public int? ProposalFormId { get; set; }
+        [ForeignKey("ProposalFormId"), InverseProperty("InsuranceContracts")]
         public ProposalForm ProposalForm { get; set; }
         public long MonthlyPrice { get; set; }
         public DateTime FromDate { get; set; }
@@ -60,5 +59,11 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public List<InsuranceContractValidUserForFullDebit> InsuranceContractValidUserForFullDebits { get; set; }
         [InverseProperty("InsuranceContract")]
         public List<InsuranceContractUser> InsuranceContractUsers { get; set; }
+        [InverseProperty("InsuranceContract")]
+        public List<InsuranceContractInsuranceContractType> InsuranceContractInsuranceContractTypes { get; set; }
+        [InverseProperty("InsuranceContract")]
+        public List<InsuranceContractTypeRequiredDocument> InsuranceContractTypeRequiredDocuments { get; set; }
+        [InverseProperty("InsuranceContract")]
+        public List<InsuranceContractProposalFilledForm> InsuranceContractProposalFilledForms { get; set; }
     }
 }

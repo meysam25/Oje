@@ -2,7 +2,7 @@
   "panels": [
     {
       "id": "searchPanel",
-      "title": "ثبت فرم پیشنهاد",
+      "title": "ثبت فرم پیشنهاد بیمه",
       "stepWizards": [
         {
           "lastStepButtonTitle": "شروع",

@@ -2,7 +2,7 @@
   "panels": [
     {
       "id": "searchPanel",
-      "title": "استعلام ثالث",
+      "title": "استعلام حق بیمه شخص ثالث خودرو",
       "stepWizards": [
         {
           "lastStepButtonTitle": "استعلام",

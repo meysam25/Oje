@@ -15,15 +15,17 @@ function updateAllSelectByInnerSelect(querySelector) {
     });
 }
 
+$(document).ready(
+    function () {
+        $('body').click(function () { closeAllDropdownInPage(); });
+    }
+);
+
 $.fn.initMyDropdown = function () {
 
     return this.each(function () {
         var curElement = $(this)[0];
         curElement.openMDD = function () {
-            if (!this.isBodyClosedBinded) {
-                this.isBodyClosedBinded = true;
-                $('body').click(function () { this.cE.closeMDD(); }.bind({ cE: this }));
-            }
             closeAllDropdownInPage();
             makeCtrlFocused($(this).find('select'));
             if ($(this)[0].actionTimeoutInterval)
@@ -41,10 +43,13 @@ $.fn.initMyDropdown = function () {
             $(this)[0].bindSelectItemEventMMD();
         };
         curElement.closeMDD = function () {
+            var curId = $(this).attr('id');
             if (!$(this).find('select').val())
                 makeCtrlBlure($(this).find('select'));
             if ($(this)[0].actionTimeoutInterval)
                 clearTimeout($(this)[0].actionTimeoutInterval);
+            if ($('#' + curId + '_HItems').length == 0)
+                return;
             $(this).removeClass('myDroppdownShowItem');
             $(this)[0].actionTimeoutInterval = setTimeout(function () { $(this).removeClass('myDropdownMakeVisibleItems'); }.bind(this), 300);
             var curId = $(this).attr('id');
@@ -115,7 +120,6 @@ $.fn.initMyDropdown = function () {
                 e.stopPropagation();
             });
         };
-
         curElement.bindSelectItemEventMMD();
         $(curElement).closest('.myCtrl').find('label').click(function (e) {
             $(this).closest('.myDropdown')[0].openMDD();

@@ -15,7 +15,6 @@ using Oje.Infrastructure.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Collections;
 using Oje.Infrastructure.Models.PageForms;
-using System.Net;
 
 namespace Oje.Infrastructure.Services
 {

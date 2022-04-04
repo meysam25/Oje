@@ -89,10 +89,8 @@ namespace Oje.ProposalFormService.Services
             var allRequiredFileUpload = ProposalFormRequiredDocumentService.GetProposalFormRequiredDocuments(foundProposalForm?.Id, siteSettingId);
             long newFormId = 0;
             PageForm ppfObj = null;
-            try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch (Exception ) 
-            { 
-                throw ; 
-            } //catch { };// catch (Exception) { throw; }
+            try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch (Exception ) {  } 
+            //catch { };// catch (Exception) { throw; }
             int companyId = 0;
 
             if (inquiryId > 0)

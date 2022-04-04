@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Oje.AccountService.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -18,22 +19,28 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "قرارداد (تفاهم نامه)")]
     [CustomeAuthorizeFilter]
-    public class InsuranceContractController: Controller
+    public class InsuranceContractController : Controller
     {
         readonly IInsuranceContractService InsuranceContractService = null;
         readonly IInsuranceContractCompanyService InsuranceContractCompanyService = null;
         readonly IInsuranceContractTypeService InsuranceContractTypeService = null;
-        readonly IProposalFormService ProposalFormService = null;
+        readonly IInsuranceContractProposalFormService InsuranceContractProposalFormService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        readonly Interfaces.IProposalFormService ProposalFormService = null;
         public InsuranceContractController(
                 IInsuranceContractService InsuranceContractService,
                 IInsuranceContractCompanyService InsuranceContractCompanyService,
                 IInsuranceContractTypeService InsuranceContractTypeService,
-                IProposalFormService ProposalFormService
+                IInsuranceContractProposalFormService InsuranceContractProposalFormService,
+                ISiteSettingService SiteSettingService,
+                Interfaces.IProposalFormService ProposalFormService
             )
         {
             this.InsuranceContractService = InsuranceContractService;
             this.InsuranceContractCompanyService = InsuranceContractCompanyService;
             this.InsuranceContractTypeService = InsuranceContractTypeService;
+            this.InsuranceContractProposalFormService = InsuranceContractProposalFormService;
+            this.SiteSettingService = SiteSettingService;
             this.ProposalFormService = ProposalFormService;
         }
 
@@ -118,11 +125,18 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractTypeService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد نمایشی", Icon = "fa-list-alt ")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(InsuranceContractProposalFormService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [HttpGet]
+        public ActionResult GetProposalFormRList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(ProposalFormService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }
