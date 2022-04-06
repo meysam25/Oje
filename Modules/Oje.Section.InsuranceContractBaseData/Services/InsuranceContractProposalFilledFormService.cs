@@ -87,7 +87,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
                     newFormId = newForm.Id;
 
-                    UserNotifierService.Notify(loginUserId, UserNotificationType.CreateNewDamageClime, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.CreateUser) } , newForm.Id, contract.title, siteSettingId, "/InsuranceContractBaseData/InsuranceContractProposalFilledForm/Detaile?id=" + newForm.Id);
+                    UserNotifierService.Notify(loginUserId, UserNotificationType.CreateNewDamageClime, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.CreateUser) }, newForm.Id, contract.title, siteSettingId, "/InsuranceContractBaseData/InsuranceContractProposalFilledForm/Detaile?id=" + newForm.Id);
                 }
                 catch (Exception)
                 {
@@ -217,11 +217,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return result;
         }
 
-        public InsuranceContractProposalFilledFormDetaileVM Detaile(long? id, long? loginUserId, int? siteSettingId, bool ignoreLoginUserId = false)
+        public InsuranceContractProposalFilledFormDetaileVM Detaile(long? id, long? loginUserId, int? siteSettingId, bool ignoreLoginUserId = false, List<InsuranceContractProposalFilledFormType> status = null)
         {
             var result = new InsuranceContractProposalFilledFormDetaileVM();
-            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.Id == id && (ignoreLoginUserId == true || t.CreateUserId == loginUserId) && t.SiteSettingId == siteSettingId && t.IsDelete != true)
-               .Where(t => t.Id == id)
+            var foundItem = db.InsuranceContractProposalFilledForms
+               .Where(t => t.Id == id && (ignoreLoginUserId == true || t.CreateUserId == loginUserId) && t.SiteSettingId == siteSettingId && t.IsDelete != true)
+               .Where(t => status == null || status.Contains(t.Status))
                .Select(t => new
                {
                    t.Id,

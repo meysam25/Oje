@@ -316,6 +316,7 @@
 }
 .topGridAction{
     text-align:right;
+    padding-bottom:3px;
 }
 .gridPageButtonHolder {
     display:inline-block;

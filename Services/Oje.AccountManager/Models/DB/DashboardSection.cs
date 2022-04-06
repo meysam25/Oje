@@ -22,6 +22,8 @@ namespace Oje.AccountService.Models.DB
         [ForeignKey("DashboardSectionCategoryId"), InverseProperty("DashboardSections")]
         public DashboardSectionCategory DashboardSectionCategory { get; set; }
         public int? Order { get; set; }
+        [MaxLength(20)]
+        public string Color { get; set; }
 
     }
 }

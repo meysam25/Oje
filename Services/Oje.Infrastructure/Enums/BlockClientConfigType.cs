@@ -42,6 +42,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "استعلام ثبت خسارت")]
         ContractValidationCheck = 18,
         [Display(Name = "ثبت اعلام خسارت در وبسایت")]
-        ContractCreate = 19
+        ContractCreate = 19,
+        [Display(Name = "افزودن مدرک جدید برای خسارت")]
+        WebsiteUserAddNewImageForInsuranceContract = 20
     }
 }

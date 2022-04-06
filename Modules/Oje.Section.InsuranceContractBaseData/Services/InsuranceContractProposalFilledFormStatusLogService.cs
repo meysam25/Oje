@@ -5,6 +5,7 @@ using Oje.Section.InsuranceContractBaseData.Models.DB;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
@@ -79,6 +80,42 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     t.userFullname,
                     createDate = t.createDate.ToString("hh:MM") + " " + t.createDate.ToFaDate(),
                     desc = string.IsNullOrEmpty(t.desc) ? "" : t.desc
+                })
+                .ToList()
+            };
+        }
+
+        public object GetListForUser(InsuranceContractProposalFilledFormStatusLogGrid searchInput, int? siteSettingId, long? loginUserId, List<InsuranceContractProposalFilledFormType> validStatus)
+        {
+            searchInput = searchInput ?? new InsuranceContractProposalFilledFormStatusLogGrid();
+
+            var quiryResult = db.InsuranceContractProposalFilledFormStatusLogs
+                .Where(t => 
+                    t.InsuranceContractProposalFilledFormId == searchInput.pKey && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && 
+                    t.InsuranceContractProposalFilledForm.IsDelete != true && t.InsuranceContractProposalFilledForm.CreateUserId == loginUserId && validStatus.Contains(t.InsuranceContractProposalFilledForm.Status));
+
+            int row = searchInput.skip;
+
+            return new
+            {
+                total = quiryResult.Count(),
+                data = quiryResult
+                .OrderByDescending(t => t.CreateDate)
+                .Skip(searchInput.skip)
+                .Take(searchInput.take)
+                .Select(t => new
+                {
+                    id = t.CreateDate,
+                    status = t.Status,
+                    createDate = t.CreateDate
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    row = ++row,
+                    id = t.id.Ticks,
+                    status = t.status.GetEnumDisplayName(),
+                    createDate = t.createDate.ToString("hh:MM") + " " + t.createDate.ToFaDate()
                 })
                 .ToList()
             };

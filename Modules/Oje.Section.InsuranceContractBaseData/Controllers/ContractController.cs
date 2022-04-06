@@ -86,8 +86,8 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
             return View(foundUserInfo);
         }
 
-        [HttpGet]
-        public IActionResult Create([FromQuery] contractUserInput input)
+        [HttpPost]
+        public IActionResult Create([FromForm] contractUserInput input)
         {
             InsuranceContractService.IsValid(input, SiteSettingService.GetSiteSetting()?.Id);
 
@@ -109,7 +109,7 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create()
+        public IActionResult CreateNewItem()
         {
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractCreate, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             var tempVar = InsuranceContractProposalFilledFormService.Create(HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, Request.Form);

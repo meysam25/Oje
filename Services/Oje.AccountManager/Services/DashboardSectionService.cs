@@ -37,7 +37,8 @@ namespace Oje.AccountService.Services
                 RoleId = input.pKey.ToIntReturnZiro(),
                 Type = input.type.Value,
                 DashboardSectionCategoryId = input.catId,
-                Order = input.order
+                Order = input.order,
+                Color = input.color
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -88,7 +89,8 @@ namespace Oje.AccountService.Services
                     actionId = t.ActionId,
                     actionId_Title = t.Action.Title,
                     catId = t.DashboardSectionCategoryId,
-                    order = t.Order
+                    order = t.Order,
+                    color = t.Color
                 })
                 .Take(1)
                 .Select(t => new
@@ -99,7 +101,8 @@ namespace Oje.AccountService.Services
                     t.actionId,
                     t.actionId_Title,
                     t.catId,
-                    t.order
+                    t.order,
+                    t.color
                 })
                 .FirstOrDefault();
         }
@@ -159,6 +162,7 @@ namespace Oje.AccountService.Services
             foundItem.Type = input.type.Value;
             foundItem.DashboardSectionCategoryId = input.catId;
             foundItem.Order = input.order;
+            foundItem.Color = input.color;
 
             db.SaveChanges();
 
@@ -185,7 +189,8 @@ namespace Oje.AccountService.Services
                     gType = t.DashboardSectionCategory.Type,
                     gOrder = t.DashboardSectionCategory.Order,
                     gcssClass = t.DashboardSectionCategory.Css,
-                    order = t.Order
+                    order = t.Order,
+                    color = t.Color
                 })
                 .ToList();
 
@@ -207,7 +212,8 @@ namespace Oje.AccountService.Services
                         t.parentCL,
                         label = t.label.Replace("تنظیمات ", "").Replace("صفحه ", ""),
                         url = t.type == Infrastructure.Enums.DashboardSectionType.Content || t.type == Infrastructure.Enums.DashboardSectionType.TabContent || t.type == Infrastructure.Enums.DashboardSectionType.Tab ? t.url : putIndexAtEntOfUrl(t.url),
-                        icon = t.icon
+                        icon = t.icon,
+                        t.color
                     })
                     .ToList()
                 });

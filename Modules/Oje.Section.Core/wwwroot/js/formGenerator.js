@@ -505,6 +505,11 @@ function getCTemplate(ctrl) {
             if (curUrl) {
                 var postFormData = new FormData();
                 appendAllQueryStringToForm(postFormData);
+                if (window['exteraModelParams']) {
+                    for (var item in exteraModelParams) {
+                        postFormData.append(item, exteraModelParams[item]);
+                    }
+                }
                 postForm(curUrl, postFormData, function (res) {
                     $('#' + this.id)[0].templateStr = res;
                     $('#' + this.id).html(res);
@@ -995,11 +1000,11 @@ function getGridUrlFromConfig(res) {
 function addUpdateNotificationCount(buttonId, total) {
     var buttonQuery = $('#' + buttonId);
 
-    if (buttonQuery.find('notificationBoble').length == 0) {
-        buttonQuery.append('<span class="notificationBoble" >' + total + '</span>');
+    if (buttonQuery.find('tabButtonExistCount').length == 0) {
+        buttonQuery.append('<span class="tabButtonExistCount" >' + total + '</span>');
     }
     else {
-        buttonQuery.find('notificationBoble').html(total);
+        buttonQuery.find('tabButtonExistCount').html(total);
     }
 }
 
@@ -1025,10 +1030,17 @@ function getTabContentTemplate(ctrl) {
     var result = '';
 
     if (ctrl.url && ctrl.label) {
-        result += '<a id="' + ctrl.id + '" style="margin-bottom:10px;position:relative" class="btn btn-primary btn-block" href="' + ctrl.url + '" >' + ctrl.label + '</a>';
+        if (!ctrl.color)
+            ctrl.color = 'orange';
+        result += '<div id="' + ctrl.id + '_holder" class="tabButtonBoxHolder">';
+        result += '<span  style="' + (ctrl.color ? 'background-color:' + ctrl.color + ';' : '') + '" class="tabButtonIcon fa ' + ctrl.icon + '" ><span style="' + (ctrl.color ? 'border-color:' + ctrl.color + ';' : '') + '" ></span></span>';
+        result += '<a id="' + ctrl.id + '" style="margin-bottom:15px;position:relative;' + (ctrl.color ? 'border-top:4px solid ' + ctrl.color + ';' : '') + '" class="tabButtonBox" href="' + ctrl.url + '" ><span class="buttonTitle">' + ctrl.label + '</span></a>';
+        result += '</div>';
         functionsList.push(function () {
             addCountNotificationToButtonIfHasGrid(this.ctrl.id);
-
+            $('#' + this.ctrl.id + '_holder').click(function () {
+                $(this).find('a').click();
+            });
             $('#' + this.ctrl.id).click(function (e) {
                 e.stopPropagation();
                 e.preventDefault();

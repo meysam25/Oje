@@ -719,8 +719,29 @@ function convertFormDataToJsonOject(formData) {
     return result;
 }
 
-function openNewLink(holderParametersId, link) {
-    if (link && holderParametersId && $('#' + holderParametersId).length > 0) {
+function openNewLink(holderParametersId, link, checkUrl, makePost) {
+    if (link && holderParametersId && $('#' + holderParametersId).length > 0 && checkUrl) {
+        var formData = getFormData($('#' + holderParametersId));
+        showLoader($('#' + holderParametersId));
+        postForm(checkUrl, formData, function (res) {
+            if (res && res.isSuccess) {
+                if (!makePost) {
+                    var qureString = '';
+                    for (var pair of this.formData.entries()) {
+                        if (qureString == '' && this.link.indexOf('?') == -1) {
+                            qureString = '?' + pair[0] + '=' + pair[1];
+                        } else {
+                            qureString = qureString + '&' + pair[0] + '=' + pair[1];
+                        }
+                    }
+                    location.href = this.link + qureString;
+                } else {
+                    postPage(link, this.formData);
+                }
+
+            }
+        }.bind({ checkUrl: checkUrl, formData: formData, link: link }), null, function () { hideLoader($('#' + holderParametersId)); });
+    } else if (link && holderParametersId && $('#' + holderParametersId).length > 0) {
         var formData = getFormData($('#' + holderParametersId));
         var qureString = '';
         for (var pair of formData.entries()) {
@@ -734,26 +755,18 @@ function openNewLink(holderParametersId, link) {
     }
 }
 
-function openNewLink(holderParametersId, link, checkUrl) {
-    if (link && holderParametersId && $('#' + holderParametersId).length > 0 && checkUrl) {
-        var formData = getFormData($('#' + holderParametersId));
-        showLoader($('#' + holderParametersId));
-        postForm(checkUrl, formData, function (res)
-        {
-            if (res && res.isSuccess) {
-                var qureString = '';
-                for (var pair of this.formData.entries()) {
-                    if (qureString == '' && this.link.indexOf('?') == -1) {
-                        qureString = '?' + pair[0] + '=' + pair[1];
-                    } else {
-                        qureString = qureString + '&' + pair[0] + '=' + pair[1];
-                    }
-                }
-                location.href = this.link + qureString;
-            }
-        }.bind({ checkUrl: checkUrl, formData: formData, link: link }), null, function () { hideLoader($('#' + holderParametersId)); });
-        
+function postPage(link, formData) {
+    var formId = uuidv4RemoveDash();
+    var tempResult = '<form id="' + formId + '" action="' + link + '" style="display:none;" method="post">';
+
+    for (var pair of formData.entries()) {
+        tempResult += '<input type="hidden" value="' + pair[1] + '" name="' + pair[0] + '" />';
     }
+
+    tempResult += '</form>';
+
+    $('body').append(tempResult);
+    $('#' + formId).submit();
 }
 
 $.fn.modal = function (action) {

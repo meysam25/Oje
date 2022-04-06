@@ -367,6 +367,12 @@
               "name": "order",
               "type": "text",
               "label": "ترتیب"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "color",
+              "type": "color",
+              "label": "رنگ"
             }
           ],
           "actions": [
@@ -431,6 +437,12 @@
               "name": "order",
               "type": "text",
               "label": "ترتیب"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "color",
+              "type": "color",
+              "label": "رنگ"
             }
           ],
           "actions": [

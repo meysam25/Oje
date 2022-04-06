@@ -341,11 +341,14 @@ namespace Oje.AccountService.Services
             {
                 if (!currActions.Any(t => t == action))
                 {
-                    var foundAction = db.Actions.Include(t => t.RoleActions).Where(t => t.Name == action).FirstOrDefault();
+                    var foundAction = db.Actions.Include(t => t.RoleActions).Include(t => t.DashboardSections).Where(t => t.Name == action).FirstOrDefault();
                     if (foundAction != null)
                     {
                         if (foundAction.RoleActions != null)
                             foreach (var temp1 in foundAction.RoleActions)
+                                db.Entry(temp1).State = EntityState.Deleted;
+                        if (foundAction.DashboardSections != null)
+                            foreach (var temp1 in foundAction.DashboardSections)
                                 db.Entry(temp1).State = EntityState.Deleted;
                         db.Entry(foundAction).State = EntityState.Deleted;
                     }

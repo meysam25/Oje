@@ -8,8 +8,6 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -42,7 +40,7 @@ namespace Oje.ProposalFormService.Services
             }
         }
 
-        public object GetList(ProposalFilledFormLogMainGrid searchInput, int? siteSettingId, long? userId)
+        public object GetList(ProposalFilledFormLogMainGrid searchInput, int? siteSettingId, long? userId, List<ProposalFilledFormStatus> validStatus = null)
         {
             if (searchInput == null)
                 searchInput = new ProposalFilledFormLogMainGrid();
@@ -50,6 +48,7 @@ namespace Oje.ProposalFormService.Services
             var qureResult = ProposalFilledFormAdminBaseQueryService
                 .getProposalFilledFormBaseQuery(siteSettingId, userId)
                 .Where(t => t.Id == searchInput.pKey)
+                .Where(t => validStatus == null || validStatus.Contains(t.Status))
                 .SelectMany(t => t.ProposalFilledFormStatusLogs);
 
             if (!string.IsNullOrEmpty(searchInput.userFullname))

@@ -65,16 +65,20 @@ namespace Oje.ProposalFormService.Services
             this.BankAccountFactorService = BankAccountFactorService;
         }
 
-        public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
         {
             if (input == null)
                 input = new GlobalGridParentLong();
             var foundItemId =
                 ProposalFilledFormAdminBaseQueryService
-                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                .getProposalFilledFormBaseQuery(siteSettingId, userId)
+                .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status)) || t.Status == status)
                 .Where(t => t.Id == input.pKey)
-               .Select(t => t.Id)
+                .Select(t => t.Id)
                 .FirstOrDefault();
+
+            if (foundItemId <= 0)
+                foundItemId = -1;
 
             return new
             {
@@ -429,10 +433,11 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_One_User);
         }
 
-        public ProposalFilledFormPdfVM PdfDetailes(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        public ProposalFilledFormPdfVM PdfDetailes(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
         {
             var result = new ProposalFilledFormPdfVM();
-            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId)
+               .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status)) || t.Status == status)
                .Where(t => t.Id == id)
                .Select(t => new
                {
@@ -576,22 +581,23 @@ namespace Oje.ProposalFormService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public ApiResult UploadImage(long? proposalFilledFormId, IFormFile mainFile, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        public ApiResult UploadImage(long? proposalFilledFormId, IFormFile mainFile, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
         {
             if (mainFile == null)
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             var foundItemId =
              ProposalFilledFormAdminBaseQueryService
-             .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+             .getProposalFilledFormBaseQuery(siteSettingId, userId)
              .Where(t => t.Id == proposalFilledFormId)
-            .Select(t => t.Id)
+             .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status)) || t.Status == status)
+             .Select(t => t.Id)
              .FirstOrDefault();
             if (foundItemId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, mainFile, userId, siteSettingId, proposalFilledFormId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true);
 
-            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormNewDocument, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
+            UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormNewDocument, ProposalFilledFormUseService.GetProposalFilledFormUserIds(proposalFilledFormId.ToLongReturnZiro()), proposalFilledFormId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus((status != null ? status.Value : validStatus.FirstOrDefault())) + "/PdfDetailesForAdmin?id=" + proposalFilledFormId);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -728,6 +734,55 @@ namespace Oje.ProposalFormService.Services
             if (db.ProposalFilledForms.Any(t => t.SiteSettingId == siteSettingId && t.InsuranceNumber == input.insuranceNumber && t.Id != input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
 
+        }
+
+        public object GetListForUser(MyProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, List<ProposalFilledFormStatus> validStatus)
+        {
+            searchInput = searchInput ?? new MyProposalFilledFormMainGrid();
+
+            var qureResult = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId).Where(t => validStatus.Contains(t.Status));
+
+
+            int row = searchInput.skip;
+
+            return new
+            {
+                total = qureResult.Count(),
+                data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    cId = t.ProposalFilledFormCompanies.Select(tt => tt.Company.Title).ToList(),
+                    ppfTitle = t.ProposalForm.Title,
+                    createDate = t.CreateDate,
+                    price = t.Price,
+                    agentFullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.Agent).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
+                    targetUserfullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.OwnerUser).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
+                    targetUserMobileNumber = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.OwnerUser).Select(tt => tt.User.Username).FirstOrDefault(),
+                    createUserfullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.CreateUser).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
+                    issueDate = t.IssueDate,
+                    startDate = t.InsuranceStartDate,
+                    endDate = t.InsuranceEndDate
+                })
+                .ToList()
+                .Select(t => new ProposalFilledFormMainGridResult
+                {
+                    row = ++row,
+                    id = t.id,
+                    cId = String.Join(",", t.cId),
+                    ppfTitle = t.ppfTitle,
+                    createDate = t.createDate.ToFaDate(),
+                    price = t.price > 0 ? t.price.ToString("###,###") : "0",
+                    agentFullname = t.agentFullname,
+                    targetUserfullname = t.targetUserfullname,
+                    createUserfullname = t.createUserfullname,
+                    targetUserMobileNumber = t.targetUserMobileNumber,
+                    issueDate = t.issueDate != null ? t.issueDate.ToFaDate() : "",
+                    startDate = t.startDate != null ? t.startDate.ToFaDate() : "",
+                    endDate = t.endDate != null ? t.endDate.ToFaDate() : ""
+                })
+                .ToList()
+            };
         }
     }
 }

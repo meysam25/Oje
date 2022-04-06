@@ -219,7 +219,7 @@ namespace Oje.ProposalFormService.Services
                 .FirstOrDefault();
         }
 
-        public GridResultVM<ProposalFilledFormDocumentMainGridResultVM> GetList(ProposalFilledFormDocumentMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        public GridResultVM<ProposalFilledFormDocumentMainGridResultVM> GetList(ProposalFilledFormDocumentMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
         {
             var endOfToday = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
             var startOfToday = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
@@ -228,7 +228,11 @@ namespace Oje.ProposalFormService.Services
             if (searchInput == null)
                 searchInput = new ProposalFilledFormDocumentMainGrid();
 
-            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status).Where(t => t.Id == searchInput.pKey).Select(t => t.Id).FirstOrDefault();
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId)
+                .Where(t => t.Id == searchInput.pKey)
+                .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status) || t.Status == status))
+                .Select(t => t.Id)
+                .FirstOrDefault();
             var qureResult = db.ProposalFilledFormDocuments.Where(t => t.ProposalFilledFormId == foundId);
 
             if (searchInput.type != null)

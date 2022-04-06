@@ -197,7 +197,7 @@
         },
         {
           "id": "InsuranceContractProposalFilledFormChangePrice",
-          "title": "تغییر وضعیت",
+          "title": "تغییر قیمت",
           "class": "",
           "ctrls": [
             {

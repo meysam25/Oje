@@ -1,0 +1,316 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "MyConfirmProposalFilledFormGrid",
+          "topActions": [
+            {
+              "title": "خرید بیمه نامه جدید",
+              "onClick": "showModal('MyConfirmProposalFilledFormNewPPF', this)",
+              "type": "add",
+              "modalId": "MyConfirmProposalFilledFormNewPPF"
+            }
+          ],
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "MyConfirmProposalFilledFormchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/ProposalFilledForm/MyConfirmProposalFilledForm/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-powerpoint",
+                "prop": "id",
+                "modalId": "MyConfirmProposalFilledFormchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/MyConfirmProposalFilledForm/Detaile?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "MyConfirmProposalFilledFormchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyConfirmProposalFilledFormviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-credit-card ",
+                "prop": "id",
+                "modalId": "MyConfirmProposalFilledFormviewDocuments",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyConfirmProposalFilledFormviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-history",
+                "prop": "id",
+                "modalId": "MyConfirmProposalFilledFormviewPPFStatusHistory",
+                "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyConfirmProposalFilledFormviewPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/ProposalFilledForm/MyConfirmProposalFilledForm/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "cId",
+              "caption": "شرکت بیمه"
+            },
+            {
+              "field": "ppfTitle",
+              "caption": "فرم پیشنهاد"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد"
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ"
+            },
+            {
+              "field": "agentFullname",
+              "caption": "نماینده"
+            },
+            {
+              "field": "targetUserfullname",
+              "caption": "بیمه گذار"
+            },
+            {
+              "field": "targetUserMobileNumber",
+              "caption": "نام کاربری بیمه گذار"
+            },
+            {
+              "field": "createUserfullname",
+              "caption": "ثبت کننده"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "MyConfirmProposalFilledFormviewPPfImages",
+          "title": "مدارک فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyConfirmProposalFilledFormimageGrid",
+                  "class": "imageGallery",
+                  "formatters": {
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span></div></div>'; } bindRow(data);"
+                  },
+                  "topActions": [
+                    {
+                      "title": "افزودن",
+                      "onClick": "showModal('MyConfirmProposalFilledFormNewPPFImageFile', this)",
+                      "type": "add",
+                      "modalId": "MyConfirmProposalFilledFormNewPPFImageModalId"
+                    }
+                  ],
+                  "key": "id",
+                  "url": "/ProposalFilledForm/MyConfirmProposalFilledForm/GetPPFImageList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+
+                    {
+                      "formatter": "imageFormater",
+                      "field": "src",
+                      "caption": "تصویر"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyConfirmProposalFilledFormNewPPFImageFile",
+          "title": "افزودن مدرک جدید",
+          "ctrls": [
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "فایل",
+              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'MyConfirmProposalFilledFormimageGrid', '/ProposalFilledForm/MyConfirmProposalFilledForm/UploadNewFile')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "MyConfirmProposalFilledFormviewDocuments",
+          "title": "اسناد فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyConfirmProposalFilledFormdocumentGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFilledForm/MyConfirmProposalFilledForm/GetDocumentList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "type",
+                      "caption": "نوع"
+                    },
+                    {
+                      "field": "bankId",
+                      "caption": "بانک"
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ"
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد"
+                    },
+                    {
+                      "field": "arriveDate",
+                      "caption": "تاریخ رسید"
+                    },
+                    {
+                      "field": "cashDate",
+                      "caption": "تاریخ وصول"
+                    },
+                    {
+                      "field": "status",
+                      "caption": "وضعیت"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyConfirmProposalFilledFormviewPPFStatusHistory",
+          "title": "اسناد فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyConfirmProposalFilledFormstatusHistoryGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFilledForm/MyConfirmProposalFilledForm/GetStatusLogList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "status",
+                      "caption": "وضعیت"
+                    },
+                    {
+                      "field": "userFullname",
+                      "caption": "کاربر"
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد"
+                    },
+                    {
+                      "field": "desc",
+                      "caption": "توضیحات"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyConfirmProposalFilledFormNewPPF",
+          "title": "افزودن فرم پیشنهاد جدید",
+          "ctrls": [
+            {
+              "id": "MyConfirmProposalFilledFormNewPPFppfCatId",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "MyConfirmProposalFilledFormNewPPFppfCatId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/MyConfirmProposalFilledForm/GetProposalFormCategoryList",
+              "label": "گروه بندی فرم پیشنهاد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fid",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/MyConfirmProposalFilledForm/GetProposalFormList",
+              "exteraParameterIds": [ "MyConfirmProposalFilledFormNewPPFppfCatId" ],
+              "label": "فرم پیشنهاد"
+            }
+
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "افزودن",
+              "onClick": "openNewLink('MyConfirmProposalFilledFormNewPPF', '/Proposal/Form')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

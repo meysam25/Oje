@@ -47,18 +47,18 @@
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "contractCode",
-                      "type": "text",
-                      "label": "کد تفاهم نامه",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "name": "birthDate",
                       "type": "persianDateTime",
                       "label": "تاریخ تولد",
                       "isRequired": true,
                       "nationalCodeValidation": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "contractCode",
+                      "type": "text",
+                      "label": "کد تفاهم نامه",
+                      "isRequired": true
                     },
                     {
                       "parentCL": "col-md-8 col-sm-6 col-xs-12 col-lg-9",
@@ -68,7 +68,7 @@
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "type": "button",
                       "class": "btn-block btn-primary",
-                      "onClick": "openNewLink('ContractSearchPanel', '/Contract/Create', '/Contract/IsValid')",
+                      "onClick": "openNewLink('ContractSearchPanel', '/Contract/Create', '/Contract/IsValid', true)",
                       "title": "برسی"
                     }
                   ]

@@ -1,0 +1,18 @@
+﻿@using Oje.Infrastructure
+@{
+    Layout = "_WebLayout";
+}
+
+
+
+@section Styles {
+<link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+
+}
+
+<div id="dashboardSection" class="myContainer">
+    <section class="globalSection"></section>
+</div>
+<script>
+    loadJsonConfig('/Account/Dashboard/GetJsonConfig', $('#dashboardSection .globalSection'));
+</script>

@@ -16,5 +16,6 @@ namespace Oje.AccountService.Models.View
         public long? actionId { get; set; }
         public int? catId { get; set; }
         public int? order { get; set; }
+        public string color { get; set; }
     }
 }

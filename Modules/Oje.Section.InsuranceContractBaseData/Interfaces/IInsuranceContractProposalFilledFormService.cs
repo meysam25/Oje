@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using Oje.Section.InsuranceContractBaseData.Models.View;
+using System.Collections.Generic;
 
 namespace Oje.Section.InsuranceContractBaseData.Interfaces
 {
     public interface IInsuranceContractProposalFilledFormService
     {
         ApiResult Create(long? loginUserId, int? siteSettingId, IFormCollection request);
-        InsuranceContractProposalFilledFormDetaileVM Detaile(long? id, long? loginUserId, int? siteSettingId, bool ignoreLoginUserId = false);
+        InsuranceContractProposalFilledFormDetaileVM Detaile(long? id, long? loginUserId, int? siteSettingId, bool ignoreLoginUserId = false, List<InsuranceContractProposalFilledFormType> status = null);
         ApiResult Delete(long? id, int? siteSettingId);
         GridResultVM<InsuranceContractProposalFilledFormMainGridResultVM> GetList(InsuranceContractProposalFilledFormMainGrid searchInput, int? siteSettingId);
         object GetPPFImageList(GlobalGridParentLong input, int? siteSettingId);

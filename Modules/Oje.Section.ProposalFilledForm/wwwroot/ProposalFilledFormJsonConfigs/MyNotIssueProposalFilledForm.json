@@ -1,0 +1,316 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "MyNotIssueProposalFilledFormGrid",
+          "topActions": [
+            {
+              "title": "خرید بیمه نامه جدید",
+              "onClick": "showModal('MyNotIssueProposalFilledFormNewPPF', this)",
+              "type": "add",
+              "modalId": "MyNotIssueProposalFilledFormNewPPF"
+            }
+          ],
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "MyNotIssueProposalFilledFormchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/ProposalFilledForm/MyNotIssueProposalFilledForm/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-powerpoint",
+                "prop": "id",
+                "modalId": "MyNotIssueProposalFilledFormchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/MyNotIssueProposalFilledForm/Detaile?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "MyNotIssueProposalFilledFormchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyNotIssueProposalFilledFormviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-credit-card ",
+                "prop": "id",
+                "modalId": "MyNotIssueProposalFilledFormviewDocuments",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyNotIssueProposalFilledFormviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-history",
+                "prop": "id",
+                "modalId": "MyNotIssueProposalFilledFormviewPPFStatusHistory",
+                "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyNotIssueProposalFilledFormviewPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/ProposalFilledForm/MyNotIssueProposalFilledForm/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "cId",
+              "caption": "شرکت بیمه"
+            },
+            {
+              "field": "ppfTitle",
+              "caption": "فرم پیشنهاد"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد"
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ"
+            },
+            {
+              "field": "agentFullname",
+              "caption": "نماینده"
+            },
+            {
+              "field": "targetUserfullname",
+              "caption": "بیمه گذار"
+            },
+            {
+              "field": "targetUserMobileNumber",
+              "caption": "نام کاربری بیمه گذار"
+            },
+            {
+              "field": "createUserfullname",
+              "caption": "ثبت کننده"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "MyNotIssueProposalFilledFormviewPPfImages",
+          "title": "مدارک فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyNotIssueProposalFilledFormimageGrid",
+                  "class": "imageGallery",
+                  "formatters": {
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span></div></div>'; } bindRow(data);"
+                  },
+                  "topActions": [
+                    {
+                      "title": "افزودن",
+                      "onClick": "showModal('MyNotIssueProposalFilledFormNewPPFImageFile', this)",
+                      "type": "add",
+                      "modalId": "MyNotIssueProposalFilledFormNewPPFImageModalId"
+                    }
+                  ],
+                  "key": "id",
+                  "url": "/ProposalFilledForm/MyNotIssueProposalFilledForm/GetPPFImageList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+
+                    {
+                      "formatter": "imageFormater",
+                      "field": "src",
+                      "caption": "تصویر"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyNotIssueProposalFilledFormNewPPFImageFile",
+          "title": "افزودن مدرک جدید",
+          "ctrls": [
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "فایل",
+              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'MyNotIssueProposalFilledFormimageGrid', '/ProposalFilledForm/MyNotIssueProposalFilledForm/UploadNewFile')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "MyNotIssueProposalFilledFormviewDocuments",
+          "title": "اسناد فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyNotIssueProposalFilledFormdocumentGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFilledForm/MyNotIssueProposalFilledForm/GetDocumentList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "type",
+                      "caption": "نوع"
+                    },
+                    {
+                      "field": "bankId",
+                      "caption": "بانک"
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ"
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد"
+                    },
+                    {
+                      "field": "arriveDate",
+                      "caption": "تاریخ رسید"
+                    },
+                    {
+                      "field": "cashDate",
+                      "caption": "تاریخ وصول"
+                    },
+                    {
+                      "field": "status",
+                      "caption": "وضعیت"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyNotIssueProposalFilledFormviewPPFStatusHistory",
+          "title": "اسناد فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyNotIssueProposalFilledFormstatusHistoryGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFilledForm/MyNotIssueProposalFilledForm/GetStatusLogList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "status",
+                      "caption": "وضعیت"
+                    },
+                    {
+                      "field": "userFullname",
+                      "caption": "کاربر"
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد"
+                    },
+                    {
+                      "field": "desc",
+                      "caption": "توضیحات"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyNotIssueProposalFilledFormNewPPF",
+          "title": "افزودن فرم پیشنهاد جدید",
+          "ctrls": [
+            {
+              "id": "MyNotIssueProposalFilledFormNewPPFppfCatId",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "MyNotIssueProposalFilledFormNewPPFppfCatId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/MyNotIssueProposalFilledForm/GetProposalFormCategoryList",
+              "label": "گروه بندی فرم پیشنهاد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fid",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/MyNotIssueProposalFilledForm/GetProposalFormList",
+              "exteraParameterIds": [ "MyNotIssueProposalFilledFormNewPPFppfCatId" ],
+              "label": "فرم پیشنهاد"
+            }
+
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "افزودن",
+              "onClick": "openNewLink('MyNotIssueProposalFilledFormNewPPF', '/Proposal/Form')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

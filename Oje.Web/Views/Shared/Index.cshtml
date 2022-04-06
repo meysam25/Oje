@@ -1,7 +1,22 @@
 ﻿
-@{ 
-    Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+@{
+    if(ViewBag.layer != null)
+    {
+        Layout = ViewBag.layer;
+    }
+    else
+    {
+       Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    }
 }
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
+    }
+}
+
 <div class="MainHolder"></div>
 <script>
     @{
@@ -12,3 +27,11 @@
     }
     loadJsonConfig('@ViewBag.ConfigRoute');
 </script>
+
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("</section></div>");
+    }
+}
