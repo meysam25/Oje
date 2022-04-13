@@ -106,7 +106,9 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult UploadNewFile([FromForm] long? pKey, [FromForm] IFormFile mainFile)
         {
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.NewDocumentForWebUserPPF, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             var tempResult = ProposalFilledFormAdminService.UploadImage(pKey, mainFile, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, null, validStatus);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.NewDocumentForWebUserPPF, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }
 

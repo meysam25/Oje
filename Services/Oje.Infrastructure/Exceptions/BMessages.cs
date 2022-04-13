@@ -599,5 +599,13 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_BirthDate = 293,
         [Display(Name = "لطفا اطلاعات تمامی اعضای خانواده را وارد کنید")]
         Please_Enter_All_Family_Memebers = 294,
+        [Display(Name = "پاسخ شما نمی تواند بیشتر از 4000 کارکتر باشد")]
+        Answer_Length_Can_Not_Be_More_Then_4000 = 295,
+        [Display(Name = "لینک وارد شده صحیح نمی باشد")]
+        Invalid_Url = 296,
+        [Display(Name = "کاربر وب سایت لاگین نمی باشد")]
+        Website_User_Is_Not_Login = 297,
+        [Display(Name = "جهت دریافت فایل از ادمین باید لاگین کنید")]
+        Website_User_For_Recive_File_From_Admin_Need_To_Be_Login = 298
     }
 }

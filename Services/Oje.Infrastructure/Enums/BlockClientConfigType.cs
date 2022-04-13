@@ -44,6 +44,36 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ثبت اعلام خسارت در وبسایت")]
         ContractCreate = 19,
         [Display(Name = "افزودن مدرک جدید برای خسارت")]
-        WebsiteUserAddNewImageForInsuranceContract = 20
+        WebsiteUserAddNewImageForInsuranceContract = 20,
+        [Display(Name = "ثبت مدرک جدید برای فرم پیشنهاد ها در وبسایت")]
+        NewDocumentForWebUserPPF = 21,
+        [Display(Name = "ایجاد تیکت")]
+        CreateNewTicket = 22,
+        [Display(Name = "ایجاد پاسخ برای تیکت")]
+        CreateNewAnswerForTicket = 23,
+        [Display(Name = "ثبت ایمیل جدید توسط چت انلاین")]
+        SubscribeNewEmail = 24,
+        [Display(Name = "بارگزاری فایل برای انلاین چت")]
+        UploadFileForOnlineChat = 25,
+        [Display(Name = "بارگزاری فایل صوتی برای چت انلاین")]
+        UploadVoiceForOnlineChat = 26,
+        [Display(Name = "جوین شدن در روم جهت چت")]
+        JoinOnlineRome = 27,
+        [Display(Name = "ارسال پیام در چت برای چت")]
+        SendMessage = 28,
+        [Display(Name = "ارسال نقشه برای کاربر برای چت")]
+        SendMapForUser = 29,
+        [Display(Name = "ارسال صدا برای کاربر برای چت")]
+        SendVoiceForUser = 30,
+        [Display(Name = "بارگزاری فایل برای ادمین برای چت")]
+        UploadVoiceForAdmin = 31,
+        [Display(Name = "ارسال نقشه برای ادمین برای چت")]
+        SendMapForAdmin = 32,
+        [Display(Name = "بارگزاری فایل برای کاربر چت")]
+        UploadFileForUser = 33,
+        [Display(Name = "بارگزاری فایل برای ادمین برای چت")]
+        UploadFileForAdmin = 34,
+        [Display(Name = "ارسال پیام برای ادمین برای چت")]
+        SendMessageForAdmin = 35
     }
 }

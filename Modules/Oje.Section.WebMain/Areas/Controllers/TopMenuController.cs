@@ -66,7 +66,7 @@ namespace Oje.Section.WebMain.Areas.Controllers
 
         [AreaConfig(Title = "مشاهده  یک منوی بالا", Icon = "fa-eye")]
         [HttpPost]
-        public IActionResult GetById([FromForm] GlobalIntId input)
+        public IActionResult GetById([FromForm] GlobalLongId input)
         {
             return Json(TopMenuService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id));
         }

@@ -75,7 +75,7 @@
     }
 
     <script src="/Modules/Core/js/jquery.min.js.gz"></script>
-
+    <script src="/Modules/Core/js/sr.js.gz"></script>
     <script src="/Modules/Core/js/websiteCor.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
     <script src="/Modules/Core/js/mainPage.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
 
@@ -95,6 +95,9 @@
     <link rel="apple-touch-icon" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image512)" />
     <meta name="apple-mobile-web-app-status-bar" content="#db4938" />
     <meta name="theme-color" content="#db4938" />
+    <script>
+        var whatToDoAfterUserLogin = [];
+    </script>
 </head>
 <body dir="rtl" class="makeRTL">
     <div class="wrapper">
@@ -109,7 +112,7 @@
             <script>
                 bindTopLeftIcons();
             </script>
-            <section id="headerTagHolderS1"  class="topHeaderMobile">
+            <section id="headerTagHolderS1" class="topHeaderMobile">
                 <div class="myContainer">
                     @{
                         if (!string.IsNullOrEmpty(curSetting.ImageText))
@@ -130,7 +133,7 @@
                         <div class="topMenuBttonLine"></div>
                     </div>
                     <div class="holderRigAndLogUser">
-                        <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText" >ورود | ثبت نام</span></a>
+                        <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
                     </div>
                     <div id="topMenuHolderItems" class="headerMenuInner">
                     </div>
@@ -193,8 +196,8 @@
                         <div class="myContainer">
                             <div class="floatingFooterSection">
                                 <div>
-                                    <a href="#" title="ارسال تیکت" class="mainBtn">ارسال تیکت</a>
-                                    <a href="#" title="مشاوره رایگان" class="secountBtn">مشاوره رایگان</a>
+                                    <a href="/Ticket/TicketUser/Index" title="ارسال تیکت" class="mainBtn newTicketMainPageButton">ارسال تیکت</a>
+                                    <span onclick="initOnlineChat()" title="مشاوره رایگان" class="secountBtn">مشاوره رایگان</span>
                                 </div>
                                 <div class="floatingFooterSectionCenter">
                                     <div>مرکز تماس و پشتیبانی </div>
@@ -250,7 +253,7 @@
                 <div class="myContainer">
                     <div class="footerSharingAndCopyRightSection">
                         <div class="footerCopyRightSection">
-                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به شرکت کارگزاری رسمی بیمه مستقیم برخط اوج می‌باشد.
+                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به @(curSetting.Title) می‌باشد.
                         </div>
                         <div class="footerCenterSection">
                             @{

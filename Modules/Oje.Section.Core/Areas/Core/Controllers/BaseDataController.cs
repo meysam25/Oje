@@ -4,10 +4,7 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure.Models;
 
@@ -21,18 +18,15 @@ namespace Oje.Section.Core.Areas.Controllers
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProvinceService ProvinceService = null;
         readonly ICityService CityService = null;
-        readonly IUserService UserService = null;
         public BaseDataController(
                 IUploadedFileService UploadedFileService,
                 IProvinceService ProvinceService,
-                ICityService CityService,
-                IUserService UserService
+                ICityService CityService
             )
         {
             this.UploadedFileService = UploadedFileService;
             this.ProvinceService = ProvinceService;
             this.CityService = CityService;
-            this.UserService = UserService;
         }
 
         [HttpGet]

@@ -65,6 +65,8 @@ namespace Oje.Web
                     webBuilder.UseUrls();
                     //webBuilder.UseIISIntegration();
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+            .UseWindowsService()
+            ;
     }
 }

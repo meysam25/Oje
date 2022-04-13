@@ -60,7 +60,10 @@ namespace Oje.Web
                 options.EnableForHttps = true;
                 options.Providers.Add<GzipCompressionProvider>();
             });
-            services.AddSignalR();
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("Oje") && !a.Location.EndsWith(".Views.dll")).ToList();
             GlobalConfig.Moduals = assemblies;
             foreach (var module in assemblies)

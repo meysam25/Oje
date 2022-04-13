@@ -7,6 +7,7 @@ using Oje.Section.WebMain.Services;
 using Oje.Section.WebMain.Services.EContext;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
+using Oje.Section.WebMain.Hubs;
 
 namespace Oje.Section.WebMain
 {
@@ -14,6 +15,10 @@ namespace Oje.Section.WebMain
     {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<SupportHUb>("/support");
+            });
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -28,6 +33,9 @@ namespace Oje.Section.WebMain
             services.AddScoped<IFooterGroupExteraLinkService, FooterGroupExteraLinkService>();
             services.AddScoped<IContactUsService, ContactUsService>();
             services.AddScoped<IOurObjectService, OurObjectService>();
+            services.AddScoped<IAutoAnswerOnlineChatMessageService, AutoAnswerOnlineChatMessageService>();
+            services.AddScoped<IAutoAnswerOnlineChatMessageLikeService, AutoAnswerOnlineChatMessageLikeService>();
+            services.AddScoped<ISubscribeEmailService, SubscribeEmailService>();
         }
     }
 }

@@ -58,6 +58,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تغییر وضعیت اعلام خسارت")]
         DamageClimeStatusChange = 24,
         [Display(Name = "تغییر قیمت اعلام خسارت")]
-        DamageClimeSetPrice = 25
+        DamageClimeSetPrice = 25,
+        [Display(Name = "تیکت جدید")]
+        NewTicket = 26
     }
 }

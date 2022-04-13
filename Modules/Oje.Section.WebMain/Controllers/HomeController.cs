@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
+using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.View;
+using Oje.Security.Interfaces;
 
 namespace Oje.Section.WebMain.Areas.WebMain.Controllers
 {
@@ -19,6 +23,9 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         readonly ProposalFormService.Interfaces.IProposalFormCategoryService ProposalFormCategoryService = null;
         readonly ProposalFormService.Interfaces.IProposalFormService ProposalFormService = null;
         readonly IOurObjectService OurObjectService = null;
+        readonly IUploadedFileService UploadedFileService = null;
+        readonly IBlockAutoIpService BlockAutoIpService = null;
+
         public HomeController
             (
                 IPropertyService PropertyService,
@@ -28,7 +35,9 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 IFooterGroupExteraLinkService FooterGroupExteraLinkService,
                 ProposalFormService.Interfaces.IProposalFormCategoryService ProposalFormCategoryService,
                 ProposalFormService.Interfaces.IProposalFormService ProposalFormService,
-                IOurObjectService OurObjectService
+                IOurObjectService OurObjectService,
+                IUploadedFileService UploadedFileService,
+                IBlockAutoIpService BlockAutoIpService
             )
         {
             this.PropertyService = PropertyService;
@@ -39,6 +48,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.ProposalFormCategoryService = ProposalFormCategoryService;
             this.ProposalFormService = ProposalFormService;
             this.OurObjectService = OurObjectService;
+            this.UploadedFileService = UploadedFileService;
+            this.BlockAutoIpService = BlockAutoIpService;
         }
 
         [Route("/")]
@@ -253,6 +264,35 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         public ActionResult GetOurCompanyList()
         {
             return Json(OurObjectService.GetListWeb(SiteSettingService.GetSiteSetting()?.Id, OurObjectType.OurContractCompanies));
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
+        public ActionResult UploadNewFileForOnlineChat([FromForm] IFormFile mainFile)
+        {
+            if (HttpContext.GetLoginUser()?.UserId == null || HttpContext.GetLoginUser()?.UserId <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.UploadFileForOnlineChat, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = UploadedFileService.UploadNewFile(FileType.OnlineFile, mainFile, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, null, ".jpg,.jpeg,.png,.doc,.pdf", true);
+            if (!string.IsNullOrEmpty(tempResult))
+                tempResult = GlobalConfig.FileAccessHandlerUrl + tempResult;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.UploadFileForOnlineChat, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
+        public ActionResult UploadNewVoiceForOnlineChat([FromForm] IFormFile mainFile)
+        {
+            if (HttpContext.GetLoginUser()?.UserId == null || HttpContext.GetLoginUser()?.UserId <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.UploadVoiceForOnlineChat, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = UploadedFileService.UploadNewFile(FileType.OnlineFile, mainFile, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, null, ".ogg,.webm", true);
+            if (!string.IsNullOrEmpty(tempResult))
+                tempResult = GlobalConfig.FileAccessHandlerUrl + tempResult;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.UploadVoiceForOnlineChat, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
         }
     }
 }

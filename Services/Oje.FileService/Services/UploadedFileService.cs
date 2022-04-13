@@ -28,11 +28,9 @@ namespace Oje.FileService.Services
         public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null)
         {
             if (userPic == null || userPic.Length == 0)
-                return "";
+                throw BException.GenerateNewException(BMessages.Please_Select_File);
 
             UploadNewFileValidation(userPic, extensions);
-
-
 
             UploadedFile newFile = new UploadedFile()
             {

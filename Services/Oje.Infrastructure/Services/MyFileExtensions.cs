@@ -19,7 +19,7 @@ namespace Oje.Infrastructure.Services
             { ".jpg", new byte[] { 255, 216, 255 }  },
             { ".jpeg", new byte[] { 255, 216, 255 }  },
             { ".mp3", new byte[] { 73, 68, 51 }  },
-            { ".ogg", new byte[] { 79, 103, 103, 83, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0 }  },
+            { ".ogg", new byte[] { 79, 103, 103, 83, 0,  }  },
             { ".png", new byte[] { 137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82 }  },
             { ".rar", new byte[] { 82, 97, 114, 33, 26, 7, 0 }  },
             { ".swf", new byte[] { 70, 87, 83 }  },
@@ -34,7 +34,8 @@ namespace Oje.Infrastructure.Services
             { ".docx", new byte[] {  80, 75, 3, 4 }  },
             { ".pdf", new byte[] { 37, 80, 68, 70 }  },
             { ".xlsx", new byte[] { 80, 75, 3, 4 }  },
-            { ".svg", new byte[] { 60, 115, 118, 103 }  }
+            { ".svg", new byte[] { 60, 115, 118, 103 }  },
+            { ".webm", new byte[] { 26, 69, 223, 163, 159 }  }
         };
     }
 }

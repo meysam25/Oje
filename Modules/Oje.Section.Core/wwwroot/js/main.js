@@ -790,6 +790,7 @@ $.fn.modal = function (action) {
         });
         $(curThis).find('.modal-dialog').click(function (e) { e.stopPropagation(); if (window['closeAllDropdownInPage']) closeAllDropdownInPage(); });
         $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
+        setTimeout(function () { $(curThis).find('input:visible:eq(0)').focus(); $(curThis).find('input:visible:eq(0)').click();}, 200);
     }
     function bindCloseButton(curThis) {
         $(curThis).find('[data-dismiss]').unbind().click(function () {

@@ -120,8 +120,6 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(ProposalFormService.GetightListForSelect2(searchInput, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-
-
         [AreaConfig(Title = "افزودن بخش نقش جدید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult CreateRoleAction([FromForm] DashboardSectionCreateUpdateVM input)

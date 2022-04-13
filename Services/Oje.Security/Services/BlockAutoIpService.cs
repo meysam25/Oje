@@ -18,6 +18,8 @@ namespace Oje.Security.Services
         readonly SecurityDBContext db = null;
         readonly IBlockClientConfigService BlockClientConfigService = null;
         readonly IBlockFirewallIpService BlockFirewallIpService = null;
+        static object lockObj = null;
+
         public BlockAutoIpService
             (
                 SecurityDBContext db,
@@ -44,29 +46,36 @@ namespace Oje.Security.Services
 
         private void createNewItem(IpSections ipSections, int? siteSettingId, DateTime now, BlockClientConfigType type, BlockAutoIpAction exeType)
         {
-            if (!db.BlockAutoIps
-                .Any(
-                    t => t.Ip4 == ipSections.Ip4 && t.Ip3 == ipSections.Ip3 && t.Ip2 == ipSections.Ip2 && t.Ip1 == ipSections.Ip1 && 
-                    t.BlockClientConfigType == type && t.CreateDate == now
-                    )
-                )
+            if (lockObj == null)
+                lockObj = new Object();
+
+            lock (lockObj)
             {
-                db.Entry(new BlockAutoIp()
+                if (!db.BlockAutoIps
+                        .Any(
+                            t => t.Ip4 == ipSections.Ip4 && t.Ip3 == ipSections.Ip3 && t.Ip2 == ipSections.Ip2 && t.Ip1 == ipSections.Ip1 &&
+                            t.BlockClientConfigType == type && t.CreateDate == now
+                            )
+                        )
                 {
-                    BlockClientConfigType = type,
-                    CreateDate = now,
-                    CreateDay = now.Day,
-                    CreateMonth = now.Month,
-                    CreateYear = now.Year,
-                    Ip1 = ipSections.Ip1,
-                    Ip2 = ipSections.Ip2,
-                    Ip3 = ipSections.Ip3,
-                    Ip4 = ipSections.Ip4,
-                    BlockAutoIpAction = exeType,
-                    SiteSettingId = siteSettingId.Value
-                }).State = EntityState.Added;
-                db.SaveChanges();
+                    db.Entry(new BlockAutoIp()
+                    {
+                        BlockClientConfigType = type,
+                        CreateDate = now,
+                        CreateDay = now.Day,
+                        CreateMonth = now.Month,
+                        CreateYear = now.Year,
+                        Ip1 = ipSections.Ip1,
+                        Ip2 = ipSections.Ip2,
+                        Ip3 = ipSections.Ip3,
+                        Ip4 = ipSections.Ip4,
+                        BlockAutoIpAction = exeType,
+                        SiteSettingId = siteSettingId.Value
+                    }).State = EntityState.Added;
+                    db.SaveChanges();
+                }
             }
+
         }
 
         void validate(IpSections ipSections, int? siteSettingId, int maxFirewall, int maxSoftware, BlockClientConfigType type, BlockAutoIpAction exeType)

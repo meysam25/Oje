@@ -1,7 +1,7 @@
 ﻿
 var functionsList = [];
 
-function generateForm(res, targetId) {
+function generateForm(res, targetId, canBeAppened) {
     var result = '';
     if (res && res.panels && res.panels.length > 0) {
         result += '<div class="row">';
@@ -12,17 +12,26 @@ function generateForm(res, targetId) {
     }
     if (targetId) {
         if (typeof targetId === 'string' || targetId instanceof String) {
-            $('#' + targetId).html(result);
+            if (canBeAppened)
+                $('#' + targetId).append(result);
+            else
+                $('#' + targetId).html(result);
             executeArrFunctions();
         }
         else {
-            $(targetId).html(result);
+            if (canBeAppened)
+                $(targetId).append(result);
+            else
+                $(targetId).html(result);
             executeArrFunctions();
         }
 
     }
     else {
-        $('.MainHolder').html(result);
+        if (canBeAppened)
+            $('.MainHolder').append(result);
+        else
+            $('.MainHolder').html(result);
         executeArrFunctions();
     }
 }
@@ -450,16 +459,18 @@ function getModualTemplate(modual) {
 function getModualTemplateCTRL(modual) {
     var result = '';
 
-    if (modual && modual.ctrls) {
+    if (modual) {
         result += '<div class="row">';
-        for (var i = 0; i < modual.ctrls.length; i++) {
-            result += getInputTemplate(modual.ctrls[i]);
+
+        if (modual && modual.panels && modual.panels.length > 0) {
+            for (var i = 0; i < modual.panels.length; i++) {
+                result += getPanelTemplate(modual.panels[i]);
+            }
         }
-        result += '</div>';
-    } else if (modual && modual.panels && modual.panels.length > 0) {
-        result += '<div class="row">';
-        for (var i = 0; i < modual.panels.length; i++) {
-            result += getPanelTemplate(modual.panels[i]);
+        if (modual && modual.ctrls) {
+            for (var i = 0; i < modual.ctrls.length; i++) {
+                result += getInputTemplate(modual.ctrls[i]);
+            }
         }
         result += '</div>';
     }
@@ -535,10 +546,11 @@ function getMapTemplate(ctrl) {
     var result = '';
 
     if (ctrl) {
+        if (!ctrl.id)
+            ctrl.id = uuidv4RemoveDash();
         result += '<div style="padding:0px;position:relative;z-index:2;" class="myCtrl mapCtrl form-check">';
         if (ctrl.label)
             result += '<label>' + ctrl.label + '</label>';
-
         if (ctrl.names && ctrl.names.lat)
             result += '<input id="' + ctrl.id + '_lat" name="' + ctrl.names.lat + '" type="hidden" />';
         if (ctrl.names && ctrl.names.lon)
@@ -1638,6 +1650,13 @@ function inputNewLabelEventHandler(curId) {
             makeCtrlFocused(this);
         }
     });
+    $('#' + curId).keyup(function () {
+        if (!$(this).val()) {
+            makeCtrlBlure(this);
+        } else {
+            makeCtrlFocused(this);
+        }
+    });
     if ($('#' + curId).val()) {
         makeCtrlFocused($('#' + curId));
     }
@@ -2364,10 +2383,17 @@ function submitThisStep(curThis, targetUrl) {
                         $(this).closest('.modal').modal('hide');
 
                     }
-                    if (res.data.userfullname && window['userLoginWeb']) {
-                        userLoginWeb(res.data.userfullname);
-                        if (window['showLoginUserPanelInMainPage']) {
+                    if (res.data.userfullname) {
+                        if (window['userLoginWeb'])
+                            userLoginWeb(res.data.userfullname);
+                        if (window['showLoginUserPanelInMainPage'])
                             showLoginUserPanelInMainPage();
+                        if (window['whatToDoAfterUserLogin']) {
+                            if (whatToDoAfterUserLogin && whatToDoAfterUserLogin.length > 0) {
+                                for (var i = 0; i < whatToDoAfterUserLogin.length; i++) {
+                                    whatToDoAfterUserLogin[i].curFun(res.data.userfullname);
+                                }
+                            }
                         }
                     }
                 }
@@ -2590,7 +2616,6 @@ function doPageActions(actionOnLastStep) {
 
 function getGridTemplate(grid) {
     var result = '';
-
     if (grid) {
         var gridId = (!grid.id ? uuidv4RemoveDash() : grid.id);
         result += '<div id="' + gridId + '" class="myGridCTRL ' + (grid.class ? grid.class : '') + '"></div>';
@@ -2690,7 +2715,16 @@ function simpleAjax(key, url, curElement) {
     }
 }
 
-function postModalData(curElement, gridId, url) {
+function setFocusToFirstVisbleText(qSelector) {
+    if (qSelector) {
+        qSelector.find('input:visible:eq(0)').focus();
+        var modalQuiry = $(qSelector).closest('.modal');
+        modalQuiry.animate({ scrollTop: modalQuiry.find('.modal-body').height() }, 300);
+        console.log(qSelector);
+    }
+}
+
+function postModalData(curElement, gridId, url, ignoreCloseModal) {
     var qSelector = $(curElement).closest('.modal').find('.modal-content');
     if (!gridId && $(curElement).closest('.modal')[0].gridOwnerId)
         gridId = $(curElement).closest('.modal')[0].gridOwnerId;
@@ -2698,12 +2732,17 @@ function postModalData(curElement, gridId, url) {
     showLoader(qSelector);
     postForm(url, postFormData, function (res) {
         if (res && res.isSuccess == true) {
-            closeThisModal(this.curElement);
+            if (!this.ignoreCloseModal) {
+                closeThisModal(this.curElement);
+            } else {
+                clearForm(qSelector);
+                setFocusToFirstVisbleText(qSelector);
+            }
             if (this.gridId) {
                 $('#' + this.gridId)[0].refreshData();
             }
         }
-    }.bind({ gridId, curElement }), null, function () { hideLoader(qSelector); });
+    }.bind({ gridId, curElement, ignoreCloseModal: ignoreCloseModal }), null, function () { hideLoader(qSelector); });
 }
 
 function refreshGrid(gridId, currButtonInsideModal) {

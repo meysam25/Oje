@@ -608,6 +608,18 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static bool IsWebsite(this string input)
+        {
+            try
+            {
+                return Uri.IsWellFormedUriString(input, UriKind.RelativeOrAbsolute);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static string GetTargetAreaByRefferForInquiry(this HttpRequest input)
         {
             try
@@ -768,8 +780,8 @@ namespace Oje.Infrastructure.Services
                     suffix = "پیش";
 
                 if (defDate.TotalMinutes <= 10)
-                    result = "لحضات " + suffix;
-                if (defDate.TotalMinutes > 10 && defDate.TotalMinutes < 60)
+                    result = "لحظاتی " + suffix;
+                else if (defDate.TotalMinutes > 10 && defDate.TotalMinutes < 60)
                     result = Math.Floor(defDate.TotalMinutes).ToIntReturnZiro() + " دقیقه " + suffix;
                 else if (defDate.TotalHours >= 1 && defDate.TotalHours < 24)
                     result = Math.Floor(defDate.TotalHours) + " ساعت " + suffix;

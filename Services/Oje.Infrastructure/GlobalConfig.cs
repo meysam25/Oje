@@ -72,6 +72,21 @@ namespace Oje.Infrastructure
             }
         }
 
+        static List<string> supportRolesCache = null;
+        public static List<string> GetValidRoleForSupports()
+        {
+            try
+            {
+                if (supportRolesCache == null)
+                    supportRolesCache = Configuration.GetSection("SupportRoles").Get<List<string>>();
+                return supportRolesCache;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static string replaceInvalidChars(string input)
         {
             return System.Net.WebUtility.UrlEncode((input + "").Trim().Replace(" ", "-").Replace("--", "-"));

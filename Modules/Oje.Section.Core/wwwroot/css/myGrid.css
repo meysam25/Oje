@@ -4,9 +4,11 @@
     width: 100%;
     background-color: white;
 }
+
     .myGrid tbody > tr:nth-child(2n+1) {
-        background-color:rgb(245, 245, 245);
+        background-color: rgb(245, 245, 245);
     }
+
     .myGrid tbody > tr:last-child {
         background-color: white;
     }
@@ -61,8 +63,9 @@
         }
 
 .myItemPerPage {
-    text-align:right;
+    text-align: right;
 }
+
 .myGrid .myItemPerPage > span {
     display: inline-block;
     margin: 1px;
@@ -76,41 +79,41 @@
     cursor: pointer;
 }
 
-        .myGrid .myItemPerPage > span.activeItemPerPage {
-            background-color: #d4d4d4;
-        }
-
-
-    .myGrid .myGridAction {
-        display: inline-block;
-        background-color: #005ad3;
-        border: 1px solid #014db3;
-        -moz-border-radius: 50%;
-        -webkit-border-radius: 50%;
-        border-radius: 50%;
-        width: 25px;
-        height: 25px;
-        text-align: center;
-        cursor: pointer;
-        margin: 1px;
-        vertical-align: top;
+    .myGrid .myItemPerPage > span.activeItemPerPage {
+        background-color: #d4d4d4;
     }
 
-        .myGrid .myGridAction > i, .myGrid .myGridAction > a > i {
-            color: white;
-            font-size: 13pt;
-            line-height: 24px;
-        }
 
-    .myGrid .myGridActionDelete {
-        background-color: #e20000;
-        border-color: #cc0000;
+.myGrid .myGridAction {
+    display: inline-block;
+    background-color: #005ad3;
+    border: 1px solid #014db3;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    cursor: pointer;
+    margin: 1px;
+    vertical-align: top;
+}
+
+    .myGrid .myGridAction > i, .myGrid .myGridAction > a > i {
+        color: white;
+        font-size: 13pt;
+        line-height: 24px;
     }
 
-    .myGrid .myGridWarning {
-        background-color: #d5b500;
-        border-color: #c5a701;
-    }
+.myGrid .myGridActionDelete {
+    background-color: #e20000;
+    border-color: #cc0000;
+}
+
+.myGrid .myGridWarning {
+    background-color: #d5b500;
+    border-color: #c5a701;
+}
 
 .myGridCTRL .holderColumnConfig {
     text-align: left;
@@ -137,6 +140,7 @@
         font-size: 14pt;
         line-height: 30px;
     }
+
     .myGridCTRL .gridExteraFilterModal > i {
         font-size: 14pt;
         line-height: 30px;
@@ -171,7 +175,7 @@
 
 .holderColumnConfig .columnMenuItem {
     display: block;
-    text-align:left;
+    text-align: left;
 }
 
     .holderColumnConfig .columnMenuItem > label {
@@ -259,7 +263,7 @@
 
 .convertToImageGallery > table {
     display: block;
-    border:1px solid silver;
+    border: 1px solid silver;
 }
 
     .convertToImageGallery > table > thead {
@@ -268,7 +272,7 @@
 
     .convertToImageGallery > table > tbody {
         display: block;
-        text-align:center;
+        text-align: center;
     }
 
         .convertToImageGallery > table > tbody > tr {
@@ -277,13 +281,15 @@
             margin: 10px;
             position: relative;
         }
+
             .convertToImageGallery > table > tbody > tr:last-child {
-                display:block;
+                display: block;
             }
-            .convertToImageGallery > table > tbody > tr:last-child > td {
-                display:inline-block;
-                width:100%;
-            }
+
+                .convertToImageGallery > table > tbody > tr:last-child > td {
+                    display: inline-block;
+                    width: 100%;
+                }
 
             .convertToImageGallery > table > tbody > tr > td {
                 display: inline-block;
@@ -301,45 +307,166 @@
     display: block;
     text-align: center;
 }
+
 .myGrid tr td:first-child {
-    border-left:1px solid silver;
+    border-left: 1px solid silver;
 }
-.gridheaderButton{
-    margin-right:10px;
+
+.gridheaderButton {
+    margin-right: 10px;
 }
-.gridTopActionButtonHolder{
-    float:left;
-    margin-bottom:10px;
+
+.gridTopActionButtonHolder {
+    float: left;
+    margin-bottom: 10px;
 }
+
 .gridResTitle {
-    display:none;
+    display: none;
 }
-.topGridAction{
-    text-align:right;
-    padding-bottom:3px;
+
+.topGridAction {
+    text-align: right;
+    padding-bottom: 3px;
 }
+
 .gridPageButtonHolder {
-    display:inline-block;
-    float:left;
+    display: inline-block;
+    float: left;
 }
+
 .gridExpandButton {
     display: inline-block;
-    cursor:pointer;
+    cursor: pointer;
 }
+
 .imageGallery .myTableHeader {
-    display:none;
+    display: none;
 }
+
 .imageGallery .myTableBody > tr, .imageGallery .myTableBody > tr > td {
     display: inline-block;
-    border:none;
+    border: none;
 }
+
 .imageGallery .myGrid {
     display: block;
-    text-align:center;
+    text-align: center;
 }
+
 .imageGallery .myTableBody > tr:last-child, .imageGallery .myTableBody > tr:last-child > td, .imageGallery .myTableBody {
     display: block;
 }
-.gridDetailes{
-    padding-right:30px;
+
+.gridDetailes {
+    padding-right: 30px;
+}
+
+.messageGrid {
+    display: block;
+}
+
+    .messageGrid .myTableBody, .messageGrid .myTableBody > tr, .messageGrid .myTableBody > tr > td {
+        display: block;
+    }
+
+    .messageGrid .myTableBody {
+        padding: 15px;
+    }
+
+    .messageGrid .myTableHeader {
+        display: none;
+    }
+
+    .messageGrid .myTableBody > tr:last-child {
+        display: none;
+    }
+
+    .messageGrid .myGrid tbody > tr:nth-child(2n+1) {
+        background-color: white;
+    }
+
+
+
+    .messageGrid .message {
+        float: left;
+        background-color: #4a84ef;
+        color: white;
+        text-align: right;
+        direction: rtl;
+        position: relative;
+        margin-bottom: 25px;
+        min-width: 230px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        border: 1px solid #607eb2;
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 5px;
+    }
+
+        .messageGrid .message:before {
+            content: ' ';
+            position: absolute;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #4a84ef;
+            top: 6px;
+            left: -10px;
+        }
+
+        .messageGrid .message .messCreateDate {
+            position: absolute;
+            color: silver;
+            bottom: -20px;
+            left: 0px;
+            font-size: 8pt;
+        }
+
+        .messageGrid .message .messUsername {
+            position: absolute;
+            color: silver;
+            bottom: -20px;
+            right: 0px;
+            font-size: 8pt;
+        }
+
+    .messageGrid .myTableBody > tr > td:after {
+        content: ' ';
+        display: block;
+        clear: both;
+    }
+
+    .messageGrid .myTableBody > tr > td {
+        border: none;
+    }
+
+    .messageGrid .message.myMessage {
+        float: right;
+        color: black;
+        background-color: #e4edfc;
+        border: none;
+    }
+
+        .messageGrid .message.myMessage:before {
+            left: auto;
+            right: -10px;
+            border-right: none;
+            border-left: 10px solid #e4edfc;
+        }
+
+    .messageGrid .gridResTitle {
+        display: none;
+    }
+
+    .messageGrid .myTableBody > tr {
+        border: none !important;
+    }
+
+.messDownloadFile {
+    display:inline-block;
+    margin-right:10px;
+    margin-left:10px;
+    color:#b70101;
 }

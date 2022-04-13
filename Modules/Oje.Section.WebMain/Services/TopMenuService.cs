@@ -6,11 +6,7 @@ using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.DB;
 using Oje.Section.WebMain.Models.View;
 using Oje.Section.WebMain.Services.EContext;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Services
 {
@@ -68,7 +64,7 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetById(int? id, int? siteSettingId)
+        public object GetById(long? id, int? siteSettingId)
         {
             return db.TopMenus
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)

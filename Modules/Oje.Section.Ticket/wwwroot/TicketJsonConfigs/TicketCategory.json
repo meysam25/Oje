@@ -1,0 +1,220 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "TicketCategoryGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('TicketCategoryAddGridModal', this)",
+              "type": "add",
+              "modalId": "TicketCategoryAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/Ticket/TicketCategory/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/Ticket/TicketCategory/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "TicketCategoryEditModal",
+                "url": "/Ticket/TicketCategory/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Ticket/TicketCategory/GetById\\', \\'TicketCategoryEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Ticket/TicketCategory/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ],
+          "detailes": {
+            "id": "TicketCategoryGridChild1",
+            "topActions": [
+              {
+                "title": "افزودن",
+                "onClick": "showModal('TicketCategoryAddGridModal', this)",
+                "type": "add",
+                "modalId": "TicketCategoryAddGridModal"
+              }
+            ],
+            "exportToExcelUrl": "/Ticket/TicketCategory/Export",
+            "showColumnConfigButton": true,
+            "actions": {
+              "delete": {
+                "url": "/Ticket/TicketCategory/Delete"
+              },
+              "cActions": [
+                {
+                  "type": "edit",
+                  "icon": "fa-pen",
+                  "prop": "id",
+                  "modalId": "TicketCategoryEditModal",
+                  "url": "/Ticket/TicketCategory/GetById",
+                  "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Ticket/TicketCategory/GetById\\', \\'TicketCategoryEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                }
+              ]
+            },
+            "key": "id",
+            "url": "/Ticket/TicketCategory/GetList",
+            "itemPerPage": 10,
+            "schema": {
+              "data": "data",
+              "total": "total"
+            },
+            "columns": [
+              {
+                "field": "row",
+                "caption": "ردیف",
+                "width": "50px",
+                "textAlign": "center"
+              },
+              {
+                "field": "title",
+                "caption": "عنوان",
+                "search": {
+                  "searchType": "text"
+                }
+              },
+              {
+                "field": "isActive",
+                "caption": "وضعیت",
+                "search": {
+                  "searchType": "dropdown",
+                  "url": "/Core/BaseData/Get/IsActive",
+                  "textField": "title",
+                  "valueField": "id"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "TicketCategoryAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب نمایش"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, '', '/Ticket/TicketCategory/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "TicketCategoryEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب نمایش"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, '', '/Ticket/TicketCategory/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

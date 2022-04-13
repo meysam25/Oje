@@ -9,6 +9,7 @@
       "wwwroot/js/jquery.toast.js",
       "wwwroot/js/select2.min.js",
       "wwwroot/js/seperatorPlugin.js",
+      "wwwroot/js/Website/onlineChat.js",
       "wwwroot/js/captchaPlugin.js",
       "wwwroot/js/treeView.js",
       "wwwroot/js/main.js",
@@ -35,6 +36,7 @@
       "wwwroot/js/jquery.toast.js",
       "wwwroot/js/select2.min.js",
       "wwwroot/js/seperatorPlugin.js",
+      "wwwroot/js/Website/onlineChat.js",
       "wwwroot/js/captchaPlugin.js",
       "wwwroot/js/main.js",
       "wwwroot/js/validation.js",
@@ -183,7 +185,8 @@
       "wwwroot/css/dropdown.css",
       "wwwroot/css/cImage.css",
       "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css",
-      "wwwroot/css/Website/MainPage/inquirySection.css"
+      "wwwroot/css/Website/MainPage/inquirySection.css",
+      "wwwroot/css/Website/onlineChat.css"
     ],
     "minify": {
       "enabled": true,
@@ -208,7 +211,8 @@
       "wwwroot/css/stepWizard.css",
       "wwwroot/css/validation.css",
       "wwwroot/css/dropdown.css",
-      "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css"
+      "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css",
+      "wwwroot/css/Website/onlineChat.css"
     ],
     "minify": {
       "enabled": true,

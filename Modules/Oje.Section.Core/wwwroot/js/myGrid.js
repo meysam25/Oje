@@ -1,6 +1,9 @@
 ﻿
 $.fn.initMyGrid = function (option) {
-
+    if (option.nlevel) {
+        option.detailes = JSON.parse(JSON.stringify(option));
+        option.detailes.id = option.detailes.id + "1";
+    }
     var templateFunctions = {
         getGridHeaderCellTemplateStyle: function (col) {
             var result = '';
@@ -583,7 +586,9 @@ $.fn.initMyGrid = function (option) {
         }
 
         curElement.expandDetailes = function (currButton) {
+            
             if ($(currButton).hasClass('fa-plus-square')) {
+                this.closeAllExpandButton(currButton);
                 $(currButton).removeClass('fa-plus-square');
                 $(currButton).addClass('fa-minus-square');
                 var curTr = $(currButton).closest('tr');
@@ -599,6 +604,16 @@ $.fn.initMyGrid = function (option) {
                 var curTr = $(currButton).closest('tr');
                 curTr.next().remove();
             }
+        }
+
+        curElement.closeAllExpandButton = function (currButton)
+        {
+            $(currButton).closest('.myTableBody').find('> tr > td > .fa-minus-square').each(function ()
+            {
+                if ($(this)[0] != $(currButton)[0]) {
+                    $(this).click();
+                }
+            });
         }
 
         curElement.bindData = function (res) {

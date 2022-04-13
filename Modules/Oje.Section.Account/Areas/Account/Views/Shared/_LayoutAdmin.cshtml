@@ -23,6 +23,12 @@
     <script asp-append-version="true" src="/Modules/Account/js/Account.min.js.gz"></script>
 
     <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + currSiteSetting.Image96)">
+    <script>
+        @{
+            ViewContext.Writer.Write("var isUserLogin = " +( Context.GetLoginUser()?.UserId != null ? "true" : "false"));
+        }
+
+    </script>
 </head>
 <body class="makeRTL">
     <div class="mainLoaderForAdminArea">
