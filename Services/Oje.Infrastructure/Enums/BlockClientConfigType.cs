@@ -74,6 +74,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "بارگزاری فایل برای ادمین برای چت")]
         UploadFileForAdmin = 34,
         [Display(Name = "ارسال پیام برای ادمین برای چت")]
-        SendMessageForAdmin = 35
+        SendMessageForAdmin = 35,
+        [Display(Name = "عضویت برای وب نوتیفیکیشن")]
+        ExternalNotificationServicePushSubscription = 36
     }
 }

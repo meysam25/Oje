@@ -606,6 +606,10 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "کاربر وب سایت لاگین نمی باشد")]
         Website_User_Is_Not_Login = 297,
         [Display(Name = "جهت دریافت فایل از ادمین باید لاگین کنید")]
-        Website_User_For_Recive_File_From_Admin_Need_To_Be_Login = 298
+        Website_User_For_Recive_File_From_Admin_Need_To_Be_Login = 298,
+        [Display(Name = "لطفا کلید عمومی را وارد کنید")]
+        Please_Enter_Public_Key = 299,
+        [Display(Name = "لطفا کلید خصوصی را وارد کنید")]
+        Please_Enter_Private_Key = 300
     }
 }

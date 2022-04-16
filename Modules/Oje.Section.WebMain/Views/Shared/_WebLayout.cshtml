@@ -283,7 +283,7 @@
             </section>
         </footer>
     </div>
-    <script src="/Modules/Core/js/registerServices.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
+    <script src="/registerServices.min.js?v=@(GlobalConfig.GetAppVersion())"></script>
     <script>
         bindFooterExteraLinks();
         bindFooterExteraLinkGroups();
@@ -304,11 +304,11 @@
         }
 
         $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
-        localStorage.clear();
+        //localStorage.clear();
         @{
             if (Context.Request.IsHttps)
             {
-                ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+               // ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
             }
         }
     </script>

@@ -36,6 +36,9 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<SectionCategorySection> SectionCategorySections { get; set; }
         public DbSet<ControllerCategory> ControllerCategories { get; set; }
         public DbSet<ControllerCategoryController> ControllerCategoryControllers { get; set; }
+        public DbSet<ExternalNotificationServiceConfig> ExternalNotificationServiceConfigs { get; set; }
+        public DbSet<ExternalNotificationServicePushSubscription> ExternalNotificationServicePushSubscriptions { get; set; }
+        public DbSet<ExternalNotificationServicePushSubscriptionError> ExternalNotificationServicePushSubscriptionErrors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

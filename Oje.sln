@@ -85,6 +85,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.RegisterForm", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.Ticket", "Modules\Oje.Section.Ticket\Oje.Section.Ticket.csproj", "{D2EC2E59-6E4F-4F97-9323-078D74C069BD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Worker.ExternalNotificationService", "Workers\Oje.Worker.ExternalNotificationService\Oje.Worker.ExternalNotificationService.csproj", "{2E99DFFA-DC5B-4D8F-9D37-DC81A09B24D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,6 +245,10 @@ Global
 		{D2EC2E59-6E4F-4F97-9323-078D74C069BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2EC2E59-6E4F-4F97-9323-078D74C069BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2EC2E59-6E4F-4F97-9323-078D74C069BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E99DFFA-DC5B-4D8F-9D37-DC81A09B24D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E99DFFA-DC5B-4D8F-9D37-DC81A09B24D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E99DFFA-DC5B-4D8F-9D37-DC81A09B24D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E99DFFA-DC5B-4D8F-9D37-DC81A09B24D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -285,6 +291,7 @@ Global
 		{FCA77596-F226-433E-A86B-A0A1D4F3FC4D} = {C1723884-F4B8-44A9-AA12-8022348CCDCE}
 		{F0F3E085-DDFB-49E2-99DC-083A4E578327} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
 		{D2EC2E59-6E4F-4F97-9323-078D74C069BD} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
+		{2E99DFFA-DC5B-4D8F-9D37-DC81A09B24D8} = {C1723884-F4B8-44A9-AA12-8022348CCDCE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5BEE9DD2-169F-4F13-842E-FBA0D3C46071}

@@ -9,5 +9,6 @@ namespace Oje.AccountService.Interfaces
         void UpdateSiteSettings();
         object GetManifest();
         string GetMainService();
+        string GetRegisterServices();
     }
 }

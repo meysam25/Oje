@@ -38,6 +38,21 @@ namespace Oje.AccountService
             services.AddScoped<ISectionCategoryService, SectionCategoryService>();
             services.AddScoped<IControllerCategoryService, ControllerCategoryService>();
             services.AddScoped<IControllerService, ControllerService>();
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
+            services.AddScoped<IExternalNotificationServiceConfigService, ExternalNotificationServiceConfigService>();
+            services.AddScoped<IExternalNotificationServicePushSubscriptionService, ExternalNotificationServicePushSubscriptionService>();
+            services.AddScoped<IExternalNotificationServicePushSubscriptionErrorService, ExternalNotificationServicePushSubscriptionErrorService>();
+        }
+
+        public static void ConfigForWorker(IServiceCollection services)
+        {
+
+            services.AddDbContext<AccountDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => { b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery); b.UseNetTopologySuite(); }), ServiceLifetime.Singleton);
+
+            services.AddSingleton<IPushNotificationService, PushNotificationService>();
+            services.AddSingleton<IExternalNotificationServiceConfigService, ExternalNotificationServiceConfigService>();
+            services.AddSingleton<IExternalNotificationServicePushSubscriptionService, ExternalNotificationServicePushSubscriptionService>();
+            services.AddSingleton<IExternalNotificationServicePushSubscriptionErrorService, ExternalNotificationServicePushSubscriptionErrorService>();
         }
     }
 }

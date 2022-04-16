@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Oje.AccountService.Services.EContext;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
@@ -19,15 +17,21 @@ namespace Oje.AccountService.Services
     {
         readonly AccountDBContext db = null;
         readonly IHttpContextAccessor httpContextAccessor = null;
+        readonly IExternalNotificationServiceConfigService ExternalNotificationServiceConfigService = null;
+
+
         static List<SiteSetting> SS { get; set; }
         static object lockObject = new object();
+
         public SiteSettingService(
                 AccountDBContext db,
-                IHttpContextAccessor httpContextAccessor
+                IHttpContextAccessor httpContextAccessor,
+                IExternalNotificationServiceConfigService ExternalNotificationServiceConfigService
             )
         {
             this.db = db;
             this.httpContextAccessor = httpContextAccessor;
+            this.ExternalNotificationServiceConfigService = ExternalNotificationServiceConfigService;
         }
 
         public object GetightList()
@@ -67,6 +71,7 @@ namespace Oje.AccountService.Services
             var foundSetting = GetSiteSetting();
             if (foundSetting == null)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+            var getActiveNotificationConfig = ExternalNotificationServiceConfigService.GetActiveConfig(foundSetting?.Id);
 
             return new
             {
@@ -78,6 +83,7 @@ namespace Oje.AccountService.Services
                 theme_color = "#db4938",
                 orientation = "portrait-primary",
                 scope = "/",
+                gcm_sender_id = getActiveNotificationConfig?.PublicKey,
                 description = foundSetting.SeoMainPage,
                 icons = new List<object>()
                 {
@@ -112,7 +118,7 @@ namespace Oje.AccountService.Services
 
             result += "const assets = [";
             result += "'/',";
-            result += "'/Modules/Core/css/master.min.css.gz?v="+ curVer + "',";
+            result += "'/Modules/Core/css/master.min.css.gz?v=" + curVer + "',";
             result += "'/Modules/Core/css/websiteCore.min.css.gz?v=" + curVer + "',";
             result += "'/Modules/Core/css/mainPage.min.css.gz?v=" + curVer + "',";
             result += "'/Modules/Core/js/jquery.min.js.gz?v=" + curVer + "',";
@@ -155,6 +161,136 @@ namespace Oje.AccountService.Services
                   );
                 });
             ";
+
+            result += @"
+                self.addEventListener('notificationclick', function(e) {
+                    let url = e.notification.data.url;
+                    var notification = e.notification;
+                    var action = e.action;
+                    if (action === 'close') {
+                        notification.close();
+                    } else {
+                        e.waitUntil(
+                            clients.matchAll({type: 'window'}).then( windowClients => {
+                                for (var i = 0; i < windowClients.length; i++) {
+                                    var client = windowClients[i];
+                                    if (client.url === url && 'focus' in client) {
+                                        return client.focus();
+                                    }
+                                }
+                                if (clients.openWindow) {
+                                    return clients.openWindow(url);
+                                }
+                            })
+                        );
+                        notification.close();
+                    }
+                });
+            ";
+
+            //result += "setInterval(function() {self.registration.showNotification('PWA Notification!', { body: 'Testing Our Notification', icon: './bell.png',data: {url: 'https://localhost:5001/Contract/Index'}});}, 20000);";
+
+            result += @"
+                self.addEventListener('push', function(e) {
+                if (!(self.Notification && self.Notification.permission === 'granted')) {
+                    return;
+                }
+                  var data = e.data.json();
+
+                    var options = {
+                        body: data.body,
+                        icon: 'images/icon-512x512.png',
+                        vibrate: [100, 50, 100],
+                        data: {
+			                url: data.url 
+                        },
+                        actions: [
+                            {
+                                action: 'explore', title: 'Go interact with this!',
+                                icon: 'images/checkmark.png'
+                            },
+                            {
+                                action: 'close', title: 'Ignore',
+                                icon: 'images/red_x.png'
+                            },
+                        ]
+                    };
+                    e.waitUntil(
+                        self.registration.showNotification(data.title, options)
+                    );
+                });
+            ";
+
+            //result += "self.showNotification('PWA Notification!', { body: 'Testing Our Notification', icon: './bell.png',data: {url: 'https://google.com'}});";
+
+
+            return result;
+        }
+
+        public string GetRegisterServices()
+        {
+            int? siteSettingId = GetSiteSetting()?.Id;
+            var getActiveNotificationConfig = ExternalNotificationServiceConfigService.GetActiveConfig(siteSettingId);
+
+            string result = @"
+            function subscribeUser() {
+            Notification.requestPermission(status => {
+                if (status === 'granted') {
+                } else {
+                }
+            });
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(function (reg) {
+            
+                    reg.pushManager.subscribe({
+                        userVisibleOnly: true
+                        " + (getActiveNotificationConfig != null ? ",applicationServerKey: '" + getActiveNotificationConfig.PublicKey + "'" : "") + @"
+                    }).then(function (sub) {
+                        var postFormData = new FormData();
+                        postFormData.append('auth', arrayBufferToBase64(sub.getKey('auth')));
+                        postFormData.append('p256DH', arrayBufferToBase64(sub.getKey('p256dh')));
+                        postFormData.append('endpoint', sub.endpoint);
+                        postForm('/Home/PushNotificationSubscribe', postFormData);
+                    }).catch(function (e) {
+                        if (Notification.permission === 'denied') {
+                            console.warn('Permission for notifications was denied');
+                        } else {
+                            console.error('Unable to subscribe to push', e);
+                        }
+                    });
+                });
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker
+                        .register('/serviceWorker.js?v=" + GlobalConfig.GetAppVersion() + @"')
+                        .then(reg => {
+                            reg.pushManager.getSubscription().then(function (sub) {
+                                if (sub === null) {
+                                    // Update UI to ask user to register for Push
+                                    console.log('Not subscribed to push service!');
+                                } else {
+                                    
+                                    //sub.unsubscribe();
+                                    // We have a subscription, update the database
+                                }
+                            });
+                        })
+                        .catch(err => console.log('service worker not registered', err));
+                });
+            }
+        }
+        function arrayBufferToBase64(buffer) {
+            var binary = '';
+            var bytes = new Uint8Array(buffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+        subscribeUser();
+            
+";
+
 
 
             return result;

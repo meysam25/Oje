@@ -51,16 +51,6 @@
     }
   },
   {
-    "outputFileName": "wwwroot/Core/js/registerServices.min.js",
-    "inputFiles": [
-      "wwwroot/js/Website/registerServices.js"
-    ],
-    "minify": {
-      "enabled": true,
-      "renameLocals": true
-    }
-  },
-  {
     "outputFileName": "wwwroot/Core/js/op.min.js",
     "inputFiles": [
       "wwwroot/js/OpenLayers.js"

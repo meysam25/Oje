@@ -1,12 +1,8 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Interfac;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
@@ -30,6 +26,9 @@ namespace Oje.AccountService.Models.DB
         [MaxLength(200)]
         public string TargetPageLink { get; set; }
         public DateTime? ViewDate { get; set; }
+        public DateTime? LastTryDate { get; set; }
+        public bool? IsSuccess { get; set; }
+        public int? CountTry { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

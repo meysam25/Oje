@@ -26,5 +26,13 @@ namespace Oje.Section.Core.Areas.Core.Controllers
             Response.Headers["Cache-Control"] = new TimeSpan(365, 0, 0, 0).TotalSeconds.ToString("0");
             return Content(SiteSettingService.GetMainService());
         }
+
+        [Route("registerServices.min.js")]
+        public IActionResult GetRegisterServices()
+        {
+            Response.ContentType = "text/javascript";
+            Response.Headers["Cache-Control"] = new TimeSpan(365, 0, 0, 0).TotalSeconds.ToString("0");
+            return Content(SiteSettingService.GetRegisterServices());
+        }
     }
 }

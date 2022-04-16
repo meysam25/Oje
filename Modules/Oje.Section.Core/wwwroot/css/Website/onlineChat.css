@@ -78,7 +78,7 @@
     line-height: 54px;
     padding-right: 5px;
     display: inline-block;
-    width: 200px;
+    width: calc(100% - 100px);
     overflow: hidden;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
@@ -113,7 +113,9 @@
 .onlineChatInputs {
     padding: 10px;
     background-color: white;
-    display: block;
+    display: flex;
+    -webkit-align-items: end;
+    align-items: end;
 }
 
 .onlineChatInputInner {
@@ -121,7 +123,9 @@
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    display: block;
+    display: inline-block;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
     overflow: hidden;
     padding: 3px;
     display: flex;
@@ -137,7 +141,7 @@
     height: 300px;
 }
 
-.ocSendButton {
+.ocSendButton, .messageButton {
     width: 25px;
     height: 25px;
     color: white;
@@ -157,8 +161,19 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+    margin-right:2px;
 }
 
+    .messageButton {
+        background-color:transparent;
+        color:#050505;
+    }
+.ocSendButton{
+    font-size:1.6em;
+    width:30px;
+    height:30px;
+    line-height:30px;
+}
 .fileUploadCl {
     display: block;
     height: 38px;
@@ -176,7 +191,7 @@
     }
 
 .onlineChatInputInner > .ocUserInputTextBox {
-    width: calc(100% - 30px);
+    width: calc(100% - 60px);
     outline: none;
     border: none;
     line-height: 26px;
@@ -549,13 +564,22 @@
 .makeAdminMessage .onDownloadButton, .makeAdminMessage .onDownloadButton:hover {
     color: #252525;
 }
+.hideMicNow{
+    display:none;
+}
 
 @media (max-width: 450px) {
     .onlineChat {
-        height: calc(100vh - 60px);
-        width: 100vw;
-        bottom: 0px;
+        height: auto;
+        width: auto;
+        top: 0px;
         right: 0px;
+        left: 0px;
+        bottom: 0px;
         background-color: white;
+        -moz-border-radius: 0px;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+        overflow: hidden;
     }
 }

@@ -7,7 +7,7 @@ function initOnlineChat(id, isAdmin) {
     <span class="onlineChatShadowBox" ></span>
     <span class="onlineChatHeader">
         <span class="onlineChatHeaderMenueButton" ><span></span><span></span><span></span></span>
-        <span class="onlineChatHeaderTitleSection" >شرکت کارگزاری ستاد بیمه</span>
+        <span class="onlineChatHeaderTitleSection" ></span>
         <span class="onlineChatHeaderActionButtons" >
             <span class="fa fa-times onlineChatHeaderActionButtonClose" ></span>
         </span>
@@ -17,13 +17,16 @@ function initOnlineChat(id, isAdmin) {
     <span class="onlineChatInputs">
         <span class="onlineChatInputInner">
             <textarea placeholder="پیغام شما" maxlength="4000" class="ocUserInputTextBox"></textarea>
-            <span class="ocSendButton fa fa-microphone" ></span>
+            <span class="messageButton fa fa-paperclip" ></span>
+            <span class="messageButton fa fa-camera" ></span>
         </span>
+        <span style="margin-right:5px;" class="ocSendButton fa fa-microphone " ></span>
+
     </span>
     <span class="onlineChatMenue mainMenue" >
         <span class="onlineChatMenueItem enableDisableNotifiSound" ><span class="fa fa-volume-mute"></span>فعال کردن صدا</span>
         <span class="onlineChatMenueItem rigisterEmail" ><span class="fa fa-at"></span> ثبت ایمیل</span>
-        <span class="onlineChatMenueItem uploadNewFile" ><span class="fa fa-upload"></span>بارگزاری فایل</span>
+        /*<span class="onlineChatMenueItem uploadNewFile" ><span class="fa fa-upload"></span>بارگزاری فایل</span>*/
         <span class="onlineChatMenueItem sendMap" ><span class="fa fa-map-marker-alt"></span>ارسال نقشه</span>
     </span>
     <span class="onlineChatMenue emailMenue" >
@@ -77,7 +80,19 @@ function initOnlineChantJS(isAdmin, id) {
         initOnlineChantSocket(onlineChatObj, isAdmin);
         initOnlineChantInitAskForLoginMethods(onlineChatObj);
         initOnlineChantInitWhatToDoAfterUserLogin(onlineChatObj);
+
+        bindCompanyTitle(onlineChatObj);
     }
+}
+
+function bindCompanyTitle(onlineChatObj) {
+    postForm('/Home/GetCompanyTitle', new FormData(), function (res)
+    {
+        if (res && res.constructor == String) {
+            $(this.curObj).find('.onlineChatHeaderTitleSection').text(res);
+        }
+    }.bind({ curObj: onlineChatObj })
+    );
 }
 
 function initOnlineChantInitWhatToDoAfterUserLogin(onlineChatObj) {
@@ -361,9 +376,9 @@ function initOnlineChantSendMessage(onlineChatObj, isAdmin) {
     $(onlineChatObj).find('.ocUserInputTextBox').keyup(function () {
         var curValue = $(this).val();
         if (curValue) {
-            $(this).closest('.onlineChatInputInner').find('.ocSendButton').removeClass('fa-microphone').addClass('fa-arrow-up');
+            $(this).closest('.onlineChatInputs').find('.ocSendButton').removeClass('fa-microphone').addClass('fa-arrow-up');
         } else {
-            $(this).closest('.onlineChatInputInner').find('.ocSendButton').removeClass('fa-arrow-up').addClass('fa-microphone');
+            $(this).closest('.onlineChatInputs').find('.ocSendButton').removeClass('fa-arrow-up').addClass('fa-microphone');
         }
     });
 
@@ -548,7 +563,7 @@ function initAutoHeightForInputText(onlineChatObj) {
     var sQuiry = $(onlineChatObj).find('.ocUserInputTextBox');
     sQuiry[0].inputAutoHeightId = newId;
     var inputWidth = sQuiry.width();
-    $('body').append('<div style="height:0px;width:0px;overflow:hidden;"><div style="padding:2px;line-height:26px;width:' + inputWidth + 'px" id="' + newId + '"></div></div>');
+    $('body').append('<div style="height:0px;width:0px;overflow:hidden;"><div style="-ms-word-break: break-all;word-break: break-all;padding:2px;line-height:26px;width:' + inputWidth + 'px" id="' + newId + '"></div></div>');
     sQuiry.keyup(function (e) {
         var curValue = $(this).val();
         curValue = curValue + e.key;
@@ -839,6 +854,13 @@ function initOnlineChantUploadNewFile(onlineChatObj, isAdmin) {
         else
             setTimeout(function () { this.curThis.openMainMenue('.uploadFile'); }.bind({ curThis: this }), 200);
     }
+    $(onlineChatObj).find('.fa-camera').click(function ()
+    {
+        $(this).closest('.onlineChat')[0].openUploadFile();
+    });
+    $(onlineChatObj).find('.fa-paperclip').click(function () {
+        $(this).closest('.onlineChat')[0].openUploadFile();
+    });
     onlineChatObj.uploadFileForAdmin = function (userid) {
         var formData = this.pendingUploadFile;
         if (formData) {
@@ -852,6 +874,7 @@ function initOnlineChantUploadNewFile(onlineChatObj, isAdmin) {
             });
         }
     }
+
     onlineChatObj.addFile = function (msgObj) {
         $(this).find('.onlineChatMessages').append(
             `
@@ -865,7 +888,7 @@ function initOnlineChantUploadNewFile(onlineChatObj, isAdmin) {
     $(onlineChatObj).find('.uploadNewFile').click(function () { $(this).closest('.onlineChat')[0].openUploadFile(); });
     $(onlineChatObj).find('.uploadFile').find('.moveBackButtonForRigisterMobile').click(function () {
         $(this).closest('.onlineChat')[0].closeMainMenue('.uploadFile');
-        setTimeout(function () { this.curThis.openMainMenue('.mainMenue'); }.bind({ curThis: $(this).closest('.onlineChat')[0] }), 200);
+        //setTimeout(function () { this.curThis.openMainMenue('.mainMenue'); }.bind({ curThis: $(this).closest('.onlineChat')[0] }), 200);
     });
     $(onlineChatObj).find('.uploadFile').find('input[type=file]').change(function () {
         var formData = getFormData($(this).closest('.uploadFile'));
@@ -882,7 +905,6 @@ function initOnlineChantUploadNewFile(onlineChatObj, isAdmin) {
             onlineChatObj.getUserIdAndUploadFile(formData);
         }
     });
-
 }
 
 function initOnlineChantNotification(onlineChatObj) {

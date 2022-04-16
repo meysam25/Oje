@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
+using Oje.AccountService.Models.View;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -25,6 +26,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         readonly IOurObjectService OurObjectService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+        readonly IPushNotificationService PushNotificationService = null;
+        readonly IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService = null;
 
         public HomeController
             (
@@ -37,7 +40,9 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 ProposalFormService.Interfaces.IProposalFormService ProposalFormService,
                 IOurObjectService OurObjectService,
                 IUploadedFileService UploadedFileService,
-                IBlockAutoIpService BlockAutoIpService
+                IBlockAutoIpService BlockAutoIpService,
+                IPushNotificationService PushNotificationService,
+                IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService
             )
         {
             this.PropertyService = PropertyService;
@@ -50,6 +55,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.OurObjectService = OurObjectService;
             this.UploadedFileService = UploadedFileService;
             this.BlockAutoIpService = BlockAutoIpService;
+            this.PushNotificationService = PushNotificationService;
+            this.ExternalNotificationServicePushSubscriptionService = ExternalNotificationServicePushSubscriptionService;
         }
 
         [Route("/")]
@@ -71,6 +78,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                    Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
                    null
                    );
+
+            //PushNotificationService.Send();
 
             return View();
         }
@@ -293,6 +302,23 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 tempResult = GlobalConfig.FileAccessHandlerUrl + tempResult;
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.UploadVoiceForOnlineChat, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
+        public ActionResult PushNotificationSubscribe([FromForm] ExternalNotificationServicePushSubscriptionCreateVM input)
+        {
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ExternalNotificationServicePushSubscription, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            ExternalNotificationServicePushSubscriptionService.Create(input, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ExternalNotificationServicePushSubscription, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(true);
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpPost]
+        public ActionResult GetCompanyTitle()
+        {
+            return Content(SiteSettingService.GetSiteSetting()?.Title);
         }
     }
 }

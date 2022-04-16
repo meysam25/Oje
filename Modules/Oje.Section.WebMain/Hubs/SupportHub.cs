@@ -3,6 +3,7 @@ using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
+using Oje.JoinServices.Interfaces;
 using Oje.Section.WebMain.Hubs.Models;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Security.Interfaces;
@@ -18,18 +19,21 @@ namespace Oje.Section.WebMain.Hubs
         readonly IAutoAnswerOnlineChatMessageService AutoAnswerOnlineChatMessageService = null;
         readonly ISubscribeEmailService SubscribeEmailService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+        readonly IUserNotifierService UserNotifierService = null;
 
         public SupportHUb(
                 ISiteSettingService SiteSettingService,
                 IAutoAnswerOnlineChatMessageService AutoAnswerOnlineChatMessageService,
                 ISubscribeEmailService SubscribeEmailService,
-                IBlockAutoIpService BlockAutoIpService
+                IBlockAutoIpService BlockAutoIpService,
+                IUserNotifierService UserNotifierService
             )
         {
             this.SiteSettingService = SiteSettingService;
             this.AutoAnswerOnlineChatMessageService = AutoAnswerOnlineChatMessageService;
             this.SubscribeEmailService = SubscribeEmailService;
             this.BlockAutoIpService = BlockAutoIpService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public override Task OnConnectedAsync()
@@ -121,6 +125,7 @@ namespace Oje.Section.WebMain.Hubs
                 if (ssId.ToIntReturnZiro() > 0 && clientIp != null)
                 {
                     string adminsConnectionId = SupportUserInfo.AddUserMessage(message, ssId.ToIntReturnZiro(), Context.ConnectionId, clientIp, clientId.GetHashCode());
+                    UserNotifierService.Notify(null, UserNotificationType.NewOnlineMessageForAdmin, null, null, "پیام جدید", ssId, "/WebMainAdmin/OnlineSupport/Index" );
                     if (!string.IsNullOrEmpty(adminsConnectionId))
                     {
                         try

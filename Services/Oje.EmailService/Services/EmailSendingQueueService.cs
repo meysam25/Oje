@@ -6,11 +6,6 @@ using Oje.EmailService.Models.View;
 using Oje.EmailService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.EmailService.Services
 {
