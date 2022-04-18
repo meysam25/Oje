@@ -6,11 +6,6 @@ using Oje.Infrastructure.Services;
 using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Models.DB;
 using Oje.PaymentService.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {
@@ -19,15 +14,19 @@ namespace Oje.PaymentService.Services
         readonly PaymentDBContext db = null;
         readonly IProposalFilledFormService ProposalFilledFormService = null;
         readonly IBankAccountService BankAccountService = null;
+        readonly IWalletTransactionService WalletTransactionService = null;
+
         public BankAccountFactorService(
                 PaymentDBContext db,
                 IProposalFilledFormService ProposalFilledFormService,
-                IBankAccountService BankAccountService
+                IBankAccountService BankAccountService,
+                IWalletTransactionService WalletTransactionService
             )
         {
             this.db = db;
             this.BankAccountService = BankAccountService;
             this.ProposalFilledFormService = ProposalFilledFormService;
+            this.WalletTransactionService = WalletTransactionService;
         }
 
         public string Create(int? bankAccountId, PaymentFactorVM payModel, int? siteSettingId, long? loginUserId)
@@ -107,17 +106,20 @@ namespace Oje.PaymentService.Services
                 ;
         }
 
-        public void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo)
+        public void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo, int? siteSettingId)
         {
             if (foundAccount == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (string.IsNullOrEmpty(traceNo))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+           
             var foundItem = db.BankAccountFactors.Where(t => t.BankAccountId == foundAccount.BankAccountId && t.Type == foundAccount.Type && t.ObjectId == foundAccount.ObjectId && t.CreateDate == foundAccount.CreateDate).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (foundItem.Type == BankAccountFactorType.ProposalFilledForm)
                 ProposalFilledFormService.UpdateTraceCode(foundItem.ObjectId, traceNo);
+            else if (foundItem.Type == BankAccountFactorType.Wallet)
+                WalletTransactionService.Create(foundItem.Price, siteSettingId, foundItem.ObjectId, "افزایش موجودی", traceNo);
             else
                 throw BException.GenerateNewException(BMessages.No_Imprement_Yet);
 

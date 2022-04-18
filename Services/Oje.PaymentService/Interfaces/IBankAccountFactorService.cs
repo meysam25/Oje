@@ -13,7 +13,7 @@ namespace Oje.PaymentService.Interfaces
     {
         BankAccountFactor GetById(string bankAccountFactorId, int? siteSettingId);
         bool ExistBy(string traceNo);
-        void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo);
+        void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo, int? siteSettingId);
         string Create(int? bankAccountId, PaymentFactorVM payModel, int? siteSettingId, long? loginUserId);
         List<ProposalFilledFormPaymentVM> GetListBy(BankAccountFactorType type, long objectId, int? siteSettingId);
     }

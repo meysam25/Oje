@@ -199,19 +199,19 @@ namespace Oje.AccountService.Services
 
                     var options = {
                         body: data.body,
-                        icon: 'images/icon-512x512.png',
+                        icon: '/Modules/Assets/support.png',
                         vibrate: [100, 50, 100],
                         data: {
 			                url: data.url 
                         },
                         actions: [
                             {
-                                action: 'explore', title: 'Go interact with this!',
-                                icon: 'images/checkmark.png'
+                                action: 'explore', title: 'مشاهده',
+                                icon: '/Modules/Assets/view.png'
                             },
                             {
-                                action: 'close', title: 'Ignore',
-                                icon: 'images/red_x.png'
+                                action: 'close', title: 'بستن',
+                                icon: '/Modules/Assets/close.png'
                             },
                         ]
                     };

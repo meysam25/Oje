@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
-using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
@@ -9,8 +8,6 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -101,6 +98,11 @@ namespace Oje.ProposalFormService.Services
         public List<int> GetUserCompanies(long? userId)
         {
             return db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserCompanies).Select(t => t.CompanyId).ToList();
+        }
+
+        public long GetUserWalletBalance(long? userId, int? siteSettingId)
+        {
+            return db.Users.Where(t => t.SiteSettingId == siteSettingId && t.Id == userId && t.IsActive == true && t.IsDelete != true).SelectMany(t => t.WalletTransactions).Sum(t => t.Price);
         }
 
         private void createForProposalFormValidation(User newUser)

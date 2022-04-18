@@ -19,6 +19,7 @@ namespace Oje.Infrastructure.Models.Pdf.ProposalFilledForm
         public List<ProposalFilledFormPdfGroupVM> ProposalFilledFormPdfGroupVMs { get; set; }
         public string companyTitle { get; set; }
         public string companyImage { get; set; }
+        public long loginUserWalletBalance { get; set; }
 
     }
 }

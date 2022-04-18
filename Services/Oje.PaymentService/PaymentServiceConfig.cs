@@ -1,15 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Oje.FileService;
 using Oje.Infrastructure;
 using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Services;
 using Oje.PaymentService.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService
 {
@@ -29,6 +23,7 @@ namespace Oje.PaymentService
             services.AddScoped<ISizpayCryptoService, SizpayCryptoService>();
             services.AddScoped<IBankAccountDetectorService, BankAccountDetectorService>();
             services.AddScoped<IProposalFilledFormService, ProposalFilledFormService>();
+            services.AddScoped<IWalletTransactionService, WalletTransactionService>();
         }
     }
 }

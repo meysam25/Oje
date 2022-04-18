@@ -44,5 +44,6 @@ namespace Oje.AccountService.Interfaces
         object GetUserInfoBy(long? userId);
         void CreateTempTable();
         PPFUserTypes GetUserTypePPFInfo(long? loginUserId, ProposalFilledFormUserType resultType);
+        bool isWebsiteUser(long userId);
     }
 }

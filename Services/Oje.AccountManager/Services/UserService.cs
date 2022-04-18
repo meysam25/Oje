@@ -86,7 +86,13 @@ namespace Oje.AccountService.Services
             else if (foundUser != null && foundUser.Password == input.password.Encrypt())
             {
                 setCookieForThisUser(foundUser, input);
-                return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name, data = new { stepId = "rigLogStep", hideModal = true, userfullname = (!string.IsNullOrEmpty(foundUser.Firstname) ? (foundUser.Firstname + " " + foundUser.Lastname) : foundUser.Username) } };
+                return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name, data = new 
+                { 
+                    stepId = "rigLogStep", 
+                    hideModal = true, 
+                    userfullname = (!string.IsNullOrEmpty(foundUser.Firstname) ? (foundUser.Firstname + " " + foundUser.Lastname) : foundUser.Username),
+                    isUser = foundUser.UserRoles.Any(tt => tt.Role != null && tt.Role.Name.ToLower() == "user")
+                } };
             }
 
             if (foundUser != null)
@@ -1345,6 +1351,11 @@ namespace Oje.AccountService.Services
                     ProposalFilledFormUserType = resultType
                 })
                 .FirstOrDefault();
+        }
+
+        public bool isWebsiteUser(long userId)
+        {
+            return db.Users.Any(t => t.UserRoles.Any(tt => tt.Role.Name.ToLower() == "user"));
         }
     }
 }

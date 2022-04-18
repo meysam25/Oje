@@ -2,11 +2,6 @@
 using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Models.DB;
 using Oje.PaymentService.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {
@@ -21,6 +16,12 @@ namespace Oje.PaymentService.Services
         public User GetBy(long? loginUserId, int? siteSettingId)
         {
             return db.Users.Where(t => t.Id == loginUserId && t.SiteSettingId == siteSettingId).AsNoTracking().FirstOrDefault();
+        }
+
+        public long GetMainPaymentUserId(int? siteSettingId)
+        {
+            var parentUserId = db.Users.Where(t => t.ParentId == null).Select(t => t.Id).FirstOrDefault();
+            return db.Users.Where(t => t.ParentId == parentUserId && t.SiteSettingId == siteSettingId).OrderBy(t => t.Id).Select(t => t.Id).FirstOrDefault();
         }
     }
 }

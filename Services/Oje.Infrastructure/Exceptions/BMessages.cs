@@ -610,6 +610,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا کلید عمومی را وارد کنید")]
         Please_Enter_Public_Key = 299,
         [Display(Name = "لطفا کلید خصوصی را وارد کنید")]
-        Please_Enter_Private_Key = 300
+        Please_Enter_Private_Key = 300,
+        [Display(Name = "موجودی کیف پول کافی نمی باشد")]
+        Inventory_Is_Not_Enough = 301
     }
 }

@@ -5,11 +5,6 @@ using Oje.Infrastructure.Models;
 using Oje.Security.Interfaces;
 using Oje.Security.Models.DB;
 using Oje.Security.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Security.Services
 {
@@ -54,7 +49,7 @@ namespace Oje.Security.Services
                 if (!db.BlockAutoIps
                         .Any(
                             t => t.Ip4 == ipSections.Ip4 && t.Ip3 == ipSections.Ip3 && t.Ip2 == ipSections.Ip2 && t.Ip1 == ipSections.Ip1 &&
-                            t.BlockClientConfigType == type && t.CreateDate == now
+                            t.BlockClientConfigType == type && t.CreateDate == now && t.BlockAutoIpAction == exeType
                             )
                         )
                 {
@@ -85,7 +80,7 @@ namespace Oje.Security.Services
                 .Where(t =>
                         t.SiteSettingId == siteSettingId && t.BlockAutoIpAction == exeType &&
                         t.Ip1 == ipSections.Ip1 && t.Ip2 == ipSections.Ip2 && t.Ip3 == ipSections.Ip3 && t.Ip4 == ipSections.Ip4 &&
-                        t.CreateYear == dtKnow.Year && t.CreateMonth == dtKnow.Month && t.CreateDay == dtKnow.Day
+                        t.CreateYear == dtKnow.Year && t.CreateMonth == dtKnow.Month && t.CreateDay == dtKnow.Day && t.BlockClientConfigType == type
                     )
                 .Count();
             if (countExist > maxFirewall)

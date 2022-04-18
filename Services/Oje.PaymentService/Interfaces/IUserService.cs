@@ -10,5 +10,6 @@ namespace Oje.PaymentService.Interfaces
     public interface IUserService
     {
         User GetBy(long? loginUserId, int? siteSettingId);
+        long GetMainPaymentUserId(int? siteSettingId);
     }
 }

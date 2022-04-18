@@ -18,6 +18,7 @@ namespace Oje.PaymentService.Models.DB
         public long Price { get; set; }
         [MaxLength(50)]
         public string PaymentTraceCode { get; set; }
+        public bool IsDelete { get; set; }
         public int SiteSettingId { get; set; }
 
     }

@@ -4,25 +4,12 @@
       "loadUrl": "/WebMainAdmin/OurPride/Get",
       "title": "افتخارات ما صفحه اصلی",
       "ctrls": [
-        {
-          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
-          "name": "image1",
-          "type": "file",
-          "label": "لوگوی 1 (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg"
-        },
+
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
           "name": "title1",
           "type": "text",
           "label": "زیرعنوان لوگوی 1"
-        },
-        {
-          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
-          "name": "image2",
-          "type": "file",
-          "label": "لوگوی 2 (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg"
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -32,23 +19,9 @@
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
-          "name": "image3",
-          "type": "file",
-          "label": "لوگوی 3 (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg"
-        },
-        {
-          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
           "name": "title3",
           "type": "text",
           "label": "زیرعنوان لوگوی 3"
-        },
-        {
-          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
-          "name": "image4",
-          "type": "file",
-          "label": "لوگوی 4 (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg"
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -61,6 +34,38 @@
           "name": "title",
           "type": "text",
           "label": "عنوان"
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "type": "empty"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "image1",
+          "type": "file",
+          "label": "لوگوی 1 (80*80)",
+          "acceptEx": ".jpg,.png,.jpeg"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "image2",
+          "type": "file",
+          "label": "لوگوی 2 (80*80)",
+          "acceptEx": ".jpg,.png,.jpeg"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "image3",
+          "type": "file",
+          "label": "لوگوی 3 (80*80)",
+          "acceptEx": ".jpg,.png,.jpeg"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "image4",
+          "type": "file",
+          "label": "لوگوی 4 (80*80)",
+          "acceptEx": ".jpg,.png,.jpeg"
         },
         {
           "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",

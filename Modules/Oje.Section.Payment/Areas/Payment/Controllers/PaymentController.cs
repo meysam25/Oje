@@ -40,7 +40,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
                 throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
 
             var allUserGW = BankAccountService.GetAllAcountForPayment(payModel.userId, SiteSettingService.GetSiteSetting()?.Id);
-            if(allUserGW == null || allUserGW.Count == 0)
+            if (allUserGW == null || allUserGW.Count == 0)
                 throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
             ViewBag.status = status;
             ViewBag.Title = "پرداخت فاکتور به مبلغ " + payModel.price.ToString("###,###") + " ریال";
@@ -55,7 +55,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             if (payModel == null || payModel.price <= 0 || string.IsNullOrEmpty(payModel.returnUrl) || payModel.objectId <= 0)
                 throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
 
-            var createdFactorId = BankAccountFactorService.Create(id,payModel, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
+            var createdFactorId = BankAccountFactorService.Create(id, payModel, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
 
             return RedirectToAction("SelectGW", "Payment", new { area = "Payment", factorId = createdFactorId });
         }

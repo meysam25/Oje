@@ -4,14 +4,6 @@
       "grids": [
         {
           "id": "TicketUserAdminGrid",
-          "topActions": [
-            {
-              "title": "افزودن",
-              "onClick": "showModal('TicketUserAdminAddGridModal', this)",
-              "type": "add",
-              "modalId": "TicketUserAdminAddGridModal"
-            }
-          ],
           "actions": {
             "cActions": [
               {

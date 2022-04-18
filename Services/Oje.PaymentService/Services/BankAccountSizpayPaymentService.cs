@@ -4,13 +4,8 @@ using Oje.Infrastructure;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.PaymentService.Interfaces;
-using Oje.PaymentService.Models.View;
 using Oje.PaymentService.Models.View.SizPay;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {
@@ -22,6 +17,9 @@ namespace Oje.PaymentService.Services
         readonly ISizpayCryptoService SizpayCryptoService = null;
         readonly IUserService UserService = null;
         readonly IHttpClientFactory HttpClientFactory = null;
+
+        static object lockObj = null;
+
         public BankAccountSizpayPaymentService(
                 IBankAccountSizpayService BankAccountSizpayService,
                 IBankAccountFactorService BankAccountFactorService,
@@ -69,12 +67,17 @@ namespace Oje.PaymentService.Services
                                 {
                                     if (confirmResult.ResCod == 0)
                                     {
-                                        if(confirmResult.Amount == foundFactor.Price && !string.IsNullOrEmpty(confirmResult.TraceNo) && confirmResult.InvoiceNo == input.InvoiceNo)
+                                        if (confirmResult.Amount == foundFactor.Price && !string.IsNullOrEmpty(confirmResult.TraceNo) && confirmResult.InvoiceNo == input.InvoiceNo)
                                         {
-                                            if(!BankAccountFactorService.ExistBy(confirmResult.TraceNo))
+                                            if (lockObj == null)
+                                                lockObj = new object();
+                                            lock(lockObj)
                                             {
-                                                BankAccountFactorService.UpdatePaymentInfor(foundFactor, confirmResult.TraceNo);
-                                                result = foundFactor.TargetLink;
+                                                if (!BankAccountFactorService.ExistBy(confirmResult.TraceNo))
+                                                {
+                                                    BankAccountFactorService.UpdatePaymentInfor(foundFactor, confirmResult.TraceNo, siteSettingId);
+                                                    result = foundFactor.TargetLink;
+                                                }
                                             }
                                         }
                                     }

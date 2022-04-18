@@ -250,6 +250,19 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "type": "empty"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "nationalcodeImage",
               "type": "file",
               "label": "تصویر کارت ملی"
@@ -271,15 +284,6 @@
               "name": "bimeImage",
               "type": "file",
               "label": "تصویر بیمه"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "isActive",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/IsActive",
-              "label": "وضعیت"
             }
           ],
           "actions": [
@@ -397,6 +401,19 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "type": "empty"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "nationalcodeImage",
               "type": "file",
               "label": "تصویر کارت ملی"
@@ -418,15 +435,6 @@
               "name": "bimeImage",
               "type": "file",
               "label": "تصویر بیمه"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "isActive",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/IsActive",
-              "label": "وضعیت"
             }
           ],
           "actions": [

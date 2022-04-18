@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Enums
 {
@@ -16,6 +11,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "کلید تب")]
         TabContent = 3,
         [Display(Name = "تب")]
-        Tab = 4
+        Tab = 4,
+        [Display(Name = "کلید تب متن دینامیک")]
+        TabContentDynamicContent = 5,
     }
 }

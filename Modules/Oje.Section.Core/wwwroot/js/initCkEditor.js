@@ -2,10 +2,13 @@ $('.ckEditor').each(function () {
     ClassicEditor
         .create($(this)[0], {
             language: 'fa',
-            cloudServices: {
-                tokenUrl: '/Core/BaseData/GenerateToken',
+            ckfinder: {
                 uploadUrl: '/Core/BaseData/UploadFile/'
             }
+            //cloudServices: {
+            //    tokenUrl: '/Core/BaseData/GenerateToken',
+            //    uploadUrl: '/Core/BaseData/UploadFile/'
+            //}
         })
         .then(editor => {
             $(this)[0].ckEditor = editor;

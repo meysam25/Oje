@@ -16,6 +16,7 @@ namespace Oje.PaymentService.Services.EContext
         public DbSet<BankAccountFactor> BankAccountFactors { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<ProposalFilledForm> ProposalFilledForms { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

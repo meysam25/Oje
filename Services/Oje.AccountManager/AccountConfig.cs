@@ -42,6 +42,7 @@ namespace Oje.AccountService
             services.AddScoped<IExternalNotificationServiceConfigService, ExternalNotificationServiceConfigService>();
             services.AddScoped<IExternalNotificationServicePushSubscriptionService, ExternalNotificationServicePushSubscriptionService>();
             services.AddScoped<IExternalNotificationServicePushSubscriptionErrorService, ExternalNotificationServicePushSubscriptionErrorService>();
+            services.AddScoped<IWalletTransactionService, WalletTransactionService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)

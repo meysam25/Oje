@@ -173,7 +173,7 @@ namespace Oje.JoinServices.Services
                 SmsSendingQueueService.SaveChange();
             }
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = input.username });
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = input.username, isUser = UserService.isWebsiteUser(foundUser.Id) });
         }
 
         private void LoginRegisterValidation(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)

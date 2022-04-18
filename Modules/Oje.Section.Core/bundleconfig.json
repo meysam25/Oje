@@ -2,7 +2,8 @@
   {
     "outputFileName": "wwwroot/Core/js/core.min.js",
     "inputFiles": [
-      "wwwroot/js/JalaliDatePicker.js",
+      "wwwroot/js/NewPersianDatePicker/prism.min.js",
+      "wwwroot/js/NewPersianDatePicker/persianDatepicker.min.js",
       "wwwroot/js/myGrid.js",
       "wwwroot/js/expandablePanel.js",
       "wwwroot/js/multiSelectLine.js",
@@ -29,7 +30,8 @@
   {
     "outputFileName": "wwwroot/Core/js/websiteCor.min.js",
     "inputFiles": [
-      "wwwroot/js/JalaliDatePicker.js",
+      "wwwroot/js/NewPersianDatePicker/prism.min.js",
+      "wwwroot/js/NewPersianDatePicker/persianDatepicker.min.js",
       "wwwroot/js/myGrid.js",
       "wwwroot/js/expandablePanel.js",
       "wwwroot/js/multiSelectLine.js",
@@ -135,7 +137,6 @@
     "outputFileName": "wwwroot/Core/js/ce.js",
     "inputFiles": [
       "wwwroot/js/ckeditor.js",
-      "wwwroot/js/fa.js",
       "wwwroot/js/initCkEditor.js"
     ],
     "minify": {
@@ -169,7 +170,8 @@
       "wwwroot/css/main.css",
       "wwwroot/css/makeRTL.css",
       "wwwroot/css/adminFont.css",
-      "wwwroot/css/JalaliDatePicker.css",
+      "wwwroot/css/NewPersianDatePicker/prism.css",
+      "wwwroot/css/NewPersianDatePicker/persianDatepicker-default.css",
       "wwwroot/css/stepWizard.css",
       "wwwroot/css/validation.css",
       "wwwroot/css/dropdown.css",
@@ -197,7 +199,8 @@
       "wwwroot/css/expandablePanel.css",
       "wwwroot/css/main.css",
       "wwwroot/css/makeRTL.css",
-      "wwwroot/css/JalaliDatePicker.css",
+      "wwwroot/css/NewPersianDatePicker/prism.css",
+      "wwwroot/css/NewPersianDatePicker/persianDatepicker-default.css",
       "wwwroot/css/stepWizard.css",
       "wwwroot/css/validation.css",
       "wwwroot/css/dropdown.css",

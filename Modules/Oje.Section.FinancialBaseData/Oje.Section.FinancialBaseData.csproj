@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
     <ProjectReference Include="..\..\Services\Oje.PaymentService\Oje.PaymentService.csproj" />
   </ItemGroup>

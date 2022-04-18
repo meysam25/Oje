@@ -26,5 +26,7 @@ namespace Oje.Section.WebMain.Models.View
         public IFormFile leftFile { get; set; }
         [Display(Name = "زیر عنوان تصویر سمت چپ")]
         public string leftFileTitle { get; set; }
+        [Display(Name = "لینک توضیحات بیشتر")]
+        public string readMoreUrl { get; set; }
     }
 }

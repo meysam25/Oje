@@ -1,0 +1,86 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "WalletTransactionGrid",
+          "topActions": [
+            {
+              "title": "افزایش موجودی",
+              "onClick": "showModal('WalletTransactionAddGridModal', this)",
+              "type": "add",
+              "modalId": "WalletTransactionAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/FinancialBaseData/WalletTransaction/Export",
+          "showColumnConfigButton": true,
+          "key": "id",
+          "url": "/FinancialBaseData/WalletTransaction/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "descrption",
+              "caption": "توضیحات",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "WalletTransactionAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ خود را وارد کنید",
+              "isRequired": true,
+              "seperator": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "پرداخت",
+              "onClick": "postModalData(this, 'WalletTransactionGrid', '/FinancialBaseData/WalletTransaction/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -39,6 +39,7 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<ExternalNotificationServiceConfig> ExternalNotificationServiceConfigs { get; set; }
         public DbSet<ExternalNotificationServicePushSubscription> ExternalNotificationServicePushSubscriptions { get; set; }
         public DbSet<ExternalNotificationServicePushSubscriptionError> ExternalNotificationServicePushSubscriptionErrors { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

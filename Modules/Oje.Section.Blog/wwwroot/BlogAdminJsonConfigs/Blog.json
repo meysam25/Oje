@@ -141,20 +141,6 @@
               "label": "وضعیت"
             },
             {
-              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
-              "name": "mainImage",
-              "type": "file",
-              "label": "تصویر اصلی 1000 * 750",
-              "acceptEx": ".jpg,.png,.jpeg"
-            },
-            {
-              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
-              "name": "mainSound",
-              "type": "file",
-              "label": "فایل صوتی",
-              "acceptEx": ".mp3"
-            },
-            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "tags",
               "type": "tokenBox2",
@@ -172,6 +158,20 @@
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetBlogLightist",
               "label": "مرتبط"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainImage",
+              "type": "file",
+              "label": "تصویر اصلی 1000 * 750",
+              "acceptEx": ".jpg,.png,.jpeg"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainSound",
+              "type": "file",
+              "label": "فایل صوتی",
+              "acceptEx": ".mp3"
             }
           ],
           "actions": [
@@ -250,20 +250,6 @@
               "label": "وضعیت"
             },
             {
-              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
-              "name": "mainImage",
-              "type": "file",
-              "label": "تصویر اصلی 1000 * 750",
-              "acceptEx": ".jpg,.png,.jpeg"
-            },
-            {
-              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
-              "name": "mainSound",
-              "type": "file",
-              "label": "فایل صوتی",
-              "acceptEx": ".mp3"
-            },
-            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "tags",
               "type": "tokenBox2",
@@ -281,6 +267,20 @@
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetBlogLightist",
               "label": "مرتبط"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainImage",
+              "type": "file",
+              "label": "تصویر اصلی 1000 * 750",
+              "acceptEx": ".jpg,.png,.jpeg"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "mainSound",
+              "type": "file",
+              "label": "فایل صوتی",
+              "acceptEx": ".mp3"
             }
           ],
           "actions": [

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.DB
 {
@@ -21,6 +18,7 @@ namespace Oje.ProposalFormService.Models.DB
             UpdateUserProposalFilledFormCompanies = new();
             ProposalFilledFormStatusLogs = new();
             ProposalFormReminders = new();
+            WalletTransactions = new();
         }
 
         [Key]
@@ -77,5 +75,7 @@ namespace Oje.ProposalFormService.Models.DB
         public List<ProposalFilledFormStatusLog> ProposalFilledFormStatusLogs { get; set; }
         [InverseProperty("LoginUser")]
         public List<ProposalFormReminder> ProposalFormReminders { get; set; }
+        [InverseProperty("User")]
+        public List<WalletTransaction> WalletTransactions { get; set; }
     }
 }

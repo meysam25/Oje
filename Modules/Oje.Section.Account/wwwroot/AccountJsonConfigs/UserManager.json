@@ -173,13 +173,6 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-              "name": "userPic",
-              "type": "file",
-              "label": "تصویر کاربر (۳۰۰ * ۳۰۰)",
-              "acceptEx": ".jpg,.png,.jpeg"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "agentCode",
               "type": "text",
               "label": "کد نماینده"
@@ -305,6 +298,13 @@
               "dataurl": "/Account/UserManager/GetRoleList",
               "label": "نقش",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "userPic",
+              "type": "file",
+              "label": "تصویر کاربر (۳۰۰ * ۳۰۰)",
+              "acceptEx": ".jpg,.png,.jpeg"
             }
           ],
           "actions": [
@@ -394,13 +394,6 @@
               "name": "postalCode",
               "type": "text",
               "label": "کد پستی"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-              "name": "userPic",
-              "type": "file",
-              "label": "تصویر کاربر (۳۰۰ * ۳۰۰)",
-              "acceptEx": ".jpg,.png,.jpeg"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -529,6 +522,13 @@
               "dataurl": "/Account/UserManager/GetRoleList",
               "label": "نقش",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "userPic",
+              "type": "file",
+              "label": "تصویر کاربر (۳۰۰ * ۳۰۰)",
+              "acceptEx": ".jpg,.png,.jpeg"
             }
           ],
           "actions": [

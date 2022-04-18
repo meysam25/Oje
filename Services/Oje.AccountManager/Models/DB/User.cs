@@ -24,6 +24,7 @@ namespace Oje.AccountService.Models.DB
             UserNotificationTrigers = new();
             SiteSettings = new();
             ExternalNotificationServicePushSubscriptions = new();
+            WalletTransactions = new();
         }
 
         [Key]
@@ -122,5 +123,7 @@ namespace Oje.AccountService.Models.DB
         public List<SiteSetting> SiteSettings { get; set; }
         [InverseProperty("User")]
         public List<ExternalNotificationServicePushSubscription> ExternalNotificationServicePushSubscriptions { get; set; }
+        [InverseProperty("User")]
+        public List<WalletTransaction> WalletTransactions { get; set; }
     }
 }

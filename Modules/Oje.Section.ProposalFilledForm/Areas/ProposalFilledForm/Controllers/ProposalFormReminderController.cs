@@ -36,7 +36,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.ProposalFormService = ProposalFormService;
         }
 
-        [AreaConfig(Title = "یادآوری", Icon = "alarm-clock", IsMainMenuItem = true)]
+        [AreaConfig(Title = "یادآوری", Icon = "fa-alarm-clock", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

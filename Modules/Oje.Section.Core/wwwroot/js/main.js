@@ -548,6 +548,11 @@ function postForm(url, postData, success, error, completeEvent) {
                         window.addEventListener('focus', e => URL.revokeObjectURL(link.href), { once: true });
                     }
                 }
+                if (res && res.isSuccess && res.data && res.data.action) {
+                    if (res.data.action == 'redirect' && res.data.url)
+                        location.href = res.data.url;
+
+                }
             }.bind({ url: url }),
             error: function (xhr) {
 
@@ -755,6 +760,8 @@ function openNewLink(holderParametersId, link, checkUrl, makePost) {
     }
 }
 
+
+
 function postPage(link, formData) {
     var formId = uuidv4RemoveDash();
     var tempResult = '<form id="' + formId + '" action="' + link + '" style="display:none;" method="post">';
@@ -790,7 +797,7 @@ $.fn.modal = function (action) {
         });
         $(curThis).find('.modal-dialog').click(function (e) { e.stopPropagation(); if (window['closeAllDropdownInPage']) closeAllDropdownInPage(); });
         $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
-        setTimeout(function () { $(curThis).find('input:visible:eq(0)').focus(); $(curThis).find('input:visible:eq(0)').click();}, 200);
+        setTimeout(function () { $(curThis).find('input:visible:eq(0)').focus(); $(curThis).find('input:visible:eq(0)').click(); }, 200);
     }
     function bindCloseButton(curThis) {
         $(curThis).find('[data-dismiss]').unbind().click(function () {

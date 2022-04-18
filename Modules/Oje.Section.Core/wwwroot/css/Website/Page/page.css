@@ -164,8 +164,15 @@
         text-align: center;
     }
 
-@media (max-width: 1100px) {
-    .pageLRDesignItemTextSide {
+figure.image{
+    text-align:center;
+}
+    figure.image.image-style-side{
+        float:right;
+    }
+
+    @media (max-width: 1100px) {
+        .pageLRDesignItemTextSide {
         margin-top: 0px;
     }
 }

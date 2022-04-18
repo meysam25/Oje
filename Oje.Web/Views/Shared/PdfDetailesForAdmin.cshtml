@@ -131,10 +131,30 @@
             if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
             {
                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                    <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت</a>
+                    <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت درگاه بانک</a>
                 </div>
+
+                if(Model.loginUserWalletBalance >= Model.price.ToLongReturnZiro())
+                {
+                    <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                        <a id="walletPaymentButton" style="color:white;cursor:pointer;" class="btn btn-primary btn-success btn-block" >پرداخت از کیف پول (موجودی : @Model.loginUserWalletBalance.ToString("###,###") ریال )</a>
+                    </div>
+                    <script>
+                    $('#walletPaymentButton').click(function() {
+                        var curButtonHolder = $(this).closest('div');
+                        confirmDialog('پرداخت از کیف پول', 'آیا اطمینان دارید ؟', function () {
+                            var postData = new FormData();
+                            postData.append('id', @(Model.proposalFilledFormId));
+                            postData.append('type', 1);
+                            showLoader(curButtonHolder)
+                            postForm('/Payment/WalletTransaction/Pay', postData, function (res) { if(res && res.isSuccess ) location.reload();  }, null, function () { hideLoader(curButtonHolder) });
+                        });
+                    });
+                </script>
+                }
             }
-            }
+            
+        }
     </div>
 </div>
 
@@ -144,3 +164,4 @@
         ViewContext.Writer.Write("</section></div>");
     }
 }
+

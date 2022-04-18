@@ -126,7 +126,6 @@
               "name": "cardNo",
               "type": "text",
               "label": "شماره کارت (فقط عدد)",
-              "ph": "16 عدد",
               "isRequired": true
             },
             {
@@ -134,7 +133,6 @@
               "name": "shabaNo",
               "type": "text",
               "label": "شماره شبا (فقط عدد)",
-              "ph": "24 عدد",
               "isRequired": true
             },
             {
@@ -217,7 +215,6 @@
               "name": "cardNo",
               "type": "text",
               "label": "شماره کارت (فقط عدد)",
-              "ph": "16 عدد",
               "isRequired": true
             },
             {
@@ -225,7 +222,6 @@
               "name": "shabaNo",
               "type": "text",
               "label": "شماره شبا (فقط عدد)",
-              "ph": "24 عدد",
               "isRequired": true
             },
             {

@@ -18,8 +18,6 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -36,10 +34,10 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService = null;
         readonly IUserNotifierService UserNotifierService = null;
         readonly IBankAccountFactorService BankAccountFactorService = null;
+        readonly Interfaces.IUserService UserService = null;
 
         public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
-                AccountService.Interfaces.IUserService UserService,
                 IProposalFilledFormJsonService ProposalFilledFormJsonService,
                 IProposalFilledFormValueService ProposalFilledFormValueService,
                 IProposalFilledFormUseService ProposalFilledFormUseService,
@@ -49,7 +47,8 @@ namespace Oje.ProposalFormService.Services
                 IUploadedFileService UploadedFileService,
                 IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService,
                 IUserNotifierService UserNotifierService,
-                IBankAccountFactorService BankAccountFactorService
+                IBankAccountFactorService BankAccountFactorService,
+                Interfaces.IUserService UserService
             )
         {
             this.db = db;
@@ -63,6 +62,7 @@ namespace Oje.ProposalFormService.Services
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
             this.UserNotifierService = UserNotifierService;
             this.BankAccountFactorService = BankAccountFactorService;
+            this.UserService = UserService;
         }
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
@@ -540,6 +540,8 @@ namespace Oje.ProposalFormService.Services
 
                 listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "نماینده", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
             }
+
+            result.loginUserWalletBalance = UserService.GetUserWalletBalance(userId, siteSettingId);
 
 
             result.proposalFilledFormId = foundItem.Id;

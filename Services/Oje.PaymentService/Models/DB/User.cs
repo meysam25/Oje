@@ -14,6 +14,7 @@ namespace Oje.PaymentService.Models.DB
         public User()
         {
             BankAccounts = new();
+            WalletTransactions = new();
         }
 
         [Key]
@@ -31,11 +32,14 @@ namespace Oje.PaymentService.Models.DB
         public string Email { get; set; }
         [MaxLength(14)]
         public string Mobile { get; set; }
+        public long? ParentId { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
         public int? SiteSettingId { get; set; }
 
         [InverseProperty("User")]
         public List<BankAccount> BankAccounts { get; set; }
+        [InverseProperty("User")]
+        public List<WalletTransaction> WalletTransactions { get; set; }
     }
 }

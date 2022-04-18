@@ -1,11 +1,6 @@
 ﻿using Oje.Infrastructure.Exceptions;
 using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {
@@ -25,6 +20,18 @@ namespace Oje.PaymentService.Services
 
             foundItem.PaymentTraceCode = traceNo;
             db.SaveChanges();
+        }
+
+        public long ValidateForPayment(int? siteSettingId, long id)
+        {
+            var foundItem = db.ProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.Id == id && t.IsDelete != true).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+            if (!string.IsNullOrEmpty(foundItem.PaymentTraceCode))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (foundItem.Price <= 0)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            return foundItem.Price;
         }
     }
 }

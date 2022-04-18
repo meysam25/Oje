@@ -6,7 +6,6 @@ using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Oje.PaymentService.Interfaces;
-using Oje.PaymentService.Models.DB;
 using Oje.PaymentService.Models.View;
 
 namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers

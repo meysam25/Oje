@@ -98,6 +98,7 @@ function getInputTemplate(ctrl) {
                 result += getContentTemplate(ctrl);
                 break;
             case 'TabContent':
+            case 'TabContentDynamicContent':
                 result += getTabContentTemplate(ctrl);
                 break;
             case 'Shortcut':
@@ -200,7 +201,7 @@ function executeArrFunctions() {
     }
 }
 
-function getPanelTemplate(panel) {
+function getPanelTemplate(panel, isInsideModal) {
     var result = '';
     if (panel) {
         if (!panel.id)
@@ -224,7 +225,7 @@ function getPanelTemplate(panel) {
         }
         if (panel.grids) {
             for (var i = 0; i < panel.grids.length; i++) {
-                result += getGridTemplate(panel.grids[i]);
+                result += getGridTemplate(panel.grids[i], isInsideModal);
             }
         }
         if (panel.moduals) {
@@ -464,7 +465,7 @@ function getModualTemplateCTRL(modual) {
 
         if (modual && modual.panels && modual.panels.length > 0) {
             for (var i = 0; i < modual.panels.length; i++) {
-                result += getPanelTemplate(modual.panels[i]);
+                result += getPanelTemplate(modual.panels[i], true);
             }
         }
         if (modual && modual.ctrls) {
@@ -1038,6 +1039,26 @@ function addCountNotificationToButtonIfHasGrid(buttonId) {
     }
 }
 
+function getTextURl(configUrl) {
+    if (configUrl) {
+        var arrParts = configUrl.split('/');
+        arrParts.pop();
+        return arrParts.join('/') + '/GetTitle';
+    }
+}
+
+function loadTabContentDynamicContentText(buttonId) {
+    var configUrl = $('#' + buttonId).attr('href');
+    if (configUrl) {
+        var textUrl = getTextURl(configUrl);
+        if (textUrl) {
+            postForm(textUrl, new FormData(), function (res) {
+                addUpdateNotificationCount(this.buttonId, res);
+            }.bind({ buttonId: buttonId }), null, null);
+        }
+    }
+}
+
 function getTabContentTemplate(ctrl) {
     var result = '';
 
@@ -1049,7 +1070,10 @@ function getTabContentTemplate(ctrl) {
         result += '<a id="' + ctrl.id + '" style="margin-bottom:15px;position:relative;' + (ctrl.color ? 'border-top:4px solid ' + ctrl.color + ';' : '') + '" class="tabButtonBox" href="' + ctrl.url + '" ><span class="buttonTitle">' + ctrl.label + '</span></a>';
         result += '</div>';
         functionsList.push(function () {
-            addCountNotificationToButtonIfHasGrid(this.ctrl.id);
+            if (ctrl.type == 'TabContent')
+                addCountNotificationToButtonIfHasGrid(this.ctrl.id);
+            else if (ctrl.type == 'TabContentDynamicContent')
+                loadTabContentDynamicContentText(this.ctrl.id);
             $('#' + this.ctrl.id + '_holder').click(function () {
                 $(this).find('a').click();
             });
@@ -1550,16 +1574,17 @@ function getTextBoxTemplate(ctrl) {
         functionsList.push(function () {
             setTimeout(function () {
                 var jdtOption = {
-                    separatorChar: "/",
-                    changeMonthRotateYear: true,
-                    showTodayBtn: true,
-                    showEmptyBtn: true
+                    formatDate: "YYYY/0M/0D",
+                    cellWidth: 38,
+                    cellHeight: 30,
+                    fontSize: 16
                 };
                 if (this.ctrl.minDateValidation)
-                    jdtOption.minDate = "attr";
+                    jdtOption.startDate = $('#' + this.id).attr('data-jdp-min-date')
                 if (this.ctrl.maxDateValidation)
-                    jdtOption.maxDate = "attr";
-                jalaliDatepicker.startWatch(jdtOption);
+                    jdtOption.endDate = $('#' + this.id).attr('data-jdp-max-date')
+                $('#' + this.id).persianDatepicker(jdtOption);
+
             }.bind({ id: this.id, ctrl: ctrl }), 100);
         }.bind({ id: ctrl.id }));
     }
@@ -2381,11 +2406,10 @@ function submitThisStep(curThis, targetUrl) {
                     }
                     if (res.data.hideModal) {
                         $(this).closest('.modal').modal('hide');
-
                     }
                     if (res.data.userfullname) {
                         if (window['userLoginWeb'])
-                            userLoginWeb(res.data.userfullname);
+                            userLoginWeb(res.data.userfullname, res.data.isUser);
                         if (window['showLoginUserPanelInMainPage'])
                             showLoginUserPanelInMainPage();
                         if (window['whatToDoAfterUserLogin']) {
@@ -2594,7 +2618,12 @@ function doPageActions(actionOnLastStep) {
 
     if (actionOnLastStep && actionOnLastStep.actionName) {
         if (actionOnLastStep.actionName == 'refreshGrid' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
-            $('#' + actionOnLastStep.objectId)[0].refreshData()
+            if ($('#' + actionOnLastStep.objectId)[0].refreshData)
+                $('#' + actionOnLastStep.objectId)[0].refreshData();
+            else if ($('#' + actionOnLastStep.objectId)[0].tempGridConfig) {
+                $('#' + actionOnLastStep.objectId).initMyGrid($('#' + actionOnLastStep.objectId)[0].tempGridConfig);
+            }
+
         } else if (actionOnLastStep.actionName == 'submitPage' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
             var formQuery = $('#' + actionOnLastStep.objectId);
             var postData = getFormData(formQuery);
@@ -2614,13 +2643,17 @@ function doPageActions(actionOnLastStep) {
     }
 }
 
-function getGridTemplate(grid) {
+function getGridTemplate(grid, isInsideModal) {
     var result = '';
     if (grid) {
         var gridId = (!grid.id ? uuidv4RemoveDash() : grid.id);
         result += '<div id="' + gridId + '" class="myGridCTRL ' + (grid.class ? grid.class : '') + '"></div>';
         functionsList.push(function () {
-            $('#' + gridId).initMyGrid(grid);
+            if (!isInsideModal)
+                $('#' + gridId).initMyGrid(grid);
+            else {
+                $('#' + gridId)[0].tempGridConfig = grid;
+            }
         });
     }
 
@@ -2653,6 +2686,12 @@ function showModal(targetModal, curElement) {
     }
 }
 
+function initGridIfNotAlreadyInited(curThis) {
+    if ($(curThis).length > 0 && !$(curThis)[0].refreshData && $(curThis)[0].tempGridConfig) {
+        $(curThis).initMyGrid($(curThis)[0].tempGridConfig);
+    }
+}
+
 function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
     if (url && modalId) {
         var gridSelector = $(curElement).closest('.myGridCTRL');
@@ -2680,7 +2719,10 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
                 $('#' + modalId)[0].gridOwnerId = gridId;
                 if ($('#' + modalId).find('.myGridCTRL').length > 0) {
                     $('#' + modalId).find('.myGridCTRL').each(function () {
-                        $(this)[0].refreshData();
+                        if ($(this)[0].refreshData)
+                            $(this)[0].refreshData();
+                        else
+                            initGridIfNotAlreadyInited(this);
                     })
                 }
 
@@ -2692,7 +2734,10 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
             $('#' + modalId).modal('show');
             if ($('#' + modalId).find('.myGridCTRL').length > 0) {
                 $('#' + modalId).find('.myGridCTRL').each(function () {
-                    $(this)[0].refreshData();
+                    if ($(this)[0].refreshData)
+                        $(this)[0].refreshData();
+                    else
+                        initGridIfNotAlreadyInited(this);
                 })
             }
         }

@@ -23,7 +23,7 @@ namespace Oje.Security.Services.EContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BlockAutoIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate, t.BlockClientConfigType });
+            modelBuilder.Entity<BlockAutoIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate, t.BlockClientConfigType, t.BlockAutoIpAction });
             modelBuilder.Entity<BlockFirewallIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4 });
 
             base.OnModelCreating(modelBuilder);

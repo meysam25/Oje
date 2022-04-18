@@ -104,7 +104,7 @@ namespace Oje.Section.Core.Areas.Controllers
         [HttpGet]
         public string GenerateToken()
         {
-            return Guid.NewGuid().ToString();
+            return RandomService.GeneratePassword(5) + "." + RandomService.GeneratePassword(5) + "." + RandomService.GeneratePassword(5);
         }
 
         [HttpPost]
@@ -117,7 +117,7 @@ namespace Oje.Section.Core.Areas.Controllers
                 if (pFile != null && pFile.Length > 0)
                 {
                     var tempResult = UploadedFileService.UploadNewFile(FileType.CKEditor, pFile, null, null, null, ".png,.jpg,.jpeg", false);
-                    result = new { @default = GlobalConfig.FileAccessHandlerUrl + tempResult };
+                    result = new { fileName = pFile.FileName, uploaded = 1, url =  GlobalConfig.FileAccessHandlerUrl + tempResult };
                 }
             }
 

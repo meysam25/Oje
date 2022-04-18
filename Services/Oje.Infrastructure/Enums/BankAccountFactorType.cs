@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Enums
 {
@@ -12,6 +7,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "فرم پیشنهاد")]
         ProposalFilledForm = 1,
         [Display(Name = "ثبت نام کاربر")]
-        UserRegister = 2
+        UserRegister = 2,
+        [Display(Name = "افزایش موجودی کیف پول")]
+        Wallet = 3
     }
 }

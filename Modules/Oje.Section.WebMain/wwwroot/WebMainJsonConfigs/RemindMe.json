@@ -30,7 +30,9 @@
           "class": "startAndEndDate",
           "type": "persianDateTime",
           "label": "تاریخ یادآوری",
-          "isRequired": true
+          "isRequired": true,
+          "minDateValidation": 1,
+          "maxDateValidation": 90
         },
         {
           "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",

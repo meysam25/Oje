@@ -475,11 +475,11 @@ $.fn.initMyGrid = function (option) {
         curElement.initCTRL = function (curObj) {
             $(curObj).find('.myGridPersianDP').each(function () {
                 $(document).ready(function () {
-                    jalaliDatepicker.startWatch({
-                        separatorChar: "/",
-                        changeMonthRotateYear: true,
-                        showTodayBtn: true,
-                        showEmptyBtn: true
+                    $(this.cObj).persianDatepicker({
+                        formatDate: "YYYY/0M/0D",
+                        cellWidth: 38,
+                        cellHeight: 30,
+                        fontSize: 16
                     });
                 }.bind({ cObj: this }));
             });

@@ -2,11 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Filters
 {
@@ -24,7 +19,7 @@ namespace Oje.Infrastructure.Filters
                 var referUrl = context.HttpContext.Request.GetRefererUrl();
                 if (string.IsNullOrEmpty(referUrl))
                     throw BException.GenerateNewException(BMessages.ReferrUrl_Is_Invalid);
-                if ((context.HttpContext.Request.Host.Host ) != referUrl && referUrl != "rt.sizpay.ir:443")
+                if ((context.HttpContext.Request.Host.Host ) != referUrl && referUrl != "rt.sizpay.ir:443" && referUrl != "rt.sizpay.ir")
                     throw BException.GenerateNewException(BMessages.ReferrUrl_Is_Invalid);
             }
         }
