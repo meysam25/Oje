@@ -9,11 +9,7 @@ using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.DB;
 using Oje.Section.WebMain.Models.View;
 using Oje.Section.WebMain.Services.EContext;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Services
 {
@@ -93,7 +89,7 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public PageLeftRightDesignItemCreateUpdateVM GetById(int? id, int? siteSettingId)
+        public PageLeftRightDesignItemCreateUpdateVM GetById(long? id, int? siteSettingId)
         {
             return db.PageLeftRightDesignItems
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)

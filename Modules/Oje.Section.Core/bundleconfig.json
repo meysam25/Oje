@@ -45,7 +45,8 @@
       "wwwroot/js/dropdown.js",
       "wwwroot/js/countDown.js",
       "wwwroot/js/formGenerator.js",
-      "wwwroot/js/Website/bindLoginButtonClick.js"
+      "wwwroot/js/Website/bindLoginButtonClick.js",
+      "wwwroot/js/Website/topNewMenu.js"
     ],
     "minify": {
       "enabled": true,
@@ -205,7 +206,8 @@
       "wwwroot/css/validation.css",
       "wwwroot/css/dropdown.css",
       "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css",
-      "wwwroot/css/Website/onlineChat.css"
+      "wwwroot/css/Website/onlineChat.css",
+      "wwwroot/css/Website/topNewMenu.css"
     ],
     "minify": {
       "enabled": true,

@@ -1,10 +1,5 @@
 ﻿using Oje.Infrastructure.Models;
 using Oje.Section.WebMain.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Interfaces
 {
@@ -18,5 +13,6 @@ namespace Oje.Section.WebMain.Interfaces
         object GetSelect2(Select2SearchVM searchInput, int? siteSettingId);
         PageWebVM GetBy(long? id, string pTitle, int? siteSettingId);
         string GenerateUrlForPage(string title, long? pageId);
+        bool Exist(long? id, int? siteSettingId);
     }
 }

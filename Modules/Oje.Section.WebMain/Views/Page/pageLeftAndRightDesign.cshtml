@@ -26,9 +26,9 @@
                             <div class="pageLRDesignItem">
                                 <div class="pageLRDesignItemTextSide">
                                     <div class="pageLRDesignItemTitle">@item.title</div>
-                                    <p>@{
-                                            ViewContext.Writer.Write(item.description);
-                                        }</p>
+                                    @{
+                                        ViewContext.Writer.Write(item.description);
+                                    }
                                     @{
                                         if (!string.IsNullOrEmpty(item.bTitle) && !string.IsNullOrEmpty(item.bLink))
                                         {

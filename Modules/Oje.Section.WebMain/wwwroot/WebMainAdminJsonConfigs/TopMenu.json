@@ -178,7 +178,67 @@
                     "valueField": "id"
                   }
                 }
-              ]
+              ],
+              "detailes": {
+                "id": "WebMainAdminTopMenuGridChild2",
+                "topActions": [
+                  {
+                    "title": "افزودن",
+                    "onClick": "showModal('WebMainAdminTopMenuAddGridModal', this)",
+                    "type": "add",
+                    "modalId": "WebMainAdminTopMenuAddGridModal"
+                  }
+                ],
+                "exportToExcelUrl": "/WebMainAdmin/TopMenu/Export",
+                "showColumnConfigButton": true,
+                "actions": {
+                  "delete": {
+                    "url": "/WebMainAdmin/TopMenu/Delete"
+                  },
+                  "cActions": [
+                    {
+                      "type": "edit",
+                      "icon": "fa-pen",
+                      "prop": "id",
+                      "modalId": "WebMainAdminTopMenuEditModal",
+                      "url": "/WebMainAdmin/TopMenu/GetById",
+                      "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/WebMainAdmin/TopMenu/GetById\\', \\'WebMainAdminTopMenuEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                    }
+                  ]
+                },
+                "key": "id",
+                "url": "/WebMainAdmin/TopMenu/GetList",
+                "itemPerPage": 10,
+                "schema": {
+                  "data": "data",
+                  "total": "total"
+                },
+                "columns": [
+                  {
+                    "field": "row",
+                    "caption": "ردیف",
+                    "width": "50px",
+                    "textAlign": "center"
+                  },
+                  {
+                    "field": "title",
+                    "caption": "عنوان",
+                    "search": {
+                      "searchType": "text"
+                    }
+                  },
+                  {
+                    "field": "isActive",
+                    "caption": "وضعیت",
+                    "search": {
+                      "searchType": "dropdown",
+                      "url": "/Core/BaseData/Get/IsActive",
+                      "textField": "title",
+                      "valueField": "id"
+                    }
+                  }
+                ]
+              }
             }
           }
         }

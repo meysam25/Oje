@@ -7,10 +7,6 @@ using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Oje.AccountService.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
@@ -27,6 +23,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         readonly IInsuranceContractProposalFormService InsuranceContractProposalFormService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly Interfaces.IProposalFormService ProposalFormService = null;
+
         public InsuranceContractController(
                 IInsuranceContractService InsuranceContractService,
                 IInsuranceContractCompanyService InsuranceContractCompanyService,

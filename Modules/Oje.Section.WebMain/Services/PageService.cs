@@ -12,8 +12,6 @@ using Oje.Section.WebMain.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Services
 {
@@ -22,16 +20,19 @@ namespace Oje.Section.WebMain.Services
         readonly WebMainDBContext db = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IPageLeftRightDesignService PageLeftRightDesignService = null;
+        readonly IPageManifestService PageManifestService = null;
         public PageService
             (
                 WebMainDBContext db,
                 IUploadedFileService UploadedFileService,
-                IPageLeftRightDesignService PageLeftRightDesignService
+                IPageLeftRightDesignService PageLeftRightDesignService,
+                IPageManifestService PageManifestService
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
             this.PageLeftRightDesignService = PageLeftRightDesignService;
+            this.PageManifestService = PageManifestService;
         }
 
         public ApiResult Create(PageCreateUpdateVM input, int? siteSettingId)
@@ -255,8 +256,14 @@ namespace Oje.Section.WebMain.Services
             };
 
             result.Items.AddRange(PageLeftRightDesignService.GetListForWeb(id, siteSettingId));
+            result.Items.AddRange(PageManifestService.GetListForWeb(id, siteSettingId));
 
             return result;
+        }
+
+        public bool Exist(long? id, int? siteSettingId)
+        {
+            return db.Pages.Any(t => t.Id == id && t.SiteSettingId == siteSettingId);
         }
     }
 }

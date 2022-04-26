@@ -1,0 +1,551 @@
+
+.wrapper > header {
+    z-index: 3;
+}
+.responsiveClearBoth {
+    display: none;
+    clear: both;
+}
+.topMenuNew {
+    display: block;
+    margin-bottom: 0px;
+}
+
+    .topMenuNew > li a {
+        -webkit-text-decoration: none !important;
+        text-decoration: none !important;
+    }
+
+    .topMenuNew > li > a > i {
+        display: none;
+    }
+
+    .topMenuNew > li {
+        display: inline-block;
+        margin-right: 10px;
+        margin-left: 10px;
+        padding-top: 15px;
+        padding-bottom: 25px;
+        position: relative;
+    }
+
+        .topMenuNew > li:before {
+            content: ' ';
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            left: 0px;
+            background-color: black;
+            height: 2px;
+            -moz-transition: 0.3s;
+            -o-transition: 0.3s;
+            -webkit-transition: 0.3s;
+            transition: 0.3s;
+            opacity: 0;
+        }
+
+        .topMenuNew > li:hover:before {
+            bottom: 15px;
+            opacity: 1;
+            background-color: #007bff;
+        }
+
+        .topMenuNew > li:hover > a {
+            color: #007bff;
+        }
+
+        .topMenuNew > li > a {
+            font-size: 1.1em;
+            color: #333333;
+            cursor: pointer;
+        }
+
+        .topMenuNew > li > ul {
+            -moz-transform: scaleY(0) translateZ(0);
+            -ms-transform: scaleY(0) translateZ(0);
+            -o-transform: scaleY(0) translateZ(0);
+            -webkit-transform: scaleY(0) translateZ(0);
+            transform: scaleY(0) translateZ(0);
+            position: absolute;
+            top: 64px;
+            right: 0px;
+            opacity: 0;
+            display: block;
+            background-color: white;
+            -moz-transition: 0.3s;
+            -o-transition: 0.3s;
+            -webkit-transition: 0.3s;
+            transition: 0.3s;
+            z-index: 10;
+            padding: 0px;
+            min-width: 191px;
+            -webkit-box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.3);
+            box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.3);
+        }
+
+            .topMenuNew > li > ul > li {
+                display: block;
+                white-space: nowrap;
+                position: relative;
+            }
+
+                .topMenuNew > li > ul > li > a {
+                    color: #333333;
+                    cursor: pointer;
+                    padding: 10px;
+                    display: block;
+                }
+
+        .topMenuNew > li:hover > ul {
+            -moz-transform: scaleY(1) translateZ(0);
+            -ms-transform: scaleY(1) translateZ(0);
+            -o-transform: scaleY(1) translateZ(0);
+            -webkit-transform: scaleY(1) translateZ(0);
+            transform: scaleY(1) translateZ(0);
+            opacity: 1;
+        }
+
+        .topMenuNew > li > ul > li:hover {
+            background: hsla(211, 100%, 50%, 1);
+            background: linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+            background: -moz-linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+            background: -webkit-linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+        }
+
+            .topMenuNew > li > ul > li:hover a {
+                color: white;
+            }
+
+
+
+        .topMenuNew > li > ul > li > ul {
+            display: block;
+            position: absolute;
+            right: 100%;
+            padding: 0px;
+            margin: 0px;
+            background-color: white;
+            min-width: 200px;
+            -moz-transform: scaleY(0) translateZ(0);
+            -ms-transform: scaleY(0) translateZ(0);
+            -o-transform: scaleY(0) translateZ(0);
+            -webkit-transform: scaleY(0) translateZ(0);
+            transform: scaleY(0) translateZ(0);
+            -webkit-box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.3);
+            box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.3);
+            display: block;
+            -moz-transition: 0.3s;
+            -o-transition: 0.3s;
+            -webkit-transition: 0.3s;
+            transition: 0.3s;
+            opacity: 0;
+            top: 0px;
+        }
+
+            .topMenuNew > li > ul > li > ul > li > ul {
+                display: block;
+                position: absolute;
+                right: 100%;
+                padding: 0px;
+                margin: 0px;
+                background-color: white;
+                min-width: 200px;
+                -moz-transform: scaleY(0) translateZ(0);
+                -ms-transform: scaleY(0) translateZ(0);
+                -o-transform: scaleY(0) translateZ(0);
+                -webkit-transform: scaleY(0) translateZ(0);
+                transform: scaleY(0) translateZ(0);
+                -webkit-box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.3);
+                box-shadow: 0px 0px 15px -6px rgba(0,0,0,0.3);
+                display: block;
+                -moz-transition: 0.3s;
+                -o-transition: 0.3s;
+                -webkit-transition: 0.3s;
+                transition: 0.3s;
+                opacity: 0;
+                top: 0px;
+            }
+
+
+        .topMenuNew > li > ul > li:hover > ul {
+            -moz-transform: scaleY(1) translateZ(0);
+            -ms-transform: scaleY(1) translateZ(0);
+            -o-transform: scaleY(1) translateZ(0);
+            -webkit-transform: scaleY(1) translateZ(0);
+            transform: scaleY(1) translateZ(0);
+            opacity: 1;
+        }
+
+        .topMenuNew > li > ul > li > ul > li:hover > ul {
+            -moz-transform: scaleY(1) translateZ(0);
+            -ms-transform: scaleY(1) translateZ(0);
+            -o-transform: scaleY(1) translateZ(0);
+            -webkit-transform: scaleY(1) translateZ(0);
+            transform: scaleY(1) translateZ(0);
+            opacity: 1;
+        }
+
+        .topMenuNew > li > ul > li > ul > li {
+            display: block;
+        }
+
+            .topMenuNew > li > ul > li > ul > li > a {
+                color: #333333 !important;
+                cursor: pointer;
+                padding: 10px;
+                display: block;
+            }
+
+            .topMenuNew > li > ul > li > ul > li:hover {
+                background: hsla(211, 100%, 50%, 1);
+                background: linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+                background: -moz-linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+                background: -webkit-linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+            }
+
+                .topMenuNew > li > ul > li > ul > li:hover > a {
+                    color: white !important;
+                }
+
+            .topMenuNew > li > ul > li > ul > li > ul > li {
+                display: block;
+            }
+
+                .topMenuNew > li > ul > li > ul > li > ul > li > a {
+                    color: #333333 !important;
+                    cursor: pointer;
+                    padding: 10px;
+                    display: block;
+                }
+
+                .topMenuNew > li > ul > li > ul > li > ul > li:hover {
+                    background: hsla(211, 100%, 50%, 1);
+                    background: linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+                    background: -moz-linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+                    background: -webkit-linear-gradient(360deg, hsla(211, 100%, 50%, 1) 0%, hsla(220, 99%, 30%, 1) 100%);
+                }
+
+                    .topMenuNew > li > ul > li > ul > li > ul > li:hover > a {
+                        color: white !important;
+                    }
+
+.moreMenuItems {
+    float: left;
+}
+
+.topMenuNewResponsiveButton {
+    display: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-right: 20px;
+    position: relative;
+}
+
+.topMenuNewResponsiveButtonLine {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    background-color: #333333;
+    border-top: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+
+    .topMenuNewResponsiveButtonLine:nth-child(2) {
+        top: 6px;
+    }
+
+    .topMenuNewResponsiveButtonLine:nth-child(3) {
+        top: 12px;
+    }
+
+    .topMenuNewResponsiveButtonLine:first-child {
+        margin-top: 0px;
+    }
+
+.topMenuNewResponsiveButtonActive .topMenuNewResponsiveButtonLine {
+    background-color: #007bff;
+    border-color: transparent;
+}
+
+    .topMenuNewResponsiveButtonActive .topMenuNewResponsiveButtonLine:nth-child(1) {
+        animation: responsiveMenuAnimationLine1 0.5s;
+        animation-fill-mode: forwards;
+    }
+
+    .topMenuNewResponsiveButtonActive .topMenuNewResponsiveButtonLine:nth-child(2) {
+        animation: responsiveMenuAnimationLine2 0.5s;
+        animation-fill-mode: forwards;
+    }
+
+    .topMenuNewResponsiveButtonActive .topMenuNewResponsiveButtonLine:nth-child(3) {
+        animation: responsiveMenuAnimationLine3 0.5s;
+        animation-fill-mode: forwards;
+    }
+
+.topMenuNewResponsiveButtonActiveInvert .topMenuNewResponsiveButtonLine:nth-child(1) {
+    animation: responsiveMenuAnimationLine1Reverse 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.topMenuNewResponsiveButtonActiveInvert .topMenuNewResponsiveButtonLine:nth-child(2) {
+    animation: responsiveMenuAnimationLine2Reverse 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.topMenuNewResponsiveButtonActiveInvert .topMenuNewResponsiveButtonLine:nth-child(3) {
+    animation: responsiveMenuAnimationLine3Reverse 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.topMenuNewResponsiveButtonActiveInvert .topMenuNewResponsiveButtonLine {
+    background-color: #333333;
+    border-color: #999999;
+}
+
+@keyframes responsiveMenuAnimationLine1 {
+    0% {
+        top: 0px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    50% {
+        top: 6px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        top: 6px;
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+}
+
+@keyframes responsiveMenuAnimationLine1Reverse {
+    0% {
+        top: 6px;
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    50% {
+        top: 6px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        top: 0px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes responsiveMenuAnimationLine2 {
+    0% {
+        top: 6px;
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes responsiveMenuAnimationLine2Reverse {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        top: 6px;
+        opacity: 1;
+    }
+}
+
+
+@keyframes responsiveMenuAnimationLine3 {
+    0% {
+        top: 12px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    50% {
+        top: 6px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        top: 6px;
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+}
+
+@keyframes responsiveMenuAnimationLine3Reverse {
+    0% {
+        top: 6px;
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+
+    50% {
+        top: 6px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        top: 12px;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+}
+
+.moreMenuItems {
+    font-size: 1.5em;
+}
+
+
+
+@media (max-width: 1100px) {
+    .responsiveClearBoth{
+        display:block;
+    }
+    .topMenuNew > li {
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+    .topMenuNew li {
+        cursor: pointer;
+    }
+
+    .topMenuNew > li:hover:before {
+        bottom: 0px;
+    }
+
+    .openThisMenuItem > ul {
+        max-height: 3000px !important;
+    }
+
+    .topMenuNew {
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        overflow: hidden;
+        max-height: 0px;
+    }
+
+        .topMenuNew li {
+            display: block !important;
+        }
+
+        .topMenuNew > li a > i {
+            display: inline-block;
+        }
+
+        .topMenuNew ul {
+            position: static !important;
+            opacity: 1 !important;
+            -moz-transform: scaleY(1) translateZ(0) !important;
+            -ms-transform: scaleY(1) translateZ(0) !important;
+            -o-transform: scaleY(1) translateZ(0) !important;
+            -webkit-transform: scaleY(1) translateZ(0) !important;
+            transform: scaleY(1) translateZ(0) !important;
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            max-height: 0px;
+            overflow: hidden;
+        }
+
+        .topMenuNew > li > a {
+            padding-right: 30px !important;
+        }
+
+        .topMenuNew > li > ul > li > a {
+            padding-right: 60px !important;
+        }
+
+        .topMenuNew > li > ul > li > ul > li > a {
+            padding-right: 90px !important;
+        }
+
+        .topMenuNew > li > ul > li > ul > li > ul > li > a {
+            padding-right: 120px !important;
+        }
+
+    .topMenuNewResponsiveButton {
+        display: inline-block;
+    }
+
+    .topMenuNewActive {
+        max-height: 1000px;
+        overflow-y: auto;
+    }
+
+        .topMenuNewActive .moreMenuItems::before {
+            content: '\f107';
+        }
+
+    .openThisMenuItem > a > i.moreMenuItems::before {
+        content: '\f106';
+    }
+}

@@ -158,7 +158,12 @@ namespace Oje.Section.WebMain.Services
                                 .Select(ttt => new 
                                 {
                                     title = ttt.Title,
-                                    link = ttt.Link
+                                    link = ttt.Link,
+                                    childs = ttt.Childs.Where(tttt => tttt.IsActive == true).OrderBy(tttt => tttt.Order).Select(tttt => new 
+                                    {
+                                        title = tttt.Title,
+                                        link = tttt.Link,
+                                    }).ToList()
                                 })
                                 .ToList()
                         })

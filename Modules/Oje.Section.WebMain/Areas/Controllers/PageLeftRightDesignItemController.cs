@@ -69,7 +69,7 @@ namespace Oje.Section.WebMain.Areas.Controllers
 
         [AreaConfig(Title = "مشاهده  یک جزییات دیزاین چپ و راست", Icon = "fa-eye")]
         [HttpPost]
-        public IActionResult GetById([FromForm] GlobalIntId input)
+        public IActionResult GetById([FromForm] GlobalLongId input)
         {
             return Json(PageLeftRightDesignItemService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id));
         }

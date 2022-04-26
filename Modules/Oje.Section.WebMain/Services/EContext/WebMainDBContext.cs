@@ -16,6 +16,8 @@ namespace Oje.Section.WebMain.Services.EContext
         public DbSet<AutoAnswerOnlineChatMessage> AutoAnswerOnlineChatMessages { get; set; }
         public DbSet<AutoAnswerOnlineChatMessageLike> AutoAnswerOnlineChatMessageLikes { get; set; }
         public DbSet<SubscribeEmail> SubscribeEmails { get; set; }
+        public DbSet<PageManifest> PageManifests { get; set; }
+        public DbSet<PageManifestItem> PageManifestItems { get; set; }
 
         public WebMainDBContext(DbContextOptions<WebMainDBContext> options) : base(options)
         {

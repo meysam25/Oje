@@ -54,6 +54,9 @@
             if (item.type == Oje.Infrastructure.Enums.PageWebItemType.LeftAndRight)
             {
                 Html.RenderPartial("pageLeftAndRightDesign", item);
+            } else if (item.type == Oje.Infrastructure.Enums.PageWebItemType.Manifest)
+            {
+                Html.RenderPartial("pageManifestDesign", item);
             }
         }
     }

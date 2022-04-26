@@ -127,15 +127,16 @@
             <div id="headerTagHolderS1Desctination"></div>
             <nav id="headerMenu" class="headerMenu">
                 <div class="myContainer">
-                    <div class="topMenuBtton" tabindex="0">
-                        <div class="topMenuBttonLine"></div>
-                        <div class="topMenuBttonLine"></div>
-                        <div class="topMenuBttonLine"></div>
+                    <div class="topMenuNewResponsiveButton">
+                        <span class="topMenuNewResponsiveButtonLine"></span>
+                        <span class="topMenuNewResponsiveButtonLine"></span>
+                        <span class="topMenuNewResponsiveButtonLine"></span>
                     </div>
                     <div class="holderRigAndLogUser">
                         <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
                     </div>
-                    <div id="topMenuHolderItems" class="headerMenuInner">
+                    <div class="responsiveClearBoth" ></div>
+                    <div id="topMenuHolderItems">
                     </div>
                     <script>
                         $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
@@ -308,7 +309,7 @@
         @{
             if (Context.Request.IsHttps)
             {
-               // ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+                // ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
             }
         }
     </script>

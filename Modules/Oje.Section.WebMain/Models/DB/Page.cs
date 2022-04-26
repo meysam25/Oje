@@ -14,6 +14,7 @@ namespace Oje.Section.WebMain.Models.DB
         public Page()
         {
             PageLeftRightDesigns = new();
+            PageManifests = new();
         }
 
         [Key]
@@ -38,5 +39,7 @@ namespace Oje.Section.WebMain.Models.DB
 
         [InverseProperty("Page")]
         public List<PageLeftRightDesign> PageLeftRightDesigns { get; set; }
+        [InverseProperty("Page")]
+        public List<PageManifest> PageManifests { get; set; }
     }
 }

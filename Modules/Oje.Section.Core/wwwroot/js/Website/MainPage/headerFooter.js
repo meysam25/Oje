@@ -37,8 +37,7 @@ function bindTopLeftIcons() {
 }
 
 function bindFooterIcons() {
-    postForm('/home/GetFooterSocialUrl', new FormData(), function (res)
-    {
+    postForm('/home/GetFooterSocialUrl', new FormData(), function (res) {
         if (res) {
             if (res.linkIn)
                 $('#aLinkin').attr('href', res.linkIn);
@@ -74,37 +73,55 @@ $.fn.loadTopMenu = function (url) {
     function getTopMenuTemplate(l1Item) {
         var result = '';
 
-        result += '<div class="headerMenuItem ">';
-        result += '<div class="headerMenuItemInner ' + (l1Item.childs && l1Item.childs.length > 0 ? 'headerMenuItemHasArrow' : '') + '">';
+        result += '<li>';
         if (l1Item.link)
-            result += '<a href="' + (l1Item.link ? l1Item.link : '#') + '" class="headerMenuItemLink">' + l1Item.title + '</a>';
+            result += '<a href="' + (l1Item.link ? l1Item.link : '#') + '">' + l1Item.title + (l1Item.childs && l1Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
         else
-            result += '<span class="headerMenuItemLink">' + l1Item.title + '</span>';
-        result += '</div>';
+            result += '<a href="#">' + l1Item.title + (l1Item.childs && l1Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
 
         if (l1Item.childs && l1Item.childs.length > 0) {
-            result += '<div class="headerMenuItemSumMenuItems">';
-            result += '<div class="myContainer">';
-            result += '<div class="headerMenuItemSumMenuItemsInner">';
-            result += '<div class="headerMenuItemGroup headerMenuMoveBackButton">';
-            result += '<span class="headerMenuItemLink"><i class="fa fa-arrow-right closeSubMenuItemButton"></i>' + l1Item.title + '</span>';
-            result += '</div>';
+            result += '<ul>';
             for (var j = 0; j < l1Item.childs.length; j++) {
                 var level2Item = l1Item.childs[j];
-                result += '<div class="headerMenuItemGroup">';
-                result += '<div class="headerMenuItemGroupTitle">' + level2Item.title + '</div>';
+                result += '<li>';
+                if (level2Item.link)
+                    result += '<a href="' + (level2Item.link ? level2Item.link : '#') + '">' + level2Item.title + (level2Item.childs && level2Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                else
+                    result += '<a href="#">' + level2Item.title + (level2Item.childs && level2Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+
                 if (level2Item.childs && level2Item.childs.length > 0) {
+                    result += '<ul>';
                     for (var m = 0; m < level2Item.childs.length; m++) {
-                        result += '<a href="' + (level2Item.childs[m].link ? level2Item.childs[m].link : '#') + '" title="' + level2Item.childs[m].title + '" class="headerMenuItemGroupItem">' + level2Item.childs[m].title + '</a>';
+                        var level3Item = level2Item.childs[m];
+                        result += '<li>';
+                        if (level3Item.link)
+                            result += '<a href="' + (level3Item.link ? level3Item.link : '#') + '">' + level3Item.title + (level3Item.childs && level3Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                        else
+                            result += '<a href="#">' + level3Item.title + (level3Item.childs && level3Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+
+                        if (level3Item.childs && level3Item.childs.length > 0) {
+                            result += '<ul>';
+                            for (var n = 0; n < level3Item.childs.length; n++) {
+                                result += '<li>';
+                                var level4Item = level3Item.childs[n];
+                                if (level4Item.link)
+                                    result += '<a href="' + (level4Item.link ? level4Item.link : '#') + '">' + level4Item.title + (level4Item.childs && level4Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                                else
+                                    result += '<a href="#">' + level4Item.title + (level4Item.childs && level4Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                                result += '</li>';
+                            }
+                            result += '</ul>';
+                        }
+
+                        result += '</li>';
                     }
+                    result += '</ul>';
                 }
-                result += '</div>';
+                result += '</li>';
             }
-            result += '</div>';
-            result += '</div>';
-            result += '</div>';
+            result += '</ul>';
         }
-        result += '</div>';
+        result += '</li>';
 
         return result;
     }
@@ -112,15 +129,16 @@ $.fn.loadTopMenu = function (url) {
         postForm(url, new FormData(), function (res) {
             var template = '<img class="floatingIcon" width="50" height="50" alt="' + $('#mainSiteLogoIcon').attr('title') + '" src="' + $('#mainSiteLogoIcon').find('img').attr('src') + '" />';
             if (res && res.length > 0) {
-                template += '<i class="moveBackButtonInResponsive fa fa-arrow-right" ></i>';
+                template += '<ul class="topMenuNew">';
                 for (var i = 0; i < res.length; i++) {
                     var level1Item = res[i];
                     template += getTopMenuTemplate(level1Item);
 
                 }
+                template += '</ul>';
             }
             $(this.curThis).html(template);
-            $('.headerMenu').initNavResButton();
+            $('.topMenuNewResponsiveButton').initTopMenuResponsiveButton();
         }.bind({ curThis: $(this) }));
     });
 }

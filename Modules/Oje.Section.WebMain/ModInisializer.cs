@@ -36,6 +36,8 @@ namespace Oje.Section.WebMain
             services.AddScoped<IAutoAnswerOnlineChatMessageService, AutoAnswerOnlineChatMessageService>();
             services.AddScoped<IAutoAnswerOnlineChatMessageLikeService, AutoAnswerOnlineChatMessageLikeService>();
             services.AddScoped<ISubscribeEmailService, SubscribeEmailService>();
+            services.AddScoped<IPageManifestService, PageManifestService>();
+            services.AddScoped<IPageManifestItemService, PageManifestItemService>();
         }
     }
 }

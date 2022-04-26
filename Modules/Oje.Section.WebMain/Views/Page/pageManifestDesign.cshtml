@@ -1,0 +1,55 @@
+﻿@using Oje.Infrastructure.Services
+@model Oje.Section.WebMain.Models.View.PageLeftRightDesignWebVM
+
+
+<div style="padding-bottom:30px;" class="myContainer removeBoxShadow">
+    <div class="pageLRDesign">
+        @{
+            var randomId = "id_" + RandomService.GenerateRandomNumber(10);
+            if (!string.IsNullOrEmpty(Model.title))
+            {
+                <div id="@randomId" class="manifest">
+                    <div class="manifestTitle">
+                        @Model.title
+                        <span class="manifestShowHideButton">[پنهان]</span>
+                    </div>
+                    @{
+                        if (Model.PageLeftRightDesignWebItemVMs != null && Model.PageLeftRightDesignWebItemVMs.Count > 0)
+                        {
+                            <div class="manifestItems">
+                                @{
+                                    for (var i = 0; i < Model.PageLeftRightDesignWebItemVMs.Count; i++)
+                                    {
+                                        <a href="#@(Model.PageLeftRightDesignWebItemVMs[i].title.Replace(" ","-"))" class="manifestItem">@(i+1).@Model.PageLeftRightDesignWebItemVMs[i].title</a>
+                                    }
+                                }
+                            </div>
+                        }
+                    }
+                    <script>
+                        $('#@(randomId)').find('.manifestShowHideButton').click(function() { $(this).closest('.manifest').toggleClass('hideManifest'); if($(this).closest('.manifest').hasClass('hideManifest')) { $(this).text('[نمایش]'); } else { $(this).text('[پنهان]');}})
+                    </script>
+                </div>
+            }
+
+            if (Model.PageLeftRightDesignWebItemVMs != null && Model.PageLeftRightDesignWebItemVMs.Count > 0)
+            {
+                <div class="manifestDescriptionItems">
+                    @{
+                        foreach (var item in Model.PageLeftRightDesignWebItemVMs)
+                        {
+                            <div id="@(item.title.Replace(" ","-"))" class="manifestDescriptionItem">
+                                <div>
+                                    <h4 class="pageLRDesignItemTitle">@item.title</h4>
+                                    @{
+                                        ViewContext.Writer.Write(item.description);
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>

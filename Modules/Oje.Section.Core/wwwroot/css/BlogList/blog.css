@@ -124,12 +124,12 @@
     }
 
 .otherArticleRelatedItem .holderOtherArticleImage > img {
-    width: 150%;
-    height: auto;
+    width: auto;
+    height: 100%;
 }
 
 .holderOtherArticleImage {
-    display: inline-block;
+    display: flex;
     width: 70px;
     height: 70px;
     overflow: hidden;
@@ -137,6 +137,10 @@
     -webkit-border-radius: 50%;
     border-radius: 50%;
     border: 1px solid silver;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
 }
 
 .otherArticleRelatedItems {

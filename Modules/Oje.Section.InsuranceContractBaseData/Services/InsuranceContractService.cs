@@ -191,9 +191,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     insuranceContractTypeIds = t.insuranceContractTypeIds,
                     isActive = t.isActive,
                     monthlyPrice = t.monthlyPrice,
-                    proposalFormId = t.proposalFormId == null ? 0 : t.proposalFormId,
+                    proposalFormId = t.proposalFormId ,
                     proposalFormId_Title = !string.IsNullOrEmpty(t.proposalFormId_Title) ? t.proposalFormId_Title : "",
-                    rPFId = t.rPFId == null ? 0 : t.rPFId,
+                    rPFId = t.rPFId ,
                     rPFId_Title = string.IsNullOrEmpty(t.rPFId_Title) ? "" : t.rPFId_Title,
                     title = t.title,
                     toDate = t.toDate.ToFaDate(),
@@ -302,15 +302,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 foundItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, foundItem.Id, ".pdf,.doc,.docx", false);
 
             foundItem.Code = input.code.Value;
-            foundItem.CreateDate = DateTime.Now;
-            foundItem.CreateUserId = loginUserId.Value;
             foundItem.Description = input.description;
             foundItem.FromDate = input.fromDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.InsuranceContractCompanyId = input.insuranceContractCompanyId.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.MonthlyPrice = input.monthlyPrice.ToLongReturnZiro();
             foundItem.InsuranceContractProposalFormId = input.proposalFormId.Value;
-            foundItem.SiteSettingId = siteSettingId.Value;
             foundItem.Title = input.title;
             foundItem.ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.ProposalFormId = input.rPFId;
