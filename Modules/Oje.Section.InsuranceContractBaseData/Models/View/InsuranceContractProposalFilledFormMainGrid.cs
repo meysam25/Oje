@@ -12,7 +12,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
     {
         public string createUserfullname { get; set; }
         public string createDate { get; set; }
-        public InsuranceContractProposalFilledFormType? status { get; set; }
         public string confirmDate { get; set; }
         public string contractTitle { get; set; }
         public string familyMemers { get; set; }

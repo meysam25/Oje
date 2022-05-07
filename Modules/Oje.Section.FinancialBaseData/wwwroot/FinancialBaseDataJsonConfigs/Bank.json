@@ -51,6 +51,13 @@
               }
             },
             {
+              "field": "code",
+              "caption": "کد بانک",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "isActive",
               "caption": "وضعیت",
               "search": {
@@ -79,6 +86,12 @@
               "type": "text",
               "label": "عنوان",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -125,6 +138,12 @@
               "type": "text",
               "label": "عنوان",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

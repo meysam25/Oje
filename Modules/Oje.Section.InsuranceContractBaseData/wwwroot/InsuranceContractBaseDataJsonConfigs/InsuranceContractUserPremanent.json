@@ -18,6 +18,14 @@
             {
               "title": "افزودن (فایل اکسل)",
               "onClick": "uploadFile('excelFile','.xlsx', '/InsuranceContractBaseData/InsuranceContractUserPremanent/CreateFromXcel', this)"
+            },
+            {
+              "title": "دانلود فایل اعضای خانواده",
+              "onClick": "window.open('/Modules/InsuranceContractBaseDataExcelExample/InsuranceContractUserChilds.xlsx');"
+            },
+            {
+              "title": "افزودن اعضای خانواده (فایل اکسل)",
+              "onClick": "uploadFile('excelFile','.xlsx', '/InsuranceContractBaseData/InsuranceContractUserPremanent/CreateFromXcelChilds', this)"
             }
           ],
           "exportToExcelUrl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/Export",
@@ -169,6 +177,24 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "baseInsuranceId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetBaseInsuranceList",
+              "label": "بیمه پایه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "subCatId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetSubCatList",
+              "label": "زیرگروه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "firstName",
               "type": "text",
               "label": "نام",
@@ -183,10 +209,34 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "fatherName",
+              "type": "text",
+              "label": "نام پدر"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "nationalCode",
               "type": "text",
               "label": "کد ملی",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "gender",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/Gender",
+              "label": "جنسیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "marrageStatus",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/MarrageStatus",
+              "label": "وضعیت تاهل"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -200,23 +250,65 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "custody",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/Custody",
+              "label": "تکفل",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "email",
               "type": "text",
-              "label": "ایمیل",
-              "isRequired": true
+              "label": "ایمیل"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "mobile",
               "type": "text",
-              "label": "مبایل",
+              "label": "تلفن همراه",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "tell",
+              "type": "text",
+              "label": "تلفن"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "shenasnameNo",
+              "type": "text",
+              "label": "شماره شناسنامه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "insuranceMiniBookNumber",
+              "type": "text",
+              "label": "شماره دفترچه بیمه"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "birthDate",
               "type": "persianDateTime",
               "label": "تاریخ تولد"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "hireDate",
+              "type": "persianDateTime",
+              "label": "تاریخ استخدام"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "bankId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetBankList",
+              "label": "بانک"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -320,6 +412,24 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "baseInsuranceId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetBaseInsuranceList",
+              "label": "بیمه پایه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "subCatId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetSubCatList",
+              "label": "زیرگروه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "firstName",
               "type": "text",
               "label": "نام",
@@ -334,10 +444,34 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "fatherName",
+              "type": "text",
+              "label": "نام پدر"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "nationalCode",
               "type": "text",
               "label": "کد ملی",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "gender",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/Gender",
+              "label": "جنسیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "marrageStatus",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/MarrageStatus",
+              "label": "وضعیت تاهل"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -351,23 +485,65 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "custody",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/Custody",
+              "label": "تکفل",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "email",
               "type": "text",
-              "label": "ایمیل",
-              "isRequired": true
+              "label": "ایمیل"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "mobile",
               "type": "text",
-              "label": "مبایل",
+              "label": "تلفن همراه",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "tell",
+              "type": "text",
+              "label": "تلفن"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "shenasnameNo",
+              "type": "text",
+              "label": "شماره شناسنامه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "insuranceMiniBookNumber",
+              "type": "text",
+              "label": "شماره دفترچه بیمه"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "birthDate",
               "type": "persianDateTime",
               "label": "تاریخ تولد"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "hireDate",
+              "type": "persianDateTime",
+              "label": "تاریخ استخدام"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "bankId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetBankList",
+              "label": "بانک"
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Enums
 {
@@ -62,6 +57,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تیکت جدید")]
         NewTicket = 26,
         [Display(Name = "پیام جدید برای ادمین در چت انلاین")]
-        NewOnlineMessageForAdmin = 27
+        NewOnlineMessageForAdmin = 27,
+        [Display(Name = "افزودن بیمه شده")]
+        NewInsuranceContractUser = 28
     }
 }

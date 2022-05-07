@@ -19,5 +19,7 @@ namespace Oje.PaymentService.Models.View
         public string title { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "کد بانک")]
+        public int? code { get; set; }
     }
 }

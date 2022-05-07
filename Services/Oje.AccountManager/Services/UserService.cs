@@ -86,13 +86,18 @@ namespace Oje.AccountService.Services
             else if (foundUser != null && foundUser.Password == input.password.Encrypt())
             {
                 setCookieForThisUser(foundUser, input);
-                return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name, data = new 
-                { 
-                    stepId = "rigLogStep", 
-                    hideModal = true, 
-                    userfullname = (!string.IsNullOrEmpty(foundUser.Firstname) ? (foundUser.Firstname + " " + foundUser.Lastname) : foundUser.Username),
-                    isUser = foundUser.UserRoles.Any(tt => tt.Role != null && tt.Role.Name.ToLower() == "user")
-                } };
+                return new ApiResult()
+                {
+                    isSuccess = true,
+                    message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name,
+                    data = new
+                    {
+                        stepId = "rigLogStep",
+                        hideModal = true,
+                        userfullname = (!string.IsNullOrEmpty(foundUser.Firstname) ? (foundUser.Firstname + " " + foundUser.Lastname) : foundUser.Username),
+                        isUser = foundUser.UserRoles.Any(tt => tt.Role != null && tt.Role.Name.ToLower() == "user")
+                    }
+                };
             }
 
             if (foundUser != null)
@@ -600,6 +605,13 @@ namespace Oje.AccountService.Services
             newUser.MapLon = input.mapLon;
             newUser.MapLat = input.mapLat;
             newUser.MapZoom = input.mapZoom;
+            newUser.FatherName = input.fatherName;
+            newUser.HireDate = input.hireDate.ToEnDate();
+            newUser.ShenasnameNo = input.shenasnameNo;
+            newUser.Gender = input.gender;
+            newUser.MarrageStatus = input.marrageStatus;
+            newUser.BankId = input.bankId;
+
             if (input.mapLon != null && input.mapLon != null)
             {
                 newUser.MapLocation = new Point(input.mapLat.ToDoubleReturnNull().Value, input.mapLon.ToDoubleReturnNull().Value) { SRID = 4326 };
@@ -663,8 +675,8 @@ namespace Oje.AccountService.Services
 
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters, ApiResultErrorCode.ValidationError);
-            if (string.IsNullOrEmpty(input.email))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Email, ApiResultErrorCode.ValidationError);
+            //if (string.IsNullOrEmpty(input.email))
+            //    throw BException.GenerateNewException(BMessages.Please_Enter_Email, ApiResultErrorCode.ValidationError);
             if (string.IsNullOrEmpty(input.firstname))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Firstname, ApiResultErrorCode.ValidationError);
             if (string.IsNullOrEmpty(input.lastname))
@@ -701,6 +713,12 @@ namespace Oje.AccountService.Services
             if (input.mapLat != null && (input.mapLat < -90 || input.mapLon > 90))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.mapLat != null && (input.mapLon < -90 || input.mapLon > 90))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!string.IsNullOrEmpty(input.fatherName) && input.fatherName.Length > 50)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!string.IsNullOrEmpty(input.hireDate) && input.hireDate.ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            if (!string.IsNullOrEmpty(input.shenasnameNo) && input.shenasnameNo.Length > 20)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
             var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
@@ -778,7 +796,13 @@ namespace Oje.AccountService.Services
                     t.MapZoom,
                     t.MapLon,
                     t.MapLat,
-                    t.MapLocation
+                    t.MapLocation,
+                    t.FatherName,
+                    t.HireDate,
+                    t.Gender,
+                    t.ShenasnameNo,
+                    t.MarrageStatus,
+                    t.BankId
                 })
                 .Take(1)
                 .ToList()
@@ -811,7 +835,13 @@ namespace Oje.AccountService.Services
                     cityId = t.cityId,
                     mapLat = t.MapLocation != null ? (decimal)t.MapLocation.X : null,
                     mapLon = t.MapLocation != null ? (decimal)t.MapLocation.Y : null,
-                    mapZoom = t.MapZoom
+                    mapZoom = t.MapZoom,
+                    fatherName = t.FatherName,
+                    hireDate = t.HireDate.ToFaDate(),
+                    gender = t.Gender,
+                    shenasnameNo = t.ShenasnameNo,
+                    marrageStatus = t.MarrageStatus,
+                    bankId = t.BankId
                 })
                 .FirstOrDefault();
         }
@@ -862,6 +892,12 @@ namespace Oje.AccountService.Services
                     foundItem.MapZoom = input.mapZoom;
                     if (input.mapLon != null && input.mapLon != null)
                         foundItem.MapLocation = new Point(input.mapLat.ToDoubleReturnNull().Value, input.mapLon.ToDoubleReturnNull().Value) { SRID = 4326 };
+                    foundItem.FatherName = input.fatherName;
+                    foundItem.HireDate = input.hireDate.ToEnDate();
+                    foundItem.Gender = input.gender;
+                    foundItem.ShenasnameNo = input.shenasnameNo;
+                    foundItem.MarrageStatus = input.marrageStatus;
+                    foundItem.BankId = input.bankId;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.Encrypt();
@@ -959,12 +995,12 @@ namespace Oje.AccountService.Services
             }).FirstOrDefault();
         }
 
-        public long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string email, string eCode, long? loginUserId, int? siteSettingId)
+        public long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string eCode, long? loginUserId, int? siteSettingId)
         {
             var canSeeAllItem = CanSeeAllItems(loginUserId.ToLongReturnZiro());
             return db.Users
                 .Where(t =>
-                    t.Nationalcode == nationalCode && t.Mobile == mobile && t.Email == email && t.InsuranceECode == eCode && t.SiteSettingId == siteSettingId &&
+                    t.Nationalcode == nationalCode && t.Mobile == mobile && t.InsuranceECode == eCode && t.SiteSettingId == siteSettingId &&
                     t.CreateByUserId != null
                     )
                 .getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem)
@@ -972,7 +1008,7 @@ namespace Oje.AccountService.Services
                 .FirstOrDefault();
         }
 
-        public void DeleteFlag(long userId, int? siteSettingId, long? loginUserId)
+        public void DeleteFlag(long? userId, int? siteSettingId, long? loginUserId)
         {
             var canSeeAllItem = CanSeeAllItems(loginUserId.ToLongReturnZiro());
             var foundItem = db.Users.Where(t => t.Id == userId && t.SiteSettingId == siteSettingId).getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem).FirstOrDefault();
@@ -1342,7 +1378,7 @@ namespace Oje.AccountService.Services
         {
             return db.Users
                 .Where(t => t.Id == loginUserId)
-                .Select(t => new PPFUserTypes 
+                .Select(t => new PPFUserTypes
                 {
                     emaile = t.Email,
                     fullUserName = t.Firstname + " " + t.Lastname,

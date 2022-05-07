@@ -612,6 +612,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا کلید خصوصی را وارد کنید")]
         Please_Enter_Private_Key = 300,
         [Display(Name = "موجودی کیف پول کافی نمی باشد")]
-        Inventory_Is_Not_Enough = 301
+        Inventory_Is_Not_Enough = 301,
+        [Display(Name = "امکان ویرایش نصبت خانوادگی وجود ندارد")]
+        FamilyRelation_Can_Not_Be_Edited = 302
     }
 }

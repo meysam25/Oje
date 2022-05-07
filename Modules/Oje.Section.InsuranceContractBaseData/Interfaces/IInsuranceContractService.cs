@@ -22,5 +22,6 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         List<IdTitle> GetContractTypeList(contractUserInput input, int? siteSettingId);
         RequiredDocumentVM GetRequiredDocuments(contractUserInput input, int? insuranceContractTypeId, int? siteSettingId);
         IdTitle GetIdTitleBy(contractUserInput contractInfo, int? siteSettingId);
+        string GetIdByCode(int? id, int? siteSettingId);
     }
 }

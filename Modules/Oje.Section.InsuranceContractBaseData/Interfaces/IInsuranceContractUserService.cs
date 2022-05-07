@@ -1,11 +1,6 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using Oje.Section.InsuranceContractBaseData.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Interfaces
 {
@@ -17,6 +12,7 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         ApiResult Update(CreateUpdateInsuranceContractUserVM input, InsuranceContractUserStatus status);
         GridResultVM<InsuranceContractUserMainGridResultVM> GetList(InsuranceContractUserMainGrid searchInput, InsuranceContractUserStatus status);
         ApiResult ChangeStatus(long? id, InsuranceContractUserStatus fromStatus, InsuranceContractUserStatus toStatus);
-        ApiResult CreateFromExcel(GlobalExcelFile input, InsuranceContractUserStatus status);
+        ApiResult CreateFromExcel(GlobalExcelFile input, InsuranceContractUserStatus status, int? siteSettingId);
+        ApiResult CreateFromExcelChild(GlobalExcelFile input, InsuranceContractUserStatus status, int? siteSettingId);
     }
 }

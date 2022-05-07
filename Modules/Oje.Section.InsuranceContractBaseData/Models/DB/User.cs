@@ -1,11 +1,9 @@
-﻿using Oje.Infrastructure.Interfac;
+﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
@@ -58,6 +56,11 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public long? ParentId { get; set; }
         [ForeignKey("ParentId"), InverseProperty("Childs")]
         public User Parent { get; set; }
+        public Gender? Gender { get; set; }
+        public int? BankId { get; set; }
+        public DateTime? HireDate { get; set; }
+        [MaxLength(50)]
+        public string Tell { get; set; }
 
 
         [InverseProperty("Parent")]

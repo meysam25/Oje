@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Enums
 {
     public enum InsuranceContractUserFamilyRelation
     {
+        [Display(Name = "نامشخص")]
+        Unknown = 0,
         [Display(Name = "اصلی")]
         Self = 1,
         [Display(Name = "همسر")]
@@ -21,7 +18,11 @@ namespace Oje.Infrastructure.Enums
         Father = 5,
         [Display(Name = "مادر")]
         Mother = 6,
-        [Display(Name = "نوه")]
-        Grandchild = 7,
+        [Display(Name = "برادر")]
+        Brother = 8,
+        [Display(Name = "خواهر")]
+        Sister = 9,
+        [Display(Name = "سایر")]
+        Other = 7,
     }
 }

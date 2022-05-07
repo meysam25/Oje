@@ -2,24 +2,28 @@
 using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using System;
+using System.Collections.Generic;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های ثبت شده")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های ثبت شده جدید")]
     [CustomeAuthorizeFilter]
     public class InsuranceContractProposalFilledFormController : Controller
     {
         readonly IInsuranceContractProposalFilledFormService InsuranceContractProposalFilledFormService = null;
         readonly IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService = null;
         readonly ISiteSettingService SiteSettingService = null;
+        readonly InsuranceContractProposalFilledFormType status = InsuranceContractProposalFilledFormType.New;
+
         public InsuranceContractProposalFilledFormController
             (
                 IInsuranceContractProposalFilledFormService InsuranceContractProposalFilledFormService,
@@ -32,16 +36,16 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های ثبت شده", Icon = "fa-hospital-symbol", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های ثبت شده جدید", Icon = "fa-hospital-symbol", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های ثبت شده";
+            ViewBag.Title = "خسارت های ثبت شده جدید";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "InsuranceContractProposalFilledForm", new { area = "InsuranceContractBaseData" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های ثبت شده", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های ثبت شده جدید", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -49,11 +53,11 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "InsuranceContractProposalFilledForm")));
         }
 
-        [AreaConfig(Title = "حذف خسارت های ثبت شده", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "حذف خسارت های ثبت شده جدید", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractProposalFilledFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFilledFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
         [AreaConfig(Title = "مشاهده جززیات خسارت ثبت شده", Icon = "fa-eye")]
@@ -61,35 +65,35 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         public IActionResult Detaile([FromQuery] long? id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
-            return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, true));
+            return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, true, new List<InsuranceContractProposalFilledFormType>() { status }));
         }
 
         [AreaConfig(Title = "مشاهده وضعیت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetStatus([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractProposalFilledFormService.GetStatus(input?.id, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFilledFormService.GetStatus(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
         [AreaConfig(Title = "تغییر وضعیت فرم پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdateStatus([FromForm] InsuranceContractProposalFilledFormChangeStatusVM input)
         {
-            return Json(InsuranceContractProposalFilledFormService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(InsuranceContractProposalFilledFormService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, status));
         }
 
         [AreaConfig(Title = "مشاهده قیمت تایین شده فرم پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetPrice([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractProposalFilledFormService.GetPrice(input?.id, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFilledFormService.GetPrice(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
         [AreaConfig(Title = "تغییر قیمت فرم پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdatePrice([FromForm] InsuranceContractProposalFilledFormChangePriceVM input)
         {
-            return Json(InsuranceContractProposalFilledFormService.UpdatePrice(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(InsuranceContractProposalFilledFormService.UpdatePrice(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, status));
         }
 
         [AreaConfig(Title = "دانلود پی دی اف فرم پیشنهاد", Icon = "fa-download")]
@@ -102,18 +106,18 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های ثبت شده", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های ثبت شده جدید", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractProposalFilledFormMainGrid searchInput)
         {
-            return Json(InsuranceContractProposalFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] InsuranceContractProposalFilledFormMainGrid searchInput)
         {
-            var result = InsuranceContractProposalFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
+            var result = InsuranceContractProposalFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, status);
             if (result == null || result.data == null || result.data.Count == 0)
                 return NotFound();
             var byteResult = ExportToExcel.Export(result.data);
@@ -127,14 +131,14 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public ActionResult GetStatusLogList([FromForm] InsuranceContractProposalFilledFormStatusLogGrid searchInput)
         {
-            return Json(InsuranceContractProposalFilledFormStatusLogService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFilledFormStatusLogService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
-        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های ثبت شده", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های ثبت شده جدید", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {
-            return Json(InsuranceContractProposalFilledFormService.GetPPFImageList(input, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFilledFormService.GetPPFImageList(input, SiteSettingService.GetSiteSetting()?.Id, status));
         }
     }
 }

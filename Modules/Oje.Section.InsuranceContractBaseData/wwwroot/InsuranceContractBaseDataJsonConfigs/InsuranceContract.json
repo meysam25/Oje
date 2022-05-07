@@ -44,6 +44,12 @@
               "textAlign": "center"
             },
             {
+              "field": "id",
+              "caption": "شناسه",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
               "field": "contractCompany",
               "caption": "شرکت بیمه گذار حقوقی",
               "search": {

@@ -494,5 +494,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .Select(t => new IdTitle { id = t.Id.ToString(), title = t.Title })
                 .FirstOrDefault();
         }
+
+        public string GetIdByCode(int? id, int? siteSettingId)
+        {
+            return db.InsuranceContracts.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => t.Code).FirstOrDefault() + "";
+        }
     }
 }

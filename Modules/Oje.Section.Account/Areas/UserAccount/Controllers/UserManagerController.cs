@@ -1,16 +1,11 @@
 ﻿using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
-using Oje.AccountService.Models;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.UserAccount.Controllers
@@ -25,18 +20,21 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         readonly IRoleService RoleService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly ICompanyService CompanyService = null;
+        readonly PaymentService.Interfaces.IBankService BankService = null;
 
         public UserManagerController(
                 IUserService UserService, 
                 IRoleService RoleService, 
                 ISiteSettingService SiteSettingService, 
-                ICompanyService CompanyService
+                ICompanyService CompanyService,
+                PaymentService.Interfaces.IBankService BankService
             )
         {
             this.UserService = UserService;
             this.RoleService = RoleService;
             this.SiteSettingService = SiteSettingService;
             this.CompanyService = CompanyService;
+            this.BankService = BankService;
         }
 
         [AreaConfig(Title = "کاربران", Icon = "fa-user", IsMainMenuItem = true)]
@@ -91,7 +89,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
             return Json(UserService.UpdateForUser(input, HttpContext.GetLoginUser()?.UserId, HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserServiceForUserMainGrid searchInput)
         {
@@ -112,18 +110,25 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نقش ها")]
+        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt")]
         [HttpPost]
         public IActionResult GetRoleList()
         {
             return Json(RoleService.GetRoleLightListForUser(HttpContext.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه")]
+        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه", Icon = "fa-list-alt")]
         [HttpPost]
         public IActionResult GetCompanyList()
         {
             return Json(CompanyService.GetightList());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست بانک ها", Icon = "fa-list-alt")]
+        [HttpPost]
+        public IActionResult GetBankList()
+        {
+            return Json(BankService.GetLightList());
         }
     }
 }

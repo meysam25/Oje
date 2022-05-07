@@ -15,7 +15,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های من (رد شده)")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های غیر قابل پرداخت")]
     [CustomeAuthorizeFilter]
     public class MyRejectedFilledContractController: Controller
     {
@@ -43,18 +43,18 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های من (رد شده)", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های غیر قابل پرداخت", Icon = "fa-file-signature", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های من (رد شده)";
+            ViewBag.Title = "خسارت های غیر قابل پرداخت";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyRejectedFilledContract", new { area = "InsuranceContractBaseData" });
             ViewBag.layer = "_WebLayout";
 
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های من (رد شده)", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های غیر قابل پرداخت", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -82,7 +82,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های من (رد شده)", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های غیر قابل پرداخت", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {

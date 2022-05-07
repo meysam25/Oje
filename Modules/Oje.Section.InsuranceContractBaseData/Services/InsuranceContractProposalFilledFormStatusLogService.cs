@@ -37,11 +37,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             }
         }
 
-        public object GetList(InsuranceContractProposalFilledFormStatusLogGrid searchInput, int? siteSettingId)
+        public object GetList(InsuranceContractProposalFilledFormStatusLogGrid searchInput, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
             searchInput = searchInput ?? new InsuranceContractProposalFilledFormStatusLogGrid();
 
-            var quiryResult = db.InsuranceContractProposalFilledFormStatusLogs.Where(t => t.InsuranceContractProposalFilledFormId == searchInput.pKey && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true);
+            var quiryResult = db.InsuranceContractProposalFilledFormStatusLogs
+                .Where(t => t.InsuranceContractProposalFilledFormId == searchInput.pKey && t.InsuranceContractProposalFilledForm.Status == status && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true);
             if (searchInput.status != null)
                 quiryResult = quiryResult.Where(t => t.Status == searchInput.status);
             if (!string.IsNullOrEmpty(searchInput.userFullname))

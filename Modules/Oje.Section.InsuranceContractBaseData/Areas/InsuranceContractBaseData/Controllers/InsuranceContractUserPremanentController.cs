@@ -8,10 +8,8 @@ using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.PaymentService.Interfaces;
+using Oje.AccountService.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -19,17 +17,31 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "لیست بیمه شدگان دائم")]
     [CustomeAuthorizeFilter]
-    public class InsuranceContractUserPremanentController: Controller
+    public class InsuranceContractUserPremanentController : Controller
     {
         readonly IInsuranceContractUserService InsuranceContractUserService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
+        readonly IBankService BankService = null;
+        readonly IInsuranceContractUserSubCategoryService InsuranceContractUserSubCategoryService = null;
+        readonly IInsuranceContractUserBaseInsuranceService InsuranceContractUserBaseInsuranceService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+
+
         public InsuranceContractUserPremanentController(
                 IInsuranceContractUserService InsuranceContractUserService,
-                IInsuranceContractService InsuranceContractService
+                IInsuranceContractService InsuranceContractService,
+                IBankService BankService,
+                IInsuranceContractUserSubCategoryService InsuranceContractUserSubCategoryService,
+                ISiteSettingService SiteSettingService,
+                IInsuranceContractUserBaseInsuranceService InsuranceContractUserBaseInsuranceService
             )
         {
             this.InsuranceContractUserService = InsuranceContractUserService;
             this.InsuranceContractService = InsuranceContractService;
+            this.BankService = BankService;
+            this.InsuranceContractUserSubCategoryService = InsuranceContractUserSubCategoryService;
+            this.SiteSettingService = SiteSettingService;
+            this.InsuranceContractUserBaseInsuranceService = InsuranceContractUserBaseInsuranceService;
         }
 
         [AreaConfig(Title = "لیست بیمه شدگان دائم", Icon = "fa-user-check", IsMainMenuItem = true)]
@@ -67,7 +79,14 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public IActionResult CreateFromXcel([FromForm] GlobalExcelFile input)
         {
-            return Json(InsuranceContractUserService.CreateFromExcel(input, InsuranceContractUserStatus.Premanent));
+            return Json(InsuranceContractUserService.CreateFromExcel(input, InsuranceContractUserStatus.Premanent, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "افزودن بیمه شدگان دائم زیرمجموعه از روی فایل اکسل", Icon = "fa-plus")]
+        [HttpPost]
+        public IActionResult CreateFromXcelChilds([FromForm] GlobalExcelFile input)
+        {
+            return Json(InsuranceContractUserService.CreateFromExcelChild(input, InsuranceContractUserStatus.Premanent, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "حذف بیمه شدگان دائم", Icon = "fa-trash-o")]
@@ -91,7 +110,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractUserService.Update(input, InsuranceContractUserStatus.Premanent));
         }
 
-        [AreaConfig(Title = "مشاهده لیست بیمه شدگان دائم", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست بیمه شدگان دائم", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractUserMainGrid searchInput)
         {
@@ -112,11 +131,32 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست قرارداد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست قرارداد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetContractList()
         {
             return Json(InsuranceContractService.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست بانک", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetBankList()
+        {
+            return Json(BankService.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست زیرگروه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetSubCatList()
+        {
+            return Json(InsuranceContractUserSubCategoryService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست بیمه پایه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetBaseInsuranceList()
+        {
+            return Json(InsuranceContractUserBaseInsuranceService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

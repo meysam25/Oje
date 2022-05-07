@@ -29,6 +29,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services.EContext
         public DbSet<InsuranceContractProposalFilledFormValue> InsuranceContractProposalFilledFormValues { get; set; }
         public DbSet<InsuranceContractProposalFilledFormJson> InsuranceContractProposalFilledFormJsons { get; set; }
         public DbSet<InsuranceContractProposalFilledFormUser> InsuranceContractProposalFilledFormUsers { get; set; }
+        public DbSet<InsuranceContractUserSubCategory> InsuranceContractUserSubCategories { get; set; }
+        public DbSet<InsuranceContractUserBaseInsurance> InsuranceContractUserBaseInsurances { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

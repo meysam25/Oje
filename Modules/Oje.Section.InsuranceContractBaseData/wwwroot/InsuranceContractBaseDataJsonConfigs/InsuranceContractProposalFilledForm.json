@@ -89,16 +89,6 @@
               }
             },
             {
-              "field": "status",
-              "caption": "وضعیت",
-              "search": {
-                "searchType": "dropdown",
-                "url": "/Core/BaseData/Get/InsuranceContractProposalFilledFormType",
-                "textField": "title",
-                "valueField": "id"
-              }
-            },
-            {
               "field": "familyMemers",
               "caption": "اعضای خانواده",
               "search": {

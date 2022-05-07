@@ -8,7 +8,7 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
     public interface IInsuranceContractProposalFilledFormStatusLogService
     {
         void Create(long? insuranceContractProposalFilledFormId, InsuranceContractProposalFilledFormType? status, DateTime now, long? loginUserId, string description);
-        object GetList(InsuranceContractProposalFilledFormStatusLogGrid searchInput, int? siteSettingId);
+        object GetList(InsuranceContractProposalFilledFormStatusLogGrid searchInput, int? siteSettingId, InsuranceContractProposalFilledFormType status);
         object GetListForUser(InsuranceContractProposalFilledFormStatusLogGrid searchInput, int? siteSettingId, long? loginUserId, List<InsuranceContractProposalFilledFormType> validStatus);
     }
 }

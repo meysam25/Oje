@@ -8,6 +8,7 @@ using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Oje.AccountService.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -15,17 +16,21 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "لیست بیمه شدگان موقت")]
     [CustomeAuthorizeFilter]
-    public class InsuranceContractUserTemproryController: Controller
+    public class InsuranceContractUserTemproryController : Controller
     {
         readonly IInsuranceContractUserService InsuranceContractUserService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+
         public InsuranceContractUserTemproryController(
                 IInsuranceContractUserService InsuranceContractUserService,
-                IInsuranceContractService InsuranceContractService
+                IInsuranceContractService InsuranceContractService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.InsuranceContractUserService = InsuranceContractUserService;
             this.InsuranceContractService = InsuranceContractService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "لیست بیمه شدگان موقت", Icon = "fa-user-alt", IsMainMenuItem = true)]
@@ -63,7 +68,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public IActionResult CreateFromXcel([FromForm] GlobalExcelFile input)
         {
-            return Json(InsuranceContractUserService.CreateFromExcel(input, InsuranceContractUserStatus.Temprory));
+            return Json(InsuranceContractUserService.CreateFromExcel(input, InsuranceContractUserStatus.Temprory, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "حذف بیمه شدگان موقت", Icon = "fa-trash-o")]

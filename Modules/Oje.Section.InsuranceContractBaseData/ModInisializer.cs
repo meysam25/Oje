@@ -38,6 +38,8 @@ namespace Oje.Section.InsuranceContractBaseData
             services.AddScoped<IInsuranceContractProposalFilledFormStatusLogService, InsuranceContractProposalFilledFormStatusLogService>();
             services.AddScoped<IInsuranceContractProposalFilledFormStatusLogService, InsuranceContractProposalFilledFormStatusLogService>();
             services.AddScoped<IMyFilledContractService, MyFilledContractService>();
+            services.AddScoped<IInsuranceContractUserSubCategoryService, InsuranceContractUserSubCategoryService>();
+            services.AddScoped<IInsuranceContractUserBaseInsuranceService, InsuranceContractUserBaseInsuranceService>();
         }
     }
 }

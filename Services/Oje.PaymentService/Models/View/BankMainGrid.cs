@@ -10,6 +10,7 @@ namespace Oje.PaymentService.Models.View
     public class BankMainGrid: GlobalGrid
     {
         public string title { get; set; }
+        public int? code { get; set; }
         public bool? isActive { get; set; }
     }
 }

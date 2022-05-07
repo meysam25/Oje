@@ -323,9 +323,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return result;
         }
 
-        public ApiResult Delete(long? id, int? siteSettingId)
+        public ApiResult Delete(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
-            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.IsDelete != true).FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Status == status).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             foundItem.IsDelete = true;
@@ -334,16 +334,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public GridResultVM<InsuranceContractProposalFilledFormMainGridResultVM> GetList(InsuranceContractProposalFilledFormMainGrid searchInput, int? siteSettingId)
+        public GridResultVM<InsuranceContractProposalFilledFormMainGridResultVM> GetList(InsuranceContractProposalFilledFormMainGrid searchInput, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
             searchInput = searchInput ?? new InsuranceContractProposalFilledFormMainGrid();
 
-            var quiryResult = db.InsuranceContractProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true);
+            var quiryResult = db.InsuranceContractProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Status == status);
 
             if (!string.IsNullOrEmpty(searchInput.createUserfullname))
                 quiryResult = quiryResult.Where(t => (t.CreateUser.Firstname + " " + t.CreateUser.Lastname).Contains(searchInput.createUserfullname));
-            if (searchInput.status != null)
-                quiryResult = quiryResult.Where(t => t.Status == searchInput.status);
             if (!string.IsNullOrEmpty(searchInput.contractTitle))
                 quiryResult = quiryResult.Where(t => t.InsuranceContract.Title.Contains(searchInput.contractTitle));
             if (!string.IsNullOrEmpty(searchInput.familyMemers))
@@ -393,9 +391,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             };
         }
 
-        public object GetPPFImageList(GlobalGridParentLong input, int? siteSettingId)
+        public object GetPPFImageList(GlobalGridParentLong input, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
             input = input ?? new GlobalGridParentLong();
+
+            var foundId = db.InsuranceContractProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.Status == status && t.IsDelete != true && t.Id == input.pKey).Select(t => t.Id).FirstOrDefault();
+            if (foundId <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return new
             {
@@ -404,15 +406,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             };
         }
 
-        public object GetStatus(long? id, int? siteSettingId)
+        public object GetStatus(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
-            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Id == id).Select(t => new { t.Status }).FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Id == id && t.Status == status).Select(t => new { t.Status }).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             return new { status = foundItem.Status, id = id };
         }
 
-        public ApiResult UpdateStatus(InsuranceContractProposalFilledFormChangeStatusVM input, int? siteSettingId, long? loginUserId)
+        public ApiResult UpdateStatus(InsuranceContractProposalFilledFormChangeStatusVM input, int? siteSettingId, long? loginUserId, InsuranceContractProposalFilledFormType status)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -426,7 +428,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             var foundItem =
             db.InsuranceContractProposalFilledForms
             .Include(t => t.InsuranceContract)
-            .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && t.IsDelete != true)
+            .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Status == status)
             .FirstOrDefault();
 
             if (foundItem == null)
@@ -448,7 +450,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public ApiResult UpdatePrice(InsuranceContractProposalFilledFormChangePriceVM input, int? siteSettingId, long? loginUserId)
+        public ApiResult UpdatePrice(InsuranceContractProposalFilledFormChangePriceVM input, int? siteSettingId, long? loginUserId, InsuranceContractProposalFilledFormType status)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -456,7 +458,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
 
             var foundItem = db.InsuranceContractProposalFilledForms
-                .Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Id == input.id)
+                .Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Id == input.id && t.Status == status)
                 .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -469,10 +471,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetPrice(long? id, int? siteSettingId)
+        public object GetPrice(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
             return db.InsuranceContractProposalFilledForms
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.IsDelete != true)
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.IsDelete != true && t.Status == status)
                 .Select(t => new
                 {
                     id = t.Id,

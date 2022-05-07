@@ -34,7 +34,8 @@ namespace Oje.PaymentService.Services
             {
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Title = input.title,
-                Pic = " "
+                Pic = " ",
+                BankCode = input.code
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -60,6 +61,8 @@ namespace Oje.PaymentService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Image, ApiResultErrorCode.ValidationError);
             if (db.Banks.Any(t => t.Title == input.title && t.Id != input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Title, ApiResultErrorCode.ValidationError);
+            if (input.code != null && db.Banks.Any(t => t.BankCode == input.code && t.Id != input.id))
+                throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
         public ApiResult Delete(int? id)
@@ -84,7 +87,8 @@ namespace Oje.PaymentService.Services
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
-                    minPic_address = GlobalConfig.FileAccessHandlerUrl + t.Pic
+                    minPic_address = GlobalConfig.FileAccessHandlerUrl + t.Pic,
+                    code = t.BankCode
                 })
                 .FirstOrDefault();
         }
@@ -100,6 +104,8 @@ namespace Oje.PaymentService.Services
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive.Value);
+            if(searchInput.code != null)
+                qureResult = qureResult.Where(t => t.BankCode == searchInput.code);
 
             int row = searchInput.skip;
 
@@ -111,7 +117,8 @@ namespace Oje.PaymentService.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    code = t.BankCode
                 })
                 .ToList()
                 .Select(t => new BankMainGridResultVM
@@ -119,7 +126,8 @@ namespace Oje.PaymentService.Services
                     row = ++row,
                     id = t.id,
                     title = t.title,
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    code = t.code
                 })
                 .ToList()
             };
@@ -135,6 +143,7 @@ namespace Oje.PaymentService.Services
 
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;
+            foundItem.BankCode = input.code;
 
             db.SaveChanges();
 
@@ -155,6 +164,11 @@ namespace Oje.PaymentService.Services
             result.AddRange(db.Banks.AsNoTracking().Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
+        }
+
+        public int? GetByCode(int? code)
+        {
+            return db.Banks.Where(t => t.BankCode == code).Select(t => t.Id).FirstOrDefault();
         }
     }
 }

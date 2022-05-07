@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
@@ -30,12 +27,14 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         [ForeignKey("InsuranceContractId")]
         [InverseProperty("InsuranceContractUsers")]
         public InsuranceContract InsuranceContract { get; set; }
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
         [ForeignKey("UserId")]
         [InverseProperty("InsuranceContractUsers")]
         public User User { get; set; }
         public InsuranceContractUserFamilyRelation FamilyRelation { get; set; }
         public InsuranceContractUserStatus Status { get; set; }
+        [MaxLength(50)]
+        public string InsuranceECode { get; set; }
         [MaxLength(200)]
         public string KartMeliFileUrl { get; set; }
         [MaxLength(200)]
@@ -55,10 +54,34 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public User UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
         public bool HasConfilictWithUser { get; set; }
+        public Custody? Custody { get; set; }
         public int SiteSettingId { get; set; }
+
+        [Required, MaxLength(50)]
+        public string FirstName { get; set; }
+        [Required, MaxLength(50)]
+        public string LastName { get; set; }
+        [MaxLength(50)]
+        public string FatherName { get; set; }
+        public DateTime? BirthDate { get; set; }
+        [MaxLength(20)]
+        public string ShenasnameNo { get; set; }
+        [Required, MaxLength(11)]
+        public string NationalCode { get; set; }
+        public MarrageStatus? MarrageStatus { get; set; }
+        public int? InsuranceContractUserBaseInsuranceId { get; set; }
+        [ForeignKey("InsuranceContractUserBaseInsuranceId"), InverseProperty("InsuranceContractUsers")]
+        public InsuranceContractUserBaseInsurance InsuranceContractUserBaseInsurance { get; set; }
+        public int? InsuranceContractUserSubCategoryId { get; set; }
+        [ForeignKey("InsuranceContractUserSubCategoryId"), InverseProperty("InsuranceContractUsers")]
+        public InsuranceContractUserSubCategory InsuranceContractUserSubCategory { get; set; }
+        [MaxLength(20)]
+        public string InsuranceMiniBookNumber { get; set; }
+        [MaxLength(14)]
+        public string Mobile { get; set; }
+        public Gender? Gender { get; set; }
 
         [InverseProperty("InsuranceContractUser")]
         public List<InsuranceContractProposalFilledFormUser> InsuranceContractProposalFilledFormUsers { get; set; }
-
     }
 }

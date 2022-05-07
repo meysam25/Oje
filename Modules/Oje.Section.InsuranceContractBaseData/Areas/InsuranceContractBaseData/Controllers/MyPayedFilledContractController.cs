@@ -18,7 +18,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های من (پرداخت شده)")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های پرداخت شده")]
     [CustomeAuthorizeFilter]
     public class MyPayedFilledContractController: Controller
     {
@@ -46,18 +46,18 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های من (پرداخت شده)", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های پرداخت شده", Icon = "fa-file-signature", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های من (پرداخت شده)";
+            ViewBag.Title = "خسارت های پرداخت شده";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyPayedFilledContract", new { area = "InsuranceContractBaseData" });
             ViewBag.layer = "_WebLayout";
 
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های من (پرداخت شده)", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های پرداخت شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -85,7 +85,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های من (پرداخت شده)", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های پرداخت شده", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {

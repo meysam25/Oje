@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Interfac;
+﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,6 +39,8 @@ namespace Oje.AccountService.Models.DB
         [Required]
         [MaxLength(50)]
         public string Lastname { get; set; }
+        [MaxLength(50)]
+        public string FatherName { get; set; }
         [Required]
         [MaxLength(200)]
         public string Password { get; set; }
@@ -103,6 +106,12 @@ namespace Oje.AccountService.Models.DB
         public decimal? MapLon { get; set; }
         public byte? MapZoom { get; set; }
         public NetTopologySuite.Geometries.Point MapLocation { get; set; }
+        public DateTime? HireDate { get; set; }
+        public Gender? Gender { get; set; }
+        [MaxLength(20)]
+        public string ShenasnameNo { get; set; }
+        public MarrageStatus? MarrageStatus { get; set; }
+        public int? BankId { get; set; }
         public int? SiteSettingId { get; set; }
 
         [NotMapped]

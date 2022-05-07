@@ -131,6 +131,12 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "fatherName",
+              "type": "text",
+              "label": "نام پدر"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "nationalCode",
               "type": "text",
               "label": "کد ملی"
@@ -139,8 +145,7 @@
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "email",
               "type": "text",
-              "label": "ایمیل",
-              "isRequired": true
+              "label": "ایمیل"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -162,6 +167,30 @@
               "type": "password",
               "label": "تکرار کلمه عبور",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "gender",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/Gender",
+              "label": "جنسیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "marrageStatus",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/MarrageStatus",
+              "label": "وضعیت تاهل"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "shenasnameNo",
+              "type": "text",
+              "label": "شماره شناسنامه"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -228,6 +257,21 @@
               "name": "birthDate",
               "type": "persianDateTime",
               "label": "تاریخ تولد"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "hireDate",
+              "type": "persianDateTime",
+              "label": "تاریخ استخدام"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "bankId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/UserAccount/UserManager/GetBankList",
+              "label": "بانک"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -341,7 +385,6 @@
               "name": "username",
               "type": "text",
               "label": "نام کاربری",
-              "maxLength": 50,
               "isRequired": true
             },
             {
@@ -360,6 +403,12 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "fatherName",
+              "type": "text",
+              "label": "نام پدر"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "nationalCode",
               "type": "text",
               "label": "کد ملی"
@@ -368,8 +417,7 @@
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "email",
               "type": "text",
-              "label": "ایمیل",
-              "isRequired": true
+              "label": "ایمیل"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -382,13 +430,39 @@
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "password",
               "type": "password",
-              "label": "کلمه عبور"
+              "label": "کلمه عبور",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "confirmPassword",
               "type": "password",
-              "label": "تکرار کلمه عبور"
+              "label": "تکرار کلمه عبور",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "gender",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/Gender",
+              "label": "جنسیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "marrageStatus",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/MarrageStatus",
+              "label": "وضعیت تاهل"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "shenasnameNo",
+              "type": "text",
+              "label": "شماره شناسنامه"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -455,6 +529,21 @@
               "name": "birthDate",
               "type": "persianDateTime",
               "label": "تاریخ تولد"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "hireDate",
+              "type": "persianDateTime",
+              "label": "تاریخ استخدام"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "bankId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/UserAccount/UserManager/GetBankList",
+              "label": "بانک"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",

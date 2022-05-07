@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
+using Oje.Infrastructure.Enums;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.View
 {
@@ -46,5 +43,11 @@ namespace Oje.AccountService.Models.View
         public decimal? mapLat { get; set; }
         public decimal? mapLon { get; set; }
         public byte? mapZoom { get; set; }
+        public string fatherName { get; set; }
+        public string hireDate { get; set; }
+        public Gender? gender { get; set; }
+        public string shenasnameNo { get; set; }
+        public MarrageStatus? marrageStatus { get; set; }
+        public int? bankId { get; set; }
     }
 }

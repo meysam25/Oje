@@ -1,10 +1,5 @@
 ﻿using Oje.Infrastructure.Models;
 using Oje.PaymentService.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Interfaces
 {
@@ -16,5 +11,6 @@ namespace Oje.PaymentService.Interfaces
         ApiResult Update(BankCreateUpdateVM input, long? userId);
         GridResultVM<BankMainGridResultVM> GetList(BankMainGrid searchInput);
         object GetLightList();
+        int? GetByCode(int? code);
     }
 }
