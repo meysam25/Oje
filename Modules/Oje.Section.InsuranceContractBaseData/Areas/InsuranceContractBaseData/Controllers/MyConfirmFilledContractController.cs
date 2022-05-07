@@ -16,9 +16,9 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های جدید")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های تایید شده")]
     [CustomeAuthorizeFilter]
-    public class MyFilledContractController : Controller
+    public class MyConfirmFilledContractController: Controller
     {
         readonly IMyFilledContractService MyFilledContractService = null;
         readonly IInsuranceContractProposalFilledFormService InsuranceContractProposalFilledFormService = null;
@@ -27,10 +27,10 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 
         readonly List<InsuranceContractProposalFilledFormType> validStatus = new List<InsuranceContractProposalFilledFormType>()
             {
-                InsuranceContractProposalFilledFormType.New
+                InsuranceContractProposalFilledFormType.Confirm
             };
 
-        public MyFilledContractController
+        public MyConfirmFilledContractController
                 (
                     IMyFilledContractService MyFilledContractService,
                     ISiteSettingService SiteSettingService,
@@ -44,23 +44,23 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های جدید", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های تایید شده", Icon = "fa-file-signature", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های جدید";
-            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyFilledContract", new { area = "InsuranceContractBaseData" });
+            ViewBag.Title = "خسارت های تایید شده";
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyConfirmFilledContract", new { area = "InsuranceContractBaseData" });
             ViewBag.layer = "_WebLayout";
 
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های جدید", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های تایید شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "MyFilledContract")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "MyConfirmFilledContract")));
         }
 
         [AreaConfig(Title = "مشاهده جززیات خسارت ثبت شده", Icon = "fa-eye")]
@@ -83,7 +83,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های جدید", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های تایید شده", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {

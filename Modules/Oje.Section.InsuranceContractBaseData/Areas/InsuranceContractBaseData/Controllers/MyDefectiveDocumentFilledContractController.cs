@@ -29,7 +29,6 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 
         readonly List<InsuranceContractProposalFilledFormType> validStatus = new List<InsuranceContractProposalFilledFormType>()
             {
-                InsuranceContractProposalFilledFormType.W8ForReciveingRealDocuments,
                 InsuranceContractProposalFilledFormType.DefectiveDocument
             };
 

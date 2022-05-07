@@ -9,6 +9,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
+using Oje.Security.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -16,51 +17,54 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های جدید")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "درانتظار دریافت اصل مدرک")]
     [CustomeAuthorizeFilter]
-    public class MyFilledContractController : Controller
+    public class MyW8ForReciveingRealDocumentsFilledContractController: Controller
     {
         readonly IMyFilledContractService MyFilledContractService = null;
         readonly IInsuranceContractProposalFilledFormService InsuranceContractProposalFilledFormService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService = null;
+        readonly IBlockAutoIpService BlockAutoIpService = null;
 
         readonly List<InsuranceContractProposalFilledFormType> validStatus = new List<InsuranceContractProposalFilledFormType>()
             {
-                InsuranceContractProposalFilledFormType.New
+                InsuranceContractProposalFilledFormType.W8ForReciveingRealDocuments
             };
 
-        public MyFilledContractController
+        public MyW8ForReciveingRealDocumentsFilledContractController
                 (
                     IMyFilledContractService MyFilledContractService,
                     ISiteSettingService SiteSettingService,
                     IInsuranceContractProposalFilledFormService InsuranceContractProposalFilledFormService,
-                    IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService
+                    IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService,
+                    IBlockAutoIpService BlockAutoIpService
                 )
         {
             this.MyFilledContractService = MyFilledContractService;
             this.SiteSettingService = SiteSettingService;
             this.InsuranceContractProposalFilledFormService = InsuranceContractProposalFilledFormService;
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
+            this.BlockAutoIpService = BlockAutoIpService;
         }
 
-        [AreaConfig(Title = "خسارت های جدید", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "درانتظار دریافت اصل مدرک", Icon = "fa-file-signature", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های جدید";
-            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyFilledContract", new { area = "InsuranceContractBaseData" });
+            ViewBag.Title = "درانتظار دریافت اصل مدرک";
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyW8ForReciveingRealDocumentsFilledContract", new { area = "InsuranceContractBaseData" });
             ViewBag.layer = "_WebLayout";
 
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های جدید", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست درانتظار دریافت اصل مدرک", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "MyFilledContract")));
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "MyW8ForReciveingRealDocumentsFilledContract")));
         }
 
         [AreaConfig(Title = "مشاهده جززیات خسارت ثبت شده", Icon = "fa-eye")]
@@ -78,12 +82,12 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         public IActionResult DownloadPdf([FromQuery] GlobalLongId input)
         {
             return File(
-                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("Detaile", "MyFilledContract", new { area = "InsuranceContractBaseData", id = input.id, isPrint = true }), Request.Cookies),
+                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("Detaile", "MyDefectiveDocumentFilledContract", new { area = "InsuranceContractBaseData", id = input.id, isPrint = true }), Request.Cookies),
                     System.Net.Mime.MediaTypeNames.Application.Pdf, DateTime.Now.ToFaDate("_") + "_" + DateTime.Now.ToString("HH_mm_ss") + ".pdf"
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های جدید", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست درانتظار دریافت اصل مدرک", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {
@@ -96,6 +100,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         {
             return Json(MyFilledContractService.GetPPFImageList(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, validStatus));
         }
+
 
         [AreaConfig(Title = "مشاهده لیست تاریخچه", Icon = "fa-list-alt")]
         [HttpPost]
