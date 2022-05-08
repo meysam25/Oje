@@ -10,9 +10,6 @@ using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -46,7 +43,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های پرداخت شده", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های پرداخت شده", Icon = "fa-credit-card", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

@@ -30,6 +30,16 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         [ForeignKey("InsuranceContractId"), InverseProperty("InsuranceContractProposalFilledForms")]
         public InsuranceContract InsuranceContract { get; set; }
         public long? Price { get; set; }
+        public ContractLocation? ReciveLocation { get; set; }
+        public DateTime? ReciveDate { get; set; }
+        [MaxLength(20)]
+        public string ReciveTime { get; set; }
+        [MaxLength(50)]
+        public string ReciveTell { get; set; }
+        [MaxLength(4000)]
+        public string ReciveAddress { get; set; }
+        public byte? ReciveZoom { get; set; }
+        public NetTopologySuite.Geometries.Point ReciveMapLocation { get; set; }
         public int SiteSettingId { get; set; }
 
         [InverseProperty("InsuranceContractProposalFilledForm")]

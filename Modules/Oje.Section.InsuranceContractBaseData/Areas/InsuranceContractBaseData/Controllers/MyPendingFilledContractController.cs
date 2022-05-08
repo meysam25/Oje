@@ -44,7 +44,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های در دست برسی", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های در دست برسی", Icon = "fa-file-search", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

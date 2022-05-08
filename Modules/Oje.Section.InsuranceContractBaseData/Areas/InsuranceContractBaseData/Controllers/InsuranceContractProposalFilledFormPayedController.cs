@@ -15,7 +15,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های ثبت شده پرداخت شده")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های پرداخت شده")]
     [CustomeAuthorizeFilter]
     public class InsuranceContractProposalFilledFormPayedController : Controller
     {
@@ -36,16 +36,16 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های ثبت شده پرداخت شده", Icon = "fa-hospital-symbol", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های پرداخت شده", Icon = "fa-credit-card", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های ثبت شده پرداخت شده";
+            ViewBag.Title = "خسارت های پرداخت شده";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "InsuranceContractProposalFilledFormPayed", new { area = "InsuranceContractBaseData" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های ثبت شده پرداخت شده", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های پرداخت شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -53,7 +53,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "InsuranceContractProposalFilledFormPayed")));
         }
 
-        [AreaConfig(Title = "حذف خسارت های ثبت شده پرداخت شده", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "حذف خسارت های پرداخت شده", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
@@ -106,7 +106,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های ثبت شده پرداخت شده", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های پرداخت شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractProposalFilledFormMainGrid searchInput)
         {
@@ -134,7 +134,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractProposalFilledFormStatusLogService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
-        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های ثبت شده پرداخت شده", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های پرداخت شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {

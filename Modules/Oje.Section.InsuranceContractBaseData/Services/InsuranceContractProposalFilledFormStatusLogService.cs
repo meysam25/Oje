@@ -108,7 +108,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     id = t.CreateDate,
                     status = t.Status,
-                    createDate = t.CreateDate
+                    createDate = t.CreateDate,
+                    t.Description
                 })
                 .ToList()
                 .Select(t => new
@@ -116,7 +117,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     row = ++row,
                     id = t.id.Ticks,
                     status = t.status.GetEnumDisplayName(),
-                    createDate = t.createDate.ToString("hh:MM") + " " + t.createDate.ToFaDate()
+                    createDate = t.createDate.ToString("hh:MM") + " " + t.createDate.ToFaDate(),
+                    description = t.Description
                 })
                 .ToList()
             };

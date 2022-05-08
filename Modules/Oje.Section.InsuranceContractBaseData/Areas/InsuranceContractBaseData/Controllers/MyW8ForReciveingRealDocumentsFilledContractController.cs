@@ -17,9 +17,9 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "درانتظار دریافت اصل مدرک")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های تایید شده در انتظار دریافت اصل مدرک")]
     [CustomeAuthorizeFilter]
-    public class MyW8ForReciveingRealDocumentsFilledContractController: Controller
+    public class MyW8ForReciveingRealDocumentsFilledContractController : Controller
     {
         readonly IMyFilledContractService MyFilledContractService = null;
         readonly IInsuranceContractProposalFilledFormService InsuranceContractProposalFilledFormService = null;
@@ -48,18 +48,18 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.BlockAutoIpService = BlockAutoIpService;
         }
 
-        [AreaConfig(Title = "درانتظار دریافت اصل مدرک", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های تایید شده در انتظار دریافت اصل مدرک", Icon = "fa-map-marked-alt", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "درانتظار دریافت اصل مدرک";
+            ViewBag.Title = "خسارت های تایید شده در انتظار دریافت اصل مدرک";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyW8ForReciveingRealDocumentsFilledContract", new { area = "InsuranceContractBaseData" });
             ViewBag.layer = "_WebLayout";
 
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست درانتظار دریافت اصل مدرک", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه خسارت های تایید شده در انتظار دریافت اصل مدرک", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -67,7 +67,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "MyW8ForReciveingRealDocumentsFilledContract")));
         }
 
-        [AreaConfig(Title = "مشاهده جززیات خسارت ثبت شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده خسارت های تایید شده در انتظار دریافت اصل مدرک", Icon = "fa-eye")]
         [HttpGet]
         public IActionResult Detaile([FromQuery] long? id, [FromQuery] bool isPrint = false)
         {
@@ -87,20 +87,33 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست درانتظار دریافت اصل مدرک", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های تایید شده در انتظار دریافت اصل مدرک", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {
             return Json(MyFilledContractService.GetList(searchInput, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, validStatus));
         }
 
-        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های ثبت شده", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های تایید شده در انتظار دریافت اصل مدرک", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {
             return Json(MyFilledContractService.GetPPFImageList(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, validStatus));
         }
 
+        [AreaConfig(Title = "مشاهده مقعیت دریافت", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetMapInfo([FromForm] GlobalLongId input)
+        {
+            return Json(MyFilledContractService.GetAddress(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, validStatus));
+        }
+
+        [AreaConfig(Title = "به روز رسانی  موقعیت", Icon = "fa-pencil")]
+        [HttpPost]
+        public IActionResult UpdateAddress([FromForm] MyFilledContractAddressVM input)
+        {
+            return Json(MyFilledContractService.UpdateAddress(input, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, validStatus));
+        }
 
         [AreaConfig(Title = "مشاهده لیست تاریخچه", Icon = "fa-list-alt")]
         [HttpPost]

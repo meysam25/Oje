@@ -2618,7 +2618,7 @@ function doPageActions(actionOnLastStep) {
 
     if (actionOnLastStep && actionOnLastStep.actionName) {
         if (actionOnLastStep.actionName == 'refreshGrid' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
-            if ($('#' + actionOnLastStep.objectId)[0].refreshData)
+            if ($('#' + actionOnLastStep.objectId).length > 0 && $('#' + actionOnLastStep.objectId)[0].refreshData)
                 $('#' + actionOnLastStep.objectId)[0].refreshData();
             else if ($('#' + actionOnLastStep.objectId)[0].tempGridConfig) {
                 $('#' + actionOnLastStep.objectId).initMyGrid($('#' + actionOnLastStep.objectId)[0].tempGridConfig);
@@ -2754,7 +2754,8 @@ function simpleAjax(key, url, curElement) {
         postData.append('id', key);
         postForm(url, postData, function (res) {
             if (res && res.isSuccess == true) {
-                gridSelector[0].refreshData();
+                if (gridSelector[0].refreshData)
+                    gridSelector[0].refreshData();
             }
         }, null, function () { hideLoader(gridSelector); });
     }
@@ -2783,7 +2784,7 @@ function postModalData(curElement, gridId, url, ignoreCloseModal) {
                 clearForm(qSelector);
                 setFocusToFirstVisbleText(qSelector);
             }
-            if (this.gridId) {
+            if (this.gridId && $('#' + this.gridId).length > 0 && $('#' + this.gridId)[0].refreshData) {
                 $('#' + this.gridId)[0].refreshData();
             }
         }
@@ -2792,7 +2793,8 @@ function postModalData(curElement, gridId, url, ignoreCloseModal) {
 
 function refreshGrid(gridId, currButtonInsideModal) {
     closeThisModal(currButtonInsideModal);
-    $('#' + gridId)[0].refreshData();
+    if ($('#' + gridId).length > 0 && $('#' + gridId)[0].refreshData)
+        $('#' + gridId)[0].refreshData();
 }
 
 function postPanel(curElement, url, exteraParameters, clearPanelAfter) {
@@ -2884,7 +2886,8 @@ function uploadFile(fileName, accepts, url, curButton) {
             showLoader(formObj)
             postForm(url, formData, function (res) {
                 if (res.isSuccess == true) {
-                    $(curButton).closest('.myGridCTRL')[0].refreshData();
+                    if ($(curButton).closest('.myGridCTRL').length > 0 && $(curButton).closest('.myGridCTRL')[0].refreshData)
+                        $(curButton).closest('.myGridCTRL')[0].refreshData();
                 }
             }, function () {
             }, function () {

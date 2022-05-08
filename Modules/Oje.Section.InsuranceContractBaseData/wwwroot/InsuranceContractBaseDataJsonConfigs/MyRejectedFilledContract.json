@@ -141,6 +141,10 @@
                     {
                       "field": "createDate",
                       "caption": "تاریخ ایجاد"
+                    },
+                    {
+                      "field": "description",
+                      "caption": "توضیحات"
                     }
                   ]
                 }

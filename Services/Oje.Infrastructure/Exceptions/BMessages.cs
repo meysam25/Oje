@@ -614,6 +614,14 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "موجودی کیف پول کافی نمی باشد")]
         Inventory_Is_Not_Enough = 301,
         [Display(Name = "امکان ویرایش نصبت خانوادگی وجود ندارد")]
-        FamilyRelation_Can_Not_Be_Edited = 302
+        FamilyRelation_Can_Not_Be_Edited = 302,
+        [Display(Name = "لطفا محل دریافت را انتخاب کنید")]
+        Please_Select_Recive_Location = 303,
+        [Display(Name = "لطفا زمان را مشخص کنید")]
+        Please_Select_Time = 304,
+        [Display(Name = "لطفا ادرس را وارد کنید")]
+        Please_Enter_Address = 305,
+        [Display(Name = "لطفا مقعیت را در نقشه مشخص کنید")]
+        Please_Select_Map = 306
     }
 }

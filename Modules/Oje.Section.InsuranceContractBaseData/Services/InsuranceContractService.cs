@@ -442,11 +442,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 new List<IdTitle>() { new IdTitle() { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } }
                 .Union(
                     db.InsuranceContractUsers
-                    .Where(t => t.Id == contractUserId).Select(t => new { id = t.Id, title = t.User.Firstname + " " + t.User.Lastname }).Select(t => new IdTitle() { id = t.id + "", title = t.title })
+                    .Where(t => t.Id == contractUserId).Select(t => new { id = t.Id, title = t.FirstName + " " + t.LastName }).Select(t => new IdTitle() { id = t.id + "", title = t.title })
                     .ToList()
                         .Union(
                               db.InsuranceContractUsers
-                            .Where(t => t.ParentId == contractUserId).Select(t => new { id = t.Id, title = t.User.Firstname + " " + t.User.Lastname }).Select(t => new IdTitle() { id = t.id + "", title = t.title })
+                            .Where(t => t.ParentId == contractUserId).Select(t => new { id = t.Id, title = t.FirstName + " " + t.LastName }).Select(t => new IdTitle() { id = t.id + "", title = t.title })
                             .ToList()
                         )
                 )

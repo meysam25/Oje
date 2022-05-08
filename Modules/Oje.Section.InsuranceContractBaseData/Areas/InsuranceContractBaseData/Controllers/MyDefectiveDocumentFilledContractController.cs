@@ -17,7 +17,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت دارای نقص")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت دارای نقص مدرک")]
     [CustomeAuthorizeFilter]
     public class MyDefectiveDocumentFilledContractController: Controller
     {
@@ -48,18 +48,18 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.BlockAutoIpService = BlockAutoIpService;
         }
 
-        [AreaConfig(Title = "خسارت دارای نقص", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت دارای نقص مدرک", Icon = "fa-layer-minus", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت دارای نقص";
+            ViewBag.Title = "خسارت دارای نقص مدرک";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyDefectiveDocumentFilledContract", new { area = "InsuranceContractBaseData" });
             ViewBag.layer = "_WebLayout";
 
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت دارای نقص", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت دارای نقص مدرک", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -87,7 +87,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت دارای نقص", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت دارای نقص مدرک", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {

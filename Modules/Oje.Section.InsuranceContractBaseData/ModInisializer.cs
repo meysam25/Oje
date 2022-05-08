@@ -19,7 +19,7 @@ namespace Oje.Section.InsuranceContractBaseData
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<InsuranceContractBaseDataDBContext>(
-               options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
+               options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => { b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery); b.UseNetTopologySuite(); })
            );
 
             services.AddScoped<IInsuranceContractTypeService, InsuranceContractTypeService>();

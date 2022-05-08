@@ -15,7 +15,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های ثبت شده ندر انتظار دریافت اصل مدارک")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های تایید شده در انتظار دریافت اصل مدارک")]
     [CustomeAuthorizeFilter]
     public class InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsController : Controller
     {
@@ -36,16 +36,16 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های ثبت شده ندر انتظار دریافت اصل مدارک", Icon = "fa-hospital-symbol", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های تایید شده در انتظار دریافت اصل مدارک", Icon = "fa-map-marked-alt", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های ثبت شده ندر انتظار دریافت اصل مدارک";
+            ViewBag.Title = "خسارت های تایید شده در انتظار دریافت اصل مدارک";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "InsuranceContractProposalFilledFormW8ForReciveingRealDocuments", new { area = "InsuranceContractBaseData" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های ثبت شده ندر انتظار دریافت اصل مدارک", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های تایید شده در انتظار دریافت اصل مدارک", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -53,7 +53,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("InsuranceContractBaseData", "InsuranceContractProposalFilledFormW8ForReciveingRealDocuments")));
         }
 
-        [AreaConfig(Title = "حذف خسارت های ثبت شده ندر انتظار دریافت اصل مدارک", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "حذف خسارت های تایید شده در انتظار دریافت اصل مدارک", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
@@ -106,7 +106,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های ثبت شده ندر انتظار دریافت اصل مدارک", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های تایید شده در انتظار دریافت اصل مدارک", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractProposalFilledFormMainGrid searchInput)
         {
@@ -134,7 +134,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractProposalFilledFormStatusLogService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
-        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های ثبت شده ندر انتظار دریافت اصل مدارک", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده مدارک لیست خسارت های تایید شده در انتظار دریافت اصل مدارک", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {

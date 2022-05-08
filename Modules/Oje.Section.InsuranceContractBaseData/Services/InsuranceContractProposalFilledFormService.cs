@@ -345,7 +345,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (!string.IsNullOrEmpty(searchInput.contractTitle))
                 quiryResult = quiryResult.Where(t => t.InsuranceContract.Title.Contains(searchInput.contractTitle));
             if (!string.IsNullOrEmpty(searchInput.familyMemers))
-                quiryResult = quiryResult.Where(t => t.InsuranceContractProposalFilledFormUsers.Any(tt => (tt.InsuranceContractUser.User.Firstname + " " + tt.InsuranceContractUser.User.Lastname).Contains(searchInput.familyMemers)));
+                quiryResult = quiryResult.Where(t => t.InsuranceContractProposalFilledFormUsers.Any(tt => (tt.InsuranceContractUser.FirstName + " " + tt.InsuranceContractUser.LastName).Contains(searchInput.familyMemers)));
             if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ToEnDate() != null)
             {
                 var targetDate = searchInput.createDate.ToEnDate().Value;
@@ -374,7 +374,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     status = t.Status,
                     confirmDate = t.ConfirmDate,
                     contractTitle = t.InsuranceContract.Title,
-                    familyMemers = t.InsuranceContractProposalFilledFormUsers.Select(tt => tt.InsuranceContractUser.User.Firstname + " " + tt.InsuranceContractUser.User.Firstname).ToList()
+                    familyMemers = t.InsuranceContractProposalFilledFormUsers.Select(tt => tt.InsuranceContractUser.FirstName + " " + tt.InsuranceContractUser.LastName).ToList()
                 })
                 .ToList()
                 .Select(t => new InsuranceContractProposalFilledFormMainGridResultVM

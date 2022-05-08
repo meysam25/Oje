@@ -16,7 +16,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های اصلاح شده")]
+    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های رفع نقص شده برای بازبینی")]
     [CustomeAuthorizeFilter]
     public class MyReviewedFilledContractController: Controller
     {
@@ -44,18 +44,18 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "خسارت های اصلاح شده", Icon = "fa-file-signature", IsMainMenuItem = true)]
+        [AreaConfig(Title = "خسارت های رفع نقص شده برای بازبینی", Icon = "fa-print-search", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "خسارت های اصلاح شده";
+            ViewBag.Title = "خسارت های رفع نقص شده برای بازبینی";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyReviewedFilledContract", new { area = "InsuranceContractBaseData" });
             ViewBag.layer = "_WebLayout";
 
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های اصلاح شده", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست خسارت های رفع نقص شده برای بازبینی", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -83,7 +83,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های اصلاح شده", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های رفع نقص شده برای بازبینی", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {
