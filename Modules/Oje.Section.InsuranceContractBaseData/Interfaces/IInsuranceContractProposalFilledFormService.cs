@@ -14,8 +14,5 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         GridResultVM<InsuranceContractProposalFilledFormMainGridResultVM> GetList(InsuranceContractProposalFilledFormMainGrid searchInput, int? siteSettingId, InsuranceContractProposalFilledFormType status);
         object GetPPFImageList(GlobalGridParentLong input, int? siteSettingId, InsuranceContractProposalFilledFormType status);
         object GetStatus(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status);
-        ApiResult UpdateStatus(InsuranceContractProposalFilledFormChangeStatusVM input, int? siteSettingId, long? loginUserId, InsuranceContractProposalFilledFormType status);
-        ApiResult UpdatePrice(InsuranceContractProposalFilledFormChangePriceVM input, int? siteSettingId, long? loginUserId, InsuranceContractProposalFilledFormType status);
-        object GetPrice(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status);
     }
 }

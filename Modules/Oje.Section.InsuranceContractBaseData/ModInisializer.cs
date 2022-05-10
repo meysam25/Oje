@@ -40,6 +40,7 @@ namespace Oje.Section.InsuranceContractBaseData
             services.AddScoped<IMyFilledContractService, MyFilledContractService>();
             services.AddScoped<IInsuranceContractUserSubCategoryService, InsuranceContractUserSubCategoryService>();
             services.AddScoped<IInsuranceContractUserBaseInsuranceService, InsuranceContractUserBaseInsuranceService>();
+            services.AddScoped<IInsuranceContractInsuranceContractTypeMaxPriceService, InsuranceContractInsuranceContractTypeMaxPriceService>();
         }
     }
 }

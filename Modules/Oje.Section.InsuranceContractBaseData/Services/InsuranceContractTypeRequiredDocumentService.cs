@@ -194,17 +194,17 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 desc = typeDescrtiption,
                 items = db.InsuranceContractTypeRequiredDocuments
                 .Where(t => t.IsActive == true && t.SiteSettingId == siteSettingId && t.InsuranceContractTypeId == insuranceContractTypeId && t.InsuranceContractId == insuranceContractId)
-                .Select(t => new
+                .Select(t => new 
                 {
                     title = t.Title,
                     isRequired = t.IsRequired,
                     sample = t.DownloadFile
                 })
                 .ToList()
-                .Select(t => new 
+                .Select(t => new RequiredDocumentItemVM
                 {
-                    t.title,
-                    t.isRequired,
+                    title = t.title,
+                    isRequired = t.isRequired,
                     sample = !string.IsNullOrEmpty(t.sample) ? (GlobalConfig.FileAccessHandlerUrl + t.sample) : ""
                 })
                 .ToList()

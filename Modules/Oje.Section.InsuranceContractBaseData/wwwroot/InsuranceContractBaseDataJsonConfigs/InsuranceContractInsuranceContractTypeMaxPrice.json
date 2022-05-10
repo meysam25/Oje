@@ -1,0 +1,174 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "InsuranceContractInsuranceContractTypeMaxPriceGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('InsuranceContractInsuranceContractTypeMaxPriceaddGridModal', this)",
+              "type": "add",
+              "modalId": "InsuranceContractInsuranceContractTypeMaxPriceaddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "InsuranceContractInsuranceContractTypeMaxPriceeditGridModal",
+                "url": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetById\\', \\'InsuranceContractInsuranceContractTypeMaxPriceeditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "typeId",
+              "caption": "نوع",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "cid",
+              "caption": "قرارداد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "InsuranceContractInsuranceContractTypeMaxPriceaddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "typeId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetTypeList",
+              "label": "نوع قرارداد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetContractList",
+              "label": "قرارداد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractInsuranceContractTypeMaxPriceGrid', '/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "InsuranceContractInsuranceContractTypeMaxPriceeditGridModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "staticTypeId",
+              "type": "hidden"
+            },
+            {
+              "name": "staticCid",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "typeId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetTypeList",
+              "label": "نوع قرارداد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetContractList",
+              "label": "قرارداد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractInsuranceContractTypeMaxPriceGrid', '/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

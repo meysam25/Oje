@@ -23,6 +23,8 @@ namespace Oje.FileService.Models.DB
         public long? ObjectId { get; set; }
         [MaxLength(50)]
         public string ObjectIdStr { get; set; }
+        [MaxLength(100)]
+        public string Title { get; set; }
         public int? SiteSettingId { get; set; }
 
         [NotMapped]

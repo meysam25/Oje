@@ -1,10 +1,6 @@
 ﻿using Oje.Infrastructure.Models;
 using Oje.Section.InsuranceContractBaseData.Models.View;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Interfaces
 {
@@ -18,5 +14,7 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         bool Exist(List<int> ids, int? siteSettingId, long? loginUserId);
         object GetLightList();
         object GetLightList(int? contractId);
+        bool Exist(int? id, int? siteSettingId);
+        object GetLightListBySiteSettingId(int? siteSettingId);
     }
 }

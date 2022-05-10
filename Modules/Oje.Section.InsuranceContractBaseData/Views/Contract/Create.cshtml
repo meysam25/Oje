@@ -17,6 +17,9 @@
     loadJsonConfig('/Contract/GetJsonConfig','holderContractSection');
     function updateRequiredDocumentInputs(targetId) {
         var sv = $('#' + targetId).find('option:selected').attr('value');
+        var sName = $('#' + targetId).attr('name');
+        if(sName)
+            sName = sName.split('.')[0];
         var formData = new FormData();
         formData.append('ctId', sv);
         for(var item in exteraModelParams)
@@ -28,6 +31,9 @@
             var gQuiry = $('#' + targetId).closest('.MultiRowInputRow');
             var sQuiry = gQuiry.find('.debitFileUploader');
             if(sQuiry.length > 0) {
+                for(var i = 0; i < res.items.length; i++) {
+                    res.items[i].name =sName + '.' + res.items[i].title;
+                }
                 sQuiry[0].addNewRow(res.items);
                 gQuiry.find('.holderDescription').html(res.desc);
             }

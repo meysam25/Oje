@@ -4,16 +4,12 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using Oje.FileService.Services.EContext;
 using Oje.FileService.Interfaces;
 using Oje.FileService.Models.DB;
-using System.Runtime.InteropServices;
 using Imazen.WebP;
 
 namespace Oje.FileService.Services
@@ -25,7 +21,7 @@ namespace Oje.FileService.Services
         {
             this.db = db;
         }
-        public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null)
+        public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null, string title = null)
         {
             if (userPic == null || userPic.Length == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
@@ -40,7 +36,8 @@ namespace Oje.FileService.Services
                 ObjectId = objectId,
                 SiteSettingId = siteSettingId,
                 FileName = "empty",
-                ObjectIdStr = objectIdStr
+                ObjectIdStr = objectIdStr,
+                Title = title
             };
             db.Entry(newFile).State = EntityState.Added;
             db.SaveChanges();
@@ -252,13 +249,15 @@ namespace Oje.FileService.Services
                 .Select(t => new
                 {
                     id = t.Id,
-                    src = t.FileName
+                    src = t.FileName,
+                    title = t.Title
                 })
                 .ToList()
                 .Select(t => new
                 {
                     t.id,
-                    src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg"
+                    src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg",
+                    title = string.IsNullOrEmpty(t.title) ? "" : t.title
                 })
                 .ToList()
                 ;

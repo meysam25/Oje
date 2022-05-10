@@ -549,7 +549,7 @@ function getMapTemplate(ctrl) {
     if (ctrl) {
         if (!ctrl.id)
             ctrl.id = uuidv4RemoveDash();
-        result += '<div style="padding:0px;position:relative;z-index:2;" class="myCtrl mapCtrl form-check">';
+        result += '<div style="padding:0px;position:relative;z-index:2;" class="myCtrl mapCtrl form-check ' + (ctrl.class ? ctrl.class : '') + '">';
         if (ctrl.label)
             result += '<label>' + ctrl.label + '</label>';
         if (ctrl.names && ctrl.names.lat)
@@ -1533,7 +1533,7 @@ function getTextBoxTemplate(ctrl) {
     functionsList.push(function () {
         setTimeout(function () {
             $('#' + this.id).attr('type', (this.type == 'persianDateTime' ? 'text' : this.type));
-        }.bind(this), 350);
+        }.bind(this), 1);
         inputNewLabelEventHandler(this.id);
     }.bind({ id: ctrl.id, type: ctrl.type }));
 

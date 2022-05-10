@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
@@ -17,6 +14,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
             InsuranceContractInsuranceContractTypes = new();
             InsuranceContractTypeRequiredDocuments = new();
             InsuranceContractProposalFilledFormUsers = new();
+            InsuranceContractInsuranceContractTypeMaxPrices = new();
         }
 
         [Key]
@@ -45,5 +43,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public List<InsuranceContractTypeRequiredDocument> InsuranceContractTypeRequiredDocuments { get; set; }
         [InverseProperty("InsuranceContractType")]
         public List<InsuranceContractProposalFilledFormUser> InsuranceContractProposalFilledFormUsers { get; set; }
+        [InverseProperty("InsuranceContractType")]
+        public List<InsuranceContractInsuranceContractTypeMaxPrice> InsuranceContractInsuranceContractTypeMaxPrices { get; set; }
     }
 }

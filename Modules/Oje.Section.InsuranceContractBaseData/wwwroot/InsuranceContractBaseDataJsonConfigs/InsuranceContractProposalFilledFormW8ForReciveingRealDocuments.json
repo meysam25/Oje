@@ -21,35 +21,14 @@
                 "type": "edit",
                 "icon": "fa-usd",
                 "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsImages",
-                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
                 "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
-                "icon": "fa-thumbs-up",
+                "icon": "fa-info",
                 "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentschangeStatusModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/GetStatus\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentschangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-dollar-sign",
-                "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsChangePrice",
-                "template": "function bindRow (curRow) { return '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/GetPrice\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsChangePrice\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-history",
-                "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsPPFStatusHistory",
-                "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+                "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModal",
+                "template": "function bindRow (curRow) { return '<span title=\"جزئیات\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-info\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -87,25 +66,112 @@
               "search": {
                 "searchType": "persianDateTime"
               }
-            },
-            {
-              "field": "familyMemers",
-              "caption": "اعضای خانواده",
-              "search": {
-                "searchType": "text"
-              }
-            },
-            {
-              "field": "confirmDate",
-              "caption": "تاریخ تایید",
-              "search": {
-                "searchType": "persianDateTime"
-              }
             }
           ]
         }
       ],
       "moduals": [
+        {
+          "id": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModal",
+          "title": "جزئیات",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-thumbs-up",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentschangeStatusModal",
+                        "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/GetStatus\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentschangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-dollar-sign",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsChangePrice",
+                        "template": "function bindRow (curRow) { return '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/GetPrice\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsChangePrice\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-history",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsPPFStatusHistory",
+                        "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-usd",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsImages",
+                        "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "id": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModalGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/GetDetailesList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "userFullname",
+                      "caption": "کاربر",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "type",
+                      "caption": "نوع قرارداد",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+
+                    {
+                      "field": "relation",
+                      "caption": "نصبت",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/InsuranceContractUserFamilyRelation",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    },
+                    {
+                      "field": "remindPrice",
+                      "caption": "مبلغ باقی مانده",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsImages",
           "title": "مدارک فرم پیشنهاد",
@@ -117,16 +183,8 @@
                   "id": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsimageGrid",
                   "class": "imageGallery",
                   "formatters": {
-                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/ProposalFilledForm/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/DeletePPFImage\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /><div style=\"text-align:center;\">'+ dataRow.title +'</div></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span></div></div>'; } bindRow(data);"
                   },
-                  "topActions": [
-                    {
-                      "title": "افزودن",
-                      "onClick": "showModal('InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsaddNewPPFImageFile', this)",
-                      "type": "add",
-                      "modalId": "addNewPPFImageModalId"
-                    }
-                  ],
                   "key": "id",
                   "url": "/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/GetPPFImageList",
                   "itemPerPage": 10,
@@ -180,7 +238,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/UpdateStatus')",
+              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModalGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/UpdateStatus')",
               "class": "btn-primary"
             }
           ]
@@ -210,7 +268,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/UpdatePrice')",
+              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModalGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocuments/UpdatePrice')",
               "class": "btn-primary"
             }
           ]

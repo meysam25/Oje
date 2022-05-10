@@ -19,8 +19,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
         public string createDate { get; set; }
         [Display(Name = "وضعیت")]
         public string status { get; set; }
-        [Display(Name = "تاریخ تایید")]
-        public string confirmDate { get; set; }
         [Display(Name = "قرارداد")]
         public string contractTitle { get; set; }
         [Display(Name = "اعضای خانواده")]

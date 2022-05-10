@@ -23,17 +23,20 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         readonly IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly InsuranceContractProposalFilledFormType status = InsuranceContractProposalFilledFormType.Reviewed;
+        readonly IInsuranceContractProposalFilledFormUserService InsuranceContractProposalFilledFormUserService = null;
 
         public InsuranceContractProposalFilledFormReviewedController
             (
                 IInsuranceContractProposalFilledFormService InsuranceContractProposalFilledFormService,
                 ISiteSettingService SiteSettingService,
-                IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService
+                IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService,
+                IInsuranceContractProposalFilledFormUserService InsuranceContractProposalFilledFormUserService
             )
         {
             this.InsuranceContractProposalFilledFormService = InsuranceContractProposalFilledFormService;
             this.SiteSettingService = SiteSettingService;
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
+            this.InsuranceContractProposalFilledFormUserService = InsuranceContractProposalFilledFormUserService;
         }
 
         [AreaConfig(Title = "خسارت های رفع نقص شده برای بازبینی", Icon = "fa-print-search", IsMainMenuItem = true)]
@@ -79,21 +82,21 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         [HttpPost]
         public IActionResult UpdateStatus([FromForm] InsuranceContractProposalFilledFormChangeStatusVM input)
         {
-            return Json(InsuranceContractProposalFilledFormService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, status));
+            return Json(InsuranceContractProposalFilledFormUserService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, status));
         }
 
         [AreaConfig(Title = "مشاهده قیمت تایین شده فرم پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetPrice([FromForm] GlobalLongId input)
         {
-            return Json(InsuranceContractProposalFilledFormService.GetPrice(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
+            return Json(InsuranceContractProposalFilledFormUserService.GetPrice(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
         [AreaConfig(Title = "تغییر قیمت فرم پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdatePrice([FromForm] InsuranceContractProposalFilledFormChangePriceVM input)
         {
-            return Json(InsuranceContractProposalFilledFormService.UpdatePrice(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, status));
+            return Json(InsuranceContractProposalFilledFormUserService.UpdatePrice(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, status));
         }
 
         [AreaConfig(Title = "دانلود پی دی اف فرم پیشنهاد", Icon = "fa-download")]
@@ -139,6 +142,13 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {
             return Json(InsuranceContractProposalFilledFormService.GetPPFImageList(input, SiteSettingService.GetSiteSetting()?.Id, status));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست جزئیات خسارت های رفع نقص شده برای بازبینی", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetDetailesList([FromForm] InsuranceContractProposalFilledFormDetailesMainGrid searchInput)
+        {
+            return Json(InsuranceContractProposalFilledFormUserService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, status));
         }
     }
 }

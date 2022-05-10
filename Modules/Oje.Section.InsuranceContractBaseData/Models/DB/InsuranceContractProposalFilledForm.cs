@@ -11,7 +11,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
     {
         public InsuranceContractProposalFilledForm()
         {
-            InsuranceContractProposalFilledFormStatusLogs = new();
             InsuranceContractProposalFilledFormValues = new();
             InsuranceContractProposalFilledFormJsons = new();
             InsuranceContractProposalFilledFormUsers = new();
@@ -19,9 +18,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
 
         [Key]
         public long Id { get; set; }
-        public InsuranceContractProposalFilledFormType Status { get; set; }
         public DateTime CreateDate { get; set; }
-        public DateTime? ConfirmDate { get; set; }
         public bool IsDelete { get; set; }
         public long CreateUserId { get; set; }
         [ForeignKey("CreateUserId"), InverseProperty("InsuranceContractProposalFilledForms")]
@@ -29,7 +26,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public int InsuranceContractId { get; set; }
         [ForeignKey("InsuranceContractId"), InverseProperty("InsuranceContractProposalFilledForms")]
         public InsuranceContract InsuranceContract { get; set; }
-        public long? Price { get; set; }
         public ContractLocation? ReciveLocation { get; set; }
         public DateTime? ReciveDate { get; set; }
         [MaxLength(20)]
@@ -42,8 +38,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public NetTopologySuite.Geometries.Point ReciveMapLocation { get; set; }
         public int SiteSettingId { get; set; }
 
-        [InverseProperty("InsuranceContractProposalFilledForm")]
-        public List<InsuranceContractProposalFilledFormStatusLog> InsuranceContractProposalFilledFormStatusLogs { get; set; }
         [InverseProperty("InsuranceContractProposalFilledForm")]
         public List<InsuranceContractProposalFilledFormValue> InsuranceContractProposalFilledFormValues { get; set; }
         [InverseProperty("InsuranceContractProposalFilledForm")]

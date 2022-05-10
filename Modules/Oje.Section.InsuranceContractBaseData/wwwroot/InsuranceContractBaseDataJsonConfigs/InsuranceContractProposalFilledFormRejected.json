@@ -17,13 +17,7 @@
                 "prop": "id",
                 "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/Detaile?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
               },
-              {
-                "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormRejectedImages",
-                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormRejectedImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
-              },
+
               {
                 "type": "edit",
                 "icon": "fa-usd",
@@ -32,24 +26,10 @@
               },
               {
                 "type": "edit",
-                "icon": "fa-thumbs-up",
+                "icon": "fa-info",
                 "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormRejectedchangeStatusModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/GetStatus\\', \\'InsuranceContractProposalFilledFormRejectedchangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-dollar-sign",
-                "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormRejectedChangePrice",
-                "template": "function bindRow (curRow) { return '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/GetPrice\\', \\'InsuranceContractProposalFilledFormRejectedChangePrice\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-history",
-                "prop": "id",
-                "modalId": "InsuranceContractProposalFilledFormRejectedPPFStatusHistory",
-                "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormRejectedPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+                "modalId": "InsuranceContractProposalFilledFormRejectedDetailesModal",
+                "template": "function bindRow (curRow) { return '<span title=\"جزئیات\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormRejectedDetailesModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-info\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -87,25 +67,112 @@
               "search": {
                 "searchType": "persianDateTime"
               }
-            },
-            {
-              "field": "familyMemers",
-              "caption": "اعضای خانواده",
-              "search": {
-                "searchType": "text"
-              }
-            },
-            {
-              "field": "confirmDate",
-              "caption": "تاریخ تایید",
-              "search": {
-                "searchType": "persianDateTime"
-              }
             }
           ]
         }
       ],
       "moduals": [
+        {
+          "id": "InsuranceContractProposalFilledFormRejectedDetailesModal",
+          "title": "جزئیات",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-thumbs-up",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormRejectedchangeStatusModal",
+                        "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/GetStatus\\', \\'InsuranceContractProposalFilledFormRejectedchangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-dollar-sign",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormRejectedChangePrice",
+                        "template": "function bindRow (curRow) { return '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/GetPrice\\', \\'InsuranceContractProposalFilledFormRejectedChangePrice\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-history",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormRejectedPPFStatusHistory",
+                        "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormRejectedPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-usd",
+                        "prop": "id",
+                        "modalId": "InsuranceContractProposalFilledFormRejectedImages",
+                        "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormRejectedImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "id": "InsuranceContractProposalFilledFormRejectedDetailesModalGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/GetDetailesList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "userFullname",
+                      "caption": "کاربر",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "type",
+                      "caption": "نوع قرارداد",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+
+                    {
+                      "field": "relation",
+                      "caption": "نصبت",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/InsuranceContractUserFamilyRelation",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    },
+                    {
+                      "field": "remindPrice",
+                      "caption": "مبلغ باقی مانده",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": "InsuranceContractProposalFilledFormRejectedImages",
           "title": "مدارک فرم پیشنهاد",
@@ -117,16 +184,8 @@
                   "id": "InsuranceContractProposalFilledFormRejectedimageGrid",
                   "class": "imageGallery",
                   "formatters": {
-                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/ProposalFilledForm/InsuranceContractProposalFilledFormRejected/DeletePPFImage\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /><div style=\"text-align:center;\">'+ dataRow.title +'</div></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span></div></div>'; } bindRow(data);"
                   },
-                  "topActions": [
-                    {
-                      "title": "افزودن",
-                      "onClick": "showModal('InsuranceContractProposalFilledFormRejectedaddNewPPFImageFile', this)",
-                      "type": "add",
-                      "modalId": "addNewPPFImageModalId"
-                    }
-                  ],
                   "key": "id",
                   "url": "/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/GetPPFImageList",
                   "itemPerPage": 10,
@@ -180,7 +239,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormRejectedGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/UpdateStatus')",
+              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormRejectedDetailesModalGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/UpdateStatus')",
               "class": "btn-primary"
             }
           ]
@@ -210,7 +269,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormRejectedGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/UpdatePrice')",
+              "onClick": "postModalData(this, 'InsuranceContractProposalFilledFormRejectedDetailesModalGrid', '/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/UpdatePrice')",
               "class": "btn-primary"
             }
           ]

@@ -31,13 +31,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services.EContext
         public DbSet<InsuranceContractProposalFilledFormUser> InsuranceContractProposalFilledFormUsers { get; set; }
         public DbSet<InsuranceContractUserSubCategory> InsuranceContractUserSubCategories { get; set; }
         public DbSet<InsuranceContractUserBaseInsurance> InsuranceContractUserBaseInsurances { get; set; }
+        public DbSet<InsuranceContractInsuranceContractTypeMaxPrice> InsuranceContractInsuranceContractTypeMaxPrices { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<InsuranceContractInsuranceContractType>().HasKey(t => new { t.InsuranceContractTypeId, t.InsuranceContractId });
-            modelBuilder.Entity<InsuranceContractProposalFilledFormStatusLog>().HasKey(t => new { t.InsuranceContractProposalFilledFormId, t.Status, t.CreateDate });
-            modelBuilder.Entity<InsuranceContractProposalFilledFormUser>().HasKey(t => new { t.InsuranceContractProposalFilledFormId, t.InsuranceContractUserId, t.InsuranceContractTypeId });
+            modelBuilder.Entity<InsuranceContractInsuranceContractTypeMaxPrice>().HasKey(t => new { t.InsuranceContractTypeId, t.InsuranceContractId });
+            modelBuilder.Entity<InsuranceContractProposalFilledFormStatusLog>().HasKey(t => new { t.InsuranceContractProposalFilledFormUserId, t.Status, t.CreateDate });
 
             base.OnModelCreating(modelBuilder);
         }

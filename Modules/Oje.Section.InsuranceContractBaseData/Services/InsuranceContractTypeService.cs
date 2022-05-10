@@ -227,5 +227,24 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             return result;
         }
+
+        public bool Exist(int? id, int? siteSettingId)
+        {
+            return db.InsuranceContractTypes.Any(t => t.Id == id && t.SiteSettingId == siteSettingId);
+        }
+
+        public object GetLightListBySiteSettingId(int? siteSettingId)
+        {
+            List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
+
+            result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title
+                }).ToList());
+
+            return result;
+        }
     }
 }

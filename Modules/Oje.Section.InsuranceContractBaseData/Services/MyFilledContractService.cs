@@ -32,7 +32,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public object GetAddress(long? id, int? siteSettingId, long? userId, List<InsuranceContractProposalFilledFormType> validStatus)
         {
             return db.InsuranceContractProposalFilledForms
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.CreateUserId == userId && validStatus.Contains(t.Status))
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.CreateUserId == userId && t.InsuranceContractProposalFilledFormUsers.Any(tt => validStatus.Contains(tt.Status)))
                 .OrderByDescending(t => t.Id)
                 .Take(1)
                 .Select(t => new
@@ -66,17 +66,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             searchInput = searchInput ?? new MyFilledContractMainGrid();
 
-            var qureResult = db.InsuranceContractProposalFilledForms.Where(t => t.CreateUserId == loginUserId && t.SiteSettingId == siteSettingId && status.Contains(t.Status) && t.IsDelete != true);
-
-            if (!string.IsNullOrEmpty(searchInput.contractTitle))
-                qureResult = qureResult.Where(t => t.InsuranceContract.Title.Contains(searchInput.contractTitle));
-            if (!string.IsNullOrEmpty(searchInput.familyMemebers))
-                qureResult = qureResult.Where(t => t.InsuranceContractProposalFilledFormUsers.Any(tt => (tt.InsuranceContractUser.FirstName + " " + tt.InsuranceContractUser.LastName).Contains(searchInput.familyMemebers)));
-            if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ToEnDate() != null)
-            {
-                var targetDate = searchInput.createDate.ToEnDate().Value;
-                qureResult = qureResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
-            }
+            var qureResult = db.InsuranceContractProposalFilledFormUsers.Where(t => t.InsuranceContractProposalFilledForm.CreateUserId == loginUserId && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId &&
+            status.Contains(t.Status) && t.InsuranceContractProposalFilledForm.IsDelete != true);
 
             int row = searchInput.skip;
 
@@ -90,20 +81,28 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .Select(t => new
                 {
                     id = t.Id,
-                    contractTitle = t.InsuranceContract.Title,
-                    createDate = t.CreateDate,
-                    familyMemebers = t.InsuranceContractProposalFilledFormUsers.Select(tt => tt.InsuranceContractUser.FirstName + " " + tt.InsuranceContractUser.LastName).ToList(),
-                    status = t.Status
+                    contractTitle = t.InsuranceContractProposalFilledForm.InsuranceContract.Title,
+                    createDate = t.InsuranceContractProposalFilledForm.CreateDate,
+                    userFullname = t.InsuranceContractUser.FirstName + " " + t.InsuranceContractUser.LastName,
+                    type = t.InsuranceContractType.Title,
+                    t.Status,
+                    t.InsuranceContractUser.FamilyRelation,
+                    t.Price,
+                    t.InsuranceContractProposalFilledFormId
                 })
                 .ToList()
                 .Select(t => new
                 {
                     row = ++row,
+                    fId = t.InsuranceContractProposalFilledFormId,
                     t.id,
-                    familyMemebers = string.Join(",", t.familyMemebers),
+                    t.userFullname,
                     createDate = t.createDate.ToFaDate(),
                     t.contractTitle,
-                    status = t.status.GetEnumDisplayName()
+                    status = t.Status.GetEnumDisplayName(),
+                    t.type,
+                    relation = t.FamilyRelation.GetEnumDisplayName(),
+                    price = t.Price != null ? t.Price.Value.ToString("###,###") : "0"
                 }).ToList()
             };
         }
@@ -112,10 +111,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             input = input ?? new GlobalGridParentLong();
 
-            var foundItemId = db.InsuranceContractProposalFilledForms
+            var foundItemId = db.InsuranceContractProposalFilledFormUsers
                     .Where(t =>
-                        t.Id == input.pKey && t.SiteSettingId == siteSettingId && t.CreateUserId == loginUserId &&
-                        t.IsDelete != true && status.Contains(t.Status))
+                        t.Id == input.pKey && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.CreateUserId == loginUserId &&
+                        t.InsuranceContractProposalFilledForm.IsDelete != true && status.Contains(t.Status))
                     .Select(t => t.Id)
                     .FirstOrDefault();
 
@@ -133,7 +132,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             UpdateAddressValidation(input, userId, siteSettingId);
 
-            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.IsDelete != true && t.Id == input.id && t.CreateUserId == userId && t.SiteSettingId == siteSettingId && validStatus.Contains(t.Status)).FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.IsDelete != true && t.Id == input.id && t.CreateUserId == userId && t.SiteSettingId == siteSettingId &&
+            t.InsuranceContractProposalFilledFormUsers.Any(tt => validStatus.Contains(tt.Status))
+            ).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -206,10 +207,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public object UploadImage(long? insuranceContractProposalFilledFormId, IFormFile mainFile, int? siteSettingId, long? loginUserId, List<InsuranceContractProposalFilledFormType> status)
         {
-            var foundItemId = db.InsuranceContractProposalFilledForms
+            var foundItemId = db.InsuranceContractProposalFilledFormUsers
                 .Where(t =>
-                    t.Id == insuranceContractProposalFilledFormId && t.SiteSettingId == siteSettingId &&
-                    t.CreateUserId == loginUserId && t.IsDelete != true && status.Contains(t.Status))
+                    t.Id == insuranceContractProposalFilledFormId && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId &&
+                    t.InsuranceContractProposalFilledForm.CreateUserId == loginUserId && t.InsuranceContractProposalFilledForm.IsDelete != true && status.Contains(t.Status))
                 .Select(t => t.Id)
                 .FirstOrDefault();
 

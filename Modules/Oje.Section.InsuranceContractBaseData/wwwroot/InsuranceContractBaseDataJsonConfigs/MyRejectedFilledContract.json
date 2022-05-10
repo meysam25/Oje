@@ -10,20 +10,13 @@
                 "type": "edit",
                 "icon": "fa-file-powerpoint",
                 "prop": "id",
-                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/InsuranceContractBaseData/MyRejectedFilledContract/Detaile?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/InsuranceContractBaseData/MyRejectedFilledContract/Detaile?id='+ curRow.fId +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-usd",
                 "prop": "id",
-                "modalId": "MyRejectedFilledContractImages",
-                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyRejectedFilledContractImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/InsuranceContractBaseData/MyRejectedFilledContract/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/InsuranceContractBaseData/MyRejectedFilledContract/DownloadPdf?id='+ curRow.fId +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -31,6 +24,13 @@
                 "prop": "id",
                 "modalId": "MyRejectedFilledContractPPFStatusHistory",
                 "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyRejectedFilledContractPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "MyRejectedFilledContractImages",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyRejectedFilledContractImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -50,28 +50,28 @@
             },
             {
               "field": "contractTitle",
-              "caption": "قرارداد",
-              "search": {
-                "searchType": "text"
-              }
+              "caption": "قرارداد"
             },
             {
               "field": "createDate",
-              "caption": "تاریخ ایجاد",
-              "search": {
-                "searchType": "persianDateTime"
-              }
+              "caption": "تاریخ ایجاد"
             },
             {
-              "field": "familyMemebers",
-              "caption": "خانواده",
-              "search": {
-                "searchType": "text"
-              }
+              "field": "userFullname",
+              "caption": "کاربر"
             },
             {
-              "field": "status",
-              "caption": "وضعیت"
+              "field": "type",
+              "caption": "نوع قرارداد"
+            },
+
+            {
+              "field": "relation",
+              "caption": "نصبت"
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ تایید شده"
             }
           ]
         }

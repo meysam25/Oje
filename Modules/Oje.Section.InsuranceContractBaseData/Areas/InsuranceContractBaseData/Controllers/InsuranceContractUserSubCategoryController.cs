@@ -19,6 +19,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     {
         readonly IInsuranceContractUserSubCategoryService InsuranceContractUserSubCategoryService = null;
         readonly ISiteSettingService SiteSettingService = null;
+
         public InsuranceContractUserSubCategoryController
             (
                 IInsuranceContractUserSubCategoryService InsuranceContractUserSubCategoryService,

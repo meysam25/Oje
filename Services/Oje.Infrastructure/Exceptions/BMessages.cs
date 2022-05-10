@@ -165,7 +165,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_MaxValue = 76,
         [Display(Name = "لطفا حداقل را وارد کنید")]
         Please_Enter_MinValue = 77,
-        [Display(Name = "مبلغ وارد شده مجاز نمی باشد")]
+        [Display(Name = "مبلغ مجاز نمی باشد")]
         Invalid_Price = 78,
         [Display(Name = "لطفا یا مبلغ یا درصد را وارد کنید")]
         Please_Enter_Percent_Or_Price = 79,
@@ -622,6 +622,8 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا ادرس را وارد کنید")]
         Please_Enter_Address = 305,
         [Display(Name = "لطفا مقعیت را در نقشه مشخص کنید")]
-        Please_Select_Map = 306
+        Please_Select_Map = 306,
+        [Display(Name = "لطفا فایل {0} را انتخاب کنید")]
+        Please_Select_File_Format = 307
     }
 }

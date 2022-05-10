@@ -21,13 +21,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.db = db;
         }
 
-        public void Create(long? insuranceContractProposalFilledFormId, InsuranceContractProposalFilledFormType? status, DateTime now, long? loginUserId, string description)
+        public void Create(long? InsuranceContractProposalFilledFormUserId, InsuranceContractProposalFilledFormType? status, DateTime now, long? loginUserId, string description)
         {
-            if (insuranceContractProposalFilledFormId.ToLongReturnZiro() > 0 && status != null && loginUserId.ToLongReturnZiro() > 0)
+            if (InsuranceContractProposalFilledFormUserId.ToLongReturnZiro() > 0 && status != null && loginUserId.ToLongReturnZiro() > 0)
             {
                 db.Entry(new InsuranceContractProposalFilledFormStatusLog()
                 {
-                    InsuranceContractProposalFilledFormId = insuranceContractProposalFilledFormId.Value,
+                    InsuranceContractProposalFilledFormUserId = InsuranceContractProposalFilledFormUserId.Value,
                     Status = status.Value,
                     CreateDate = now,
                     UserId = loginUserId.Value,
@@ -42,7 +42,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             searchInput = searchInput ?? new InsuranceContractProposalFilledFormStatusLogGrid();
 
             var quiryResult = db.InsuranceContractProposalFilledFormStatusLogs
-                .Where(t => t.InsuranceContractProposalFilledFormId == searchInput.pKey && t.InsuranceContractProposalFilledForm.Status == status && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true);
+                .Where(t => t.InsuranceContractProposalFilledFormUserId == searchInput.pKey && t.InsuranceContractProposalFilledFormUser.Status == status && 
+                t.InsuranceContractProposalFilledFormUser.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledFormUser.InsuranceContractProposalFilledForm.IsDelete != true);
             if (searchInput.status != null)
                 quiryResult = quiryResult.Where(t => t.Status == searchInput.status);
             if (!string.IsNullOrEmpty(searchInput.userFullname))
@@ -92,8 +93,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             var quiryResult = db.InsuranceContractProposalFilledFormStatusLogs
                 .Where(t => 
-                    t.InsuranceContractProposalFilledFormId == searchInput.pKey && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && 
-                    t.InsuranceContractProposalFilledForm.IsDelete != true && t.InsuranceContractProposalFilledForm.CreateUserId == loginUserId && validStatus.Contains(t.InsuranceContractProposalFilledForm.Status));
+                    t.InsuranceContractProposalFilledFormUserId == searchInput.pKey && t.InsuranceContractProposalFilledFormUser.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && 
+                    t.InsuranceContractProposalFilledFormUser.InsuranceContractProposalFilledForm.IsDelete != true && t.InsuranceContractProposalFilledFormUser.InsuranceContractProposalFilledForm.CreateUserId == loginUserId && 
+                    validStatus.Contains(t.InsuranceContractProposalFilledFormUser.Status));
 
             int row = searchInput.skip;
 
@@ -118,7 +120,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     id = t.id.Ticks,
                     status = t.status.GetEnumDisplayName(),
                     createDate = t.createDate.ToString("hh:MM") + " " + t.createDate.ToFaDate(),
-                    description = t.Description
+                    description = !string.IsNullOrEmpty(t.Description) ? t.Description : ""
                 })
                 .ToList()
             };

@@ -191,9 +191,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     insuranceContractTypeIds = t.insuranceContractTypeIds,
                     isActive = t.isActive,
                     monthlyPrice = t.monthlyPrice,
-                    proposalFormId = t.proposalFormId ,
+                    proposalFormId = t.proposalFormId,
                     proposalFormId_Title = !string.IsNullOrEmpty(t.proposalFormId_Title) ? t.proposalFormId_Title : "",
-                    rPFId = t.rPFId ,
+                    rPFId = t.rPFId,
                     rPFId_Title = string.IsNullOrEmpty(t.rPFId_Title) ? "" : t.rPFId_Title,
                     title = t.title,
                     toDate = t.toDate.ToFaDate(),
@@ -254,7 +254,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     code = t.Code,
                     contractCompany = t.InsuranceContractCompany.Title,
-                    contractType = t.InsuranceContractCompany.Title,
+                    contractType = t.InsuranceContractInsuranceContractTypes.Select(tt => tt.InsuranceContractType.Title),
                     fromDate = t.FromDate,
                     id = t.Id,
                     isActive = t.IsActive,
@@ -270,7 +270,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     row = ++row,
                     id = t.id,
                     contractCompany = t.contractCompany,
-                    contractType = t.contractType,
+                    contractType = String.Join(',', t.contractType),
                     ppfTitle = t.ppfTitle,
                     title = t.title,
                     createUser = t.createUser,
@@ -498,6 +498,24 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public string GetIdByCode(int? id, int? siteSettingId)
         {
             return db.InsuranceContracts.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => t.Code).FirstOrDefault() + "";
+        }
+
+        public bool Exist(int? id, int? siteSettingId)
+        {
+            return db.InsuranceContracts.Any(t => t.Id == id && t.SiteSettingId == siteSettingId);
+        }
+
+        public object GetLightList(int? siteSettingId)
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId).Select(t => new
+            {
+                id = t.Id,
+                title = t.Title
+            }).ToList());
+
+            return result;
         }
     }
 }
