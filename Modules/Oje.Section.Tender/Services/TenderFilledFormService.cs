@@ -8,6 +8,7 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
+using Oje.JoinServices.Interfaces;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
 using Oje.Section.Tender.Models.View;
@@ -27,6 +28,7 @@ namespace Oje.Section.Tender.Services
         readonly ITenderProposalFormJsonConfigService TenderProposalFormJsonConfigService = null;
         readonly ITenderFilledFormPFService TenderFilledFormPFService = null;
         readonly IUserService UserService = null;
+        readonly IUserNotifierService UserNotifierService = null;
 
         public TenderFilledFormService
             (
@@ -35,7 +37,8 @@ namespace Oje.Section.Tender.Services
                 ITenderFilledFormsValueService TenderFilledFormsValueService,
                 ITenderProposalFormJsonConfigService TenderProposalFormJsonConfigService,
                 ITenderFilledFormPFService TenderFilledFormPFService,
-                IUserService UserService
+                IUserService UserService,
+                IUserNotifierService UserNotifierService
             )
         {
             this.db = db;
@@ -44,6 +47,7 @@ namespace Oje.Section.Tender.Services
             this.TenderProposalFormJsonConfigService = TenderProposalFormJsonConfigService;
             this.TenderFilledFormPFService = TenderFilledFormPFService;
             this.UserService = UserService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId)
@@ -430,6 +434,8 @@ namespace Oje.Section.Tender.Services
 
             db.SaveChanges();
 
+            UserNotifierService.Notify(loginUserId, UserNotificationType.UpdateTenderDates, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "تاریخ های مناقصه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
+
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
@@ -588,6 +594,8 @@ namespace Oje.Section.Tender.Services
 
             db.SaveChanges();
 
+            UserNotifierService.Notify(loginUserId, UserNotificationType.UpdateTenderAccess, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "شرایط مناقصه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
+
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
@@ -651,6 +659,8 @@ namespace Oje.Section.Tender.Services
 
             foundItem.IsPublished = true;
             db.SaveChanges();
+
+            UserNotifierService.Notify(loginUserId, UserNotificationType.PublishTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "انتشار مناقصه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

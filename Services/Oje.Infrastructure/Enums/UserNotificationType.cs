@@ -21,7 +21,7 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ثبت مدرک جدید برای فرم پیشنهاد")]
         ProposalFilledFormNewDocument = 8,
         [Display(Name = "حذف مدرک برای فرم پیشنهاد")]
-        ProposalFilledFormDocumentDeleted = 9 ,
+        ProposalFilledFormDocumentDeleted = 9,
         [Display(Name = "افزود مدرک مالی جدید برای فرم پیشنهاد")]
         ProposalFilledFormNewFinancialDocuemnt = 10,
         [Display(Name = "حذف مدرک مالی برای فرم پیشنهاد")]
@@ -61,6 +61,26 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "افزودن بیمه شده")]
         NewInsuranceContractUser = 28,
         [Display(Name = "کاربر پروفایل خود را به روز رسانی کرد")]
-        UserUpdateHisProfile = 29
+        UserUpdateHisProfile = 29,
+        [Display(Name = "به روز رسانی قیمت مناقصه")]
+        UpdateTenderDates = 30,
+        [Display(Name = "مشخص کردن شهر و استان")]
+        UpdateTenderAccess = 31,
+        [Display(Name = "انتشار مناقصه")]
+        PublishTender = 32,
+        [Display(Name = "انتخاب نماینده مناقصه")]
+        TenderSelectPrice = 33,
+        [Display(Name = "افزودن قیمت برای مناقصه")]
+        AddTenderPrice = 34,
+        [Display(Name = "به روز رسانی قیمت برای مناقصه")]
+        UpdateTenderPrice = 35,
+        [Display(Name = "انتشار مبلغ مناقصه توسط نماینده")]
+        PublishTenderPrice = 36,
+        [Display(Name = "حذف قیمت تایین شده توسط نماینده")]
+        DeleteTenderPrice = 37,
+        [Display(Name = "صدور بیمه نامه")]
+        IssueTender = 38,
+        [Display(Name = "به روز رسانی صدور بیمه نامه")]
+        UpdateIssueTender = 39
     }
 }

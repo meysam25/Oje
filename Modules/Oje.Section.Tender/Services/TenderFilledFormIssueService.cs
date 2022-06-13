@@ -6,11 +6,13 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
+using Oje.JoinServices.Interfaces;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
 using Oje.Section.Tender.Models.View;
 using Oje.Section.Tender.Services.EContext;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Oje.Section.Tender.Services
@@ -22,6 +24,7 @@ namespace Oje.Section.Tender.Services
         readonly ITenderFilledFormService TenderFilledFormService = null;
         readonly IUserService UserService = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IUserNotifierService UserNotifierService = null;
 
         public TenderFilledFormIssueService
             (
@@ -29,7 +32,8 @@ namespace Oje.Section.Tender.Services
                 ITenderFilledFormPriceService TenderFilledFormPriceService,
                 IUserService UserService,
                 ITenderFilledFormService TenderFilledFormService,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IUserNotifierService UserNotifierService
             )
         {
             this.db = db;
@@ -37,6 +41,7 @@ namespace Oje.Section.Tender.Services
             this.UserService = UserService;
             this.TenderFilledFormService = TenderFilledFormService;
             this.UploadedFileService = UploadedFileService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public object Create(TenderFilledFormIssueCreateUpdateVM input, int? siteSettingId, long? loginUserId)
@@ -62,6 +67,8 @@ namespace Oje.Section.Tender.Services
                 newItem.FileUrl = UploadedFileService.UploadNewFile(FileType.IssueTender, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, newItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
             db.SaveChanges();
+
+            UserNotifierService.Notify(loginUserId, UserNotificationType.IssueTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, newItem.Id, "صدور بیمه نامه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -268,6 +275,8 @@ namespace Oje.Section.Tender.Services
                 foundItem.FileUrl = UploadedFileService.UploadNewFile(FileType.IssueTender, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, foundItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
             db.SaveChanges();
+
+            UserNotifierService.Notify(loginUserId, UserNotificationType.UpdateIssueTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "به روز رسانی صدور بیمه نامه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
