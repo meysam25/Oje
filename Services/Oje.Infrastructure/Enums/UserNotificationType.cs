@@ -59,6 +59,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "پیام جدید برای ادمین در چت انلاین")]
         NewOnlineMessageForAdmin = 27,
         [Display(Name = "افزودن بیمه شده")]
-        NewInsuranceContractUser = 28
+        NewInsuranceContractUser = 28,
+        [Display(Name = "کاربر پروفایل خود را به روز رسانی کرد")]
+        UserUpdateHisProfile = 29
     }
 }

@@ -6,11 +6,6 @@ using Oje.Infrastructure.Services;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.View;
 using Oje.Security.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Controllers
 {
@@ -34,6 +29,7 @@ namespace Oje.Section.WebMain.Controllers
         }
 
         [Route("ContactUs")]
+        [HttpGet]
         public ActionResult ContactUs()
         {
             var foundDescription = PropertyService.GetBy<ContactUsVM>(PropertyType.ContactUs, SiteSettingService.GetSiteSetting()?.Id);

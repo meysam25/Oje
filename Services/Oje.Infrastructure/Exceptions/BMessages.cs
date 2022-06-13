@@ -455,8 +455,8 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_Start_Date = 221,
         [Display(Name = "لطفا تاریخ پایان را انتخاب کنید")]
         Please_Enter_EndDate = 222,
-        [Display(Name = "لطفا شماره بیمه نامه را وارد کنید")]
-        Please_Enter_InsuranceNumber = 223,
+        [Display(Name = "لطفا شماره را وارد کنید")]
+        Please_Enter_Number = 223,
         [Display(Name ="شماره بیمه نامه نمی تواند بیشتر از 50 کارکتر باشد")]
         InsuranceNumber_Can_Not_Be_More_Then_50 = 224,
         [Display(Name = "لطفا کاربر یا نقش را انتخاب کنید")]
@@ -624,6 +624,34 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا مقعیت را در نقشه مشخص کنید")]
         Please_Select_Map = 306,
         [Display(Name = "لطفا فایل {0} را انتخاب کنید")]
-        Please_Select_File_Format = 307
+        Please_Select_File_Format = 307,
+        [Display(Name = "لطفا فایل قرارداد عمومی را انتخاب کنید")]
+        Please_Select_General_Low_File = 308,
+        [Display(Name = "لطفا توضیحات پی دی اف را وارد کنید")]
+        Please_Enter_PdfDesciption = 309,
+        [Display(Name = "لطفا یک بیمه نامه انتخاب کنید")]
+        Please_Select_Insurance = 310,
+        [Display(Name = "لطفا تاریخ انتشار را انتخاب کنید")]
+        Please_Select_OpenDate = 311,
+        [Display(Name = "لطفا تاریخ بسته شدن را انتخاب کنید")]
+        Please_Select_CloseDate = 312,
+        [Display(Name = "لطفا تاریخ انقضا را انتخاب کنید")]
+        Please_Select_Price_ExpireDate = 313,
+        [Display(Name = "جهت انتشار باید کلیه اطلاعات را وارد کنید")]
+        For_Publishe_You_Need_To_Enter_All_Other_Information = 314,
+        [Display(Name = "هم اکنون منتشر شده است لطفا منتظر بمانید")]
+        It_Published_Already = 315,
+        [Display(Name = "شناسه مناقصه مجاز نمی باشد")]
+        Please_Enter_TenderFilledFormId = 316,
+        [Display(Name = "شرکت انتخاب شده مجاز نمی باشد")]
+        Invalid_Company = 317,
+        [Display(Name = "امکان انتخاب کاربر وجود ندارد")]
+        User_CanNot_Be_Selected = 318,
+        [Display(Name = "شما مجاز به انجام این عمل نمی باشدی")]
+        You_CanNot_Do_This = 319,
+        [Display(Name = "مناقصه صادر شده")]
+        Its_Already_Issued = 320,
+        [Display(Name = "شماره وارد شده تکراری می باشد")]
+        Dublicate_Number = 321
     }
 }

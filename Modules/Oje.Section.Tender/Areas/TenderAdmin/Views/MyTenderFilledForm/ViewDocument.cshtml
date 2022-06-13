@@ -1,0 +1,95 @@
+﻿@{
+    Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    if(ViewBag.newLayoutName != null)
+    {
+        Layout = ViewBag.newLayoutName;
+    }
+}
+@using Oje.Infrastructure.Services
+
+<style>
+    .pdfBody {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        direction: rtl;
+        padding: 10px;
+        text-align: right;
+        background-color:white;
+    }
+
+    .printBox {
+        border: 1px solid silver;
+        margin-bottom:10px;
+        border-radius:4px;
+    }
+
+    .boxTitle {
+        border-bottom: 1px solid silver;
+        font-weight: bold;
+        padding: 10px;
+    }
+    .printItem{
+        font-size:9pt;
+    }
+    .boxContent{
+        padding:15px;
+    }
+    @{
+        if(ViewBag.isPrint == true)
+        {
+            ViewContext.Writer.Write("  body{background-color:white;}" + Environment.NewLine );
+            ViewContext.Writer.Write("  main { margin-right:0px !important; }" + Environment.NewLine);
+            ViewContext.Writer.Write("  aside{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}"  + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  footer{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  main{background:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{-webkit-box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{box-shadow:none!important;}" + Environment.NewLine);
+        }
+    }
+   .pdfHeader{
+       display:flex;
+       align-items: stretch;
+   }
+   .headerItem{
+       padding:10px;
+       flex-grow:1
+   }
+   .headerItem:last-child{
+       text-align:left;
+   }
+   .ppfTitle{
+       text-align:center;
+       font-weight:bold;
+       flex-grow:5;
+   }
+   .pdfFooterSection{
+       padding:15px;
+   }
+</style>
+<script>
+    if(window["$"]) {
+        $('.mainLoaderForAdminArea').css('display', 'none');
+    }
+</script>
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
+    }
+}
+
+@{
+    ViewContext.Writer.Write(ViewBag.documentHtml);
+}
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("</section></div>");
+    }
+}
+

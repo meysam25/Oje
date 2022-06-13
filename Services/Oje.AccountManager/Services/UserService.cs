@@ -1393,5 +1393,138 @@ namespace Oje.AccountService.Services
         {
             return db.Users.Any(t => t.UserRoles.Any(tt => tt.Role.Name.ToLower() == "user"));
         }
+
+        public object GetBy(long? userId, int? siteSettingId)
+        {
+            return db.Users
+                .OrderByDescending(t => t.Id)
+                .Where(t => t.Id == userId && t.SiteSettingId == siteSettingId && t.IsDelete != true)
+                .Take(1)
+                .Select(t => new
+                {
+                    t.Firstname,
+                    t.Lastname,
+                    t.Nationalcode,
+                    t.FatherName,
+                    t.ShenasnameNo,
+                    t.Gender,
+                    t.MarrageStatus,
+                    t.Email,
+                    t.Mobile,
+                    t.Tell,
+                    t.PostalCode,
+                    t.Address,
+                    mapLat = t.MapLocation != null ? (decimal?)t.MapLocation.X : null,
+                    mapLon = t.MapLocation != null ? (decimal?)t.MapLocation.Y : null,
+                    mapZoom = t.MapZoom,
+                    t.BirthDate
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    firstname = t.Firstname,
+                    lastname = t.Lastname,
+                    nationalCode = t.Nationalcode,
+                    fatherName = t.FatherName,
+                    shenasnameNo = t.ShenasnameNo,
+                    gender = t.Gender,
+                    marrageStatus = t.MarrageStatus,
+                    email = t.Email,
+                    mobile = t.Mobile,
+                    tell = t.Tell,
+                    postalCode = t.PostalCode,
+                    address = t.Address,
+                    mapLat = t.mapLat,
+                    mapLon = t.mapLon,
+                    mapZoom = t.mapZoom,
+                    birthDate = t.BirthDate.ToFaDate()
+                })
+                .FirstOrDefault();
+        }
+
+        public ApiResult UpdateUserProfile(UpdateUserForUserVM input, long? userId, int? siteSettingId)
+        {
+            updateUserProfileValidation(input, userId, siteSettingId);
+
+            var foundUser = db.Users
+                .OrderByDescending(t => t.Id)
+                .Where(t => t.SiteSettingId == siteSettingId && t.Id == userId && t.IsActive == true && t.IsDelete != true)
+                .FirstOrDefault();
+
+            if (foundUser == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            foundUser.Firstname = input.firstname;
+            foundUser.Lastname = input.lastname;
+            foundUser.Email = input.email;
+            foundUser.Mobile = input.mobile;
+            foundUser.Tell = input.tell;
+            foundUser.Nationalcode = input.nationalCode;
+            foundUser.PostalCode = input.postalCode;
+            foundUser.Address = input.address;
+            foundUser.BirthDate = input.birthDate.ToEnDate();
+            foundUser.MapLat = input.mapLat;
+            foundUser.MapZoom = input.mapZoom;
+            if (input.mapLon != null && input.mapLon != null)
+                foundUser.MapLocation = new Point(input.mapLat.ToDoubleReturnNull().Value, input.mapLon.ToDoubleReturnNull().Value) { SRID = 4326 };
+            foundUser.FatherName = input.fatherName;
+            foundUser.Gender = input.gender;
+            foundUser.ShenasnameNo = input.shenasnameNo;
+            foundUser.MarrageStatus = input.marrageStatus;
+
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        private void updateUserProfileValidation(UpdateUserForUserVM input, long? userId, int? siteSettingId)
+        {
+            if (siteSettingId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+            if (userId.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (string.IsNullOrEmpty(input.firstname))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Firstname);
+            if (string.IsNullOrEmpty(input.lastname))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Lastname, ApiResultErrorCode.ValidationError);
+            if (string.IsNullOrEmpty(input.birthDate) || input.birthDate.ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Please_Enter_BirthDate, ApiResultErrorCode.ValidationError);
+            if (!string.IsNullOrEmpty(input.mobile) && input.mobile.IsMobile() == false)
+                throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number, ApiResultErrorCode.ValidationError);
+            if (!string.IsNullOrEmpty(input.nationalCode) && input.nationalCode.IsCodeMeli() == false)
+                throw BException.GenerateNewException(BMessages.National_Is_Not_Valid, ApiResultErrorCode.ValidationError);
+            if (!string.IsNullOrEmpty(input.postalCode) && input.postalCode.Length != 10)
+                throw BException.GenerateNewException(BMessages.PostalCode_Is_Not_Valid, ApiResultErrorCode.ValidationError);
+            if (!string.IsNullOrEmpty(input.address) && input.address.Length > 1000)
+                throw BException.GenerateNewException(BMessages.Address_Length_Is_Not_Valid, ApiResultErrorCode.ValidationError);
+            if (input.mapLat != null && (input.mapLat < -90 || input.mapLon > 90))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (input.mapLat != null && (input.mapLon < -90 || input.mapLon > 90))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!string.IsNullOrEmpty(input.fatherName) && input.fatherName.Length > 50)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!string.IsNullOrEmpty(input.shenasnameNo) && input.shenasnameNo.Length > 20)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+        }
+
+        public bool HasCompany(long? userId, int? companyId)
+        {
+            return db.Users.Any(t => t.Id == userId && t.UserCompanies.Any(tt => tt.CompanyId == companyId));
+        }
+
+        public (int? cityId, int? provinceId) GetCityAndProvince(long? loginUserId)
+        {
+            var userCityProvince = db.Users.Where(t => t.Id == loginUserId).Select(t => new { provinceId = t.ProvinceId, cityId = t.CityId }).FirstOrDefault();
+
+            return (userCityProvince?.cityId, userCityProvince?.provinceId);
+        }
+
+        public (int? province, int? cityid, List<int> companyIds) GetUserCityCompany(long? userId)
+        {
+            var foundUser = db.Users.Where(t => t.Id == userId).Select(t => new { provinceId = t.ProvinceId, cityid = t.CityId, cids = t.UserCompanies.Select(tt => tt.CompanyId).ToList() }).FirstOrDefault();
+            return (foundUser?.provinceId, foundUser?.cityid, foundUser?.cids);
+        }
     }
 }

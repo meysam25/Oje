@@ -15,6 +15,7 @@ using Oje.Infrastructure.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Collections;
 using Oje.Infrastructure.Models.PageForms;
+using System.Web;
 
 namespace Oje.Infrastructure.Services
 {
@@ -28,6 +29,7 @@ namespace Oje.Infrastructure.Services
             {
                 var currValue = input[key];
                 result = string.Join(",", currValue);
+                result = HttpUtility.HtmlEncode(result);
             }
 
             return result;

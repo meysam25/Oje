@@ -229,5 +229,38 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .Select(t => t.Id)
                 .FirstOrDefault();
         }
+
+        public object GetAddress(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
+        {
+            return db.InsuranceContractProposalFilledForms
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledFormUsers.Any(tt => status == tt.Status))
+                .OrderByDescending(t => t.Id)
+                .Take(1)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    reciveLocation = t.ReciveLocation,
+                    reciveDate = t.ReciveDate,
+                    reciveTime = t.ReciveTime,
+                    tell = t.ReciveTell,
+                    address = t.ReciveAddress,
+                    mapZoomRecivePlace = t.ReciveZoom,
+                    mapLatRecivePlace = t.ReciveMapLocation != null ? (decimal?)t.ReciveMapLocation.X : null,
+                    mapLonRecivePlace = t.ReciveMapLocation != null ? (decimal?)t.ReciveMapLocation.Y : null
+                })
+                .ToList().Select(t => new
+                {
+                    t.id,
+                    t.reciveLocation,
+                    reciveDate = t.reciveDate.ToFaDate(),
+                    t.reciveTime,
+                    t.tell,
+                    t.address,
+                    t.mapZoomRecivePlace,
+                    t.mapLatRecivePlace,
+                    t.mapLonRecivePlace
+                })
+                .FirstOrDefault();
+        }
     }
 }

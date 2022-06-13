@@ -150,5 +150,12 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         {
             return Json(InsuranceContractProposalFilledFormUserService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, status));
         }
+
+        [AreaConfig(Title = "مشاهده مقعیت دریافت", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetMapInfo([FromForm] GlobalLongId input)
+        {
+            return Json(InsuranceContractProposalFilledFormUserService.GetAddress(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
+        }
     }
 }

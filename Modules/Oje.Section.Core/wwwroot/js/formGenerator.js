@@ -1884,7 +1884,7 @@ function getDropdownCTRLTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label id="' + labelId + '" for="' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<select ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
+    result += '<select ' + (ctrl.reInitOnShowModal ? 'reInitOnShowModal="true" ' : '') + (ctrl.ignoreOnChange ? 'ignoreOnChange="ignoreOnChange" ' : '') + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
         for (var i = 0; i < ctrl.values.length; i++) {
             result += '<option value="' + ctrl.values[i][ctrl.valuefield] + '" >' + ctrl.values[i][ctrl.textfield] + '</option>';
@@ -1941,11 +1941,11 @@ function getDropdownCTRLTemplate(ctrl) {
                         return data;
                     }.bind({ ctrl: ctrl }),
                     data: function (params) {
-                        addExteraParameterFromCtrls(this.exteraParameterIds, this.exParam)
+                        addExteraParameterFromCtrls(this.exteraParameterIds, this.exParam, this.exteraParameterIdsEndWith, this.elementId);
                         this.exParam.search = params.term;
                         this.exParam.page = params.page || 1;
                         return this.exParam;
-                    }.bind({ exParam: exteraSelect2Parameters, exteraParameterIds: this.exteraParameterIds })
+                    }.bind({ exParam: exteraSelect2Parameters, exteraParameterIds: this.exteraParameterIds, exteraParameterIdsEndWith: this.ctrl.exteraParameterIdsEndWith, elementId: this.ctrl.id })
                 }
             };
             if (this.ctrl.disableCondationStyleOnly) {
@@ -1977,8 +1977,11 @@ function getDropdownCTRLTemplate(ctrl) {
             }
             if (this.onChange) {
                 $('#' + this.id).change(function () {
-                    eval(this.sOnChange);
-                }.bind({ sOnChange: this.onChange }));
+                    var tempOnChange = this.sOnChange;
+                    if (tempOnChange.indexOf('{{currentIdHolder}}') > -1)
+                        tempOnChange = tempOnChange.replace('{{currentIdHolder}}', this.id);
+                    eval(tempOnChange);
+                }.bind({ sOnChange: this.onChange, id: this.id }));
             }
             $('#' + this.id).closest('.myCtrl').find('label').click(function (e) {
                 e.preventDefault();
@@ -2039,12 +2042,17 @@ function showModalOnDynamiCondation(ctrlId, showModalCondation) {
     }
 }
 
-function addExteraParameterFromCtrls(exteraParameterIds, exteraSelect2Parameters) {
+function addExteraParameterFromCtrls(exteraParameterIds, exteraSelect2Parameters, exteraParameterIdsEndWith, elementId) {
     if (exteraParameterIds && exteraParameterIds.length > 0) {
         for (var i = 0; i < exteraParameterIds.length; i++) {
             var qureSelect = $('#' + exteraParameterIds[i]);
+            if (exteraParameterIdsEndWith && elementId)
+                qureSelect = $('#' + elementId).closest('.MultiRowInputRow').find('[name$=' + exteraParameterIds[i]);
             if (qureSelect.length > 0) {
-                exteraSelect2Parameters[qureSelect.attr('name')] = qureSelect.val();
+                if (exteraParameterIdsEndWith)
+                    exteraSelect2Parameters[exteraParameterIds[i]] = qureSelect.val();
+                else
+                    exteraSelect2Parameters[qureSelect.attr('name')] = qureSelect.val();
             }
         }
     }
@@ -2286,6 +2294,10 @@ function getStepWizardTemplate(wizard) {
         if (!wizard.id)
             wizard.id = uuidv4RemoveDash();
 
+        for (var ii = 0; ii < wizard.steps.length; ii++)
+            if (!wizard.steps[ii].id)
+                wizard.steps[ii].id = uuidv4RemoveDash();
+
         wizard.steps = wizard.steps.sort(function (a, b) { return a.order > b.order ? 1 : a.order < b.order ? -1 : 0; });
 
         result += '<div style="' + (wizard.hideBorder ? 'border:none;' : '') + '" class="panelSWizard" id="' + wizard.id + '">';
@@ -2502,22 +2514,23 @@ function refreshMapIfExist(quirySelector) {
 function initSWFunctions(curId, actionOnLastStep) {
     if ($('#' + curId).length > 0) {
         $('#' + curId)[0].moveNext = function () {
-            if (!validateForm($(this).find('.panelSWizardHolderContentItemActive')))
+            if (!validateForm($(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive')))
                 return;
-            var nextStep = $(this).find('.panelSWizardHolderHeaderItemActive').next();
+            var nextStep = $(this).find('>.panelSWizardHolderHeader>.panelSWizardHolderHeaderItemActive').next();
+
             while (isShowCondationValid(nextStep) == false)
                 nextStep = nextStep.next();
             if (nextStep.length > 0) {
-                $(this).find('.panelSWizardHolderHeaderItemActive').removeClass('panelSWizardHolderHeaderItemActive');
+                $(this).find('>.panelSWizardHolderHeader>.panelSWizardHolderHeaderItemActive').removeClass('panelSWizardHolderHeaderItemActive');
                 nextStep.addClass('panelSWizardHolderHeaderItemActive');
             }
-            var nextContent = $(this).find('.panelSWizardHolderContentItemActive').next();
+            var nextContent = $(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive').next();
             while (isShowCondationValid(nextContent) == false)
                 nextContent = nextContent.next();
             if (nextContent.length > 0) {
-                $(this).find('.panelSWizardHolderContentItemActive').removeClass('panelSWizardHolderContentItemActive');
+                $(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive').removeClass('panelSWizardHolderContentItemActive');
                 nextContent.addClass('panelSWizardHolderContentItemActive');
-                $(nextContent).find('select').change();
+                $(nextContent).find('select:not([ignoreOnChange])').change();
                 refreshMapIfExist($(nextContent));
             }
         };
@@ -2545,20 +2558,18 @@ function initSWFunctions(curId, actionOnLastStep) {
             }
         };
         $('#' + curId)[0].movePrev = function () {
-            //if (!validateForm($(this).find('.panelSWizardHolderContentItemActive')))
-            //    return;
-            var nextStep = $(this).find('.panelSWizardHolderHeaderItemActive').prev();
+            var nextStep = $(this).find('>.panelSWizardHolderHeader>.panelSWizardHolderHeaderItemActive').prev();
             while (isShowCondationValid(nextStep) == false)
                 nextStep = nextStep.prev();
             if (nextStep.length > 0) {
-                $(this).find('.panelSWizardHolderHeaderItemActive').removeClass('panelSWizardHolderHeaderItemActive');
+                $(this).find('>.panelSWizardHolderHeader>.panelSWizardHolderHeaderItemActive').removeClass('panelSWizardHolderHeaderItemActive');
                 nextStep.addClass('panelSWizardHolderHeaderItemActive');
             }
-            var nextContent = $(this).find('.panelSWizardHolderContentItemActive').prev();
+            var nextContent = $(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive').prev();
             while (isShowCondationValid(nextContent) == false)
                 nextContent = nextContent.prev();
             if (nextContent.length > 0) {
-                $(this).find('.panelSWizardHolderContentItemActive').removeClass('panelSWizardHolderContentItemActive');
+                $(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive').removeClass('panelSWizardHolderContentItemActive');
                 nextContent.addClass('panelSWizardHolderContentItemActive');
             }
         };
@@ -2660,6 +2671,15 @@ function getGridTemplate(grid, isInsideModal) {
     return result;
 }
 
+function reinitCtrls(targetModal) {
+    var sQuiry = $('#' + targetModal);
+    sQuiry.find('select[reinitonshowmodal]').each(function () {
+        $(this)[0].resData = null;
+        initDropdown($('#' + $(this).attr('id')), true);
+    });
+
+}
+
 function showModal(targetModal, curElement) {
     clearForm($('#' + targetModal));
     $('#' + targetModal)[0].pKey = null;
@@ -2684,6 +2704,7 @@ function showModal(targetModal, curElement) {
         $('#' + targetModal).find('.olMap').html('');
         initMapInner($('#' + targetModal).find('.olMap')[0].ctrl);
     }
+    reinitCtrls(targetModal);
 }
 
 function initGridIfNotAlreadyInited(curThis) {
@@ -2692,7 +2713,7 @@ function initGridIfNotAlreadyInited(curThis) {
     }
 }
 
-function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
+function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, setParentKeyImeditly) {
     if (url && modalId) {
         var gridSelector = $(curElement).closest('.myGridCTRL');
         showLoader(gridSelector);
@@ -2701,6 +2722,9 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
         if (parentKey)
             postData.append('pKey', parentKey);
         var gridId = gridSelector.attr('id');
+
+        if (setParentKeyImeditly && parentKey)
+            $('#' + modalId)[0].pKey = parentKey;
 
         postForm(url, postData, function (res) {
             if (res) {
@@ -2743,7 +2767,7 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange) {
         }
     }
 
-
+    reinitCtrls(modalId);
 }
 
 function simpleAjax(key, url, curElement) {

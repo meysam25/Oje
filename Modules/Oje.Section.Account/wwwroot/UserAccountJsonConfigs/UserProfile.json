@@ -1,0 +1,117 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/UserAccount/UserProfile/Get",
+      "title": "به روز رسانی مشخصات کاربر",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "firstname",
+          "type": "text",
+          "label": "نام",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "lastname",
+          "type": "text",
+          "label": "نام خانوادگی",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "nationalCode",
+          "type": "text",
+          "label": "کد ملی",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "birthDate",
+          "type": "persianDateTime",
+          "label": "تاریخ تولد",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "fatherName",
+          "type": "text",
+          "label": "نام پدر"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "shenasnameNo",
+          "type": "text",
+          "label": "شماره شناسنامه"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "gender",
+          "type": "dropDown",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/Core/BaseData/Get/Gender",
+          "label": "جنسیت"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "marrageStatus",
+          "type": "dropDown",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/Core/BaseData/Get/MarrageStatus",
+          "label": "وضعیت تاهل"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "email",
+          "type": "text",
+          "label": "ایمیل"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "mobile",
+          "type": "text",
+          "label": "همراه"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "tell",
+          "type": "text",
+          "label": "تلفن"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+          "name": "postalCode",
+          "type": "text",
+          "label": "کد پستی"
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-6 col-sm-12 col-xs-12",
+          "name": "address",
+          "type": "text",
+          "label": "آدرس"
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "names": {
+            "lat": "mapLat",
+            "lon": "mapLon",
+            "zoom": "mapZoom"
+          },
+          "width": "100%",
+          "height": "312px",
+          "type": "map",
+          "label": "موقعیت شما"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/UserAccount/UserProfile/Update')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

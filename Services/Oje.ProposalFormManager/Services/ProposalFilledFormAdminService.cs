@@ -456,7 +456,8 @@ namespace Oje.ProposalFormService.Services
                        t.User.Firstname,
                        t.User.Lastname,
                        t.User.AgentCode,
-                       t.User.Address
+                       t.User.Address,
+                       t.User.Username
                    })
                    .FirstOrDefault(),
                    values = t.ProposalFilledFormValues.Select(tt => new
@@ -531,15 +532,7 @@ namespace Oje.ProposalFormService.Services
                         listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = step.title, ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupItems });
                 }
             }
-            if (foundItem.selectAgent != null)
-            {
-                List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupPaymentItems = new();
-                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام ", value = foundItem.selectAgent.Firstname + " " + foundItem.selectAgent.Lastname });
-                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ", value = foundItem.selectAgent.AgentCode + "" });
-                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12", title = "آدرس ", value = foundItem.selectAgent.Address + "" });
-
-                listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "نماینده", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
-            }
+            Company foundCompany = ProposalFilledFormCompanyService.GetSelectedBy(foundItem.Id);
 
             result.loginUserWalletBalance = UserService.GetUserWalletBalance(userId, siteSettingId);
 
@@ -555,11 +548,22 @@ namespace Oje.ProposalFormService.Services
             result.ppfCreateDate = foundItem.CreateDate.ToFaDate();
             if (foundItem.GlobalInqueryId > 0)
                 GlobalInqueryService.AppendInquiryData(foundItem.GlobalInqueryId.ToLongReturnZiro(), result.ProposalFilledFormPdfGroupVMs);
-            Company foundCompany = ProposalFilledFormCompanyService.GetSelectedBy(foundItem.Id);
             if (foundCompany != null)
             {
                 result.companyTitle = foundCompany.Title;
                 result.companyImage = GlobalConfig.FileAccessHandlerUrl + foundCompany.Pic;
+            }
+            if (foundItem.selectAgent != null)
+            {
+                List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupPaymentItems = new();
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام ", value = foundItem.selectAgent.Firstname + " " + foundItem.selectAgent.Lastname });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ", value = foundItem.selectAgent.AgentCode + "" });
+                if (foundCompany != null)
+                    ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "شرکت بیمه ", value = foundCompany.Title + "" });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "همراه ", value = foundItem.selectAgent.Username + "" });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12", title = "آدرس ", value = foundItem.selectAgent.Address + "" });
+
+                listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "نماینده واحد صدور", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
             }
 
             return result;
@@ -726,7 +730,7 @@ namespace Oje.ProposalFormService.Services
             if (input.startDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value >= input.endDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value)
                 throw BException.GenerateNewException(BMessages.StartDate_Should_Be_Less_Then_EndDate);
             if (string.IsNullOrEmpty(input.insuranceNumber))
-                throw BException.GenerateNewException(BMessages.Please_Enter_InsuranceNumber);
+                throw BException.GenerateNewException(BMessages.Please_Enter_Number);
             if (input.insuranceNumber.Length > 50)
                 throw BException.GenerateNewException(BMessages.InsuranceNumber_Can_Not_Be_More_Then_50);
             if (!string.IsNullOrEmpty(input.description) && input.description.Length > 4000)

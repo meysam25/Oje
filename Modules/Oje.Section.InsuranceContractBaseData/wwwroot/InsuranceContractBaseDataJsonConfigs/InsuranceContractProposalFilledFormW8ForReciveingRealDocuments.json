@@ -29,6 +29,13 @@
                 "prop": "id",
                 "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModal",
                 "template": "function bindRow (curRow) { return '<span title=\"جزئیات\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-info\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-map-marker-alt",
+                "prop": "id",
+                "modalId": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModalPPFMap",
+                "template": "function bindRow (curRow) { return '<span title=\"مکان دریافت\" onclick=\"showEditModal('+ curRow.fId +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModal/GetMapInfo\\', \\'InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModalPPFMap\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-map-marker-alt\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -169,6 +176,112 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "id": "InsuranceContractProposalFilledFormW8ForReciveingRealDocumentsDetailesModalPPFMap",
+          "class": "modal-xl",
+          "title": "مشخص کردن مکان",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "reciveLocation",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/ContractLocation",
+              "label": "محل دریافت",
+              "isRequired": true,
+              "showHideCondation": [
+                {
+                  "value": "",
+                  "classHide": [ "myAddressLocation" ],
+                  "isDefault": true
+                },
+                {
+                  "value": "1",
+                  "classShow": [ "myAddressLocation" ]
+                },
+                {
+                  "value": "2",
+                  "classHide": [ "myAddressLocation" ]
+                }
+              ]
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "reciveDate",
+              "type": "persianDateTime",
+              "label": "تاریخ",
+              "minDateValidation": 1,
+              "maxDateValidation": 10,
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "label": "بازه مراجعه",
+              "name": "reciveTime",
+              "isRequired": true,
+              "values": [
+                {
+                  "id": "",
+                  "title": ""
+                },
+                {
+                  "id": "بازه 8 صبح تا 11",
+                  "title": "بازه 8 صبح تا 11"
+                },
+                {
+                  "id": "بازه 11 صبح تا 14",
+                  "title": "بازه 11 صبح تا 14"
+                },
+                {
+                  "id": "بازه 14 ظهر تا 17",
+                  "title": "بازه 14 ظهر تا 17"
+                },
+                {
+                  "id": "بازه 17 عصر تا 20",
+                  "title": "بازه 17 عصر تا 20"
+                }
+              ]
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "class": "myAddressLocation",
+              "name": "tell",
+              "type": "text",
+              "label": "تلفن",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "address",
+              "class": "myAddressLocation",
+              "type": "text",
+              "label": "آدرس",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "class": "myAddressLocation",
+              "id": "userSelectMapPoint",
+              "names": {
+                "lat": "mapLatRecivePlace",
+                "lon": "mapLonRecivePlace",
+                "zoom": "mapZoomRecivePlace"
+              },
+              "width": "100%",
+              "height": "312px",
+              "type": "map",
+              "label": "موقعیت شما"
             }
           ]
         },

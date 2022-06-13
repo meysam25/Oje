@@ -1,0 +1,162 @@
+﻿@{
+    Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    if(ViewBag.newLayoutName != null)
+    {
+        Layout = ViewBag.newLayoutName;
+    }
+    ViewBag.Title = Model.ppfTitle;
+}
+@model Oje.Section.Tender.Models.View.TenderFilledFormPdfVM
+@using Oje.Infrastructure.Services
+
+<style>
+    .pdfBody {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        direction: rtl;
+        padding: 10px;
+        text-align: right;
+        background-color:white;
+    }
+
+    .printBox {
+        border: 1px solid silver;
+        margin-bottom:10px;
+        border-radius:4px;
+    }
+
+    .boxTitle {
+        border-bottom: 1px solid silver;
+        font-weight: bold;
+        padding: 10px;
+    }
+    .printItem{
+        font-size:9pt;
+    }
+    .boxContent{
+        padding:15px;
+    }
+    @{
+        if(ViewBag.isPrint == true)
+        {
+            ViewContext.Writer.Write("  body{background-color:white;}" + Environment.NewLine );
+            ViewContext.Writer.Write("  main { margin-right:0px !important; }" + Environment.NewLine);
+            ViewContext.Writer.Write("  aside{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}"  + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  footer{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  main{background:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{-webkit-box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{box-shadow:none!important;}" + Environment.NewLine);
+        }
+    }
+   .pdfHeader{
+       display:flex;
+       align-items: stretch;
+   }
+   .headerItem{
+       padding:10px;
+       flex-grow:1
+   }
+   .headerItem:last-child{
+       text-align:left;
+   }
+   .ppfTitle{
+       text-align:center;
+       font-weight:bold;
+       flex-grow:5;
+   }
+   .pdfFooterSection{
+       padding:15px;
+   }
+</style>
+<script>
+    if(window["$"]) {
+        $('.mainLoaderForAdminArea').css('display', 'none');
+    }
+</script>
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
+    }
+}
+<div class="pdfBody">
+    <div class="pdfHeader">
+        <div class="headerItem" >شماره:@(Model.id)</div><div class="headerItem ppfTitle">@(Model.ppfTitle)</div><div class="headerItem" >تاریخ:@(Model.createDate)</div>
+    </div>
+    @{
+        if(Model.TenderFilledFormPdfVMGroupVMs != null && Model.TenderFilledFormPdfVMGroupVMs.Count > 0)
+        {
+            foreach(var group in Model.TenderFilledFormPdfVMGroupVMs)
+            {
+                   <div class="printBox">
+                    <div class="boxTitle">
+                    @(group.title)  
+                        @{
+                            if(group.id > 0 && group.configId > 0)
+                            {
+                                <a href="/Tender/DownloadDocument?id=@group.id&cId=@group.configId" style="float:left;color:#007bff;" >دانلود مدارک</a> 
+                            }
+                        }
+                    </div>
+                    <div class="boxContent ">
+                        <div class="row">
+                            @{
+                                if(group.ProposalFilledFormPdfGroupItems != null && group.ProposalFilledFormPdfGroupItems.Count > 0)
+                                {
+                                    foreach(var gorupItem in group.ProposalFilledFormPdfGroupItems )
+                                    {
+                                         <div class="printItem @(gorupItem.cssClass)">
+                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                        </div>
+                                    }
+                                } else if (group.TenderFilledFormPdfVMGroupVMs != null && group.TenderFilledFormPdfVMGroupVMs.Count > 0)
+                                {
+                                    <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12" >
+                                       @{
+                                            foreach(var subGroup in group.TenderFilledFormPdfVMGroupVMs)
+                                            {
+                                                   <div class="printBox">
+                                                    <div class="boxTitle">@(subGroup.title)  </div>
+                                                    <div class="boxContent ">
+                                                        <div class="row">
+                                                            @{
+                                                                if(subGroup.ProposalFilledFormPdfGroupItems != null && subGroup.ProposalFilledFormPdfGroupItems.Count > 0)
+                                                                {
+                                                                    foreach(var gorupItem in subGroup.ProposalFilledFormPdfGroupItems )
+                                                                    {
+                                                                         <div class="printItem @(gorupItem.cssClass)">
+                                                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                       }
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+    <div class="pdfFooterSection">
+        <div>محل امضا @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
+    </div>
+</div>
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("</section></div>");
+    }
+}
+

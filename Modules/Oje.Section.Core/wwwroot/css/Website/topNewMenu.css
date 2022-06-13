@@ -96,14 +96,20 @@
                     display: block;
                 }
 
-        .topMenuNew > li:hover > ul {
-            -moz-transform: scaleY(1) translateZ(0);
-            -ms-transform: scaleY(1) translateZ(0);
-            -o-transform: scaleY(1) translateZ(0);
-            -webkit-transform: scaleY(1) translateZ(0);
-            transform: scaleY(1) translateZ(0);
-            opacity: 1;
-        }
+                .topMenuNew > li > ul > li > ul > li {
+                    display: block;
+                    white-space: nowrap;
+                    position: relative;
+                }
+
+                .topMenuNew > li:hover > ul {
+                    -moz-transform: scaleY(1) translateZ(0);
+                    -ms-transform: scaleY(1) translateZ(0);
+                    -o-transform: scaleY(1) translateZ(0);
+                    -webkit-transform: scaleY(1) translateZ(0);
+                    transform: scaleY(1) translateZ(0);
+                    opacity: 1;
+                }
 
         .topMenuNew > li > ul > li:hover {
             background: hsla(211, 100%, 50%, 1);

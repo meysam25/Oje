@@ -71,6 +71,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ارسال پیام برای ادمین برای چت")]
         SendMessageForAdmin = 35,
         [Display(Name = "عضویت برای وب نوتیفیکیشن")]
-        ExternalNotificationServicePushSubscription = 36
+        ExternalNotificationServicePushSubscription = 36,
+        [Display(Name =  "به روز رسانی اطلاعت پروفایل کاربر")]
+        UpdateUserProfile = 37,
+        [Display(Name = "افزودن مناقصه")]
+        CreateTender = 38
     }
 }

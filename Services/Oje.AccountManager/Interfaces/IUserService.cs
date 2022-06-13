@@ -26,13 +26,16 @@ namespace Oje.AccountService.Interfaces
         ApiResult UpdateForUser(CreateUpdateUserForUserVM input, long? loginUserId, LoginUserVM loginUserVM, int? siteSettingId);
         GridResultVM<UserServiceForUserMainGridResultVM> GetListForUser(UserServiceForUserMainGrid searchInput, LoginUserVM loginUserVM, int? siteSettingId);
         User GetBy(string username, int? siteSettingId);
+        object GetBy(long? userId, int? siteSettingId);
         object GetUserInfoByUserId(long? userId);
         long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string eCode, long? loginUserId, int? siteSettingId);
         void TsetRemoveMe();
         void DeleteFlag(long? userId, int? siteSettingId, long? childIds);
         bool IsValidUser(long userId, int? siteSettingId, List<long> childUserIds, RoleType? Type);
+        bool HasCompany(long? userId, int? companyId);
         object GetSelect2ListByType(Select2SearchVM searchInput, RoleType? rType);
         object GetSelect2ListByPPFAndCompanyId(Select2SearchVM searchInput, int? siteSettingId, int proposalFormId, int companyId, ProvinceAndCityVM provinceAndCityInput, string mapLat, string mapLon);
+        ApiResult UpdateUserProfile(UpdateUserForUserVM input, long? userId, int? siteSettingId);
         string GetUserFullName(int? siteSettingId, long? userId);
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId, int companyId);
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId);
@@ -44,5 +47,7 @@ namespace Oje.AccountService.Interfaces
         void CreateTempTable();
         PPFUserTypes GetUserTypePPFInfo(long? loginUserId, ProposalFilledFormUserType resultType);
         bool isWebsiteUser(long userId);
+        (int? cityId, int? provinceId) GetCityAndProvince(long? loginUserId);
+        (int? province, int? cityid, List<int> companyIds) GetUserCityCompany(long? userId);
     }
 }

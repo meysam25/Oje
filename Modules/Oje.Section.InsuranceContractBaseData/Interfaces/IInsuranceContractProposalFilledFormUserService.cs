@@ -13,5 +13,6 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         object GetPrice(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status);
         object GetList(InsuranceContractProposalFilledFormDetailesMainGrid searchInput, int? siteSettingId, InsuranceContractProposalFilledFormType status);
         long GetBy(long filledFormId, long currUserId);
+        object GetAddress(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status);
     }
 }

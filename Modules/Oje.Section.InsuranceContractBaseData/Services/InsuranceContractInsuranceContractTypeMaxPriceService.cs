@@ -139,7 +139,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     row = ++row,
                     id = t.InsuranceContractTypeId + "_" + t.InsuranceContractId,
-                    typeId = t.InsuranceContractTypeTitle,
+                    typeId = t.InsuranceContractTile,
                     cid = t.InsuranceContractTypeTitle,
                     price = t.MaxPrice.ToString("###,###")
                 }).ToList()

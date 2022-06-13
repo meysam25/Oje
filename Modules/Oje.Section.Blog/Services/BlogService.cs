@@ -435,7 +435,7 @@ namespace Oje.Section.Blog.Services
                     createDate = t.PublisheDate,
                     catTitle = t.BlogCategory.Title,
                     fCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.Like),
-                    mCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.View)
+                    mCount = t.BlogReviews.Count(tt => tt.IsConfirm == true)
                 })
                 .ToList()
                 .Select(t => new

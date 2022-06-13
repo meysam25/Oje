@@ -80,6 +80,12 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "مدارک تیکت", Prompt = "TicketUser")]
         TicketUser = 35,
         [Display(Name = "فایل های چت آنلاین", Prompt = "OnlineFile")]
-        OnlineFile = 36
+        OnlineFile = 36,
+        [Display(Name = "شرایط عمومی مناقصه", Prompt = "TenderGeneralLow")]
+        TenderGeneralLow = 37,
+        [Display(Name = "تایین قیمت مناقصه", Prompt = "TenderPrice")]
+        TenderPrice = 38,
+        [Display(Name = "صدور مناقصه", Prompt = "IssueTender")]
+        IssueTender = 39
     }
 }

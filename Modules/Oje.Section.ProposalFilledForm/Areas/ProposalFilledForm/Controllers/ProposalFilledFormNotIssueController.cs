@@ -57,7 +57,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "لیست فرم پیشنهاد رد شده", Icon = "fa-file", IsMainMenuItem = true)]
+        [AreaConfig(Title = "لیست فرم پیشنهاد رد شده", Icon = "fa-print-slash", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

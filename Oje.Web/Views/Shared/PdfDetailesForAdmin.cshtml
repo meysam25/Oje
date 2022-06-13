@@ -131,9 +131,11 @@
             if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
             {
                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                    <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت درگاه بانک</a>
+                    <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>
                 </div>
-
+                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                    <a style="border-color:silver;background-color:silver;cursor:default;" class="btn btn-primary btn-success btn-block" >پرداخت مستقیم به حساب شرکت @(Model.companyTitle) </a>
+                </div>
                 if(Model.loginUserWalletBalance >= Model.price.ToLongReturnZiro())
                 {
                     <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">

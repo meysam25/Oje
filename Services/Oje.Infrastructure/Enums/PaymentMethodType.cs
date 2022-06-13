@@ -11,7 +11,7 @@ namespace Oje.Infrastructure.Enums
     {
         [Display(Name = "نقدی")]
         Cash = 1,
-        [Display(Name = "غیر نقدی")]
+        [Display(Name = "اقساطی")]
         Debit = 2
     }
 }

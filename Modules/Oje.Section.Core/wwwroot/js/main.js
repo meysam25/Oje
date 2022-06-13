@@ -290,12 +290,12 @@ function initDropdown(curObj, dontUseCache, parentValue) {
     var textField = $(curObj).attr('data-textfield');
     var valueField = $(curObj).attr('data-valuefield');
     var hasAttrBindFormUrl = $(curObj).attr('bindFormUrl');
-
     if (url && textField && valueField) {
         var postData = new FormData();
+        if ($(curObj).closest('.modal').length > 0 && $(curObj).closest('.modal')[0].pKey)
+            postData.append('pKey', $(curObj).closest('.modal')[0].pKey);
         if (dontUseCache == true || isExistInRequestQ(url) == false) {
             allRequestQ.push({ url: url });
-            var postData = new FormData();
             if (parentValue)
                 postData.append('id', parentValue);
             if (url.indexOf("/Core/BaseData") == -1 && window['exteraModelParams'])
@@ -486,6 +486,7 @@ function getDataFromLocalStorageCache(url) {
     }
     return null;
 }
+
 
 function delete_cookie(name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';

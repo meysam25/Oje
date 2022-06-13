@@ -10,10 +10,6 @@
               "onClick": "showModal('userAccountUserManagerAddGridModal', this)",
               "type": "add",
               "modalId": "userAccountUserManagerAddGridModal"
-            },
-            {
-              "title": "افزودن (فایل جی سان)",
-              "onClick": "uploadFile('excelFile','.json', '/UserAccount/UserManager/CreateFromJson', this)"
             }
           ],
           "exportToExcelUrl": "/UserAccount/UserManager/Export",

@@ -68,6 +68,7 @@ function getLoginUserMenuTemplate(userfullanme, isUser) {
         <span class="logedInUserMenuFullname" ><img src="" />${userfullanme}<i style="font-size:2em;vertical-align:-9px;margin-right:10px;" class="fa fa-angle-down" ></i><i style="font-size:2em;vertical-align:-9px;margin-right:10px;" class="fa fa-user-circle" ></i></span>
         <div class="logedInUserMenuItems">
             <a href="${(isUser ? '/Dashboard' : '/Account/Dashboard/Index')}" >داشبورد</a>
+            <a href="/UserAccount/UserProfile/Index" >به روز رسانی پروفایل</a>
             <a href="/Account/Dashboard/Logout" >خروج</a>
         </div>
     </div>

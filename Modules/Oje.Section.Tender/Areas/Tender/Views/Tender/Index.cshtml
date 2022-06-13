@@ -1,0 +1,49 @@
+﻿
+@{
+    if(ViewBag.layer != null)
+    {
+        Layout = ViewBag.layer;
+    }
+    else
+    {
+       Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
+    }
+}
+
+<div class="MainHolder"></div>
+<script>
+    @{
+        if(ViewBag.exteraParameters != null)
+        {
+            ViewContext.Writer.Write("var exteraModelParams = JSON.parse('" + Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.exteraParameters) + "');");
+        }
+    }
+    loadJsonConfig('@ViewBag.ConfigRoute');
+</script>
+
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("</section></div>");
+    }
+}
+
+<script>
+    function loadJsonForPPF(ctrlId) {
+        var curValue = $('#' + ctrlId).find('option:selected').attr('value');
+        if(curValue) {
+            var quirySelector = $('#' + ctrlId).closest('.MultiRowInputRow').find('.holderDynamicSW');
+            if(quirySelector.length > 0) {
+                loadJsonConfig('/Tender/GetPPFJsonConfig?ppfid=' + curValue , quirySelector);
+            }
+        }
+    }
+</script>

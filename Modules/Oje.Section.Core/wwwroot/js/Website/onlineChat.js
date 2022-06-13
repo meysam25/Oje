@@ -26,7 +26,6 @@ function initOnlineChat(id, isAdmin) {
     <span class="onlineChatMenue mainMenue" >
         <span class="onlineChatMenueItem enableDisableNotifiSound" ><span class="fa fa-volume-mute"></span>فعال کردن صدا</span>
         <span class="onlineChatMenueItem rigisterEmail" ><span class="fa fa-at"></span> ثبت ایمیل</span>
-        /*<span class="onlineChatMenueItem uploadNewFile" ><span class="fa fa-upload"></span>بارگزاری فایل</span>*/
         <span class="onlineChatMenueItem sendMap" ><span class="fa fa-map-marker-alt"></span>ارسال نقشه</span>
     </span>
     <span class="onlineChatMenue emailMenue" >
@@ -52,6 +51,8 @@ function initOnlineChat(id, isAdmin) {
 </span>
 
 `;
+
+    /*<span class="onlineChatMenueItem uploadNewFile" ><span class="fa fa-upload"></span>بارگزاری فایل</span>*/
 
     if ($('.onlineChat').length > 0) {
         $('.onlineChat')[0].close();
