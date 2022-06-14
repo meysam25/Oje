@@ -35,5 +35,7 @@ namespace Oje.ProposalFormService.Models.View
         public string startDate { get; set; }
         [Display(Name = "تاریخ پایان")]
         public string endDate { get; set; }
+        [Display(Name = "نماینده")]
+        public bool isAgent { get; set; }
     }
 }

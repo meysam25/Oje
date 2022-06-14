@@ -95,6 +95,13 @@
     <div class="pdfHeader">
         <div class="headerItem" >شماره:@(Model.id)</div><div class="headerItem ppfTitle">@(Model.ppfTitle)</div><div class="headerItem" >تاریخ:@(Model.ppfCreateDate)</div>
     </div>
+    <div>
+        @{
+            if(Model.printDescriptions != null && Model.printDescriptions.Any(t => t.type == Oje.Infrastructure.Enums.ProposalFormPrintDescrptionType.Header)) {
+                ViewContext.Writer.Write(Model.printDescriptions.Where(t => t.type == Oje.Infrastructure.Enums.ProposalFormPrintDescrptionType.Header).Select(t => t.descption).FirstOrDefault());
+            }
+        }
+    </div>
     @{
         if(Model.ProposalFilledFormPdfGroupVMs != null && Model.ProposalFilledFormPdfGroupVMs.Count > 0)
         {
@@ -125,7 +132,13 @@
     <div class="pdfFooterSection">
         <div>محل امضا بیمه گزار @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
     </div>
-
+    <div>
+        @{
+            if(Model.printDescriptions != null && Model.printDescriptions.Any(t => t.type == Oje.Infrastructure.Enums.ProposalFormPrintDescrptionType.Footer)) {
+                ViewContext.Writer.Write(Model.printDescriptions.Where(t => t.type == Oje.Infrastructure.Enums.ProposalFormPrintDescrptionType.Footer).Select(t => t.descption).FirstOrDefault());
+            }
+        }
+    </div>
     <div class="row">
         @{
             if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))

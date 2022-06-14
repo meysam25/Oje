@@ -2,8 +2,8 @@
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Services;
-using Oje.JoinServices.Interfaces;
 using Oje.Section.WebMain.Hubs.Models;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Security.Interfaces;

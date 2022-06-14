@@ -13,7 +13,7 @@ using System;
 using Oje.Infrastructure.Enums;
 using System.Collections.Generic;
 using Oje.Infrastructure;
-using Oje.JoinServices.Interfaces;
+using Oje.Infrastructure.Interfac;
 
 namespace Oje.Section.Tender.Services
 {

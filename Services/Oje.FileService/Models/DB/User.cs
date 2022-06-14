@@ -16,6 +16,7 @@ namespace Oje.FileService.Models.DB
         {
             Childs = new();
             UploadedFiles = new();
+            SecoundUploadedFiles = new();
         }
 
         [Key]
@@ -29,5 +30,7 @@ namespace Oje.FileService.Models.DB
         public List<User> Childs { get; set; }
         [InverseProperty("CreateByUser")]
         public List<UploadedFile> UploadedFiles { get; set; }
+        [InverseProperty("User")]
+        public List<UploadedFile> SecoundUploadedFiles { get; set; }
     }
 }

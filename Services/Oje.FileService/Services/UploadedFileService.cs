@@ -21,7 +21,7 @@ namespace Oje.FileService.Services
         {
             this.db = db;
         }
-        public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null, string title = null)
+        public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null, string title = null, long? userId = null)
         {
             if (userPic == null || userPic.Length == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
@@ -37,7 +37,8 @@ namespace Oje.FileService.Services
                 SiteSettingId = siteSettingId,
                 FileName = "empty",
                 ObjectIdStr = objectIdStr,
-                Title = title
+                Title = title,
+                UserId = userId
             };
             db.Entry(newFile).State = EntityState.Added;
             db.SaveChanges();
@@ -220,7 +221,7 @@ namespace Oje.FileService.Services
                         else if (userId > 0)
                         {
                             if (
-                                    (result.CreateByUserId != userId && !db.FileAccessRoles.Any(t => t.FileType == result.FileType && t.Role.UserRoles.Any(tt => tt.UserId == userId)))
+                                    (result.UserId != userId || result.CreateByUserId != userId && !db.FileAccessRoles.Any(t => t.FileType == result.FileType && t.Role.UserRoles.Any(tt => tt.UserId == userId)))
                                     &&
                                     !db.UploadedFiles.Where(t => t.Id == result.Id).getWhereCreateByUserMultiLevelForUserOwnerShip<UploadedFile, User>(userId, false).Any()
 

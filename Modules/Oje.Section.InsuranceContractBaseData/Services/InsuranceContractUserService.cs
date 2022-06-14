@@ -15,7 +15,7 @@ using System.Linq;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using Oje.FileService.Interfaces;
 using Oje.PaymentService.Interfaces;
-using Oje.JoinServices.Interfaces;
+using Oje.Infrastructure.Interfac;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {

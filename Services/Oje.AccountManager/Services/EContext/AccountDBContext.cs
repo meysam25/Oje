@@ -40,6 +40,8 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<ExternalNotificationServicePushSubscription> ExternalNotificationServicePushSubscriptions { get; set; }
         public DbSet<ExternalNotificationServicePushSubscriptionError> ExternalNotificationServicePushSubscriptionErrors { get; set; }
         public DbSet<WalletTransaction> WalletTransactions { get; set; }
+        public DbSet<UserMessage> UserMessages { get; set; }
+        public DbSet<UserMessageReply> UserMessageReplies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

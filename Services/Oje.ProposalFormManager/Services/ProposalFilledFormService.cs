@@ -3,19 +3,16 @@ using Newtonsoft.Json;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
-using Oje.JoinServices.Interfaces;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {

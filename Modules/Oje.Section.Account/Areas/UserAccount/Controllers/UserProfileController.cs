@@ -4,8 +4,8 @@ using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.View;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Services;
-using Oje.JoinServices.Interfaces;
 using Oje.Security.Interfaces;
 
 namespace Oje.Section.Account.Areas.UserAccount.Controllers

@@ -33,28 +33,28 @@
                 "icon": "fa-share",
                 "prop": "id",
                 "modalId": "ProposalFilledFormW8ForConfirmrefferToModal",
-                "template": "function bindRow (curRow) { return '<span title=\"ارجاع\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetRefferUsers\\', \\'ProposalFilledFormW8ForConfirmrefferToModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-share\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) {  return curRow.isAgent ?'' : '<span title=\"ارجاع\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetRefferUsers\\', \\'ProposalFilledFormW8ForConfirmrefferToModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-share\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-building",
                 "prop": "id",
                 "modalId": "ProposalFilledFormW8ForConfirmchangeCompanyModal",
-                "template": "function bindRow (curRow) { return '<span title=\"شرکت ها\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetPPFCompanies\\', \\'ProposalFilledFormW8ForConfirmchangeCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"شرکت ها\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetPPFCompanies\\', \\'ProposalFilledFormW8ForConfirmchangeCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-user ",
                 "prop": "id",
                 "modalId": "ProposalFilledFormW8ForConfirmchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تغییر نماینده\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetAgent\\', \\'ProposalFilledFormW8ForConfirmchangeAgentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-user\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"تغییر نماینده\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetAgent\\', \\'ProposalFilledFormW8ForConfirmchangeAgentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-user\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-usd",
                 "prop": "id",
                 "modalId": "ProposalFilledFormW8ForConfirmchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormW8ForConfirmdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormW8ForConfirmdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",

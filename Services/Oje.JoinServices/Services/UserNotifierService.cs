@@ -1,14 +1,9 @@
 ﻿using Oje.AccountService.Interfaces;
 using Oje.EmailService.Interfaces;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
-using Oje.JoinServices.Interfaces;
 using Oje.Sms.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.JoinServices.Services
 {

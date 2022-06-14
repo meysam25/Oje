@@ -10,7 +10,7 @@ namespace Oje.ProposalFormService.Interfaces
     public interface IProposalFilledFormAdminService
     {
         ApiResult Delete(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
-        GridResultVM<ProposalFilledFormMainGridResult> GetList(ProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        GridResultVM<ProposalFilledFormMainGridResult> GetList(ProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status, List<string> roles);
         string GetJsonConfir(int id, int? siteSettingId, long? userId, ProposalFilledFormStatus status, string loadUrl, string saveUrl);
         object GetById(long? id, int? sitesettingId, long? userId, ProposalFilledFormStatus status);
         object Update(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status, IFormCollection form);

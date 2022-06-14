@@ -86,6 +86,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تایین قیمت مناقصه", Prompt = "TenderPrice")]
         TenderPrice = 38,
         [Display(Name = "صدور مناقصه", Prompt = "IssueTender")]
-        IssueTender = 39
+        IssueTender = 39,
+        [Display(Name = "پیام های کاربر", Prompt = "UserMessageFile")]
+        UserMessageFile = 40
     }
 }

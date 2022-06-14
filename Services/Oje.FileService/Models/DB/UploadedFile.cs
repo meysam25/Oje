@@ -25,6 +25,9 @@ namespace Oje.FileService.Models.DB
         public string ObjectIdStr { get; set; }
         [MaxLength(100)]
         public string Title { get; set; }
+        public long? UserId { get; set; }
+        [ForeignKey("UserId"), InverseProperty("SecoundUploadedFiles")]
+        public User User { get; set; }
         public int? SiteSettingId { get; set; }
 
         [NotMapped]

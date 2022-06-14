@@ -652,6 +652,10 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "مناقصه صادر شده")]
         Its_Already_Issued = 320,
         [Display(Name = "شماره وارد شده تکراری می باشد")]
-        Dublicate_Number = 321
+        Dublicate_Number = 321,
+        [Display(Name = "لطفا پیام خود را وارد کنید")]
+        Please_Enter_Message = 322,
+        [Display(Name = "پیام شما طولانی می باشد")]
+        Message_Is_To_Long = 323
     }
 }

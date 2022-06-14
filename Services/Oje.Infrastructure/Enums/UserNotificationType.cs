@@ -81,6 +81,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "صدور بیمه نامه")]
         IssueTender = 38,
         [Display(Name = "به روز رسانی صدور بیمه نامه")]
-        UpdateIssueTender = 39
+        UpdateIssueTender = 39,
+        [Display(Name = "افزودن پیام جدید")]
+        AddNewMessage = 40
     }
 }

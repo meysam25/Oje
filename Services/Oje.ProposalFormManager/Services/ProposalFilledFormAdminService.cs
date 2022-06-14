@@ -5,11 +5,11 @@ using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.Infrastructure.Services;
-using Oje.JoinServices.Interfaces;
 using Oje.PaymentService.Interfaces;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
@@ -197,7 +197,7 @@ namespace Oje.ProposalFormService.Services
             return allSteps;
         }
 
-        public GridResultVM<ProposalFilledFormMainGridResult> GetList(ProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        public GridResultVM<ProposalFilledFormMainGridResult> GetList(ProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, ProposalFilledFormStatus status, List<string> roles)
         {
             if (searchInput == null)
                 searchInput = new ProposalFilledFormMainGrid();
@@ -280,7 +280,8 @@ namespace Oje.ProposalFormService.Services
                     targetUserMobileNumber = t.targetUserMobileNumber,
                     issueDate = t.issueDate != null ? t.issueDate.ToFaDate() : "",
                     startDate = t.startDate != null ? t.startDate.ToFaDate() : "",
-                    endDate = t.endDate != null ? t.endDate.ToFaDate() : ""
+                    endDate = t.endDate != null ? t.endDate.ToFaDate() : "",
+                    isAgent = roles != null && roles.Any(t => t == "agent"),
                 })
                 .ToList()
             };

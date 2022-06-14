@@ -33,21 +33,21 @@
                 "icon": "fa-share",
                 "prop": "id",
                 "modalId": "ProposalFilledFormConfirmrefferToModal",
-                "template": "function bindRow (curRow) { return '<span title=\"ارجاع\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetRefferUsers\\', \\'ProposalFilledFormConfirmrefferToModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-share\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"ارجاع\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetRefferUsers\\', \\'ProposalFilledFormConfirmrefferToModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-share\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-building",
                 "prop": "id",
                 "modalId": "ProposalFilledFormConfirmchangeCompanyModal",
-                "template": "function bindRow (curRow) { return '<span title=\"شرکت ها\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetPPFCompanies\\', \\'ProposalFilledFormConfirmchangeCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"شرکت ها\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetPPFCompanies\\', \\'ProposalFilledFormConfirmchangeCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "icon": "fa-user ",
                 "prop": "id",
                 "modalId": "changeAgentModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تغییر نماینده\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetAgent\\', \\'ProposalFilledFormConfirmchangeAgentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-user\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"تغییر نماینده\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirm/GetAgent\\', \\'ProposalFilledFormConfirmchangeAgentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-user\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -992,14 +992,18 @@
               "name": "startDate",
               "type": "persianDateTime",
               "label": "تاریخ شروع",
-              "isRequired": true
+              "isRequired": true,
+              "minDateValidation": 1,
+              "maxDateValidation": 365
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "endDate",
               "type": "persianDateTime",
               "label": "تاریخ پایان",
-              "isRequired": true
+              "isRequired": true,
+              "minDateValidation": 2,
+              "maxDateValidation": 730
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

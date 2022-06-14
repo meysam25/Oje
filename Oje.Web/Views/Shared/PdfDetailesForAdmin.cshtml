@@ -150,7 +150,9 @@
             if(ViewBag.cName == "ProposalFilledFormConfirm")
             {
                 canSeeW8ForConfirm = false;
+                canSeeNeedSpecialist = false;
                 canSeeConfirm = false;
+                canSeeReject = false;
             } else if(ViewBag.cName == "ProposalFilledFormIssue")
             {
                 canSeeW8ForConfirm = false;
@@ -162,15 +164,12 @@
             {
                 canSeeW8ForConfirm = false;
                 canSeeNeedSpecialist = false;
-                canSeeIssue = false;
-
             } else if(ViewBag.cName == "ProposalFilledFormNew")
             {
-                canSeeNeedSpecialist = false;
-                canSeeConfirm = false;
-                canSeeIssue = false;
+                
             } else if(ViewBag.cName == "ProposalFilledFormNotIssue")
             {
+                canSeeW8ForConfirm = false;
                 canSeeNeedSpecialist = false;
                 canSeeConfirm = false;
                 canSeeIssue = false;
@@ -178,8 +177,6 @@
             } else if(ViewBag.cName == "ProposalFilledFormW8ForConfirm")
             {
                 canSeeW8ForConfirm = false;
-                canSeeNeedSpecialist = false;
-                canSeeIssue = false;
             } else
             {
                 canSeeW8ForConfirm = false;
@@ -192,32 +189,32 @@
              @{
                     if(canSeeW8ForConfirm == true)
                     {
-                         <div class="col-md-3 col-lg-3 col-sm-6 col-xs-12" style="text-align:center;padding-top:10px;">
+                         <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
                             <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormW8ForConfirm/Index" data-status="2" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >در انتظار تایید</button>
                         </div>
                     }
                     if(canSeeNeedSpecialist == true)
                     {
-                        <div class="col-md-3 col-lg-3 col-sm-6 col-xs-12" style="text-align:center;padding-top:10px;">
+                        <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
                             <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormNeedSpecialist/Index" data-status="3" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >نیاز به کارشناسی</button>
                         </div>
                     }
                     if(canSeeConfirm == true)
                     {
-                         <div class="col-md-3 col-lg-3 col-sm-6 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormConfirm/Index" data-status="4" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >تایید</button>
+                         <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
+                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormConfirm/Index" data-status="4" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >تایید شده</button>
                         </div>
                     }
                     if(canSeeIssue == true)
                     {
-                        <div class="col-md-3 col-lg-3 col-sm-6 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-issue data-success-url="/ProposalFilledForm/ProposalFilledFormIssue/Index" data-status="5" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >صدور</button>
+                        <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
+                            <button data-issue data-success-url="/ProposalFilledForm/ProposalFilledFormIssue/Index" data-status="5" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >ارصال برای صدور</button>
                         </div>
                     }
                     if(canSeeReject == true)
                     {
-                         <div class="col-md-3 col-lg-3 col-sm-6 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormNotIssue/Index" data-status="6" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-warning btn-block" >رد</button>
+                         <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
+                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormNotIssue/Index" data-status="6" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-warning btn-block" >رد فرم پیشنهاد</button>
                         </div>
                     }
                 }
@@ -249,14 +246,18 @@
                                     "name": "startDate",
                                     "type": "persianDateTime",
                                     "label": "تاریخ شروع",
-                                    "isRequired": true
+                                    "isRequired": true,
+                                    "minDateValidation": 1,
+                                    "maxDateValidation": 365
                                 },
                                 {
                                     "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
                                     "name": "endDate",
                                     "type": "persianDateTime",
                                     "label": "تاریخ پایان",
-                                    "isRequired": true
+                                    "isRequired": true,
+                                    "minDateValidation": 2,
+                                    "maxDateValidation": 730
                                 },
                                 {
                                     "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -288,8 +289,9 @@
                             ));
                             executeArrFunctions();
                             $('#ProposalFilledFormConfirmissuePPFModal').find('input[name="id"]').val($(this).attr('data-id'));
-                            $('#ProposalFilledFormConfirmissuePPFModal').modal('show');
+                            
                         }
+                        $('#ProposalFilledFormConfirmissuePPFModal').modal('show');
                     });
                 </script>
             </div>
@@ -298,7 +300,7 @@
     
     <div style="justify-content:center;" class="row">
         @{
-            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
+            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode) && Model.price == -56123512)
             {
                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
                     <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>

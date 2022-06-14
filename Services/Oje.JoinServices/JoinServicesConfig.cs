@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Oje.Infrastructure.Interfac;
 using Oje.JoinServices.Interfaces;
 using Oje.JoinServices.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.JoinServices
 {
