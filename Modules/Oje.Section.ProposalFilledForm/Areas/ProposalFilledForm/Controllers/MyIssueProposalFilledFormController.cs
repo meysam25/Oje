@@ -85,7 +85,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         {
             ViewBag.isPrint = isPrint;
             ViewBag.newLayoutName = "_WebLayout";
-            return View("PdfDetailesForAdmin", ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, null, validStatus));
+            return View("PdfDetailes", ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, null, validStatus));
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه های من (صادر شده)", Icon = "fa-eye")]

@@ -14,6 +14,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
             ProposalFormRequiredDocumentTypes = new();
             PaymentMethods = new();
             ProposalFormPostPrices = new();
+            ProposalFormPrintDescrptions = new();
         }
 
         [Key]
@@ -61,5 +62,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public List<PaymentMethod> PaymentMethods { get; set; }
         [InverseProperty("ProposalForm")]
         public List<ProposalFormPostPrice> ProposalFormPostPrices { get; set; }
+        [InverseProperty("ProposalForm")]
+        public List<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
     }
 }

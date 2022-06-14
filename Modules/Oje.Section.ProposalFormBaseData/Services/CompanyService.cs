@@ -23,5 +23,14 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
             return result;
         }
+
+        public object GetLightList(long? userId)
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(db.Companies.Where(t => t.UserCompanies.Any(tt => tt.UserId == userId)).Select(t => new { id = t.Id, title = t.Title }).ToList());
+
+            return result;
+        }
     }
 }

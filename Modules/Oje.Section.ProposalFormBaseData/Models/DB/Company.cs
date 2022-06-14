@@ -14,6 +14,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public Company()
         {
             PaymentMethodCompanies = new();
+            UserCompanies = new();
         }
 
         [Key]
@@ -24,6 +25,8 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
 
         [InverseProperty("Company")]
         public List<PaymentMethodCompany> PaymentMethodCompanies { get; set; }
+        [InverseProperty("Company")]
+        public List<UserCompany> UserCompanies { get; set; }
 
     }
 }

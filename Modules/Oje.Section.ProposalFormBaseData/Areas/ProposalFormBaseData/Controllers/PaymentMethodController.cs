@@ -96,7 +96,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyService.GetLightList());
+            return Json(CompanyService.GetLightList(HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]

@@ -28,6 +28,7 @@ namespace Oje.ProposalFormService.Models.DB
             PaymentMethods = new();
             ProposalFormRequiredDocumentTypes = new();
             ProposalFormReminders = new();
+            ProposalFormPrintDescrptions = new();
         }
 
         [Key]
@@ -79,5 +80,7 @@ namespace Oje.ProposalFormService.Models.DB
         public List<ProposalFormRequiredDocumentType> ProposalFormRequiredDocumentTypes { get; set; }
         [InverseProperty("ProposalForm")]
         public List<ProposalFormReminder> ProposalFormReminders { get; set; }
+        [InverseProperty("ProposalForm")]
+        public List<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
     }
 }

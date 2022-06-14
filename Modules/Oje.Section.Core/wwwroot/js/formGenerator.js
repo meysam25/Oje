@@ -2794,7 +2794,7 @@ function setFocusToFirstVisbleText(qSelector) {
     }
 }
 
-function postModalData(curElement, gridId, url, ignoreCloseModal) {
+function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl) {
     var qSelector = $(curElement).closest('.modal').find('.modal-content');
     if (!gridId && $(curElement).closest('.modal')[0].gridOwnerId)
         gridId = $(curElement).closest('.modal')[0].gridOwnerId;
@@ -2802,6 +2802,8 @@ function postModalData(curElement, gridId, url, ignoreCloseModal) {
     showLoader(qSelector);
     postForm(url, postFormData, function (res) {
         if (res && res.isSuccess == true) {
+            if (successUrl)
+                location.href = successUrl;
             if (!this.ignoreCloseModal) {
                 closeThisModal(this.curElement);
             } else {

@@ -35,6 +35,7 @@ namespace Oje.ProposalFormService.Services
         readonly IUserNotifierService UserNotifierService = null;
         readonly IBankAccountFactorService BankAccountFactorService = null;
         readonly Interfaces.IUserService UserService = null;
+        readonly IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService = null;
 
         public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
@@ -48,7 +49,8 @@ namespace Oje.ProposalFormService.Services
                 IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService,
                 IUserNotifierService UserNotifierService,
                 IBankAccountFactorService BankAccountFactorService,
-                Interfaces.IUserService UserService
+                Interfaces.IUserService UserService,
+                IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService
             )
         {
             this.db = db;
@@ -63,6 +65,7 @@ namespace Oje.ProposalFormService.Services
             this.UserNotifierService = UserNotifierService;
             this.BankAccountFactorService = BankAccountFactorService;
             this.UserService = UserService;
+            this.ProposalFormPrintDescrptionService = ProposalFormPrintDescrptionService;
         }
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
@@ -566,6 +569,8 @@ namespace Oje.ProposalFormService.Services
                 listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "نماینده واحد صدور", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
             }
 
+            result.printDescriptions = ProposalFormPrintDescrptionService.GetList(siteSettingId, foundItem.ProposalFormId);
+
             return result;
         }
 
@@ -710,7 +715,7 @@ namespace Oje.ProposalFormService.Services
 
             ProposalFilledFormStatusLogService.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description);
 
-            UserNotifierService.Notify(userId, UserNotifierService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
+            UserNotifierService.Notify(userId, UserNotifierService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, input.insuranceNumber, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

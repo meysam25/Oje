@@ -20,6 +20,6 @@ namespace Oje.Infrastructure.Models.Pdf.ProposalFilledForm
         public string companyTitle { get; set; }
         public string companyImage { get; set; }
         public long loginUserWalletBalance { get; set; }
-
+        public List<ProposalFormPrintDescrptionVM> printDescriptions { get; set; }
     }
 }

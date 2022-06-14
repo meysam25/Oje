@@ -50,5 +50,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public List<ProposalFormRequiredDocument> CreateUserProposalFormRequiredDocuments { get; set; }
         [InverseProperty("UpdateUser")]
         public List<ProposalFormRequiredDocument> UpdateUserProposalFormRequiredDocuments { get; set; }
+        [InverseProperty("User")]
+        public List<UserCompany> UserCompanies { get; set; }
     }
 }

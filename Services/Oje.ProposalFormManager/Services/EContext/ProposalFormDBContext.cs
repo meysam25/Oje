@@ -70,6 +70,7 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<VehicleSpec> VehicleSpecs { get; set; }
         public DbSet<CarType> CarTypes { get; set; }
         public DbSet<ProposalFormReminder> ProposalFormReminders { get; set; }
+        public DbSet<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
