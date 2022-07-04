@@ -1,14 +1,10 @@
 ﻿using Oje.Section.CarBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Services;
 
 namespace Oje.Section.CarBaseData.Services.EContext
 {
-    public class CarDBContext : DbContext
+    public class CarDBContext : MyBaseDbContext
     {
         public CarDBContext(DbContextOptions<CarDBContext> options) : base(options)
         {

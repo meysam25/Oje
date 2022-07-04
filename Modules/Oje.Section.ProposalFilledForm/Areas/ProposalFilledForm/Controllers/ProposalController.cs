@@ -25,6 +25,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         readonly IBankService BankService = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+        readonly IProposalFilledFormAdminService ProposalFilledFormAdminService = null;
         public ProposalController(
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
                 IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService,
@@ -34,7 +35,8 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
                 IPaymentMethodService PaymentMethodService,
                 IBankService BankService,
                 AccountService.Interfaces.IUserService UserService,
-                IBlockAutoIpService BlockAutoIpService
+                IBlockAutoIpService BlockAutoIpService,
+                IProposalFilledFormAdminService ProposalFilledFormAdminService
             )
         {
             this.SiteSettingService = SiteSettingService;
@@ -46,6 +48,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.BankService = BankService;
             this.UserService = UserService;
             this.BlockAutoIpService = BlockAutoIpService;
+            this.ProposalFilledFormAdminService = ProposalFilledFormAdminService;
         }
 
         [AreaConfig(Title = "ثبت فرم", Icon = "fa-file-powerpoint")]
@@ -80,17 +83,31 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(tempResult);
         }
 
+        [AreaConfig(Title = "پیش نمایش فرم پیشنهاد", Icon = "fa-eye")]
+        [HttpPost]
+        //[CustomeAuthorizeFilter]
+        public IActionResult PrintPreview()
+        {
+            var loginUserId = HttpContext.GetLoginUser()?.UserId;
+            if (loginUserId.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+            ProposalFilledFormService.JustValidation(SiteSettingService.GetSiteSetting()?.Id, Request.Form, loginUserId, Request.GetTargetAreaByRefferForPPFDetailes());
+            ViewBag.makeLayoutNull = true;
+            return View("PdfDetailes", ProposalFilledFormAdminService.PdfDetailesByForm(Request.Form, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
         [HttpPost]
         public IActionResult GetTermsHtml(int? fid)
         {
             var foundPPF = ProposalFormService.GetById(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
             if (foundPPF == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             ViewBag.ContractFile = foundPPF.ContractFile;
             ViewBag.RulesFile = foundPPF.RulesFile;
             ViewBag.HtmlTemplate = foundPPF.TermTemplate;
             ViewBag.companyTitle = SiteSettingService.GetSiteSetting()?.Title;
+            ViewBag.pTitle = foundPPF.Title;
 
             return View();
         }
@@ -138,11 +155,12 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "مشاهده لیست نماینده", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetAgentList([FromQuery] Select2SearchVM searchInput, [FromQuery] ProposalFormVM input, [FromQuery] ProvinceAndCityVM provinceAndCityInput, [FromQuery] string mapLat, [FromQuery] string mapLon)
+        public ActionResult GetAgentList([FromQuery] Select2SearchVM searchInput, [FromQuery] ProposalFormVM input, [FromQuery] ProvinceAndCityVM provinceAndCityInput, [FromQuery] string mapLat, [FromQuery] string mapLon, [FromQuery] string cIds)
         {
             return Json(
                     UserService.GetSelect2ListByPPFAndCompanyId(searchInput, SiteSettingService.GetSiteSetting()?.Id, input.fid.ToIntReturnZiro(),
-                            GlobalInqueryService.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id), provinceAndCityInput, mapLat, mapLon)
+                            (!string.IsNullOrEmpty(cIds)  ? cIds.ToIntReturnZiro() : GlobalInqueryService.GetCompanyId(input.inquiryId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id)), 
+                            provinceAndCityInput, mapLat, mapLon)
                     );
         }
     }

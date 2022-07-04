@@ -66,7 +66,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         {
             var curSetting = SiteSettingService.GetSiteSetting();
             if (curSetting == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             GlobalServices.FillSeoInfo(
                   ViewData,

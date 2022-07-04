@@ -7,10 +7,7 @@ using Oje.Section.BaseData.Interfaces;
 using Oje.Section.BaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.BaseData.Areas.BaseData.Controllers
 {
@@ -86,10 +83,10 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         {
             var result = DutyService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Exceptions
 {
@@ -253,7 +248,7 @@ namespace Oje.Infrastructure.Exceptions
         Service_Name_Can_Not_Be_More_Then_100_chars = 120,
         [Display(Name = "لطفا نوع قرارداد را انتخاب کنید")]
         Please_Select_Contract_Type = 121,
-        [Display(Name = "لطفا شرکت بیمه گزار حقوقی را انتخاب کنید")]
+        [Display(Name = "لطفا شرکت بیمه گذار حقوقی را انتخاب کنید")]
         Please_Select_Legal_Company = 122,
         [Display(Name = "لطفا کد را وارد کنید")]
         Please_Enter_Code = 123,
@@ -656,6 +651,16 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "لطفا پیام خود را وارد کنید")]
         Please_Enter_Message = 322,
         [Display(Name = "پیام شما طولانی می باشد")]
-        Message_Is_To_Long = 323
+        Message_Is_To_Long = 323,
+        [Display(Name = "لطفا نام را وارد کنید")]
+        Please_Select_FullName = 324,
+        [Display(Name = "عدم نیاز به دسترسی")]
+        Dont_Need_Access = 325,
+        [Display(Name = "نیاز به دسترسی")]
+        Need_Access = 326,
+        [Display(Name = "لطفا فقط یک نقش انتخاب کنید")]
+        Jsut_One_Role = 327,
+        [Display(Name = "زمان وارد شده معتبر نمی باشد")]
+        Invalid_Time = 328,
     }
 }

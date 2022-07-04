@@ -8,7 +8,7 @@ using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.View;
 using System;
-using System.Linq;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
@@ -94,10 +94,10 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         {
             var result = ProposalFormReminderService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

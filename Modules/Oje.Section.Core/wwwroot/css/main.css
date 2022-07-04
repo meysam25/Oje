@@ -281,8 +281,8 @@ select[size] {
 
 input[type=radio]:checked + label::after {
     left: auto;
-    right: 7px;
-    top: 15px;
+    right: -14px;
+    top: 6px;
 }
 
 input[type=radio] + label {
@@ -907,9 +907,17 @@ input[type=checkbox] + label, input[type=checkbox] {
     transform: scale(1.2);
 }
 
+.form-check{
+    padding-top:3px;
+    padding-bottom:9px;
+}
+
 @media (max-width: 400px) {
     .select2-selection__rendered {
         white-space: unset !important;
         height: 36px !important;
     }
+}
+.hasSort {
+    display:table-cell !important;
 }

@@ -4,13 +4,9 @@ using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.View;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
-using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Account.Areas.UserAccount.Controllers
 {
@@ -69,10 +65,10 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         {
             var result = UserNotificationService.GetList(searchInput, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

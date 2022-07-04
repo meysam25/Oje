@@ -1,10 +1,11 @@
 ﻿using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.SP;
 using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 
 namespace Oje.AccountService.Services.EContext
 {
-    public class AccountDBContext : DbContext
+    public class AccountDBContext : MyBaseDbContext
     {
         public AccountDBContext(DbContextOptions<AccountDBContext> options) : base(options)
         {

@@ -36,6 +36,8 @@ namespace Oje.ProposalFormService.Services
         readonly IBankAccountFactorService BankAccountFactorService = null;
         readonly Interfaces.IUserService UserService = null;
         readonly IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService = null;
+        readonly IAgentRefferService AgentRefferService = null;
+        readonly IProposalFormService ProposalFormService = null;
 
         public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
@@ -50,7 +52,9 @@ namespace Oje.ProposalFormService.Services
                 IUserNotifierService UserNotifierService,
                 IBankAccountFactorService BankAccountFactorService,
                 Interfaces.IUserService UserService,
-                IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService
+                IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService,
+                IAgentRefferService AgentRefferService,
+                IProposalFormService ProposalFormService
             )
         {
             this.db = db;
@@ -66,6 +70,8 @@ namespace Oje.ProposalFormService.Services
             this.BankAccountFactorService = BankAccountFactorService;
             this.UserService = UserService;
             this.ProposalFormPrintDescrptionService = ProposalFormPrintDescrptionService;
+            this.AgentRefferService = AgentRefferService;
+            this.ProposalFormService = ProposalFormService;
         }
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
@@ -515,21 +521,24 @@ namespace Oje.ProposalFormService.Services
                             if (ctrl.type == ctrlType.multiRowInput && ctrl.ctrls != null && ctrl.ctrls.Count > 0)
                             {
                                 for (var i = 0; i < 20; i++)
-                                {
                                     foreach (var subCtrl in ctrl.ctrls)
                                     {
                                         string currKey = ctrl.name + "[" + i + "]." + subCtrl.name;
                                         string subTitle = !string.IsNullOrEmpty(subCtrl.label) ? subCtrl.label : subCtrl.ph;
                                         string subValue = foundItem.values.Where(t => t.Key == currKey).Select(t => t.Value).FirstOrDefault();
                                         if (!string.IsNullOrEmpty(subTitle) && !string.IsNullOrEmpty(subValue))
-                                        {
                                             ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = subCtrl.parentCL, title = subTitle, value = subValue });
-                                        }
                                     }
-                                }
                             }
                             else if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
                                 ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = ctrl.parentCL, title = title, value = value });
+                        }
+                        else if (ctrl.type == ctrlType.carPlaque)
+                        {
+                            string value1 = foundItem.values.Where(t => t.Key == ctrl.name).Select(t => t.Value).FirstOrDefault();
+                            if (!string.IsNullOrEmpty(value1))
+                                ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = ctrl.parentCL, title = title, value = value1  });
+
                         }
                     }
                     if (ProposalFilledFormPdfGroupItems.Count > 0)
@@ -537,6 +546,9 @@ namespace Oje.ProposalFormService.Services
                 }
             }
             Company foundCompany = ProposalFilledFormCompanyService.GetSelectedBy(foundItem.Id);
+
+            if (foundCompany == null)
+                foundCompany = ProposalFilledFormCompanyService.GetBy(foundItem.Id);
 
             result.loginUserWalletBalance = UserService.GetUserWalletBalance(userId, siteSettingId);
 
@@ -556,6 +568,18 @@ namespace Oje.ProposalFormService.Services
             {
                 result.companyTitle = foundCompany.Title;
                 result.companyImage = GlobalConfig.FileAccessHandlerUrl + foundCompany.Pic;
+            }
+            var foundRefferAgent = AgentRefferService.GetBy(foundCompany?.Id, siteSettingId);
+            if (foundRefferAgent != null)
+            {
+                List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupPaymentItems = new();
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام ", value = foundRefferAgent.FullName });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ", value = foundRefferAgent.Code });
+                if (foundCompany != null)
+                    ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "همراه ", value = foundRefferAgent.Mobile + "" });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12", title = "آدرس ", value = foundRefferAgent.Address + "" });
+
+                listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "واحد معرف", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
             }
             if (foundItem.selectAgent != null)
             {
@@ -795,6 +819,70 @@ namespace Oje.ProposalFormService.Services
                 })
                 .ToList()
             };
+        }
+
+        public ProposalFilledFormPdfVM PdfDetailesByForm(IFormCollection form, int? siteSettingId)
+        {
+            var result = new ProposalFilledFormPdfVM();
+            int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
+            var foundProposalForm = ProposalFormService.GetById(proposalFormId, siteSettingId);
+            PageForm jsonObj = null;
+            try { jsonObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch (Exception) { }
+            if (jsonObj == null)
+                throw BException.GenerateNewException(BMessages.Json_Convert_Error);
+            var foundSw = jsonObj.GetAllListOf<stepWizard>();
+            if (foundSw == null || foundSw.Count == 0)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            foundSw.FirstOrDefault().steps = ignoreSteps(foundSw.FirstOrDefault().steps);
+            var fFoundSw = foundSw.FirstOrDefault();
+            List<ProposalFilledFormPdfGroupVM> listGroup = new();
+
+            var values = form.Keys.Select(t => new { Key = t, Value = form.GetStringIfExist(t) }).ToList();
+            foreach (var step in fFoundSw.steps)
+            {
+                var allCtrls = step.GetAllListOf<ctrl>();
+                List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupItems = new();
+                if (allCtrls != null && allCtrls.Count > 0)
+                {
+                    foreach (var ctrl in allCtrls)
+                    {
+                        string title = !string.IsNullOrEmpty(ctrl.label) ? ctrl.label : ctrl.ph;
+                        string value = values.Where(t => t.Key == ctrl.name).Select(t => t.Value).FirstOrDefault();
+                        if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || ctrl.type == ctrlType.multiRowInput)
+                        {
+                            if (ctrl.type == ctrlType.checkBox)
+                                title = "";
+                            if (ctrl.type == ctrlType.multiRowInput && ctrl.ctrls != null && ctrl.ctrls.Count > 0)
+                            {
+                                for (var i = 0; i < 20; i++)
+                                {
+                                    foreach (var subCtrl in ctrl.ctrls)
+                                    {
+                                        string currKey = ctrl.name + "[" + i + "]." + subCtrl.name;
+                                        string subTitle = !string.IsNullOrEmpty(subCtrl.label) ? subCtrl.label : subCtrl.ph;
+                                        string subValue = values.Where(t => t.Key == currKey).Select(t => t.Value).FirstOrDefault();
+                                        if (!string.IsNullOrEmpty(subTitle) && !string.IsNullOrEmpty(subValue))
+                                        {
+                                            ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = subCtrl.parentCL, title = subTitle, value = subValue });
+                                        }
+                                    }
+                                }
+                            }
+                            else if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
+                                ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = ctrl.parentCL, title = title, value = value });
+                        }
+                    }
+                    if (ProposalFilledFormPdfGroupItems.Count > 0)
+                        listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = step.title, ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupItems });
+                }
+            }
+
+            result.proposalFilledFormId = 0;
+            result.ProposalFilledFormPdfGroupVMs = listGroup;
+            result.ppfTitle = foundProposalForm.Title;
+            result.ppfCreateDate = DateTime.Now.ToFaDate();
+
+            return result;
         }
     }
 }

@@ -122,6 +122,9 @@ function getInputTemplate(ctrl) {
             case 'cTemplate':
                 result += getCTemplate(ctrl);
                 break;
+            case 'label':
+                result += getLableTemplate(ctrl);
+                break;
             case 'map':
                 result += getMapTemplate(ctrl);
                 break;
@@ -133,6 +136,16 @@ function getInputTemplate(ctrl) {
             result += '</div>';
     }
 
+    return result;
+}
+
+function getLableTemplate(ctrl) {
+    var result = '';
+    result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '">';
+    if (ctrl.label) {
+        result += '<label style="position: relative;font-weight:bold;cursor:default;color:black;" >' + ctrl.label + '</label>';
+    }
+    result += '</div>';
     return result;
 }
 
@@ -902,18 +915,18 @@ function getButtonTemplateWidthLabel(ctrl) {
 function getPlaqueTemplate(ctrl) {
     var result = '';
     if (ctrl) {
-        if (ctrl.label) {
-            result += '<label style="display:block;"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
-        }
+        //if (ctrl.label) {
+        //    result += '<label style="display:block;"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+        //}
         result += '<div class="plaqueCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '" >';
         result += '<div class="plaqueRightPart" >';
         result += '<div class="plaqueRightPartRight">';
-        result += '<input type="text" placeholder="55" name="' + ctrl.name + '_1" />';
+        result += '<input type="text" placeholder="55" maxlength="2" name="' + ctrl.name + '_1" />';
         result += '</div>';
         result += '<div class="plaqueRightPartLeft">';
-        result += '<input type="text" placeholder="555" name="' + ctrl.name + '_2" />';
+        result += '<input type="text" placeholder="555" maxlength="3" name="' + ctrl.name + '_2" />';
         result += getPlaqueDropdownItem(ctrl);
-        result += '<input type="text" placeholder="55" name="' + ctrl.name + '_4" />';
+        result += '<input type="text" placeholder="55" maxlength="2" name="' + ctrl.name + '_4" />';
         result += '</div>';
         result += '</div>';
         result += '<div class="plaqueLeftPart" >';
@@ -935,7 +948,7 @@ function getPlaqueDropdownItem(ctrl) {
             "type": "dropDown",
             "textfield": "title",
             "valuefield": "title",
-            "name": ctrl.name + '_2',
+            "name": ctrl.name + '_3',
             "itemsClass": "makeFAP",
             "values": [
                 { title: "الف" },
@@ -1226,7 +1239,7 @@ function getRadioButtonTemplate(ctrl) {
     if (ctrl) {
         result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '"' + '>';
         if (ctrl.label)
-            result += '<label style="display:block" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+            result += '<label style="position: relative;display:block" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
         if (ctrl.values && ctrl.values.length > 0) {
             var idList = [];
             for (var i = 0; i < ctrl.values.length; i++) {
@@ -1234,7 +1247,7 @@ function getRadioButtonTemplate(ctrl) {
                 idList.push(id);
                 result += '<div class="form-check form-check-inline">';
                 result += '<input ' + (i == 0 ? 'checked="checked"' : '') + ' class="form-check-input" name="' + ctrl.name + '" id="' + id + '" type="radio" value="' + ctrl.values[i][ctrl.valuefield] + '" />';
-                result += '<label class="form-check-label" for="' + id + '" >' + ctrl.values[i][ctrl.textfield] + '</label>';
+                result += '<label  style="position: relative" class="form-check-label" for="' + id + '" >' + ctrl.values[i][ctrl.textfield] + '</label>';
                 result += '</div>';
             }
             ctrl.idList = idList;
@@ -1592,9 +1605,30 @@ function getTextBoxTemplate(ctrl) {
         functionsList.push(function () {
             for (var i = 0; i < this.ctrl.multiPlay.length; i++) {
                 if ($('#' + this.ctrl.multiPlay[i]).length > 0) {
-                    $('#' + this.ctrl.multiPlay[i])[0].multiPlayObj = this.ctrl;
+                    if (!$('#' + this.ctrl.multiPlay[i])[0].multiPlayObj)
+                        $('#' + this.ctrl.multiPlay[i])[0].multiPlayObj = [];
+                    $('#' + this.ctrl.multiPlay[i])[0].multiPlayObj.push(this.ctrl);
                     $('#' + this.ctrl.multiPlay[i]).change(function () {
-                        doCalceForMultiplay($(this)[0].multiPlayObj);
+                        if ($(this)[0].multiPlayObj && $(this)[0].multiPlayObj.length > 0)
+                            for (var m = 0; m < $(this)[0].multiPlayObj.length; m++)
+                                doCalceForMultiplay($(this)[0].multiPlayObj[m]);
+                    });
+                }
+            }
+        }.bind({ ctrl: ctrl }));
+    }
+
+    if (ctrl.sumCalculator) {
+        functionsList.push(function () {
+            for (var i = 0; i < this.ctrl.sumCalculator.length; i++) {
+                if ($('#' + this.ctrl.sumCalculator[i]).length > 0) {
+                    if (!$('#' + this.ctrl.sumCalculator[i])[0].sumCalculatorObj)
+                        $('#' + this.ctrl.sumCalculator[i])[0].sumCalculatorObj = [];
+                    $('#' + this.ctrl.sumCalculator[i])[0].sumCalculatorObj.push(this.ctrl);
+                    $('#' + this.ctrl.sumCalculator[i]).change(function () {
+                        if ($(this)[0].sumCalculatorObj && $(this)[0].sumCalculatorObj.length > 0)
+                            for (var m = 0; m < $(this)[0].sumCalculatorObj.length; m++)
+                                doCalceForSum($(this)[0].sumCalculatorObj[m]);
                     });
                 }
             }
@@ -1618,6 +1652,24 @@ function changeInputValueSetter(objectId) {
             return descriptor.get.apply(this);
         }
     });
+}
+
+function doCalceForSum(sumCalculator) {
+    if (sumCalculator && sumCalculator.sumCalculator) {
+        var result = 0;
+        for (var i = 0; i < sumCalculator.sumCalculator.length; i++) {
+            try {
+                if ($('#' + sumCalculator.sumCalculator[i]).val().replace(/,/, ''))
+                    result = result + Number.parseInt($('#' + sumCalculator.sumCalculator[i]).val().replace(/,/, ''));
+            }
+            catch (e) {
+
+            }
+        }
+        if (isNaN(result))
+            result = 0;
+        $('#' + sumCalculator.id).val(postCommanInNumberPlugin(result));
+    }
 }
 
 function doCalceForMultiplay(multiPlayObj) {
@@ -2049,10 +2101,18 @@ function addExteraParameterFromCtrls(exteraParameterIds, exteraSelect2Parameters
             if (exteraParameterIdsEndWith && elementId)
                 qureSelect = $('#' + elementId).closest('.MultiRowInputRow').find('[name$=' + exteraParameterIds[i]);
             if (qureSelect.length > 0) {
-                if (exteraParameterIdsEndWith)
-                    exteraSelect2Parameters[exteraParameterIds[i]] = qureSelect.val();
-                else
-                    exteraSelect2Parameters[qureSelect.attr('name')] = qureSelect.val();
+                if (qureSelect.closest('.tokenBox').length > 0) {
+                    exteraSelect2Parameters[qureSelect.closest('.tokenBox').attr('name')] = '';
+                    qureSelect.closest('.tokenBox').find('input[type="hidden"]').each(function () {
+                        exteraSelect2Parameters[$(this).attr('name')] += $(this).val() + ',';
+                    });
+                }
+                else {
+                    if (exteraParameterIdsEndWith)
+                        exteraSelect2Parameters[exteraParameterIds[i]] = qureSelect.val();
+                    else
+                        exteraSelect2Parameters[qureSelect.attr('name')] = qureSelect.val();
+                }
             }
         }
     }
@@ -2532,6 +2592,9 @@ function initSWFunctions(curId, actionOnLastStep) {
                 nextContent.addClass('panelSWizardHolderContentItemActive');
                 $(nextContent).find('select:not([ignoreOnChange])').change();
                 refreshMapIfExist($(nextContent));
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: $(nextContent).offset().top - 300
+                }, 500);
             }
         };
         $('#' + curId)[0].moveToStepById = function (targetId) {
@@ -2626,7 +2689,6 @@ function lastButtonActionSW(actionOnLastStep) {
 }
 
 function doPageActions(actionOnLastStep) {
-
     if (actionOnLastStep && actionOnLastStep.actionName) {
         if (actionOnLastStep.actionName == 'refreshGrid' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
             if ($('#' + actionOnLastStep.objectId).length > 0 && $('#' + actionOnLastStep.objectId)[0].refreshData)
@@ -2650,6 +2712,19 @@ function doPageActions(actionOnLastStep) {
             }.bind({ actionOnLastStep: actionOnLastStep }), null, function () { hideLoader(formQuery); });
         } else if (actionOnLastStep.actionName == 'showModal' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
             $('#' + actionOnLastStep.objectId).modal('show');
+        } else if (actionOnLastStep.actionName == 'showPrintPreview' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0 && actionOnLastStep.modalId && $('#' + actionOnLastStep.modalId).length > 0 && actionOnLastStep.url) {
+            var postData = getFormData($('#' + actionOnLastStep.objectId));
+            if (window['exteraModelParams']) {
+                for (var prop in exteraModelParams)
+                    postData.append(prop, exteraModelParams[prop]);
+            }
+            showLoader($('#' + actionOnLastStep.objectId));
+            postForm(actionOnLastStep.url, postData, function (res) {
+                if (res && res.isSuccess != false) {
+                    $('#' + actionOnLastStep.modalId).find('.modal-body').html(res);
+                    $('#' + actionOnLastStep.modalId).modal('show');
+                }
+            }, null, function () { hideLoader($('#' + actionOnLastStep.objectId)) });
         }
     }
 }
@@ -2794,14 +2869,24 @@ function setFocusToFirstVisbleText(qSelector) {
     }
 }
 
-function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl) {
+function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId) {
     var qSelector = $(curElement).closest('.modal').find('.modal-content');
-    if (!gridId && $(curElement).closest('.modal')[0].gridOwnerId)
+    if (qSelector.length == 0)
+        qSelector = $(curElement);
+    if (!gridId && $(curElement).closest('.modal')[0] && $(curElement).closest('.modal')[0].gridOwnerId)
         gridId = $(curElement).closest('.modal')[0].gridOwnerId;
     var postFormData = getFormData($(qSelector));
+    if (window['exteraModelParams']) {
+        for (var prop in exteraModelParams)
+            postFormData.append(prop, exteraModelParams[prop]);
+    }
     showLoader(qSelector);
+    if (showLoaderId)
+        showLoader($('#' + showLoaderId))
     postForm(url, postFormData, function (res) {
         if (res && res.isSuccess == true) {
+            if (onSuccessFunction)
+                onSuccessFunction(res);
             if (successUrl)
                 location.href = successUrl;
             if (!this.ignoreCloseModal) {
@@ -2814,7 +2899,12 @@ function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl) {
                 $('#' + this.gridId)[0].refreshData();
             }
         }
-    }.bind({ gridId, curElement, ignoreCloseModal: ignoreCloseModal }), null, function () { hideLoader(qSelector); });
+    }.bind({ gridId, curElement, ignoreCloseModal: ignoreCloseModal }), null, function ()
+    {
+        hideLoader(qSelector);
+        if (showLoaderId)
+            hideLoader($('#' + showLoaderId))
+    });
 }
 
 function refreshGrid(gridId, currButtonInsideModal) {

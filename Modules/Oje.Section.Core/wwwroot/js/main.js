@@ -449,7 +449,7 @@ function getFormData(selector) {
 }
 
 var allCacheURLs = [
-    '/core/basedata/get', '/getjsonconfig', '/account/dashboard/getloginuserinfo', '/TopMenu/GetTopMenu', '/Home/GetAboutUsMainPage', '/Home/GetReminderConfig', '/Reminder/GetMainPageDescription',
+    '/core/basedata/get', '/getjsonconfig', '/TopMenu/GetTopMenu', '/Home/GetAboutUsMainPage', '/Home/GetReminderConfig', '/Reminder/GetMainPageDescription',
     '/Home/GetOurPrideMainPage', '/Home/GetFooterDescrption', '/Home/GetFooterInfor', '/GetCompanyList', '/GetCreateDateList', '/Blog/Blog/GetMainBlog', '/Home/GetLoginModalConfig',
     '/Home/GetFooterExteraLink', '/Home/GetFooterExteraLinkGroup', '/Home/GetFooterSambole', '/Question/YourQuestion/GetList'
 ];
@@ -503,7 +503,7 @@ function getCookie(name) {
     return null;
 }
 
-function postForm(url, postData, success, error, completeEvent) {
+function postForm(url, postData, success, error, completeEvent, ignoreAutoToast) {
     var foundDataFromCache = getDataFromLocalStorageCache(url);
     if (foundDataFromCache) {
         if (success)
@@ -523,14 +523,15 @@ function postForm(url, postData, success, error, completeEvent) {
                     success(res);
                     if (res) {
                         if (res.isSuccess == true || res.isSuccess == false) {
-                            $.toast({
-                                heading: res.isSuccess == false ? 'خطا' : 'موفقیت',
-                                text: res.message,
-                                textAlign: 'right',
-                                position: 'bottom-right',
-                                showHideTransition: 'slide',
-                                icon: res.isSuccess == false ? 'error' : 'success'
-                            })
+                            if (!ignoreAutoToast)
+                                $.toast({
+                                    heading: res.isSuccess == false ? 'خطا' : 'موفقیت',
+                                    text: res.message,
+                                    textAlign: 'right',
+                                    position: 'bottom-right',
+                                    showHideTransition: 'slide',
+                                    icon: res.isSuccess == false ? 'error' : 'success'
+                                })
                             if (res.errorCode == 5) {
                                 if ($('[data-captcha]').length > 0 && $('[data-captcha]')[0].refreshCode) {
                                     $('[data-captcha]')[0].refreshCode();

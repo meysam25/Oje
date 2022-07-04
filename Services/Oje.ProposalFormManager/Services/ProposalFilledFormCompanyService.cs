@@ -362,5 +362,10 @@ namespace Oje.ProposalFormService.Services
         {
             return db.ProposalFilledFormCompanies.Any(t => t.IsSelected == true);
         }
+
+        public Company GetBy(long proposalFilledFormId)
+        {
+            return db.ProposalFilledFormCompanies.Where(t => t.ProposalFilledFormId == proposalFilledFormId).Select(t => t.Company).FirstOrDefault();
+        }
     }
 }

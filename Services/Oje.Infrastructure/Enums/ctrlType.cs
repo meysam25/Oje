@@ -33,7 +33,11 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "دکمه")]
         button = 14,
         [Display(Name = "نقشه")]
-        map = 15
+        map = 15,
+        [Display(Name = "متن")]
+        label = 16,
+        [Display(Name = "پلاک")]
+        carPlaque = 17
 
     }
 }

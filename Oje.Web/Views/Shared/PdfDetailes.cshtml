@@ -1,5 +1,9 @@
 ﻿@{
     Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    if(ViewBag.makeLayoutNull == true)
+    {
+        Layout = null;
+    }
     if(ViewBag.newLayoutName != null)
     {
         Layout = ViewBag.newLayoutName;
@@ -18,6 +22,9 @@
         padding: 10px;
         text-align: right;
         background-color:white;
+    }
+    .fontSize {
+        font-size:0.99em;
     }
 
     .printBox {
@@ -82,6 +89,8 @@
     {
         ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
     }
+
+    
 }
 <div class="pdfBody">
     @{
@@ -117,7 +126,7 @@
                                     foreach(var gorupItem in group.ProposalFilledFormPdfGroupItems )
                                     {
                                          <div class="printItem @(gorupItem.cssClass)">
-                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                            <label class="fontSize" >@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong class="fontSize">@(gorupItem.value)</strong> </label>
                                         </div>
                                     }
                                 }
@@ -128,9 +137,8 @@
             }
         }
     }
- 
     <div class="pdfFooterSection">
-        <div>محل امضا بیمه گزار @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
+        <div>محل امضا بیمه گذار @(!string.IsNullOrEmpty((Model.createUserFullname + "").Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
     </div>
     <div>
         @{
@@ -144,7 +152,7 @@
             if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
             {
                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                    <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>
+                    <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2())" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>
                 </div>
                  <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
                     <a style="border-color:silver;background-color:silver;cursor:default;" class="btn btn-primary btn-success btn-block" >پرداخت مستقیم به حساب شرکت @(Model.companyTitle) </a>
@@ -172,6 +180,24 @@
         }
     </div>
 </div>
+
+<script>
+    $('#paymentButton').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var curUrlWithQuiry = $(this).attr('href');
+        if(curUrlWithQuiry && curUrlWithQuiry.indexOf('?') > 0) {
+            var curUrl = curUrlWithQuiry.split('?')[0];
+            var status = curUrlWithQuiry.split('?')[1].split('status=')[1];
+            var fId = uuidv4RemoveDash();
+            $('body').append('<form action="'+ curUrl +'" method="post" id="'+ fId +'" ><input type="hidden" value="'+status+'" name="status" /></form>');
+            $('#' + fId).submit();
+        }
+
+        return false;
+    });
+</script>
 
 @{
     if(Layout == "_WebLayout")

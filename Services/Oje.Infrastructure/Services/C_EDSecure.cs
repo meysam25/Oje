@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Services
 {
@@ -25,9 +21,9 @@ namespace Oje.Infrastructure.Services
             //This is our encryption method
             using (Aes rm = Aes.Create("AesManaged"))
             {
-                //rm.Mode = CipherMode.CBC;
-                //rm.KeySize = 256;
-                //rm.BlockSize = 128;
+                rm.Mode = CipherMode.CBC;
+                //rm.KeySize =128 ;
+                //rm.BlockSize = 256;
                 //Create an encryptor and a decryptor using our encryption method, key, and vector.
                 EncryptorTransform = rm.CreateEncryptor(this.Key, this.Vector);
                 DecryptorTransform = rm.CreateDecryptor(this.Key, this.Vector);
@@ -41,6 +37,7 @@ namespace Oje.Infrastructure.Services
         {
             using (Aes rm = Aes.Create("AesManaged"))
             {
+                rm.Mode = CipherMode.CBC;
                 EncryptorTransform = rm.CreateEncryptor(arrKey, arrVector);
                 DecryptorTransform = rm.CreateDecryptor(arrKey, arrVector);
             }

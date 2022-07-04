@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Services
 {
@@ -40,6 +36,22 @@ namespace Oje.Infrastructure.Services
             string basePath = CreateDirecotryIfNotExist();
             string fileName = Path.Combine(basePath, name);
             return File.Exists(fileName);
+        }
+
+        public static void WriteData(string name, string data)
+        {
+            string basePath = CreateDirecotryIfNotExist();
+            string fileName = Path.Combine(basePath, name);
+            if (File.Exists(fileName))
+                File.WriteAllText(fileName, data);
+        }
+
+        public static void ReadData(string name, string data)
+        {
+            string basePath = CreateDirecotryIfNotExist();
+            string fileName = Path.Combine(basePath, name);
+            if (File.Exists(fileName))
+                File.WriteAllText(fileName, data);
         }
     }
 }

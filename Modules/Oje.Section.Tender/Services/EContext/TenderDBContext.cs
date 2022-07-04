@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Models.DB;
 
 namespace Oje.Section.Tender.Services.EContext
 {
-    public class TenderDBContext : DbContext
+    public class TenderDBContext : MyBaseDbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<TenderFilledForm> TenderFilledForms { get; set; }

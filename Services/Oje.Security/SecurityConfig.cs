@@ -23,6 +23,16 @@ namespace Oje.Security
             services.AddScoped<IBlockClientConfigService, BlockClientConfigService>();
             services.AddScoped<IBlockAutoIpService, BlockAutoIpService>();
             services.AddScoped<IBlockFirewallIpService, BlockFirewallIpService>();
+            services.AddScoped<IUserLoginConfigService, UserLoginConfigService>();
+            services.AddScoped<IUserAdminLogConfigService, UserAdminLogConfigService>();
+            services.AddScoped<IActionService, ActionService>();
+            services.AddScoped<IUserAdminLogService, UserAdminLogService>();
+            services.AddScoped<IErrorService, ErrorService>();
+            services.AddScoped<IAdminBlockClientConfigService, AdminBlockClientConfigService>();
+            services.AddScoped<IUserLoginLogoutLogService, UserLoginLogoutLogService>();
+            services.AddScoped<IBlockLoginUserService, BlockLoginUserService>();
+            services.AddScoped<IDebugEmailService, DebugEmailService>();
+            services.AddScoped<IDebugEmailReceiverService, DebugEmailReceiverService>();
 
             cacheServices = services;
         }
@@ -35,13 +45,8 @@ namespace Oje.Security
                     , ServiceLifetime.Singleton
             );
 
-            services.AddSingleton<IIpLimitationWhiteListService, IpLimitationWhiteListService>();
-            services.AddSingleton<IIpLimitationBlackListService, IpLimitationBlackListService>();
-            services.AddSingleton<IFileAccessRoleService, FileAccessRoleService>();
-            services.AddSingleton<IRoleService, RoleService>();
-            services.AddSingleton<IBlockClientConfigService, BlockClientConfigService>();
-            services.AddSingleton<IBlockAutoIpService, BlockAutoIpService>();
-            services.AddSingleton<IBlockFirewallIpService, BlockFirewallIpService>();
+            services.AddSingleton<IDebugEmailService, DebugEmailService>();
+            services.AddSingleton<IDebugEmailReceiverService, DebugEmailReceiverService>();
 
             cacheServices = services;
         }

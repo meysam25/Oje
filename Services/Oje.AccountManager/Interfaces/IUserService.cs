@@ -20,7 +20,6 @@ namespace Oje.AccountService.Interfaces
         List<long> GetUserIdByRoleIds(List<int> roleIds);
         bool CanSeeAllItems(long userId);
         ApiResult CreateForUser(CreateUpdateUserForUserVM input, long? loginUserId, LoginUserVM loginUserVM, int? siteSettingId);
-        void SetFlagForGooglePointPerformanceProblem();
         ApiResult DeleteForUser(long? id, LoginUserVM loginUserVM, int? siteSettingId);
         CreateUpdateUserForUserVM GetByIdForUser(long? id, LoginUserVM loginUserVM, int? siteSettingId);
         ApiResult UpdateForUser(CreateUpdateUserForUserVM input, long? loginUserId, LoginUserVM loginUserVM, int? siteSettingId);
@@ -28,6 +27,7 @@ namespace Oje.AccountService.Interfaces
         User GetBy(string username, int? siteSettingId);
         object GetBy(long? userId, int? siteSettingId);
         object GetUserInfoByUserId(long? userId);
+        void UpdateHashPassword();
         long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string eCode, long? loginUserId, int? siteSettingId);
         void TsetRemoveMe();
         void DeleteFlag(long? userId, int? siteSettingId, long? childIds);
@@ -42,6 +42,7 @@ namespace Oje.AccountService.Interfaces
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
         void setCookieForThisUser(User newUser, LoginVM input);
         void UpdatePassword(User user, string password);
+        void UpdateUserSessionFileName(long? id, string lastSessionFileName);
         object CreateForUserFromJson(GlobalExcelFile input, long? userId, LoginUserVM loginUserVM, int? siteSettingId, string websiteUrl);
         object GetUserInfoBy(long? userId);
         void CreateTempTable();

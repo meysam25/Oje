@@ -9,6 +9,7 @@ using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Security.Interfaces;
 using System;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.Tender.Areas.Tender.Controllers
 {
@@ -116,7 +117,7 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
         {
             var foundPPF = TenderConfigService.GetBy(SiteSettingService.GetSiteSetting()?.Id);
             if (foundPPF == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             ViewBag.RulesFile = foundPPF.generallow_address;
             ViewBag.HtmlTemplate = foundPPF.desctpion;

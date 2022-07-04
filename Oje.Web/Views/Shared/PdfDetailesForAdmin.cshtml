@@ -19,7 +19,9 @@
         text-align: right;
         background-color:white;
     }
-
+     .fontSize {
+        font-size:0.99em;
+    }
     .printBox {
         border: 1px solid silver;
         margin-bottom:10px;
@@ -117,7 +119,7 @@
                                     foreach(var gorupItem in group.ProposalFilledFormPdfGroupItems )
                                     {
                                          <div class="printItem @(gorupItem.cssClass)">
-                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                            <label class="fontSize" >@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong class="fontSize">@(gorupItem.value)</strong> </label>
                                         </div>
                                     }
                                 }
@@ -130,7 +132,7 @@
     }
  
     <div class="pdfFooterSection">
-        <div>محل امضا بیمه گزار @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
+        <div>محل امضا بیمه گذار @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
     </div>
     <div>
         @{
@@ -208,7 +210,7 @@
                     if(canSeeIssue == true)
                     {
                         <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-issue data-success-url="/ProposalFilledForm/ProposalFilledFormIssue/Index" data-status="5" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >ارصال برای صدور</button>
+                            <button data-issue data-success-url="/ProposalFilledForm/ProposalFilledFormIssue/Index" data-status="5" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >ارسال برای صدور</button>
                         </div>
                     }
                     if(canSeeReject == true)

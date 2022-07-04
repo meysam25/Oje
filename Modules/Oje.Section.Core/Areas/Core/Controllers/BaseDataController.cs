@@ -7,6 +7,8 @@ using System;
 using System.IO;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Exceptions;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Oje.Section.Core.Areas.Controllers
 {
@@ -18,23 +20,37 @@ namespace Oje.Section.Core.Areas.Controllers
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProvinceService ProvinceService = null;
         readonly ICityService CityService = null;
+        readonly ICompanyService CompanyService = null;
+        //readonly IUserService UserService = null;
         public BaseDataController(
                 IUploadedFileService UploadedFileService,
                 IProvinceService ProvinceService,
-                ICityService CityService
+                ICityService CityService,
+                ICompanyService CompanyService//,
+                //IUserService UserService
             )
         {
             this.UploadedFileService = UploadedFileService;
             this.ProvinceService = ProvinceService;
             this.CityService = CityService;
+            this.CompanyService = CompanyService;
+            //this.UserService = UserService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            //var m = "test".Encrypt();
             ManageModalResource.Copy();
             return Json(true);
         }
+
+        //[HttpGet]
+        //public IActionResult HashPassword()
+        //{
+        //    UserService.UpdateHashPassword();
+        //    return Json(true);
+        //}
 
         [HttpGet]
         public IActionResult GetFile(string fn)
@@ -45,12 +61,25 @@ namespace Oje.Section.Core.Areas.Controllers
             var loginUserId = HttpContext.GetLoginUser()?.UserId;
 
             var foundFile = UploadedFileService.GetFile(fn, loginUserId.ToLongReturnZiro());
-            if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || string.IsNullOrEmpty(foundFile.FileContentType))
+            if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false )
                 return Content("File Not Found");
+
+            var fi = new FileInfo(foundFile.FileName);
+            var rfi = new FileInfo(foundFile.FileNameOnServer);
 
             Response.Headers["Cache-Control"] = "max-age=" + new TimeSpan(365, 0, 0, 0).TotalSeconds.ToString("0");
 
-            return File(System.IO.File.ReadAllBytes(foundFile.FileNameOnServer), foundFile.FileContentType, new FileInfo(foundFile.FileName).Name);
+            if (foundFile.FileSize != null && rfi.Length != foundFile.FileSize)
+                return Content("File Not Found");
+
+            string rFileContentType = " ";
+            if (!string.IsNullOrEmpty(fi.Name))
+                new FileExtensionContentTypeProvider().TryGetContentType(new FileInfo(fi.Name).Name, out rFileContentType);
+
+            if (foundFile.FileContentType != null && rFileContentType != foundFile.FileContentType)
+                return Content("File Not Found");
+
+            return File(System.IO.File.ReadAllBytes(foundFile.FileNameOnServer), rFileContentType, fi.Name);
         }
 
         [HttpPost]
@@ -83,6 +112,12 @@ namespace Oje.Section.Core.Areas.Controllers
             return Json(CityService.GetLightList(id));
         }
 
+        [HttpPost]
+        public IActionResult GetCompanyList()
+        {
+            return Json(CompanyService.GetightList());
+        }
+
         [HttpGet]
         public IActionResult GetCityList2([FromQuery] int? provinceId, [FromQuery] Select2SearchVM searchInput)
         {
@@ -93,12 +128,12 @@ namespace Oje.Section.Core.Areas.Controllers
         public IActionResult GetCaptchaImage(Guid? id)
         {
             if (id == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var imageBytes = Captcha.GetImageCaptch(id.Value);
             if (imageBytes != null && imageBytes.Length > 0)
                 return File(imageBytes, "image/jpeg");
 
-            return NotFound();
+            throw BException.GenerateNewException(BMessages.Not_Found);
         }
 
         [HttpGet]
@@ -117,7 +152,7 @@ namespace Oje.Section.Core.Areas.Controllers
                 if (pFile != null && pFile.Length > 0)
                 {
                     var tempResult = UploadedFileService.UploadNewFile(FileType.CKEditor, pFile, null, null, null, ".png,.jpg,.jpeg", false);
-                    result = new { fileName = pFile.FileName, uploaded = 1, url =  GlobalConfig.FileAccessHandlerUrl + tempResult };
+                    result = new { fileName = pFile.FileName, uploaded = 1, url = GlobalConfig.FileAccessHandlerUrl + tempResult };
                 }
             }
 

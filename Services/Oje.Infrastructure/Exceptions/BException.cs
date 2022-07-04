@@ -1,11 +1,7 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Exceptions
 {
@@ -13,36 +9,39 @@ namespace Oje.Infrastructure.Exceptions
     {
         public ApiResultErrorCode Code;
         public BMessages BMessages;
+        public long UserId = 0;
         public BException(string Message) :
             base(Message)
         {
             Code = ApiResultErrorCode.ValidationError;
         }
-        public BException(string Message, ApiResultErrorCode Code) :
+        public BException(string Message, ApiResultErrorCode Code, long UserId = 0) :
             base(Message)
         {
             this.Code = Code;
+            this.UserId = UserId;
         }
-        public BException(string Message, ApiResultErrorCode Code, BMessages BMessages) :
+        public BException(string Message, ApiResultErrorCode Code, BMessages BMessages, long UserId = 0) :
             base(Message)
         {
             this.Code = Code;
             this.BMessages = BMessages;
+            this.UserId = UserId;
         }
 
-        public static BException GenerateNewException(BMessages message, ApiResultErrorCode code)
+        public static BException GenerateNewException(BMessages message, ApiResultErrorCode code, long UserId = 0)
         {
-            return new BException(message.GetAttribute<DisplayAttribute>()?.Name, code);
+            return new BException(message.GetAttribute<DisplayAttribute>()?.Name, code, message, UserId);
         }
 
         public static BException GenerateNewException(BMessages message)
         {
-            return new BException(message.GetAttribute<DisplayAttribute>()?.Name, ApiResultErrorCode.ValidationError);
+            return new BException(message.GetAttribute<DisplayAttribute>()?.Name, ApiResultErrorCode.ValidationError, message);
         }
 
-        public static BException GenerateNewException(string message)
+        public static BException GenerateNewException(string message, long UserId = 0)
         {
-            return new BException(message, ApiResultErrorCode.ValidationError);
+            return new BException(message, ApiResultErrorCode.ValidationError, UserId);
         }
 
         public static Exception GenerateNewException(object dublicate_Email, ApiResultErrorCode validationError)

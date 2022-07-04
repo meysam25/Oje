@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Oje.FileService\Oje.FileService.csproj" />
+    <ProjectReference Include="..\Oje.Security\Oje.Security.csproj" />
   </ItemGroup>
 
 </Project>

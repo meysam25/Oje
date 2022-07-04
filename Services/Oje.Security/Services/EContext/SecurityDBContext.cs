@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.Security.Models.DB;
 
 namespace Oje.Security.Services.EContext
 {
-    public class SecurityDBContext: DbContext
+    public class SecurityDBContext: MyBaseDbContext
     {
         public SecurityDBContext(DbContextOptions<SecurityDBContext> options) : base(options)
         {
@@ -18,8 +19,20 @@ namespace Oje.Security.Services.EContext
         public DbSet<BlockClientConfig> BlockClientConfigs { get; set; }
         public DbSet<BlockAutoIp> BlockAutoIps { get; set; }
         public DbSet<BlockFirewallIp> BlockFirewallIps { get; set; }
+        public DbSet<UserLoginConfig> UserLoginConfigs { get; set; }
+        public DbSet<UserAdminLogConfig> UserAdminLogConfigs { get; set; }
+        public DbSet<Models.DB.Action> Actions { get; set; }
+        public DbSet<Controller> Controllers { get; set; }
+        public DbSet<Section> Sections { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserAdminLog> UserAdminLogs { get; set; }
+        public DbSet<Error> Errors { get; set; }
+        public DbSet<AdminBlockClientConfig> AdminBlockClientConfigs { get; set; }
+        public DbSet<UserLoginLogoutLog> UserLoginLogoutLogs { get; set; }
+        public DbSet<BlockLoginUser> BlockLoginUsers { get; set; }
+        public DbSet<DebugEmail> DebugEmails { get; set; }
+        public DbSet<DebugEmailReceiver> DebugEmailReceivers { get; set; }
 
-         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
@@ -13,7 +9,9 @@ namespace Oje.AccountService.Models.DB
     {
         public Action()
         {
-            RoleActions = new List<RoleAction>();
+            RoleActions = new ();
+            UserAdminLogConfigs = new();
+            UserAdminLogs = new();
         }
 
         [Key]
@@ -38,5 +36,9 @@ namespace Oje.AccountService.Models.DB
         public List<RoleAction> RoleActions { get; set; }
         [InverseProperty("Action")]
         public List<DashboardSection> DashboardSections { get; set; }
+        [InverseProperty("Action")]
+        public List<UserAdminLogConfig> UserAdminLogConfigs { get; set; }
+        [InverseProperty("Action")]
+        public List<UserAdminLog> UserAdminLogs { get; set; }
     }
 }

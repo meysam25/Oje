@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.Section.Ticket.Models.DB;
 
 namespace Oje.Section.Ticket.Services.EContext
 {
-    public class TicketDBContext : DbContext
+    public class TicketDBContext : MyBaseDbContext
     {
         public TicketDBContext
             (

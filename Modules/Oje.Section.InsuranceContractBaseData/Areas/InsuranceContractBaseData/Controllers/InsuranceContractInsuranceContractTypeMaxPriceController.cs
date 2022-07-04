@@ -3,7 +3,7 @@ using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
-using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
@@ -94,10 +94,10 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         {
             var result = InsuranceContractInsuranceContractTypeMaxPriceService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

@@ -341,9 +341,21 @@ namespace Oje.AccountService.Services
             {
                 if (!currActions.Any(t => t == action))
                 {
-                    var foundAction = db.Actions.Include(t => t.RoleActions).Include(t => t.DashboardSections).Where(t => t.Name == action).FirstOrDefault();
+                    var foundAction = db.Actions
+                        .Include(t => t.UserAdminLogConfigs)
+                        .Include(t => t.UserAdminLogs)
+                        .Include(t => t.RoleActions)
+                        .Include(t => t.DashboardSections)
+                        .Where(t => t.Name == action)
+                        .FirstOrDefault();
                     if (foundAction != null)
                     {
+                        if (foundAction.UserAdminLogConfigs != null)
+                            foreach (var temp1 in foundAction.UserAdminLogConfigs)
+                                db.Entry(temp1).State = EntityState.Deleted;
+                        if (foundAction.UserAdminLogs != null)
+                            foreach (var temp1 in foundAction.UserAdminLogs)
+                                db.Entry(temp1).State = EntityState.Deleted;
                         if (foundAction.RoleActions != null)
                             foreach (var temp1 in foundAction.RoleActions)
                                 db.Entry(temp1).State = EntityState.Deleted;
@@ -573,7 +585,7 @@ namespace Oje.AccountService.Services
                                         icon = controllerItem.Actions.FirstOrDefault()?.Icon,
                                         url = controllerItem.Actions.FirstOrDefault()?.Name
                                     };
-                                    
+
                                     controllerChildList.Add(newCatItem);
                                 }
                             }
@@ -620,7 +632,7 @@ namespace Oje.AccountService.Services
                             }
                             else
                             {
-                                foreach(var tempX2 in gITem.ToList())
+                                foreach (var tempX2 in gITem.ToList())
                                 {
                                     SiteMenueVM tempX = new SiteMenueVM()
                                     {

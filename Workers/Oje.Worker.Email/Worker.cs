@@ -48,7 +48,7 @@ namespace Oje.Worker.Email
 
                 SqlDependency.Start(GetDbConnection());
 
-                string commandText = "SELECT [Id],[Email] ,[Subject] ,[Body] FROM dbo.EmailSendingQueues where LastTryDate is null";
+                string commandText = "SELECT [Id],[Email] ,[Subject] ,[Body] FROM dbo.EmailSendingQueues where LastTryDate is null and BMessageCode is null";
 
                 using (SqlCommand cmd = new SqlCommand(commandText, conn))
                 {

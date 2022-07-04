@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Oje.Infrastructure.Models
 {
     public class GlobalGrid
     {
+        public string sortField { get; set; }
+        public bool? sortFieldIsAsc { get; set; }
         int? Skip;
         public int skip { get
             {

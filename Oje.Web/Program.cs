@@ -2,13 +2,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace Oje.Web
 {
@@ -28,6 +25,8 @@ namespace Oje.Web
                     webBuilder.UseKestrel(options =>
                     {
                         options.AddServerHeader = false;
+
+                        options.Limits.MaxRequestBodySize = 10971520;
 
                         options.Listen(IPAddress.Any, 80);
                         var allUrls = config.GetSection("httpsUrls").Get<List<string>>();

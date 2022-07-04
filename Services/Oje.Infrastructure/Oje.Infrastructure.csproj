@@ -29,5 +29,10 @@
     <PackageReference Include="WebPush-NetCore" Version="1.0.2" />
 	
   </ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="MyResources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MyResources\regexes.yaml" />
+</ItemGroup>
 </Project>

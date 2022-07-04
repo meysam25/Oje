@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Models.DB.Reports;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services.EContext
 {
-    public class ProposalFormReportDBContext : DbContext
+    public class ProposalFormReportDBContext : MyBaseDbContext
     {
         public ProposalFormReportDBContext(DbContextOptions<ProposalFormReportDBContext> options) : base(options)
         {

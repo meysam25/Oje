@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.Section.Blog.Models.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Services.EContext
 {
-    public class BlogDBContext : DbContext
+    public class BlogDBContext : MyBaseDbContext
     {
         public BlogDBContext(DbContextOptions<BlogDBContext> options) : base(options)
         {

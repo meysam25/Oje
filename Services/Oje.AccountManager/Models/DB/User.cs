@@ -29,6 +29,7 @@ namespace Oje.AccountService.Models.DB
             FromUserUserMessages = new();
             ToUserUserMessages = new();
             UserMessageReplies = new();
+            UserAdminLogs = new();
         }
 
         [Key]
@@ -115,6 +116,8 @@ namespace Oje.AccountService.Models.DB
         public string ShenasnameNo { get; set; }
         public MarrageStatus? MarrageStatus { get; set; }
         public int? BankId { get; set; }
+        [MaxLength(50)]
+        public string LastSessionFileName { get; set; }
         public int? SiteSettingId { get; set; }
 
         [NotMapped]
@@ -143,6 +146,8 @@ namespace Oje.AccountService.Models.DB
         public List<UserMessage> ToUserUserMessages { get; set; }
         [InverseProperty("User")]
         public List<UserMessageReply> UserMessageReplies { get; set; }
+        [InverseProperty("User")]
+        public List<UserAdminLog> UserAdminLogs { get; set; }
 
     }
 }

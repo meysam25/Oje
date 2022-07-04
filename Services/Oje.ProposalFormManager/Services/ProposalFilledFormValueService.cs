@@ -48,7 +48,8 @@ namespace Oje.ProposalFormService.Services
                             ctrl.type == ctrlType.dropDown ||
                             ctrl.type == ctrlType.checkBox ||
                             ctrl.type == ctrlType.radio ||
-                            ctrl.type == ctrlType.persianDateTime 
+                            ctrl.type == ctrlType.persianDateTime || 
+                            ctrl.type == ctrlType.carPlaque
                         )
                         {
                             string currValue = "";
@@ -62,6 +63,8 @@ namespace Oje.ProposalFormService.Services
                                     currValue = form.GetStringIfExist(ctrl.name);
                             }
                             else if (ctrl.type == ctrlType.dropDown || ctrl.type == ctrlType.dropDown2)
+                                currValue = ctrl.defV;
+                            else if (ctrl.type == ctrlType.carPlaque)
                                 currValue = ctrl.defV;
                             if (!string.IsNullOrEmpty(currValue))
                             {

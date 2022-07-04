@@ -2,11 +2,6 @@
 using Oje.Infrastructure.Models;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Interfaces
 {
@@ -23,5 +18,6 @@ namespace Oje.ProposalFormService.Interfaces
         object Select(string id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         Company GetSelectedBy(long proposalFilledFormId);
         bool IsSelectedBy(long proposalFilledFormId);
+        Company GetBy(long proposalFilledFormId);
     }
 }

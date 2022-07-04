@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Oje.Models;
 using Oje.Infrastructure.Models;
-using Microsoft.AspNetCore.Builder;
 
 namespace Oje.Infrastructure
 {

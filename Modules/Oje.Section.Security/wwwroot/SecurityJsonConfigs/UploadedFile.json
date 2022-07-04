@@ -1,0 +1,30 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "UploadedFileimageGrid",
+          "class": "imageGallery",
+          "formatters": {
+            "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><div style=\"font-size:8pt;padding-bottom:10px;\" >'+ dataRow.fileSection +'</div><div style=\"font-size:8pt;padding-bottom:10px;\" >'+ dataRow.user1Fullname1 +'</div><div style=\"font-size:8pt;padding-bottom:10px;\" >'+ dataRow.user1Fullname2 +'</div><div style=\"font-size:8pt;padding-bottom:10px;\" >'+ dataRow.requiredAccess +'</div><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/Security/UploadedFile/Delete\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
+          },
+          "key": "id",
+          "url": "/Security/UploadedFile/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+
+            {
+              "formatter": "imageFormater",
+              "field": "src",
+              "caption": "تصویر"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

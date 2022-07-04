@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Models.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Services;
 
 namespace Oje.FileService.Services.EContext
 {
-    public class FileDBContext : DbContext
+    public class FileDBContext : MyBaseDbContext
     {
         public FileDBContext(DbContextOptions<FileDBContext> options) : base(options)
         {

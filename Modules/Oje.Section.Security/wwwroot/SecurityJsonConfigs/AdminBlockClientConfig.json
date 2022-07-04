@@ -1,0 +1,180 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "AdminBlockClientConfigMainGrid",
+          "exportToExcelUrl": "/Security/AdminBlockClientConfig/Export",
+          "showColumnConfigButton": true,
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('AdminBlockClientConfigAddGridModal', this)",
+              "type": "add",
+              "modalId": "IpLimitationBlackListAddGridModal"
+            }
+          ],
+          "actions": {
+            "delete": {
+              "url": "/Security/AdminBlockClientConfig/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "AdminBlockClientConfigEditGridModal",
+                "url": "/Security/AdminBlockClientConfig/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/Security/AdminBlockClientConfig/GetById\\', \\'AdminBlockClientConfigEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Security/AdminBlockClientConfig/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "action",
+              "caption": "بخش",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/BlockClientConfigType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "value",
+              "caption": "حداکثر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "sort": true,
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+
+      "moduals": [
+        {
+          "class": "",
+          "id": "AdminBlockClientConfigAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "aid",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Security/AdminBlockClientConfig/GetSectionList",
+              "label": "بخش",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "value",
+              "type": "text",
+              "label": "حداکثر",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'AdminBlockClientConfigMainGrid', '/Security/AdminBlockClientConfig/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "AdminBlockClientConfigEditGridModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "aid",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Security/AdminBlockClientConfig/GetSectionList",
+              "label": "بخش",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "value",
+              "type": "text",
+              "label": "حداکثر",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'AdminBlockClientConfigMainGrid', '/Security/AdminBlockClientConfig/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

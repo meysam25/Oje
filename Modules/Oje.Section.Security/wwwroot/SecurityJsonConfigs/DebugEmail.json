@@ -1,0 +1,79 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/Security/DebugEmail/Get",
+      "title": "ایمیل ارسال کننده خطا",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "username",
+          "type": "text",
+          "label": "نام کاربری",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "password",
+          "type": "password",
+          "label": "کلمه عبور",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "smtpPort",
+          "type": "text",
+          "label": "پورت",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "smtpHost",
+          "type": "text",
+          "label": "هاست",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "timeOut",
+          "type": "text",
+          "label": "زمان انصراف",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "isSSL",
+          "type": "dropDown",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/Core/BaseData/Get/IsActive",
+          "label": "اس اس ال"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "isDefaultCredentials",
+          "type": "dropDown",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/Core/BaseData/Get/IsActive",
+          "label": "Use Default Credentials"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "isActive",
+          "type": "dropDown",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/Core/BaseData/Get/IsActive",
+          "label": "وضعیت"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/Security/DebugEmail/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

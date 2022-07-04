@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.DB
 {
@@ -27,6 +23,7 @@ namespace Oje.ProposalFormService.Models.DB
             PaymentMethodCompanies = new();
             CarSpecificationAmountCompanies = new();
             UserCompanies = new();
+            AgentReffers = new();
         }
 
         [Key]
@@ -75,6 +72,8 @@ namespace Oje.ProposalFormService.Models.DB
         public List<CarSpecificationAmountCompany> CarSpecificationAmountCompanies { get; set; }
         [InverseProperty("Company")]
         public List<UserCompany> UserCompanies { get; set; }
+        [InverseProperty("Company")]
+        public List<AgentReffer> AgentReffers { get; set; }
 
     }
 }

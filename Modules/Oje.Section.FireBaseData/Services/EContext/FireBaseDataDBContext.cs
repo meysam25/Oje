@@ -1,14 +1,10 @@
 ﻿using Oje.Section.FireBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Services;
 
 namespace Oje.Section.FireBaseData.Services.EContext
 {
-    public class FireBaseDataDBContext : DbContext
+    public class FireBaseDataDBContext : MyBaseDbContext
     {
         public FireBaseDataDBContext(DbContextOptions<FireBaseDataDBContext> options) : base(options)
         {

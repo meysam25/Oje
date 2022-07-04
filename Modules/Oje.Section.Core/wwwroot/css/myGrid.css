@@ -9,58 +9,62 @@
         background-color: rgb(245, 245, 245);
     }
 
-    .myGrid tbody > tr:last-child {
-        background-color: white;
+.imageGallery .myGrid tbody > tr:nth-child(2n+1) {
+    background-color:white;
+}
+
+.myGrid tbody > tr:last-child {
+    background-color: white;
+}
+
+.myGrid tr td {
+    padding: 5px;
+    border-right: 1px solid silver;
+    border-top: 1px solid silver;
+}
+
+.myGrid tr:last-child > td {
+    border-bottom: 1px solid silver;
+}
+
+.myGrid tr td:last-child {
+    border-left: 1px solid silver;
+}
+
+.myGrid .myGridPagaer {
+    text-align: left;
+    direction: ltr;
+}
+
+    .myGrid .myGridPagaer > div > button, .myGrid .myGridPagaer > div > span {
+        vertical-align: top;
+        display: inline-block;
+        min-width: 32px;
+        height: 32px;
+        border: 1px solid silver;
+        text-align: center;
+        line-height: 31px;
+        margin: 1px;
+        cursor: pointer;
+        background-color: transparent;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
     }
 
-    .myGrid tr td {
-        padding: 5px;
-        border-right: 1px solid silver;
-        border-top: 1px solid silver;
-    }
-
-    .myGrid tr:last-child > td {
-        border-bottom: 1px solid silver;
-    }
-
-    .myGrid tr td:last-child {
-        border-left: 1px solid silver;
-    }
-
-    .myGrid .myGridPagaer {
-        text-align: left;
-        direction: ltr;
-    }
-
-        .myGrid .myGridPagaer > div > button, .myGrid .myGridPagaer > div > span {
-            vertical-align: top;
-            display: inline-block;
-            min-width: 32px;
-            height: 32px;
-            border: 1px solid silver;
-            text-align: center;
-            line-height: 31px;
-            margin: 1px;
-            cursor: pointer;
-            background-color: transparent;
-            -moz-border-radius: 4px;
-            -webkit-border-radius: 4px;
-            border-radius: 4px;
+        .myGrid .myGridPagaer > div > button.normalCR {
+            cursor: auto;
         }
 
-            .myGrid .myGridPagaer > div > button.normalCR {
-                cursor: auto;
-            }
+    .myGrid .myGridPagaer .pagaerDescription {
+        direction: rtl;
+        margin: 5px;
+        margin-left: 10px;
+    }
 
-        .myGrid .myGridPagaer .pagaerDescription {
-            direction: rtl;
-            margin: 5px;
-            margin-left: 10px;
-        }
-
-        .myGrid .myGridPagaer .myActive, .myGrid .myGridPagaer > div > button:hover {
-            background-color: #d4d4d4;
-        }
+    .myGrid .myGridPagaer .myActive, .myGrid .myGridPagaer > div > button:hover {
+        background-color: #d4d4d4;
+    }
 
 .myItemPerPage {
     text-align: right;
@@ -465,8 +469,8 @@
     }
 
 .messDownloadFile {
-    display:inline-block;
-    margin-right:10px;
-    margin-left:10px;
-    color:#b70101;
+    display: inline-block;
+    margin-right: 10px;
+    margin-left: 10px;
+    color: #b70101;
 }

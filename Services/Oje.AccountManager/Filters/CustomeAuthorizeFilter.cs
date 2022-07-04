@@ -8,14 +8,79 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Oje.AccountService.Models.View;
+using Oje.Security.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.AccountService.Filters
 {
-    public class CustomeAuthorizeFilter : Attribute, IAuthorizationFilter
+    public class CustomeAuthorizeFilter : Attribute, IAuthorizationFilter, IActionFilter
     {
         public static List<UserAccessCache> UserAccessCaches = new();
+
         public CustomeAuthorizeFilter()
         {
+        }
+
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+            //var currentFilter = context.ActionDescriptor.FilterDescriptors.FirstOrDefault(filterDescriptor => ReferenceEquals(filterDescriptor.Filter, this));
+            //if (currentFilter == null)
+            //    return;
+
+            //if (currentFilter.Scope == FilterScope.Action )
+            //{
+            var curIp = context.HttpContext.GetIpAddress();
+            if (curIp != null)
+            {
+                IUserAdminLogService UserAdminLogService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogService)) as IUserAdminLogService;
+                IUserAdminLogConfigService UserAdminLogConfigService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogConfigService)) as IUserAdminLogConfigService;
+                IUserService UserService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
+                LoginUserVM loginUser = context.HttpContext.GetLoginUser();
+                string requestPath = getCurrPath(context.HttpContext);
+                if (loginUser != null)
+                {
+                    fillUserCache(loginUser, UserService);
+                    var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
+                    if (foundUserAccess != null)
+                    {
+                        var foundActionId = foundUserAccess.Actions.Where(t => t.Name == requestPath).Select(t => t.Id).FirstOrDefault();
+                        if (foundActionId > 0 && UserAdminLogConfigService.IsNeededCache(foundActionId, loginUser.siteSettingId.ToIntReturnZiro()))
+                            UserAdminLogService.Create(loginUser.UserId, context.HttpContext.TraceIdentifier, foundActionId, false, true, curIp, loginUser.siteSettingId.ToIntReturnZiro());
+                    }
+                }
+            }
+            // }
+        }
+
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+            //var currentFilter = context.ActionDescriptor.FilterDescriptors.FirstOrDefault(filterDescriptor => ReferenceEquals(filterDescriptor.Filter, this));
+            //if (currentFilter == null)
+            //    return;
+
+            //if (currentFilter.Scope == FilterScope.Action)
+            //{
+            var curIp = context.HttpContext.GetIpAddress();
+            if (curIp != null)
+            {
+                IUserAdminLogService UserAdminLogService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogService)) as IUserAdminLogService;
+                IUserAdminLogConfigService UserAdminLogConfigService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogConfigService)) as IUserAdminLogConfigService;
+                IUserService UserService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
+                LoginUserVM loginUser = context.HttpContext.GetLoginUser();
+                string requestPath = getCurrPath(context.HttpContext);
+                if (loginUser != null)
+                {
+                    fillUserCache(loginUser, UserService);
+                    var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
+                    if (foundUserAccess != null)
+                    {
+                        var foundActionId = foundUserAccess.Actions.Where(t => t.Name == requestPath).Select(t => t.Id).FirstOrDefault();
+                        if (foundActionId > 0 && UserAdminLogConfigService.IsNeededCache(foundActionId, loginUser.siteSettingId.ToIntReturnZiro()))
+                            UserAdminLogService.Create(loginUser.UserId, context.HttpContext.TraceIdentifier, foundActionId, false, false, curIp, loginUser.siteSettingId.ToIntReturnZiro());
+                    }
+                }
+            }
+            //}
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -24,12 +89,11 @@ namespace Oje.AccountService.Filters
             string loginCValue = "";
             bool noAccess = false;
             LoginUserVM loginUser = null;
-            string requestPath =
-                (context.HttpContext.Request.RouteValues.ContainsKey("area") ? "/" + context.HttpContext.Request.RouteValues["area"] : "") +
-                (context.HttpContext.Request.RouteValues.ContainsKey("controller") ? "/" + context.HttpContext.Request.RouteValues["controller"] : "") +
-                (context.HttpContext.Request.RouteValues.ContainsKey("action") ? "/" + context.HttpContext.Request.RouteValues["action"] : "");
+            string requestPath = getCurrPath(context.HttpContext);
+
             IUserService UserService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
             ISiteSettingService SiteSettingService = context.HttpContext.RequestServices.GetService(typeof(ISiteSettingService)) as ISiteSettingService;
+            IUserLoginConfigService UserLoginConfigService = context.HttpContext.RequestServices.GetService(typeof(IUserLoginConfigService)) as IUserLoginConfigService;
             var foundSetting = SiteSettingService.GetSiteSetting();
             if (foundSetting != null && context.HttpContext.Request.Cookies.ContainsKey("login"))
             {
@@ -44,27 +108,38 @@ namespace Oje.AccountService.Filters
                         try { var tempResultX = context.HttpContext.Request.Cookies["ignoreCIP"]; ignoreIp = tempResultX.Decrypt2() == "true" ? true : false; } catch { }
                     }
 
-                    if ((ignoreIp == true || loginUser.Ip == context.HttpContext.GetIpAddress()?.ToString()) && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
+                    if (loginUser.browserName == context.HttpContext.GetBroswerName())
                     {
-                        if (!UserAccessCaches.Any(t => t.UserId == loginUser.UserId) ||
-                            UserAccessCaches.Where(t => t.UserId == loginUser.UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)
+                        if ((ignoreIp == true || loginUser.Ip == context.HttpContext.GetIpAddress()?.ToString()) && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
                         {
-                            var userAccess = UserService.GetUserSections(loginUser.UserId);
-                            var foundItem = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
-                            if (foundItem == null)
-                                UserAccessCaches.Add(new UserAccessCache() { UserId = loginUser.UserId, Actions = userAccess });
-                            else
-                                foundItem.Actions = userAccess;
+                            fillUserCache(loginUser, UserService);
+                            var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
+                            if (foundUserAccess != null)
+                                if (foundUserAccess.Actions.Any(t => t.Name == requestPath))
+                                    isValidUserr = true;
+                                else
+                                    noAccess = true;
+
+                            var loginUserConfig = UserLoginConfigService.GetByCache(foundSetting?.Id);
+                            if (loginUserConfig != null)
+                            {
+                                if (foundUserAccess != null)
+                                    if ((DateTime.Now - foundUserAccess.LastActiveTime).TotalMinutes >= loginUserConfig.InActiveLogoffMinute)
+                                    {
+                                        isValidUserr = false;
+                                        noAccess = false;
+                                        MySession.Clean(loginUser.sessionFileName);
+                                        foundUserAccess.CreateDate = DateTime.Now.AddDays(-1);
+                                    }
+                                    else
+                                        foundUserAccess.LastActiveTime = DateTime.Now;
+                            }
                         }
-                        var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
-                        if (foundUserAccess.Actions.Any(t => t.Name == requestPath))
-                        {
-                            isValidUserr = true;
-                        }
-                        else
-                        {
-                            noAccess = true;
-                        }
+                    }
+                    else
+                    {
+                        isValidUserr = false;
+                        noAccess = false;
                     }
                 }
             }
@@ -83,6 +158,34 @@ namespace Oje.AccountService.Filters
                         context.Result = new RedirectToActionResult("Login", "Dashboard", new { area = "Account" });
                     else
                         context.Result = new ViewResult { ViewName = "AccessDenied" };
+                }
+            }
+        }
+
+        private string getCurrPath(HttpContext context)
+        {
+            return (context.Request.RouteValues.ContainsKey("area") ? "/" + context.Request.RouteValues["area"] : "") +
+                (context.Request.RouteValues.ContainsKey("controller") ? "/" + context.Request.RouteValues["controller"] : "") +
+                (context.Request.RouteValues.ContainsKey("action") ? "/" + context.Request.RouteValues["action"] : "");
+        }
+
+        void fillUserCache(LoginUserVM loginUser, IUserService UserService)
+        {
+            if (UserAccessCaches == null)
+                UserAccessCaches = new List<UserAccessCache>();
+
+            if (!UserAccessCaches.Any(t => t.UserId == loginUser.UserId) ||
+                UserAccessCaches.Where(t => t.UserId == loginUser.UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)
+            {
+                var userAccess = UserService.GetUserSections(loginUser.UserId);
+                var foundItem = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
+                if (foundItem == null)
+                    UserAccessCaches.Add(new UserAccessCache() { UserId = loginUser.UserId, Actions = userAccess, LastActiveTime = DateTime.Now });
+                else
+                {
+                    foundItem.Actions = userAccess;
+                    foundItem.LastActiveTime = DateTime.Now;
+                    foundItem.CreateDate = DateTime.Now;
                 }
             }
         }

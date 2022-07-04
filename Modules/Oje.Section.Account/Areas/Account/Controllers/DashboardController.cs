@@ -7,6 +7,8 @@ using Oje.AccountService.Models.View;
 using Oje.Sms.Models.View;
 using Oje.JoinServices.Interfaces;
 using Oje.Security.Interfaces;
+using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Enums;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -22,6 +24,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         readonly Sms.Interfaces.ISmsSendingQueueService SmsSendingQueueService = null;
         readonly ISMSUserService SMSUserService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+        readonly IUserLoginLogoutLogService UserLoginLogoutLogService = null;
 
         public DashboardController(
             IUserService UserService,
@@ -30,7 +33,8 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             IDashboardSectionService DashboardSectionService,
             Sms.Interfaces.ISmsSendingQueueService SmsSendingQueueService,
             ISMSUserService SMSUserService,
-            IBlockAutoIpService BlockAutoIpService
+            IBlockAutoIpService BlockAutoIpService,
+            IUserLoginLogoutLogService UserLoginLogoutLogService
             )
         {
             this.UserService = UserService;
@@ -40,6 +44,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             this.SmsSendingQueueService = SmsSendingQueueService;
             this.SMSUserService = SMSUserService;
             this.BlockAutoIpService = BlockAutoIpService;
+            this.UserLoginLogoutLogService = UserLoginLogoutLogService;
         }
 
         [CustomeAuthorizeFilter]
@@ -69,16 +74,18 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult Login([FromForm] LoginVM input)
         {
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.LoginWithPassword, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = UserService.Login(input, SiteSettingService.GetSiteSetting()?.Id);
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.LoginWithPassword, Infrastructure.Enums.BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            object tempResult = null;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginWithPassword, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            try { tempResult = UserService.Login(input, SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithPassword, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginWithPassword, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
 
             return Json(tempResult);
         }
 
         public IActionResult Logout()
         {
-            UserService.Logout(HttpContext.GetLoginUser());
+            var curUser = HttpContext.GetLoginUser();
+            UserService.Logout(curUser);
             try
             {
                 string referer = Request.Headers["Referer"].ToString();
@@ -86,11 +93,14 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             }
             catch { }
             ViewBag.loginUrl = Url.Action("Login");
+            UserLoginLogoutLogService.Create(curUser?.UserId ?? 0, UserLoginLogoutLogType.Logout, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
+
             return View();
         }
 
         [AreaConfig(Title = "مشاهده مشخصات کاربر لاگین شده")]
         [HttpPost]
+        [CustomeAuthorizeFilter]
         public IActionResult GetLoginUserInfo()
         {
             return Json(UserService.GetUserInfoByUserId(HttpContext.GetLoginUser()?.UserId));
@@ -112,42 +122,50 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpPost]
         public IActionResult LoginWithSMS(RegLogSMSVM input)
         {
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.LoginWithSMS, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = SmsSendingQueueService.LoginWithSMS(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.LoginWithSMS, Infrastructure.Enums.BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            object tempResult = null;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginWithSMS, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            try { tempResult = SmsSendingQueueService.LoginWithSMS(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginWithSMS, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }
 
         [HttpPost]
         public IActionResult LoginRegister(RegLogSMSVM input)
         {
-            return Json(SMSUserService.LoginRegister(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id));
+            object tempResult = null;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginRegister, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            try { tempResult = SMSUserService.LoginRegister(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginRegister, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
         }
 
         [HttpPost]
         public IActionResult ActiveCodeForResetPassword(RegLogSMSVM input)
         {
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.ActiveCodeForResetPassword, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = SmsSendingQueueService.ActiveCodeForResetPassword(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.ActiveCodeForResetPassword, Infrastructure.Enums.BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            object tempResult = null;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ActiveCodeForResetPassword, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            try { tempResult = SmsSendingQueueService.ActiveCodeForResetPassword(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithChangePassword, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ActiveCodeForResetPassword, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }
 
         [HttpPost]
         public IActionResult CheckIfSmsCodeIsValid(RegLogSMSVM input)
         {
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.CheckIfSmsCodeIsValid, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = SMSUserService.CheckIfSmsCodeIsValid(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.CheckIfSmsCodeIsValid, Infrastructure.Enums.BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            object tempResult = null;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CheckIfSmsCodeIsValid, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            try { tempResult = SMSUserService.CheckIfSmsCodeIsValid(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CheckIfSmsCodeIsValid, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }
 
         [HttpPost]
         public IActionResult ChangePasswordAndLogin(ChangePasswordAndLoginVM input)
         {
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.ChangePasswordAndLogin, Infrastructure.Enums.BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = SMSUserService.ChagePasswordAndLogin(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            BlockAutoIpService.CheckIfRequestIsValid(Infrastructure.Enums.BlockClientConfigType.ChangePasswordAndLogin, Infrastructure.Enums.BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            object tempResult = null;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ChangePasswordAndLogin, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            try { tempResult = SMSUserService.ChagePasswordAndLogin(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithChangePassword, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ChangePasswordAndLogin, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }
     }

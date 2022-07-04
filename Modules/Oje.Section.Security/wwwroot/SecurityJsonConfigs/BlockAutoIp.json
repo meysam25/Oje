@@ -1,0 +1,113 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "BlockAutoIpMainGrid",
+          "exportToExcelUrl": "/Security/BlockAutoIp/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "BlockAutoIpEditGridModal",
+                "url": "/Security/BlockAutoIp/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.rid +'\\', \\'/Security/BlockAutoIp/GetById\\', \\'BlockAutoIpEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Security/BlockAutoIp/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "section",
+              "caption": "بخش",
+              "sort": true,
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/BlockClientConfigType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "ip",
+              "caption": "ای پی",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ",
+              "sort": true,
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "duration",
+              "caption": "مدت زمان"
+            },
+            {
+              "field": "isSuccess",
+              "caption": "موفقیت؟",
+              "sort": true,
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "fullUsername",
+              "caption": "نام",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "BlockAutoIpEditGridModal",
+          "title": "مشاهده",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "text",
+              "label": "متن خطا"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

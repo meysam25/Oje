@@ -16,6 +16,8 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Oje.AccountService.Middlewares;
 using Oje.Section.Core.Services;
+using Oje.Security.Filters;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Oje.Web
 {
@@ -77,6 +79,11 @@ namespace Oje.Web
                     moduleInitializer.ConfigureServices(services);
                 }
             }
+
+            services.Configure<FormOptions>(x =>
+            {
+                x.MultipartBodyLengthLimit = 10971520;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

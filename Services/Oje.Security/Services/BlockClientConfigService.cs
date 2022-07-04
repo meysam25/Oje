@@ -7,17 +7,14 @@ using Oje.Security.Interfaces;
 using Oje.Security.Models.DB;
 using Oje.Security.Models.View;
 using Oje.Security.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Security.Services
 {
     public class BlockClientConfigService : IBlockClientConfigService
     {
         readonly SecurityDBContext db = null;
+        static List<BlockClientConfig> BlockClientConfigs = null;
+
         public BlockClientConfigService
             (
                 SecurityDBContext db
@@ -41,6 +38,8 @@ namespace Oje.Security.Services
                 Type = input.type.Value
             }).State = EntityState.Added;
             db.SaveChanges();
+
+            BlockClientConfigs = null;
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -74,6 +73,8 @@ namespace Oje.Security.Services
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
+
+            BlockClientConfigs = null;
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -148,15 +149,20 @@ namespace Oje.Security.Services
             foundItem.MaxSuccessFirewall = input.maxSuccessFirewall.ToIntReturnZiro();
             foundItem.MaxSuccessSoftware = input.maxSuccessSoftware.ToIntReturnZiro();
             foundItem.Type = input.type.Value;
-
+            
             db.SaveChanges();
+
+            BlockClientConfigs = null;
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
         public BlockClientConfig GetBy(BlockClientConfigType type, int? siteSettingId)
         {
-            return db.BlockClientConfigs.Where(t => t.Type == type && t.SiteSettingId == siteSettingId && t.IsActive == true).FirstOrDefault();
+            if (BlockClientConfigs == null)
+                BlockClientConfigs = db.BlockClientConfigs.AsNoTracking().ToList();
+
+            return BlockClientConfigs.Where(t => t.Type == type && t.SiteSettingId == siteSettingId && t.IsActive == true).FirstOrDefault();
         }
     }
 }

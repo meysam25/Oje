@@ -6,6 +6,7 @@ using Oje.Infrastructure.Services;
 using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Models.View;
 using System;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
 {
@@ -83,10 +84,10 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
         {
             var result = WalletTransactionService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

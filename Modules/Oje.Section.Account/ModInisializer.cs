@@ -24,7 +24,7 @@ namespace Oje.Section.Account
 
             var sBuilder = services.BuildServiceProvider();
             sBuilder.GetService<ISectionService>().UpdateModuals();
-            sBuilder.GetService<IUserService>().SetFlagForGooglePointPerformanceProblem();
+            sBuilder.GetService<ITempSqlCommService>().SetFlagForGooglePointPerformanceProblem();
         }
     }
 }

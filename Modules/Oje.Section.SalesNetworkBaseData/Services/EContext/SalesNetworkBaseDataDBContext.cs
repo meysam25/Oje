@@ -1,14 +1,10 @@
 ﻿using Oje.Section.SalesNetworkBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Services;
 
 namespace Oje.Section.SalesNetworkBaseData.Services.EContext
 {
-    public class SalesNetworkBaseDataDBContext : DbContext
+    public class SalesNetworkBaseDataDBContext : MyBaseDbContext
     {
         public SalesNetworkBaseDataDBContext(
             DbContextOptions<SalesNetworkBaseDataDBContext> option

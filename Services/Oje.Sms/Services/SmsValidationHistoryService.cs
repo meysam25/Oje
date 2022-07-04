@@ -1,15 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
+using Oje.Sms.Models.View;
 using Oje.Sms.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Sms.Services
 {
@@ -60,6 +57,110 @@ namespace Oje.Sms.Services
                 result = Math.Round((DateTime.Now - lastCreateDate.CreateDate).TotalSeconds).ToIntReturnZiro();
 
             return result;
+        }
+
+        public GridResultVM<SmsValidationHistoryMainGridResultVM> GetList(SmsValidationHistoryMainGrid searchInput, int? siteSettingId)
+        {
+            searchInput = searchInput ?? new SmsValidationHistoryMainGrid();
+
+            var quiryResult = db.SmsValidationHistories.Where(t => t.SiteSettingId == siteSettingId);
+
+            if (!string.IsNullOrEmpty(searchInput.ip) && searchInput.ip.ToIp() != null)
+            {
+                var targetIp = searchInput.ip.ToIp();
+                quiryResult = quiryResult.Where(t => t.Ip1 == targetIp.Ip1 && t.Ip2 == targetIp.Ip2 && t.Ip3 == targetIp.Ip3 && t.Ip4 == targetIp.Ip4);
+            }
+            if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ToEnDate() != null)
+            {
+                var targetDate = searchInput.createDate.ToEnDate().Value;
+                quiryResult = quiryResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
+            }
+            if (searchInput.type != null)
+                quiryResult = quiryResult.Where(t => t.Type == searchInput.type);
+            if (searchInput.mobile != null)
+                quiryResult = quiryResult.Where(t => t.MobileNumber == searchInput.mobile);
+            if (searchInput.invalidCount != null && searchInput.invalidCount.Value >= 0)
+                quiryResult = quiryResult.Where(t => t.InvalidCount == searchInput.invalidCount.Value);
+            if (searchInput.isUsed != null)
+                quiryResult = quiryResult.Where(t => t.IsUsed == searchInput.isUsed);
+
+            switch (searchInput.sortField)
+            {
+                case "ip":
+                    if (searchInput.sortFieldIsAsc == false)
+                        quiryResult = quiryResult.OrderByDescending(t => t.Ip1).ThenByDescending(t => t.Ip2).ThenByDescending(t => t.Ip3).ThenByDescending(t => t.Ip4);
+                    else
+                        quiryResult = quiryResult.OrderBy(t => t.Ip1).ThenBy(t => t.Ip2).ThenBy(t => t.Ip3).ThenBy(t => t.Ip4);
+                    break;
+                case "createDate":
+                    if (searchInput.sortFieldIsAsc == false)
+                        quiryResult = quiryResult.OrderByDescending(t => t.CreateDate);
+                    else
+                        quiryResult = quiryResult.OrderBy(t => t.CreateDate);
+                    break;
+                case "mobile":
+                    if (searchInput.sortFieldIsAsc == false)
+                        quiryResult = quiryResult.OrderByDescending(t => t.MobileNumber);
+                    else
+                        quiryResult = quiryResult.OrderBy(t => t.MobileNumber);
+                    break;
+                case "invalidCount":
+                    if (searchInput.sortFieldIsAsc == false)
+                        quiryResult = quiryResult.OrderByDescending(t => t.InvalidCount);
+                    else
+                        quiryResult = quiryResult.OrderBy(t => t.InvalidCount);
+                    break;
+                case "isUsed":
+                    if (searchInput.sortFieldIsAsc == false)
+                        quiryResult = quiryResult.OrderByDescending(t => t.IsUsed);
+                    else
+                        quiryResult = quiryResult.OrderBy(t => t.IsUsed);
+                    break;
+                case "type":
+                    if (searchInput.sortFieldIsAsc == false)
+                        quiryResult = quiryResult.OrderByDescending(t => t.Type);
+                    else
+                        quiryResult = quiryResult.OrderBy(t => t.Type);
+                    break;
+                default:
+                    quiryResult = quiryResult.OrderByDescending(t => t.CreateDate);
+                    break;
+            }
+
+            int row = searchInput.skip;
+
+            return new GridResultVM<SmsValidationHistoryMainGridResultVM>()
+            {
+                total = quiryResult.Count(),
+                data = quiryResult
+                .Skip(searchInput.skip)
+                .Take(searchInput.take)
+                .Select(t => new
+                {
+                    t.Ip1,
+                    t.Ip2,
+                    t.Ip3,
+                    t.Ip4,
+                    t.CreateDate,
+                    t.Type,
+                    t.MobileNumber,
+                    t.InvalidCount,
+                    t.IsUsed
+                })
+                .ToList()
+                .Select(t => new SmsValidationHistoryMainGridResultVM
+                {
+                    row = ++row,
+                    id = t.Ip1 + "." + t.Ip2 + "." + t.Ip3 + "." + t.Ip4,
+                    ip = t.Ip1 + "." + t.Ip2 + "." + t.Ip3 + "." + t.Ip4,
+                    createDate = t.CreateDate.ToFaDate() + " " + t.CreateDate.ToString("HH:mm"),
+                    type = t.Type.GetEnumDisplayName(),
+                    mobile = t.MobileNumber.ToString(),
+                    invalidCount = t.InvalidCount + "",
+                    isUsed = t.IsUsed == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName()
+                })
+                .ToList()
+            };
         }
 
         public bool IsValidPreUsed(long mobileNumber, string codeId, IpSections ipSections)

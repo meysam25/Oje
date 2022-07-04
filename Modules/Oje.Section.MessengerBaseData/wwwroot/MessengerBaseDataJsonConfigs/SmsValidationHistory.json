@@ -1,0 +1,82 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "SmsValidationHistoryMainGrid",
+          "exportToExcelUrl": "/MessengerBaseData/SmsValidationHistory/Export",
+          "showColumnConfigButton": true,
+          "key": "id",
+          "url": "/MessengerBaseData/SmsValidationHistory/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "ip",
+              "caption": "ای پی",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ",
+              "sort": true,
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "mobile",
+              "caption": "همراه",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "invalidCount",
+              "caption": "تعداد اشتباه",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isUsed",
+              "caption": "استفاده شده؟",
+              "sort": true,
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "type",
+              "caption": "نوع استفاده",
+              "sort": true,
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/SmsValidationHistoryType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

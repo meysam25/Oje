@@ -1,6 +1,7 @@
 ﻿using Oje.Infrastructure.Enums;
 using Microsoft.AspNetCore.Http;
 using Oje.FileService.Models.DB;
+using Oje.FileService.Models.View;
 
 namespace Oje.FileService.Interfaces
 {
@@ -14,5 +15,7 @@ namespace Oje.FileService.Interfaces
         object GetListBy(long objectId, FileType fileType, int skip, int take, int? siteSettingId);
         void Delete(long? uploadFileId, int? siteSettingId, long? objectId, FileType fileType);
         bool IsValidImageSize(IFormFile mainImage, bool isWidthCheck, decimal relatedRateStart, decimal relatedRateEnd);
+        object Delete(long? id, int? siteSettingId);
+        object GetList(UploadedFileMainGrid searchInput, int? siteSettingId);
     }
 }

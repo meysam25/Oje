@@ -32,6 +32,7 @@ namespace Oje.Section.ProposalFormBaseData
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IPaymentMethodFileService, PaymentMethodFileService>();
             services.AddScoped<IProposalFormPrintDescrptionService, ProposalFormPrintDescrptionService>();
+            services.AddScoped<IAgentRefferService, AgentRefferService>();
         }
     }
 }

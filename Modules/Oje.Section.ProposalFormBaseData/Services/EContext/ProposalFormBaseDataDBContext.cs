@@ -1,9 +1,10 @@
 ﻿using Oje.Section.ProposalFormBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 
 namespace Oje.Section.ProposalFormBaseData.Services.EContext
 {
-    public class ProposalFormBaseDataDBContext : DbContext
+    public class ProposalFormBaseDataDBContext : MyBaseDbContext
     {
         public ProposalFormBaseDataDBContext(
             DbContextOptions<ProposalFormBaseDataDBContext> option
@@ -23,6 +24,7 @@ namespace Oje.Section.ProposalFormBaseData.Services.EContext
         public DbSet<Company> Companies { get; set; }
         public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
+        public DbSet<AgentReffer> AgentReffers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

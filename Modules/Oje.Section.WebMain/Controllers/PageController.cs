@@ -3,6 +3,7 @@ using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
 using Oje.Section.WebMain.Interfaces;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.WebMain.Controllers
 {
@@ -26,7 +27,7 @@ namespace Oje.Section.WebMain.Controllers
         {
             var foundPage = PageService.GetBy(pid, pTitle, SiteSettingService.GetSiteSetting()?.Id);
             if (foundPage == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             GlobalServices.FillSeoInfo(
                 ViewData,

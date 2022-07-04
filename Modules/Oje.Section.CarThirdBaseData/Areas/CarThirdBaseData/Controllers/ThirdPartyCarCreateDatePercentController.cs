@@ -7,6 +7,7 @@ using Oje.Section.CarThirdBaseData.Interfaces;
 using Oje.Section.CarThirdBaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
 {
@@ -80,10 +81,10 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
         {
             var result = ThirdPartyCarCreateDatePercentService.GetList(searchInput);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

@@ -302,5 +302,24 @@ namespace Oje.ProposalFormService.Services
             if (!ProposalFormService.Exist(proposalFormId, siteSettingId))
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
+
+        public void JustValidation(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl)
+        {
+            createValidation(siteSettingId, form);
+
+            long inquiryId = form.GetStringIfExist("inquiryId").ToLongReturnZiro();
+            int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
+            var foundProposalForm = ProposalFormService.GetById(proposalFormId, siteSettingId);
+            var allRequiredFileUpload = ProposalFormRequiredDocumentService.GetProposalFormRequiredDocuments(foundProposalForm?.Id, siteSettingId);
+            PageForm ppfObj = null;
+            try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch (Exception) { }
+            //catch { };// catch (Exception) { throw; }
+            int companyId = 0;
+
+            if (inquiryId > 0)
+                companyId = GlobalInqueryService.GetCompanyId(inquiryId, siteSettingId);
+
+            createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId);
+        }
     }
 }

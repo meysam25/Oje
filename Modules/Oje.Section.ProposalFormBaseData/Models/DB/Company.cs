@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Models.DB
 {
@@ -15,6 +11,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         {
             PaymentMethodCompanies = new();
             UserCompanies = new();
+            AgentReffers = new();
         }
 
         [Key]
@@ -27,6 +24,8 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public List<PaymentMethodCompany> PaymentMethodCompanies { get; set; }
         [InverseProperty("Company")]
         public List<UserCompany> UserCompanies { get; set; }
+        [InverseProperty("Company")]
+        public List<AgentReffer> AgentReffers { get; set; }
 
     }
 }

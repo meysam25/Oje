@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Oje.Infrastructure\Oje.Infrastructure.csproj" />
+    <ProjectReference Include="..\Oje.Security\Oje.Security.csproj" />
   </ItemGroup>
 
 </Project>

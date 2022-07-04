@@ -5,6 +5,7 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
+using Oje.Security.Interfaces;
 using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
@@ -21,6 +22,7 @@ namespace Oje.Sms.Services
         readonly ISmsValidationHistoryService SmsValidationHistoryService = null;
         readonly IUserService UserService = null;
         readonly ISmsTemplateService SmsTemplateService = null;
+        readonly IBlockLoginUserService BlockLoginUserService = null;
         public SmsSendingQueueService(
                 SmsDBContext db,
                 IHttpContextAccessor HttpContextAccessor,
@@ -28,7 +30,8 @@ namespace Oje.Sms.Services
                 ISmsSendingQueueErrorService SmsSendingQueueErrorService,
                 ISmsValidationHistoryService SmsValidationHistoryService,
                 IUserService UserService,
-                ISmsTemplateService SmsTemplateService
+                ISmsTemplateService SmsTemplateService,
+                IBlockLoginUserService BlockLoginUserService
             )
         {
             this.db = db;
@@ -38,6 +41,7 @@ namespace Oje.Sms.Services
             this.SmsValidationHistoryService = SmsValidationHistoryService;
             this.UserService = UserService;
             this.SmsTemplateService = SmsTemplateService;
+            this.BlockLoginUserService = BlockLoginUserService;
         }
 
         public void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite)
@@ -59,8 +63,8 @@ namespace Oje.Sms.Services
                 var foundLimit = smsLimits.Where(t => t.type == smsSendingQueue.Type && t.isWebsite == isWebsite).FirstOrDefault();
                 if (foundLimit != null)
                 {
-                    if (db.SmsSendingQueues.Count(t => 
-                    t.CreateDate.Year == smsSendingQueue.CreateDate.Year && t.CreateDate.Month == smsSendingQueue.CreateDate.Month && t.CreateDate.Day == smsSendingQueue.CreateDate.Day && 
+                    if (db.SmsSendingQueues.Count(t =>
+                    t.CreateDate.Year == smsSendingQueue.CreateDate.Year && t.CreateDate.Month == smsSendingQueue.CreateDate.Month && t.CreateDate.Day == smsSendingQueue.CreateDate.Day &&
                     t.Ip1 == smsSendingQueue.Ip1 && t.Ip2 == smsSendingQueue.Ip2 && t.Ip3 == smsSendingQueue.Ip3 && t.Ip4 == smsSendingQueue.Ip4 && t.Type == smsSendingQueue.Type) >= foundLimit.value)
                         return;
                 }
@@ -149,8 +153,15 @@ namespace Oje.Sms.Services
 
             var foundUser = UserService.GetBy(siteSettingId, input.username);
 
-            if (foundUser != null && (foundUser.IsActive == false || foundUser.IsDelete == true))
+            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(SmsValidationHistoryType.RegisterLogin, ipSections, siteSettingId);
+            if (deffFromLastSendSecound < 120)
+                throw BException.GenerateNewException(string.Format(BMessages.Please_W8_X_Secound.GetEnumDisplayName(), (120 - deffFromLastSendSecound)), foundUser?.Id ?? 0);
+
+            if (!BlockLoginUserService.IsValidDay(DateTime.Now, siteSettingId))
                 throw BException.GenerateNewException(BMessages.UnknownError);
+
+            if (foundUser != null && (foundUser.IsActive == false || foundUser.IsDelete == true))
+                throw BException.GenerateNewException(BMessages.UnknownError, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 
             var newCode = SmsValidationHistoryService.Create(ipSections, input.username, siteSettingId, SmsValidationHistoryType.RegisterLogin);
 
@@ -208,9 +219,6 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
-            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(SmsValidationHistoryType.RegisterLogin, ipSections, siteSettingId);
-            if (deffFromLastSendSecound < 120)
-                throw BException.GenerateNewException(string.Format(BMessages.Please_W8_X_Secound.GetEnumDisplayName(), (120 - deffFromLastSendSecound)));
         }
 
         public void SaveChange()
@@ -271,6 +279,13 @@ namespace Oje.Sms.Services
 
             var foundUser = UserService.GetBy(siteSettingId, input.username);
 
+            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(SmsValidationHistoryType.ForgetPassword, ipSections, siteSettingId);
+            if (deffFromLastSendSecound < 120)
+                throw BException.GenerateNewException(string.Format(BMessages.Please_W8_X_Secound.GetEnumDisplayName(), (120 - deffFromLastSendSecound)), foundUser?.Id ?? 0);
+
+            if (!BlockLoginUserService.IsValidDay(DateTime.Now, siteSettingId))
+                throw BException.GenerateNewException(BMessages.UnknownError);
+
             if (foundUser != null && foundUser.IsActive == true && foundUser.IsDelete != true)
             {
                 var newCode = SmsValidationHistoryService.Create(ipSections, input.username, siteSettingId, SmsValidationHistoryType.ForgetPassword);
@@ -326,9 +341,7 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
-            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(SmsValidationHistoryType.ForgetPassword, ipSections, siteSettingId);
-            if (deffFromLastSendSecound < 120)
-                throw BException.GenerateNewException(string.Format(BMessages.Please_W8_X_Secound.GetEnumDisplayName(), (120 - deffFromLastSendSecound)));
+            
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Oje.PaymentService.Interfaces;
 using Oje.AccountService.Interfaces;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -123,10 +124,10 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         {
             var result = InsuranceContractUserService.GetList(searchInput, InsuranceContractUserStatus.Premanent);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

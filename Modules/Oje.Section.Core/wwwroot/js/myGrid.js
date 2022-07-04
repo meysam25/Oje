@@ -45,9 +45,9 @@ $.fn.initMyGrid = function (option) {
                         if (option.columns[i].sort)
                             sortCL = 'hasSort';
                         if (option.sortFieldStatus == true && option.columns[i].field == option.sortField)
-                            sortCL += ' icon-sort-alpha-asc2';
+                            sortCL += ' fa fa-sort-alpha-down';
                         else if (option.sortFieldStatus == false && option.columns[i].field == option.sortField)
-                            sortCL += ' icon-sort-alpha-desc2';
+                            sortCL += ' fa fa-sort-alpha-up';
                         result += '<td class="' + sortCL + '" ' + (option.columns[i].sort ? 'data-field-name="' + option.columns[i].field + '"' : '') +
                             ' style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span style="display:inline-block;padding-right:5px;" >' + option.columns[i].caption + '</span></td>';
                     }

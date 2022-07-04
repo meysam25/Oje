@@ -1,14 +1,10 @@
 ﻿using Oje.Section.InquiryBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Services;
 
 namespace Oje.Section.InquiryBaseData.Services.EContext
 {
-    public class InquiryBaseDataDBContext : DbContext
+    public class InquiryBaseDataDBContext : MyBaseDbContext
     {
         public InquiryBaseDataDBContext(DbContextOptions<InquiryBaseDataDBContext> options) : base(options)
         {

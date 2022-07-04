@@ -6,6 +6,7 @@ using Oje.Infrastructure.Services;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using Oje.Security.Interfaces;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.InsuranceContractBaseData.Controllers
 {
@@ -78,7 +79,7 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
         {
             var foundUserInfo = InsuranceContractService.GetTermsInfo(input, SiteSettingService.GetSiteSetting()?.Id);
             if (foundUserInfo == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             ViewBag.companyTitle = SiteSettingService.GetSiteSetting()?.Title;
             ViewBag.ContractFile = foundUserInfo.contractDocumentUrl;

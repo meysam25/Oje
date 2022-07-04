@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.PaymentService.Models.DB;
 
 namespace Oje.PaymentService.Services.EContext
 {
-    public class PaymentDBContext : DbContext
+    public class PaymentDBContext : MyBaseDbContext
     {
         public PaymentDBContext(DbContextOptions<PaymentDBContext> options) : base(options)
         {

@@ -30,6 +30,9 @@ namespace Oje.AccountService.Services
         readonly IProvinceService ProvinceService = null;
         readonly ICityService CityService = null;
         readonly ICompanyService CompanyService = null;
+        readonly Security.Interfaces.IUserLoginConfigService UserLoginConfigService = null;
+        readonly Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService = null;
+        readonly Security.Interfaces.IBlockLoginUserService BlockLoginUserService = null;
         public UserService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor,
@@ -38,7 +41,10 @@ namespace Oje.AccountService.Services
                 ISiteSettingService SiteSettingService,
                 IProvinceService ProvinceService,
                 ICityService CityService,
-                ICompanyService CompanyService
+                ICompanyService CompanyService,
+                Security.Interfaces.IUserLoginConfigService UserLoginConfigService,
+                Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService,
+                Security.Interfaces.IBlockLoginUserService BlockLoginUserService
             )
         {
             this.db = db;
@@ -49,6 +55,9 @@ namespace Oje.AccountService.Services
             this.CompanyService = CompanyService;
             this.ProvinceService = ProvinceService;
             this.CityService = CityService;
+            this.UserLoginConfigService = UserLoginConfigService;
+            this.UserLoginLogoutLogService = UserLoginLogoutLogService;
+            this.BlockLoginUserService = BlockLoginUserService;
         }
 
         private void LoginValidation(LoginVM input)
@@ -57,8 +66,7 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters, ApiResultErrorCode.ValidationError);
             if (string.IsNullOrEmpty(input.username))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Username, ApiResultErrorCode.ValidationError);
-            if (string.IsNullOrEmpty(input.password))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Password, ApiResultErrorCode.ValidationError);
+
             //if (Captcha.ValidateCaptchaCode(input.sCode, input.sCodeGuid) == false)
             //    throw BException.GenerateNewException(BMessages.Invalid_Captcha, ApiResultErrorCode.InvalidCaptcha);
         }
@@ -72,20 +80,28 @@ namespace Oje.AccountService.Services
             var foundUser = db.Users.Include(t => t.UserRoles).ThenInclude(t => t.Role).Where(t => t.Username.ToLower() == input.username.ToLower() && t.SiteSettingId == siteSettingId).FirstOrDefault();
 
             if (foundUser != null && foundUser.TemproryLockDate != null)
-            {
                 if (foundUser.TemproryLockDate > DateTime.Now)
-                    throw BException.GenerateNewException(BMessages.Invalid_User_Or_Password, ApiResultErrorCode.InvalidUserOrPassword);
-            }
+                    throw BException.GenerateNewException(BMessages.Invalid_User_Or_Password, ApiResultErrorCode.InvalidUserOrPassword, foundUser.Id);
+
+            if (string.IsNullOrEmpty(input.password))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Password, ApiResultErrorCode.ValidationError, foundUser.Id);
+
+            if (!BlockLoginUserService.IsValidDay(DateTime.Now, siteSettingId))
+                throw BException.GenerateNewException(BMessages.UnknownError);
 
             if (foundUser != null && foundUser.SiteSettingId != null)
                 MyValidations.SiteSettingValidation(foundUser.SiteSettingId, siteSettingId);
             if (foundUser == null && !db.Users.Any())
                 return CreateAdminUser(input);
             else if (foundUser != null && (foundUser.IsActive == false || foundUser.IsDelete == true))
-                throw BException.GenerateNewException(BMessages.Inactive_User, ApiResultErrorCode.InActiveUser);
-            else if (foundUser != null && foundUser.Password == input.password.Encrypt())
+                throw BException.GenerateNewException(BMessages.Inactive_User, ApiResultErrorCode.InActiveUser, foundUser.Id);
+            else if (foundUser != null && foundUser.Password == input.password.GetSha1())
             {
                 setCookieForThisUser(foundUser, input);
+                UpdateUserSessionFileName(foundUser.Id, foundUser.LastSessionFileName);
+
+                UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPassword, siteSettingId, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
+
                 return new ApiResult()
                 {
                     isSuccess = true,
@@ -102,18 +118,19 @@ namespace Oje.AccountService.Services
 
             if (foundUser != null)
             {
+                var loginConfig = UserLoginConfigService.GetByCache(siteSettingId);
                 if (foundUser.CountInvalidPass == null)
                     foundUser.CountInvalidPass = 0;
                 foundUser.CountInvalidPass++;
-                if (foundUser.CountInvalidPass >= 4)
+                if (foundUser.CountInvalidPass >= (loginConfig != null ? loginConfig.FailCount : 4))
                 {
                     foundUser.CountInvalidPass = 0;
-                    foundUser.TemproryLockDate = DateTime.Now.AddMinutes(7);
+                    foundUser.TemproryLockDate = DateTime.Now.AddMinutes((loginConfig != null ? loginConfig.DeactiveMinute : 7));
                 }
                 db.SaveChanges();
             }
 
-            throw BException.GenerateNewException(BMessages.Invalid_User_Or_Password, ApiResultErrorCode.InvalidUserOrPassword);
+            throw BException.GenerateNewException(BMessages.Invalid_User_Or_Password, ApiResultErrorCode.InvalidUserOrPassword, foundUser?.Id ?? 0);
         }
 
         private ApiResult CreateAdminUser(LoginVM input)
@@ -126,7 +143,7 @@ namespace Oje.AccountService.Services
                     newUser.Firstname = input.username;
                     newUser.Lastname = input.username;
                     newUser.Username = input.username;
-                    newUser.Password = input.password.Encrypt();
+                    newUser.Password = input.password.GetSha1();
                     newUser.IsActive = true;
                     newUser.CreateDate = DateTime.Now;
 
@@ -168,6 +185,7 @@ namespace Oje.AccountService.Services
                     newUser.UserRoles.Add(newUserRole);
 
                     setCookieForThisUser(newUser, input);
+                    UpdateUserSessionFileName(newUser.Id, newUser.LastSessionFileName);
                     return new ApiResult() { isSuccess = true };
                 }
                 catch
@@ -183,13 +201,18 @@ namespace Oje.AccountService.Services
             string sessionFileName = Guid.NewGuid().ToString();
             string userRoles = "";
             if (newUser.UserRoles != null)
-                userRoles = String.Join("-", newUser.UserRoles.Where(t => t.Role != null).Select(t => t.Role.Name).ToList());
-            string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," + newUser.SiteSettingId + "," + sessionFileName + "," + userRoles;
+                userRoles = string.Join("-", newUser.UserRoles.Where(t => t.Role != null).Select(t => t.Role.Name).ToList());
+            string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," + newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName();
             var cOption = new CookieOptions() { HttpOnly = true };
             if (input.rememberMe == true)
                 cOption.Expires = DateTime.Now.AddDays(1);
+            if (httpContextAccessor.HttpContext.Request.IsHttps == true)
+                cOption.Secure = true;
             httpContextAccessor.HttpContext.Response.Cookies.Append("login", cookiValue.Encrypt2(), cOption);
             MySession.Create(sessionFileName);
+            if (!string.IsNullOrEmpty(newUser.LastSessionFileName))
+                MySession.Clean(newUser.LastSessionFileName);
+            newUser.LastSessionFileName = sessionFileName;
         }
 
         private void CreateValidation(CreateUpdateUserVM input, long? loginUserId)
@@ -233,6 +256,8 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.BankAcount_Can_Not_Be_More_Then_20);
             if (!string.IsNullOrEmpty(input.bankShaba) && input.bankShaba.Length > 40)
                 throw BException.GenerateNewException(BMessages.BankShaba_Can_Not_Be_More_Then_40);
+            if (input.roleIds.Count > 1)
+                throw BException.GenerateNewException(BMessages.Jsut_One_Role);
         }
 
         private void passwordValidation2(CreateUpdateUserVM input)
@@ -270,7 +295,7 @@ namespace Oje.AccountService.Services
             newUser.Mobile = input.mobile;
             newUser.Tell = input.tell;
             newUser.ParentId = loginUserId.Value;
-            newUser.Password = input.password.Encrypt();
+            newUser.Password = input.password.GetSha1();
             newUser.CreateDate = DateTime.Now;
             newUser.CreateByUserId = loginUserId.Value;
             newUser.Nationalcode = input.nationalCode;
@@ -333,6 +358,8 @@ namespace Oje.AccountService.Services
                     db.Entry(foundItem).State = EntityState.Deleted;
                     db.SaveChanges();
                     tr.Commit();
+
+                    MySession.Clean(foundItem.LastSessionFileName);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -451,7 +478,7 @@ namespace Oje.AccountService.Services
                     foundItem.CityId = input.cityId;
 
                     if (!string.IsNullOrEmpty(input.password))
-                        foundItem.Password = input.password.Encrypt();
+                        foundItem.Password = input.password.GetSha1();
                     if (input.userPic != null && input.userPic.Length > 0)
                         foundItem.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, foundItem.Id, ".png,.jpg,.jpeg", true);
 
@@ -467,6 +494,8 @@ namespace Oje.AccountService.Services
 
                     db.SaveChanges();
                     tr.Commit();
+
+                    MySession.Clean(foundItem.LastSessionFileName);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -535,6 +564,7 @@ namespace Oje.AccountService.Services
                 .Select(t => t.Role)
                 .SelectMany(t => t.RoleActions)
                 .Select(t => t.Action)
+                .AsNoTracking()
                 .ToList();
         }
 
@@ -584,7 +614,7 @@ namespace Oje.AccountService.Services
             newUser.Mobile = input.mobile;
             newUser.Tell = input.tell;
             newUser.ParentId = loginUserId.Value;
-            newUser.Password = input.password.Encrypt();
+            newUser.Password = input.password.GetSha1();
             newUser.CreateDate = DateTime.Now;
             newUser.CreateByUserId = loginUserId.Value;
             newUser.Nationalcode = input.nationalCode;
@@ -720,6 +750,8 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Date);
             if (!string.IsNullOrEmpty(input.shenasnameNo) && input.shenasnameNo.Length > 20)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (input.roleIds.Count > 1)
+                throw BException.GenerateNewException(BMessages.Jsut_One_Role);
 
             var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
             foreach (var rid in input.roleIds)
@@ -749,6 +781,8 @@ namespace Oje.AccountService.Services
                     db.Entry(foundItem).State = EntityState.Deleted;
                     db.SaveChanges();
                     tr.Commit();
+
+                    MySession.Clean(foundItem.LastSessionFileName);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -900,7 +934,7 @@ namespace Oje.AccountService.Services
                     foundItem.BankId = input.bankId;
 
                     if (!string.IsNullOrEmpty(input.password))
-                        foundItem.Password = input.password.Encrypt();
+                        foundItem.Password = input.password.GetSha1();
                     if (input.userPic != null && input.userPic.Length > 0)
                         foundItem.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, foundItem.Id, ".png,.jpg,.jpeg", true);
 
@@ -916,6 +950,8 @@ namespace Oje.AccountService.Services
 
                     db.SaveChanges();
                     tr.Commit();
+
+                    MySession.Clean(foundItem.LastSessionFileName);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -991,7 +1027,8 @@ namespace Oje.AccountService.Services
                 lastname = t.Lastname.Trim(),
                 username = t.Username.Trim(),
                 pic = !string.IsNullOrEmpty(t.UserPic) ? GlobalConfig.FileAccessHandlerUrl + t.UserPic : "",
-                isUser = t.UserRoles.Any(tt => tt.Role.Name == "user")
+                isUser = t.UserRoles.Any(tt => tt.Role.Name == "user"),
+                isSuccess = true
             }).FirstOrDefault();
         }
 
@@ -1073,8 +1110,7 @@ namespace Oje.AccountService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true);
-
+            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.UserRoles.Any(tt => tt.Role.Name == "agent"));
 
             if (companyId > 0)
                 qureResult = qureResult.Where(t => t.UserCompanies.Any(tt => tt.CompanyId == companyId));
@@ -1140,7 +1176,7 @@ namespace Oje.AccountService.Services
             result.AddRange(tempResult.Select(t => new
             {
                 id = t.Id,
-                text = companyTitle + " با کد " + t.AgentCode + " " + (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.distance)) + " متر فاصله با شما)")),
+                text = companyTitle + " کد " + t.AgentCode + " " + (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.distance)) + " متر فاصله با شما)")),
                 mapLat = t.MapLocation != null ? t.MapLocation.X : 0,
                 mapLng = t.MapLocation != null ? t.MapLocation.Y : 0,
                 isA = t.IsActive
@@ -1226,7 +1262,7 @@ namespace Oje.AccountService.Services
             if (user == null || string.IsNullOrEmpty(password))
                 return;
             var foundUser = db.Users.Where(t => t.Id == user.Id).FirstOrDefault();
-            foundUser.Password = password.Encrypt();
+            foundUser.Password = password.GetSha1();
             db.SaveChanges();
         }
 
@@ -1349,11 +1385,6 @@ namespace Oje.AccountService.Services
         public void CreateTempTable()
         {
             db.Database.ExecuteSqlRaw("IF OBJECT_ID(N'tempdb..##tempUserParentChild') IS NOT NULL BEGIN DROP TABLE ##tempUserParentChild END select * into ##tempUserParentChild from  [UserParentChild]");
-        }
-
-        public void SetFlagForGooglePointPerformanceProblem()
-        {
-            db.Database.ExecuteSqlRaw("DBCC TRACEON (4326);DBCC TRACESTATUS;");
         }
 
         public void TsetRemoveMe()
@@ -1525,6 +1556,31 @@ namespace Oje.AccountService.Services
         {
             var foundUser = db.Users.Where(t => t.Id == userId).Select(t => new { provinceId = t.ProvinceId, cityid = t.CityId, cids = t.UserCompanies.Select(tt => tt.CompanyId).ToList() }).FirstOrDefault();
             return (foundUser?.provinceId, foundUser?.cityid, foundUser?.cids);
+        }
+
+        public void UpdateUserSessionFileName(long? id, string lastSessionFileName)
+        {
+            var foundUser = db.Users.Where(t => t.Id == id).FirstOrDefault();
+            if (foundUser != null)
+            {
+                foundUser.LastSessionFileName = lastSessionFileName;
+                db.SaveChanges();
+            }
+        }
+
+        public void UpdateHashPassword()
+        {
+            var listUsers = db.Users.ToList();
+
+            foreach (var user in listUsers)
+            {
+                string curPassword = "";
+                try { curPassword = user.Password.Decrypt(); } catch { }
+                if (!string.IsNullOrEmpty(curPassword))
+                    user.Password = curPassword.GetSha1();
+            }
+
+            db.SaveChanges();
         }
     }
 }

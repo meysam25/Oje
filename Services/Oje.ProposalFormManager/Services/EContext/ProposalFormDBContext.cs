@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Models.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services.EContext
 {
-    public class ProposalFormDBContext : DbContext
+    public class ProposalFormDBContext : MyBaseDbContext
     {
         public ProposalFormDBContext(DbContextOptions<ProposalFormDBContext> options) : base(options)
         {
@@ -71,6 +67,7 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<CarType> CarTypes { get; set; }
         public DbSet<ProposalFormReminder> ProposalFormReminders { get; set; }
         public DbSet<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
+        public DbSet<AgentReffer> AgentReffers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

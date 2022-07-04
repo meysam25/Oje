@@ -1,0 +1,90 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "ErrorMainGrid",
+          "exportToExcelUrl": "/Security/Error/Export",
+          "showColumnConfigButton": true,
+          "key": "id",
+          "url": "/Security/Error/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "userFullname",
+              "caption": "نام",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "ip",
+              "caption": "ای پی",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ",
+              "sort": true,
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "description",
+              "caption": "خطا",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "lineNumber",
+              "caption": "شماره خط ها",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "fileName",
+              "caption": "کلاس ها",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "bMessageCode",
+              "caption": "کد متن خطا",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "type",
+              "caption": "کد خطا",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

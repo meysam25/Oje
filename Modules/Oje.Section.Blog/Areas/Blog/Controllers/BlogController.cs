@@ -5,12 +5,7 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
 using Oje.Section.Blog.Interfaces;
 using Oje.Section.Blog.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.Blog.Areas.Blog.Controllers
 {
@@ -60,7 +55,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
             {
                 var foundTag = BlogTagService.GetBy(keyWordId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
                 if (foundTag == null || foundTag.Title.Replace(" ", "-").Replace("--", "-") != KeywordTitle)
-                    return NotFound();
+                    throw BException.GenerateNewException(BMessages.Not_Found);
                 ViewBag.keyWordId = keyWordId;
                 GlobalServices.FillSeoInfo(
                    ViewData,
@@ -77,7 +72,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
             {
                 var foundTag = BlogCategoryService.GetBy(catId.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
                 if (foundTag == null || foundTag.title.Replace(" ", "-").Replace("--", "-") != catTitle)
-                    return NotFound();
+                    throw BException.GenerateNewException(BMessages.Not_Found);
                 ViewBag.catId = catId;
                 ViewData["metaDescription"] = "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.title;
 
@@ -115,7 +110,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
         {
             var foundBlog = BlogService.GetByIdForWeb(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetIpAddress());
             if (foundBlog == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             BlogService.SetViewOrLike(id, HttpContext.GetIpAddress(), BlogLastLikeAndViewType.View);
 

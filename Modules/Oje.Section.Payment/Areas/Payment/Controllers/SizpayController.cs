@@ -33,7 +33,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
         {
             var foundFactor = BankAccountFactorService.GetById(factorId, SiteSettingService.GetSiteSetting()?.Id);
             if (foundFactor == null || BankAccountDetectorService.GetByType(foundFactor.BankAccountId, SiteSettingService.GetSiteSetting()?.Id) != Infrastructure.Enums.BankAccountType.sizpay)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             var generateToken = await BankAccountSizpayPaymentService.GenerateToken(factorId, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
 

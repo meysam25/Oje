@@ -9,6 +9,7 @@ using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.View;
 using System;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
@@ -306,10 +307,10 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         {
             var result = ProposalFilledFormCompanyService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Confirm);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }
@@ -327,10 +328,10 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         {
             var result = ProposalFilledFormAdminService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Confirm, HttpContext.GetLoginUser()?.roles);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }
@@ -376,10 +377,10 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         {
             var result = ProposalFilledFormDocumentService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Confirm);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

@@ -15,5 +15,6 @@ namespace Oje.Infrastructure.Models
         public int? siteSettingId { get; set; }
         public string sessionFileName { get; set; }
         public List<string> roles { get; set; }
+        public string browserName { get; set; }
     }
 }

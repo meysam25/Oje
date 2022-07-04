@@ -1,0 +1,35 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/Security/UserLoginConfig/Get",
+      "title": "تنظیمات لاگین",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "failCount",
+          "type": "text",
+          "label": "دفعاتی که کاربر پس از اطلاعات اشتباه بلاک میشه"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "deactiveMinute",
+          "type": "text",
+          "label": "مدت زمانی که کاربر غیر فعال می مونه (دقیقه)"
+        },
+        {
+          "parentCL": "col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "inActiveLogoffMinute",
+          "type": "text",
+          "label": "خروج کاربر در صورت عدم فعالیت (دقیقه)"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/Security/UserLoginConfig/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

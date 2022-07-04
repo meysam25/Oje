@@ -1,10 +1,6 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Security.Models.DB
 {
@@ -22,6 +18,11 @@ namespace Oje.Security.Models.DB
         public int CreateDay { get; set; }
         public BlockClientConfigType BlockClientConfigType { get; set; }
         public BlockAutoIpAction BlockAutoIpAction { get; set; }
+        public long? UserId { get; set; }
+        [ForeignKey("UserId"), InverseProperty("BlockAutoIps")]
+        public User User { get; set; }
+        [Required, MaxLength(50)]
+        public string RequestId { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

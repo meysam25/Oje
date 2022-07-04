@@ -29,5 +29,6 @@ namespace Oje.ProposalFormService.Interfaces
         object GetListForUser(MyProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, List<ProposalFilledFormStatus> validStatus);
         object GetDefaultValuesForIssue(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
         ApiResult IssuePPF(ProposalFilledFormIssueVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status);
+        ProposalFilledFormPdfVM PdfDetailesByForm(IFormCollection request, int? siteSettingId);
     }
 }

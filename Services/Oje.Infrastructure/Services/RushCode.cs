@@ -16,6 +16,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections;
 using Oje.Infrastructure.Models.PageForms;
 using System.Web;
+using UAParser;
+using System.Security.Cryptography;
 
 namespace Oje.Infrastructure.Services
 {
@@ -136,6 +138,11 @@ namespace Oje.Infrastructure.Services
             return result;
         }
 
+        public static string GetSha1(this string input)
+        {
+            using var sha1 = SHA1.Create();
+            return Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(input)));
+        }
 
         public static string Encrypt(this string input)
         {
@@ -311,6 +318,25 @@ namespace Oje.Infrastructure.Services
                     if (apAddress == "::1")
                         apAddress = "127.0.0.1";
                     return apAddress.GetIpSections();
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static string GetBroswerName(this HttpContext input)
+        {
+            try
+            {
+                var userAgent = input.Request.Headers["User-Agent"];
+                if (!string.IsNullOrEmpty(userAgent))
+                {
+                    var uaParser = Parser.GetDefault();
+                    ClientInfo c = uaParser.Parse(userAgent);
+                    return c.UA.Family + "_" + c.UA.Major;
                 }
                 return null;
             }
@@ -1068,6 +1094,7 @@ namespace Oje.Infrastructure.Services
                     return null;
                 if (!MySession.IsFileExist(result.sessionFileName))
                     return null;
+                result.browserName = dycriptTextArr[7];
             }
             catch
             {
@@ -1138,6 +1165,8 @@ namespace Oje.Infrastructure.Services
                 if (input.Request.Cookies.ContainsKey("login"))
                 {
                     loginUser = input.Request.Cookies["login"].Decrypt2AndGetUserVM();
+                    if (loginUser != null && (input.GetBroswerName() != loginUser.browserName || input.GetIpAddress().ToString() != loginUser.Ip))
+                        return null;
                 }
                 return loginUser;
             }

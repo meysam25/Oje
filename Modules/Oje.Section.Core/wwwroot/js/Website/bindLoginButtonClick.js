@@ -21,12 +21,10 @@ $.fn.initLoginButton = function (url, modalId) {
     });
 }
 
-function loadLoginConfigIfNotExist(url, modalId, showModal)
-{
+function loadLoginConfigIfNotExist(url, modalId, showModal) {
     var newId = uuidv4RemoveDash();
     $('body').append('<div id="' + newId + '" ></div>');
-    loadJsonConfig(url, newId, function ()
-    {
+    loadJsonConfig(url, newId, function () {
         if (this.showModal) {
             $('#' + this.modalId).modal('show');
         }
@@ -36,7 +34,7 @@ function loadLoginConfigIfNotExist(url, modalId, showModal)
 
 function bindIfUserAreadyLogin(modalId) {
     postForm('/Account/Dashboard/GetLoginUserInfo', new FormData(), function (res) {
-        if (res) {
+        if (res && res.isSuccess == true) {
             isUserLogin = true;
             var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
             localStorage.setItem('curLogin', JSON.stringify(res));
@@ -49,7 +47,7 @@ function bindIfUserAreadyLogin(modalId) {
                 $('#' + modalId).modal('show');
             });
         }
-    });
+    }, null, null, true);
 }
 
 function userLoginWeb(userfullname, isUser) {

@@ -8,6 +8,7 @@ using Oje.Infrastructure.Services;
 using Oje.Section.Ticket.Interfaces;
 using Oje.Section.Ticket.Models.View;
 using System;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.Ticket.Areas.Ticket.Controllers
 {
@@ -88,10 +89,10 @@ namespace Oje.Section.Ticket.Areas.Ticket.Controllers
         {
             var result = TicketCategoryService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Oje.Infrastructure.Services;
+using Oje.Security.Interfaces;
+using System.Diagnostics;
 
-namespace Oje.Infrastructure.Filters
+namespace Oje.Security.Filters
 {
     public class CustomExceptionFilter : IExceptionFilter
     {
@@ -22,6 +25,8 @@ namespace Oje.Infrastructure.Filters
                 ajaxStr = context.HttpContext.Request.Headers["X-Requested-With"];
 
             BException be = context.Exception as BException;
+
+            logError(context, be);
 
             if (string.IsNullOrEmpty(ajaxStr))
             {
@@ -40,10 +45,43 @@ namespace Oje.Infrastructure.Filters
                 if (be == null)
                     context.Result = new JsonResult(new ApiResult() { errorCode = ApiResultErrorCode.UnknownError, message = "خطا در انجام عملیات" });
                 else
-                    context.Result = new JsonResult(new ApiResult() { errorCode = be.Code, message = context.Exception.Message, messageCode = be.BMessages });
+                    context.Result = new JsonResult(new ApiResult() { errorCode = 0, message = context.Exception.Message, messageCode = 0 });
             }
             context.ExceptionHandled = true;
 
+        }
+
+        private void logError(ExceptionContext context, BException be)
+        {
+            string cMessages = " ";
+            string cLineNumbers = " ";
+            string cFilenames = " ";
+            var st = new StackTrace(context.Exception, true);
+            for (var i = 0; i < st.FrameCount; i++)
+            {
+                var frame = st.GetFrame(i);
+                int line = frame.GetFileLineNumber();
+                string filename = frame.GetFileName();
+                if (line > 0)
+                    cLineNumbers += line + Environment.NewLine;
+                if (!string.IsNullOrEmpty(filename))
+                    cFilenames += filename + Environment.NewLine;
+            }
+
+            Exception tempEx = context.Exception;
+            while (tempEx != null)
+            {
+                cMessages += tempEx.Message + Environment.NewLine;
+                tempEx = tempEx.InnerException;
+            }
+
+            var curIp = context.HttpContext.GetIpAddress();
+            if (curIp != null)
+            {
+                IErrorService ErrorService = context.HttpContext.RequestServices.GetService(typeof(IErrorService)) as IErrorService;
+                if (ErrorService != null)
+                    ErrorService.Create(context.HttpContext.GetLoginUser()?.UserId, context.HttpContext.TraceIdentifier, be?.Code, be?.BMessages, cMessages, curIp, cLineNumbers, cFilenames);
+            }
         }
     }
 }

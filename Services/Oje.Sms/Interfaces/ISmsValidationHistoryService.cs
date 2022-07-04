@@ -1,10 +1,6 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Sms.Models.View;
 
 namespace Oje.Sms.Interfaces
 {
@@ -15,5 +11,6 @@ namespace Oje.Sms.Interfaces
         bool ValidateBy(long mobileNumber, int smsCode, IpSections ipSections);
         string ValidatePreUsedBy(long mobileNumber, int smsCode, IpSections ipSections);
         bool IsValidPreUsed(long mobileNumber, string codeId, IpSections ipSections);
+        GridResultVM<SmsValidationHistoryMainGridResultVM> GetList(SmsValidationHistoryMainGrid searchInput, int? siteSettingId);
     }
 }

@@ -40,7 +40,7 @@ namespace Oje.Section.RegisterForm.Controllers
         {
             var foundItem = UserRegisterFormService.GetBy(formName, fid, SiteSettingService.GetSiteSetting()?.Id);
             if (foundItem == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             GlobalServices.FillSeoInfo(
                     ViewData,
@@ -75,7 +75,7 @@ namespace Oje.Section.RegisterForm.Controllers
         {
             var strJson = UserRegisterFormService.GetConfigJson(fid, SiteSettingService.GetSiteSetting()?.Id);
             if (string.IsNullOrEmpty(strJson))
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             Response.ContentType = "application/json; charset=utf-8";
             return Content(strJson);
         }
@@ -93,7 +93,7 @@ namespace Oje.Section.RegisterForm.Controllers
             ViewBag.isPrint = isPrint;
             var result = UserFilledRegisterFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
             if (result == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             return View(result);
         }
 
@@ -108,7 +108,7 @@ namespace Oje.Section.RegisterForm.Controllers
         {
             var foundPPF = UserRegisterFormService.GetTermInfo(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
             if (foundPPF == null)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             ViewBag.RulesFile = foundPPF.RuleFile;
             ViewBag.HtmlTemplate = foundPPF.TermDescription;

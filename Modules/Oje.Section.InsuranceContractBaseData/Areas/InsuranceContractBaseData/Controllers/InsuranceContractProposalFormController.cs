@@ -8,10 +8,7 @@ using Oje.Infrastructure.Services;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -87,10 +84,10 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         {
             var result = InsuranceContractProposalFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

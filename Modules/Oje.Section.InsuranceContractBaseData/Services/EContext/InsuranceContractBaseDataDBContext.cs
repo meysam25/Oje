@@ -1,9 +1,10 @@
 ﻿using Oje.Section.InsuranceContractBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 
 namespace Oje.Section.InsuranceContractBaseData.Services.EContext
 {
-    public class InsuranceContractBaseDataDBContext : DbContext
+    public class InsuranceContractBaseDataDBContext : MyBaseDbContext
     {
         public InsuranceContractBaseDataDBContext
             (

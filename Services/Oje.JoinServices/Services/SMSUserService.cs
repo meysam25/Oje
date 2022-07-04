@@ -5,6 +5,7 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.JoinServices.Interfaces;
+using Oje.Security.Interfaces;
 using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
@@ -20,6 +21,8 @@ namespace Oje.JoinServices.Services
         readonly ISmsSendingQueueService SmsSendingQueueService = null;
         readonly ISmsTemplateService SmsTemplateService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+        readonly IUserLoginLogoutLogService UserLoginLogoutLogService = null;
+        readonly IBlockLoginUserService BlockLoginUserService = null;
 
         public SMSUserService
             (
@@ -29,7 +32,9 @@ namespace Oje.JoinServices.Services
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
                 ISmsSendingQueueService SmsSendingQueueService,
                 ISmsTemplateService SmsTemplateService,
-                IHttpContextAccessor HttpContextAccessor
+                IHttpContextAccessor HttpContextAccessor,
+                IUserLoginLogoutLogService UserLoginLogoutLogService,
+                IBlockLoginUserService BlockLoginUserService
             )
         {
             this.SmsValidationHistoryService = SmsValidationHistoryService;
@@ -39,23 +44,47 @@ namespace Oje.JoinServices.Services
             this.SmsSendingQueueService = SmsSendingQueueService;
             this.SmsTemplateService = SmsTemplateService;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.UserLoginLogoutLogService = UserLoginLogoutLogService;
+            this.BlockLoginUserService = BlockLoginUserService;
         }
 
         public object ChagePasswordAndLogin(ChangePasswordAndLoginVM input, IpSections ipSections, int? siteSettingId)
         {
             ChagePasswordAndLoginValidation(input, ipSections, siteSettingId);
 
+            if (!BlockLoginUserService.IsValidDay(DateTime.Now, siteSettingId))
+                throw BException.GenerateNewException(BMessages.UnknownError);
+
             var foundUser = UserService.GetBy(input.username, siteSettingId.Value);
             if (foundUser == null || foundUser.IsActive == false || foundUser.IsDelete == true)
-                throw BException.GenerateNewException(BMessages.Validation_Error);
+                throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+
+            if (string.IsNullOrEmpty(input.codeId))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            try { input.codeId.Decrypt2(); } catch { throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0); }
+            if (string.IsNullOrEmpty(input.password))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Password, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (string.IsNullOrEmpty(input.confirmPassword))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Password, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.password != input.confirmPassword)
+                throw BException.GenerateNewException(BMessages.The_Password_Is_Not_Look_Like_Confirm_Password, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.password.Length > 30)
+                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_30_Chars, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.password.Length < 6)
+                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_Less_Then_6_Chars, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.password.IsWeekPassword())
+                throw BException.GenerateNewException(BMessages.The_Password_Is_Week, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 
             bool isValidPreUsed = SmsValidationHistoryService.IsValidPreUsed(input.username.ToLongReturnZiro(), input.codeId.Decrypt2(), ipSections);
 
             if (isValidPreUsed == false)
-                throw BException.GenerateNewException(BMessages.Invalid_Code);
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 
             UserService.UpdatePassword(foundUser, input.password);
             UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true });
+            UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
+
+            UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithChangePassword, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = (string.IsNullOrEmpty(foundUser.Firstname) ? foundUser.Username : (foundUser.Firstname + " " + foundUser.Lastname)) });
         }
@@ -72,37 +101,33 @@ namespace Oje.JoinServices.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Username);
             if (!input.username.IsMobile())
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
-            if (string.IsNullOrEmpty(input.codeId))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Code);
-            try { input.codeId.Decrypt2(); } catch { throw BException.GenerateNewException(BMessages.Invalid_Code); }
-            if (string.IsNullOrEmpty(input.password))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Password);
-            if (string.IsNullOrEmpty(input.confirmPassword))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Password);
-            if (input.password != input.confirmPassword)
-                throw BException.GenerateNewException(BMessages.The_Password_Is_Not_Look_Like_Confirm_Password);
-            if (input.password.Length > 30)
-                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_30_Chars);
-            if (input.password.Length < 6)
-                throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_Less_Then_6_Chars);
-            if (input.password.IsWeekPassword())
-                throw BException.GenerateNewException(BMessages.The_Password_Is_Week);
+
         }
 
         public object CheckIfSmsCodeIsValid(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)
         {
             LoginRegisterValidation(input, ipSections, siteSettingId);
 
+            if (!BlockLoginUserService.IsValidDay(DateTime.Now, siteSettingId))
+                throw BException.GenerateNewException(BMessages.UnknownError);
+
             var foundUser = UserService.GetBy(input.username, siteSettingId);
+
+            if (string.IsNullOrEmpty(input.code))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.code.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Just_Use_Number_For_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.code.Length > 20)
+                throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 
             if (foundUser != null)
             {
                 if (foundUser != null && (foundUser.IsDelete == true || foundUser.IsActive == false))
-                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                    throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser.Id);
 
                 string codeId = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), ipSections);
                 if (string.IsNullOrEmpty(codeId))
-                    throw BException.GenerateNewException(BMessages.Invalid_Code);
+                    throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser.Id);
 
                 return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "recoveryPasswordChangePassword", data = new { username = input.username, codeId = codeId } });
             }
@@ -114,22 +139,35 @@ namespace Oje.JoinServices.Services
         {
             LoginRegisterValidation(input, ipSections, siteSettingId);
 
+            if (!BlockLoginUserService.IsValidDay(DateTime.Now, siteSettingId))
+                throw BException.GenerateNewException(BMessages.UnknownError);
+
             var foundUser = UserService.GetBy(input.username, siteSettingId);
 
             if (foundUser != null && (foundUser.IsDelete == true || foundUser.IsActive == false))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
+            if (string.IsNullOrEmpty(input.code))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.code.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Just_Use_Number_For_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.code.Length > 20)
+                throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
             bool isValid = SmsValidationHistoryService.ValidateBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), ipSections);
             if (!isValid)
-                throw BException.GenerateNewException(BMessages.Invalid_Code);
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 
             if (foundUser != null)
+            {
                 UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true });
+                UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
+                UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
+            }
             else
             {
                 var foundUserRole = RoleService.CreateGet("user", "کاربر", 1, RoleType.User);
                 if (foundUserRole == null)
-                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                    throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
                 string password = RandomService.GeneratePassword(12);
                 UserService.Create(new AccountService.Models.View.CreateUpdateUserVM()
                 {
@@ -147,8 +185,9 @@ namespace Oje.JoinServices.Services
                 }, SiteSettingService.GetSiteSetting()?.UserId);
                 foundUser = UserService.GetBy(input.username, siteSettingId);
                 if (foundUser == null)
-                    throw BException.GenerateNewException(BMessages.UnknownError);
+                    throw BException.GenerateNewException(BMessages.UnknownError, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
                 UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true });
+                UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
 
                 List<SmsTemplate> foundTemplate = null;
                 string smsMessage = "کاربر گرامی ثبت نام شما با موفقیت انجام گرفت کلمه عبور شما عبارت است از " + Environment.NewLine + password;
@@ -171,6 +210,7 @@ namespace Oje.JoinServices.Services
                     Type = UserNotificationType.RegisterSuccessFull
                 }, siteSettingId, GlobalConfig.GetSmsLimitFromConfig(), null);
                 SmsSendingQueueService.SaveChange();
+                UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
             }
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = input.username, isUser = UserService.isWebsiteUser(foundUser.Id) });
@@ -188,12 +228,6 @@ namespace Oje.JoinServices.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
-            if (string.IsNullOrEmpty(input.code))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Code);
-            if (input.code.ToIntReturnZiro() <= 0)
-                throw BException.GenerateNewException(BMessages.Please_Just_Use_Number_For_Code);
-            if (input.code.Length > 20)
-                throw BException.GenerateNewException(BMessages.Validation_Error);
         }
     }
 }

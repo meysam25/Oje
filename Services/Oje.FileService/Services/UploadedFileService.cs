@@ -11,6 +11,9 @@ using Oje.FileService.Services.EContext;
 using Oje.FileService.Interfaces;
 using Oje.FileService.Models.DB;
 using Imazen.WebP;
+using Microsoft.AspNetCore.StaticFiles;
+using Oje.FileService.Models.View;
+using Oje.Infrastructure.Models;
 
 namespace Oje.FileService.Services
 {
@@ -95,8 +98,12 @@ namespace Oje.FileService.Services
                     userPic.CopyTo(fs);
             }
 
-            newFile.FileName = GlobalConfig.GetUploadImageDirecotryRoot(subFolder) + (objectId != null ? "/" + objectId : "") + "/" + fn;
+            string FileContentType = " ";
 
+            newFile.FileName = GlobalConfig.GetUploadImageDirecotryRoot(subFolder) + (objectId != null ? "/" + objectId : "") + "/" + fn;
+            newFile.FileSize = new FileInfo(newFile.FileNameOnServer).Length;
+            new FileExtensionContentTypeProvider().TryGetContentType(new FileInfo(newFile.FileName).Name, out FileContentType);
+            newFile.FileContentType = FileContentType;
             db.SaveChanges();
 
             return "?fn=" + fn;
@@ -331,6 +338,57 @@ namespace Oje.FileService.Services
                })
                .ToList()
                ;
+        }
+
+        public object Delete(long? id, int? siteSettingId)
+        {
+            var foundItem = db.UploadedFiles.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+            db.Entry(foundItem).State = EntityState.Deleted;
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetList(UploadedFileMainGrid searchInput, int? siteSettingId)
+        {
+            searchInput = searchInput ?? new();
+
+            var quiryResult = db.UploadedFiles.Where(t => t.SiteSettingId == siteSettingId);
+
+            return new
+            {
+                total = quiryResult.Count(),
+                data = quiryResult
+                .OrderByDescending(t => t.Id)
+                .Skip(searchInput.skip)
+                .Take(searchInput.take)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    fileSection = t.FileType,
+                    fromUsername = t.CreateByUserId > 0 ? t.CreateByUser.Username : "",
+                    fromFirstname = t.CreateByUserId > 0 ? t.CreateByUser.Firstname : "",
+                    fromLastname = t.CreateByUserId > 0 ? t.CreateByUser.Lastname : "",
+                    toUsername = t.UserId > 0 ? t.User.Username : "",
+                    toFirstname = t.UserId > 0 ? t.User.Firstname : "",
+                    toLastname = t.UserId > 0 ? t.User.Lastname : "",
+                    t.IsFileAccessRequired,
+                    t.FileName
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    t.id,
+                    fileSection = t.fileSection.GetEnumDisplayName(),
+                    user1Fullname1 = !string.IsNullOrEmpty((t.fromFirstname + " " + t.fromLastname).Trim()) ? t.fromFirstname + " " + t.fromLastname : t.fromUsername,
+                    user1Fullname2 = !string.IsNullOrEmpty((t.toFirstname + " " + t.toLastname).Trim()) ? t.toFirstname + " " + t.toLastname : t.toUsername,
+                    requiredAccess = t.IsFileAccessRequired == true ? BMessages.Need_Access.GetEnumDisplayName() : BMessages.Dont_Need_Access.GetEnumDisplayName(),
+                    src = GlobalConfig.FileAccessHandlerUrl + "?fn=" + (new FileInfo(t.FileName).Name)
+                })
+                .ToList()
+            };
         }
     }
 }

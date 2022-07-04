@@ -1,15 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Security.Models.View;
 
 namespace Oje.Security.Interfaces
 {
     public interface IBlockAutoIpService
     {
         void CheckIfRequestIsValid(BlockClientConfigType type, BlockAutoIpAction exeType, IpSections ipSections, int? siteSettingId);
+        GridResultVM<BlockAutoIpMainGridResultVM> GetList(BlockAutoIpMainGrid searchInput, int? siteSettingId);
     }
 }

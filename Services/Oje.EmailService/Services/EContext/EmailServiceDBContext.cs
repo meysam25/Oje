@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.EmailService.Models.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Services;
 
 namespace Oje.EmailService.Services.EContext
 {
-    public class EmailServiceDBContext : DbContext
+    public class EmailServiceDBContext : MyBaseDbContext
     {
         public EmailServiceDBContext(DbContextOptions<EmailServiceDBContext> options) : base(options)
         {

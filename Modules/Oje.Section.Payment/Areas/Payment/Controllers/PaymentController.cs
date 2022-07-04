@@ -4,11 +4,6 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.PaymentService.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Payment.Areas.Payment.Controllers
 {
@@ -33,7 +28,8 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             this.BankAccountService = BankAccountService;
         }
 
-        public ActionResult GetWayList([FromQuery] string status)
+        [HttpPost]
+        public ActionResult GetWayList([FromForm] string status)
         {
             PaymentFactorVM payModel = status.GetPayModel();
             if (payModel == null || payModel.price <= 0 || string.IsNullOrEmpty(payModel.returnUrl) || payModel.objectId <= 0)
@@ -49,6 +45,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             return View(allUserGW);
         }
 
+        [HttpPost]
         public ActionResult CreateFactor([FromForm] string status, [FromForm] int? id)
         {
             PaymentFactorVM payModel = status.GetPayModel();
@@ -60,6 +57,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             return RedirectToAction("SelectGW", "Payment", new { area = "Payment", factorId = createdFactorId });
         }
 
+        [HttpGet]
         public ActionResult SelectGW([FromQuery] string factorId)
         {
             var foundFactor = BankAccountFactorService.GetById(factorId, SiteSettingService.GetSiteSetting()?.Id);

@@ -45,6 +45,7 @@ namespace Oje.AccountService
             services.AddScoped<IWalletTransactionService, WalletTransactionService>();
             services.AddScoped<IUserMessageService, UserMessageService>();
             services.AddScoped<IUserMessageReplyService, UserMessageReplyService>();
+            services.AddScoped<ITempSqlCommService, TempSqlCommService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)

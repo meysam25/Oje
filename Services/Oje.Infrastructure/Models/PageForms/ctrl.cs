@@ -1,17 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Models.PageForms
 {
@@ -56,13 +52,13 @@ namespace Oje.Infrastructure.Models.PageForms
         public List<string> multiPlay { get; set; }
         public List<cTemplateMaps> fieldMaps { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string defV { get; set; }
 
 
         public static void requiredValidationForCtrl(ctrl ctrl, IFormCollection form)
         {
-            if (ctrl.isRequired == true)
+            if (ctrl.isRequired == true )
                 if (!form.Keys.Contains(ctrl.name) || string.IsNullOrEmpty(form.GetStringIfExist(ctrl.name)))
                     if (!needToBeIgnore(ctrl.name))
                         throw BException.GenerateNewException
@@ -120,6 +116,12 @@ namespace Oje.Infrastructure.Models.PageForms
                     }
                 }
                 ctrl.defV = resultM.ToString("###,###");
+            }
+            else if (ctrl.type == ctrlType.carPlaque)
+            {
+                string currValue = form.GetStringIfExist(ctrl.name + "_1") +" " + form.GetStringIfExist(ctrl.name + "_2") + " " + form.GetStringIfExist(ctrl.name + "_3") + " "+ form.GetStringIfExist(ctrl.name + "_4");
+                if (!string.IsNullOrEmpty(currValue))
+                    ctrl.defV = currValue;
             }
         }
 

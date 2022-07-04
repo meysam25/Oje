@@ -8,7 +8,7 @@ using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.View;
 using System;
-using System.Linq;
+using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 {
@@ -92,10 +92,10 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         {
             var result = TenderProposalFormJsonConfigService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
             if (result == null || result.data == null || result.data.Count == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
             if (byteResult == null || byteResult.Length == 0)
-                return NotFound();
+                throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
         }

@@ -7,7 +7,7 @@
     clear: both;
 }
 .topMenuNew {
-    display: block;
+    display: inline-block;
     margin-bottom: 0px;
 }
 
@@ -497,6 +497,7 @@
         transition: 0.5s;
         overflow: hidden;
         max-height: 0px;
+        display:block;
     }
 
         .topMenuNew li {

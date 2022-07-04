@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.Section.WebMain.Models.DB;
 
 namespace Oje.Section.WebMain.Services.EContext
 {
-    public class WebMainDBContext : DbContext
+    public class WebMainDBContext : MyBaseDbContext
     {
         public DbSet<TopMenu> TopMenus { get; set; }
         public DbSet<Page> Pages { get; set; }

@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.Section.Question.Models.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Question.Services.EContext
 {
-    public class QuestionDBContext : DbContext
+    public class QuestionDBContext : MyBaseDbContext
     {
         public DbSet<YourQuestion> YourQuestions { get; set; }
 
