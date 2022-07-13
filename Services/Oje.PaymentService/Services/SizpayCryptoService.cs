@@ -1,12 +1,7 @@
 ﻿using Oje.PaymentService.Interfaces;
-using Oje.PaymentService.Models.View;
 using Oje.PaymentService.Models.View.SizPay;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {

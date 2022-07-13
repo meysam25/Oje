@@ -16,7 +16,7 @@ body {
 .sideMenuHolder {
     width: 270px;
     min-height: 100%;
-    padding-bottom: 30px;
+    padding-bottom: 0px;
     position: absolute;
     left: 0px;
     top: 0px;
@@ -34,6 +34,20 @@ header {
     height: 50px;
     padding-left: 10px;
     background-color: white;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 271px;
+    background-color: white;
+    z-index: 10;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+.closeSideMenu header {
+    right:0;
 }
 
 main {
@@ -42,6 +56,7 @@ main {
     -o-transition: 0.3s;
     -webkit-transition: 0.3s;
     transition: 0.3s;
+    padding-top:50px;
 }
 
 a:hover {
@@ -69,6 +84,11 @@ a:hover {
     white-space: nowrap;
     overflow: hidden;
     padding-left: 5px;
+}
+
+.sideMenuHolder2 {
+    overflow-y: auto;
+    height: 100vh;
 }
 
 .sideMenu {
@@ -506,4 +526,9 @@ a:hover {
     vertical-align: -4px;
     margin-left: 3px;
     cursor:pointer;
+}
+@media (max-width: 600px) {
+    header {
+        right:0px;
+    }
 }

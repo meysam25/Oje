@@ -3,6 +3,9 @@
     <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
     <ProjectReference Include="..\..\Services\Oje.PaymentService\Oje.PaymentService.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
   
 
 

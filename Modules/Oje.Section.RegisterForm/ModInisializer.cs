@@ -32,6 +32,8 @@ namespace Oje.Section.RegisterForm
             services.AddScoped<IUserFilledRegisterFormKeyService, UserFilledRegisterFormKeyService>();
             services.AddScoped<IUserFilledRegisterFormValueService, UserFilledRegisterFormValueService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAgentRefferService, AgentRefferService>();
+            services.AddScoped<IUserRegisterFormPriceService, UserRegisterFormPriceService>();
         }
     }
 }

@@ -3,34 +3,34 @@
     {
       "grids": [
         {
-          "id": "BankuserGrid",
+          "id": "QuestionAdminProposalFormYourQuestionGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('BankAddGridModal', this)",
+              "onClick": "showModal('QuestionAdminProposalFormYourQuestionAddGridModal', this)",
               "type": "add",
-              "modalId": "BankAddGridModal"
+              "modalId": "QuestionAdminProposalFormYourQuestionAddGridModal"
             }
           ],
-          "exportToExcelUrl": "/FinancialBaseData/Bank/Export",
+          "exportToExcelUrl": "/QuestionAdmin/ProposalFormYourQuestion/Export",
           "showColumnConfigButton": true,
           "actions": {
             "delete": {
-              "url": "/FinancialBaseData/Bank/Delete"
+              "url": "/QuestionAdmin/ProposalFormYourQuestion/Delete"
             },
             "cActions": [
               {
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "editBankModal",
-                "url": "/FinancialBaseData/Bank/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/Bank/GetById\\', \\'editBankModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "modalId": "QuestionAdminProposalFormYourQuestionEditModal",
+                "url": "/QuestionAdmin/ProposalFormYourQuestion/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/QuestionAdmin/ProposalFormYourQuestion/GetById\\', \\'QuestionAdminProposalFormYourQuestionEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/FinancialBaseData/Bank/GetList",
+          "url": "/QuestionAdmin/ProposalFormYourQuestion/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -51,6 +51,13 @@
               }
             },
             {
+              "field": "form",
+              "caption": "فرم",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "isActive",
               "caption": "وضعیت",
               "search": {
@@ -65,8 +72,8 @@
       ],
       "moduals": [
         {
-          "class": "",
-          "id": "BankAddGridModal",
+          "class": "modal-xl",
+          "id": "QuestionAdminProposalFormYourQuestionAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -74,14 +81,23 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "fid",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/QuestionAdmin/ProposalFormYourQuestion/GetProposalFormList",
+              "label": "فرم"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
@@ -91,10 +107,10 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "minPic",
-              "type": "file",
-              "label": "لوگوی بانک (300 * 300)",
-              "acceptEx": ".jpg,.png,.jpeg"
+              "name": "answer",
+              "type": "textarea",
+              "label": "توضیحات",
+              "isRequired": true
             }
           ],
           "actions": [
@@ -105,14 +121,14 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'BankuserGrid', '/FinancialBaseData/Bank/Create')",
+              "onClick": "postModalData(this, 'QuestionAdminProposalFormYourQuestionGrid', '/QuestionAdmin/ProposalFormYourQuestion/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
-          "class": "",
-          "id": "editBankModal",
+          "class": "modal-xl",
+          "id": "QuestionAdminProposalFormYourQuestionEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -120,14 +136,23 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "fid",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/QuestionAdmin/ProposalFormYourQuestion/GetProposalFormList",
+              "label": "فرم"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
@@ -137,10 +162,10 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "minPic",
-              "type": "file",
-              "label": "لوگوی بانک (300 * 300)",
-              "acceptEx": ".jpg,.png,.jpeg"
+              "name": "answer",
+              "type": "textarea",
+              "label": "توضیحات",
+              "isRequired": true
             }
           ],
           "actions": [
@@ -151,7 +176,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'BankuserGrid', '/FinancialBaseData/Bank/Update')",
+              "onClick": "postModalData(this, 'QuestionAdminProposalFormYourQuestionGrid', '/QuestionAdmin/ProposalFormYourQuestion/Update')",
               "class": "btn-primary"
             }
           ]

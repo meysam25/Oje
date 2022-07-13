@@ -6,11 +6,7 @@ using Oje.Section.Question.Interfaces;
 using Oje.Section.Question.Models.DB;
 using Oje.Section.Question.Models.View;
 using Oje.Section.Question.Services.EContext;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Question.Services
 {

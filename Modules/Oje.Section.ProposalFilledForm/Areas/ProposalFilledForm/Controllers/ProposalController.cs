@@ -58,6 +58,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             ViewBag.Title = "ثبت فرم";
             ViewBag.exteraParameters = input;
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Proposal", new { area = "ProposalFilledForm" });
+            ViewBag.fid = input?.fid;
             return View("Index");
         }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.ProposalFormService.Models.View
 {
@@ -37,5 +32,7 @@ namespace Oje.ProposalFormService.Models.View
         public string endDate { get; set; }
         [Display(Name = "نماینده")]
         public bool isAgent { get; set; }
+        [Display(Name = "کد ملی بیمه گذار")]
+        public string targetUserNationalCode { get; set; }
     }
 }

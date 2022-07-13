@@ -26,8 +26,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         readonly IOurObjectService OurObjectService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
-        readonly IPushNotificationService PushNotificationService = null;
         readonly IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService = null;
+        readonly IShortLinkService ShortLinkService = null;
 
         public HomeController
             (
@@ -41,8 +41,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 IOurObjectService OurObjectService,
                 IUploadedFileService UploadedFileService,
                 IBlockAutoIpService BlockAutoIpService,
-                IPushNotificationService PushNotificationService,
-                IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService
+                IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService,
+                IShortLinkService ShortLinkService
             )
         {
             this.PropertyService = PropertyService;
@@ -55,8 +55,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.OurObjectService = OurObjectService;
             this.UploadedFileService = UploadedFileService;
             this.BlockAutoIpService = BlockAutoIpService;
-            this.PushNotificationService = PushNotificationService;
             this.ExternalNotificationServicePushSubscriptionService = ExternalNotificationServicePushSubscriptionService;
+            this.ShortLinkService = ShortLinkService;
         }
 
         [Route("/")]
@@ -319,6 +319,17 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         public ActionResult GetCompanyTitle()
         {
             return Content(SiteSettingService.GetSiteSetting()?.Title);
+        }
+
+        [Route("S/{code}")]
+        [HttpGet]
+        public ActionResult ShortLink(string code)
+        {
+            var foundLink = ShortLinkService.GetBy(SiteSettingService.GetSiteSetting()?.Id, code);
+            if (foundLink == null || string.IsNullOrWhiteSpace(foundLink.TargetLink))
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            return Redirect(foundLink.TargetLink);
         }
     }
 }

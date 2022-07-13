@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
@@ -23,6 +19,9 @@ namespace Oje.AccountService.Models.DB
         [Required]
         public string Title { get; set; }
         public bool IsActive { get; set; }
+        public byte? MapZoom { get; set; }
+        public decimal? MapLat { get; set; }
+        public decimal? MapLon { get; set; }
 
         [InverseProperty("Province")]
         public List<City> Cities { get; set; }

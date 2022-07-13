@@ -38,6 +38,7 @@ namespace Oje.Section.WebMain
             services.AddScoped<ISubscribeEmailService, SubscribeEmailService>();
             services.AddScoped<IPageManifestService, PageManifestService>();
             services.AddScoped<IPageManifestItemService, PageManifestItemService>();
+            services.AddScoped<IShortLinkService, ShortLinkService>();
         }
     }
 }

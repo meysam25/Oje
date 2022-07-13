@@ -25,33 +25,46 @@ namespace Oje.Infrastructure.Services
 
         public static void Clean(string name)
         {
-            string basePath = CreateDirecotryIfNotExist();
-            string fileName = Path.Combine(basePath, name);
-            if (File.Exists(fileName))
-                File.Delete(fileName);
+            if(!string.IsNullOrEmpty(name))
+            {
+                string basePath = CreateDirecotryIfNotExist();
+                string fileName = Path.Combine(basePath, name);
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+            }
         }
 
         public static bool IsFileExist(string name)
         {
-            string basePath = CreateDirecotryIfNotExist();
-            string fileName = Path.Combine(basePath, name);
-            return File.Exists(fileName);
+            if(!string.IsNullOrEmpty(name))
+            {
+                string basePath = CreateDirecotryIfNotExist();
+                string fileName = Path.Combine(basePath, name);
+                return File.Exists(fileName);
+            }
+            return false;
         }
 
         public static void WriteData(string name, string data)
         {
-            string basePath = CreateDirecotryIfNotExist();
-            string fileName = Path.Combine(basePath, name);
-            if (File.Exists(fileName))
-                File.WriteAllText(fileName, data);
+            if(!string.IsNullOrEmpty(name))
+            {
+                string basePath = CreateDirecotryIfNotExist();
+                string fileName = Path.Combine(basePath, name);
+                if (File.Exists(fileName))
+                    File.WriteAllText(fileName, data);
+            }
         }
 
         public static void ReadData(string name, string data)
         {
-            string basePath = CreateDirecotryIfNotExist();
-            string fileName = Path.Combine(basePath, name);
-            if (File.Exists(fileName))
-                File.WriteAllText(fileName, data);
+            if(!string.IsNullOrEmpty(name))
+            {
+                string basePath = CreateDirecotryIfNotExist();
+                string fileName = Path.Combine(basePath, name);
+                if (File.Exists(fileName))
+                    File.WriteAllText(fileName, data);
+            }
         }
     }
 }

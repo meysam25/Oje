@@ -20,7 +20,8 @@
       "wwwroot/js/cImage.js",
       "wwwroot/js/formGenerator.js",
       "wwwroot/js/notificationHob.js",
-      "wwwroot/js/Website/MainPage/inquirySection.js"
+      "wwwroot/js/Website/MainPage/inquirySection.js",
+      "wwwroot/js/jquery.maskedinput.min.js"
     ],
     "minify": {
       "enabled": true,
@@ -46,7 +47,8 @@
       "wwwroot/js/countDown.js",
       "wwwroot/js/formGenerator.js",
       "wwwroot/js/Website/bindLoginButtonClick.js",
-      "wwwroot/js/Website/topNewMenu.js"
+      "wwwroot/js/Website/topNewMenu.js",
+      "wwwroot/js/jquery.maskedinput.min.js"
     ],
     "minify": {
       "enabled": true,
@@ -81,6 +83,16 @@
     "minify": {
       "enabled": true,
       "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/js/yourQuestion.min.js",
+    "inputFiles": [
+      "wwwroot/js/Website/MainPage/yourQuestion.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
     }
   },
   {
@@ -268,6 +280,16 @@
       "wwwroot/css/Website/MainPage/quickAccess.css",
       "wwwroot/css/Website/MainPage/reminder.css",
       "wwwroot/css/Website/MainPage/setadbimePlus.css",
+      "wwwroot/css/Website/MainPage/yourQuestion.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/yourQuestion.min.css",
+    "inputFiles": [
       "wwwroot/css/Website/MainPage/yourQuestion.css"
     ],
     "minify": {

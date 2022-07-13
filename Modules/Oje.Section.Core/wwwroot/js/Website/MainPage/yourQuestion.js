@@ -1,21 +1,15 @@
 ﻿
-$.fn.initMyQuestionItem = function ()
-{
-    return this.each(function ()
-    {
-        $(this).click(function ()
-        {
+$.fn.initMyQuestionItem = function () {
+    return this.each(function () {
+        $(this).click(function () {
             $(this).toggleClass('yourQuestionItemOpen');
         });
     });
 };
 
-$.fn.loadYourQuestionList = function ()
-{
-    return this.each(function ()
-    {
-        postForm('/Question/YourQuestion/GetList', new FormData(), function (res)
-        {
+$.fn.loadYourQuestionList = function (url) {
+    return this.each(function () {
+        postForm(url, new FormData(), function (res) {
             if (res && res.length > 0) {
                 var template = getYourQuestionBeginTemplate();
 
@@ -30,7 +24,7 @@ $.fn.loadYourQuestionList = function ()
             else {
                 $(this.curThis).css('display', 'none');
             }
-        }.bind({curThis: this}));
+        }.bind({ curThis: this }));
     });
 };
 
@@ -51,7 +45,7 @@ function getYourQuestionItemTemplate(q) {
             ${q.q}
         </div>
         <div class="yourQuestionItemAnswer">
-            ${q.a}
+            ${(q.a + '').replace(/\n/g,'<br />')}
         </div>
     </div>
 `;

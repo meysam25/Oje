@@ -16,6 +16,6 @@ namespace Oje.EmailService.Interfaces
         object GetById(int? id, int? siteSettingID);
         ApiResult Update(EmailTrigerCreateUpdateVM input, int? siteSettingID);
         GridResultVM<EmailTrigerMainGridResultVM> GetList(EmailTrigerMainGrid searchInput, int? siteSettingID);
-        void CreateEmailQue(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId);
+        void CreateEmailQue(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, object exteraParameter);
     }
 }

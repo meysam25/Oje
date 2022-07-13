@@ -1,9 +1,4 @@
 ﻿using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.View
 {
@@ -21,5 +16,6 @@ namespace Oje.ProposalFormService.Models.View
         public string toCreateDate { get; set; }
         public string fromIssueDate { get; set; }
         public string toIssueDate { get; set; }
+        public string targetUserNationalCode { get; set; }
     }
 }

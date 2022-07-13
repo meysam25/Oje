@@ -55,6 +55,15 @@ function bindFooterIcons() {
                 $('#aTelegeram').attr('href', res.telegeram);
             else
                 $('#aTelegeram').css('display', 'none');
+
+            $('.footerSharingIconSection').find('a').click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                openModal($(this).attr('href'), $(this).text());
+
+                return false;
+            });
         } else {
             $('#aTelegeram').css('display', 'none');
             $('#aWhatapp').css('display', 'none');
@@ -127,7 +136,7 @@ $.fn.loadTopMenu = function (url) {
     }
     return this.each(function () {
         postForm(url, new FormData(), function (res) {
-            var template = '<img class="floatingIcon" width="50" height="50" alt="' + $('#mainSiteLogoIcon').attr('title') + '" src="' + $('#mainSiteLogoIcon').find('img').attr('src') + '" />';
+            var template = '<a title="' + $('#mainSiteLogoIcon').attr('title') + '" href="/"><img class="floatingIcon" width="50" height="50" alt="' + $('#mainSiteLogoIcon').attr('title') + '" src="' + $('#mainSiteLogoIcon').find('img').attr('src') + '" /></a>';
             if (res && res.length > 0) {
                 template += '<ul class="topMenuNew">';
                 for (var i = 0; i < res.length; i++) {
@@ -293,8 +302,8 @@ $.fn.bindFooterDescription = function (url) {
 function bindFooterPhoneAndAddress() {
     postForm('/Home/GetFooterInfor', new FormData(), function (res) {
         $('#footerAddress').html(res && res.add ? res.add : '');
-        $('#footerTell2').html(res && res.tell ? res.tell : '');
-        $('#footerTell1').html(res && res.mob ? res.mob : '');
+        $('#footerTell1').html(res && res.tell ? res.tell : '');
+        $('#footerTell2').html(res && res.mob ? res.mob : '');
         $('#footerEmail').html(res && res.email ? res.email : '');
     });
 }
@@ -331,7 +340,7 @@ const popupCenter = ({ url, title, w, h }) => {
 }
 
 function openModal(linkUrl, title) {
-    if (linkUrl, title) {
+    if (linkUrl) {
         popupCenter({ url: linkUrl, title: title, w: 580, h: 600 });
     }
 }

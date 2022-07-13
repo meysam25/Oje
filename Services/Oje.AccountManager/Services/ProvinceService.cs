@@ -2,11 +2,8 @@
 using Oje.AccountService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {
@@ -27,7 +24,18 @@ namespace Oje.AccountService.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.Provinces.Select(t => new { id = t.Id, title = t.Title }).ToList());
+            result.AddRange(
+                        db.Provinces
+                            .Select(t => new 
+                            { 
+                                id = t.Id, 
+                                title = t.Title,
+                                mapZoom = t.MapZoom,
+                                mapLon = t.MapLon,
+                                mapLat = t.MapLat
+                            })
+                            .ToList()
+                    );
 
             return result;
         }

@@ -10,8 +10,7 @@
 }
 
 @section Styles {
-<link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
-
+    <link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
 }
 
 <div id="holderInquirySection">
@@ -255,9 +254,9 @@
     {
         if(res && res.length > 0){
             $('#ourCustomers .mySlider').initSlider({
-                bigCount: 7,
+                bigCount: 10,
                 normalCount: 2,
-                smallCount: 1,
+                smallCount: 2,
                 autoStart:3000,
                 data: res
             });
@@ -272,9 +271,9 @@
     {
         if(res && res.length > 0) {
             $('#ourCompany .mySlider').initSlider({
-                bigCount: 7,
+                bigCount: 10,
                 normalCount: 2,
-                smallCount: 1,
+                smallCount: 2,
                 autoStart:3000,
                 data: res
             });
@@ -290,6 +289,6 @@
 
         $('.tabCtrl').initTabCtrl();
         $('.inquirySectionTab').initInquiryTab();
-        $('#yourQuestion').loadYourQuestionList();
+        $('#yourQuestion').loadYourQuestionList('/Question/YourQuestion/GetList');
     });
 </script>

@@ -173,5 +173,5 @@ function showValidationMessage(curObj, message) {
         canUseSetFocus = false;
     }
     $(curObj).closest('.myCtrl').addClass('inValidInput').append('<div class="inValidInputMessage">' + message + '</div>');
-    setTimeout(function () { canUseSetFocus = true; $(curObj).closest('.myCtrl').removeClass('inValidInput').find('.inValidInputMessage').remove(); }.bind({ curObj: curObj }), 3000);
+    setTimeout(function () { canUseSetFocus = true; $(curObj).closest('.myCtrl').removeClass('inValidInput').find('.inValidInputMessage').remove(); }.bind({ curObj: curObj }), 2000);
 }

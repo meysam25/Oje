@@ -21,5 +21,14 @@ namespace Oje.Section.BaseData.Services.EContext
         public DbSet<Tax> Taxs { get; set; }
         public DbSet<Duty> Duties { get; set; }
         public DbSet<ProposalForm> ProposalForms { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Province>().Property(e => e.MapLat).HasPrecision(18, 15);
+            modelBuilder.Entity<Province>().Property(e => e.MapLon).HasPrecision(18, 15);
+
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

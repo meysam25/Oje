@@ -11,8 +11,11 @@ namespace Oje.Worker.Email
         public bool checkEmail { get; set; }
         public long timePass { get; set; }
 
-        public Worker()
+        readonly IEmailSendingQueueService EmailSendingQueueService = null;
+
+        public Worker(IEmailSendingQueueService EmailSendingQueueService)
         {
+            this.EmailSendingQueueService = EmailSendingQueueService;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -29,11 +32,11 @@ namespace Oje.Worker.Email
                 if (checkEmail == true)
                 {
                     checkEmail = false;
-                    await EmailServiceConfig.cacheServices?.BuildServiceProvider()?.GetService<IEmailSendingQueueService>().SendEmail();
+                    await EmailSendingQueueService.SendEmail();
                 }
                 timePass += 1000;
                 if (timePass % 60000 == 0)
-                    await EmailServiceConfig.cacheServices?.BuildServiceProvider()?.GetService<IEmailSendingQueueService>().SendEmail();
+                    await EmailSendingQueueService.SendEmail();
 
                 await Task.Delay(1000, stoppingToken);
             }

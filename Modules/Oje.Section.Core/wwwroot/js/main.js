@@ -235,7 +235,15 @@ function bindDropdown(curObj, data, textField, valueField) {
         if (data[i][valueField] + '' == bValue || data[i][textField] + '' == bValue) {
             isSelected = 'selected=selected';
         }
-        $(curObj).append('<option ' + isSelected + ' value="' + data[i][valueField] + '" >' + data[i][textField] + '</option>');
+        var curRowTemplate = '<option ' + isSelected + ' value="' + data[i][valueField] + '" ';
+
+        for (var prop in data[i]) {
+            curRowTemplate += ' data-' + prop + '="' + data[i][prop] +'" ';
+        }
+
+        curRowTemplate += '>';
+        curRowTemplate += data[i][textField] + '</option>';
+        $(curObj).append(curRowTemplate);
     }
     if (hasSelect2) {
         $(curObj).select2({
@@ -336,8 +344,8 @@ function compressImageAndAddToFormData(file, img, targetImage) {
     var fileName = file.name.split('.')[0];
     var width = img.width;
     var height = img.height;
-    var maxWith = 1000;
-    var maxHeight = 1000;
+    var maxWith = 1900;
+    var maxHeight = 1900;
 
     if (width > maxWith) {
         height = Math.round(height *= maxWith / width);
@@ -354,7 +362,7 @@ function compressImageAndAddToFormData(file, img, targetImage) {
     canvas.toBlob(function (blob) {
         var f2 = new File([blob], fileName + ".jpg", { type: "image/jpg" });
         targetImage.compressUploadFile = f2;
-    }, 'image/jpeg', 0.8);
+    }, 'image/jpeg', 0.9);
 }
 
 function getFormData(selector) {
@@ -619,6 +627,7 @@ function clearForm(selector) {
     $(selector).find('input[type="radio"]').prop('checked', false);
     $(selector).find('input[type="checkbox"]').prop('checked', false);
     $(selector).find('input[type="file"]').not('[data-no-clear]').val(null);
+    $(selector).find('input[type="file"]').not('[data-no-clear]').change();
     $(selector).find('select').val('');
     $(selector).find('a[data-name]').html('').removeAttr('href');
     $(selector).find('select').each(function () {

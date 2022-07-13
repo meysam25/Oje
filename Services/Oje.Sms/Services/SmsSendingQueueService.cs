@@ -185,7 +185,7 @@ namespace Oje.Sms.Services
             }
 
             if (foundTemplate != null && foundTemplate.Count > 0)
-                smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, newCode.ToString(), foundUser != null ? (foundUser.Firstname + " " + foundUser.Lastname) : null);
+                smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, newCode.ToString(), foundUser != null ? (foundUser.Firstname + " " + foundUser.Lastname) : null, null);
 
             Create(new SmsSendingQueue()
             {
@@ -298,7 +298,7 @@ namespace Oje.Sms.Services
                 foundTemplate = SmsTemplateService.GetBy(curType, siteSettingId);
 
                 if (foundTemplate != null && foundTemplate.Count > 0)
-                    smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, newCode.ToString(), foundUser != null ? (foundUser.Firstname + " " + foundUser.Lastname) : null);
+                    smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, newCode.ToString(), foundUser != null ? (foundUser.Firstname + " " + foundUser.Lastname) : null, null);
 
                 Create(new SmsSendingQueue()
                 {

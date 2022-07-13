@@ -1,5 +1,11 @@
-﻿@{
+﻿@using Oje.Infrastructure
+@{
     Layout = "_WebLayout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="/Modules/Core/css/yourQuestion.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+    <script src="/Modules/Core/js/yourQuestion.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
 }
 
 <div class="myContainer">
@@ -9,7 +15,7 @@
     </section>
 
 </div>
-
+<div id="yourQuestion" class="myContainer"></div>
 
 <script>
     @{
@@ -21,4 +27,5 @@
     document.addEventListener("DOMContentLoaded", function(event) {
             loadJsonConfig('@ViewBag.ConfigRoute', 'ppfHolder');
     });
+    $('#yourQuestion').loadYourQuestionList('/Question/ProposalFormYourQuestion/GetList?fid=@(ViewBag.fid)');
 </script>

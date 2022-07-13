@@ -162,7 +162,7 @@ namespace Oje.Section.WebMain.Services
         {
             return db.OurObjects.Where(t => t.SiteSettingId == siteSettingId && t.Type == type).Select(t => new
             {
-                title = t.Title,
+                title = "",
                 subTitle = t.Subtitle,
                 img = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl,
                 url = t.Url

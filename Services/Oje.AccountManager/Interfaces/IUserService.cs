@@ -50,5 +50,6 @@ namespace Oje.AccountService.Interfaces
         bool isWebsiteUser(long userId);
         (int? cityId, int? provinceId) GetCityAndProvince(long? loginUserId);
         (int? province, int? cityid, List<int> companyIds) GetUserCityCompany(long? userId);
+        object GetAgentInfo(long userId);
     }
 }

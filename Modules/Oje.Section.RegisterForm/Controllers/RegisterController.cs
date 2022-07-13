@@ -16,6 +16,8 @@ namespace Oje.Section.RegisterForm.Controllers
         readonly IUserRegisterFormRequiredDocumentService UserRegisterFormRequiredDocumentService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
         readonly IUserFilledRegisterFormService UserFilledRegisterFormService = null;
+        readonly IAgentRefferService AgentRefferService = null;
+        readonly IUserRegisterFormPriceService UserRegisterFormPriceService = null;
 
         public RegisterController(
                 ISiteSettingService SiteSettingService,
@@ -23,7 +25,9 @@ namespace Oje.Section.RegisterForm.Controllers
                 Interfaces.ICompanyService CompanyService,
                 IUserRegisterFormRequiredDocumentService UserRegisterFormRequiredDocumentService,
                 IBlockAutoIpService BlockAutoIpService,
-                IUserFilledRegisterFormService UserFilledRegisterFormService
+                IUserFilledRegisterFormService UserFilledRegisterFormService,
+                IAgentRefferService AgentRefferService,
+                IUserRegisterFormPriceService UserRegisterFormPriceService
             )
         {
             this.SiteSettingService = SiteSettingService;
@@ -32,12 +36,17 @@ namespace Oje.Section.RegisterForm.Controllers
             this.UserRegisterFormRequiredDocumentService = UserRegisterFormRequiredDocumentService;
             this.BlockAutoIpService = BlockAutoIpService;
             this.UserFilledRegisterFormService = UserFilledRegisterFormService;
+            this.AgentRefferService = AgentRefferService;
+            this.UserRegisterFormPriceService = UserRegisterFormPriceService;
         }
 
         [Route("[Controller]/[Action]/{formName}")]
         [HttpGet]
         public IActionResult Users(string formName, int? fid)
         {
+            if (HttpContext.GetLoginUser()?.UserId == null || HttpContext.GetLoginUser()?.UserId <= 0)
+                return RedirectToAction("Login", "Dashboard", new { area = "Account", returnUrl = Request.Path + Request.QueryString + "" });
+
             var foundItem = UserRegisterFormService.GetBy(formName, fid, SiteSettingService.GetSiteSetting()?.Id);
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -55,10 +64,12 @@ namespace Oje.Section.RegisterForm.Controllers
 
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Register", new { fid = fid });
             ViewBag.exteraParameters = new { fid = fid };
+            ViewBag.fid = fid;
             return View();
         }
 
         [HttpPost]
+        [Route("[Controller]/[Action]")]
         public IActionResult Create()
         {
             if (HttpContext.GetLoginUser()?.UserId == null || HttpContext.GetLoginUser()?.UserId <= 0)
@@ -87,24 +98,34 @@ namespace Oje.Section.RegisterForm.Controllers
             return Content(UserRegisterFormService.GetSecoundFileUrl(fid, SiteSettingService.GetSiteSetting()?.Id));
         }
 
+        [HttpPost]
+        [Route("[Controller]/[Action]")]
+        public IActionResult GetAnotherFileUrl([FromForm] int? fid)
+        {
+            return Content(UserRegisterFormService.GetAnotherFileUrl(fid, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
         [HttpGet]
+        [Route("[Controller]/[Action]")]
         public IActionResult Details([FromQuery] long? id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
-            var result = UserFilledRegisterFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
+            var result = UserFilledRegisterFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, true);
             if (result == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             return View(result);
         }
 
         [HttpPost]
+        [Route("[Controller]/[Action]")]
         public IActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList());
         }
 
         [HttpPost]
-        public IActionResult GetTermsHtml(int? fid)
+        [Route("[Controller]/[Action]")]
+        public IActionResult GetTermsHtml(int? fid, int? company)
         {
             var foundPPF = UserRegisterFormService.GetTermInfo(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
             if (foundPPF == null)
@@ -113,14 +134,23 @@ namespace Oje.Section.RegisterForm.Controllers
             ViewBag.RulesFile = foundPPF.RuleFile;
             ViewBag.HtmlTemplate = foundPPF.TermDescription;
             ViewBag.companyTitle = SiteSettingService.GetSiteSetting()?.Title;
+            ViewBag.refferCode = AgentRefferService.GetRefferCode(SiteSettingService.GetSiteSetting()?.Id, company);
 
             return View();
         }
 
         [HttpPost]
+        [Route("[Controller]/[Action]")]
         public ActionResult GetRequiredDocuments([FromForm] int? fid)
         {
             return Json(UserRegisterFormRequiredDocumentService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, fid));
+        }
+
+        [HttpPost]
+        [Route("[Controller]/[Action]")]
+        public ActionResult GetPriceList([FromQuery] string id, [FromForm] int? fid)
+        {
+            return Json(UserRegisterFormPriceService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, fid, id));
         }
     }
 }

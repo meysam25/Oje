@@ -1,10 +1,18 @@
-﻿@{
+﻿@using Oje.Infrastructure
+@{
     Layout = "_WebLayout";
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="/Modules/Core/css/yourQuestion.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+    <script src="/Modules/Core/js/yourQuestion.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
 }
 
 <div style="padding-top:40px;padding-bottom:40px;" class="myContainer">
     <div class="MainHolder"></div>
 </div>
+<div id="yourQuestion" class="myContainer"></div>
 <script>
     @{
         if(ViewBag.exteraParameters != null)
@@ -13,4 +21,7 @@
         }
     }
     loadJsonConfig('@ViewBag.ConfigRoute');
+
+
+    $('#yourQuestion').loadYourQuestionList('/Question/UserRegisterFormYourQuestion/GetList?fid=@(ViewBag.fid)');
 </script>

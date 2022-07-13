@@ -27,13 +27,15 @@ $.fn.initSideMenu = function () {
                     targetQuery = targetQuery.parent().closest('.sideMenuItem');
                 }
                 $(this).addClass('sideSumMenuItemActive');
-                openMenuInterval = setInterval(function ()
-                {
+                openMenuInterval = setInterval(function () {
                     if (arrObj.length > 0) {
                         var lastObj = arrObj.pop();
                         $(lastObj).click();
                     } else {
                         clearInterval(openMenuInterval);
+                        $('.sideMenuHolder2').animate({
+                            scrollTop: $('a[href="' + curURL +'"]').offset().top
+                        }, 1000);
                     }
                 }, 300);
                 hasFound = true;
@@ -71,7 +73,7 @@ $.fn.initSideMenu = function () {
         $(this)[0].toggleSideMenu = function () {
             $('body').toggleClass('closeSideMenu');
         }
-        if ($(window).width() <= 900) {
+        if ($(window).width() <= 900 && location.pathname != '/Account/Dashboard/Index') {
             $(this)[0].closeSideMenu();
         }
     })

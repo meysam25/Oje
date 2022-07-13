@@ -6,7 +6,7 @@ namespace Oje.Infrastructure.Interfac
 {
     public interface IUserNotifierService
     {
-        void Notify(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink);
+        void Notify(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink, object exteraParameter = null);
         UserNotificationType ConvertProposalFilledFormStatusToUserNotifiactionType(ProposalFilledFormStatus status);
     }
 }

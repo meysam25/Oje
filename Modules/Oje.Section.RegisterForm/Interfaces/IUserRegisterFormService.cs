@@ -17,5 +17,7 @@ namespace Oje.Section.RegisterForm.Interfaces
         UserRegisterForm GetBy(string formName, int? id, int? iisiteSettingId);
         UserRegisterForm GetTermInfo(int id, int? siteSettingId);
         string GetSecoundFileUrl(int? id, int? siteSettingId);
+        string GetAnotherFileUrl(int? id, int? siteSettingId);
+        object GetLightList2(int? siteSettingId);
     }
 }

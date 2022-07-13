@@ -20,7 +20,7 @@
                     {
                       "order": 1,
                       "id": "rigLogStep",
-                      "title": "ورود ثبت نام",
+                      "title": "ورود | ثبت نام",
                       "submitUrl": "/Account/Dashboard/LoginWithSMS",
                       "panels": [
                         {

@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
 using Oje.Section.Question.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Question.Areas.Question.Controllers
 {
@@ -25,6 +20,7 @@ namespace Oje.Section.Question.Areas.Question.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
+        [HttpPost]
         public IActionResult GetList()
         {
             return Json(YourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id));

@@ -16,7 +16,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "لیست فرم پیشنهاد در انتظار تایید")]
+    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "پیشنهاد در انتظار تایید")]
     [CustomeAuthorizeFilter]
     public class ProposalFilledFormW8ForConfirmController : Controller
     {
@@ -59,16 +59,16 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "لیست فرم پیشنهاد در انتظار تایید", Icon = "fa-pause-circle", IsMainMenuItem = true)]
+        [AreaConfig(Title = "پیشنهاد در انتظار تایید", Icon = "fa-pause-circle", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "لیست فرم پیشنهاد در انتظار تایید";
+            ViewBag.Title = "پیشنهاد در انتظار تایید";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "ProposalFilledFormW8ForConfirm", new { area = "ProposalFilledForm" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست فرم پیشنهاد در انتظار تایید", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه پیشنهاد در انتظار تایید", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -316,7 +316,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم پیشنهاد در انتظار تایید", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده پیشنهاد در انتظار تایید", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFilledFormMainGrid searchInput)
         {

@@ -1,47 +1,89 @@
-﻿@{
-    Layout = "_LayoutAdminNoHeaderFooter";
+﻿@using Oje.Infrastructure
+@{
+    //Layout = "_LayoutAdminNoHeaderFooter";
     ViewBag.Title = "ورود";
+    Layout = "_WebLayout";
 }
 
-<div tabindex="0" class="loginBox">
+@*<div tabindex="0" class="loginBox">
     <h3 class="loginTitle">ورود</h3>
     <div class="input-group mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1"><span class="fa fa-user"></span></span>
-        </div>
-        <input id="usernameInput" type="text" class="form-control" name="username" aria-label="Username" aria-describedby="basic-addon1">
+    <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1"><span class="fa fa-user"></span></span>
+    </div>
+    <input id="usernameInput" type="text" class="form-control" name="username" aria-label="Username" aria-describedby="basic-addon1">
     </div>
     <div class="input-group mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon2"><span class="fa fa-key"></span></span>
-        </div>
-        <input id="userPassword" autocomplete="off" type="password" class="form-control" name="password" aria-label="Password" aria-describedby="basic-addon2">
+    <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon2"><span class="fa fa-key"></span></span>
     </div>
-@*    <div class="input-group mb-3">
-        <div class="captchaCTRL">
-        </div>
-
-    </div>*@
+    <input id="userPassword" autocomplete="off" type="password" class="form-control" name="password" aria-label="Password" aria-describedby="basic-addon2">
+    </div>
     <div style="direction:rtl;text-align:right;" class=" mb-3">
-        <input type="checkbox"  name="rememberMe" value="True" id="remember">
-        <label  for="remember">مرا به خاطر بسپار</label>
+    <input type="checkbox"  name="rememberMe" value="True" id="remember">
+    <label  for="remember">مرا به خاطر بسپار</label>
     </div>
     <div class="input-group mb-3">
-        <button type="button" class="btn btn-primary btn-block loginButton">ورود</button>
+    <button type="button" class="btn btn-primary btn-block loginButton">ورود</button>
     </div>
-</div>
+    </div>
 
-<script>
+    <script>
     $('.loginButton').click(function () {
-        var postData = getFormData($('.loginBox'));
-        showLoader($('.loginBox'), true);
-        postForm('/Account/Dashboard/Login', postData, function (res)
-        {
-            if (res && res.isSuccess == true) {
-                location.href = '/Account/Dashboard/Index';
-            }
-        }, null, function () { hideLoader($('.loginBox'), true); });
+    var postData = getFormData($('.loginBox'));
+    showLoader($('.loginBox'), true);
+    postForm('/Account/Dashboard/Login', postData, function (res)
+    {
+    if (res && res.isSuccess == true) {
+    location.href = '/Account/Dashboard/Index';
+    }
+    }, null, function () { hideLoader($('.loginBox'), true); });
     });
     //$('.captchaCTRL').initCaptcha();
     $('.loginBox').keypress(function (e) { if (e.keyCode == 13) $('.loginButton').click(); });
+    </script>*@
+@section Styles {
+<link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+<style>
+    .tempLoginSectionF {
+        display: inline-block;
+        width: 500px;
+        text-align: right;
+    }
+
+    @@media (max-width: 550px) {
+        .tempLoginSectionF {
+            width: 400px;
+        }
+    }
+
+    @@media (max-width: 400px) {
+        .tempLoginSectionF {
+            width: 350px;
+        }
+    }
+</style>
+
+}
+<div id="loginBodySeciton" class="myContainer" style="text-align:center;">
+    <div class="tempLoginSectionF" style="">
+        <section class="globalSection"></section>
+    </div>
+</div>
+<script>
+    postForm('/Home/GetLoginModalConfig', new FormData(), function(res)
+    {
+        if (res && res.panels && res.panels.length > 0 && res.panels[0].moduals  && res.panels[0].moduals.length > 0 && res.panels[0].moduals[0].panels && res.panels[0].moduals[0].panels.length > 0 ) {
+            generateForm(res.panels[0].moduals[0], $('#loginBodySeciton div .globalSection'));
+        }
+    });
+    whatToDoAfterUserLogin.push({curFun: function()
+    {
+        var curReturnURl = new URLSearchParams(window.location.search).get('returnUrl');
+        if(!curReturnURl)
+        {
+             curReturnURl = '/';
+        }
+         location.href = curReturnURl;
+    }});
 </script>

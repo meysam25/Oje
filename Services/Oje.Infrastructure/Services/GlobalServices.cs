@@ -1,18 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Oje.Infrastructure.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Services
 {
     public static class GlobalServices
     {
-        public static string replaceKeyword(string input, long? objectId, string title, string userFullname)
+        public static string replaceKeyword(string input, long? objectId, string title, string userFullname, object exteraParameter)
         {
-            return (input + "").Replace("{{datetime}}", DateTime.Now.ToFaDate()).Replace("{{objectId}}", objectId + "").Replace("{{fromUser}}", userFullname).Replace("{{title}}", title);
+            if(exteraParameter != null)
+            {
+                var allProps = exteraParameter.GetType().GetProperties();
+                foreach(var prop in allProps)
+                    input = input.Replace("{{" + prop.Name + "}}", prop.GetValue(exteraParameter) + "");
+            }
+            return (input + "").Replace("{{datetime}}", DateTime.Now.ToFaDate() + " " + DateTime.Now.ToString("HH:mm")).Replace("{{objectId}}", objectId + "").Replace("{{fromUser}}", userFullname).Replace("{{title}}", title);
         }
 
         public static int MaxForNotify { get { return 1000; } }

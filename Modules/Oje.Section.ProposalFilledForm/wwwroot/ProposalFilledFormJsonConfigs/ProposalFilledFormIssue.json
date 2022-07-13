@@ -6,14 +6,6 @@
           "id": "ProposalFilledFormIssueGrid",
           "exteraSearchIds": [ "ProposalFilledFormIssueSearchModal" ],
           "exteraFilterModalId": "ProposalFilledFormIssueSearchModal",
-          "topActions": [
-            {
-              "title": "افزودن",
-              "onClick": "showModal('ProposalFilledFormIssueNewPPF', this)",
-              "type": "add",
-              "modalId": "ProposalFilledFormIssueNewPPF"
-            }
-          ],
           "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormIssue/Export",
           "showColumnConfigButton": true,
           "actions": {
@@ -1029,45 +1021,6 @@
                   ]
                 }
               ]
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormIssueNewPPF",
-          "title": "افزودن فرم پیشنهاد جدید",
-          "ctrls": [
-            {
-              "id": "ProposalFilledFormIssueNewPPFppfCatId",
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "ProposalFilledFormIssueNewPPFppfCatId",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormIssue/GetProposalFormCategoryList",
-              "label": "گروه بندی فرم پیشنهاد"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "fid",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormIssue/GetProposalFormList",
-              "exteraParameterIds": [ "ProposalFilledFormIssueNewPPFppfCatId" ],
-              "label": "فرم پیشنهاد"
-            }
-
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "افزودن",
-              "onClick": "openNewLink('ProposalFilledFormIssueNewPPF', '/ProposalFilledForm/Proposal/Form')",
-              "class": "btn-primary"
             }
           ]
         }

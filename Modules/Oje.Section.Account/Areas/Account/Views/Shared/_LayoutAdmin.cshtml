@@ -25,7 +25,7 @@
     <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + currSiteSetting.Image96)">
     <script>
         @{
-            ViewContext.Writer.Write("var isUserLogin = " +( Context.GetLoginUser()?.UserId != null ? "true" : "false"));
+            ViewContext.Writer.Write("var isUserLogin = " + (Context.GetLoginUser()?.UserId != null ? "true" : "false"));
         }
 
     </script>
@@ -39,17 +39,19 @@
         </div>
     </div>
     <aside class="sideMenuHolder">
-        <span class="sideMenuHeader"><i class="fa fa-arrow-right closeSideMenuButton"></i> @(currSiteSetting.Title)</span>
-        <div class="sideMenu">
-            <a href="/Account/Dashboard/Index" class="sideMenuItem">
-                <span class="sideMenuItemInner">
-                    <span class="fa fa-home menuIcon"></span>
-                    <span>داشبورد</span>
-                </span>
-            </a>
-            <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login" vary-by="@(Oje.Infrastructure.GlobalConfig.siteMenuCache)">
-                <partial name="~/Areas/Account/Views/Shared/_LayoutAdminSideMenu.cshtml" />
-            </cache>
+        <div class="sideMenuHolder2">
+            <span class="sideMenuHeader"><i class="fa fa-arrow-right closeSideMenuButton"></i> @(currSiteSetting.Title)</span>
+            <div class="sideMenu">
+                <a href="/Account/Dashboard/Index" class="sideMenuItem">
+                    <span class="sideMenuItemInner">
+                        <span class="fa fa-home menuIcon"></span>
+                        <span>داشبورد</span>
+                    </span>
+                </a>
+                <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login" vary-by="@(Oje.Infrastructure.GlobalConfig.siteMenuCache)">
+                    <partial name="~/Areas/Account/Views/Shared/_LayoutAdminSideMenu.cshtml" />
+                </cache>
+            </div>
         </div>
     </aside>
     <main>

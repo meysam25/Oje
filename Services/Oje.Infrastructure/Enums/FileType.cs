@@ -41,7 +41,7 @@ namespace Oje.Infrastructure.Enums
         BlogSound = 15,
         [Display(Name = "تصویر بزرگ بلاگ 600", Prompt = "Blog", Description = "600*400")]
         BlogBigImage600 = 16,
-        [Display(Name = "تصویر اصلی صفحه", Prompt = "Page", Description = "1500*300", AutoGenerateField = false)]
+        [Display(Name = "تصویر اصلی صفحه", Prompt = "Page", Description = "1900*380", AutoGenerateField = false)]
         PageMainImage = 17,
         [Display(Name = "تصویر اصلی صفحه (کوچک)", Prompt = "Page", Description = "800*600", AutoGenerateField = false)]
         PageMainImageSmall = 18,
@@ -88,6 +88,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "صدور مناقصه", Prompt = "IssueTender")]
         IssueTender = 39,
         [Display(Name = "پیام های کاربر", Prompt = "UserMessageFile")]
-        UserMessageFile = 40
+        UserMessageFile = 40,
+        [Display(Name = "مدرک صدور فرم پیشنهاد", Prompt = "IssueProposalForm")]
+        IssueProposalForm = 41
     }
 }

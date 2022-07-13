@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -23,9 +24,25 @@ namespace Oje.Section.RegisterForm.Services
             this.HttpContextAccessor = HttpContextAccessor;
         }
 
+        public PPFUserTypes GetUserTypePPFInfo(long? loginUserId, ProposalFilledFormUserType resultType)
+        {
+            return db.Users
+                .Where(t => t.Id == loginUserId)
+                .Select(t => new PPFUserTypes
+                {
+                    emaile = t.Email,
+                    fullUserName = t.Firstname + " " + t.Lastname,
+                    mobile = t.Mobile,
+                    userId = t.Id,
+                    ProposalFilledFormUserType = resultType
+                })
+                .FirstOrDefault();
+        }
+
         public ApiResult CreateNewUser(UserFilledRegisterForm userFilledRegisterForm, int? siteSettingId, long? parentUserId, List<int> roleIds)
         {
             CreateNewUserValidation(userFilledRegisterForm, siteSettingId, parentUserId, roleIds);
+            long userId = 0;
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -44,9 +61,13 @@ namespace Oje.Section.RegisterForm.Services
                     newUser.BankShaba = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "shabaNo").Select(t => t.Value).FirstOrDefault();
                     newUser.BankAccount = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "hesabNo").Select(t => t.Value).FirstOrDefault();
                     newUser.Firstname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstName").Select(t => t.Value).FirstOrDefault();
+                    if(string.IsNullOrEmpty(newUser.Firstname))
+                        newUser.Firstname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstNameLegal").Select(t => t.Value).FirstOrDefault();
                     newUser.BirthDate = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "birthDate").Select(t => t.Value).FirstOrDefault().ToEnDate();
                     newUser.IsActive = true;
                     newUser.Lastname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastName").Select(t => t.Value).FirstOrDefault();
+                    if(string.IsNullOrEmpty(newUser.Lastname))
+                        newUser.Lastname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastNameLegal").Select(t => t.Value).FirstOrDefault();
                     newUser.Password = RandomService.GeneratePassword(20);
                     newUser.CreateDate = DateTime.Now;
                     newUser.ParentId = parentUserId;
@@ -65,6 +86,8 @@ namespace Oje.Section.RegisterForm.Services
                     newUser.MapLocation = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null && userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null ?
                                     new Point(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().Value, userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().ToDoubleReturnNull().Value) { SRID = 4326 } :
                                     null;
+                    newUser.CompanyTitle = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "companyNameLegal").Select(t => t.Value).FirstOrDefault();
+
 
                     db.SaveChanges();
 
@@ -93,6 +116,8 @@ namespace Oje.Section.RegisterForm.Services
                         db.SaveChanges();
                     }
 
+                    userId = newUser.Id;
+
                     tr.Commit();
                 }
                 catch
@@ -102,7 +127,7 @@ namespace Oje.Section.RegisterForm.Services
                 }
             }
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, userId);
         }
 
         private void CreateNewUserValidation(UserFilledRegisterForm userFilledRegisterForm, int? siteSettingId, long? parentUserId, List<int> roleIds)
@@ -117,6 +142,8 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (roleIds == null || roleIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_One_Or_More_Role);
+            if(roleIds.Count != 1)
+                throw BException.GenerateNewException(BMessages.Jsut_One_Role);
 
             string mobileNumber = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mobile").Select(t => t.Value).FirstOrDefault();
             if (string.IsNullOrEmpty(mobileNumber))
@@ -125,9 +152,15 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
             //if (db.Users.Any(t => t.Username.Trim() == mobileNumber.Trim()))
             //    throw BException.GenerateNewException(BMessages.Dublicate_Mobile);
-            if (string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstName").Select(t => t.Value).FirstOrDefault()))
+            if (
+                    string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstName").Select(t => t.Value).FirstOrDefault()) && 
+                    string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstNameLegal").Select(t => t.Value).FirstOrDefault())
+                )
                 throw BException.GenerateNewException(BMessages.Please_Enter_Firstname);
-            if (string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastName").Select(t => t.Value).FirstOrDefault()))
+            if (
+                string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastName").Select(t => t.Value).FirstOrDefault()) && 
+                string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastNameLegal").Select(t => t.Value).FirstOrDefault())
+                )
                 throw BException.GenerateNewException(BMessages.Please_Enter_Lastname);
             if (string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "nationalCode").Select(t => t.Value).FirstOrDefault()))
                 throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);

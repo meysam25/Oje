@@ -1,7 +1,4 @@
 
-.wrapper > header {
-    z-index: 3;
-}
 .responsiveClearBoth {
     display: none;
     clear: both;

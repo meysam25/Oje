@@ -1,4 +1,4 @@
-
+var isFirstTimeForInquiryTabs = true;
 $.fn.initInquiryTab = function () {
     return this.each(function () {
         var curElement = $(this)[0];
@@ -49,6 +49,14 @@ $.fn.initInquiryTab = function () {
                         $(this).closest('.inquirySectionTabBodyItemsActive').removeClass('inquirySectionTabBodyItemsActive');
                     });
                 }
+                if (isFirstTimeForInquiryTabs == false) {
+                    $(document.documentElement, document.body).animate({
+                        scrollTop: $(this.holderSelector).offset().top - 200
+                    }, 1000);
+                } else {
+                    isFirstTimeForInquiryTabs = false;
+                }
+                
             }.bind({ holderSelector: holderSelector }));
         };
 

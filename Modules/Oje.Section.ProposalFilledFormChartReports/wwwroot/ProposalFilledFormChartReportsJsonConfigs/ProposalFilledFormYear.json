@@ -30,7 +30,7 @@
                 "dataLabels": {
                   "enabled": false
                 },
-                "showInLegend": true
+                "showInLegend": false
               }
             }
           }

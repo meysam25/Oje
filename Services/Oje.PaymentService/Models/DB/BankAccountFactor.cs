@@ -1,11 +1,6 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Models.DB
 {
@@ -27,6 +22,10 @@ namespace Oje.PaymentService.Models.DB
         public long? UserId { get; set; }
         [MaxLength(50)]
         public string TraceCode { get; set; }
+        public DateTime? LastTryDate { get; set; }
+        public int? CountTry { get; set; }
+        public string LastErrorMessage { get; set; }
+        public BankAccountType? BankAccountType { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

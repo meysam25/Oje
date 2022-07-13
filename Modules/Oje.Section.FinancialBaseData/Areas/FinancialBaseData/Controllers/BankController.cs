@@ -15,11 +15,16 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "اطلاعات پایه مالی", Icon = "fa-dollar-sign", Title = "لیست بانک")]
     [CustomeAuthorizeFilter]
-    public class BankController: Controller
+    public class BankController : Controller
     {
         readonly IBankService BankService = null;
         readonly IBankAccountSizpayPaymentService BankAccountSizpayPaymentService = null;
-        public BankController(IBankService BankService, IBankAccountSizpayPaymentService BankAccountSizpayPaymentService)
+
+        public BankController
+            (
+                IBankService BankService,
+                IBankAccountSizpayPaymentService BankAccountSizpayPaymentService
+            )
         {
             this.BankService = BankService;
             this.BankAccountSizpayPaymentService = BankAccountSizpayPaymentService;

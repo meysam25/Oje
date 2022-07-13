@@ -273,6 +273,8 @@ namespace Oje.AccountService.Services
 
             db.SaveChanges();
 
+            CustomeAuthorizeFilter.UserAccessCaches = new();
+
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
         }
 

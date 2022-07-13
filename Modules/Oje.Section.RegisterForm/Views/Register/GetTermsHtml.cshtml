@@ -22,7 +22,7 @@
             {
                 <div>
                     @{
-                        ViewContext.Writer.Write((ViewBag.HtmlTemplate + "").Replace("{{company}}",ViewBag.companyTitle).Replace("{{date}}", DateTime.Now.ToFaDate()).Replace("{{time}}", DateTime.Now.ToString("HH:mm")));
+                        ViewContext.Writer.Write((ViewBag.HtmlTemplate + "").Replace("{{refferCode}}", ViewBag.refferCode).Replace("{{company}}",ViewBag.companyTitle).Replace("{{date}}", DateTime.Now.ToFaDate()).Replace("{{time}}", DateTime.Now.ToString("HH:mm")));
                     }
                 </div>
             }
@@ -33,7 +33,7 @@
             @{
                 if (!string.IsNullOrEmpty(ViewBag.RulesFile))
                 {
-                    <div class="form-check form-switch myCtrl"><input class="form-check-input" data-validation-required="true" data-validation-required-msg="لطفا شرایط عمومی قرارداد را مطالعه کرده و انتخاب کنید" type="checkbox" id="id_e5b2c52b82d9-46eb"><label style="padding-right:20px;" class="form-check-label" for="id_e5b2c52b82d9-46eb"><a title="شرایط عمومی بیمه نامه" target="_blank" href="@(Oje.Infrastructure.GlobalConfig.FileAccessHandlerUrl)@ViewBag.RulesFile">شرایط عمومی بیمه نامه</a> را مطالعه نموده و قبول دارم</label></div>
+                    <div class="form-check form-switch myCtrl"><input class="form-check-input" data-validation-required="true" data-validation-required-msg="لطفا شرایط عمومی قرارداد را مطالعه کرده و انتخاب کنید" type="checkbox" id="id_e5b2c52b82d9-46eb"><label style="padding-right:20px;" class="form-check-label" for="id_e5b2c52b82d9-46eb"><a title="شرایط عمومی قوانین" target="_blank" href="@(Oje.Infrastructure.GlobalConfig.FileAccessHandlerUrl)@ViewBag.RulesFile">شرایط عمومی قوانین</a> را مطالعه نموده و قبول دارم</label></div>
                 }
             }
         </div>

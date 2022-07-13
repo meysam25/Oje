@@ -22,16 +22,19 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         readonly IUserFilledRegisterFormService UserFilledRegisterFormService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly Interfaces.IRoleService RoleService = null;
+        readonly IUserRegisterFormService UserRegisterFormService = null;
         public UserFilledRegisterFormController
             (
                 IUserFilledRegisterFormService UserFilledRegisterFormService,
                 ISiteSettingService SiteSettingService,
-                Interfaces.IRoleService RoleService
+                Interfaces.IRoleService RoleService,
+                IUserRegisterFormService UserRegisterFormService
             )
         {
             this.UserFilledRegisterFormService = UserFilledRegisterFormService;
             this.SiteSettingService = SiteSettingService;
             this.RoleService = RoleService;
+            this.UserRegisterFormService = UserRegisterFormService;
         }
 
         [AreaConfig(Title = "کاربران ثبت نام کرده", Icon = "fa-user", IsMainMenuItem = true)]
@@ -55,7 +58,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         [HttpPost]
         public IActionResult CreateUser([FromForm] long? pKey, [FromForm] List<int> roleIds)
         {
-            return Json(UserFilledRegisterFormService.CreateNewUser(pKey, SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.UserId, roleIds));
+            return Json(UserFilledRegisterFormService.CreateNewUser(pKey, SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.UserId, roleIds, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده اسناد کاربران ثبت نام کرده", Icon = "fa-eye")]
@@ -66,10 +69,11 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         }
 
         [AreaConfig(Title = "مشاهده یک کاربران ثبت نام کرده", Icon = "fa-eye")]
-        [HttpGet]
-        public IActionResult GetById([FromQuery] GlobalLongId input)
+        [HttpPost]
+        public IActionResult GetById([FromForm] GlobalLongId input, [FromQuery] bool? ignoreMaster)
         {
             ViewBag.targetLayout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+            ViewBag.ignoreMaster = ignoreMaster;
             return View("~/Views/Register/Details.cshtml", UserFilledRegisterFormService.PdfDetailes(input?.id, SiteSettingService.GetSiteSetting()?.Id, null));
         }
 
@@ -106,6 +110,13 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         public ActionResult GetRoleList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(RoleService.GetList(SiteSettingService.GetSiteSetting()?.Id, searchInput));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست فرم ها", Icon = "fa-list-alt ")]
+        [HttpPost]
+        public ActionResult GetFormList()
+        {
+            return Json(UserRegisterFormService.GetLightList2(SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

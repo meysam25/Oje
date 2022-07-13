@@ -123,7 +123,7 @@ namespace Oje.FileService.Services
                         jpgEncoder = GetEncoder(ImageFormat.Jpeg);
                     Encoder myEncoder = Encoder.Quality;
                     EncoderParameters myEncoderParameters = new EncoderParameters(1);
-                    EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 70L);
+                    EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 90L);
                     myEncoderParameters.Param[0] = myEncoderParameter;
                     resultBmp.Save(fs, jpgEncoder, myEncoderParameters);
                 }
@@ -131,7 +131,7 @@ namespace Oje.FileService.Services
                 {
                     Imazen.WebP.Extern.LoadLibrary.LoadWebPOrFail();
                     var encoder = new SimpleEncoder();
-                    encoder.Encode(resultBmp, fs, 70);
+                    encoder.Encode(resultBmp, fs, 90);
                 }
             }
             else
@@ -228,7 +228,7 @@ namespace Oje.FileService.Services
                         else if (userId > 0)
                         {
                             if (
-                                    (result.UserId != userId || result.CreateByUserId != userId && !db.FileAccessRoles.Any(t => t.FileType == result.FileType && t.Role.UserRoles.Any(tt => tt.UserId == userId)))
+                                    (result.UserId != userId && result.CreateByUserId != userId && !db.FileAccessRoles.Any(t => t.FileType == result.FileType && t.Role.UserRoles.Any(tt => tt.UserId == userId)))
                                     &&
                                     !db.UploadedFiles.Where(t => t.Id == result.Id).getWhereCreateByUserMultiLevelForUserOwnerShip<UploadedFile, User>(userId, false).Any()
 

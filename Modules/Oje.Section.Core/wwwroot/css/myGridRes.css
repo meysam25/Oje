@@ -33,4 +33,7 @@
     .gridResTitle {
         display:inline-block;
     }
+    .myTableHeader {
+        display:none;
+    }
 }

@@ -1,0 +1,220 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "UserFilledRegisterFormNotPayedGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('UserFilledRegisterFormNotPayedAddGridModal', this)",
+              "type": "add",
+              "modalId": "UserFilledRegisterFormNotPayedAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/RegisterFormAdmin/UserFilledRegisterFormNotPayed/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/RegisterFormAdmin/UserFilledRegisterFormNotPayed/Delete"
+            },
+            "cActions": [
+              {
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/RegisterFormAdmin/UserFilledRegisterFormNotPayed/GetById?ignoreMaster=True\\', \\'UserFilledRegisterFormNotPayedDetailesModal\\' , this, null, null, null, true)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-plus",
+                "prop": "id",
+                "modalId": "UserFilledRegisterFormNotPayedCreateUserModal",
+                "template": "function bindRow (curRow) { return '<span title=\"ساخت کاربر\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'UserFilledRegisterFormNotPayedCreateUserModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-plus\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "UserFilledRegisterFormNotPayedviewPPfImages",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'UserFilledRegisterFormNotPayedviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/RegisterFormAdmin/UserFilledRegisterFormNotPayed/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "username",
+              "caption": "نام کاربری",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "firstname",
+              "caption": "نام",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "lastname",
+              "caption": "نام خانوادگی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ثبت نام",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "formTitle",
+              "caption": "عنوان ثبت نام",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isDone",
+              "caption": "انجام شده؟",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "UserFilledRegisterFormNotPayedviewPPfImages",
+          "title": "مدارک فرم ثبت نام",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "UserFilledRegisterFormNotPayedimageGrid",
+                  "class": "imageGallery",
+                  "formatters": {
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/ProposalFilledForm/ProposalFilledFormIssue/DeletePPFImage\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
+                  },
+                  "key": "id",
+                  "url": "/RegisterFormAdmin/UserFilledRegisterFormNotPayed/GetPPFImageList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+
+                    {
+                      "formatter": "imageFormater",
+                      "field": "src",
+                      "caption": "تصویر"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "UserFilledRegisterFormNotPayedCreateUserModal",
+          "title": "ساخت حساب کاربری",
+          "class": "modal-lg",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "roleIds",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/RegisterFormAdmin/UserFilledRegisterFormNotPayed/GetRoleList",
+              "label": "نقش",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'UserFilledRegisterFormNotPayedGrid', '/RegisterFormAdmin/UserFilledRegisterFormNotPayed/CreateUser')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "UserFilledRegisterFormNotPayedDetailesModal",
+          "title": "جزییات",
+          "class": "modal-xl",
+          "ctrls": [
+
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        },
+        {
+          "id": "UserFilledRegisterFormNotPayedAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "form",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/RegisterFormAdmin/UserFilledRegisterFormNotPayed/GetFormList",
+              "label": "فرم ثبت نام",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "جدید",
+              "onClick": "if($('#UserFilledRegisterFormNotPayedAddGridModal').find('select').find('option:selected').attr('value')) { window.open('/Register/Users' + $('#UserFilledRegisterFormNotPayedAddGridModal').find('select').find('option:selected').attr('value'), '_blank').focus(); }",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -173,7 +173,7 @@ namespace Oje.EmailService.Services
                 ;
         }
 
-        public void CreateEmailQue(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId)
+        public void CreateEmailQue(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, object exteraParameter)
         {
             var foundTemplates = EmailTemplateService.GetBy(type, siteSettingId);
             string userFullname = UserService.GetUserFullName(siteSettingId, userId);
@@ -186,8 +186,8 @@ namespace Oje.EmailService.Services
                     var foundTrigers = GetBy(type, siteSettingId);
                     if (foundTrigers != null && foundTrigers.Count > 0)
                     {
-                        string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
-                        string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                        string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname, exteraParameter);
+                        string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname, exteraParameter);
                         if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(description))
                         {
                             List<int> roleIds = foundTrigers.Where(t => t.RoleId.ToIntReturnZiro() > 0).Select(t => t.RoleId.Value).ToList();
@@ -244,8 +244,8 @@ namespace Oje.EmailService.Services
                     {
                         foreach (var foundTargetUser in foundTargetUsers)
                         {
-                            string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
-                            string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                            string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname, exteraParameter);
+                            string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname, exteraParameter);
                             EmailSendingQueueService.Create(new EmailSendingQueue()
                             {
                                 CreateDate = DateTime.Now,

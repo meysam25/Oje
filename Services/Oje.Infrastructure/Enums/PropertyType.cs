@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Enums
 {
@@ -19,13 +14,13 @@ namespace Oje.Infrastructure.Enums
         FooterDescrption = 4,
         [Display(Name = "نماد های فوتر")]
         FooterSymbol = 5,
-        [Display(Name = "تماس با ما")]
-        ContactUs = 5,
         [Display(Name = "ایکن های بالا سمت چپ صفحه اصلی")]
         MainPageTopLeftIcon = 6,
         [Display(Name = "متا تگ عمومی")]
         GlobalMetaTag = 7,
         [Display(Name = "شبکه های اجتماعی فوتر")]
-        FooterIcon = 8
+        FooterIcon = 8,
+        [Display(Name = "تماس با ما")]
+        ContactUs = 9,
     }
 }

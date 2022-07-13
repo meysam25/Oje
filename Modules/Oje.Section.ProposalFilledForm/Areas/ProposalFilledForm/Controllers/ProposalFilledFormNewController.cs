@@ -15,7 +15,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "لیست فرم پیشنهاد جدید")]
+    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = " پیشنهاد جدید")]
     [CustomeAuthorizeFilter]
     public class ProposalFilledFormNewController : Controller
     {
@@ -58,16 +58,16 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "لیست فرم پیشنهاد جدید", Icon = "fa-layer-plus", IsMainMenuItem = true)]
+        [AreaConfig(Title = " پیشنهاد جدید", Icon = "fa-layer-plus", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "لیست فرم پیشنهاد جدید";
+            ViewBag.Title = " پیشنهاد جدید";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "ProposalFilledFormNew", new { area = "ProposalFilledForm" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست فرم پیشنهاد جدید", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه  پیشنهاد جدید", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -315,7 +315,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم پیشنهاد جدید", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده  پیشنهاد جدید", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFilledFormMainGrid searchInput)
         {

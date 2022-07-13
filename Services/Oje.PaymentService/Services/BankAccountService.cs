@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
-using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -8,11 +7,6 @@ using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Models.DB;
 using Oje.PaymentService.Models.View;
 using Oje.PaymentService.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {
@@ -237,6 +231,20 @@ namespace Oje.PaymentService.Services
                 qureResult = qureResult.Where(t => t.UserId == userId);
 
             return qureResult.Any();
+        }
+
+        public BankAccountUserInfoVM GetUserInfo(int id, int? siteSettingId)
+        {
+            return db.BankAccounts
+                .OrderByDescending(t => t.Id)
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Select(t => new BankAccountUserInfoVM
+                {
+                    shabaNO = "IR" + t.ShabaNo,
+                    mobileNo = t.User.Username,
+                    fullname = t.User.Firstname + " " + t.User.Lastname
+                })
+                .FirstOrDefault();
         }
     }
 }

@@ -33,7 +33,6 @@
         }
     }
 
-
     @{
         if (!string.IsNullOrEmpty(ViewData["imageUrl"] + ""))
         {
@@ -133,13 +132,20 @@
                         <span class="topMenuNewResponsiveButtonLine"></span>
                     </div>
                     <div class="holderRigAndLogUser">
-                        <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
+                        @{
+                            if(ViewBag.HideLoginButton != true)
+                            {
+                                <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
+                                <script>
+                                    $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
+                                </script>
+                            }
+                        }
                     </div>
                     <div class="responsiveClearBoth" ></div>
                     <div id="topMenuHolderItems">
                     </div>
                     <script>
-                        $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
                         $('#topMenuHolderItems').loadTopMenu('/TopMenu/GetTopMenu');
                     </script>
                 </div>
@@ -206,10 +212,8 @@
                                 </div>
                                 <div class="floatingFooterSectionPhoneNumber">
                                     <div id="footerTell1">
-                                        021-91008700
                                     </div>
                                     <div id="footerEmail">
-                                        8700@emofid.com
                                     </div>
                                 </div>
                             </div>
@@ -242,8 +246,8 @@
                                     <a title="@(curSetting.Title)" class="footerTextSiteLogo" href="/">@(Context.Request.Host)</a>
                                 }
                             }
-                            <span class="footerAboutUsTellNumber  ">تلفن پشتیبانی :<span id="footerTell2">021-43900000 | 021-49275000</span></span>
-                            <span class="footerAboutUsTellNumber ">دفتر فروش :<span id="footerAddress"> قیطریه , بلوار اندرزگو , نبش کوچه ی بلوچ شمالی , پلاک 4</span></span>
+                            <span class="footerAboutUsTellNumber  ">تلفن پشتیبانی :<span id="footerTell2"></span></span>
+                            <span class="footerAboutUsTellNumber ">دفتر مرکزی :<span id="footerAddress"></span></span>
                             <div id="footerSharingIconSection" class="footerLeftTrophyIcons">
                             </div>
                         </div>
@@ -271,10 +275,10 @@
                             }
                         </div>
                         <div class="footerSharingIconSection">
-                            <a id="aTelegeram" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>
-                            <a id="aWhatapp" href="#"><img width="28" height="28" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
-                            <a id="aInestageram" href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagramsilver.svg" data-alt-src="/Modules/Assets/MainPage/instagram.svg" /></a>
-                            <a id="aLinkin" href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedinsilver.svg" data-alt-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
+                            <a id="aTelegeram" title="تلگرام" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>
+                            <a id="aWhatapp" title="واتساپ" href="#"><img width="28" height="28" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
+                            <a id="aInestageram" title="اینستاگرام" href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagramsilver.svg" data-alt-src="/Modules/Assets/MainPage/instagram.svg" /></a>
+                            <a id="aLinkin" title="لینکدین" href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedinsilver.svg" data-alt-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
                         </div>
                         <script>
                             bindFooterIcons();

@@ -11,6 +11,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         {
             UserRegisterFormRequiredDocumentTypes = new();
             UserFilledRegisterForms = new();
+            UserRegisterFormPrices = new();
         }
 
         [Key]
@@ -33,6 +34,8 @@ namespace Oje.Section.RegisterForm.Models.DB
         public string RuleFile { get; set; }
         [MaxLength(200)]
         public string SecountFile { get; set; }
+        [MaxLength(200)]
+        public string AnotherFile { get; set; }
         public int SiteSettingId { get; set; }
 
 
@@ -40,5 +43,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         public List<UserRegisterFormRequiredDocumentType> UserRegisterFormRequiredDocumentTypes { get; set; }
         [InverseProperty("UserRegisterForm")]
         public List<UserFilledRegisterForm> UserFilledRegisterForms { get; set; }
+        [InverseProperty("UserRegisterForm")]
+        public List<UserRegisterFormPrice> UserRegisterFormPrices { get; set; }
     }
 }

@@ -53,7 +53,7 @@ namespace Oje.AccountService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public void CreateNotificationForUser(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink)
+        public void CreateNotificationForUser(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink, object exteraParameter)
         {
             var foundTemplates = UserNotificationTemplateService.GetBy(type, siteSettingId);
             string userFullname = UserService.GetUserFullName(siteSettingId, userId);
@@ -65,8 +65,8 @@ namespace Oje.AccountService.Services
                     var foundTrigers = GetBy(type, siteSettingId);
                     if (foundTrigers != null && foundTrigers.Count > 0)
                     {
-                        string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
-                        string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                        string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname, exteraParameter);
+                        string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname, exteraParameter);
                         if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(description))
                         {
                             List<int> roleIds = foundTrigers.Where(t => t.RoleId.ToIntReturnZiro() > 0).Select(t => t.RoleId.Value).ToList();
@@ -115,8 +115,8 @@ namespace Oje.AccountService.Services
                     {
                         foreach (var foundTargetUser in foundTargetUsers)
                         {
-                            string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname);
-                            string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname);
+                            string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname, exteraParameter);
+                            string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname, exteraParameter);
                             UserNotificationService.Create(new UserNotification()
                             {
                                 CreateDate = DateTime.Now,

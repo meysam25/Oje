@@ -53,8 +53,11 @@ namespace Oje.AccountService.Services.EContext
             modelBuilder.Entity<SectionCategorySection>().HasKey(t => new { t.SectionId, t.SectionCategoryId });
             modelBuilder.Entity<ControllerCategoryController>().HasKey(t => new { t.ControllerId, t.ControllerCategoryId });
 
+
             modelBuilder.Entity<User>().Property(e => e.MapLat).HasPrecision(18, 15);
             modelBuilder.Entity<User>().Property(e => e.MapLon).HasPrecision(18, 15);
+            modelBuilder.Entity<Province>().Property(e => e.MapLat).HasPrecision(18, 15);
+            modelBuilder.Entity<Province>().Property(e => e.MapLon).HasPrecision(18, 15);
 
             base.OnModelCreating(modelBuilder);
         }

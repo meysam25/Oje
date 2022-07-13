@@ -6,6 +6,11 @@ namespace Oje.Section.WebMain.Services.EContext
 {
     public class WebMainDBContext : MyBaseDbContext
     {
+        public WebMainDBContext(DbContextOptions<WebMainDBContext> options) : base(options)
+        {
+
+        }
+
         public DbSet<TopMenu> TopMenus { get; set; }
         public DbSet<Page> Pages { get; set; }
         public DbSet<PageLeftRightDesign> PageLeftRightDesigns { get; set; }
@@ -19,11 +24,7 @@ namespace Oje.Section.WebMain.Services.EContext
         public DbSet<SubscribeEmail> SubscribeEmails { get; set; }
         public DbSet<PageManifest> PageManifests { get; set; }
         public DbSet<PageManifestItem> PageManifestItems { get; set; }
-
-        public WebMainDBContext(DbContextOptions<WebMainDBContext> options) : base(options)
-        {
-
-        }
+        public DbSet<ShortLink> ShortLinks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

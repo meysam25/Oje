@@ -86,7 +86,13 @@ namespace Oje.JoinServices.Services
 
             UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithChangePassword, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = (string.IsNullOrEmpty(foundUser.Firstname) ? foundUser.Username : (foundUser.Firstname + " " + foundUser.Lastname)) });
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new 
+            { 
+                stepId = "rigLogStep", 
+                hideModal = true, 
+                userfullname = (string.IsNullOrEmpty(foundUser.Firstname) ? foundUser.Username : (foundUser.Firstname + " " + foundUser.Lastname)) ,
+                isUser = UserService.isWebsiteUser(foundUser.Id)
+            });
         }
 
         private void ChagePasswordAndLoginValidation(ChangePasswordAndLoginVM input, IpSections ipSections, int? siteSettingId)
@@ -194,7 +200,7 @@ namespace Oje.JoinServices.Services
 
                 foundTemplate = SmsTemplateService.GetBy(UserNotificationType.RegisterSuccessFull, siteSettingId);
                 if (foundTemplate != null && foundTemplate.Count > 0)
-                    smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, password, foundUser != null ? (foundUser.Username) : null);
+                    smsMessage = GlobalServices.replaceKeyword(foundTemplate.Select(t => t.Description).FirstOrDefault(), null, password, foundUser != null ? (foundUser.Username) : null, null);
 
                 SmsSendingQueueService.Create(new SmsSendingQueue()
                 {
@@ -213,7 +219,13 @@ namespace Oje.JoinServices.Services
                 UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
             }
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new { stepId = "rigLogStep", hideModal = true, userfullname = input.username, isUser = UserService.isWebsiteUser(foundUser.Id) });
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new 
+            { 
+                stepId = "rigLogStep", 
+                hideModal = true, 
+                userfullname = (!string.IsNullOrEmpty(foundUser.Firstname) ? (foundUser.Firstname + " " + foundUser.Lastname) : foundUser.Username),
+                isUser = UserService.isWebsiteUser(foundUser.Id) 
+            });
         }
 
         private void LoginRegisterValidation(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)

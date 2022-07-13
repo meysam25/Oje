@@ -1,5 +1,4 @@
 ﻿using Oje.Infrastructure.Enums;
-using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -40,6 +39,9 @@ namespace Oje.ProposalFormService.Models.DB
         public DateTime? InsuranceStartDate { get; set; }
         public DateTime? InsuranceEndDate { get; set; }
         public bool IsDelete { get; set; }
+        public string Signature { get; set; }
+        [MaxLength(200)]
+        public string IssueFile { get; set; }
         public int SiteSettingId { get; set; }
 
         [InverseProperty("ProposalFilledForm")]

@@ -26,9 +26,12 @@ namespace Oje.Section.WebMain.Controllers
         [HttpGet]
         public IActionResult Form([FromQuery] ProposalFormVM input)
         {
+            if (HttpContext.GetLoginUser()?.UserId == null || HttpContext.GetLoginUser()?.UserId <= 0)
+                return RedirectToAction("Login", "Dashboard", new { area = "Account", returnUrl = Request.Path + Request.QueryString + "" });
             ViewBag.Title = "ثبت فرم";
             ViewBag.exteraParameters = input;
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Proposal", input);
+            ViewBag.fid = input?.fid;
             return View("Index");
         }
 

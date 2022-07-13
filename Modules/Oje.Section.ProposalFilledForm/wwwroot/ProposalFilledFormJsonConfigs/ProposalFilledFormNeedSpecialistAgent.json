@@ -1,0 +1,1020 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "ppfProposalFilledFormNeedSpecialistAgentGrid",
+          "exteraSearchIds": [ "ProposalFilledFormNeedSpecialistAgentgridSearchModal" ],
+          "exteraFilterModalId": "ProposalFilledFormNeedSpecialistAgentgridSearchModal",
+          "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetById",
+                "template": "function bindRow (curRow) { return '<a title=\"ویرایش\" href=\"/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/Edit?fid='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-share",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentrefferToModal",
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"ارجاع\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetRefferUsers\\', \\'ProposalFilledFormNeedSpecialistAgentrefferToModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-share\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-building",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentchangeCompanyModal",
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"شرکت ها\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetPPFCompanies\\', \\'ProposalFilledFormNeedSpecialistAgentchangeCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-user ",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+                "template": "function bindRow (curRow) { return curRow.isAgent ?'' :  '<span title=\"تغییر نماینده\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetAgent\\', \\'ProposalFilledFormNeedSpecialistAgentchangeAgentModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-user\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNeedSpecialistAgentdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-powerpoint",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/PdfDetailesForAdmin?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNeedSpecialistAgentviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-credit-card ",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentviewDocuments",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNeedSpecialistAgentviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-thumbs-up",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentchangeStatusModal",
+                "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetStatus\\', \\'ProposalFilledFormNeedSpecialistAgentchangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-history",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNeedSpecialistAgentviewPPFStatusHistory",
+                "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNeedSpecialistAgentviewPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "ppfTitle",
+              "caption": "فرم پیشنهاد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "targetUserfullname",
+              "caption": "بیمه گذار",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "targetUserMobileNumber",
+              "caption": "همراه بیمه گذار",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "targetUserNationalCode",
+              "caption": "کد ملی بیمه گذار",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createUserfullname",
+              "caption": "ثبت کننده",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentgridSearchModal",
+          "title": "جستجو",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fromCreateDate",
+              "type": "persianDateTime",
+              "label": "از تاریخ ایجاد"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "toCreateDate",
+              "type": "persianDateTime",
+              "label": "تا تاریخ ایجاد"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "جستجو",
+              "onClick": "refreshGrid('ppfProposalFilledFormNeedSpecialistAgentGrid', this)",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentrefferToModal",
+          "title": "ارجاع به کاربر",
+          "class": "modal-lg",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentprovinceId",
+              "name": "provinceId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetProvinceList",
+              "label": "استان",
+              "childId": "ProposalFilledFormNeedSpecialistAgentcityId"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentcityId",
+              "name": "cityId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetCityList",
+              "label": "شهر"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentroleId",
+              "name": "roleId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetRoleList",
+              "label": "نقش"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentcompanyId",
+              "name": "companyId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetCompanyList",
+              "label": "شرکت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "userIds",
+              "type": "tokenBox2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetUsers",
+              "label": "کاربران",
+              "isRequired": true,
+              "exteraParameterIds": [ "ProposalFilledFormNeedSpecialistAgentroleId", "ProposalFilledFormNeedSpecialistAgentcompanyId", "ProposalFilledFormNeedSpecialistAgentprovinceId", "ProposalFilledFormNeedSpecialistAgentcityId" ]
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormNeedSpecialistAgentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/CreateUserRefer')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentchangeCompanyModal",
+          "title": "ویرایش شرکت",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetCompanyList",
+              "label": "شرکت ها",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormNeedSpecialistAgentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/UpdateCompanies')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+          "title": "تغییر نماینده",
+          "class": "modal-lg",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentprovinceIdAgent",
+              "name": "provinceId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetProvinceList",
+              "label": "استان",
+              "childId": "ProposalFilledFormNeedSpecialistAgentcityIdAgent"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentcityIdAgent",
+              "name": "cityId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetCityList",
+              "label": "شهر"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentroleIdAgent",
+              "name": "roleId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetRoleList",
+              "label": "نقش"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNeedSpecialistAgentcompanyIdAgent",
+              "name": "companyId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetCompanyList",
+              "label": "شرکت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "userId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetUsers",
+              "label": "نماینده",
+              "isRequired": true,
+              "exteraParameterIds": [ "ProposalFilledFormNeedSpecialistAgentroleIdAgent", "ProposalFilledFormNeedSpecialistAgentcompanyIdAgent", "ProposalFilledFormNeedSpecialistAgentprovinceIdAgent", "ProposalFilledFormNeedSpecialistAgentcityIdAgent" ]
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormNeedSpecialistAgentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/UpdateAgent')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentdeterminPriceModal",
+          "title": "مشاهده تایین قیمت",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "ProposalFilledFormNeedSpecialistAgentpriceGrid",
+                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/PricingCompanyExport",
+                  "topActions": [
+                    {
+                      "title": "افزودن",
+                      "onClick": "showModal('ProposalFilledFormNeedSpecialistAgentnewCompanyModal', this)",
+                      "type": "add",
+                      "modalId": "ProposalFilledFormNeedSpecialistAgentnewCompanyModal"
+                    }
+                  ],
+                  "showColumnConfigButton": true,
+                  "actions": {
+                    "delete": {
+                      "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/DeleteCompany"
+                    },
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-usd",
+                        "prop": "id",
+                        "modalId": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetPricingCompany\\', \\'ProposalFilledFormNeedSpecialistAgenteditCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-usd",
+                        "prop": "id",
+                        "ignoreParentButton": true,
+                        "template": "function bindRow (curRow) { return '<span data-url=\"/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/SelectCompany\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.isSelectedBool== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetPricingCompanyList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "cId",
+                      "caption": "شرکت بیمه",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetCompanyList",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "createUser",
+                      "caption": "کاربر ایجاد کننده",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "updateUser",
+                      "caption": "کاربر تغییر دهنده",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "updateDate",
+                      "caption": "تاریخ تغییر",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "isSelected",
+                      "caption": "انتخاب شده؟",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/YesOrNo",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentnewCompanyModal",
+          "title": "افزودن شرکت جدید",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "companyId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "فرم پیشنهاد",
+              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistAgentpriceGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/CreatePricingCompany')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgenteditCompanyModal",
+          "title": "ویرایش شرکت",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "companyId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true,
+              "disabled": true
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "فرم پیشنهاد",
+              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistAgentpriceGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/UpdatePricingCompany')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentviewPPfImages",
+          "title": "مدارک فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "ProposalFilledFormNeedSpecialistAgentimageGrid",
+                  "class": "imageGallery",
+                  "formatters": {
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.src +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/DeletePPFImage\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
+                  },
+                  "topActions": [
+                    {
+                      "title": "افزودن",
+                      "onClick": "showModal('ProposalFilledFormNeedSpecialistAgentProposalFilledFormNeedSpecialistAgentaddNewPPFImageFile', this)",
+                      "type": "add",
+                      "modalId": "ProposalFilledFormNeedSpecialistAgentaddNewPPFImageModalId"
+                    }
+                  ],
+                  "key": "id",
+                  "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetPPFImageList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+
+                    {
+                      "formatter": "imageFormater",
+                      "field": "src",
+                      "caption": "تصویر"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentProposalFilledFormNeedSpecialistAgentaddNewPPFImageFile",
+          "title": "افزودن مدرک جدید",
+          "ctrls": [
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "فایل",
+              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistAgentimageGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/UploadNewFile')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentviewDocuments",
+          "title": "اسناد فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "ProposalFilledFormNeedSpecialistAgentdocumentGrid",
+                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetDocumentListExport",
+                  "topActions": [
+                    {
+                      "title": "افزودن",
+                      "onClick": "showModal('ProposalFilledFormNeedSpecialistAgentnewDocumentModal', this)",
+                      "type": "add",
+                      "modalId": "ProposalFilledFormNeedSpecialistAgentnewDocumentModal"
+                    }
+                  ],
+                  "showColumnConfigButton": true,
+                  "actions": {
+                    "delete": {
+                      "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/DeleteDocument"
+                    },
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-usd",
+                        "prop": "id",
+                        "modalId": "ProposalFilledFormNeedSpecialistAgentchangeAgentModal",
+                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetDocument\\', \\'ProposalFilledFormNeedSpecialistAgenteditDocumentModal\\' , this, '+ curRow.ppfId +')\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetDocumentList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "type",
+                      "caption": "نوع",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/ProposalFilledFormDocumentType",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    },
+                    {
+                      "field": "bankId",
+                      "caption": "بانک",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetBankList",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "arriveDate",
+                      "caption": "تاریخ رسید",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "cashDate",
+                      "caption": "تاریخ وصول",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "status",
+                      "caption": "وضعیت",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/CreditStatus",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentnewDocumentModal",
+          "title": "افزودن سند برای فرم پیشنهاد جدید",
+          "class": "modal-xl",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/ProposalFilledFormDocumentType",
+              "label": "نوع",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "arriveDate",
+              "type": "persianDateTime",
+              "label": "تاریخ رسید",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "cashDate",
+              "type": "persianDateTime",
+              "label": "تاریخ وصول"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "bankId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetBankList",
+              "label": "بانک"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "فایل",
+              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "text",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistAgentdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/CreateDocument')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgenteditDocumentModal",
+          "title": "ویرایش سند برای فرم پیشنهاد جدید",
+          "class": "modal-xl",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/ProposalFilledFormDocumentType",
+              "label": "نوع",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "arriveDate",
+              "type": "persianDateTime",
+              "label": "تاریخ رسید",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "cashDate",
+              "type": "persianDateTime",
+              "label": "تاریخ وصول"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "bankId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetBankList",
+              "label": "بانک"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "فایل",
+              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "text",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ProposalFilledFormNeedSpecialistAgentdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/UpdateDocument')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentchangeStatusModal",
+          "title": "تغییر وضعیت",
+          "class": "modal-xl",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "name": "status",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/ProposalFilledFormStatus",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "text",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormNeedSpecialistAgentGrid', '/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/UpdateStatus')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "ProposalFilledFormNeedSpecialistAgentviewPPFStatusHistory",
+          "title": "اسناد فرم پیشنهاد",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "ProposalFilledFormNeedSpecialistAgentstatusHistoryGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/ProposalFilledForm/ProposalFilledFormNeedSpecialistAgent/GetStatusLogList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "status",
+                      "caption": "وضعیت",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/ProposalFilledFormStatus",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    },
+                    {
+                      "field": "userFullname",
+                      "caption": "کاربر",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "desc",
+                      "caption": "توضیحات"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

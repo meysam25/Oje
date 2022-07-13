@@ -21,6 +21,10 @@ namespace Oje.Section.Question
             services.AddDbContextPool<QuestionDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<IYourQuestionService, YourQuestionService>();
+            services.AddScoped<IUserRegisterFormYourQuestionService, UserRegisterFormYourQuestionService>();
+            services.AddScoped<IUserRegisterFormService, UserRegisterFormService>();
+            services.AddScoped<IProposalFormYourQuestionService, ProposalFormYourQuestionService>();
+            services.AddScoped<IProposalFormService, ProposalFormService>();
         }
     }
 }

@@ -36,7 +36,6 @@ function generateForm(res, targetId, canBeAppened) {
     }
 }
 
-
 function getInputTemplate(ctrl) {
     var result = '';
     if (ctrl) {
@@ -438,12 +437,15 @@ function getModualTemplate(modual) {
 
     functionsList.push(function () {
         $('#' + modalId).keypress(function (e) {
-            if (e.keyCode == 13)
+            if (e.keyCode == 13) {
+                if (e.target && $(e.target)[0].nodeName == 'TEXTAREA')
+                    return;
                 $(this).find('button.btn-primary').each(function () {
                     if ($(this).is(':visible')) {
                         $(this).click();
                     }
                 });
+            }
         });
     }.bind({ modalId: modalId }));
     if (modual.autoShowModalOnFalse) {
@@ -512,11 +514,36 @@ function updateTemplateText(ctrl) {
                     }
                 }
 
-                newTemplate = newTemplate.replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue)
+                newTemplate = newTemplate.replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue)
             }
-
             selectQuiry.html(newTemplate);
         }
+    }
+}
+
+function updateCtemplateCtrlTemplate(curThis) {
+    var curUrl = $('#' + curThis.ctrl.id).attr('data-url');
+    if (curUrl) {
+        var postFormData = new FormData();
+        appendAllQueryStringToForm(postFormData);
+        if (window['exteraModelParams']) {
+            for (var item in exteraModelParams) {
+                postFormData.append(item, exteraModelParams[item]);
+            }
+        }
+        if (curThis.ctrl.exteraModelParams) {
+            for (var i = 0; i < curThis.ctrl.exteraModelParams.length; i++) {
+                var curValue = $('input[name=' + curThis.ctrl.exteraModelParams[i] + ']').val();
+                if (!curValue)
+                    curValue = $('select[name=' + curThis.ctrl.exteraModelParams[i] + ']').find('option:selected').attr('value');
+                if (curValue)
+                    postFormData.append(curThis.ctrl.exteraModelParams[i], curValue);
+            }
+        }
+        postForm(curUrl, postFormData, function (res) {
+            $('#' + this.id)[0].templateStr = res;
+            $('#' + this.id).html(res);
+        }.bind({ id: curThis.ctrl.id }));
     }
 }
 
@@ -526,20 +553,8 @@ function getCTemplate(ctrl) {
     if (ctrl) {
         result += '<div data-url="' + ctrl.dataurl + '" id="' + ctrl.id + '" ></div>';
         functionsList.push(function () {
-            var curUrl = $('#' + this.ctrl.id).attr('data-url');
-            if (curUrl) {
-                var postFormData = new FormData();
-                appendAllQueryStringToForm(postFormData);
-                if (window['exteraModelParams']) {
-                    for (var item in exteraModelParams) {
-                        postFormData.append(item, exteraModelParams[item]);
-                    }
-                }
-                postForm(curUrl, postFormData, function (res) {
-                    $('#' + this.id)[0].templateStr = res;
-                    $('#' + this.id).html(res);
-                }.bind({ id: this.ctrl.id }));
-            }
+            $('#' + this.ctrl.id)[0].ctrl = ctrl;
+            updateCtemplateCtrlTemplate(this);
             if (this.ctrl.fieldMaps && this.ctrl.fieldMaps.length > 0) {
                 for (var i = 0; i < this.ctrl.fieldMaps.length; i++) {
                     var curMap = this.ctrl.fieldMaps[i];
@@ -997,19 +1012,36 @@ function getShortcutButtonTemplate(ctrl) {
 }
 
 function createHolderIfNotExist(curObj) {
-    var foundRow = $(curObj).closest('.row');
-    if (foundRow.length == 0)
-        return '';
+    if ($(window).width() <= 600) {
+        var foundRow = $(curObj).closest('.col-xs-12');
+        if (foundRow.length == 0)
+            return '';
 
-    var id = uuidv4RemoveDash();
+        var id = uuidv4RemoveDash();
 
-    if (foundRow.find('.holderTabContentDiv').length == 0) {
-        foundRow.append('<div id="' + id + '" class="col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12 holderTabContentDiv" ></div>');
-    } else {
-        id = foundRow.find('.holderTabContentDiv').attr('id');
+        if (foundRow.find('.holderTabContentDiv').length == 0) {
+            foundRow.append('<div id="' + id + '" class="col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12 holderTabContentDiv" ></div>');
+        } else {
+            id = foundRow.find('.holderTabContentDiv').attr('id');
+        }
+
+        return id;
     }
+    else {
+        var foundRow = $(curObj).closest('.row');
+        if (foundRow.length == 0)
+            return '';
 
-    return id;
+        var id = uuidv4RemoveDash();
+
+        if (foundRow.find('.holderTabContentDiv').length == 0) {
+            foundRow.append('<div id="' + id + '" class="col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12 holderTabContentDiv" ></div>');
+        } else {
+            id = foundRow.find('.holderTabContentDiv').attr('id');
+        }
+
+        return id;
+    }
 }
 
 function getGridUrlFromConfig(res) {
@@ -1097,7 +1129,11 @@ function getTabContentTemplate(ctrl) {
                 var curUrl = $(this).attr('href');
                 var targetDivId = createHolderIfNotExist(this);
                 if (targetDivId) {
-                    loadJsonConfig(curUrl, targetDivId);
+                    loadJsonConfig(curUrl, targetDivId, function () {
+                        $(document.documentElement, document.body).animate({
+                            scrollTop: $('#' + targetDivId).offset().top - 300
+                        }, 1000);
+                    });
                 }
 
                 return false;
@@ -1540,15 +1576,28 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input ' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
+
+
     functionsList.push(function () {
+        $('#' + this.id).change(function (e) {
+            if (e.originalEvent) {
+                validateForm($(this).closest('div'));
+            }
+        });
         setTimeout(function () {
             $('#' + this.id).attr('type', (this.type == 'persianDateTime' ? 'text' : this.type));
         }.bind(this), 1);
         inputNewLabelEventHandler(this.id);
     }.bind({ id: ctrl.id, type: ctrl.type }));
+
+    if (ctrl.mask) {
+        functionsList.push(function () {
+            $('#' + this.ctrl.id).mask(this.ctrl.mask)
+        }.bind({ ctrl: ctrl }));
+    }
 
     if (ctrl.onChange) {
         functionsList.push(function () {
@@ -1837,6 +1886,25 @@ function getFileCTRLTemplate(ctrl) {
     }
     result += '<input ' + (ctrl.compressImage ? 'data-compressImage="true"' : '') + ' id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
+
+    functionsList.push(function () {
+        $('#file_' + this.id).change(function ()
+        {
+            var curValue = $(this).val();
+            if (curValue) {
+                if ($(this).closest('.myFileUpload').length > 0) {
+                    $(this).closest('.myFileUpload').find('label')[0].prevTitle = $(this).closest('.myFileUpload').find('label').html();
+                    $(this).closest('.myFileUpload').find('label').html($(this)[0].files[0].name);
+                    $(this).closest('.myFileUpload').find('label').removeClass('btn-secondary').addClass('btn-success');
+                }
+            } else {
+                if ($(this).closest('.myFileUpload').length > 0) {
+                    $(this).closest('.myFileUpload').find('label').html($(this).closest('.myFileUpload').find('label')[0].prevTitle);
+                    $(this).closest('.myFileUpload').find('label').removeClass('btn-success').addClass('btn-secondary');
+                }
+            }
+        });
+    }.bind({ id: ctrl.id }));
 
     functionsList.push(function () {
         var imgId = 'img_' + this.id;
@@ -2788,7 +2856,7 @@ function initGridIfNotAlreadyInited(curThis) {
     }
 }
 
-function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, setParentKeyImeditly) {
+function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, setParentKeyImeditly, itsHtml) {
     if (url && modalId) {
         var gridSelector = $(curElement).closest('.myGridCTRL');
         showLoader(gridSelector);
@@ -2804,27 +2872,32 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, s
         postForm(url, postData, function (res) {
             if (res) {
                 var holderForm = $('#' + this.modalId);
-                clearForm(holderForm);
-                holderForm.modal('show');
-                if ($('#' + modalId).find('.olMap').length > 0 && $('#' + modalId).find('.olMap')[0].ctrl) {
-                    $('#' + modalId).find('.olMap').html('');
-                    initMapInner($('#' + modalId).find('.olMap')[0].ctrl);
+                if (itsHtml) {
+                    holderForm.find('.modal-body').html(res);
+                    holderForm.modal('show');
                 }
-                bindForm(res, holderForm, ignoreChange);
-                if (parentKey)
-                    $('#' + modalId)[0].pKey = parentKey;
-                else
-                    $('#' + modalId)[0].pKey = key;
-                $('#' + modalId)[0].gridOwnerId = gridId;
-                if ($('#' + modalId).find('.myGridCTRL').length > 0) {
-                    $('#' + modalId).find('.myGridCTRL').each(function () {
-                        if ($(this)[0].refreshData)
-                            $(this)[0].refreshData();
-                        else
-                            initGridIfNotAlreadyInited(this);
-                    })
+                else {
+                    clearForm(holderForm);
+                    holderForm.modal('show');
+                    if ($('#' + modalId).find('.olMap').length > 0 && $('#' + modalId).find('.olMap')[0].ctrl) {
+                        $('#' + modalId).find('.olMap').html('');
+                        initMapInner($('#' + modalId).find('.olMap')[0].ctrl);
+                    }
+                    bindForm(res, holderForm, ignoreChange);
+                    if (parentKey)
+                        $('#' + modalId)[0].pKey = parentKey;
+                    else
+                        $('#' + modalId)[0].pKey = key;
+                    $('#' + modalId)[0].gridOwnerId = gridId;
+                    if ($('#' + modalId).find('.myGridCTRL').length > 0) {
+                        $('#' + modalId).find('.myGridCTRL').each(function () {
+                            if ($(this)[0].refreshData)
+                                $(this)[0].refreshData();
+                            else
+                                initGridIfNotAlreadyInited(this);
+                        })
+                    }
                 }
-
             }
         }.bind({ modalId }), null, function () { hideLoader(gridSelector); });
     } else if (modalId) {
@@ -2865,7 +2938,6 @@ function setFocusToFirstVisbleText(qSelector) {
         qSelector.find('input:visible:eq(0)').focus();
         var modalQuiry = $(qSelector).closest('.modal');
         modalQuiry.animate({ scrollTop: modalQuiry.find('.modal-body').height() }, 300);
-        console.log(qSelector);
     }
 }
 
@@ -2899,8 +2971,7 @@ function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, on
                 $('#' + this.gridId)[0].refreshData();
             }
         }
-    }.bind({ gridId, curElement, ignoreCloseModal: ignoreCloseModal }), null, function ()
-    {
+    }.bind({ gridId, curElement, ignoreCloseModal: ignoreCloseModal }), null, function () {
         hideLoader(qSelector);
         if (showLoaderId)
             hideLoader($('#' + showLoaderId))
@@ -2988,6 +3059,26 @@ function bindTranslation() {
     if (window['langsT'] && langsT.length > 0) {
         for (var i = 0; i < langsT.length; i++) {
             $('[data-lc=' + langsT[i].id + ']').each(function () { $(this).html(langsT[i].des); });
+        }
+    }
+}
+
+function updateMapFromDropdown(dropdownId, mapId) {
+    var ddSelector = $('#' + dropdownId);
+    var mapSelector = $('#' + mapId);
+    if (ddSelector.length > 0 && mapSelector.length > 0) {
+        var ddOption = ddSelector.find('option:selected');
+        var mapzoom = ddOption.attr('data-mapzoom');
+        var maplon = ddOption.attr('data-maplon');
+        var maplat = ddOption.attr('data-maplat');
+        if (mapzoom && maplon && maplat && mapzoom != 'null' && maplon != 'null' && maplat != 'null') {
+            var holderMap = mapSelector.parent();
+            clearForm(holderMap);
+            if ($(holderMap).find('.olMap').length > 0 && $(holderMap).find('.olMap')[0].ctrl) {
+                $(holderMap).find('.olMap').html('');
+                initMapInner($(holderMap).find('.olMap')[0].ctrl);
+            }
+            bindForm({ mapLatRecivePlace: maplat, mapLonRecivePlace: maplon, mapZoomRecivePlace: mapzoom }, holderMap);
         }
     }
 }

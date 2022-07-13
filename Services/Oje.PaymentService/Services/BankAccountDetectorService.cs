@@ -1,10 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.PaymentService.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {
@@ -23,8 +18,9 @@ namespace Oje.PaymentService.Services
         {
             if (BankAccountSizpayService.Exist(bankAccountId, siteSettingId))
                 return BankAccountType.sizpay;
+            else
+                return BankAccountType.titec;
 
-            return BankAccountType.unknown;
         }
     }
 }

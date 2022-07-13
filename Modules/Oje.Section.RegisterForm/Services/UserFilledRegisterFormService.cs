@@ -5,6 +5,7 @@ using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
@@ -16,8 +17,6 @@ using Oje.Section.RegisterForm.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Services
 {
@@ -34,6 +33,8 @@ namespace Oje.Section.RegisterForm.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly Interfaces.IUserService UserService = null;
         readonly IBankAccountFactorService BankAccountFactorService = null;
+        readonly IUserNotifierService UserNotifierService = null;
+        readonly IUserRegisterFormPriceService UserRegisterFormPriceService = null;
 
         public UserFilledRegisterFormService
             (
@@ -47,7 +48,9 @@ namespace Oje.Section.RegisterForm.Services
                 IUserFilledRegisterFormValueService UserFilledRegisterFormValueService,
                 IUploadedFileService UploadedFileService,
                 Interfaces.IUserService UserService,
-                IBankAccountFactorService BankAccountFactorService
+                IBankAccountFactorService BankAccountFactorService,
+                IUserNotifierService UserNotifierService,
+                IUserRegisterFormPriceService UserRegisterFormPriceService
             )
         {
             this.db = db;
@@ -61,6 +64,8 @@ namespace Oje.Section.RegisterForm.Services
             this.UploadedFileService = UploadedFileService;
             this.UserService = UserService;
             this.BankAccountFactorService = BankAccountFactorService;
+            this.UserNotifierService = UserNotifierService;
+            this.UserRegisterFormPriceService = UserRegisterFormPriceService;
         }
 
         public object Create(int? siteSettingId, IFormCollection form, IpSections ipSections, long? parentUserId, long? userId)
@@ -76,11 +81,15 @@ namespace Oje.Section.RegisterForm.Services
             // catch (Exception ex) { throw ex; }
             createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId);
 
+            var foundPrice = UserRegisterFormPriceService.GetPriceBy(formId, siteSettingId, form.GetStringIfExist("price").ToIntReturnZiro(), form.GetStringIfExist("likeToMarketing"));
+            if (form.GetStringIfExist("price").ToIntReturnZiro() > 0 && foundPrice == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Price);
+
             using (var tr = db.Database.BeginTransaction())
             {
                 try
                 {
-                    UserFilledRegisterForm newItem = createNewItem(siteSettingId, ipSections, formId, getFormPrice(ppfObj, form), userId, form.GetStringIfExist("company"), form.GetStringIfExist("provinceId").ToIntReturnZiro(), form.GetStringIfExist("cityId").ToIntReturnZiro());
+                    UserFilledRegisterForm newItem = createNewItem(siteSettingId, ipSections, formId, foundPrice?.Price ?? 0, userId, form.GetStringIfExist("company"), form.GetStringIfExist("provinceId").ToIntReturnZiro(), form.GetStringIfExist("cityId").ToIntReturnZiro());
                     UserFilledRegisterFormJsonService.Create(foundJsonFormStr, newItem.Id);
                     UserFilledRegisterFormValueService.CreateByJsonConfig(ppfObj, newItem.Id, form);
                     createUploadedFiles(siteSettingId, form, newItem.Id);
@@ -187,6 +196,27 @@ namespace Oje.Section.RegisterForm.Services
             }
 
             validateProvinceAndCity(allCtrls, form);
+            validatePriceCtrl(allCtrls, form);
+        }
+
+        private void validatePriceCtrl(List<ctrl> ctrls, IFormCollection form)
+        {
+            if (ctrls != null)
+            {
+                var foundPrice = ctrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/Register/GetPriceList".ToLower()).FirstOrDefault();
+                if (foundPrice != null)
+                {
+                    var foundPriceValue = form.GetStringIfExist(foundPrice.name);
+                    if (!string.IsNullOrEmpty(foundPriceValue) )
+                    {
+                        var froundPriceObj = UserRegisterFormPriceService.GetById(foundPriceValue.ToIntReturnZiro());
+                        if (froundPriceObj == null)
+                            throw BException.GenerateNewException(BMessages.Validation_Error);
+
+                        foundPrice.defV = froundPriceObj.Title;
+                    }
+                }
+            }
         }
 
         private void validateProvinceAndCity(List<ctrl> ctrls, IFormCollection form)
@@ -271,11 +301,13 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
-        public userFilledRegisterFormDetailesVM PdfDetailes(long? id, int? siteSettingId, long? loginUserId)
+        public userFilledRegisterFormDetailesVM PdfDetailes(long? id, int? siteSettingId, long? loginUserId, bool isLoginRequired = false, bool? isPayed = null, bool? isDone = null)
         {
             var result = new userFilledRegisterFormDetailesVM();
-            var foundItem = db.UserFilledRegisterForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (loginUserId == t.UserId || loginUserId == null) && t.UserId != null)
+            var foundItem = db.UserFilledRegisterForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (isLoginRequired == false || loginUserId == t.UserId) && t.UserId != null)
                .Where(t => t.Id == id)
+               .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
+               .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
                .Select(t => new
                {
                    t.Id,
@@ -380,19 +412,30 @@ namespace Oje.Section.RegisterForm.Services
             return result;
         }
 
-        public GridResultVM<UserFilledRegisterFormMainGridResultVM> GetList(UserFilledRegisterFormMainGrid searchInput, int? siteSettingId)
+        public GridResultVM<UserFilledRegisterFormMainGridResultVM> GetList(UserFilledRegisterFormMainGrid searchInput, int? siteSettingId, bool? isPayed = null, bool? isDone = null)
         {
             if (searchInput == null)
                 searchInput = new();
 
             var qureResult = db.UserFilledRegisterForms.Where(t => t.SiteSettingId == siteSettingId);
 
+            if (isPayed != null)
+                if (isPayed == true)
+                    qureResult = qureResult.Where(t => !string.IsNullOrEmpty(t.PaymentTraceCode));
+                else
+                    qureResult = qureResult.Where(t => string.IsNullOrEmpty(t.PaymentTraceCode));
+            if (isDone != null)
+                if (isDone == true)
+                    qureResult = qureResult.Where(t => t.IsDone == true);
+                else if (isDone == false)
+                    qureResult = qureResult.Where(t => t.IsDone == false || t.IsDone == null);
+
             if (!string.IsNullOrEmpty(searchInput.username))
                 qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => tt.UserFilledRegisterFormKey.Key == "mobile" && tt.Value.Contains(searchInput.username)));
             if (!string.IsNullOrEmpty(searchInput.firstname))
-                qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => tt.UserFilledRegisterFormKey.Key == "firstName" && tt.Value.Contains(searchInput.username)));
+                qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => (tt.UserFilledRegisterFormKey.Key == "firstName" && tt.Value.Contains(searchInput.firstname)) || (tt.UserFilledRegisterFormKey.Key == "firstNameLegal" && tt.Value.Contains(searchInput.firstname))));
             if (!string.IsNullOrEmpty(searchInput.lastname))
-                qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => tt.UserFilledRegisterFormKey.Key == "lastName" && tt.Value.Contains(searchInput.username)));
+                qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => (tt.UserFilledRegisterFormKey.Key == "lastName" && tt.Value.Contains(searchInput.lastname)) || (tt.UserFilledRegisterFormKey.Key == "lastNameLegal" && tt.Value.Contains(searchInput.lastname))));
             if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
             {
                 var targetDate = searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
@@ -408,7 +451,7 @@ namespace Oje.Section.RegisterForm.Services
                 qureResult = qureResult.Where(t => string.IsNullOrEmpty(t.PaymentTraceCode));
             if (!string.IsNullOrEmpty(searchInput.traceCode))
                 qureResult = qureResult.Where(t => t.PaymentTraceCode == searchInput.traceCode);
-            if(searchInput.isDone != null)
+            if (searchInput.isDone != null)
                 qureResult = qureResult.Where(t => t.IsDone == searchInput.isDone);
 
             int row = searchInput.skip;
@@ -425,7 +468,9 @@ namespace Oje.Section.RegisterForm.Services
                     id = t.Id,
                     username = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "mobile").Select(tt => tt.Value).FirstOrDefault(),
                     firstname = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "firstName").Select(tt => tt.Value).FirstOrDefault(),
+                    firstNameLegal = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "firstNameLegal").Select(tt => tt.Value).FirstOrDefault(),
                     lastname = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "lastName").Select(tt => tt.Value).FirstOrDefault(),
+                    lastNameLegal = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "lastNameLegal").Select(tt => tt.Value).FirstOrDefault(),
                     createDate = t.CreateDate,
                     formTitle = t.UserRegisterForm.Title,
                     price = t.Price,
@@ -438,11 +483,11 @@ namespace Oje.Section.RegisterForm.Services
                 {
                     id = t.id,
                     row = ++row,
-                    firstname = t.firstname,
+                    firstname = !string.IsNullOrEmpty(t.firstNameLegal) ? t.firstNameLegal : t.firstname,
                     traceCode = t.traceCode,
                     formTitle = t.formTitle,
                     isPayed = t.isPayed == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
-                    lastname = t.lastname,
+                    lastname = !string.IsNullOrEmpty(t.lastNameLegal) ? t.lastNameLegal : t.lastname,
                     price = t.price > 0 ? t.price.Value.ToString("###,###") : "",
                     username = t.username,
                     createDate = t.createDate.ToFaDate(),
@@ -452,7 +497,7 @@ namespace Oje.Section.RegisterForm.Services
             };
         }
 
-        public object Delete(long? id, int? siteSettingId)
+        public object Delete(long? id, int? siteSettingId, bool? isPayed = null, bool? isDone = null)
         {
             var foundItem =
                 db.UserFilledRegisterForms
@@ -460,6 +505,8 @@ namespace Oje.Section.RegisterForm.Services
                 .Include(t => t.UserFilledRegisterFormValues)
                 .Include(t => t.UserFilledRegisterFormCompanies)
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
+                .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
                 .FirstOrDefault();
 
             if (foundItem == null)
@@ -483,12 +530,14 @@ namespace Oje.Section.RegisterForm.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object CreateNewUser(long? id, int? siteSettingId, long? parentId, List<int> roleIds)
+        public object CreateNewUser(long? id, int? siteSettingId, long? parentId, List<int> roleIds, long? loginUserId, bool? isPayed = null, bool? isDone = null)
         {
             var foundItem = db.UserFilledRegisterForms
                 .Include(t => t.UserFilledRegisterFormValues).ThenInclude(t => t.UserFilledRegisterFormKey)
                 .Include(t => t.UserFilledRegisterFormCompanies)
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
+                .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
                 .FirstOrDefault();
 
             if (foundItem == null)
@@ -497,22 +546,26 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
             var result = UserService.CreateNewUser(foundItem, siteSettingId, parentId, roleIds);
-            if(result.isSuccess == true)
+            if (result.isSuccess == true)
             {
                 foundItem.IsDone = true;
                 db.SaveChanges();
+                UserNotifierService.Notify(loginUserId, UserNotificationType.AddRoleToNewUser, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(result.data.ToLongReturnZiro(), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "ثبت نام", siteSettingId, "/RegisterFormAdmin/UserFilledRegisterForm/Index");
             }
 
             return result;
         }
 
-        public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId)
+        public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, bool? isPayed = null, bool? isDone = null)
         {
             if (input == null)
                 input = new GlobalGridParentLong();
             var foundItemId =
-                db.UserFilledRegisterForms.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.pKey)
-               .Select(t => t.Id)
+                db.UserFilledRegisterForms
+                .Where(t => t.SiteSettingId == siteSettingId && t.Id == input.pKey)
+                .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
+                .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
+                .Select(t => t.Id)
                 .FirstOrDefault();
 
             return new

@@ -39,7 +39,7 @@ namespace Oje.AccountService.Filters
                 string requestPath = getCurrPath(context.HttpContext);
                 if (loginUser != null)
                 {
-                    fillUserCache(loginUser, UserService);
+                    fillUserCache(loginUser?.UserId ?? 0, UserService);
                     var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
                     if (foundUserAccess != null)
                     {
@@ -70,7 +70,7 @@ namespace Oje.AccountService.Filters
                 string requestPath = getCurrPath(context.HttpContext);
                 if (loginUser != null)
                 {
-                    fillUserCache(loginUser, UserService);
+                    fillUserCache(loginUser?.UserId ?? 0, UserService);
                     var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
                     if (foundUserAccess != null)
                     {
@@ -112,7 +112,7 @@ namespace Oje.AccountService.Filters
                     {
                         if ((ignoreIp == true || loginUser.Ip == context.HttpContext.GetIpAddress()?.ToString()) && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
                         {
-                            fillUserCache(loginUser, UserService);
+                            fillUserCache(loginUser?.UserId ?? 0, UserService);
                             var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
                             if (foundUserAccess != null)
                                 if (foundUserAccess.Actions.Any(t => t.Name == requestPath))
@@ -155,7 +155,7 @@ namespace Oje.AccountService.Filters
                 else
                 {
                     if (noAccess == false)
-                        context.Result = new RedirectToActionResult("Login", "Dashboard", new { area = "Account" });
+                        context.Result = new RedirectToActionResult("Login", "Dashboard", new { area = "Account", returnUrl = context.HttpContext.Request.Path + context.HttpContext.Request.QueryString + "" });
                     else
                         context.Result = new ViewResult { ViewName = "AccessDenied" };
                 }
@@ -169,18 +169,20 @@ namespace Oje.AccountService.Filters
                 (context.Request.RouteValues.ContainsKey("action") ? "/" + context.Request.RouteValues["action"] : "");
         }
 
-        void fillUserCache(LoginUserVM loginUser, IUserService UserService)
+        static void fillUserCache(long UserId, IUserService UserService)
         {
+            if (UserId <= 0)
+                return;
             if (UserAccessCaches == null)
                 UserAccessCaches = new List<UserAccessCache>();
 
-            if (!UserAccessCaches.Any(t => t.UserId == loginUser.UserId) ||
-                UserAccessCaches.Where(t => t.UserId == loginUser.UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)
+            if (!UserAccessCaches.Any(t => t.UserId == UserId) ||
+                UserAccessCaches.Where(t => t.UserId == UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)
             {
-                var userAccess = UserService.GetUserSections(loginUser.UserId);
-                var foundItem = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
+                var userAccess = UserService.GetUserSections(UserId);
+                var foundItem = UserAccessCaches.Where(t => t.UserId == UserId).FirstOrDefault();
                 if (foundItem == null)
-                    UserAccessCaches.Add(new UserAccessCache() { UserId = loginUser.UserId, Actions = userAccess, LastActiveTime = DateTime.Now });
+                    UserAccessCaches.Add(new UserAccessCache() { UserId = UserId, Actions = userAccess, LastActiveTime = DateTime.Now });
                 else
                 {
                     foundItem.Actions = userAccess;
@@ -188,6 +190,12 @@ namespace Oje.AccountService.Filters
                     foundItem.CreateDate = DateTime.Now;
                 }
             }
+        }
+
+        internal static void CleanCacheByUserId(long userId, IUserService UserService)
+        {
+            if (UserAccessCaches != null)
+                fillUserCache(userId, UserService);
         }
     }
 }

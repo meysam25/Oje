@@ -5,6 +5,11 @@
     {
         Layout = ViewBag.targetLayout;
     }
+
+    if(ViewBag.ignoreMaster == true)
+    {
+        Layout = null;
+    }
 }
 @model Oje.Section.RegisterForm.Models.View.userFilledRegisterFormDetailesVM
 @using Oje.Infrastructure.Services
@@ -122,13 +127,29 @@
             if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode) && Model.paymentUserId.ToLongReturnZiro() > 0)
             {
                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                    <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("2,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.paymentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت</a>
+                    <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("2,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.paymentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت</a>
                 </div>
             }
             }
     </div>
 </div>
+<script>
+    $('#paymentButton').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
+        var curUrlWithQuiry = $(this).attr('href');
+        if(curUrlWithQuiry && curUrlWithQuiry.indexOf('?') > 0) {
+            var curUrl = curUrlWithQuiry.split('?')[0];
+            var status = curUrlWithQuiry.split('?')[1].split('status=')[1];
+            var fId = uuidv4RemoveDash();
+            $('body').append('<form action="'+ curUrl +'" method="post" id="'+ fId +'" ><input type="hidden" value="'+status+'" name="status" /></form>');
+            $('#' + fId).submit();
+        }
+
+        return false;
+    });
+</script>
 @{
     if(Layout == "_WebLayout")
     {

@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using Oje.Section.RegisterForm.Models.DB;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Interfaces
 {
@@ -15,5 +12,6 @@ namespace Oje.Section.RegisterForm.Interfaces
         bool Exist(string userName, int? siteSettingId);
         ApiResult CreateNewUser(UserFilledRegisterForm UserFilledRegisterForm, int? siteSettingId,  long? parentUserId, List<int> roleIds);
         void TemproryLogin(long? userId, int? siteSettingId, DateTime expireDate);
+        PPFUserTypes GetUserTypePPFInfo(long? loginUserId, ProposalFilledFormUserType resultType);
     }
 }

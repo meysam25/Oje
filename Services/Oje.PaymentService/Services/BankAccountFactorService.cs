@@ -15,18 +15,21 @@ namespace Oje.PaymentService.Services
         readonly IProposalFilledFormService ProposalFilledFormService = null;
         readonly IBankAccountService BankAccountService = null;
         readonly IWalletTransactionService WalletTransactionService = null;
+        readonly IBankAccountDetectorService BankAccountDetectorService = null;
 
         public BankAccountFactorService(
                 PaymentDBContext db,
                 IProposalFilledFormService ProposalFilledFormService,
                 IBankAccountService BankAccountService,
-                IWalletTransactionService WalletTransactionService
+                IWalletTransactionService WalletTransactionService,
+                IBankAccountDetectorService BankAccountDetectorService
             )
         {
             this.db = db;
             this.BankAccountService = BankAccountService;
             this.ProposalFilledFormService = ProposalFilledFormService;
             this.WalletTransactionService = WalletTransactionService;
+            this.BankAccountDetectorService = BankAccountDetectorService;
         }
 
         public string Create(int? bankAccountId, PaymentFactorVM payModel, int? siteSettingId, long? loginUserId)
@@ -44,7 +47,8 @@ namespace Oje.PaymentService.Services
                     SiteSettingId = siteSettingId.ToIntReturnZiro(),
                     TargetLink = payModel.returnUrl,
                     Type = payModel.type,
-                    UserId = loginUserId
+                    UserId = loginUserId,
+                    BankAccountType = BankAccountDetectorService.GetByType(bankAccountId.ToIntReturnZiro(), siteSettingId)
                 };
                 db.Entry(newItem).State = EntityState.Added;
                 db.SaveChanges();
@@ -106,13 +110,13 @@ namespace Oje.PaymentService.Services
                 ;
         }
 
-        public void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo, int? siteSettingId)
+        public void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo, int? siteSettingId, DateTime? payDate = null)
         {
             if (foundAccount == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (string.IsNullOrEmpty(traceNo))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
-           
+
             var foundItem = db.BankAccountFactors.Where(t => t.BankAccountId == foundAccount.BankAccountId && t.Type == foundAccount.Type && t.ObjectId == foundAccount.ObjectId && t.CreateDate == foundAccount.CreateDate).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -125,7 +129,7 @@ namespace Oje.PaymentService.Services
 
             foundItem.TraceCode = traceNo;
             foundItem.IsPayed = true;
-            foundItem.PayDate = DateTime.Now;
+            foundItem.PayDate = payDate != null ? payDate.Value : DateTime.Now;
             db.SaveChanges();
 
         }

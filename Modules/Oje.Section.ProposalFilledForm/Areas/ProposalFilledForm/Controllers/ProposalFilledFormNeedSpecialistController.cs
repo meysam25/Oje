@@ -15,7 +15,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "لیست فرم پیشنهاد نیاز به کارشناسی")]
+    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = " پیشنهاد نیاز به کارشناسی")]
     [CustomeAuthorizeFilter]
     public class ProposalFilledFormNeedSpecialistController : Controller
     {
@@ -58,16 +58,16 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.ProposalFilledFormStatusLogService = ProposalFilledFormStatusLogService;
         }
 
-        [AreaConfig(Title = "لیست فرم پیشنهاد نیاز به کارشناسی", Icon = "fa-print-search", IsMainMenuItem = true)]
+        [AreaConfig(Title = " پیشنهاد نیاز به کارشناسی", Icon = "fa-print-search", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "لیست فرم پیشنهاد نیاز به کارشناسی";
+            ViewBag.Title = " پیشنهاد نیاز به کارشناسی";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "ProposalFilledFormNeedSpecialist", new { area = "ProposalFilledForm" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست فرم پیشنهاد نیاز به کارشناسی", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه  پیشنهاد نیاز به کارشناسی", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -315,7 +315,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم پیشنهاد نیاز به کارشناسی", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده  پیشنهاد نیاز به کارشناسی", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFilledFormMainGrid searchInput)
         {

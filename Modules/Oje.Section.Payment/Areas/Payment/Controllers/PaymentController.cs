@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -67,9 +68,11 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
                 var foundType = BankAccountDetectorService.GetByType(foundFactor.BankAccountId, SiteSettingService.GetSiteSetting()?.Id);
                 switch (foundType)
                 {
-                    case Infrastructure.Enums.BankAccountType.sizpay:
+                    case BankAccountType.sizpay:
                         return RedirectToAction("Pay", "Sizpay", new { area = "Payment", factorId = factorId });
-                    case Infrastructure.Enums.BankAccountType.unknown:
+                    case BankAccountType.titec:
+                        return RedirectToAction("Pay", "TITec", new { area = "Payment", factorId = factorId });
+                    case BankAccountType.unknown:
                     default:
                         break;
                 }

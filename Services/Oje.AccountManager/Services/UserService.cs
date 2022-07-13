@@ -17,6 +17,7 @@ using Oje.FileService.Interfaces;
 using System.IO;
 using Newtonsoft.Json;
 using NetTopologySuite.Geometries;
+using Oje.AccountService.Filters;
 
 namespace Oje.AccountService.Services
 {
@@ -492,10 +493,11 @@ namespace Oje.AccountService.Services
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
 
+                    MySession.Clean(foundItem.LastSessionFileName);
+                    CustomeAuthorizeFilter.CleanCacheByUserId(foundItem.Id, this);
+
                     db.SaveChanges();
                     tr.Commit();
-
-                    MySession.Clean(foundItem.LastSessionFileName);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -948,10 +950,12 @@ namespace Oje.AccountService.Services
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
 
+                    MySession.Clean(foundItem.LastSessionFileName);
+                    CustomeAuthorizeFilter.CleanCacheByUserId(foundItem.Id, this);
+
+
                     db.SaveChanges();
                     tr.Commit();
-
-                    MySession.Clean(foundItem.LastSessionFileName);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -1127,7 +1131,7 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.CityId == provinceAndCityInput.cityId);
 
             if (!string.IsNullOrEmpty(searchInput.search))
-                qureResult = qureResult.Where(t => (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + t.Address + ")"))).Contains(searchInput.search));
+                qureResult = qureResult.Where(t => ((!string.IsNullOrEmpty(t.CompanyTitle) ? t.CompanyTitle : (t.Firstname + " " + t.Lastname)) + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + t.Address + ")"))).Contains(searchInput.search));
 
             //if (qureResult.Count() >= take)
             //    hasPagination = false;
@@ -1155,7 +1159,8 @@ namespace Oje.AccountService.Services
                 Lastname = t.Lastname,
                 Address = t.Address,
                 MapLocation = t.MapLocation,
-                distance = gm != null ? t.MapLocation.Distance(gm) : 0
+                distance = gm != null ? t.MapLocation.Distance(gm) : 0,
+                CompanyTitle = t.CompanyTitle
             }).ToList();
 
             if (!tempResult.Any(t => t.IsActive == true))
@@ -1176,7 +1181,7 @@ namespace Oje.AccountService.Services
             result.AddRange(tempResult.Select(t => new
             {
                 id = t.Id,
-                text = companyTitle + " کد " + t.AgentCode + " " + (t.Firstname + " " + t.Lastname + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.distance)) + " متر فاصله با شما)")),
+                text = companyTitle + " کد " + t.AgentCode + " " + ((!string.IsNullOrEmpty(t.CompanyTitle) ? t.CompanyTitle : (t.Firstname + " " + t.Lastname)) + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.distance)) + " متر فاصله با شما)")),
                 mapLat = t.MapLocation != null ? t.MapLocation.X : 0,
                 mapLng = t.MapLocation != null ? t.MapLocation.Y : 0,
                 isA = t.IsActive
@@ -1422,7 +1427,7 @@ namespace Oje.AccountService.Services
 
         public bool isWebsiteUser(long userId)
         {
-            return db.Users.Any(t => t.UserRoles.Any(tt => tt.Role.Name.ToLower() == "user"));
+            return db.Users.Where(t => t.Id == userId).Any(t => t.UserRoles.Any(tt => tt.Role.Name.ToLower() == "user"));
         }
 
         public object GetBy(long? userId, int? siteSettingId)
@@ -1581,6 +1586,32 @@ namespace Oje.AccountService.Services
             }
 
             db.SaveChanges();
+        }
+
+        public object GetAgentInfo(long userId)
+        {
+            return db.Users
+                .Where(t => t.Id == userId)
+                .OrderBy(t => t.Id)
+                .Take(1)
+                .Select(t => new
+                {
+                    agentFirstName = t.Firstname,
+                    agentLastName = t.Lastname,
+                    companyTitle = t.CompanyTitle,
+                    uCompany = t.UserCompanies.Select(tt => tt.Company.Title).ToList(),
+                    agentCode = t.AgentCode,
+                    agentMobile = t.Mobile
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    agentName = !string.IsNullOrEmpty(t.companyTitle) ? t.companyTitle : t.agentFirstName + " " + t.agentLastName,
+                    uCompany = t.uCompany != null ? string.Join(',', t.uCompany) : "",
+                    agentCode = t.agentCode + "",
+                    t.agentMobile
+                })
+                .FirstOrDefault();
         }
     }
 }

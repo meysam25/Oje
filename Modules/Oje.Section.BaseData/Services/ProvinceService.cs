@@ -13,7 +13,7 @@ using Oje.Section.BaseData.Services.EContext;
 
 namespace Oje.Section.BaseData.Services
 {
-    public class ProvinceService: IProvinceService
+    public class ProvinceService : IProvinceService
     {
         readonly BaseDataDBContext db = null;
         public ProvinceService(BaseDataDBContext db)
@@ -25,7 +25,14 @@ namespace Oje.Section.BaseData.Services
         {
             CreateValidation(input);
 
-            db.Entry(new Province() { Title = input.title, IsActive = input.isActive.ToBooleanReturnFalse() }).State = EntityState.Added;
+            db.Entry(new Province()
+            {
+                Title = input.title,
+                IsActive = input.isActive.ToBooleanReturnFalse(),
+                MapZoom = input.mapZoom,
+                MapLon = input.mapLon,
+                MapLat = input.mapLat,
+            }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -58,11 +65,14 @@ namespace Oje.Section.BaseData.Services
 
         public CreateUpdateProvinceVM GetById(int? id)
         {
-            return db.Provinces.Where(t => t.Id == id).Select(t => new CreateUpdateProvinceVM 
+            return db.Provinces.Where(t => t.Id == id).Select(t => new CreateUpdateProvinceVM
             {
                 id = t.Id,
                 title = t.Title,
-                isActive = t.IsActive
+                isActive = t.IsActive,
+                mapLat = t.MapLat,
+                mapLon = t.MapLon,
+                mapZoom = t.MapZoom
             }).FirstOrDefault();
         }
 
@@ -82,11 +92,11 @@ namespace Oje.Section.BaseData.Services
 
             var row = searchInput.skip;
 
-            return new GridResultVM<ProvinceMainGridResultVM>() 
+            return new GridResultVM<ProvinceMainGridResultVM>()
             {
                 total = qureResult.Count(),
                 data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
-                .Select(t => new 
+                .Select(t => new
                 {
                     id = t.Id,
                     title = t.Title,
@@ -94,8 +104,8 @@ namespace Oje.Section.BaseData.Services
                     cityCount = t.Cities.Count()
                 })
                 .ToList()
-                .Select(t => new ProvinceMainGridResultVM 
-                { 
+                .Select(t => new ProvinceMainGridResultVM
+                {
                     row = ++row,
                     id = t.id,
                     title = t.title,
@@ -116,6 +126,9 @@ namespace Oje.Section.BaseData.Services
 
             foundItem.Title = input.title;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.MapZoom = input.mapZoom;
+            foundItem.MapLon = input.mapLon;
+            foundItem.MapLat = input.mapLat;
 
             db.SaveChanges();
 

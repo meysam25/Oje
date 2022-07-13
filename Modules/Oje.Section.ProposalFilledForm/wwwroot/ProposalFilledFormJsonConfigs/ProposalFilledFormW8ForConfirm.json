@@ -3,17 +3,9 @@
     {
       "grids": [
         {
-          "id": "ppfGrid",
+          "id": "ppfProposalFilledFormW8ForConfirmGrid",
           "exteraSearchIds": [ "ProposalFilledFormW8ForConfirmgridSearchModal" ],
           "exteraFilterModalId": "ProposalFilledFormW8ForConfirmgridSearchModal",
-          "topActions": [
-            {
-              "title": "افزودن",
-              "onClick": "showModal('ProposalFilledFormW8ForConfirmaddNewPPF', this)",
-              "type": "add",
-              "modalId": "ProposalFilledFormW8ForConfirmaddNewPPF"
-            }
-          ],
           "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormW8ForConfirm/Export",
           "showColumnConfigButton": true,
           "actions": {
@@ -202,7 +194,7 @@
             },
             {
               "title": "جستجو",
-              "onClick": "refreshGrid('ppfGrid', this)",
+              "onClick": "refreshGrid('ppfProposalFilledFormW8ForConfirmGrid', this)",
               "class": "btn-primary"
             }
           ]
@@ -277,7 +269,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/CreateUserRefer')",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormW8ForConfirmGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/CreateUserRefer')",
               "class": "btn-primary"
             }
           ]
@@ -309,7 +301,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateCompanies')",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormW8ForConfirmGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateCompanies')",
               "class": "btn-primary"
             }
           ]
@@ -384,7 +376,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateAgent')",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormW8ForConfirmGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateAgent')",
               "class": "btn-primary"
             }
           ]
@@ -969,7 +961,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'ppfGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateStatus')",
+              "onClick": "postModalData(this, 'ppfProposalFilledFormW8ForConfirmGrid', '/ProposalFilledForm/ProposalFilledFormW8ForConfirm/UpdateStatus')",
               "class": "btn-primary"
             }
           ]
@@ -1029,45 +1021,6 @@
                   ]
                 }
               ]
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormW8ForConfirmaddNewPPF",
-          "title": "افزودن فرم پیشنهاد جدید",
-          "ctrls": [
-            {
-              "id": "ProposalFilledFormW8ForConfirmppfCatId",
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "ppfCatId",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetProposalFormCategoryList",
-              "label": "گروه بندی فرم پیشنهاد"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "fid",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormW8ForConfirm/GetProposalFormList",
-              "exteraParameterIds": [ "ProposalFilledFormW8ForConfirmppfCatId" ],
-              "label": "فرم پیشنهاد"
-            }
-
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "افزودن",
-              "onClick": "openNewLink('ProposalFilledFormW8ForConfirmaddNewPPF', '/ProposalFilledForm/Proposal/Form')",
-              "class": "btn-primary"
             }
           ]
         }

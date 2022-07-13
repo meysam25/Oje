@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure.Enums;
@@ -116,10 +117,19 @@ namespace Oje.ProposalFormService.Services
                     ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form);
                     createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
 
-                    tr.Commit();
-
-                    UserNotifierService.Notify(loginUserId, UserNotificationType.NewProposalFilledForm, ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), newForm.Id, foundProposalForm.Title, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id);
+                    UserNotifierService.Notify
+                        (
+                            loginUserId, 
+                            UserNotificationType.NewProposalFilledForm, 
+                            ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), 
+                            newForm.Id, 
+                            foundProposalForm.Title, 
+                            siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id,
+                            UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro())
+                        );
                     newFormId = newForm.Id;
+
+                    tr.Commit();
 
                     if (RoleService.IsUserInRole(loginUserId, "user"))
                         targetUrl = "/Proposal/Detaile";
@@ -156,7 +166,9 @@ namespace Oje.ProposalFormService.Services
                 SiteSettingId = siteSettingId.Value
             };
 
-            db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            //newItem.Signature = SignatureManager.Create(newItem);
+
+            db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
             return newItem;

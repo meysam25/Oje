@@ -68,6 +68,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            ViewBag.HideLoginButton = true;
             return View();
         }
 

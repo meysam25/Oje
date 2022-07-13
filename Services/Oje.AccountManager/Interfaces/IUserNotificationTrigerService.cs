@@ -16,6 +16,6 @@ namespace Oje.AccountService.Interfaces
         object GetById(int? id, int? siteSettingId);
         ApiResult Update(CreateUpdateUserNotificationTrigerVM input, int? siteSettingId);
         GridResultVM<UserNotificationTrigerMainGridResultVM> GetList(UserNotificationTrigerMainGrid searchInput, int? siteSettingId);
-        void CreateNotificationForUser(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink);
+        void CreateNotificationForUser(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink, object exteraParameter);
     }
 }

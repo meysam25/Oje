@@ -29,6 +29,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             this.BankAccountSizpayPaymentService = BankAccountSizpayPaymentService;
         }
 
+        [HttpGet]
         public async Task<ActionResult> Pay([FromQuery] string factorId)
         {
             var foundFactor = BankAccountFactorService.GetById(factorId, SiteSettingService.GetSiteSetting()?.Id);

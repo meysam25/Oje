@@ -26,6 +26,8 @@ namespace Oje.Section.RegisterForm.Services.EContext
         public DbSet<UserFilledRegisterFormCompany> UserFilledRegisterFormCompanies { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<AgentReffer> AgentReffers { get; set; }
+        public DbSet<UserRegisterFormPrice> UserRegisterFormPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

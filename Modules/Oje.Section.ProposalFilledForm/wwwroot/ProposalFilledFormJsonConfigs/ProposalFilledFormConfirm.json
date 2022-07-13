@@ -6,14 +6,6 @@
           "id": "ProposalFilledFormConfirmGrid",
           "exteraSearchIds": [ "ProposalFilledFormConfirmgridSearchModal" ],
           "exteraFilterModalId": "ProposalFilledFormConfirmgridSearchModal",
-          "topActions": [
-            {
-              "title": "افزودن",
-              "onClick": "showModal('ProposalFilledFormConfirmaddNewPPF', this)",
-              "type": "add",
-              "modalId": "ProposalFilledFormConfirmaddNewPPF"
-            }
-          ],
           "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormConfirm/Export",
           "showColumnConfigButton": true,
           "actions": {
@@ -1017,6 +1009,14 @@
               "name": "description",
               "type": "text",
               "label": "توضیحات"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "مدرک فرم صادر شده",
+              "acceptEx": ".jpg,.jpeg,.png,.doc,.docx,.pdf",
+              "hideImagePreview": true
             }
           ],
           "actions": [
@@ -1087,45 +1087,6 @@
                   ]
                 }
               ]
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormConfirmaddNewPPF",
-          "title": "افزودن فرم پیشنهاد جدید",
-          "ctrls": [
-            {
-              "id": "ProposalFilledFormConfirmaddppfCatId",
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "ProposalFilledFormConfirmaddppfCatId",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormCategoryList",
-              "label": "گروه بندی فرم پیشنهاد"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "fid",
-              "type": "dropDown2",
-              "textfield": "text",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirm/GetProposalFormList",
-              "exteraParameterIds": [ "ProposalFilledFormConfirmaddppfCatId" ],
-              "label": "فرم پیشنهاد"
-            }
-
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "افزودن",
-              "onClick": "openNewLink('ProposalFilledFormConfirmaddNewPPF', '/ProposalFilledForm/Proposal/Form')",
-              "class": "btn-primary"
             }
           ]
         }

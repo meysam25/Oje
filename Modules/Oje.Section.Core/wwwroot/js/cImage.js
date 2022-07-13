@@ -73,9 +73,9 @@ $.fn.initImageCrapper = function (imgUrl, min, max) {
         var resw = (rw * tw) / nw;
         var resH = (rh * th) / nh;
 
-        $('#' + canvasId).attr('width', tw).attr('height', th);
+        $('#' + canvasId).attr('width', resw).attr('height', resH);
         var ctx = $('#' + canvasId)[0].getContext('2d');
-        ctx.drawImage(img, rx, ry, resw, resH, 0, 0, tw, th);
+        ctx.drawImage(img, rx, ry, resw, resH, 0, 0, resw, resH);
     }
 
     function getCurCrapImageSize(curThis) {

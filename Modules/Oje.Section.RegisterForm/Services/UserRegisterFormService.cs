@@ -9,7 +9,6 @@ using Oje.Section.RegisterForm.Interfaces;
 using Oje.Section.RegisterForm.Models.DB;
 using Oje.Section.RegisterForm.Models.View;
 using Oje.Section.RegisterForm.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,17 +44,14 @@ namespace Oje.Section.RegisterForm.Services
             db.SaveChanges();
 
             if (input.rules != null && input.rules.Length > 0)
-            {
                 newItem.RuleFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.rules, null, null, newItem.Id, ".pdf,.doc,.docx", false);
-                db.SaveChanges();
-            }
-
             if (input.secoundFile != null && input.secoundFile.Length > 0)
-            {
                 newItem.SecountFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.secoundFile, null, null, newItem.Id, ".pdf,.doc,.docx", false);
-                db.SaveChanges();
-            }
+            if (input.anotherFile != null && input.anotherFile.Length > 0)
+                newItem.AnotherFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.anotherFile, null, null, newItem.Id, ".pdf,.doc,.docx", false);
 
+
+            db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -182,6 +178,8 @@ namespace Oje.Section.RegisterForm.Services
                 foundItem.RuleFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.rules, null, null, foundItem.Id, ".pdf,.doc,.docx", false);
             if (input.secoundFile != null && input.secoundFile.Length > 0)
                 foundItem.SecountFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.secoundFile, null, null, foundItem.Id, ".pdf,.doc,.docx", false);
+            if (input.anotherFile != null && input.anotherFile.Length > 0)
+                foundItem.AnotherFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.anotherFile, null, null, foundItem.Id, ".pdf,.doc,.docx", false);
 
             db.SaveChanges();
 
@@ -232,6 +230,27 @@ namespace Oje.Section.RegisterForm.Services
             if (!string.IsNullOrEmpty(tempStrResult))
                 tempStrResult = GlobalConfig.FileAccessHandlerUrl + tempStrResult;
             return tempStrResult;
+        }
+
+        public string GetAnotherFileUrl(int? id, int? siteSettingId)
+        {
+            var tempStrResult = db.UserRegisterForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => t.AnotherFile).FirstOrDefault();
+            if (!string.IsNullOrEmpty(tempStrResult))
+                tempStrResult = GlobalConfig.FileAccessHandlerUrl + tempStrResult;
+            return tempStrResult;
+        }
+
+        public object GetLightList2(int? siteSettingId)
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(db.UserRegisterForms.Where(t => t.SiteSettingId == siteSettingId).Select(t => new
+            {
+                id = "/" + t.Name + "?fid=" + t.Id,
+                title = t.Title
+            }).ToList());
+
+            return result;
         }
     }
 }

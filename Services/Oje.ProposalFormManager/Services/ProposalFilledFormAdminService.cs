@@ -227,6 +227,8 @@ namespace Oje.ProposalFormService.Services
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.OwnerUser && (tt.User.Firstname + " " + tt.User.Lastname).Contains(searchInput.targetUserfullname)));
             if (!string.IsNullOrEmpty(searchInput.createUserfullname))
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.CreateUser && (tt.User.Firstname + " " + tt.User.Lastname).Contains(searchInput.createUserfullname)));
+            if(!string.IsNullOrEmpty(searchInput.targetUserNationalCode))
+                qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.OwnerUser && tt.User.Nationalcode == searchInput.targetUserNationalCode));
             if (!string.IsNullOrEmpty(searchInput.fromCreateDate) && searchInput.fromCreateDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
             {
                 var targetDT = searchInput.fromCreateDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
@@ -267,6 +269,7 @@ namespace Oje.ProposalFormService.Services
                     targetUserfullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.OwnerUser).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
                     targetUserMobileNumber = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.OwnerUser).Select(tt => tt.User.Username).FirstOrDefault(),
                     createUserfullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.CreateUser).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
+                    targetUserNationalCode = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.CreateUser).Select(tt => tt.User.Nationalcode).FirstOrDefault(),
                     issueDate = t.IssueDate,
                     startDate = t.InsuranceStartDate,
                     endDate = t.InsuranceEndDate
@@ -288,6 +291,7 @@ namespace Oje.ProposalFormService.Services
                     startDate = t.startDate != null ? t.startDate.ToFaDate() : "",
                     endDate = t.endDate != null ? t.endDate.ToFaDate() : "",
                     isAgent = roles != null && roles.Any(t => t == "agent"),
+                    targetUserNationalCode = t.targetUserNationalCode
                 })
                 .ToList()
             };
@@ -716,7 +720,7 @@ namespace Oje.ProposalFormService.Services
             string sDate = DateTime.Now.ToFaDate();
             string eDate = (sDate.Split('/')[0].ToIntReturnZiro() + 1) + "/" + sDate.Split('/')[1] + "/" + sDate.Split('/')[2];
 
-            return new { id = id, startDate = sDate, endDate = eDate, insuranceNumber = DateTime.Now.ToFaDate() + "/" + foundItem.ssId + "/" + foundItem.ppId + "/" + foundItem.cid + "/" + foundItem.uid + "/" + foundItem.id };
+            return new { id = id, startDate = sDate, endDate = eDate };
         }
 
         public ApiResult IssuePPF(ProposalFilledFormIssueVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
@@ -732,10 +736,14 @@ namespace Oje.ProposalFormService.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            if(input.mainFile != null && input.mainFile.Length > 0)
+            foundItem.IssueFile = UploadedFileService.UploadNewFile(FileType.IssueProposalForm, input.mainFile, userId, siteSettingId, foundItem.Id, ".jpg,.jpeg,.png,.doc,.docx,.pdf", true);
+
             foundItem.InsuranceStartDate = input.startDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.InsuranceEndDate = input.endDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.InsuranceNumber = input.insuranceNumber;
             foundItem.Status = ProposalFilledFormStatus.Issuing;
+
             db.SaveChanges();
 
             ProposalFilledFormStatusLogService.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description);
@@ -769,6 +777,8 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (db.ProposalFilledForms.Any(t => t.SiteSettingId == siteSettingId && t.InsuranceNumber == input.insuranceNumber && t.Id != input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
+            if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(".jpg,.jpeg,.png,.doc,.docx,.pdf"))
+                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
 
         }
 

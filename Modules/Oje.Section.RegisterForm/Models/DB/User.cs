@@ -48,6 +48,8 @@ namespace Oje.Section.RegisterForm.Models.DB
         [MaxLength(1000)]
         public string Address { get; set; }
         public long? AgentCode { get; set; }
+        [MaxLength(100)]
+        public string CompanyTitle { get; set; }
         public int? ProvinceId { get; set; }
         public int? CityId { get; set; }
         public decimal? MapLat { get; set; }

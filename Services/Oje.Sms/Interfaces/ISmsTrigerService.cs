@@ -16,6 +16,6 @@ namespace Oje.Sms.Interfaces
         object GetById(int? id, int? siteSettingID);
         ApiResult Update(CreateUpdateSmsTrigerVM input, int? siteSettingID);
         GridResultVM<SmsTrigerMainGridResultVM> GetList(SmsTrigerMainGrid searchInput, int? siteSettingID);
-        void CreateSmsQue(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId);
+        void CreateSmsQue(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, object exteraParameter);
     }
 }

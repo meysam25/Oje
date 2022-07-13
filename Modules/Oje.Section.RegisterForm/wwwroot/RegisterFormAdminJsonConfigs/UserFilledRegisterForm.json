@@ -4,6 +4,14 @@
       "grids": [
         {
           "id": "UserFilledRegisterFormGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('UserFilledRegisterFormAddGridModal', this)",
+              "type": "add",
+              "modalId": "UserFilledRegisterFormAddGridModal"
+            }
+          ],
           "exportToExcelUrl": "/RegisterFormAdmin/UserFilledRegisterForm/Export",
           "showColumnConfigButton": true,
           "actions": {
@@ -12,7 +20,7 @@
             },
             "cActions": [
               {
-                "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"/RegisterFormAdmin/UserFilledRegisterForm/GetById?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/RegisterFormAdmin/UserFilledRegisterForm/GetById?ignoreMaster=True\\', \\'UserFilledRegisterFormDetailesModal\\' , this, null, null, null, true)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -27,6 +35,7 @@
                 "prop": "id",
                 "modalId": "UserFilledRegisterFormviewPPfImages",
                 "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'UserFilledRegisterFormviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+
               }
             ]
           },
@@ -175,6 +184,49 @@
             {
               "title": "ذخیره",
               "onClick": "postModalData(this, 'UserFilledRegisterFormGrid', '/RegisterFormAdmin/UserFilledRegisterForm/CreateUser')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "UserFilledRegisterFormDetailesModal",
+          "title": "جزییات",
+          "class": "modal-xl",
+          "ctrls": [
+
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        },
+        {
+          "id": "UserFilledRegisterFormAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "form",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/RegisterFormAdmin/UserFilledRegisterForm/GetFormList",
+              "label": "فرم ثبت نام",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "جدید",
+              "onClick": "if($('#UserFilledRegisterFormAddGridModal').find('select').find('option:selected').attr('value')) { window.open('/Register/Users' + $('#UserFilledRegisterFormAddGridModal').find('select').find('option:selected').attr('value'), '_blank').focus(); }",
               "class": "btn-primary"
             }
           ]
