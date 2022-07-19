@@ -25,6 +25,9 @@ namespace Oje.Section.WebMain.Services.EContext
         public DbSet<PageManifest> PageManifests { get; set; }
         public DbSet<PageManifestItem> PageManifestItems { get; set; }
         public DbSet<ShortLink> ShortLinks { get; set; }
+        public DbSet<LoginDescrption> LoginDescrptions { get; set; }
+        public DbSet<LoginBackgroundImage> LoginBackgroundImages { get; set; }
+        public DbSet<PageSlider> PageSliders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

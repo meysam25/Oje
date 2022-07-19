@@ -16,6 +16,7 @@ namespace Oje.Section.Question.Models.DB
         [Required, MaxLength(4000)]
         public string Answer { get; set; }
         public bool IsActive { get; set; }
+        public bool? IsInquiry { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

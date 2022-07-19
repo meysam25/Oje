@@ -43,6 +43,8 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<WalletTransaction> WalletTransactions { get; set; }
         public DbSet<UserMessage> UserMessages { get; set; }
         public DbSet<UserMessageReply> UserMessageReplies { get; set; }
+        public DbSet<LoginDescrption> LoginDescrptions { get; set; }
+        public DbSet<LoginBackgroundImage> LoginBackgroundImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

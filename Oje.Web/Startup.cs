@@ -64,7 +64,7 @@ namespace Oje.Web
             });
             services.AddSignalR(options =>
             {
-                options.EnableDetailedErrors = true;
+                options.EnableDetailedErrors = false;
             });
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("Oje") && !a.Location.EndsWith(".Views.dll")).ToList();
             GlobalConfig.Moduals = assemblies;

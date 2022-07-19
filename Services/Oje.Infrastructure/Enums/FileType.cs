@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Enums
 {
@@ -29,7 +24,7 @@ namespace Oje.Infrastructure.Enums
         BankLogo = 9,
         [Display(Name = "مدارک فرم پیشنهاد", Prompt = "ProposalFilledForm", Description = "~1000*1000")]
         ProposalFilledForm = 10,
-        [Display(Name ="مدارک تایین قیمت شرکت", Prompt = "ProposalFilledFormCompanies")]
+        [Display(Name ="مدارک تعیین قیمت شرکت", Prompt = "ProposalFilledFormCompanies")]
         CompanyPrice = 11,
         [Display(Name = "تصویر بزرگ بلاگ", Prompt = "Blog", Description = "1000*800")]
         BlogBigImage = 12,
@@ -83,13 +78,17 @@ namespace Oje.Infrastructure.Enums
         OnlineFile = 36,
         [Display(Name = "شرایط عمومی مناقصه", Prompt = "TenderGeneralLow")]
         TenderGeneralLow = 37,
-        [Display(Name = "تایین قیمت مناقصه", Prompt = "TenderPrice")]
+        [Display(Name = "تعیین قیمت مناقصه", Prompt = "TenderPrice")]
         TenderPrice = 38,
         [Display(Name = "صدور مناقصه", Prompt = "IssueTender")]
         IssueTender = 39,
         [Display(Name = "پیام های کاربر", Prompt = "UserMessageFile")]
         UserMessageFile = 40,
         [Display(Name = "مدرک صدور فرم پیشنهاد", Prompt = "IssueProposalForm")]
-        IssueProposalForm = 41
+        IssueProposalForm = 41,
+        [Display(Name = "پس زمینه صفحه لاگین", Description = "~2000*2000")]
+        LoginBackground = 42,
+        [Display(Name = "تصویر اسلایدر صفحه", Prompt = "PageSlider", Description = "1900*380", AutoGenerateField = false)]
+        PageSlider = 43
     }
 }

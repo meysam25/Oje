@@ -34,7 +34,7 @@ namespace Oje.AccountService.Services
 
         public ApiResult CreateUpdate(object input, int? siteSettingId, PropertyType type)
         {
-            RemoveBy(type, siteSettingId);
+            //RemoveBy(type, siteSettingId);
             int fileIndex = 0;
 
             if (input != null && siteSettingId.ToIntReturnZiro() > 0)
@@ -61,15 +61,24 @@ namespace Oje.AccountService.Services
                         var disName = prop.GetCustomAttributes(typeof(DisplayAttribute), true).FirstOrDefault() as DisplayAttribute;
                         if (!string.IsNullOrEmpty(value) && disName != null && !string.IsNullOrEmpty(disName.Name))
                         {
-                            db.Entry(new Property()
+                            var foundProp = db.Properties.Where(t => t.SiteSettingId == siteSettingId && t.Type == type && t.Name == prop.Name).FirstOrDefault();
+                            if (foundProp == null)
                             {
-                                Name = prop.Name,
-                                Value = value,
-                                SiteSettingId = siteSettingId.Value,
-                                Title = disName.Name,
-                                Type = type,
-                                InputType = inputType
-                            }).State = EntityState.Added;
+                                db.Entry(new Property()
+                                {
+                                    Name = prop.Name,
+                                    Value = value,
+                                    SiteSettingId = siteSettingId.Value,
+                                    Title = disName.Name,
+                                    Type = type,
+                                    InputType = inputType
+                                }).State = EntityState.Added;
+                            }
+                            else
+                            {
+                                foundProp.Value = value;
+                                foundProp.Title = disName.Name;
+                            }
                         }
                     }
                 }

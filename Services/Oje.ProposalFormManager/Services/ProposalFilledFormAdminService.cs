@@ -227,7 +227,7 @@ namespace Oje.ProposalFormService.Services
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.OwnerUser && (tt.User.Firstname + " " + tt.User.Lastname).Contains(searchInput.targetUserfullname)));
             if (!string.IsNullOrEmpty(searchInput.createUserfullname))
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.CreateUser && (tt.User.Firstname + " " + tt.User.Lastname).Contains(searchInput.createUserfullname)));
-            if(!string.IsNullOrEmpty(searchInput.targetUserNationalCode))
+            if (!string.IsNullOrEmpty(searchInput.targetUserNationalCode))
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.OwnerUser && tt.User.Nationalcode == searchInput.targetUserNationalCode));
             if (!string.IsNullOrEmpty(searchInput.fromCreateDate) && searchInput.fromCreateDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null)
             {
@@ -471,7 +471,8 @@ namespace Oje.ProposalFormService.Services
                        t.User.Lastname,
                        t.User.AgentCode,
                        t.User.Address,
-                       t.User.Username
+                       t.User.Username,
+                       t.User.CompanyTitle
                    })
                    .FirstOrDefault(),
                    values = t.ProposalFilledFormValues.Select(tt => new
@@ -541,7 +542,7 @@ namespace Oje.ProposalFormService.Services
                         {
                             string value1 = foundItem.values.Where(t => t.Key == ctrl.name).Select(t => t.Value).FirstOrDefault();
                             if (!string.IsNullOrEmpty(value1))
-                                ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = ctrl.parentCL, title = title, value = value1  });
+                                ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = ctrl.parentCL, title = title, value = value1 });
 
                         }
                     }
@@ -588,7 +589,7 @@ namespace Oje.ProposalFormService.Services
             if (foundItem.selectAgent != null)
             {
                 List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupPaymentItems = new();
-                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام ", value = foundItem.selectAgent.Firstname + " " + foundItem.selectAgent.Lastname });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام ", value = (!string.IsNullOrEmpty(foundItem.selectAgent.CompanyTitle) ? foundItem.selectAgent.CompanyTitle : (foundItem.selectAgent.Firstname + " " + foundItem.selectAgent.Lastname)) });
                 ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ", value = foundItem.selectAgent.AgentCode + "" });
                 if (foundCompany != null)
                     ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "شرکت بیمه ", value = foundCompany.Title + "" });
@@ -736,8 +737,8 @@ namespace Oje.ProposalFormService.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            if(input.mainFile != null && input.mainFile.Length > 0)
-            foundItem.IssueFile = UploadedFileService.UploadNewFile(FileType.IssueProposalForm, input.mainFile, userId, siteSettingId, foundItem.Id, ".jpg,.jpeg,.png,.doc,.docx,.pdf", true);
+            if (input.mainFile != null && input.mainFile.Length > 0)
+                foundItem.IssueFile = UploadedFileService.UploadNewFile(FileType.IssueProposalForm, input.mainFile, userId, siteSettingId, foundItem.Id, ".jpg,.jpeg,.png,.doc,.docx,.pdf", true);
 
             foundItem.InsuranceStartDate = input.startDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.InsuranceEndDate = input.endDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
@@ -860,6 +861,17 @@ namespace Oje.ProposalFormService.Services
                         string value = values.Where(t => t.Key == ctrl.name).Select(t => t.Value).FirstOrDefault();
                         if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || ctrl.type == ctrlType.multiRowInput)
                         {
+                            if (!string.IsNullOrEmpty(ctrl.dataurl) && ctrl.dataurl.Contains("/Core/BaseData/Get/"))
+                            {
+                                string enumName = ctrl.dataurl.Replace("/Core/BaseData/Get/", "");
+                                var allEnums = EnumService.GetEnum(enumName);
+                                if (allEnums != null && allEnums.Count > 0)
+                                {
+                                    var foundItem = allEnums.Where(t => t.id == value).FirstOrDefault();
+                                    if (foundItem != null)
+                                        value = foundItem.title;
+                                }
+                            }
                             if (ctrl.type == ctrlType.checkBox)
                                 title = "";
                             if (ctrl.type == ctrlType.multiRowInput && ctrl.ctrls != null && ctrl.ctrls.Count > 0)

@@ -65,7 +65,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.id.ToIntReturnZiro() <= 0 && (input.mainImage == null || input.mainImage.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_Image);
-            if (input.id.ToIntReturnZiro() <= 0 && !UploadedFileService.IsValidImageSize(input.mainImage, true, 0.9m, 1.1m))
+            if (input.mainImage != null && input.mainImage.Length > 0 && !UploadedFileService.IsValidImageSize(input.mainImage, true, 0.99m, 1.01m))
                 throw BException.GenerateNewException(BMessages.Invalid_Image_Size);
         }
 

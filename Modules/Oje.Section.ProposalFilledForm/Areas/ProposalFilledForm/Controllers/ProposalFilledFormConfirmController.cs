@@ -272,7 +272,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return View(ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Confirm));
         }
 
-        [AreaConfig(Title = "مشاهده شرکت تایین قیمت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده شرکت تعیین قیمت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetPricingCompany([FromForm] GlobalStringId input)
         {
@@ -294,14 +294,14 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         }
 
 
-        [AreaConfig(Title = "مشاهده لیست تایین قیمت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده لیست تعیین قیمت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetPricingCompanyList([FromForm] ProposalFilledFormCompanyPriceMainGrid searchInput)
         {
             return Json(ProposalFilledFormCompanyService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Confirm));
         }
 
-        [AreaConfig(Title = "خروجی اکسل تایین قیمت", Icon = "fa-file-excel")]
+        [AreaConfig(Title = "خروجی اکسل تعیین قیمت", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult PricingCompanyExport([FromForm] ProposalFilledFormCompanyPriceMainGrid searchInput)
         {

@@ -77,6 +77,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "افزودن مناقصه")]
         CreateTender = 38,
         [Display(Name = "ورود/ثبت نام با کد پیامک")]
-        LoginRegister = 39
+        LoginRegister = 39,
+        [Display(Name = "دریافت اطلاعات کاربر هنگام ثبت نام")]
+        GetUserInfoRegister = 40
     }
 }

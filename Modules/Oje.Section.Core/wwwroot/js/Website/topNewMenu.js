@@ -17,9 +17,11 @@ $.fn.initTopMenuResponsiveButton = function () {
     $('.topMenuNew li').initResponsiveClickMenu();
     function showTopMenue() {
         $('.topMenuNew').addClass('topMenuNewActive');
+        $('#headerTagHolder').css('z-index', '5');
     }
     function hideTopMenue() {
         $('.topMenuNew').removeClass('topMenuNewActive');
+        $('#headerTagHolder').css('z-index', '4');
     }
     return this.each(function () {
         $(this).click(function () {

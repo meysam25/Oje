@@ -553,3 +553,18 @@
         content: '\f106';
     }
 }
+
+@media (max-width: 1100px) {
+    #topMenuHolderItems > a {
+        display:none;
+    }
+}
+@media (max-width: 650px)  {
+    .floatTopMenue {
+        top: 40px;
+    }
+    .moveInquiryLB {
+        top : 46px;
+    }
+}
+

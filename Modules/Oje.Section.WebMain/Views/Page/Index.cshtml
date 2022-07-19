@@ -7,6 +7,14 @@
 
 @section Styles {
 <link rel="stylesheet" asp-append-version="true" href="/Modules/Core/css/page.min.css.gz" />
+<style>
+    .mySliderItem>img {
+        width:100%;
+    }
+    .mySliderItems {
+        padding-top:0px;
+    }
+</style>
 }
 
 <div class="pageG">
@@ -35,11 +43,33 @@
                         <a href="@Model.bLink" title="@Model.bTitle" class="mainBtn">@Model.bTitle</a>
                     }
                 }
-
             </div>
         </div>
-        <img alt="@Model.title" class="pageGMainImageMP8" width="2000" height="600" src="@Model.mainImage" />
-        <img alt="@Model.title" class="pageGMainImageMM8" width="800" height="600" src="@Model.mainImageSmall" />
+        @{
+            if(Model.PageWebSliderVMs != null && Model.PageWebSliderVMs.Count > 0)
+            {
+                <div id="pageSlider">
+                </div>
+                <script>
+                    $('document').ready(function() {
+                        $('#pageSlider').initSlider({
+                            dontShowTitle: true,
+                            bigCount: 1,
+                            normalCount: 1,
+                            smallCount: 1,
+                            autoStart:3000,
+                            data: @{ ViewContext.Writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(Model.PageWebSliderVMs)); }
+                        });
+                    });
+                </script>
+            }
+            else
+            {
+                <img alt="@Model.title" class="pageGMainImageMP8" width="2000" height="600" src="@Model.mainImage" />
+                <img alt="@Model.title" class="pageGMainImageMM8" width="800" height="600" src="@Model.mainImageSmall" />
+            }
+        }
+       
         <div class="myContainer removeBoxShadow">
             <ul style="border-bottom:none;" class="breadcrumb">
                 <li><a href="/">@(SiteSettingService.GetSiteSetting().Title)</a></li>

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Models.DB
 {
@@ -15,6 +11,7 @@ namespace Oje.Section.WebMain.Models.DB
         {
             PageLeftRightDesigns = new();
             PageManifests = new();
+            PageSliders = new();
         }
 
         [Key]
@@ -41,5 +38,7 @@ namespace Oje.Section.WebMain.Models.DB
         public List<PageLeftRightDesign> PageLeftRightDesigns { get; set; }
         [InverseProperty("Page")]
         public List<PageManifest> PageManifests { get; set; }
+        [InverseProperty("Page")]
+        public List<PageSlider> PageSliders { get; set; }
     }
 }

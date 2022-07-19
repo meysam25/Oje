@@ -2,7 +2,7 @@
 @{
     //Layout = "_LayoutAdminNoHeaderFooter";
     ViewBag.Title = "ورود";
-    Layout = "_WebLayout";
+    Layout = "_WebLayout_Login";
 }
 
 @*<div tabindex="0" class="loginBox">
@@ -62,9 +62,14 @@
             width: 350px;
         }
     }
+    .makeImage100P img {
+        width:100%;
+    }
 </style>
-
 }
+
+<span class="showLoginModal" ><span>ورود به سامانه</span><i class="fa fa-user" ></i></span>
+
 <div id="loginBodySeciton" class="myContainer" style="text-align:center;">
     <div class="tempLoginSectionF" style="">
         <section class="globalSection"></section>
@@ -75,6 +80,10 @@
     {
         if (res && res.panels && res.panels.length > 0 && res.panels[0].moduals  && res.panels[0].moduals.length > 0 && res.panels[0].moduals[0].panels && res.panels[0].moduals[0].panels.length > 0 ) {
             generateForm(res.panels[0].moduals[0], $('#loginBodySeciton div .globalSection'));
+            $('.tempLoginSectionF').append('<i class="closeLoginButton fa fa-times" ></i>');
+            $('.tempLoginSectionF').find('.closeLoginButton').click(function() {
+                togleLoginPanel();
+            });
         }
     });
     whatToDoAfterUserLogin.push({curFun: function()
@@ -86,4 +95,48 @@
         }
          location.href = curReturnURl;
     }});
+
+    var loginDescriptionPostData = new FormData();
+
+    loginDescriptionPostData.append('returnUrl', new URLSearchParams(location.search).get('returnUrl'));
+
+    postForm('/Account/Dashboard/GetLoginDescription', loginDescriptionPostData, function(res) 
+    {
+        if(res && res.desc) {
+            var modalHtml = getModualTemplate(
+                {
+                    id: 'loginDescriptionModal',
+                    title: 'توجه',
+                    modelBody: res.desc,
+                    class: "makeImage100P"
+                });
+
+                $('body').append(modalHtml);
+                $('#loginDescriptionModal').modal('show');
+        }
+    });
+
+    postForm('/Account/Dashboard/GetLoginBackgroundImage', new FormData(), function(res) 
+    {
+        if(res && res.src) {
+            $('main').css('background','url("'+ res.src +'") no-repeat').css('background-size','100% 100%');
+        }
+    });
+
+    $('.showLoginModal').click(function() 
+    { 
+        togleLoginPanel();  
+    });
+
+    var disabledButton = false;
+    function togleLoginPanel(){
+        if(disabledButton == false) {
+            disabledButton = true;
+            if($('main').hasClass('showLogin'))
+                $('main').removeClass('showLogin').addClass('showLoginRevert');
+            else
+                $('main').removeClass('showLoginRevert').addClass('showLogin');
+        }
+        setTimeout(function() { disabledButton = false; }, 1000);
+    }
 </script>

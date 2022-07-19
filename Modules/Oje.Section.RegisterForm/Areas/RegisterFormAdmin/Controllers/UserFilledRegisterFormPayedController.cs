@@ -24,7 +24,8 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         readonly Interfaces.IRoleService RoleService = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
 
-        static bool isPayed = true;
+        static readonly bool isPayed = true;
+        static readonly bool isDone = false;
 
         public UserFilledRegisterFormPayedController
             (
@@ -61,14 +62,14 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         [HttpPost]
         public IActionResult CreateUser([FromForm] long? pKey, [FromForm] List<int> roleIds)
         {
-            return Json(UserFilledRegisterFormService.CreateNewUser(pKey, SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.UserId, roleIds, HttpContext.GetLoginUser()?.UserId, isPayed));
+            return Json(UserFilledRegisterFormService.CreateNewUser(pKey, SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.UserId, roleIds, HttpContext.GetLoginUser()?.UserId, isPayed, isDone));
         }
 
         [AreaConfig(Title = "مشاهده اسناد کاربران ثبت نام کرده پرداخت شده", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {
-            return Json(UserFilledRegisterFormService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, isPayed));
+            return Json(UserFilledRegisterFormService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
         [AreaConfig(Title = "مشاهده یک کاربران ثبت نام کرده پرداخت شده", Icon = "fa-eye")]
@@ -77,28 +78,28 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         {
             ViewBag.targetLayout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
             ViewBag.ignoreMaster = ignoreMaster;
-            return View("~/Views/Register/Details.cshtml", UserFilledRegisterFormService.PdfDetailes(input?.id, SiteSettingService.GetSiteSetting()?.Id, null, false, isPayed));
+            return View("~/Views/Register/Details.cshtml", UserFilledRegisterFormService.PdfDetailes(input?.id, SiteSettingService.GetSiteSetting()?.Id, null, false, isPayed, isDone));
         }
 
         [AreaConfig(Title = "حذف کاربران ثبت نام کرده پرداخت شده", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
-            return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed ));
+            return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربران ثبت نام کرده پرداخت شده", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {
-            return Json(UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed));
+            return Json(UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {
-            var result = UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed);
+            var result = UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone);
             if (result == null || result.data == null || result.data.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);

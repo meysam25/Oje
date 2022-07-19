@@ -24,7 +24,13 @@ namespace Oje.Section.Question.Areas.Question.Controllers
         [HttpPost]
         public IActionResult GetList(int? fid)
         {
-            return Json(ProposalFormYourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id, fid));
+            return Json(ProposalFormYourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id, fid, false));
+        }
+
+        [HttpPost]
+        public IActionResult GetInquiryList(int? fid)
+        {
+            return Json(ProposalFormYourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id, fid, true));
         }
     }
 }

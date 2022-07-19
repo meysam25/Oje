@@ -118,6 +118,10 @@ namespace Oje.AccountService.Models.DB
         public int? BankId { get; set; }
         [MaxLength(50)]
         public string LastSessionFileName { get; set; }
+        [MaxLength(50)]
+        public string RefferCode { get; set; }
+        public PersonType? RealOrLegaPerson { get; set; }
+        public DateTime? LicenceExpireDate { get; set; }
         public int? SiteSettingId { get; set; }
 
         [NotMapped]

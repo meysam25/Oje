@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Enums;
 using System.Collections.Generic;
 
 namespace Oje.AccountService.Models.View
@@ -12,6 +13,7 @@ namespace Oje.AccountService.Models.View
         }
 
         public long? id { get; set; }
+        public PersonType? realOrLegaPerson { get; set; }
         public string username { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
@@ -36,10 +38,12 @@ namespace Oje.AccountService.Models.View
         public string bankShaba { get; set; }
         public string birthDate { get; set; }
         public string insuranceECode { get; set; }
+        public string refferCode { get; set; }
         public int? sitesettingId { get; set; }
         public List<int> cIds { get; set; }
         public int? provinceId { get; set; }
         public int? cityId { get; set; }
+        public string licenceExpireDate { get; set; }
 
     }
 }

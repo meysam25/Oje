@@ -232,7 +232,7 @@ $.fn.initFloatingFooter = function (placeHolderId) {
     });
 }
 
-$.fn.initFloatingTop = function (placeHolderId, exteraClass) {
+$.fn.initFloatingTop = function (placeHolderId, exteraClass, exteraClass2) {
     return this.each(function () {
         var curPlaceHolder = $('#' + placeHolderId);
         if (curPlaceHolder.length > 0) {
@@ -245,11 +245,15 @@ $.fn.initFloatingTop = function (placeHolderId, exteraClass) {
                         this.curThis.addClass('floatingTopSectionMakeFloat')
                     if (exteraClass && !this.curThis.hasClass(exteraClass))
                         this.curThis.addClass(exteraClass);
+                    if (exteraClass2 && !this.curThis.hasClass(exteraClass2))
+                        this.curThis.addClass(exteraClass2);
                 } else {
                     if (this.curThis.hasClass('floatingTopSectionMakeFloat'))
                         this.curThis.removeClass('floatingTopSectionMakeFloat');
                     if (exteraClass && this.curThis.hasClass(exteraClass))
                         this.curThis.removeClass(exteraClass);
+                    if (exteraClass2 && this.curThis.hasClass(exteraClass2))
+                        this.curThis.removeClass(exteraClass2);
                 }
             }.bind({ curPlaceHolderObj: curPlaceHolderObj, curThis: $(this) }), true);
 
@@ -305,6 +309,7 @@ function bindFooterPhoneAndAddress() {
         $('#footerTell1').html(res && res.tell ? res.tell : '');
         $('#footerTell2').html(res && res.mob ? res.mob : '');
         $('#footerEmail').html(res && res.email ? res.email : '');
+        $('#supportPhone').html(res && res.email ? res.tell : '');
     });
 }
 

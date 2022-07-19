@@ -25,16 +25,20 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         readonly ISMSUserService SMSUserService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
         readonly IUserLoginLogoutLogService UserLoginLogoutLogService = null;
+        readonly ILoginDescrptionService LoginDescrptionService = null;
+        readonly ILoginBackgroundImageService LoginBackgroundImageService = null;
 
         public DashboardController(
-            IUserService UserService,
-            ISiteSettingService SiteSettingService,
-            ISectionService SectionService,
-            IDashboardSectionService DashboardSectionService,
-            Sms.Interfaces.ISmsSendingQueueService SmsSendingQueueService,
-            ISMSUserService SMSUserService,
-            IBlockAutoIpService BlockAutoIpService,
-            IUserLoginLogoutLogService UserLoginLogoutLogService
+                IUserService UserService,
+                ISiteSettingService SiteSettingService,
+                ISectionService SectionService,
+                IDashboardSectionService DashboardSectionService,
+                Sms.Interfaces.ISmsSendingQueueService SmsSendingQueueService,
+                ISMSUserService SMSUserService,
+                IBlockAutoIpService BlockAutoIpService,
+                IUserLoginLogoutLogService UserLoginLogoutLogService,
+                ILoginDescrptionService LoginDescrptionService,
+                ILoginBackgroundImageService LoginBackgroundImageService
             )
         {
             this.UserService = UserService;
@@ -45,6 +49,8 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             this.SMSUserService = SMSUserService;
             this.BlockAutoIpService = BlockAutoIpService;
             this.UserLoginLogoutLogService = UserLoginLogoutLogService;
+            this.LoginDescrptionService = LoginDescrptionService;
+            this.LoginBackgroundImageService = LoginBackgroundImageService;
         }
 
         [CustomeAuthorizeFilter]
@@ -168,6 +174,18 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             try { tempResult = SMSUserService.ChagePasswordAndLogin(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithChangePassword, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ChangePasswordAndLogin, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
+        }
+
+        [HttpPost]
+        public IActionResult GetLoginDescription([FromForm] string returnUrl)
+        {
+            return Json(LoginDescrptionService.GetBy(SiteSettingService.GetSiteSetting()?.Id, returnUrl));
+        }
+
+        [HttpPost]
+        public IActionResult GetLoginBackgroundImage()
+        {
+            return Json(LoginBackgroundImageService.GetRandom(SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

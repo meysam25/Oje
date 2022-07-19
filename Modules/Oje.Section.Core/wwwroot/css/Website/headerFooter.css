@@ -340,10 +340,6 @@ body {
     align-items: center;
 }
 
-    .footerSharingAndCopyRightSection > div {
-        padding-bottom: 20px;
-    }
-
 .footerSharingIconSection {
     text-align: left;
     -webkit-flex-grow: 2;

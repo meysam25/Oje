@@ -13,6 +13,7 @@ namespace Oje.AccountService.Models.View
         }
 
         public long? id { get; set; }
+        public PersonType? realOrLegaPerson { get; set; }
         public string username { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
@@ -49,5 +50,7 @@ namespace Oje.AccountService.Models.View
         public string shenasnameNo { get; set; }
         public MarrageStatus? marrageStatus { get; set; }
         public int? bankId { get; set; }
+        public string refferCode { get; set; }
+        public string licenceExpireDate { get; set; }
     }
 }

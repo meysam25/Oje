@@ -21,18 +21,22 @@ namespace Oje.Section.WebMain.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly IPageLeftRightDesignService PageLeftRightDesignService = null;
         readonly IPageManifestService PageManifestService = null;
+        readonly IPageSliderService PageSliderService = null;
+
         public PageService
             (
                 WebMainDBContext db,
                 IUploadedFileService UploadedFileService,
                 IPageLeftRightDesignService PageLeftRightDesignService,
-                IPageManifestService PageManifestService
+                IPageManifestService PageManifestService,
+                IPageSliderService PageSliderService
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
             this.PageLeftRightDesignService = PageLeftRightDesignService;
             this.PageManifestService = PageManifestService;
+            this.PageSliderService = PageSliderService;
         }
 
         public ApiResult Create(PageCreateUpdateVM input, int? siteSettingId)
@@ -254,9 +258,10 @@ namespace Oje.Section.WebMain.Services
                 id = foundPage.Id,
                 url = GenerateUrlForPage(foundPage.Title, foundPage.Id)
             };
-
+            
             result.Items.AddRange(PageLeftRightDesignService.GetListForWeb(id, siteSettingId));
             result.Items.AddRange(PageManifestService.GetListForWeb(id, siteSettingId));
+            result.PageWebSliderVMs = PageSliderService.GetLightList(id, siteSettingId);
 
             return result;
         }

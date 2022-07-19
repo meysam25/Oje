@@ -149,7 +149,8 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
             $(this).val(foundItemByTextValue);
         }
         if ($(this).data('select2')) {
-            $(this).append(new Option(res[key + '_Title'], value, true, true)).trigger('change');
+            if (res[key + '_Title'])
+                $(this).append(new Option(res[key + '_Title'], value, true, true)).trigger('change');
         }
         if (!ignoreChanges) {
             setTimeout(function () {
@@ -238,7 +239,7 @@ function bindDropdown(curObj, data, textField, valueField) {
         var curRowTemplate = '<option ' + isSelected + ' value="' + data[i][valueField] + '" ';
 
         for (var prop in data[i]) {
-            curRowTemplate += ' data-' + prop + '="' + data[i][prop] +'" ';
+            curRowTemplate += ' data-' + prop + '="' + data[i][prop] + '" ';
         }
 
         curRowTemplate += '>';

@@ -1582,6 +1582,11 @@ function getTextBoxTemplate(ctrl) {
 
 
     functionsList.push(function () {
+        if (this.toUpperCase) {
+            $('#' + this.id).blur(function () {
+                $(this).val($(this).val().toUpperCase());
+            });
+        }
         $('#' + this.id).change(function (e) {
             if (e.originalEvent) {
                 validateForm($(this).closest('div'));
@@ -1591,7 +1596,7 @@ function getTextBoxTemplate(ctrl) {
             $('#' + this.id).attr('type', (this.type == 'persianDateTime' ? 'text' : this.type));
         }.bind(this), 1);
         inputNewLabelEventHandler(this.id);
-    }.bind({ id: ctrl.id, type: ctrl.type }));
+    }.bind({ id: ctrl.id, type: ctrl.type, toUpperCase: ctrl.toUpperCase }));
 
     if (ctrl.mask) {
         functionsList.push(function () {
@@ -1888,8 +1893,7 @@ function getFileCTRLTemplate(ctrl) {
     result += '</div>';
 
     functionsList.push(function () {
-        $('#file_' + this.id).change(function ()
-        {
+        $('#file_' + this.id).change(function () {
             var curValue = $(this).val();
             if (curValue) {
                 if ($(this).closest('.myFileUpload').length > 0) {
@@ -3060,6 +3064,32 @@ function bindTranslation() {
         for (var i = 0; i < langsT.length; i++) {
             $('[data-lc=' + langsT[i].id + ']').each(function () { $(this).html(langsT[i].des); });
         }
+    }
+}
+
+function bindContentByUrl(url, arrInputNames, contentId) {
+    if (contentId && arrInputNames && url && arrInputNames.length > 0 && $('#' + contentId).length > 0) {
+        var postData = new FormData();
+        var hasValueCount = 0;
+        for (var i = 0; i < arrInputNames.length; i++) {
+            var curName = arrInputNames[i];
+            if ($('input[name=' + curName + ']').length > 0) {
+                if ($('input[name=' + curName + ']').val())
+                    hasValueCount++;
+                postData.append(curName, $('input[name=' + curName + ']').val());
+            } else if ($('select[name=' + curName + ']').length > 0) {
+                var curValue = $('select[name=' + curName + ']').find('option:selected').attr('value');
+                if (curValue)
+                    hasValueCount++;
+                postData.append(curName, curValue);
+            }
+        }
+        if (hasValueCount == arrInputNames.length)
+            postForm(url, postData, function (res) {
+                if (res && res.isSuccess == undefined) {
+                    bindForm(res, $('#' + contentId), true);
+                }
+            });
     }
 }
 

@@ -289,14 +289,14 @@ namespace Oje.FileService.Services
                 {
                     if (bmp.Width == 0 || bmp.Height == 0)
                         return false;
-                    if (isWidthCheck == true)
-                    {
-                        if (bmp.Width < bmp.Height)
-                            return false;
-                    }
-                    else if (bmp.Height < bmp.Width)
-                        return false;
-                    if (isWidthCheck == true)
+                    //if (isWidthCheck == true)
+                    //{
+                    //    if (bmp.Width < bmp.Height)
+                    //        return false;
+                    //}
+                    //else if (bmp.Height < bmp.Width)
+                    //    return false;
+                    if (bmp.Width > bmp.Height)
                     {
                         var currRate = Convert.ToDecimal(bmp.Width) / Convert.ToDecimal(bmp.Height);
                         if (currRate > relatedRateEnd || currRate < relatedRateStart)

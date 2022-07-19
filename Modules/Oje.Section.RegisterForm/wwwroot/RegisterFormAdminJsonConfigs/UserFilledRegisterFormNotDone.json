@@ -103,6 +103,13 @@
               }
             },
             {
+              "field": "refferUser",
+              "caption": "کاربر معرف",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "isPayed",
               "caption": "پرداخت",
               "search": {

@@ -1,0 +1,188 @@
+
+.headerMenu
+{
+    display:none;
+}
+.showLoginModal {
+    position: absolute;
+    right: 0px;
+    -webkit-border-bottom-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    -webkit-border-top-left-radius: 50px;
+    border-top-left-radius: 50px;
+    height: 40px;
+    color: white;
+    line-height: 38px;
+    font-size: 1.1em;
+    background-color: rgba(0,0,0,0.7);
+    padding-left: 20px;
+    top: 190px;
+    cursor: pointer;
+    right: -95px;
+    -moz-transition: 0.1s;
+    -o-transition: 0.1s;
+    -webkit-transition: 0.1s;
+    transition: 0.1s;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none;
+    user-select: none;
+}
+    .showLoginModal:hover {
+        right:-10px;
+    }
+    .showLoginModal i {
+        font-size: 1.9em;
+        line-height: 38px;
+        display: inline-block;
+    }
+.showLoginModal span {
+    display:inline-block;
+    margin-left:10px;
+    vertical-align:7px;
+    padding-right:10px;
+    font-weight:bold;
+
+}
+.tempLoginSectionF {
+    position: absolute;
+    top: 50%;
+    margin-top: -225px;
+    margin-right: -250px;
+    right: -100%;
+}
+
+.showLogin .tempLoginSectionF {
+    animation: loginAnime 1.5s;
+    animation-fill-mode: forwards;
+}
+
+.showLoginRevert .tempLoginSectionF {
+    animation-name: loginAnimeRevers;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.showLogin .showLoginModal {
+    animation-name: loginButtonAnime;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+.showLoginRevert .showLoginModal {
+    animation-name: loginButtonAnimeInvert;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+.closeLoginButton {
+    position: absolute;
+    left: 20px;
+    top: 55px;
+    color: red;
+    cursor: pointer;
+    font-size: 1.4em;
+    font-weight: bold;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@keyframes loginAnimeRevers {
+    0% {
+        right: 50%;
+    }
+
+    50% {
+        right: 55%;
+    }
+
+    100% {
+        right: -100%;
+    }
+}
+
+@keyframes loginAnime {
+    40% {
+        right: 55%;
+    }
+    60% {
+        right: 47%;
+    }
+    70% {
+        right: 52%;
+    }
+    80% {
+        right: 49%;
+    }
+    90% {
+        right: 51%;
+    }
+    100% {
+        right: 50%;
+    }
+}
+
+
+@keyframes loginButtonAnime {
+    0% {
+        right: -10px;
+    }
+
+    40% {
+        right: 0px;
+    }
+
+    100% {
+        right: -300px;
+    }
+}
+
+@keyframes loginButtonAnimeInvert {
+    0% {
+        right: -300px
+    }
+
+    60% {
+        right: 0px;
+    }
+
+    70% {
+        right: -20px;
+    }
+
+    80% {
+        right: -10px;
+    }
+
+    90% {
+        right: -15px;
+    }
+
+    100% {
+        right: -10px;
+    }
+}
+
+@media (max-width: 700px) {
+    .showLoginModal {
+        display:none;
+    }
+    .closeLoginButton {
+        display:none;
+    }
+}
+
+@media (max-width: 550px) {
+    .tempLoginSectionF{
+        margin-right:-200px;
+    }
+}
+@media (max-width: 400px) {
+    .tempLoginSectionF {
+        margin-right: -175px;
+    }
+}

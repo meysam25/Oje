@@ -24,6 +24,8 @@
     white-space:nowrap;
     font-weight:bold;
     position:relative;
+    overflow:hidden;
+    vertical-align:top;
     
 }
 .panelSWizardHolderHeaderItemActive {

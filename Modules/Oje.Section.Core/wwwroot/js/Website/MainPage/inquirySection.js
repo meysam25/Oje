@@ -1,5 +1,5 @@
 var isFirstTimeForInquiryTabs = true;
-$.fn.initInquiryTab = function () {
+$.fn.initInquiryTab = function (whatToDoOnTabChangeEvent) {
     return this.each(function () {
         var curElement = $(this)[0];
         $(curElement).find('.inquirySectionTabHeaderItemInner').click(function () {
@@ -21,6 +21,8 @@ $.fn.initInquiryTab = function () {
         curElement.clickHeaderTabItem = function (curThis) {
             //if ($(curThis).hasClass('inquirySectionTabHeaderItemActive'))
             //    return false;
+            if (whatToDoOnTabChangeEvent)
+                whatToDoOnTabChangeEvent(curThis);
             var foundIndex = $(curThis).closest('.inquirySectionTab')[0].getSelectTabIndex(curThis);
             var curUrl = $(curThis).closest('.inquirySectionTabHeaderItem').attr('data-json-url');
             $(curThis).closest('.inquirySectionTabHeaderItems').find('.inquirySectionTabHeaderItemActive').removeClass('inquirySectionTabHeaderItemActive');

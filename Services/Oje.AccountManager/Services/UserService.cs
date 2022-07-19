@@ -259,6 +259,8 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.BankShaba_Can_Not_Be_More_Then_40);
             if (input.roleIds.Count > 1)
                 throw BException.GenerateNewException(BMessages.Jsut_One_Role);
+            if (!string.IsNullOrEmpty(input.refferCode) && db.Users.Any(t => t.Id != input.id && t.SiteSettingId == input.sitesettingId && t.RefferCode == input.refferCode))
+                throw BException.GenerateNewException(BMessages.Dublicate_User_RefferCode);
         }
 
         private void passwordValidation2(CreateUpdateUserVM input)
@@ -314,6 +316,9 @@ namespace Oje.AccountService.Services
             newUser.SiteSettingId = input.sitesettingId;
             newUser.ProvinceId = input.provinceId;
             newUser.CityId = input.cityId;
+            newUser.RefferCode = input.refferCode;
+            newUser.RealOrLegaPerson = input.realOrLegaPerson;
+            newUser.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -405,7 +410,10 @@ namespace Oje.AccountService.Services
                     birthDate = t.BirthDate,
                     insuranceECode = t.InsuranceECode,
                     provinceId = t.ProvinceId,
-                    cityId = t.CityId
+                    cityId = t.CityId,
+                    t.RealOrLegaPerson,
+                    t.RefferCode,
+                    t.LicenceExpireDate
                 })
                 .Take(1)
                 .Select(t => new CreateUpdateUserVM
@@ -435,7 +443,10 @@ namespace Oje.AccountService.Services
                     birthDate = t.birthDate.ToFaDate(),
                     insuranceECode = t.insuranceECode,
                     provinceId = t.provinceId,
-                    cityId = t.cityId
+                    cityId = t.cityId,
+                    realOrLegaPerson = t.RealOrLegaPerson,
+                    refferCode = t.RefferCode,
+                    licenceExpireDate = t.LicenceExpireDate.ToFaDate()
                 })
                 .FirstOrDefault();
         }
@@ -477,6 +488,9 @@ namespace Oje.AccountService.Services
                     foundItem.InsuranceECode = input.insuranceECode;
                     foundItem.ProvinceId = input.provinceId;
                     foundItem.CityId = input.cityId;
+                    foundItem.RefferCode = input.refferCode;
+                    foundItem.RealOrLegaPerson = input.realOrLegaPerson;
+                    foundItem.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -643,6 +657,9 @@ namespace Oje.AccountService.Services
             newUser.Gender = input.gender;
             newUser.MarrageStatus = input.marrageStatus;
             newUser.BankId = input.bankId;
+            newUser.RefferCode = input.refferCode;
+            newUser.RealOrLegaPerson = input.realOrLegaPerson;
+            newUser.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
 
             if (input.mapLon != null && input.mapLon != null)
             {
@@ -762,6 +779,9 @@ namespace Oje.AccountService.Services
                 if (roleValue > loginUserMaxRoleValue)
                     throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
             }
+
+            if (!string.IsNullOrEmpty(input.refferCode) && db.Users.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.RefferCode == input.refferCode))
+                throw BException.GenerateNewException(BMessages.Dublicate_User_RefferCode);
         }
 
         public ApiResult DeleteForUser(long? id, LoginUserVM loginUserVM, int? siteSettingId)
@@ -838,7 +858,10 @@ namespace Oje.AccountService.Services
                     t.Gender,
                     t.ShenasnameNo,
                     t.MarrageStatus,
-                    t.BankId
+                    t.BankId,
+                    t.RealOrLegaPerson,
+                    t.RefferCode,
+                    t.LicenceExpireDate
                 })
                 .Take(1)
                 .ToList()
@@ -877,7 +900,10 @@ namespace Oje.AccountService.Services
                     gender = t.Gender,
                     shenasnameNo = t.ShenasnameNo,
                     marrageStatus = t.MarrageStatus,
-                    bankId = t.BankId
+                    bankId = t.BankId,
+                    realOrLegaPerson = t.RealOrLegaPerson,
+                    refferCode = t.RefferCode,
+                    licenceExpireDate = t.LicenceExpireDate.ToFaDate()
                 })
                 .FirstOrDefault();
         }
@@ -934,6 +960,9 @@ namespace Oje.AccountService.Services
                     foundItem.ShenasnameNo = input.shenasnameNo;
                     foundItem.MarrageStatus = input.marrageStatus;
                     foundItem.BankId = input.bankId;
+                    foundItem.RefferCode = input.refferCode;
+                    foundItem.RealOrLegaPerson = input.realOrLegaPerson;
+                    foundItem.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -1181,7 +1210,7 @@ namespace Oje.AccountService.Services
             result.AddRange(tempResult.Select(t => new
             {
                 id = t.Id,
-                text = companyTitle + " کد " + t.AgentCode + " " + ((!string.IsNullOrEmpty(t.CompanyTitle) ? t.CompanyTitle : (t.Firstname + " " + t.Lastname)) + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "") + (gm == null ? "" : "-(" + (Convert.ToInt32(t.distance)) + " متر فاصله با شما)")),
+                text = companyTitle + " کد " + t.AgentCode + " " + ((!string.IsNullOrEmpty(t.CompanyTitle) ? t.CompanyTitle : (t.Firstname + " " + t.Lastname)) + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("به آدرس " + t.Address)) + (!string.IsNullOrEmpty(t.Tell) ? "(شماره تماس " + t.Tell + ")" : "")),
                 mapLat = t.MapLocation != null ? t.MapLocation.X : 0,
                 mapLng = t.MapLocation != null ? t.MapLocation.Y : 0,
                 isA = t.IsActive

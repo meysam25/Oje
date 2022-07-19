@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Oje.Section.Question.Services
 {
-    public class ProposalFormYourQuestionService: IProposalFormYourQuestionService
+    public class ProposalFormYourQuestionService : IProposalFormYourQuestionService
     {
         readonly QuestionDBContext db = null;
         readonly IProposalFormService ProposalFormService;
@@ -34,7 +34,8 @@ namespace Oje.Section.Question.Services
                 ProposalFormId = input.fid.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Title = input.title,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = siteSettingId.Value,
+                IsInquiry = input.isInquiry
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -64,7 +65,8 @@ namespace Oje.Section.Question.Services
                    isActive = t.IsActive,
                    title = t.Title,
                    fid = t.ProposalFormId,
-                   fid_Title = t.ProposalForm.Title
+                   fid_Title = t.ProposalForm.Title,
+                   isInquiry = t.IsInquiry
                })
                .FirstOrDefault();
         }
@@ -124,6 +126,7 @@ namespace Oje.Section.Question.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;
             foundItem.ProposalFormId = input.fid.Value;
+            foundItem.IsInquiry = input.isInquiry;
 
             db.SaveChanges();
 
@@ -150,10 +153,18 @@ namespace Oje.Section.Question.Services
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
 
-        public object GetListForWeb(int? siteSettingId, int? formid)
+        public object GetListForWeb(int? siteSettingId, int? formid, bool isInquiry)
         {
-            return db.ProposalFormYourQuestions
-                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.ProposalFormId == formid)
+            var quiryResult = db.ProposalFormYourQuestions
+                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.ProposalFormId == formid);
+
+            if (isInquiry == true)
+                quiryResult = quiryResult.Where(t => t.IsInquiry == true);
+            else
+                quiryResult = quiryResult.Where(t => t.IsInquiry == null || t.IsInquiry == false);
+
+            return 
+                quiryResult
                 .Select(t => new
                 {
                     q = t.Title,

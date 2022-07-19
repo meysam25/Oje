@@ -55,6 +55,8 @@ namespace Oje.ProposalFormService.Models.DB
         public long? CreateByUserId { get; set; }
         public int? ProvinceId { get; set; }
         public int? CityId { get; set; }
+        [MaxLength(100)]
+        public string CompanyTitle { get; set; }
         public int? SiteSettingId { get; set; }
 
         [InverseProperty("Parent")]

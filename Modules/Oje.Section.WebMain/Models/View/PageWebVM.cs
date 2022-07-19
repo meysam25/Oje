@@ -1,9 +1,5 @@
 ﻿using Oje.Section.WebMain.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Models.View
 {
@@ -12,6 +8,7 @@ namespace Oje.Section.WebMain.Models.View
         public PageWebVM()
         {
             Items = new ();
+            PageWebSliderVMs = new();
         }
 
         public long id { get; set; }
@@ -26,5 +23,6 @@ namespace Oje.Section.WebMain.Models.View
         public string url { get; set; }
 
         public List<IPageWebItemVM> Items { get; set; }
+        public List<PageWebSliderVM> PageWebSliderVMs { get; set; }
     }
 }

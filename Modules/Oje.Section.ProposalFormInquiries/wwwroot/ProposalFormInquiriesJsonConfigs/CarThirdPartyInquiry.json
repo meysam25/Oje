@@ -643,7 +643,7 @@
                         "url": "/ProposalFilledForm/Proposal/Form?fn=CarBody&id=",
                         "icon": "fa-cart-plus",
                         "prop": "id",
-                        "template": "function bindRow (curRow) { return '<a target=\"_blank\" href=\"'+ curRow.targetArea +'/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
+                        "template": "function bindRow (curRow) { return '<a href=\"'+ curRow.targetArea +'/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
                       }
                     ]
                   },

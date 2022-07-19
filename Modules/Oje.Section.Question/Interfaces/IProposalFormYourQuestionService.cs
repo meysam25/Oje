@@ -10,6 +10,6 @@ namespace Oje.Section.Question.Interfaces
         object GetById(int? id, int? siteSettingId);
         ApiResult Update(ProposalFormYourQuestionCreateUpdateVM input, int? siteSettingId);
         GridResultVM<ProposalFormYourQuestionMainGridResultVM> GetList(ProposalFormYourQuestionMainGrid searchInput, int? siteSettingId);
-        object GetListForWeb(int? siteSettingId, int? formid);
+        object GetListForWeb(int? siteSettingId, int? formid, bool isInquiry);
     }
 }

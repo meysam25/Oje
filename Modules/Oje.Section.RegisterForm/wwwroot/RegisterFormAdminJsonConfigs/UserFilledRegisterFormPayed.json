@@ -102,6 +102,13 @@
               }
             },
             {
+              "field": "refferUser",
+              "caption": "کاربر معرف",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "isDone",
               "caption": "انجام شده؟",
               "search": {

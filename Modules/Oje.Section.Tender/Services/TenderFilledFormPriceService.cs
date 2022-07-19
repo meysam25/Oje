@@ -65,7 +65,7 @@ namespace Oje.Section.Tender.Services
                 newItem.FilledFileUrl =
                     UploadedFileService.UploadNewFile(FileType.TenderPrice, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, newItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
-            UserNotifierService.Notify(loginUserId, UserNotificationType.AddTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, newItem.Id, "تایین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
+            UserNotifierService.Notify(loginUserId, UserNotificationType.AddTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, newItem.Id, "تعیین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             db.SaveChanges();
 
@@ -283,7 +283,7 @@ namespace Oje.Section.Tender.Services
 
             db.SaveChanges();
 
-            UserNotifierService.Notify(loginUserId, UserNotificationType.UpdateTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "به روز رسانی تایین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
+            UserNotifierService.Notify(loginUserId, UserNotificationType.UpdateTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "به روز رسانی تعیین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -301,7 +301,7 @@ namespace Oje.Section.Tender.Services
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
 
-            UserNotifierService.Notify(loginUserId, UserNotificationType.DeleteTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, foundItem.TenderFilledFormId), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "به روز رسانی تایین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
+            UserNotifierService.Notify(loginUserId, UserNotificationType.DeleteTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, foundItem.TenderFilledFormId), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "به روز رسانی تعیین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -399,7 +399,7 @@ namespace Oje.Section.Tender.Services
             foundPrice.IsPublished = true;
             db.SaveChanges();
 
-            UserNotifierService.Notify(loginUserId, UserNotificationType.PublishTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, foundPrice.TenderFilledFormId), ProposalFilledFormUserType.OwnerUser) }, foundPrice.Id, "به روز رسانی تایین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
+            UserNotifierService.Notify(loginUserId, UserNotificationType.PublishTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, foundPrice.TenderFilledFormId), ProposalFilledFormUserType.OwnerUser) }, foundPrice.Id, "به روز رسانی تعیین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

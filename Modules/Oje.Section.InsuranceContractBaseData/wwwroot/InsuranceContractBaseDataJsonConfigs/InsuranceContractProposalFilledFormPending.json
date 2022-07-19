@@ -94,7 +94,7 @@
                         "icon": "fa-dollar-sign",
                         "prop": "id",
                         "modalId": "InsuranceContractProposalFilledFormPendingChangePrice",
-                        "template": "function bindRow (curRow) { return '<span title=\"تایین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormPending/GetPrice\\', \\'InsuranceContractProposalFilledFormPendingChangePrice\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+                        "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormPending/GetPrice\\', \\'InsuranceContractProposalFilledFormPendingChangePrice\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
                       },
                       {
                         "type": "edit",

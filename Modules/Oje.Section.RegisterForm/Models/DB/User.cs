@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Oje.Infrastructure.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
@@ -17,6 +15,7 @@ namespace Oje.Section.RegisterForm.Models.DB
             UserFilledRegisterForms = new();
             UserCompanies = new();
             UserRoles = new();
+            RefferUserFilledRegisterForms = new();
         }
 
         [Key]
@@ -52,6 +51,8 @@ namespace Oje.Section.RegisterForm.Models.DB
         public string CompanyTitle { get; set; }
         public int? ProvinceId { get; set; }
         public int? CityId { get; set; }
+        [ForeignKey("CityId"), InverseProperty("Users")]
+        public City City { get; set; }
         public decimal? MapLat { get; set; }
         public decimal? MapLon { get; set; }
         public byte? MapZoom { get; set; }
@@ -61,6 +62,10 @@ namespace Oje.Section.RegisterForm.Models.DB
         public string BankAccount { get; set; }
         [MaxLength(40)]
         public string BankShaba { get; set; }
+        [MaxLength(50)]
+        public string RefferCode { get; set; }
+        public PersonType? RealOrLegaPerson { get; set; }
+        public DateTime? LicenceExpireDate { get; set; }
         public int? SiteSettingId { get; set; }
 
 
@@ -72,5 +77,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         public List<UserCompany> UserCompanies { get; set; }
         [InverseProperty("User")]
         public List<UserRole> UserRoles { get; set; }
+        [InverseProperty("RefferUser")]
+        public List<UserFilledRegisterForm> RefferUserFilledRegisterForms { get; set; }
     }
 }

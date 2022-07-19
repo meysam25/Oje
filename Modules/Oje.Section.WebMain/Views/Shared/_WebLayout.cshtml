@@ -133,7 +133,7 @@
                     </div>
                     <div class="holderRigAndLogUser">
                         @{
-                            if(ViewBag.HideLoginButton != true)
+                            if (ViewBag.HideLoginButton != true)
                             {
                                 <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
                                 <script>
@@ -142,7 +142,7 @@
                             }
                         }
                     </div>
-                    <div class="responsiveClearBoth" ></div>
+                    <div class="responsiveClearBoth"></div>
                     <div id="topMenuHolderItems">
                     </div>
                     <script>
@@ -154,11 +154,10 @@
         </header>
         <div id="headerTagHolderDesctination"></div>
         <script>
-            if($(document).width() <= 650)
+            if($(document).width() <= 650) {
                 $('#headerTagHolderS1').initFloatingTop('headerTagHolderS1Desctination');
-            else
-            if ($(document).width() > 850)
-                $('#headerMenu').initFloatingTop('headerMenuDesctination', 'makeHeaderFloot2');
+            }
+            $('#headerMenu').initFloatingTop('headerMenuDesctination', 'makeHeaderFloot2', 'floatTopMenue');
         </script>
         <main>
             @RenderBody()

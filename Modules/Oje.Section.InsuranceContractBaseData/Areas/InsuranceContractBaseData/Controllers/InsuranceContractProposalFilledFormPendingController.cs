@@ -86,7 +86,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractProposalFilledFormUserService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, status));
         }
 
-        [AreaConfig(Title = "مشاهده قیمت تایین شده فرم پیشنهاد", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده قیمت تعیین شده فرم پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetPrice([FromForm] GlobalLongId input)
         {

@@ -39,6 +39,9 @@ namespace Oje.Section.WebMain
             services.AddScoped<IPageManifestService, PageManifestService>();
             services.AddScoped<IPageManifestItemService, PageManifestItemService>();
             services.AddScoped<IShortLinkService, ShortLinkService>();
+            services.AddScoped<ILoginDescrptionService, LoginDescrptionService>();
+            services.AddScoped<ILoginBackgroundImageService, LoginBackgroundImageService>();
+            services.AddScoped<IPageSliderService, PageSliderService>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -29,7 +30,7 @@ namespace Oje.ProposalFormService.Services
             if (!mobileNumber.IsMobile())
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
 
-            User newUser = db.Users.Where(t => t.Username == mobileNumber && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            User newUser = db.Users.Where(t => t.Username == mobileNumber && t.SiteSettingId == siteSettingId).AsNoTracking().FirstOrDefault();
             if (newUser != null)
                 return newUser.Id;
 
@@ -55,7 +56,7 @@ namespace Oje.ProposalFormService.Services
 
             createForProposalFormValidation(newUser);
 
-            db.Entry(newUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            db.Entry(newUser).State = EntityState.Added;
             db.SaveChanges();
 
             RoleService.AddUserToUserRole(newUser.Id);

@@ -93,10 +93,12 @@ $.fn.initImageCrapper = function (imgUrl, min, max) {
         var curImageSize = getCurCrapImageSize(curThis);
         if (curImageSize.width > curImageSize.height) {
             var curRate = (curImageSize.width / curImageSize.height);
+            console.log(curRate);
             return curRate >= min && curRate <= max;
         }
         else {
             var curRate = (curImageSize.height / curImageSize.width);
+            console.log(curRate, min, max);
             return curRate >= min && curRate <= max;
         }
     }

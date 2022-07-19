@@ -15,7 +15,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
 {
     [Area("RegisterFormAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "ثبت نام کاربر", Icon = "fa-users", Title = "کاربران ثبت نام کرده انجام نشده")]
+    [AreaConfig(ModualTitle = "ثبت نام کاربر", Icon = "fa-users", Title = "کاربران پرداخت نکرده انجام شده")]
     [CustomeAuthorizeFilter]
     public class UserFilledRegisterFormNotDoneController : Controller
     {
@@ -24,8 +24,8 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         readonly Interfaces.IRoleService RoleService = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
 
-        static bool? isPayed = null;
-        static bool? isDone = false;
+        static bool? isPayed = false;
+        static bool? isDone = true;
 
         public UserFilledRegisterFormNotDoneController
             (
@@ -41,16 +41,16 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             this.UserRegisterFormService = UserRegisterFormService;
         }
 
-        [AreaConfig(Title = "کاربران ثبت نام کرده انجام نشده", Icon = "fa-user", IsMainMenuItem = true)]
+        [AreaConfig(Title = "کاربران پرداخت نکرده انجام شده", Icon = "fa-user", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "کاربران ثبت نام کرده انجام نشده";
+            ViewBag.Title = "کاربران پرداخت نکرده انجام شده";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserFilledRegisterFormNotDone", new { area = "RegisterFormAdmin" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه کاربران ثبت نام کرده انجام نشده", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه کاربران پرداخت نکرده انجام شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -65,14 +65,14 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return Json(UserFilledRegisterFormService.CreateNewUser(pKey, SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.UserId, roleIds, HttpContext.GetLoginUser()?.UserId, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده اسناد کاربران ثبت نام کرده انجام نشده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده اسناد کاربران پرداخت نکرده انجام شده", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {
             return Json(UserFilledRegisterFormService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده یک کاربران ثبت نام کرده انجام نشده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک کاربران پرداخت نکرده انجام شده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input, [FromQuery] bool? ignoreMaster)
         {
@@ -81,14 +81,14 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return View("~/Views/Register/Details.cshtml", UserFilledRegisterFormService.PdfDetailes(input?.id, SiteSettingService.GetSiteSetting()?.Id, null, false, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "حذف کاربران ثبت نام کرده انجام نشده", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "حذف کاربران پرداخت نکرده انجام شده", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
             return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربران ثبت نام کرده انجام نشده", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربران پرداخت نکرده انجام شده", Icon = "fa-list-alt ")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {

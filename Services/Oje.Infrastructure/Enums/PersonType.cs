@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Infrastructure.Enums
 {
-    public enum PersonType
+    public enum PersonType: byte
     {
         [Display(Name = "حقیقی")]
         Real = 1,

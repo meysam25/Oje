@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.RegisterForm.Models.View
 {
@@ -31,5 +26,7 @@ namespace Oje.Section.RegisterForm.Models.View
         public string traceCode { get; set; }
         [Display(Name = "انجام شده؟")]
         public string isDone { get; set; }
+        [Display(Name = "کاربر معرف")]
+        public string refferUser { get; set; }
     }
 }

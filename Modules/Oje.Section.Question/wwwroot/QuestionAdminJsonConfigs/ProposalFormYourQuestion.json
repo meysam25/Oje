@@ -106,6 +106,15 @@
               "label": "وضعیت"
             },
             {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "isInquiry",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "برای استعلام ؟"
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "answer",
               "type": "textarea",
@@ -159,6 +168,15 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "isInquiry",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "برای استعلام ؟"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

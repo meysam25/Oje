@@ -7,6 +7,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.RegisterForm.Interfaces;
 using Oje.Section.RegisterForm.Models.DB;
+using Oje.Section.RegisterForm.Models.View;
 using Oje.Section.RegisterForm.Services.EContext;
 using System;
 using System.Collections.Generic;
@@ -61,16 +62,18 @@ namespace Oje.Section.RegisterForm.Services
                     newUser.BankShaba = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "shabaNo").Select(t => t.Value).FirstOrDefault();
                     newUser.BankAccount = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "hesabNo").Select(t => t.Value).FirstOrDefault();
                     newUser.Firstname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstName").Select(t => t.Value).FirstOrDefault();
-                    if(string.IsNullOrEmpty(newUser.Firstname))
+                    if (string.IsNullOrEmpty(newUser.Firstname))
                         newUser.Firstname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstNameLegal").Select(t => t.Value).FirstOrDefault();
                     newUser.BirthDate = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "birthDate").Select(t => t.Value).FirstOrDefault().ToEnDate();
                     newUser.IsActive = true;
                     newUser.Lastname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastName").Select(t => t.Value).FirstOrDefault();
-                    if(string.IsNullOrEmpty(newUser.Lastname))
+                    if (string.IsNullOrEmpty(newUser.Lastname))
                         newUser.Lastname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastNameLegal").Select(t => t.Value).FirstOrDefault();
                     newUser.Password = RandomService.GeneratePassword(20);
                     newUser.CreateDate = DateTime.Now;
                     newUser.ParentId = parentUserId;
+                    newUser.RealOrLegaPerson = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "realOrLegaPerson").Select(t => t.Value).FirstOrDefault() == "حقوقی" ? PersonType.Legal : PersonType.Real;
+                    newUser.LicenceExpireDate = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "licencExpireDate").Select(t => t.Value).FirstOrDefault().ToEnDate();
                     newUser.Nationalcode = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "nationalCode").Select(t => t.Value).FirstOrDefault();
                     newUser.Mobile = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mobile").Select(t => t.Value).FirstOrDefault();
                     newUser.Email = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "email").Select(t => t.Value).FirstOrDefault();
@@ -80,14 +83,13 @@ namespace Oje.Section.RegisterForm.Services
                     newUser.AgentCode = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "licenceNumber").Select(t => t.Value).FirstOrDefault().ToLongReturnZiro();
                     newUser.ProvinceId = userFilledRegisterForm.ProvinceId;
                     newUser.CityId = userFilledRegisterForm.CityId;
-                    newUser.MapZoom = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapZoomRecivePlace").Select(t => t.Value).FirstOrDefault().ToByteReturnZiro() > 0 ? userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapZoomRecivePlace").Select(t => t.Value).FirstOrDefault().ToByteReturnZiro() : null;
-                    newUser.MapLat = !string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace").Select(t => t.Value).FirstOrDefault()) && userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null ? Convert.ToDecimal(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace").Select(t => t.Value).FirstOrDefault()) : null;
-                    newUser.MapLon = !string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace").Select(t => t.Value).FirstOrDefault()) && userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null ? Convert.ToDecimal(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace").Select(t => t.Value).FirstOrDefault()) : null;
-                    newUser.MapLocation = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null && userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null ?
-                                    new Point(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().Value, userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().ToDoubleReturnNull().Value) { SRID = 4326 } :
+                    newUser.MapZoom = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapZoomRecivePlace_zoom").Select(t => t.Value).FirstOrDefault().ToByteReturnZiro() > 0 ? userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapZoomRecivePlace_zoom").Select(t => t.Value).FirstOrDefault().ToByteReturnZiro() : null;
+                    newUser.MapLat = !string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace_lat").Select(t => t.Value).FirstOrDefault()) && userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace_lat").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null ? Convert.ToDecimal(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace_lat").Select(t => t.Value).FirstOrDefault()) : null;
+                    newUser.MapLon = !string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace_lon").Select(t => t.Value).FirstOrDefault()) && userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace_lon").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null ? Convert.ToDecimal(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace_lon").Select(t => t.Value).FirstOrDefault()) : null;
+                    newUser.MapLocation = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace_lon").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null && userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace_lat").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull() != null ?
+                                    new Point(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace_lat").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().Value, userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace_lon").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().ToDoubleReturnNull().Value) { SRID = 4326 } :
                                     null;
                     newUser.CompanyTitle = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "companyNameLegal").Select(t => t.Value).FirstOrDefault();
-
 
                     db.SaveChanges();
 
@@ -142,7 +144,7 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (roleIds == null || roleIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_One_Or_More_Role);
-            if(roleIds.Count != 1)
+            if (roleIds.Count != 1)
                 throw BException.GenerateNewException(BMessages.Jsut_One_Role);
 
             string mobileNumber = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mobile").Select(t => t.Value).FirstOrDefault();
@@ -153,12 +155,12 @@ namespace Oje.Section.RegisterForm.Services
             //if (db.Users.Any(t => t.Username.Trim() == mobileNumber.Trim()))
             //    throw BException.GenerateNewException(BMessages.Dublicate_Mobile);
             if (
-                    string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstName").Select(t => t.Value).FirstOrDefault()) && 
+                    string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstName").Select(t => t.Value).FirstOrDefault()) &&
                     string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "firstNameLegal").Select(t => t.Value).FirstOrDefault())
                 )
                 throw BException.GenerateNewException(BMessages.Please_Enter_Firstname);
             if (
-                string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastName").Select(t => t.Value).FirstOrDefault()) && 
+                string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastName").Select(t => t.Value).FirstOrDefault()) &&
                 string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastNameLegal").Select(t => t.Value).FirstOrDefault())
                 )
                 throw BException.GenerateNewException(BMessages.Please_Enter_Lastname);
@@ -221,5 +223,71 @@ namespace Oje.Section.RegisterForm.Services
             HttpContextAccessor.HttpContext.Response.Cookies.Append("tLogin", cookiValue.Encrypt2(), cOption);
         }
 
+        public bool ExistBy(string refferCode, int? siteSettingId)
+        {
+            return db.Users.Any(t => t.SiteSettingId == siteSettingId && t.RefferCode == refferCode);
+        }
+
+        public long? GetUserIdBy(string refferCode, int? siteSettingId)
+        {
+            return db.Users.Where(t => t.SiteSettingId == siteSettingId && t.RefferCode == refferCode).Select(t => t.Id).FirstOrDefault();
+        }
+
+        public RegisterGetUserInfoResultVM GetUserInfo(int? siteSettingId, registerGetUserInfoVM input)
+        {
+            if (siteSettingId.ToIntReturnZiro() > 0 && input != null && input.company.ToIntReturnZiro() > 0 && input.realOrLegaPerson != null && input.licenceNumber.ToLongReturnZiro() > 0)
+            {
+                var foundUser = db.Users
+                    .Where(t => t.SiteSettingId == siteSettingId && t.AgentCode == input.licenceNumber && t.UserCompanies.Any(tt => tt.CompanyId == input.company) && t.RealOrLegaPerson == input.realOrLegaPerson)
+                    .Select(t => new 
+                    {
+                        t.LicenceExpireDate,
+                        t.Firstname,
+                        t.Lastname,
+                        t.RealOrLegaPerson,
+                        t.Tell,
+                        t.ProvinceId,
+                        t.CityId,
+                        t.Address,
+                        t.MapLocation,
+                        t.MapZoom,
+                        cityTitle = t.City.Title
+                    })
+                    .FirstOrDefault();
+
+                return new RegisterGetUserInfoResultVM
+                {
+                    licencExpireDate = foundUser?.LicenceExpireDate?.ToFaDate(),
+                    firstName = foundUser?.RealOrLegaPerson == PersonType.Real ? foundUser?.Firstname : "",
+                    lastName = foundUser?.RealOrLegaPerson == PersonType.Real ? foundUser?.Lastname : "",
+                    tell = foundUser?.Tell,
+                    provinceId = foundUser?.ProvinceId,
+                    cityId = foundUser?.CityId,
+                    cityId_Title = foundUser?.cityTitle,
+                    address = foundUser?.Address,
+                    firstNameLegal = foundUser?.RealOrLegaPerson == PersonType.Legal ? foundUser?.Firstname : "",
+                    lastNameLegal = foundUser?.RealOrLegaPerson == PersonType.Legal ? foundUser?.Lastname : "",
+                    mapLatRecivePlace_lat = foundUser?.MapLocation != null ? (decimal?)foundUser?.MapLocation.X : null,
+                    mapLonRecivePlace_lon = foundUser?.MapLocation != null ? (decimal?)foundUser?.MapLocation.Y : null,
+                    mapZoomRecivePlace_zoom = foundUser?.MapZoom,
+                };
+            }
+            return new RegisterGetUserInfoResultVM
+            {
+                licencExpireDate = "",
+                firstName = "",
+                lastName = "",
+                tell = "",
+                provinceId = null,
+                cityId = null,
+                cityId_Title = "",
+                address = "",
+                firstNameLegal = "",
+                lastNameLegal = "",
+                mapLatRecivePlace_lat = (decimal?)null,
+                mapLonRecivePlace_lon = (decimal?)null,
+                mapZoomRecivePlace_zoom = (byte?)null,
+            };
+        }
     }
 }

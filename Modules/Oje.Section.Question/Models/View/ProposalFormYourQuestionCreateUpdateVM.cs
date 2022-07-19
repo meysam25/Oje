@@ -7,5 +7,6 @@
         public string title { get; set; }
         public string answer { get; set; }
         public bool? isActive { get; set; }
+        public bool? isInquiry { get; set; }
     }
 }

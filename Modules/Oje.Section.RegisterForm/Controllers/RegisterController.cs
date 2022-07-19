@@ -4,6 +4,7 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.Section.RegisterForm.Interfaces;
+using Oje.Section.RegisterForm.Models.View;
 using Oje.Security.Interfaces;
 
 namespace Oje.Section.RegisterForm.Controllers
@@ -18,6 +19,7 @@ namespace Oje.Section.RegisterForm.Controllers
         readonly IUserFilledRegisterFormService UserFilledRegisterFormService = null;
         readonly IAgentRefferService AgentRefferService = null;
         readonly IUserRegisterFormPriceService UserRegisterFormPriceService = null;
+        readonly Interfaces.IUserService UserService = null;
 
         public RegisterController(
                 ISiteSettingService SiteSettingService,
@@ -27,7 +29,8 @@ namespace Oje.Section.RegisterForm.Controllers
                 IBlockAutoIpService BlockAutoIpService,
                 IUserFilledRegisterFormService UserFilledRegisterFormService,
                 IAgentRefferService AgentRefferService,
-                IUserRegisterFormPriceService UserRegisterFormPriceService
+                IUserRegisterFormPriceService UserRegisterFormPriceService,
+                Interfaces.IUserService UserService
             )
         {
             this.SiteSettingService = SiteSettingService;
@@ -38,6 +41,7 @@ namespace Oje.Section.RegisterForm.Controllers
             this.UserFilledRegisterFormService = UserFilledRegisterFormService;
             this.AgentRefferService = AgentRefferService;
             this.UserRegisterFormPriceService = UserRegisterFormPriceService;
+            this.UserService = UserService;
         }
 
         [Route("[Controller]/[Action]/{formName}")]
@@ -151,6 +155,16 @@ namespace Oje.Section.RegisterForm.Controllers
         public ActionResult GetPriceList([FromQuery] string id, [FromForm] int? fid)
         {
             return Json(UserRegisterFormPriceService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, fid, id));
+        }
+
+        [HttpPost]
+        [Route("[Controller]/[Action]")]
+        public ActionResult GetUserInfo([FromForm] registerGetUserInfoVM input)
+        {
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.GetUserInfoRegister, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = UserService.GetUserInfo(SiteSettingService.GetSiteSetting()?.Id, input);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.GetUserInfoRegister, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
         }
     }
 }

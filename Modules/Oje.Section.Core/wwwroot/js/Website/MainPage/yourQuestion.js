@@ -7,9 +7,15 @@ $.fn.initMyQuestionItem = function () {
     });
 };
 
-$.fn.loadYourQuestionList = function (url) {
+$.fn.loadYourQuestionList = function (url, exteraParameters) {
     return this.each(function () {
-        postForm(url, new FormData(), function (res) {
+        var postData = new FormData()
+        if (exteraParameters) {
+            for (var prop in exteraParameters) {
+                postData.append(prop, exteraParameters[prop]);
+            }
+        }
+        postForm(url, postData, function (res) {
             if (res && res.length > 0) {
                 var template = getYourQuestionBeginTemplate();
 
@@ -20,9 +26,10 @@ $.fn.loadYourQuestionList = function (url) {
                 template += getYourQuestionEndTemplate();
                 $(this.curThis).html(template);
                 $(this.curThis).find('.yourQuestion .yourQuestionItem').initMyQuestionItem();
+                $(this.curThis).show();
             }
             else {
-                $(this.curThis).css('display', 'none');
+                $(this.curThis).hide();
             }
         }.bind({ curThis: this }));
     });

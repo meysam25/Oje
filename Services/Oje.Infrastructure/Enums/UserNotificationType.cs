@@ -76,7 +76,7 @@ namespace Oje.Infrastructure.Enums
         UpdateTenderPrice = 35,
         [Display(Name = "انتشار مبلغ مناقصه توسط نماینده")]
         PublishTenderPrice = 36,
-        [Display(Name = "حذف قیمت تایین شده توسط نماینده")]
+        [Display(Name = "حذف قیمت تعیین شده توسط نماینده")]
         DeleteTenderPrice = 37,
         [Display(Name = "صدور بیمه نامه")]
         IssueTender = 38,

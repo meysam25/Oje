@@ -85,11 +85,15 @@ namespace Oje.Section.RegisterForm.Services
             if (form.GetStringIfExist("price").ToIntReturnZiro() > 0 && foundPrice == null)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
 
+            var foundRefferCode = ppfObj.GetAllListOf<ctrl>().Where(t => t.name == "refferCode").FirstOrDefault();
+            if (foundRefferCode == null && !string.IsNullOrEmpty(form.GetStringIfExist("refferCode")))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
             using (var tr = db.Database.BeginTransaction())
             {
                 try
                 {
-                    UserFilledRegisterForm newItem = createNewItem(siteSettingId, ipSections, formId, foundPrice?.Price ?? 0, userId, form.GetStringIfExist("company"), form.GetStringIfExist("provinceId").ToIntReturnZiro(), form.GetStringIfExist("cityId").ToIntReturnZiro());
+                    UserFilledRegisterForm newItem = createNewItem(siteSettingId, ipSections, formId, foundPrice?.Price ?? 0, userId, form.GetStringIfExist("company"), form.GetStringIfExist("provinceId").ToIntReturnZiro(), form.GetStringIfExist("cityId").ToIntReturnZiro(), form.GetStringIfExist("refferCode"));
                     UserFilledRegisterFormJsonService.Create(foundJsonFormStr, newItem.Id);
                     UserFilledRegisterFormValueService.CreateByJsonConfig(ppfObj, newItem.Id, form);
                     createUploadedFiles(siteSettingId, form, newItem.Id);
@@ -132,7 +136,7 @@ namespace Oje.Section.RegisterForm.Services
             }
         }
 
-        private UserFilledRegisterForm createNewItem(int? siteSettingId, IpSections ipSections, int formId, long price, long? userId, string companyIds, int provinceId, int cityId)
+        private UserFilledRegisterForm createNewItem(int? siteSettingId, IpSections ipSections, int formId, long price, long? userId, string companyIds, int provinceId, int cityId, string refferCode)
         {
             var newItem = new UserFilledRegisterForm()
             {
@@ -145,7 +149,9 @@ namespace Oje.Section.RegisterForm.Services
                 UserRegisterFormId = formId,
                 UserId = userId,
                 ProvinceId = (provinceId > 0 ? provinceId : null),
-                CityId = (cityId > 0 ? cityId : null)
+                CityId = (cityId > 0 ? cityId : null),
+                RefferCode = refferCode,
+                RefferUserId = UserService.GetUserIdBy(refferCode, siteSettingId)
             };
             if (price > 0)
                 newItem.Price = price;
@@ -207,7 +213,7 @@ namespace Oje.Section.RegisterForm.Services
                 if (foundPrice != null)
                 {
                     var foundPriceValue = form.GetStringIfExist(foundPrice.name);
-                    if (!string.IsNullOrEmpty(foundPriceValue) )
+                    if (!string.IsNullOrEmpty(foundPriceValue))
                     {
                         var froundPriceObj = UserRegisterFormPriceService.GetById(foundPriceValue.ToIntReturnZiro());
                         if (froundPriceObj == null)
@@ -299,6 +305,11 @@ namespace Oje.Section.RegisterForm.Services
 
             if (ipSections == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            string refferCode = form.GetStringIfExist("refferCode");
+            if (!string.IsNullOrEmpty(refferCode) && !UserService.ExistBy(refferCode, siteSettingId))
+                throw BException.GenerateNewException(BMessages.Invalid_RefferCode);
+
         }
 
         public userFilledRegisterFormDetailesVM PdfDetailes(long? id, int? siteSettingId, long? loginUserId, bool isLoginRequired = false, bool? isPayed = null, bool? isDone = null)
@@ -453,6 +464,8 @@ namespace Oje.Section.RegisterForm.Services
                 qureResult = qureResult.Where(t => t.PaymentTraceCode == searchInput.traceCode);
             if (searchInput.isDone != null)
                 qureResult = qureResult.Where(t => t.IsDone == searchInput.isDone);
+            if (!string.IsNullOrEmpty(searchInput.refferUser))
+                qureResult = qureResult.Where(t => t.RefferUserId > 0 && (t.RefferUser.Firstname + " " + t.RefferUser.Lastname).Contains(searchInput.refferUser));
 
             int row = searchInput.skip;
 
@@ -476,7 +489,8 @@ namespace Oje.Section.RegisterForm.Services
                     price = t.Price,
                     isPayed = !string.IsNullOrEmpty(t.PaymentTraceCode),
                     traceCode = t.PaymentTraceCode,
-                    t.IsDone
+                    t.IsDone,
+                    refferUser = t.RefferUserId > 0 ? t.RefferUser.Firstname + " " + t.RefferUser.Lastname : ""
                 })
                 .ToList()
                 .Select(t => new UserFilledRegisterFormMainGridResultVM
@@ -491,7 +505,8 @@ namespace Oje.Section.RegisterForm.Services
                     price = t.price > 0 ? t.price.Value.ToString("###,###") : "",
                     username = t.username,
                     createDate = t.createDate.ToFaDate(),
-                    isDone = t.IsDone == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName()
+                    isDone = t.IsDone == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
+                    refferUser = t.refferUser
                 })
                 .ToList()
             };

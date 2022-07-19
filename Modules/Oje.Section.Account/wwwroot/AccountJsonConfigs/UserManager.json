@@ -106,6 +106,15 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/PersonType",
+              "label": "انتخاب شخص",
+              "name": "realOrLegaPerson"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "username",
               "type": "text",
               "label": "نام کاربری",
@@ -179,6 +188,12 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "licenceExpireDate",
+              "type": "persianDateTime",
+              "label": "تاریخ اعتبار پروانه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "companyTitle",
               "type": "text",
               "label": "نام شرکت"
@@ -245,6 +260,12 @@
               "name": "bankShaba",
               "type": "text",
               "label": "شماره شبا"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "refferCode",
+              "type": "text",
+              "label": "کد معرف"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -331,6 +352,15 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/PersonType",
+              "label": "انتخاب شخص",
+              "name": "realOrLegaPerson"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "username",
               "type": "text",
               "label": "نام کاربری",
@@ -403,6 +433,12 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "licenceExpireDate",
+              "type": "persianDateTime",
+              "label": "تاریخ اعتبار پروانه"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "companyTitle",
               "type": "text",
               "label": "نام شرکت"
@@ -463,6 +499,12 @@
               "name": "bankAccount",
               "type": "text",
               "label": "شماره حساب"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "refferCode",
+              "type": "text",
+              "label": "کد معرف"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",

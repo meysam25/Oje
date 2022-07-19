@@ -34,6 +34,11 @@ namespace Oje.Section.RegisterForm.Models.DB
         public int? ProvinceId { get; set; }
         public int? CityId { get; set; }
         public bool? IsDone { get; set; }
+        [MaxLength(50)]
+        public string RefferCode { get; set; }
+        public long? RefferUserId { get; set; }
+        [ForeignKey("RefferUserId"), InverseProperty("RefferUserFilledRegisterForms")]
+        public User RefferUser { get; set; }
         public int SiteSettingId { get; set; }
 
         [InverseProperty("UserFilledRegisterForm")]

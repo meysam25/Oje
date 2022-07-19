@@ -544,7 +544,7 @@ namespace Oje.Infrastructure.Exceptions
         Button_Title_Can_Not_Be_More_Then_50_Chars = 268,
         [Display(Name = "مسیر دکمه نمی تواند بیشتر از 200 کارکتر باشد")]
         Button_Link_Can_Not_Be_More_Then_200_Chars = 269,
-        [Display(Name = "لطفا تصویر اصلی را انتخاب کنید")]
+        [Display(Name = "لطفا تصویر را انتخاب کنید")]
         Please_Select_Main_Image = 270,
         [Display(Name = "ابعاد تصویر انتخاب شده صحیح نمی باشد")]
         Invalid_Image_Size = 271,
@@ -662,5 +662,9 @@ namespace Oje.Infrastructure.Exceptions
         Jsut_One_Role = 327,
         [Display(Name = "زمان وارد شده معتبر نمی باشد")]
         Invalid_Time = 328,
+        [Display(Name = "کد معرف کاربر تکراری می باشد")]
+        Dublicate_User_RefferCode = 329,
+        [Display(Name = "کد معرف مجاز نمی باشد")]
+        Invalid_RefferCode = 330,
     }
 }

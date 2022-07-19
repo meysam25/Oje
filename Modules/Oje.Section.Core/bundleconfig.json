@@ -168,6 +168,16 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/css/mainLogin.css",
+    "inputFiles": [
+      "wwwroot/css/mainLogin.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/css/core.min.css",
     "inputFiles": [
       "wwwroot/css/bootstrap.min.css",

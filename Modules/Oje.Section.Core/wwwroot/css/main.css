@@ -566,6 +566,10 @@ input[type=checkbox] + label, input[type=checkbox] {
     align-items: start;
 }
 
+.makeModalMinH100WithNoAlignItem {
+    max-width: unset !important;
+}
+
 .btn-roundMoreGridDetailes {
     -moz-border-radius: 15px;
     -webkit-border-radius: 15px;
@@ -815,7 +819,7 @@ input[type=checkbox] + label, input[type=checkbox] {
 
 .tabButtonBoxHolder {
     text-align: center;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .tabButtonBox {
@@ -867,9 +871,10 @@ input[type=checkbox] + label, input[type=checkbox] {
     cursor: pointer;
     position: relative;
 }
+
     .tabButtonIcon:before {
-        position:relative;
-        z-index:2;
+        position: relative;
+        z-index: 2;
     }
 
     .tabButtonIcon > span {
@@ -907,9 +912,9 @@ input[type=checkbox] + label, input[type=checkbox] {
     transform: scale(1.2);
 }
 
-.form-check{
-    padding-top:3px;
-    padding-bottom:9px;
+.form-check {
+    padding-top: 3px;
+    padding-bottom: 9px;
 }
 
 @media (max-width: 400px) {
@@ -918,8 +923,9 @@ input[type=checkbox] + label, input[type=checkbox] {
         height: 36px !important;
     }
 }
+
 .hasSort {
-    display:table-cell !important;
+    display: table-cell !important;
 }
 
 .myFileUpload label {
@@ -929,4 +935,7 @@ input[type=checkbox] + label, input[type=checkbox] {
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
+}
+.form-control[readonly] {
+    background-color:white;
 }
