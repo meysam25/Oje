@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangeNotIssue" ],
           "id": "MyNotIssueProposalFilledFormGrid",
           "topActions": [
             {

@@ -127,9 +127,10 @@ namespace Oje.ProposalFormService.Services
                             siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id,
                             UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro())
                         );
-                    newFormId = newForm.Id;
 
                     tr.Commit();
+
+                    newFormId = newForm.Id;
 
                     if (RoleService.IsUserInRole(loginUserId, "user"))
                         targetUrl = "/Proposal/Detaile";

@@ -23,18 +23,22 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         readonly ISiteSettingService SiteSettingService = null;
         readonly Interfaces.IRoleService RoleService = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
+        readonly IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService = null;
+
         public UserFilledRegisterFormController
             (
                 IUserFilledRegisterFormService UserFilledRegisterFormService,
                 ISiteSettingService SiteSettingService,
                 Interfaces.IRoleService RoleService,
-                IUserRegisterFormService UserRegisterFormService
+                IUserRegisterFormService UserRegisterFormService,
+                IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService
             )
         {
             this.UserFilledRegisterFormService = UserFilledRegisterFormService;
             this.SiteSettingService = SiteSettingService;
             this.RoleService = RoleService;
             this.UserRegisterFormService = UserRegisterFormService;
+            this.UserFilledRegisterFormCardPaymentService = UserFilledRegisterFormCardPaymentService;
         }
 
         [AreaConfig(Title = "کاربران ثبت نام کرده", Icon = "fa-user", IsMainMenuItem = true)]
@@ -117,6 +121,20 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         public ActionResult GetFormList()
         {
             return Json(UserRegisterFormService.GetLightList2(SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست کارت به کارت", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetPaymentList([FromForm] UserRegisterFormPaymentMainGrid searchInput)
+        {
+            return Json(UserFilledRegisterFormCardPaymentService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, null, null));
+        }
+
+        [AreaConfig(Title = "حذف کارت به کارت", Icon = "fa-trash-o")]
+        [HttpPost]
+        public IActionResult DeletePayment([FromForm] GlobalLongId input)
+        {
+            return Json(UserFilledRegisterFormCardPaymentService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, null, null));
         }
     }
 }

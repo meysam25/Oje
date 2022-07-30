@@ -12,6 +12,9 @@ namespace Oje.Section.RegisterForm.Models.DB
             UserRegisterFormRequiredDocumentTypes = new();
             UserFilledRegisterForms = new();
             UserRegisterFormPrices = new();
+            UserRegisterFormDiscountCodes = new();
+            UserRegisterFormCompanies = new();
+            UserRegisterFormPrintDescrptions = new();
         }
 
         [Key]
@@ -45,5 +48,11 @@ namespace Oje.Section.RegisterForm.Models.DB
         public List<UserFilledRegisterForm> UserFilledRegisterForms { get; set; }
         [InverseProperty("UserRegisterForm")]
         public List<UserRegisterFormPrice> UserRegisterFormPrices { get; set; }
+        [InverseProperty("UserRegisterForm")]
+        public List<UserRegisterFormDiscountCode> UserRegisterFormDiscountCodes { get; set; }
+        [InverseProperty("UserRegisterForm")]
+        public List<UserRegisterFormCompany> UserRegisterFormCompanies { get; set; }
+        [InverseProperty("UserRegisterForm")]
+        public List<UserRegisterFormPrintDescrption> UserRegisterFormPrintDescrptions { get; set; }
     }
 }

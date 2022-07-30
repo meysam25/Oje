@@ -23,6 +23,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         readonly ISiteSettingService SiteSettingService = null;
         readonly Interfaces.IRoleService RoleService = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
+        readonly IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService = null;
 
         static readonly bool isPayed = false;
         static readonly bool isDone = false;
@@ -32,13 +33,15 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
                 IUserFilledRegisterFormService UserFilledRegisterFormService,
                 ISiteSettingService SiteSettingService,
                 Interfaces.IRoleService RoleService,
-                 IUserRegisterFormService UserRegisterFormService
+                IUserRegisterFormService UserRegisterFormService,
+                IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService
             )
         {
             this.UserFilledRegisterFormService = UserFilledRegisterFormService;
             this.SiteSettingService = SiteSettingService;
             this.RoleService = RoleService;
             this.UserRegisterFormService = UserRegisterFormService;
+            this.UserFilledRegisterFormCardPaymentService = UserFilledRegisterFormCardPaymentService;
         }
 
         [AreaConfig(Title = "کاربران ثبت نام کرده پرداخت نشده", Icon = "fa-user", IsMainMenuItem = true)]
@@ -121,6 +124,20 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         public ActionResult GetFormList()
         {
             return Json(UserRegisterFormService.GetLightList2(SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست کارت به کارت", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetPaymentList([FromForm] UserRegisterFormPaymentMainGrid searchInput)
+        {
+            return Json(UserFilledRegisterFormCardPaymentService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
+        }
+
+        [AreaConfig(Title = "حذف کارت به کارت", Icon = "fa-trash-o")]
+        [HttpPost]
+        public IActionResult DeletePayment([FromForm] GlobalLongId input)
+        {
+            return Json(UserFilledRegisterFormCardPaymentService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
     }
 }

@@ -570,7 +570,7 @@ $.fn.initMyGrid = function (option) {
                                 if (this.pKey)
                                     postData.append('pKey', this.pKey);
                                 showLoader($(this.curThis).closest('.myGridCTRL'))
-                                postForm(this.url, postData, function () { $(this).closest('.myGridCTRL')[0].refreshData(); }.bind(this.curThis), null, function () { hideLoader($(this).closest('.myGridCTRL')) }.bind(this.curThis));
+                                postForm(this.url, postData, function () { $(this).closest('.myGridCTRL')[0].refreshData(); updateDashboardGridCountIfExist(); }.bind(this.curThis), null, function () { hideLoader($(this).closest('.myGridCTRL')) }.bind(this.curThis));
                             }.bind({ url, id, curThis: this, pKey: pKey }));
                         }
                     });

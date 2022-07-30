@@ -26,6 +26,9 @@ namespace Oje.PaymentService.Models.DB
         public int? CountTry { get; set; }
         public string LastErrorMessage { get; set; }
         public BankAccountType? BankAccountType { get; set; }
+        public long? KeyHash { get; set; }
+        [MaxLength(100)]
+        public string Token { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

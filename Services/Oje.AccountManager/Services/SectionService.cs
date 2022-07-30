@@ -347,7 +347,7 @@ namespace Oje.AccountService.Services
                         .Include(t => t.UserAdminLogConfigs)
                         .Include(t => t.UserAdminLogs)
                         .Include(t => t.RoleActions)
-                        .Include(t => t.DashboardSections)
+                        .Include(t => t.DashboardSections).ThenInclude(t => t.DashboardSectionUserNotificationTypes)
                         .Where(t => t.Name == action)
                         .FirstOrDefault();
                     if (foundAction != null)
@@ -363,7 +363,12 @@ namespace Oje.AccountService.Services
                                 db.Entry(temp1).State = EntityState.Deleted;
                         if (foundAction.DashboardSections != null)
                             foreach (var temp1 in foundAction.DashboardSections)
+                            {
+                                if(temp1.DashboardSectionUserNotificationTypes != null && temp1.DashboardSectionUserNotificationTypes.Any())
+                                    foreach(var temp2 in temp1.DashboardSectionUserNotificationTypes)
+                                        db.Entry(temp2).State = EntityState.Deleted;
                                 db.Entry(temp1).State = EntityState.Deleted;
+                            }
                         db.Entry(foundAction).State = EntityState.Deleted;
                     }
                 }

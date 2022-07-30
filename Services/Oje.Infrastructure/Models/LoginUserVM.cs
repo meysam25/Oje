@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oje.Infrastructure.Models
 {
@@ -16,5 +12,6 @@ namespace Oje.Infrastructure.Models
         public string sessionFileName { get; set; }
         public List<string> roles { get; set; }
         public string browserName { get; set; }
+        public bool? hasAutoRefres { get; set; }
     }
 }

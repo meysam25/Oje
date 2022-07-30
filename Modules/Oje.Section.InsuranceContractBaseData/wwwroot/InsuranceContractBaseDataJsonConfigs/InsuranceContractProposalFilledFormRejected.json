@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "CreateNewDamageClime", "DamageClimeStatusChange", "DamageClimeSetPrice" ],
           "id": "InsuranceContractProposalFilledFormRejectedGrid",
           "exportToExcelUrl": "/InsuranceContractBaseData/InsuranceContractProposalFilledFormRejected/Export",
           "showColumnConfigButton": true,

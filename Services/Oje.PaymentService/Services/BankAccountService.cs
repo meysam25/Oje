@@ -180,7 +180,7 @@ namespace Oje.PaymentService.Services
 
             var qureResult = db.BankAccounts.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId && t.IsForPayment == true);
             if (!string.IsNullOrEmpty(searchInput.search))
-                qureResult = qureResult.Where(t => (t.Title + "(" + t.CardNo + " " + t.HesabNo + ")").Contains(searchInput.search));
+                qureResult = qureResult.Where(t => (t.Title + "(" + t.CardNo + "-" + t.HesabNo + ")").Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
             if (qureResult.Count() >= 50)
                 hasPagination = true;
@@ -203,6 +203,7 @@ namespace Oje.PaymentService.Services
                 qureResult = qureResult.Where(t => t.UserId == userId);
 
             return qureResult
+                .Where(t => t.IsActive == true && t.IsForPayment == true)
                 .OrderByDescending(t => t.Id)
                 .Select(t => new
                 {
@@ -212,7 +213,6 @@ namespace Oje.PaymentService.Services
                     accountTitle = t.Title,
                     bankIcon = t.Bank.Pic
                 })
-                .Take(1)
                 .Select(t => new BankAccountPaymentUserVM
                 {
                     accountTitle = t.accountTitle,

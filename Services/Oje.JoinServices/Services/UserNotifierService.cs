@@ -23,9 +23,9 @@ namespace Oje.JoinServices.Services
             this.EmailTrigerService = EmailTrigerService;
         }
 
-        public void Notify(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink, object exteraParameter = null)
+        public void Notify(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink, object exteraParameter = null, bool isModal = false)
         {
-            UserNotificationTrigerService.CreateNotificationForUser(userId, type, exteraUserList, objectId, title, siteSettingId, openLink, exteraParameter);
+            UserNotificationTrigerService.CreateNotificationForUser(userId, type, exteraUserList, objectId, title, siteSettingId, openLink, exteraParameter, isModal);
             SmsTrigerService.CreateSmsQue(userId, type, exteraUserList, objectId, title, siteSettingId, exteraParameter);
             EmailTrigerService.CreateEmailQue(userId, type, exteraUserList, objectId, title, siteSettingId, exteraParameter);
         }

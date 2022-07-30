@@ -30,6 +30,7 @@ namespace Oje.AccountService.Models.DB
             ToUserUserMessages = new();
             UserMessageReplies = new();
             UserAdminLogs = new();
+            UserRequestActions = new();
         }
 
         [Key]
@@ -152,6 +153,8 @@ namespace Oje.AccountService.Models.DB
         public List<UserMessageReply> UserMessageReplies { get; set; }
         [InverseProperty("User")]
         public List<UserAdminLog> UserAdminLogs { get; set; }
+        [InverseProperty("User")]
+        public List<UserRequestAction> UserRequestActions { get; set; }
 
     }
 }

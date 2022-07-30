@@ -103,7 +103,7 @@
 <body dir="rtl" class="makeRTL">
     <div class="wrapper">
         <header id="headerTagHolder">
-            <section class="topHeader">
+            <section style="padding-bottom:8px;" class="topHeader">
                 <div class="myContainer">
                     <a id="mainSiteLogoIcon" title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
                     <div id="placeholderTopLeftIcon"></div>
@@ -156,30 +156,19 @@
         <footer>
             <section class="footerSection">
                 <div class="myContainer">
-                    <div class="footerSharingAndCopyRightSection">
+                    <div style="min-height:50px;" class="footerSharingAndCopyRightSection">
                         <div class="footerCopyRightSection">
                             کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به @(curSetting.Title) می‌باشد.
                         </div>
-                        <div class="footerCenterSection">
-                            @{
-                                if (!string.IsNullOrEmpty(curSetting.ImageText))
-                                {
-                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo2" href="/">
-                                        <img alt="@(curSetting.Title)" width="100" height="37" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo2" href="/">@(Context.Request.Host)</a>
-                                }
-                            }
+                        <div style="display:block;" class="footerCenterSection">
+                             مرکز تماس:
+                            <a id="supportPhone" ></a>
                         </div>
                         <div class="footerSharingIconSection">
                             <a id="aTelegeram" title="تلگرام" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>
                             <a id="aWhatapp" title="واتساپ" href="#"><img width="28" height="28" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
                             <a id="aInestageram" title="اینستاگرام" href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagramsilver.svg" data-alt-src="/Modules/Assets/MainPage/instagram.svg" /></a>
                             <a id="aLinkin" title="لینکدین" href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedinsilver.svg" data-alt-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
-                            <a id="supportPhone" ></a>
                         </div>
                         <script>
                             bindFooterIcons();

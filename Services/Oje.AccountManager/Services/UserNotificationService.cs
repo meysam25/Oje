@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Oje.AccountService.Hubs;
 using Oje.AccountService.Interfaces;
@@ -21,7 +22,14 @@ namespace Oje.AccountService.Services
         readonly ISiteSettingService SiteSettingService = null;
         readonly IUserService UserService = null;
         readonly IHubContext<NotificationHub> NotificationHubContext = null;
-        public UserNotificationService(AccountDBContext db, ISiteSettingService SiteSettingService, IUserService UserService, IHubContext<NotificationHub> NotificationHubContext)
+
+        public UserNotificationService
+            (
+                AccountDBContext db,
+                ISiteSettingService SiteSettingService,
+                IUserService UserService,
+                IHubContext<NotificationHub> NotificationHubContext
+            )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
@@ -34,7 +42,7 @@ namespace Oje.AccountService.Services
             if (userNotification != null && siteSettingId.ToIntReturnZiro() > 0 && userNotification.UserId > 0 && !string.IsNullOrEmpty(userNotification.Subject) && !string.IsNullOrEmpty(userNotification.Description))
             {
                 db.Entry(userNotification).State = EntityState.Added;
-                NotificationHub.SendNotification(NotificationHubContext, userNotification.Subject, userNotification.Description, new List<long>() { userNotification.UserId }, siteSettingId.ToIntReturnZiro());
+                NotificationHub.SendNotification(NotificationHubContext, userNotification.Subject, userNotification.Description, new List<long>() { userNotification.UserId }, siteSettingId.ToIntReturnZiro(), userNotification.IsModal.ToBooleanReturnFalse(), userNotification.Type);
             }
         }
 

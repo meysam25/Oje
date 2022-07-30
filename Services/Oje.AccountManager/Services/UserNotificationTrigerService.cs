@@ -53,7 +53,7 @@ namespace Oje.AccountService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public void CreateNotificationForUser(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink, object exteraParameter)
+        public void CreateNotificationForUser(long? userId, UserNotificationType type, List<PPFUserTypes> exteraUserList, long? objectId, string title, int? siteSettingId, string openLink, object exteraParameter, bool isModal)
         {
             var foundTemplates = UserNotificationTemplateService.GetBy(type, siteSettingId);
             string userFullname = UserService.GetUserFullName(siteSettingId, userId);
@@ -86,7 +86,8 @@ namespace Oje.AccountService.Services
                                     SiteSettingId = siteSettingId.Value,
                                     Type = type,
                                     UserId = fUserId,
-                                    TargetPageLink = openLink
+                                    TargetPageLink = openLink,
+                                    IsModal = isModal
                                 }, siteSettingId);
                             }
 
@@ -102,7 +103,8 @@ namespace Oje.AccountService.Services
                                     SiteSettingId = siteSettingId.Value,
                                     Type = type,
                                     UserId = fUserId.userId,
-                                    TargetPageLink = openLink
+                                    TargetPageLink = openLink,
+                                    IsModal = isModal
                                 }, siteSettingId);
                             }
                         }
@@ -127,7 +129,8 @@ namespace Oje.AccountService.Services
                                 SiteSettingId = siteSettingId.Value,
                                 Type = type,
                                 UserId = foundTargetUser.userId,
-                                TargetPageLink = openLink
+                                TargetPageLink = openLink,
+                                IsModal = isModal
                             }, siteSettingId);
                         }
                     }

@@ -159,6 +159,9 @@ namespace Oje.AccountService.Filters
                     else
                         context.Result = new ViewResult { ViewName = "AccessDenied" };
                 }
+
+                if (noAccess == true && loginUser != null && loginUser.UserId > 0)
+                    UserService.CreateUserAccessRequest(loginUser.UserId, requestPath);
             }
         }
 

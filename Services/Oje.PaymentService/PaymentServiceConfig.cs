@@ -26,6 +26,9 @@ namespace Oje.PaymentService
             services.AddScoped<IWalletTransactionService, WalletTransactionService>();
             services.AddScoped<ITitakUserService, TitakUserService>();
             services.AddScoped<ITiTecService, TiTecService>();
+            services.AddScoped<IBankAccountSadadService, BankAccountSadadService>();
+            services.AddScoped<IBankAccountSadadPaymentService, BankAccountSadadPaymentService>();
+            services.AddScoped<IUserFilledRegisterFormService, UserFilledRegisterFormService>();
         }
 
         public static void ConfigWorker(IServiceCollection services)

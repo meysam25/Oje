@@ -110,13 +110,17 @@ namespace Oje.Section.RegisterForm.Services
                         db.SaveChanges();
                     }
 
+                    if (newUser.UserRoles != null && newUser.UserRoles.Count > 0)
+                        foreach (var userrole in newUser.UserRoles)
+                            db.Entry(userrole).State = EntityState.Deleted;
+
                     if (roleIds != null && roleIds.Count > 0)
                     {
                         foreach (var roleId in roleIds)
                             if (newUser.UserRoles == null || !newUser.UserRoles.Any(t => t.RoleId == roleId))
                                 db.Entry(new UserRole() { RoleId = roleId, UserId = newUser.Id }).State = EntityState.Added;
-                        db.SaveChanges();
                     }
+                    db.SaveChanges();
 
                     userId = newUser.Id;
 
@@ -235,11 +239,11 @@ namespace Oje.Section.RegisterForm.Services
 
         public RegisterGetUserInfoResultVM GetUserInfo(int? siteSettingId, registerGetUserInfoVM input)
         {
-            if (siteSettingId.ToIntReturnZiro() > 0 && input != null && input.company.ToIntReturnZiro() > 0 && input.realOrLegaPerson != null && input.licenceNumber.ToLongReturnZiro() > 0)
+            if (siteSettingId.ToIntReturnZiro() > 0 && input != null && input.company.ToIntReturnZiro() > 0 && input.licenceNumber.ToLongReturnZiro() > 0 && input.realOrLegaPerson != null)
             {
                 var foundUser = db.Users
                     .Where(t => t.SiteSettingId == siteSettingId && t.AgentCode == input.licenceNumber && t.UserCompanies.Any(tt => tt.CompanyId == input.company) && t.RealOrLegaPerson == input.realOrLegaPerson)
-                    .Select(t => new 
+                    .Select(t => new
                     {
                         t.LicenceExpireDate,
                         t.Firstname,

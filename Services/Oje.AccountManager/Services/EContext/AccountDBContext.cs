@@ -45,6 +45,8 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<UserMessageReply> UserMessageReplies { get; set; }
         public DbSet<LoginDescrption> LoginDescrptions { get; set; }
         public DbSet<LoginBackgroundImage> LoginBackgroundImages { get; set; }
+        public DbSet<UserRequestAction> UserRequestActions { get; set; }
+        public DbSet<DashboardSectionUserNotificationType> DashboardSectionUserNotificationTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +56,8 @@ namespace Oje.AccountService.Services.EContext
             modelBuilder.Entity<Property>().HasKey(t => new { t.Name, t.SiteSettingId, t.Type });
             modelBuilder.Entity<SectionCategorySection>().HasKey(t => new { t.SectionId, t.SectionCategoryId });
             modelBuilder.Entity<ControllerCategoryController>().HasKey(t => new { t.ControllerId, t.ControllerCategoryId });
+            modelBuilder.Entity<UserRequestAction>().HasKey(t => new { t.UserId, t.ActionId});
+            modelBuilder.Entity<DashboardSectionUserNotificationType>().HasKey(t => new { t.DashboardSectionId, t.Type});
 
 
             modelBuilder.Entity<User>().Property(e => e.MapLat).HasPrecision(18, 15);

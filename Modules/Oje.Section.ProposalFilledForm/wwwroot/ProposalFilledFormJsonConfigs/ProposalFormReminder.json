@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "ProposalFormReminder" ],
           "id": "ProposalFormReminderGrid",
           "topActions": [
             {

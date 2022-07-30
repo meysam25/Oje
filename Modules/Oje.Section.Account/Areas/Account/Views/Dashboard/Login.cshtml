@@ -68,7 +68,8 @@
 </style>
 }
 
-<span class="showLoginModal" ><span>ورود به سامانه</span><i class="fa fa-user" ></i></span>
+<a href="/" class="moveToHomeButton" ><i class="fa fa-home" ></i><span>بازگشت به صفحه خانه</span></a>
+<span class="showLoginModal" ><i class="fa fa-user" ></i><span>ورود به سامانه</span></span>
 
 <div id="loginBodySeciton" class="myContainer" style="text-align:center;">
     <div class="tempLoginSectionF" style="">
@@ -108,7 +109,14 @@
                     id: 'loginDescriptionModal',
                     title: 'توجه',
                     modelBody: res.desc,
-                    class: "makeImage100P"
+                    class: "makeImage100P",
+                    actions: [
+                        {
+                          "title": "متوجه شدم",
+                          "onClick": "closeThisModal(this)",
+                          "class": "btn-secondary"
+                        }
+                    ]
                 });
 
                 $('body').append(modalHtml);

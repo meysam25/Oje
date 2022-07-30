@@ -41,14 +41,13 @@ namespace Oje.ProposalFormService.Services
                             GlobalInputInqueryId = result,
                             Key = prop.Name,
                             Value = prop.GetValue(input) + "",
-                            Title = prop.GetCustomAttributes(typeof(DisplayAttribute), false).Cast<DisplayAttribute>().FirstOrDefault()?.Name
+                            Title = prop.GetCustomAttributes(typeof(DisplayAttribute), false).Cast<DisplayAttribute>().FirstOrDefault()?.Name,
+                            ShowInDetailes = prop.GetCustomAttributes(typeof(DisplayAttribute), false).Cast<DisplayAttribute>().FirstOrDefault()?.Description
                         };
                         if (string.IsNullOrEmpty(newInqueryParameter.Title))
                             newInqueryParameter.Title = prop.Name;
                         if (!string.IsNullOrEmpty(newInqueryParameter.Value) && !string.IsNullOrEmpty(newInqueryParameter.Key))
-                        {
                             db.Entry(newInqueryParameter).State = EntityState.Added;
-                        }
                     }
                     if (inqeryExteraParameters != null && inqeryExteraParameters.Count > 0)
                     {
@@ -63,9 +62,7 @@ namespace Oje.ProposalFormService.Services
                             };
 
                             if (!string.IsNullOrEmpty(newInqueryParameter.Value) && !string.IsNullOrEmpty(newInqueryParameter.Key))
-                            {
                                 db.Entry(newInqueryParameter).State = EntityState.Added;
-                            }
                         }
                     }
                     db.SaveChanges();

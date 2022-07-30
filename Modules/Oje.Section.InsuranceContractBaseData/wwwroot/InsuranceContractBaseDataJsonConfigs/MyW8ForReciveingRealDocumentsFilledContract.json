@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "CreateNewDamageClime", "DamageClimeStatusChange", "DamageClimeSetPrice" ],
           "id": "MyW8ForReciveingRealDocumentsFilledContractGrid",
           "actions": {
             "cActions": [

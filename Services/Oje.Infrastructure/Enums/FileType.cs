@@ -89,6 +89,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "پس زمینه صفحه لاگین", Description = "~2000*2000")]
         LoginBackground = 42,
         [Display(Name = "تصویر اسلایدر صفحه", Prompt = "PageSlider", Description = "1900*380", AutoGenerateField = false)]
-        PageSlider = 43
+        PageSlider = 43,
+        [Display(Name = "تصویر پرداخت کارت به کارت", Prompt = "UserRigisterPaymentFile", Description = "1000*1000")]
+        UserRigisterPaymentFile = 44
     }
 }

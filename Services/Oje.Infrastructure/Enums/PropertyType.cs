@@ -22,5 +22,7 @@ namespace Oje.Infrastructure.Enums
         FooterIcon = 8,
         [Display(Name = "تماس با ما")]
         ContactUs = 9,
+        [Display(Name = "شماره پرداخت کارت به کارت")]
+        UserFilledRegisterFormTargetBankCardNo = 10,
     }
 }

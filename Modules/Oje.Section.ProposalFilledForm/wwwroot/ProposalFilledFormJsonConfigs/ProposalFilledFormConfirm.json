@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangeW8ForConfirm" ],
           "id": "ProposalFilledFormConfirmGrid",
           "exteraSearchIds": [ "ProposalFilledFormConfirmgridSearchModal" ],
           "exteraFilterModalId": "ProposalFilledFormConfirmgridSearchModal",
@@ -1014,7 +1015,7 @@
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "mainFile",
               "type": "file",
-              "label": "مدرک فرم صادر شده",
+              "label": "تصویر یا فایل بیمه نامه صادر شده",
               "acceptEx": ".jpg,.jpeg,.png,.doc,.docx,.pdf",
               "hideImagePreview": true
             }

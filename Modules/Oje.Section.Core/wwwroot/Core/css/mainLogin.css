@@ -1,8 +1,11 @@
-
-.headerMenu
-{
-    display:none;
+main {
+    min-height: 300px;
 }
+
+.headerMenu {
+    display: none;
+}
+
 .showLoginModal {
     position: absolute;
     right: 0px;
@@ -25,27 +28,64 @@
     transition: 0.1s;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none; 
-    -moz-user-select: none; 
+    -khtml-user-select: none;
+    -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    max-width: 50px;
+    overflow: hidden;
+    padding-right: 13px;
 }
-    .showLoginModal:hover {
-        right:-10px;
+    .showLoginModal:hover{
+        max-width:300px;
     }
-    .showLoginModal i {
-        font-size: 1.9em;
-        line-height: 38px;
-        display: inline-block;
-    }
-.showLoginModal span {
-    display:inline-block;
-    margin-left:10px;
-    vertical-align:7px;
-    padding-right:10px;
-    font-weight:bold;
 
+    .moveToHomeButton {
+        position: absolute;
+        line-height: 38px;
+        font-size: 1.1em;
+        background-color: rgba(0,0,0,0.7);
+        height: 40px;
+        -webkit-border-bottom-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        -webkit-border-top-left-radius: 50px;
+        border-top-left-radius: 50px;
+        top: 140px;
+        right: 0px;
+        color: white;
+        max-width: 40px;
+        overflow: hidden;
+        cursor: pointer;
+        -moz-transition: 0.3s;
+        -o-transition: 0.3s;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+    }
+
+    .moveToHomeButton:hover {
+        max-width:300px;
+    }
+
+.showLoginModal:hover {
+    right: -10px;
 }
+
+.showLoginModal i, .moveToHomeButton i {
+    font-size: 1.9em;
+    line-height: 38px;
+    display: inline-block;
+    color: white;
+}
+
+.showLoginModal span, .moveToHomeButton span {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: 6px;
+    padding-right: 10px;
+    font-weight: bold;
+    color:white;
+}
+
 .tempLoginSectionF {
     position: absolute;
     top: 50%;
@@ -70,11 +110,13 @@
     animation-duration: 1s;
     animation-fill-mode: forwards;
 }
+
 .showLoginRevert .showLoginModal {
     animation-name: loginButtonAnimeInvert;
     animation-duration: 1s;
     animation-fill-mode: forwards;
 }
+
 .closeLoginButton {
     position: absolute;
     left: 20px;
@@ -109,18 +151,23 @@
     40% {
         right: 55%;
     }
+
     60% {
         right: 47%;
     }
+
     70% {
         right: 52%;
     }
+
     80% {
         right: 49%;
     }
+
     90% {
         right: 51%;
     }
+
     100% {
         right: 50%;
     }
@@ -169,20 +216,32 @@
 
 @media (max-width: 700px) {
     .showLoginModal {
+        display: none;
+    }
+    .moveToHomeButton{
         display:none;
     }
+
     .closeLoginButton {
-        display:none;
+        display: none;
     }
 }
 
 @media (max-width: 550px) {
-    .tempLoginSectionF{
-        margin-right:-200px;
+    .tempLoginSectionF {
+        margin-right: -200px;
     }
 }
+
 @media (max-width: 400px) {
     .tempLoginSectionF {
         margin-right: -175px;
+    }
+}
+
+@media (max-height: 590px) {
+    .tempLoginSectionF {
+        top: 70px;
+        margin-top: 0px;
     }
 }

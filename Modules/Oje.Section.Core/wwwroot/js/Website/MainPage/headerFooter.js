@@ -22,7 +22,14 @@ function bindTopLeftIcons() {
                         id: uuidv4RemoveDash(),
                         title: title,
                         modelBody: desc,
-                        class: "makeImage100"
+                        class: "makeImage100",
+                        actions: [
+                            {
+                                "title": "متوجه شدم",
+                                "onClick": "closeThisModal(this)",
+                                "class": "btn-secondary"
+                            }
+                        ]
                     };
                     $(this).attr('data-modal-id', modalObj.id);
                     $('body').append(getModualTemplate(modalObj))

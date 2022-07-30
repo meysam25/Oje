@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace Oje.Section.RegisterForm.Services
 {
-    public class UserFilledRegisterFormService : IUserFilledRegisterFormService
+    public class UserFilledRegisterFormService : Interfaces.IUserFilledRegisterFormService
     {
         readonly RegisterFormDBContext db = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
@@ -35,6 +35,10 @@ namespace Oje.Section.RegisterForm.Services
         readonly IBankAccountFactorService BankAccountFactorService = null;
         readonly IUserNotifierService UserNotifierService = null;
         readonly IUserRegisterFormPriceService UserRegisterFormPriceService = null;
+        readonly IUserRegisterFormDiscountCodeService UserRegisterFormDiscountCodeService = null;
+        readonly IUserRegisterFormCompanyService UserRegisterFormCompanyService = null;
+        readonly IUserRegisterFormPrintDescrptionService UserRegisterFormPrintDescrptionService = null;
+        readonly IBankService BankService = null;
 
         public UserFilledRegisterFormService
             (
@@ -50,10 +54,15 @@ namespace Oje.Section.RegisterForm.Services
                 Interfaces.IUserService UserService,
                 IBankAccountFactorService BankAccountFactorService,
                 IUserNotifierService UserNotifierService,
-                IUserRegisterFormPriceService UserRegisterFormPriceService
+                IUserRegisterFormPriceService UserRegisterFormPriceService,
+                IUserRegisterFormDiscountCodeService UserRegisterFormDiscountCodeService,
+                IUserRegisterFormCompanyService UserRegisterFormCompanyService,
+                IUserRegisterFormPrintDescrptionService UserRegisterFormPrintDescrptionService,
+                IBankService BankService
             )
         {
             this.db = db;
+            this.UserRegisterFormPrintDescrptionService = UserRegisterFormPrintDescrptionService;
             this.UserFilledRegisterFormJsonService = UserFilledRegisterFormJsonService;
             this.UserRegisterFormService = UserRegisterFormService;
             this.UserRegisterFormRequiredDocumentService = UserRegisterFormRequiredDocumentService;
@@ -66,6 +75,9 @@ namespace Oje.Section.RegisterForm.Services
             this.BankAccountFactorService = BankAccountFactorService;
             this.UserNotifierService = UserNotifierService;
             this.UserRegisterFormPriceService = UserRegisterFormPriceService;
+            this.UserRegisterFormDiscountCodeService = UserRegisterFormDiscountCodeService;
+            this.UserRegisterFormCompanyService = UserRegisterFormCompanyService;
+            this.BankService = BankService;
         }
 
         public object Create(int? siteSettingId, IFormCollection form, IpSections ipSections, long? parentUserId, long? userId)
@@ -81,6 +93,8 @@ namespace Oje.Section.RegisterForm.Services
             // catch (Exception ex) { throw ex; }
             createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId);
 
+            var allCtrls = ppfObj.GetAllListOf<ctrl>();
+
             var foundPrice = UserRegisterFormPriceService.GetPriceBy(formId, siteSettingId, form.GetStringIfExist("price").ToIntReturnZiro(), form.GetStringIfExist("likeToMarketing"));
             if (form.GetStringIfExist("price").ToIntReturnZiro() > 0 && foundPrice == null)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
@@ -88,15 +102,57 @@ namespace Oje.Section.RegisterForm.Services
             var foundRefferCode = ppfObj.GetAllListOf<ctrl>().Where(t => t.name == "refferCode").FirstOrDefault();
             if (foundRefferCode == null && !string.IsNullOrEmpty(form.GetStringIfExist("refferCode")))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!allCtrls.Any(t => t.name == "discountCode") && !string.IsNullOrEmpty(form.GetStringIfExist("discountCode")))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            UserRegisterFormDiscountCode foundDiscountCode = null;
+
+            if (!string.IsNullOrEmpty(form.GetStringIfExist("discountCode")))
+            {
+                foundDiscountCode = UserRegisterFormDiscountCodeService.GetBy(form.GetStringIfExist("discountCode"), siteSettingId, formId);
+                if (foundDiscountCode == null)
+                    throw BException.GenerateNewException(BMessages.Invalid_Discount_Code);
+            }
 
             using (var tr = db.Database.BeginTransaction())
             {
                 try
                 {
-                    UserFilledRegisterForm newItem = createNewItem(siteSettingId, ipSections, formId, foundPrice?.Price ?? 0, userId, form.GetStringIfExist("company"), form.GetStringIfExist("provinceId").ToIntReturnZiro(), form.GetStringIfExist("cityId").ToIntReturnZiro(), form.GetStringIfExist("refferCode"));
+                    UserFilledRegisterForm newItem =
+                        createNewItem(
+                            siteSettingId,
+                            ipSections,
+                            formId,
+                            foundPrice?.Price ?? 0,
+                            userId,
+                            form.GetStringIfExist("company"),
+                            form.GetStringIfExist("provinceId").ToIntReturnZiro(),
+                            form.GetStringIfExist("cityId").ToIntReturnZiro(),
+                            form.GetStringIfExist("refferCode"),
+                            foundDiscountCode
+                            );
                     UserFilledRegisterFormJsonService.Create(foundJsonFormStr, newItem.Id);
                     UserFilledRegisterFormValueService.CreateByJsonConfig(ppfObj, newItem.Id, form);
                     createUploadedFiles(siteSettingId, form, newItem.Id);
+
+
+
+                    UserNotifierService.Notify
+                        (
+                            userId,
+                            UserNotificationType.NewUserFilledRegisterForm,
+                            new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(userId, ProposalFilledFormUserType.OwnerUser) },
+                            newItem.Id,
+                            ppfObj.panels[0].title,
+                            siteSettingId, "/RegisterFormAdmin/UserFilledRegisterForm/Index",
+                            new
+                            {
+                                province = allCtrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/Core/BaseData/GetProvinceList".ToLower()).FirstOrDefault()?.defV,
+                                city = allCtrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/Core/BaseData/GetCityList2".ToLower()).FirstOrDefault()?.defV,
+                                company = allCtrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/Register/GetCompanyList".ToLower()).FirstOrDefault()?.defV,
+                                licenceNumber = form.GetStringIfExist("licenceNumber"),
+                            }
+                        );
 
                     tr.Commit();
                     newFormId = newItem.Id;
@@ -136,7 +192,7 @@ namespace Oje.Section.RegisterForm.Services
             }
         }
 
-        private UserFilledRegisterForm createNewItem(int? siteSettingId, IpSections ipSections, int formId, long price, long? userId, string companyIds, int provinceId, int cityId, string refferCode)
+        private UserFilledRegisterForm createNewItem(int? siteSettingId, IpSections ipSections, int formId, long price, long? userId, string companyIds, int provinceId, int cityId, string refferCode, UserRegisterFormDiscountCode foundDiscountCode)
         {
             var newItem = new UserFilledRegisterForm()
             {
@@ -153,11 +209,45 @@ namespace Oje.Section.RegisterForm.Services
                 RefferCode = refferCode,
                 RefferUserId = UserService.GetUserIdBy(refferCode, siteSettingId)
             };
+
+            bool isUsedDiscount = false;
+
+
             if (price > 0)
-                newItem.Price = price;
+            {
+                if (foundDiscountCode != null)
+                {
+                    if (foundDiscountCode.Price > 0)
+                    {
+                        if (foundDiscountCode.Price < price)
+                        {
+                            isUsedDiscount = true;
+                            newItem.Price = price - foundDiscountCode.Price;
+                        }
+                    }
+                    else if (foundDiscountCode.Percent > 0 && foundDiscountCode.Percent < 100)
+                    {
+                        var targetPrice = (Convert.ToDecimal(foundDiscountCode.Percent * price) / Convert.ToDecimal(100)).ToLongReturnZiro();
+                        if (targetPrice < foundDiscountCode.MaxPrice && (price - targetPrice) > 0)
+                        {
+                            newItem.Price = price - targetPrice;
+                            isUsedDiscount = true;
+                        }
+                    }
+                }
+
+                if (isUsedDiscount == false)
+                    newItem.Price = price;
+
+
+
+            }
 
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
+
+            if (isUsedDiscount == true && foundDiscountCode != null)
+                UserRegisterFormDiscountCodeService.DiscountUsed(foundDiscountCode.Id, userId, newItem.Id);
 
             if (!string.IsNullOrEmpty(companyIds))
             {
@@ -203,6 +293,48 @@ namespace Oje.Section.RegisterForm.Services
 
             validateProvinceAndCity(allCtrls, form);
             validatePriceCtrl(allCtrls, form);
+            validateCompany(allCtrls, form, siteSettingId);
+            validateBank(allCtrls, form);
+        }
+
+        private void validateBank(List<ctrl> ctrls, IFormCollection form)
+        {
+            if (ctrls != null)
+            {
+                var foundBanks = ctrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/Register/GetBankList".ToLower()).FirstOrDefault();
+                if (foundBanks != null)
+                {
+                    var foundBankValue = form.GetStringIfExist(foundBanks.name);
+                    if (!string.IsNullOrEmpty(foundBankValue))
+                    {
+                        var froundCompanyObj = BankService.GetBy(foundBankValue.ToIntReturnZiro());
+                        if (froundCompanyObj == null)
+                            throw BException.GenerateNewException(BMessages.Validation_Error);
+
+                        foundBanks.defV = froundCompanyObj.Title;
+                    }
+                }
+            }
+        }
+
+        private void validateCompany(List<ctrl> ctrls, IFormCollection form, int? siteSettingId)
+        {
+            if (ctrls != null)
+            {
+                var foundCompanyCtrl = ctrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/Register/GetCompanyList".ToLower()).FirstOrDefault();
+                if (foundCompanyCtrl != null)
+                {
+                    var foundCompanyValue = form.GetStringIfExist(foundCompanyCtrl.name);
+                    if (!string.IsNullOrEmpty(foundCompanyValue))
+                    {
+                        var froundCompanyObj = UserRegisterFormCompanyService.GetCompanyBy(foundCompanyValue.ToIntReturnZiro(), siteSettingId);
+                        if (froundCompanyObj == null)
+                            throw BException.GenerateNewException(BMessages.Validation_Error);
+
+                        foundCompanyCtrl.defV = froundCompanyObj.Title;
+                    }
+                }
+            }
         }
 
         private void validatePriceCtrl(List<ctrl> ctrls, IFormCollection form)
@@ -366,6 +498,8 @@ namespace Oje.Section.RegisterForm.Services
             }
             foreach (var step in fFoundSw.steps)
             {
+                if (step.hideOnPrint == true)
+                    continue;
                 var allCtrls = step.GetAllListOf<ctrl>();
                 List<userFilledRegisterFormDetailesGroupItemVM> ProposalFilledFormPdfGroupItems = new();
                 if (allCtrls != null && allCtrls.Count > 0)
@@ -399,10 +533,9 @@ namespace Oje.Section.RegisterForm.Services
                         }
                     }
                     if (ProposalFilledFormPdfGroupItems.Count > 0)
-                        listGroup.Add(new userFilledRegisterFormDetailesGroupVM() { title = step.title, items = ProposalFilledFormPdfGroupItems });
+                        listGroup.Add(new userFilledRegisterFormDetailesGroupVM() { title = !string.IsNullOrEmpty(step.printTitle) ? step.printTitle : step.title, items = ProposalFilledFormPdfGroupItems });
                 }
             }
-
 
             result.proposalFilledFormId = foundItem.Id;
             result.groups = listGroup;
@@ -410,9 +543,13 @@ namespace Oje.Section.RegisterForm.Services
             result.traceCode = foundItem.PaymentTraceCode;
             result.ppfTitle = foundItem.ppfTitle;
             result.id = foundItem.SiteSettingId + "/" + foundItem.UserRegisterFormId + "/" + foundItem.Id;
+            result.userRegisterFormId = foundItem.UserRegisterFormId;
             result.price = foundItem.Price;
             result.ppfCreateDate = foundItem.CreateDate.ToFaDate();
             result.paymentUserId = foundItem.PaymentUserId;
+            result.headerTemplate = UserRegisterFormPrintDescrptionService.GetBy(siteSettingId, foundItem.UserRegisterFormId, ProposalFormPrintDescrptionType.Header);
+            result.footerTemplate = UserRegisterFormPrintDescrptionService.GetBy(siteSettingId, foundItem.UserRegisterFormId, ProposalFormPrintDescrptionType.Footer);
+
             Company foundCompany = CompanyService.GetByUserFilledRegisterFormId(foundItem.Id);
             if (foundCompany != null)
             {
@@ -443,6 +580,10 @@ namespace Oje.Section.RegisterForm.Services
 
             if (!string.IsNullOrEmpty(searchInput.username))
                 qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => tt.UserFilledRegisterFormKey.Key == "mobile" && tt.Value.Contains(searchInput.username)));
+            if (!string.IsNullOrEmpty(searchInput.company))
+                qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => tt.UserFilledRegisterFormKey.Key == "company" && tt.Value.Contains(searchInput.company)));
+            if (!string.IsNullOrEmpty(searchInput.agentCode))
+                qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => tt.UserFilledRegisterFormKey.Key == "licenceNumber" && tt.Value.Contains(searchInput.agentCode)));
             if (!string.IsNullOrEmpty(searchInput.firstname))
                 qureResult = qureResult.Where(t => t.UserFilledRegisterFormValues.Any(tt => (tt.UserFilledRegisterFormKey.Key == "firstName" && tt.Value.Contains(searchInput.firstname)) || (tt.UserFilledRegisterFormKey.Key == "firstNameLegal" && tt.Value.Contains(searchInput.firstname))));
             if (!string.IsNullOrEmpty(searchInput.lastname))
@@ -490,7 +631,9 @@ namespace Oje.Section.RegisterForm.Services
                     isPayed = !string.IsNullOrEmpty(t.PaymentTraceCode),
                     traceCode = t.PaymentTraceCode,
                     t.IsDone,
-                    refferUser = t.RefferUserId > 0 ? t.RefferUser.Firstname + " " + t.RefferUser.Lastname : ""
+                    refferUser = t.RefferUserId > 0 ? t.RefferUser.Firstname + " " + t.RefferUser.Lastname : "",
+                    company = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "company").Select(tt => tt.Value).FirstOrDefault(),
+                    agentCode = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "licenceNumber").Select(tt => tt.Value).FirstOrDefault()
                 })
                 .ToList()
                 .Select(t => new UserFilledRegisterFormMainGridResultVM
@@ -506,7 +649,9 @@ namespace Oje.Section.RegisterForm.Services
                     username = t.username,
                     createDate = t.createDate.ToFaDate(),
                     isDone = t.IsDone == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
-                    refferUser = t.refferUser
+                    refferUser = t.refferUser,
+                    company = t.company,
+                    agentCode = t.agentCode
                 })
                 .ToList()
             };

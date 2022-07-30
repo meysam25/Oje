@@ -7,6 +7,7 @@ namespace Oje.AccountService.Models.View
     {
         public long? userId { get; set; }
         public string message { get; set; }
+        public bool? isModal { get; set; }
         public IFormFile mainFile { get; set; }
     }
 }

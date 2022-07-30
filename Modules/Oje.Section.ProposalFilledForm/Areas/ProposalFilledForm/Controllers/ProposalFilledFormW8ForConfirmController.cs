@@ -153,7 +153,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public ActionResult GetCompanyList()
         {
-            return Json(CompanyService.GetLightList());
+            return Json(CompanyService.GetLightList(HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt")]
@@ -344,21 +344,21 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(ProposalFilledFormDocumentService.Delete(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.W8ForConfirm));
         }
 
-        [AreaConfig(Title = "ایجاد مدرک مالی فرم پیشنهاد در انتظار تایید", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "ایجاد مدرک مالی فرم پیشنهاد در انتظار تایید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult CreateDocument([FromForm] ProposalFilledFormDocumentCreateUpdateVM input)
         {
             return Json(ProposalFilledFormDocumentService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.W8ForConfirm));
         }
 
-        [AreaConfig(Title = "ایجاد مدرک مالی فرم پیشنهاد در انتظار تایید", Icon = "fa-pencil")]
+        [AreaConfig(Title = "به روز رسانی مدرک مالی فرم پیشنهاد در انتظار تایید", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdateDocument([FromForm] ProposalFilledFormDocumentCreateUpdateVM input)
         {
             return Json(ProposalFilledFormDocumentService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.W8ForConfirm));
         }
 
-        [AreaConfig(Title = "حذف مدرک مالی فرم پیشنهاد در انتظار تایید", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "مشاهده مدرک مالی فرم پیشنهاد در انتظار تایید", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetDocument([FromForm] GlobalLongId input, [FromForm] long? pKey)
         {

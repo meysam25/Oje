@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.AccountService.Models.DB
 {
     [Table("UserNotifications")]
-    public class UserNotification: IEntityWithUserId<User, long>
+    public class UserNotification : IEntityWithUserId<User, long>
     {
         public long UserId { get; set; }
         [ForeignKey("UserId"), InverseProperty("UserNotifications")]
@@ -21,7 +21,7 @@ namespace Oje.AccountService.Models.DB
         public long? ObjectId { get; set; }
         [Required, MaxLength(200)]
         public string Subject { get; set; }
-        [Required,MaxLength(4000)]
+        [Required, MaxLength(4000)]
         public string Description { get; set; }
         [MaxLength(200)]
         public string TargetPageLink { get; set; }
@@ -29,6 +29,7 @@ namespace Oje.AccountService.Models.DB
         public DateTime? LastTryDate { get; set; }
         public bool? IsSuccess { get; set; }
         public int? CountTry { get; set; }
+        public bool? IsModal { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

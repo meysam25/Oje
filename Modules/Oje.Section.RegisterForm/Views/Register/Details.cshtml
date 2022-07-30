@@ -49,6 +49,11 @@
             ViewContext.Writer.Write("  main { margin-right:0px !important; }" + Environment.NewLine);
             ViewContext.Writer.Write("  aside{display:none!important;}" + Environment.NewLine);
             ViewContext.Writer.Write("  header{display:none!important;}"  + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  footer{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  main{background:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{-webkit-box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{box-shadow:none!important;}" + Environment.NewLine);
         }
     }
    .pdfHeader{
@@ -88,12 +93,19 @@
         if(!string.IsNullOrEmpty(Model.companyTitle))
         {
              <div style="text-align:center;">
-                <img src="@Model.companyImage" style="width:70px;" />
+                <img src="@Model.companyImage" style="width:150px;" />
             </div>
         }
     }
     <div class="pdfHeader">
         <div class="headerItem" >شماره:@(Model.id)</div><div class="headerItem ppfTitle">@(Model.ppfTitle)</div><div class="headerItem" >تاریخ:@(Model.ppfCreateDate)</div>
+    </div>
+    <div>
+        @{
+            if(!string.IsNullOrEmpty(Model.headerTemplate)) {
+                ViewContext.Writer.Write(Model.headerTemplate);
+            }
+        }
     </div>
     @{
         if(Model.groups != null && Model.groups.Count > 0)
@@ -121,35 +133,159 @@
             }
         }
     }
+    <div>
+        @{
+            if (!string.IsNullOrEmpty(Model.footerTemplate)) {
+                ViewContext.Writer.Write(Model.footerTemplate);
+            }
+        }
+    </div>
 
     <div class="row">
         @{
-            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode) && Model.paymentUserId.ToLongReturnZiro() > 0)
+            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
             {
+                if(Model.paymentUserId.ToLongReturnZiro() > 0)
+                {
+                    <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                        <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("2,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.paymentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت</a>
+                    </div>
+                }
+                
+                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                    <a id="cardNoPaymentButton" href="#" class="btn btn-primary btn-success btn-block" >کارت به کارت</a>
+                </div>
+                <script>
+                    $('#paymentButton').click(function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        var curUrlWithQuiry = $(this).attr('href');
+                        if(curUrlWithQuiry && curUrlWithQuiry.indexOf('?') > 0) {
+                            var curUrl = curUrlWithQuiry.split('?')[0];
+                            var status = curUrlWithQuiry.split('?')[1].split('status=')[1];
+                            var fId = uuidv4RemoveDash();
+                            $('body').append('<form action="'+ curUrl +'" method="post" id="'+ fId +'" ><input type="hidden" value="'+status+'" name="status" /></form>');
+                            $('#' + fId).submit();
+                        }
+
+                        return false;
+                    });
+                    $('#cardNoPaymentButton').click(function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        if($('#cardToCardModal').length == 0) {
+                            $('body').append(getModualTemplate({
+                                id: 'cardToCardModal',
+                                title: 'کارت به کارت',
+                                ctrls: [
+                                    {
+                                      "name": "fid",
+                                      "type": "hidden"
+                                    },
+					                {
+                                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                                      "name": "targetBankCardNo",
+                                      "type": "text",
+                                      "label": "شماره کارت مقصد",
+                                      "disabled": true,
+                                      "ltr": true,
+                                      "fontSize":"1.5em"
+                                    },
+					                {
+                                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                                      "name": "card",
+                                      "type": "text",
+                                      "label": "شماره کارت مبدا",
+                                      "isRequired": true,
+					                  "ltr": true,
+					                  "mask":"9999 9999 9999 9999",
+                                      "validations": [
+                                        {
+                                          "reg": "[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}",
+                                          "msg": "شماره کارت مبدا صحیح نمی باشد"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                                      "name": "refferCode",
+                                      "type": "text",
+                                      "label": "کد پیگیری",
+                                      "ltr": true,
+                                      "isRequired": true
+                                    },
+                                    {
+                                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                                      "name": "price",
+                                      "type": "text",
+                                      "label": "مبلغ",
+                                      "ltr": true,
+                                      "isRequired": true,
+                                      "seperator": true
+                                    },
+                                    {
+                                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                                      "name": "pDate",
+                                      "type": "persianDateTime",
+                                      "label": "تاریخ پرداخت",
+                                      "ltr": true,
+                                      "isRequired": true
+                                    },
+                                    {
+                                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                                      "name": "mainImage",
+                                      "type": "file",
+                                      "label": "تصویر پرداخت",
+                                      "acceptEx": ".jpg,.png,.jpeg"
+                                    }
+                                ],
+                                actions:[
+                                    {
+                                      "title": "بستن",
+                                      "onClick": "closeThisModal(this)",
+                                      "class": "btn-secondary"
+                                    },
+                                    {
+                                      "title": "ذخیره",
+                                      "onClick": "postModalData(this, '', '/Register/CardPayment')",
+                                      "class": "btn-primary"
+                                    }
+                                ]
+                            }));
+                        }
+                        executeArrFunctions();
+                        clearForm($('#cardToCardModal'));
+                        bindForm({fid: '@(Model.proposalFilledFormId)'}, $('#cardToCardModal'));
+
+                        postForm('/Register/GetPaymentInfo', new FormData(), function(res) 
+                        {
+                            if(res && res.isSuccess == undefined) {
+                                bindForm(res, $('#cardToCardModal'));
+                                $('#cardToCardModal').modal('show');
+                            }
+                        });
+
+                        return false;
+                    });
+                </script>
+            }
+        }
+        @{
+            if( ViewBag.isPrint == false )
+            {
+                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                    <a  href="/Register/DownloadPdf?id=@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >دانلود پی دی اف</a>
+                </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                    <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("2,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.paymentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت</a>
+                    <a  href="/" class="btn btn-primary btn-success btn-block" >متوجه شدم</a>
                 </div>
             }
-            }
+        }
     </div>
 </div>
-<script>
-    $('#paymentButton').click(function(e) {
-        e.preventDefault();
-        e.stopPropagation();
 
-        var curUrlWithQuiry = $(this).attr('href');
-        if(curUrlWithQuiry && curUrlWithQuiry.indexOf('?') > 0) {
-            var curUrl = curUrlWithQuiry.split('?')[0];
-            var status = curUrlWithQuiry.split('?')[1].split('status=')[1];
-            var fId = uuidv4RemoveDash();
-            $('body').append('<form action="'+ curUrl +'" method="post" id="'+ fId +'" ><input type="hidden" value="'+status+'" name="status" /></form>');
-            $('#' + fId).submit();
-        }
-
-        return false;
-    });
-</script>
 @{
     if(Layout == "_WebLayout")
     {

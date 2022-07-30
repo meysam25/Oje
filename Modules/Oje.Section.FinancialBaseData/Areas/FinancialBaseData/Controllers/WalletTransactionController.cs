@@ -58,8 +58,8 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
                         input, 
                         SiteSettingService.GetSiteSetting()?.Id, 
                         HttpContext.GetLoginUser()?.UserId, 
-                        Url.Action("Index", "WalletTransaction", new { area = "FinancialBaseData" }), 
-                        UserService.GetMainPaymentUserId(SiteSettingService.GetSiteSetting()?.Id)
+                        Url.Action("Index", "WalletTransaction", new { area = "FinancialBaseData" }),
+                         SiteSettingService.GetSiteSetting().UserId.ToLongReturnZiro()
                     )
                 );
         }

@@ -13,6 +13,8 @@ namespace Oje.Section.RegisterForm.Models.DB
             UserFilledRegisterFormJsons = new();
             UserFilledRegisterFormValues = new();
             UserFilledRegisterFormCompanies = new();
+            UserFilledRegisterFormCardPayments = new();
+            UserRegisterFormDiscountCodeUses = new();
         }
 
         [Key]
@@ -47,5 +49,9 @@ namespace Oje.Section.RegisterForm.Models.DB
         public List<UserFilledRegisterFormValue> UserFilledRegisterFormValues { get; set; }
         [InverseProperty("UserFilledRegisterForm")]
         public List<UserFilledRegisterFormCompany> UserFilledRegisterFormCompanies { get; set; }
+        [InverseProperty("UserFilledRegisterForm")]
+        public List<UserFilledRegisterFormCardPayment> UserFilledRegisterFormCardPayments { get; set; }
+        [InverseProperty("UserFilledRegisterForm")]
+        public List<UserRegisterFormDiscountCodeUse> UserRegisterFormDiscountCodeUses { get; set; }
     }
 }

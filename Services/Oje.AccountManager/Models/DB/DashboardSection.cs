@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,11 @@ namespace Oje.AccountService.Models.DB
     [Table("DashboardSections")]
     public class DashboardSection
     {
+        public DashboardSection()
+        {
+            DashboardSectionUserNotificationTypes = new();
+        }
+
         [Key]
         public int Id { get; set; }
         public int RoleId { get; set; }
@@ -24,6 +30,9 @@ namespace Oje.AccountService.Models.DB
         public int? Order { get; set; }
         [MaxLength(20)]
         public string Color { get; set; }
+
+        [InverseProperty("DashboardSection")]
+        public List<DashboardSectionUserNotificationType> DashboardSectionUserNotificationTypes { get; set; }
 
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oje.Section.RegisterForm.Models.View
 {
@@ -18,6 +14,10 @@ namespace Oje.Section.RegisterForm.Models.View
         public string companyTitle { get; set; }
         public string companyImage { get; set; }
         public long? paymentUserId { get; set; }
+        public int userRegisterFormId { get; set; }
+        public string headerTemplate { get; set; }
+        public string footerTemplate { get; set; }
+
         public List<userFilledRegisterFormDetailesGroupVM> groups { get; set; }
     }
 }

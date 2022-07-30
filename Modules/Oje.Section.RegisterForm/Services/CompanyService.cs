@@ -18,6 +18,11 @@ namespace Oje.Section.RegisterForm.Services
             this.db = db;
         }
 
+        public Company GetById(int id)
+        {
+            return db.Companies.Where(t => t.Id == id).FirstOrDefault();
+        }
+
         public Company GetByUserFilledRegisterFormId(long id)
         {
             return db.UserFilledRegisterFormCompanies.Where(t => t.UserFilledRegisterFormId == id).Select(t => t.Company).FirstOrDefault();

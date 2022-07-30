@@ -1,0 +1,182 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "BankAccountSadadGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('BankAccountSadadAddGridModal', this)",
+              "type": "add",
+              "modalId": "BankAccountSadadAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/FinancialBaseData/BankAccountSadad/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/FinancialBaseData/BankAccountSadad/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "BankAccountSadadModal",
+                "url": "/FinancialBaseData/BankAccountSadad/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/BankAccountSadad/GetById\\', \\'BankAccountSadadModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/FinancialBaseData/BankAccountSadad/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "bankAcount",
+              "caption": "حساب",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "terminalId",
+              "caption": "شناسه ترمینال",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "merchantId",
+              "caption": "شناسه پذیرنده",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "BankAccountSadadAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12",
+              "name": "baId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FinancialBaseData/BankAccountSadad/GetBankAccounts",
+              "label": "حساب",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "terminalId",
+              "type": "text",
+              "label": "شناسه ترمینال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "merchantId",
+              "type": "text",
+              "label": "شناسه پذیرنده",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "terminalKey",
+              "type": "text",
+              "label": "کلید خصوصی",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'BankAccountSadadGrid', '/FinancialBaseData/BankAccountSadad/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "BankAccountSadadModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12",
+              "name": "baId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FinancialBaseData/BankAccountSadad/GetBankAccounts",
+              "label": "حساب",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "terminalId",
+              "type": "text",
+              "label": "شناسه ترمینال",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "merchantId",
+              "type": "text",
+              "label": "شناسه پذیرنده",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "terminalKey",
+              "type": "text",
+              "label": "کلید خصوصی",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'BankAccountSadadGrid', '/FinancialBaseData/BankAccountSadad/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

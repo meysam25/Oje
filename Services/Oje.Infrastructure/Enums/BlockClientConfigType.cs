@@ -79,6 +79,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ورود/ثبت نام با کد پیامک")]
         LoginRegister = 39,
         [Display(Name = "دریافت اطلاعات کاربر هنگام ثبت نام")]
-        GetUserInfoRegister = 40
+        GetUserInfoRegister = 40,
+        [Display(Name = "کارت به کارت ثبت نام کاربر")]
+        RegisterCardPayment = 41,
+        [Display(Name = "دانلود پی دی اف ثبت نام")]
+        RegisterDownloadPDF = 42
     }
 }

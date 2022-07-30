@@ -172,6 +172,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
         switch (type) {
             case 'hidden':
             case 'text':
+            case 'number':
             case 'color':
                 if ($(this).closest('.tokenBox').length == 0) {
                     $(this).val(value);
@@ -417,6 +418,7 @@ function getFormData(selector) {
             switch (type) {
                 case 'password':
                 case 'text':
+                case 'number':
                 case 'hidden':
                 case 'color':
                     postData.append(name, $(this).val())
@@ -562,6 +564,14 @@ function postForm(url, postData, success, error, completeEvent, ignoreAutoToast)
                 if (res && res.isSuccess && res.data && res.data.action) {
                     if (res.data.action == 'redirect' && res.data.url)
                         location.href = res.data.url;
+                    else if (res.data.action == 'postToUrl' && res.data.url) {
+                        var postFormData = new FormData();
+                        if (res.data.parameters) {
+                            for (var prop in res.data.parameters)
+                                postFormData.append(prop, res.data.parameters[prop]);
+                        }
+                        postPage(res.data.url, postFormData);
+                    }
 
                 }
             }.bind({ url: url }),

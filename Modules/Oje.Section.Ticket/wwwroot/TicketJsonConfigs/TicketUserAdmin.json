@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "NewTicket" ],
           "id": "TicketUserAdminGrid",
           "actions": {
             "cActions": [

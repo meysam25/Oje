@@ -49,7 +49,7 @@ namespace Oje.Section.WebMain.Controllers
         {
             ViewBag.isPrint = isPrint;
             ViewBag.newLayoutName = "_WebLayout";
-            return View("PdfDetailesForAdmin", ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
+            return View("PdfDetailes", ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
     }
 }

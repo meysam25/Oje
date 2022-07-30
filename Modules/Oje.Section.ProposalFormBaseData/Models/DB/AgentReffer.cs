@@ -19,6 +19,8 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public string Mobile { get; set; }
         [Required, MaxLength(4000)]
         public string Address { get; set; }
+        [MaxLength(50)]
+        public string Tell { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

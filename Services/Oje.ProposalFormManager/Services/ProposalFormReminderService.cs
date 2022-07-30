@@ -3,6 +3,7 @@ using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
@@ -18,14 +19,18 @@ namespace Oje.ProposalFormService.Services
     {
         readonly ProposalFormDBContext db = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IUserNotifierService UserNotifierService = null;
+
         public ProposalFormReminderService
             (
                 ProposalFormDBContext db,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IUserNotifierService UserNotifierService
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public ApiResult Create(ReminderCreateVM input, int? siteSettingId, IpSections ipSections, long? loginUserId)
@@ -57,6 +62,16 @@ namespace Oje.ProposalFormService.Services
                 newItem.PrevInsuranceImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.insuranceImage, loginUserId, siteSettingId, null, ".png,.jpg,.jpeg", true);
 
             db.SaveChanges();
+
+            UserNotifierService.Notify
+                       (
+                           loginUserId,
+                           UserNotificationType.ProposalFormReminder,
+                           new System.Collections.Generic.List<PPFUserTypes>(),
+                           null,
+                           "ثبت یادآوری جدید",
+                           siteSettingId, "/ProposalFilledForm/ProposalFormReminder/Index"
+                       );
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

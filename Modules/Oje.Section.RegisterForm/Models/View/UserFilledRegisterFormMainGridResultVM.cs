@@ -28,5 +28,9 @@ namespace Oje.Section.RegisterForm.Models.View
         public string isDone { get; set; }
         [Display(Name = "کاربر معرف")]
         public string refferUser { get; set; }
+        [Display(Name = "شرکت")]
+        public string company { get;  set; }
+        [Display(Name = "کد نماینده")]
+        public string agentCode { get;  set; }
     }
 }

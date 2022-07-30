@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Models;
+using Oje.PaymentService.Models.DB;
 using Oje.PaymentService.Models.View;
 
 namespace Oje.PaymentService.Interfaces
@@ -12,5 +13,6 @@ namespace Oje.PaymentService.Interfaces
         GridResultVM<BankMainGridResultVM> GetList(BankMainGrid searchInput);
         object GetLightList();
         int? GetByCode(int? code);
+        Bank GetBy(int id);
     }
 }

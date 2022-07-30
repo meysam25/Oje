@@ -1,0 +1,51 @@
+﻿@{
+    if (ViewBag.layer != null)
+    {
+        Layout = ViewBag.layer;
+    }
+    else
+    {
+        Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    }
+}
+
+<style>
+    .MainHolder {
+        padding: 15px;
+    }
+
+    .MainHolder > .row > .myPanel {
+        border-bottom: 1px solid silver;
+        padding-bottom: 40px;
+    }
+    .MainHolder > .row > .myPanel:last-child{
+        border-bottom:none;
+        padding-bottom: 0px;
+    }
+</style>
+
+@{
+    if (Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
+    }
+}
+
+<div class="MainHolder"></div>
+<script>
+    @{
+        if (ViewBag.exteraParameters != null)
+        {
+            ViewContext.Writer.Write("var exteraModelParams = JSON.parse('" + Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.exteraParameters) + "');");
+        }
+    }
+    loadJsonConfig('@ViewBag.ConfigRoute');
+</script>
+
+
+@{
+    if (Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("</section></div>");
+    }
+}

@@ -3,6 +3,7 @@
     {
       "charts": [
         {
+          "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangeIssue", "ProposalFilledFormStatusChangedNew", "ProposalFilledFormStatusChangeW8ForConfirm", "ProposalFilledFormStatusChangeNeedSpecialist", "ProposalFilledFormStatusChangeConfirm", "ProposalFilledFormStatusChangeNotIssue" ],
           "url": "/ProposalFilledFormChartReports/ProposalFilledFormAgent/GetSource",
           "dataSchmea": "series",
           "config": {

@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "NewOnlineMessageForAdmin" ],
           "id": "OnlineSupportMenuGrid",
           "showColumnConfigButton": true,
           "actions": {

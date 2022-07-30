@@ -15,6 +15,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly IBankAccountDetectorService BankAccountDetectorService = null;
         readonly IBankAccountSizpayPaymentService BankAccountSizpayPaymentService = null;
+
         public SizpayController
             (
                 IBankAccountFactorService BankAccountFactorService,
@@ -41,6 +42,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             return View(generateToken);
         }
 
+        [HttpPost]
         public async Task<ActionResult> Confirm([FromForm] SizpayConfirmPaymentInput input)
         {
             string redirectUrl = await BankAccountSizpayPaymentService.ConfirmPayment(input, SiteSettingService.GetSiteSetting()?.Id);

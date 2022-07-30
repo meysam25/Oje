@@ -8,6 +8,8 @@ namespace Oje.Infrastructure.Enums
         sizpay = 1,
         [Display(Name = "تی تک")]
         titec = 2,
+        [Display(Name = "سداد")]
+        sadad = 3,
         [Display(Name = "نامشخص")]
         unknown = 999
     }

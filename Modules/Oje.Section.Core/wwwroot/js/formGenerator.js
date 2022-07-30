@@ -355,6 +355,17 @@ function getEPanelsTemplate(ePanel) {
 }
 
 
+function getChartNotificationAttributes(notificationTriger) {
+    var result = '';
+
+    if (notificationTriger && notificationTriger.length > 0)
+        for (var i = 0; i < notificationTriger.length; i++) {
+            result += ' data-notify-' + notificationTriger[i];
+        }
+
+    return result;
+}
+
 var isTryLoadingChart = false;
 
 function getChartTemplate(chart) {
@@ -368,17 +379,22 @@ function getChartTemplate(chart) {
     if (chart && chart.config && chart.url && chart.dataSchmea) {
         if (!chart.id)
             chart.id = uuidv4RemoveDash();
-        result += '<div id="' + chart.id + '" >';
+        result += '<div ' + getChartNotificationAttributes(chart.notificationTriger) +' id="' + chart.id + '" class="chartHolderDiv" >';
 
         result += '</div>';
 
 
         functionsList.push(function () {
-            postForm(chart.url, new FormData(), function (res) {
-                this.config[this.dataSchmea] = res;
-                initChartUntilSerciptLoaded(this.id, this.config);
-
-            }.bind(this));
+            var curObj = $('#' + this.id)[0];
+            curObj.refreshChart = function ()
+            {
+                $('#' + this.id).html('');
+                postForm(chart.url, new FormData(), function (res) {
+                    this.config[this.dataSchmea] = res;
+                    initChartUntilSerciptLoaded(this.id, this.config);
+                }.bind(this));
+            }.bind(this);
+            curObj.refreshChart();
         }.bind(chart));
     }
 
@@ -515,6 +531,7 @@ function updateTemplateText(ctrl) {
                 }
 
                 newTemplate = newTemplate.replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue)
+                    .replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue).replace('{{' + ctrl.fieldMaps[i].targetTemplate + '}}', curValue);
             }
             selectQuiry.html(newTemplate);
         }
@@ -1057,12 +1074,13 @@ function getGridUrlFromConfig(res) {
 
 function addUpdateNotificationCount(buttonId, total) {
     var buttonQuery = $('#' + buttonId);
-
-    if (buttonQuery.find('tabButtonExistCount').length == 0) {
-        buttonQuery.append('<span class="tabButtonExistCount" >' + total + '</span>');
-    }
-    else {
-        buttonQuery.find('tabButtonExistCount').html(total);
+    if (buttonQuery.length > 0) {
+        if (buttonQuery.find('.tabButtonExistCount').length == 0) {
+            buttonQuery.append('<span class="tabButtonExistCount" >' + total + '</span>');
+        }
+        else {
+            buttonQuery.find('.tabButtonExistCount').html(total);
+        }
     }
 }
 
@@ -1104,6 +1122,17 @@ function loadTabContentDynamicContentText(buttonId) {
     }
 }
 
+function getTabButtonNotifyUpdateAttribute(nTypes) {
+    var result = '';
+
+    if (nTypes && nTypes.length > 0) {
+        for (var i = 0; i < nTypes.length; i++)
+            result += ' data-notify-' + nTypes[i];
+    }
+
+    return result;
+}
+
 function getTabContentTemplate(ctrl) {
     var result = '';
 
@@ -1112,7 +1141,7 @@ function getTabContentTemplate(ctrl) {
             ctrl.color = 'orange';
         result += '<div id="' + ctrl.id + '_holder" class="tabButtonBoxHolder">';
         result += '<span  style="' + (ctrl.color ? 'background-color:' + ctrl.color + ';' : '') + '" class="tabButtonIcon fa ' + ctrl.icon + '" ><span style="' + (ctrl.color ? 'border-color:' + ctrl.color + ';' : '') + '" ></span></span>';
-        result += '<a id="' + ctrl.id + '" style="margin-bottom:15px;position:relative;' + (ctrl.color ? 'border-top:4px solid ' + ctrl.color + ';' : '') + '" class="tabButtonBox" href="' + ctrl.url + '" ><span class="buttonTitle">' + ctrl.label + '</span></a>';
+        result += '<a ' + getTabButtonNotifyUpdateAttribute(ctrl.nTypes) + ' id="' + ctrl.id + '" style="margin-bottom:15px;position:relative;' + (ctrl.color ? 'border-top:4px solid ' + ctrl.color + ';' : '') + '" class="tabButtonBox" href="' + ctrl.url + '" ><span class="buttonTitle">' + ctrl.label + '</span></a>';
         result += '</div>';
         functionsList.push(function () {
             if (ctrl.type == 'TabContent')
@@ -1140,8 +1169,6 @@ function getTabContentTemplate(ctrl) {
             });
         }.bind({ ctrl: ctrl }));
     }
-
-
 
     return result;
 }
@@ -1568,6 +1595,15 @@ function getDateTimeMinMaxValueValidation(ctrl) {
     return result;
 }
 
+function hasNumberValidation(validations) {
+    if (validations && validations.length > 0)
+        for (var i = 0; i < validations.length; i++)
+            if (validations[i].reg == '^[0-9]*$')
+                return true;
+
+    return false;
+}
+
 function getTextBoxTemplate(ctrl) {
     if (!ctrl.id)
         ctrl.id = uuidv4RemoveDash();
@@ -1576,9 +1612,11 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input ' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
+    if (ctrl.nationalCodeValidation || hasNumberValidation(ctrl.validations))
+        ctrl.type = 'number';
 
 
     functionsList.push(function () {
@@ -2801,11 +2839,22 @@ function doPageActions(actionOnLastStep) {
     }
 }
 
+function getGridNotificationRefreshAttributes(arrNotifics) {
+    var result = '';
+
+    if (arrNotifics && arrNotifics.length > 0) {
+        for (var i = 0; i < arrNotifics.length; i++)
+            result += ' data-notify-' + arrNotifics[i];
+    }
+
+    return result;
+}
+
 function getGridTemplate(grid, isInsideModal) {
     var result = '';
     if (grid) {
         var gridId = (!grid.id ? uuidv4RemoveDash() : grid.id);
-        result += '<div id="' + gridId + '" class="myGridCTRL ' + (grid.class ? grid.class : '') + '"></div>';
+        result += '<div ' + getGridNotificationRefreshAttributes(grid.notificationTriger) + '  id="' + gridId + '" class="myGridCTRL ' + (grid.class ? grid.class : '') + '"></div>';
         functionsList.push(function () {
             if (!isInsideModal)
                 $('#' + gridId).initMyGrid(grid);
@@ -2945,7 +2994,24 @@ function setFocusToFirstVisbleText(qSelector) {
     }
 }
 
-function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId) {
+function updateDashboardGridCountIfExist() {
+    $('.tabButtonBox').each(function () {
+        if ($(this).find('.tabButtonExistCount').length > 0) {
+            addCountNotificationToButtonIfHasGrid($(this).attr('id'));
+        }
+    });
+}
+
+function postButtonAndMakeDisable(curElement, holderInputs, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId) {
+    var curButtonQuiry = $(curElement);
+    if (curButtonQuiry.attr('disabled'))
+        return;
+
+    $(curElement).attr('disabled', 'disabled');
+    postModalData(holderInputs, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId, function () { $(curElement).removeAttr('disabled') })
+}
+
+function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId, onFinished) {
     var qSelector = $(curElement).closest('.modal').find('.modal-content');
     if (qSelector.length == 0)
         qSelector = $(curElement);
@@ -2961,6 +3027,7 @@ function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, on
         showLoader($('#' + showLoaderId))
     postForm(url, postFormData, function (res) {
         if (res && res.isSuccess == true) {
+            updateDashboardGridCountIfExist();
             if (onSuccessFunction)
                 onSuccessFunction(res);
             if (successUrl)
@@ -2978,7 +3045,9 @@ function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, on
     }.bind({ gridId, curElement, ignoreCloseModal: ignoreCloseModal }), null, function () {
         hideLoader(qSelector);
         if (showLoaderId)
-            hideLoader($('#' + showLoaderId))
+            hideLoader($('#' + showLoaderId));
+        if (onFinished)
+            onFinished();
     });
 }
 
@@ -3108,7 +3177,7 @@ function updateMapFromDropdown(dropdownId, mapId) {
                 $(holderMap).find('.olMap').html('');
                 initMapInner($(holderMap).find('.olMap')[0].ctrl);
             }
-            bindForm({ mapLatRecivePlace: maplat, mapLonRecivePlace: maplon, mapZoomRecivePlace: mapzoom }, holderMap);
+            bindForm({ mapLatRecivePlace_lat: maplat, mapLonRecivePlace_lon: maplon, mapZoomRecivePlace_zoom: mapzoom }, holderMap);
         }
     }
 }

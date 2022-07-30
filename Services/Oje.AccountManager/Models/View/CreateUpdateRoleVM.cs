@@ -1,9 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.View
 {
@@ -16,6 +12,7 @@ namespace Oje.AccountService.Models.View
         public bool? disabledOnlyMyStuff { get; set; }
         public RoleType? type { get; set; }
         public int? sitesettingId { get; set; }
+        public bool? refreshGrid { get; set; }
         public List<int> formIds { get; set; }
     }
 }

@@ -1,0 +1,24 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/RegisterFormAdmin/UserFilledRegisterFormTargetBankCardNo/Get",
+      "title": "شماره کارت پرداخت کارت به کارت",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "targetBankCardNo",
+          "type": "text",
+          "label": "شماره کارت",
+          "ltr": true
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/RegisterFormAdmin/UserFilledRegisterFormTargetBankCardNo/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

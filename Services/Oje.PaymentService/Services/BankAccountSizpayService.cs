@@ -184,12 +184,12 @@ namespace Oje.PaymentService.Services
 
         public BankAccountSizpay GetBy(int bankAccountId, int? siteSettingId)
         {
-            return db.BankAccountSizpaies.Where(t => t.SiteSettingId == siteSettingId && t.BankAccountId == bankAccountId && t.BankAccount.IsActive == true && t.BankAccount.IsForPayment == true && t.BankAccount.Bank.IsActive == true).FirstOrDefault();
+            return db.BankAccountSizpaies.AsNoTracking().Where(t => t.SiteSettingId == siteSettingId && t.BankAccountId == bankAccountId && t.BankAccount.IsActive == true && t.BankAccount.IsForPayment == true && t.BankAccount.Bank.IsActive == true).FirstOrDefault();
         }
 
         public bool Exist(int bankAccountId, int? siteSettingId)
         {
-            return db.BankAccountSizpaies.Any(t => t.BankAccountId == bankAccountId && t.SiteSettingId == siteSettingId);
+            return db.BankAccountSizpaies.Any(t => t.BankAccountId == bankAccountId && t.SiteSettingId == siteSettingId && t.BankAccount.IsActive == true && t.BankAccount.IsForPayment == true);
         }
     }
 }

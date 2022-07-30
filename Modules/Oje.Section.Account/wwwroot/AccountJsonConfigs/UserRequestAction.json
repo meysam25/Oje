@@ -1,0 +1,70 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "reviewGrid",
+          "showColumnConfigButton": true,
+          "exportToExcelUrl": "/Account/UserRequestAction/Export",
+          "actions": {
+            "delete": {
+              "url": "/Account/UserRequestAction/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "ignoreParentButton": true,
+                "template": "function bindRow (curRow) { return '<span data-url=\"/Account/UserRequestAction/Confirm\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"تایید\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.iA== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Account/UserRequestAction/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "user",
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "role",
+              "caption": "نقش",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "action",
+              "caption": "بخش",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

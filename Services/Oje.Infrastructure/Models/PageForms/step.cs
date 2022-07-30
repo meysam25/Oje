@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oje.Infrastructure.Models.PageForms
 {
@@ -16,6 +12,8 @@ namespace Oje.Infrastructure.Models.PageForms
         public string id { get; set; }
         public string title { get; set; }
         public string showUrl { get; set; }
+        public string printTitle { get; set; }
+        public bool? hideOnPrint { get; set; }
         public List<panel> panels { get; set; }
     }
 }

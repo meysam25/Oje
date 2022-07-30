@@ -58,7 +58,7 @@ namespace Oje.AccountService.Services
             input.userId = db.UserMessages.Where(t => t.Id == input.pKey).Select(t => t.FromUserId == loginUserId ? t.ToUserId : t.FromUserId).FirstOrDefault();
             Create(input, loginUserId, siteSettingId, input.pKey);
 
-            UserNotifierService.Notify(loginUserId, UserNotificationType.AddNewMessage, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(input.userId.Value, ProposalFilledFormUserType.OwnerUser) }, input.pKey, "پاسخ جدید", siteSettingId, "/UserAccount/UserMessage/Index");
+            UserNotifierService.Notify(loginUserId, UserNotificationType.AddNewMessage, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(input.userId.Value, ProposalFilledFormUserType.OwnerUser) }, input.pKey, "پاسخ جدید", siteSettingId, "/UserAccount/UserMessage/Index", new { message = input.message }, input.isModal.ToBooleanReturnFalse());
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

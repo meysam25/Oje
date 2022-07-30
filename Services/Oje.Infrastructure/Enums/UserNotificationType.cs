@@ -85,6 +85,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "افزودن پیام جدید")]
         AddNewMessage = 40,
         [Display(Name = "افزودن نقش به کاربر تازه ثبت نام شده")]
-        AddRoleToNewUser = 41
+        AddRoleToNewUser = 41,
+        [Display(Name = "ثبت نام کاربر همکار سامانه")]
+        NewUserFilledRegisterForm = 42,
+        [Display(Name = "ثبت یاد آوری جدید")]
+        ProposalFormReminder = 43
     }
 }

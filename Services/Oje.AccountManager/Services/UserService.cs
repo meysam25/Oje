@@ -98,7 +98,7 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Inactive_User, ApiResultErrorCode.InActiveUser, foundUser.Id);
             else if (foundUser != null && foundUser.Password == input.password.GetSha1())
             {
-                setCookieForThisUser(foundUser, input);
+                setCookieForThisUser(foundUser, input, RoleService.HasAnyAutoRefreshRole(foundUser.Id));
                 UpdateUserSessionFileName(foundUser.Id, foundUser.LastSessionFileName);
 
                 UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPassword, siteSettingId, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
@@ -185,7 +185,7 @@ namespace Oje.AccountService.Services
                     newUserRole.Role = foundRole;
                     newUser.UserRoles.Add(newUserRole);
 
-                    setCookieForThisUser(newUser, input);
+                    setCookieForThisUser(newUser, input, RoleService.HasAnyAutoRefreshRole(newUser.Id));
                     UpdateUserSessionFileName(newUser.Id, newUser.LastSessionFileName);
                     return new ApiResult() { isSuccess = true };
                 }
@@ -197,13 +197,13 @@ namespace Oje.AccountService.Services
             }
         }
 
-        public void setCookieForThisUser(User newUser, LoginVM input)
+        public void setCookieForThisUser(User newUser, LoginVM input, bool hasAutoRefres)
         {
             string sessionFileName = Guid.NewGuid().ToString();
             string userRoles = "";
             if (newUser.UserRoles != null)
                 userRoles = string.Join("-", newUser.UserRoles.Where(t => t.Role != null).Select(t => t.Role.Name).ToList());
-            string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," + newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName();
+            string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," + newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName() + "," + hasAutoRefres;
             var cOption = new CookieOptions() { HttpOnly = true };
             if (input.rememberMe == true)
                 cOption.Expires = DateTime.Now.AddDays(1);
@@ -1061,7 +1061,8 @@ namespace Oje.AccountService.Services
                 username = t.Username.Trim(),
                 pic = !string.IsNullOrEmpty(t.UserPic) ? GlobalConfig.FileAccessHandlerUrl + t.UserPic : "",
                 isUser = t.UserRoles.Any(tt => tt.Role.Name == "user"),
-                isSuccess = true
+                isSuccess = true,
+                hasAutoRefresh = t.UserRoles.Any(tt => tt.Role.RefreshGrid == true)
             }).FirstOrDefault();
         }
 
@@ -1143,7 +1144,7 @@ namespace Oje.AccountService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.UserRoles.Any(tt => tt.Role.Name == "agent"));
+            var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.UserRoles.Any(tt => tt.Role.Name.StartsWith("agent")));
 
             if (companyId > 0)
                 qureResult = qureResult.Where(t => t.UserCompanies.Any(tt => tt.CompanyId == companyId));
@@ -1172,7 +1173,7 @@ namespace Oje.AccountService.Services
                 if (x < 90 && x > -90 && y < 90 && y > -90)
                 {
                     gm = new Point(x, y) { SRID = 4326 };
-                    qureResult = qureResult.Where(t => t.MapLocation != null).OrderBy(t => t.MapLocation.Distance(gm));
+                    qureResult = qureResult.Where(t => t.MapLocation != null).OrderByDescending(t => t.IsActive).ThenBy(t => t.MapLocation.Distance(gm));
                 }
             }
 
@@ -1224,6 +1225,7 @@ namespace Oje.AccountService.Services
             return db.Users.Where(t => t.SiteSettingId == siteSettingId && t.SiteSettings.Any(tt => tt.Id == siteSettingId)).Select(t => new User
             {
                 Id = t.Id,
+                CompanyTitle = t.CompanyTitle,
                 IsActive = t.IsActive,
                 AgentCode = t.AgentCode,
                 Tell = t.Tell,
@@ -1641,6 +1643,135 @@ namespace Oje.AccountService.Services
                     t.agentMobile
                 })
                 .FirstOrDefault();
+        }
+
+        public void CreateUserAccessRequest(long userId, string requestPath)
+        {
+            if (userId > 0 && !string.IsNullOrEmpty(requestPath))
+            {
+                var foundAction = db.Actions.Where(t => t.Name == requestPath).Select(t => t.Id).FirstOrDefault();
+                if (foundAction > 0)
+                {
+                    if (!db.UserRequestActions.Any(t => t.UserId == userId && t.ActionId == foundAction))
+                        try
+                        {
+                            db.Entry(new UserRequestAction() { UserId = userId, ActionId = foundAction, CreateDate = DateTime.Now }).State = EntityState.Added;
+                            db.SaveChanges();
+                        }
+                        catch { }
+                }
+            }
+        }
+
+        public GridResultVM<UserRequestActionMainGridResultVM> GetRequestUserAccessList(UserRequestActionMainGrid searchInput)
+        {
+            searchInput = searchInput ?? new();
+
+            var quiryResult = db.UserRequestActions.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchInput.user))
+                quiryResult = quiryResult.Where(t => (t.User.Firstname + " " + t.User.Lastname + "(" + t.User.Username + ")").Contains(searchInput.user));
+            if (!string.IsNullOrEmpty(searchInput.role))
+                quiryResult = quiryResult.Where(t => t.User.UserRoles.Any(tt => tt.Role.Title == searchInput.role));
+            if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ToEnDate() != null)
+            {
+                var targetDate = searchInput.createDate.ToEnDate().Value;
+                quiryResult = quiryResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
+            }
+            if (!string.IsNullOrEmpty(searchInput.action))
+                quiryResult = quiryResult.Where(t => (t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title).Contains(searchInput.action));
+
+            int row = searchInput.skip;
+
+            return new GridResultVM<UserRequestActionMainGridResultVM>()
+            {
+                total = quiryResult.Count(),
+                data = quiryResult
+                .OrderByDescending(t => t.CreateDate)
+                .Skip(searchInput.skip)
+                .Take(searchInput.take)
+                .Select(t => new
+                {
+                    t.ActionId,
+                    t.UserId,
+                    t.CreateDate,
+                    user = t.User.Firstname + " " + t.User.Lastname + "(" + t.User.Username + ")",
+                    action = t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title,
+                    roles = t.User.UserRoles.Select(tt => tt.Role.Title).ToList()
+                })
+                .ToList()
+                .Select(t => new UserRequestActionMainGridResultVM
+                {
+                    row = ++row,
+                    id = t.UserId + "_" + t.ActionId,
+                    createDate = t.CreateDate.ToFaDate(),
+                    user = t.user,
+                    action = t.action,
+                    role = String.Join(',', t.roles)
+                })
+                .ToList()
+            };
+        }
+
+        public ApiResult DeleteUserActionRequest(string id)
+        {
+            if (!string.IsNullOrEmpty(id) && id.IndexOf("_") > 0)
+            {
+                long userId = id.Split('_')[0].ToLongReturnZiro();
+                long actionId = id.Split('_')[1].ToLongReturnZiro();
+                if (userId > 0 && actionId > 0)
+                {
+                    var foundItem = db.UserRequestActions.Where(t => t.UserId == userId && t.ActionId == actionId).FirstOrDefault();
+                    if (foundItem != null)
+                    {
+                        db.Entry(foundItem).State = EntityState.Deleted;
+                        db.SaveChanges();
+
+                        return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+                    }
+                }
+            }
+
+            throw BException.GenerateNewException(BMessages.Not_Found);
+        }
+
+        public ApiResult ConfirmUserActionRequest(string id)
+        {
+            if (!string.IsNullOrEmpty(id) && id.IndexOf("_") > 0)
+            {
+                long userId = id.Split('_')[0].ToLongReturnZiro();
+                long actionId = id.Split('_')[1].ToLongReturnZiro();
+                if (userId > 0 && actionId > 0)
+                {
+                    var foundItem = db.UserRequestActions.Where(t => t.UserId == userId && t.ActionId == actionId).FirstOrDefault();
+                    if (foundItem != null)
+                    {
+                        if (db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserRoles).Count() > 1)
+                            throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+                        var userRoles = db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserRoles).Select(t => t.RoleId).FirstOrDefault();
+
+                        if (userRoles > 0)
+                        {
+
+                            if (!db.RoleActions.Any(t => t.RoleId == userRoles && t.ActionId == actionId))
+                                db.Entry(new RoleAction()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    ActionId = actionId,
+                                    RoleId = userRoles
+                                }).State = EntityState.Added;
+                            db.Entry(foundItem).State = EntityState.Deleted;
+                            db.SaveChanges();
+
+                            CustomeAuthorizeFilter.UserAccessCaches = new();
+                            GlobalConfig.siteMenuCache++;
+
+                            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+                        }
+                    }
+                }
+            }
+            throw BException.GenerateNewException(BMessages.Not_Found);
         }
     }
 }

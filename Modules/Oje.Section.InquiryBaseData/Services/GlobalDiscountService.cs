@@ -279,7 +279,6 @@ namespace Oje.Section.InquiryBaseData.Services
             foundItem.Percent = input.percent;
             foundItem.Price = input.price;
             foundItem.ProposalFormId = input.formId.Value;
-            foundItem.SiteSettingId = siteSettingId.Value;
             foundItem.Title = input.title;
             foundItem.ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
 

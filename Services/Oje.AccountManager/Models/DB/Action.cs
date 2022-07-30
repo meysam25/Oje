@@ -12,6 +12,7 @@ namespace Oje.AccountService.Models.DB
             RoleActions = new ();
             UserAdminLogConfigs = new();
             UserAdminLogs = new();
+            UserRequestActions = new();
         }
 
         [Key]
@@ -40,5 +41,7 @@ namespace Oje.AccountService.Models.DB
         public List<UserAdminLogConfig> UserAdminLogConfigs { get; set; }
         [InverseProperty("Action")]
         public List<UserAdminLog> UserAdminLogs { get; set; }
+        [InverseProperty("Action")]
+        public List<UserRequestAction> UserRequestActions { get; set; }
     }
 }

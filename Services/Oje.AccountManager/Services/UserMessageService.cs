@@ -51,7 +51,7 @@ namespace Oje.AccountService.Services
 
             UserMessageReplyService.Create(input, loginUserId, siteSettingId, newItem.Id);
 
-            UserNotifierService.Notify(loginUserId, UserNotificationType.AddNewMessage, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(input.userId.Value, ProposalFilledFormUserType.OwnerUser) }, newItem.Id, "پیام جدید", siteSettingId, "/UserAccount/UserMessage/Index");
+            UserNotifierService.Notify(loginUserId, UserNotificationType.AddNewMessage, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(input.userId.Value, ProposalFilledFormUserType.OwnerUser) }, newItem.Id, "پیام جدید", siteSettingId, "/UserAccount/UserMessage/Index", new { message = input.message }, input.isModal.ToBooleanReturnFalse());
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

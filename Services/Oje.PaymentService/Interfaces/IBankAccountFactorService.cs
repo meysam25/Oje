@@ -11,5 +11,7 @@ namespace Oje.PaymentService.Interfaces
         void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo, int? siteSettingId, DateTime? payDate = null);
         string Create(int? bankAccountId, PaymentFactorVM payModel, int? siteSettingId, long? loginUserId);
         List<ProposalFilledFormPaymentVM> GetListBy(BankAccountFactorType type, long objectId, int? siteSettingId);
+        BankAccountFactor GetBy(string keyHash, int? siteSettingId);
+        void Save();
     }
 }

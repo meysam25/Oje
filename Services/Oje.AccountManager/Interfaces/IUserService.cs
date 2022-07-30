@@ -29,6 +29,9 @@ namespace Oje.AccountService.Interfaces
         object GetUserInfoByUserId(long? userId);
         void UpdateHashPassword();
         long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string eCode, long? loginUserId, int? siteSettingId);
+        ApiResult DeleteUserActionRequest(string id);
+        GridResultVM<UserRequestActionMainGridResultVM> GetRequestUserAccessList(UserRequestActionMainGrid searchInput);
+        ApiResult ConfirmUserActionRequest(string id);
         void TsetRemoveMe();
         void DeleteFlag(long? userId, int? siteSettingId, long? childIds);
         bool IsValidUser(long userId, int? siteSettingId, List<long> childUserIds, RoleType? Type);
@@ -40,7 +43,7 @@ namespace Oje.AccountService.Interfaces
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId, int companyId);
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId);
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
-        void setCookieForThisUser(User newUser, LoginVM input);
+        void setCookieForThisUser(User newUser, LoginVM input, bool hasAutoRefres);
         void UpdatePassword(User user, string password);
         void UpdateUserSessionFileName(long? id, string lastSessionFileName);
         object CreateForUserFromJson(GlobalExcelFile input, long? userId, LoginUserVM loginUserVM, int? siteSettingId, string websiteUrl);
@@ -51,5 +54,6 @@ namespace Oje.AccountService.Interfaces
         (int? cityId, int? provinceId) GetCityAndProvince(long? loginUserId);
         (int? province, int? cityid, List<int> companyIds) GetUserCityCompany(long? userId);
         object GetAgentInfo(long userId);
+        void CreateUserAccessRequest(long userId, string requestPath);
     }
 }

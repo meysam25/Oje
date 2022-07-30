@@ -1,5 +1,4 @@
-﻿
-namespace Oje.Section.ProposalFormBaseData.Models.View
+﻿namespace Oje.Section.ProposalFormBaseData.Models.View
 {
     public class AgentRefferCreateUpdateVM
     {
@@ -9,5 +8,6 @@ namespace Oje.Section.ProposalFormBaseData.Models.View
         public string fullname { get; set; }
         public string mobile { get; set; }
         public string address { get; set; }
+        public string tell { get; set; }
     }
 }

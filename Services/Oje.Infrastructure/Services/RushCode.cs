@@ -1095,6 +1095,7 @@ namespace Oje.Infrastructure.Services
                 if (!MySession.IsFileExist(result.sessionFileName))
                     return null;
                 result.browserName = dycriptTextArr[7];
+                result.hasAutoRefres = dycriptTextArr[8].ToBooleanReturnFalse();
             }
             catch
             {
@@ -1157,7 +1158,7 @@ namespace Oje.Infrastructure.Services
             }
         }
 
-        public static LoginUserVM GetLoginUser(this HttpContext input)
+        public static LoginUserVM GetLoginUser(this HttpContext input, bool ignoreIpAndBrowser = false)
         {
             try
             {
@@ -1165,7 +1166,7 @@ namespace Oje.Infrastructure.Services
                 if (input.Request.Cookies.ContainsKey("login"))
                 {
                     loginUser = input.Request.Cookies["login"].Decrypt2AndGetUserVM();
-                    if (loginUser != null && (input.GetBroswerName() != loginUser.browserName || input.GetIpAddress().ToString() != loginUser.Ip))
+                    if (ignoreIpAndBrowser == false && loginUser != null && (input.GetBroswerName() != loginUser.browserName || input.GetIpAddress().ToString() != loginUser.Ip))
                         return null;
                 }
                 return loginUser;

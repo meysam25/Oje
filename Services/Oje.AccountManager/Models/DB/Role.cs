@@ -1,11 +1,7 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
@@ -32,6 +28,7 @@ namespace Oje.AccountService.Models.DB
         public long Value { get; set; }
         public bool? DisabledOnlyMyStuff { get; set; }
         public RoleType? Type { get; set; }
+        public bool? RefreshGrid { get; set; }
         public int? SiteSettingId { get; set; }
         [ForeignKey("SiteSettingId")]
         [InverseProperty("Roles")]

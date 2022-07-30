@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Models.DB
 {
@@ -15,6 +10,7 @@ namespace Oje.PaymentService.Models.DB
         {
             BankAccountSizpaies = new();
             BankAccountFactors = new();
+            BankAccountSadads = new();
         }
 
         [Key]
@@ -39,5 +35,7 @@ namespace Oje.PaymentService.Models.DB
         public List<BankAccountSizpay> BankAccountSizpaies { get; set; }
         [InverseProperty("BankAccount")]
         public List<BankAccountFactor> BankAccountFactors { get; set; }
+        [InverseProperty("BankAccount")]
+        public List<BankAccountSadad> BankAccountSadads { get; set; }
     }
 }

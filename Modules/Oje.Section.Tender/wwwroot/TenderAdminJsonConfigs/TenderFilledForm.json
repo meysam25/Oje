@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "UpdateTenderDates", "UpdateTenderAccess", "PublishTender", "TenderSelectPrice", "AddTenderPrice", "UpdateTenderPrice", "PublishTenderPrice", "DeleteTenderPrice", "IssueTender", "UpdateIssueTender" ],
           "id": "TenderFilledFormGrid",
           "exportToExcelUrl": "/TenderAdmin/TenderFilledForm/Export",
           "showColumnConfigButton": true,

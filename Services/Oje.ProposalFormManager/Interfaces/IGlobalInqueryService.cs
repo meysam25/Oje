@@ -1,10 +1,7 @@
 ﻿using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.ProposalFormService.Models.DB;
-using System;
+using Oje.ProposalFormService.Models.View;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Interfaces
 {
@@ -17,5 +14,6 @@ namespace Oje.ProposalFormService.Interfaces
         bool IsValid(long id, int? siteSettingId, int proposalFormId);
         bool HasAnyCashDiscount(long inQuiryId);
         void AppendInquiryData(long id, List<ProposalFilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs);
+        GlobalInqueryResultVM GetInquiryDataList(long id, int proposalFormId);
     }
 }

@@ -14,5 +14,7 @@ namespace Oje.Section.RegisterForm.Models.View
         public string refferUser { get; set; }
         public string traceCode { get; set; }
         public bool? isDone { get; set; }
+        public string company { get; set; }
+        public string agentCode { get; set; }
     }
 }

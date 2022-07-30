@@ -24,11 +24,11 @@ namespace Oje.ProposalFormService.Services
             return db.Companies.Where(t => t.Id == id).AsNoTracking().FirstOrDefault();
         }
 
-        public object GetLightList()
+        public object GetLightList(long? userId)
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
 
-            result.AddRange(db.Companies.Select(t => new { id = t.Id, title = t.Title, src = GlobalConfig.FileAccessHandlerUrl + t.Pic32 }).ToList());
+            result.AddRange(db.Users.Where(t => t.Id == userId).SelectMany(t => t.UserCompanies).Select(t => new { id = t.CompanyId, title = t.Company.Title, src = GlobalConfig.FileAccessHandlerUrl + t.Company.Pic32 }).ToList());
 
             return result;
         }

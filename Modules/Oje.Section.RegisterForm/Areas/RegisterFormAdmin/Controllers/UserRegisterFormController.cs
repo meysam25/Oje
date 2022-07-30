@@ -25,7 +25,8 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             (
                 IUserRegisterFormService UserRegisterFormService,
                 ISiteSettingService SiteSettingService,
-                Interfaces.IUserService UserService
+                Interfaces.IUserService UserService,
+                IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService
             )
         {
             this.UserRegisterFormService = UserRegisterFormService;

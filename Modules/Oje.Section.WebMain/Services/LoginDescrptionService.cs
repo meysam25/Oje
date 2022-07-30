@@ -45,8 +45,6 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (string.IsNullOrEmpty(input.desc))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Description);
-            if (input.desc.Length > 4000)
-                throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
             if (string.IsNullOrEmpty(input.url))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Link);
             if (db.LoginDescrptions.Any(t => t.SiteSettingId == siteSettingId && t.ReturnUrl == input.url && t.Id != input.id))

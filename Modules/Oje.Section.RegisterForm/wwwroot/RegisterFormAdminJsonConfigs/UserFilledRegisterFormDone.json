@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "AddRoleToNewUser", "NewUserFilledRegisterForm" ],
           "id": "UserFilledRegisterFormDoneGrid",
           "topActions": [
             {
@@ -35,7 +36,13 @@
                 "prop": "id",
                 "modalId": "UserFilledRegisterFormDoneviewPPfImages",
                 "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'UserFilledRegisterFormDoneviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
-
+              },
+              {
+                "type": "edit",
+                "icon": "fa-credit-card ",
+                "prop": "id",
+                "modalId": "UserFilledRegisterFormDoneDocuments",
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'UserFilledRegisterFormDoneDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -105,6 +112,20 @@
             {
               "field": "refferUser",
               "caption": "کاربر معرف",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "company",
+              "caption": "شرکت",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "agentCode",
+              "caption": "کد نماینده",
               "search": {
                 "searchType": "text"
               }
@@ -225,6 +246,73 @@
               "title": "جدید",
               "onClick": "if($('#UserFilledRegisterFormDoneAddGridModal').find('select').find('option:selected').attr('value')) { window.open('/Register/Users' + $('#UserFilledRegisterFormDoneAddGridModal').find('select').find('option:selected').attr('value'), '_blank').focus(); }",
               "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "UserFilledRegisterFormDoneDocuments",
+          "title": "کارت به کارت",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "showColumnConfigButton": true,
+                  "actions": {
+                    "delete": {
+                      "url": "/RegisterFormAdmin/UserFilledRegisterFormDone/DeletePayment"
+                    },
+                    "cActions": [
+                      {
+                        "template": "function bindRow (curRow) { return !curRow.src ?'' :  '<a title=\"دانلود\" href=\"'+ curRow.src +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-download\" ></i></span>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/RegisterFormAdmin/UserFilledRegisterFormDone/GetPaymentList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "card",
+                      "caption": "شماره کارت",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "refferCode",
+                      "caption": "کد پیگیری",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "pDate",
+                      "caption": "تاریخ پرداخت",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

@@ -4,6 +4,7 @@
     <ProjectReference Include="..\..\Services\Oje.PaymentService\Oje.PaymentService.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\Payment\Views\Sadad\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   

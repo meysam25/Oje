@@ -104,7 +104,7 @@ namespace Oje.PaymentService.Services
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive.Value);
-            if(searchInput.code != null)
+            if (searchInput.code != null)
                 qureResult = qureResult.Where(t => t.BankCode == searchInput.code);
 
             int row = searchInput.skip;
@@ -161,7 +161,7 @@ namespace Oje.PaymentService.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
 
-            result.AddRange(db.Banks.AsNoTracking().Select(t => new { id = t.Id, title = t.Title }).ToList());
+            result.AddRange(db.Banks.Where(t => t.IsActive == true).AsNoTracking().Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
         }
@@ -169,6 +169,11 @@ namespace Oje.PaymentService.Services
         public int? GetByCode(int? code)
         {
             return db.Banks.Where(t => t.BankCode == code).Select(t => t.Id).FirstOrDefault();
+        }
+
+        public Bank GetBy(int id)
+        {
+            return db.Banks.Where(t => t.IsActive == true && t.Id == id).FirstOrDefault();
         }
     }
 }

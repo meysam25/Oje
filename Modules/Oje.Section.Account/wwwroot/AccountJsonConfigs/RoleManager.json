@@ -151,6 +151,15 @@
               "label": "تنظیمات"
             },
             {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "refreshGrid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "به روز رسانی گرید"
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "formIds",
               "type": "tokenBox2",
@@ -225,6 +234,15 @@
               "valuefield": "id",
               "dataurl": "/Account/RoleManager/GetSettingList",
               "label": "تنظیمات"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "refreshGrid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "به روز رسانی گرید"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -320,29 +338,12 @@
         },
         {
           "id": "newDashboardRoleActionModal",
+          "class": "modal-xl",
           "title": "افزودن",
           "ctrls": [
             {
               "name": "id",
               "type": "hidden"
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "class",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/BootstrapClass",
-              "label": "کلاس"
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "type",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/DashboardSectionType",
-              "label": "نوع"
             },
             {
               "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
@@ -354,7 +355,25 @@
               "label": "بخش"
             },
             {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "parentCL": "col-md-6 col-sm-12 col-lg-6 col-xl-6 col-xs-12",
+              "name": "class",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/BootstrapClass",
+              "label": "کلاس"
+            },
+            {
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/DashboardSectionType",
+              "label": "نوع"
+            },
+            {
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
               "name": "catId",
               "type": "dropDown",
               "textfield": "title",
@@ -363,16 +382,25 @@
               "label": "گروه بندی"
             },
             {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
               "name": "order",
               "type": "text",
               "label": "ترتیب"
             },
             {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
               "name": "color",
               "type": "color",
               "label": "رنگ"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "types",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/UserNotificationType",
+              "label": "به روز رسانی"
             }
           ],
           "actions": [
@@ -390,29 +418,12 @@
         },
         {
           "id": "editDashboardRoleActionModal",
+          "class": "modal-xl",
           "title": "ویرایش",
           "ctrls": [
             {
               "name": "id",
               "type": "hidden"
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "class",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/BootstrapClass",
-              "label": "کلاس"
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "type",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/DashboardSectionType",
-              "label": "نوع"
             },
             {
               "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
@@ -424,7 +435,25 @@
               "label": "بخش"
             },
             {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "parentCL": "col-md-6 col-sm-12 col-lg-6 col-xl-6 col-xs-12",
+              "name": "class",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/BootstrapClass",
+              "label": "کلاس"
+            },
+            {
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
+              "name": "type",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/DashboardSectionType",
+              "label": "نوع"
+            },
+            {
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
               "name": "catId",
               "type": "dropDown",
               "textfield": "title",
@@ -433,16 +462,25 @@
               "label": "گروه بندی"
             },
             {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
               "name": "order",
               "type": "text",
               "label": "ترتیب"
             },
             {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "parentCL": "col-md-4 col-sm-12 col-lg-3 col-xl-3 col-xs-12",
               "name": "color",
               "type": "color",
               "label": "رنگ"
+            },
+            {
+              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+              "name": "types",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/UserNotificationType",
+              "label": "به روز رسانی"
             }
           ],
           "actions": [

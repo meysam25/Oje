@@ -115,6 +115,12 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "tell",
+              "type": "text",
+              "label": "تلفن"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "address",
               "type": "textarea",
               "label": "آدرس",
@@ -173,6 +179,12 @@
               "type": "text",
               "label": "همراه",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "tell",
+              "type": "text",
+              "label": "تلفن"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

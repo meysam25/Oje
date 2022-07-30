@@ -30,7 +30,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 CompanyId = input.cid.Value,
                 FullName = input.fullname,
                 Mobile = input.mobile,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = siteSettingId.Value,
+                Tell = input.tell
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -84,7 +85,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     code = t.Code,
                     fullname = t.FullName,
                     mobile = t.Mobile,
-                    address = t.Address
+                    address = t.Address,
+                    tell = t.Tell
                 })
                 .FirstOrDefault();
         }
@@ -148,6 +150,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             foundItem.CompanyId = input.cid.Value;
             foundItem.FullName = input.fullname;
             foundItem.Mobile = input.mobile;
+            foundItem.Tell = input.tell;
 
             db.SaveChanges();
 

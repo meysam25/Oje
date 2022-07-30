@@ -83,10 +83,11 @@ namespace Oje.PaymentService.Services
                 isSuccess = true,
                 message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(),
                 data =
-                new
+                new 
                 {
-                    action = "redirect",
-                    url = "/Payment/Payment/GetWayList?status=" + System.Net.WebUtility.UrlEncode(("3," + userId + "," + input.price.Value + "," + url + "," + agentUserId).Encrypt2())
+                    action = "postToUrl",
+                    url = "/Payment/Payment/GetWayList",
+                    parameters = new { status = ("3," + userId + "," + input.price.Value + "," + url + "," + agentUserId).Encrypt2() }
                 }
             };
         }

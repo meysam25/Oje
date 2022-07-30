@@ -308,11 +308,11 @@
         }
 
         $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
-        //localStorage.clear();
+        localStorage.clear();
         @{
             if (Context.Request.IsHttps)
             {
-                // ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+                 ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
             }
         }
     </script>

@@ -124,7 +124,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult GetCompanyListGridFilter()
         {
-            return Json(CompanyService.GetLightList());
+            return Json(CompanyService.GetLightList(HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه روزانه", Icon = "fa-list-alt")]

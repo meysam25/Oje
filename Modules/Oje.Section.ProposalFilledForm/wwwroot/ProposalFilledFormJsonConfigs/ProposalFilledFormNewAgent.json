@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangedNew" ],
           "id": "ppfProposalFilledFormNewAgentGrid",
           "exteraSearchIds": [ "ProposalFilledFormNewAgentgridSearchModal" ],
           "exteraFilterModalId": "ProposalFilledFormNewAgentgridSearchModal",

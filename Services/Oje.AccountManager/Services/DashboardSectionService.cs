@@ -7,11 +7,8 @@ using Oje.AccountService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {
@@ -44,6 +41,18 @@ namespace Oje.AccountService.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
+            if (input.types != null && input.types.Any())
+            {
+                foreach (var nt in input.types)
+                    db.Entry(new DashboardSectionUserNotificationType()
+                    {
+                        DashboardSectionId = newItem.Id,
+                        Type = nt
+                    }).State = EntityState.Added;
+
+                db.SaveChanges();
+            }
+
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
@@ -65,10 +74,14 @@ namespace Oje.AccountService.Services
 
         public ApiResult Delete(int? id)
         {
-            DashboardSection foundItem = db.DashboardSections.Where(t => t.Id == id).FirstOrDefault();
+            DashboardSection foundItem = db.DashboardSections.Include(t => t.DashboardSectionUserNotificationTypes).Where(t => t.Id == id).FirstOrDefault();
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (foundItem.DashboardSectionUserNotificationTypes != null && foundItem.DashboardSectionUserNotificationTypes.Any())
+                for (var i = 0; i < foundItem.DashboardSectionUserNotificationTypes.Count; i++)
+                    db.Entry(foundItem.DashboardSectionUserNotificationTypes[i]).State = EntityState.Deleted;
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -90,7 +103,8 @@ namespace Oje.AccountService.Services
                     actionId_Title = t.Action.Title,
                     catId = t.DashboardSectionCategoryId,
                     order = t.Order,
-                    color = t.Color
+                    color = t.Color,
+                    types = t.DashboardSectionUserNotificationTypes.Select(tt => tt.Type).ToList()
                 })
                 .Take(1)
                 .Select(t => new
@@ -102,7 +116,8 @@ namespace Oje.AccountService.Services
                     t.actionId_Title,
                     t.catId,
                     t.order,
-                    t.color
+                    t.color,
+                    t.types
                 })
                 .FirstOrDefault();
         }
@@ -153,9 +168,13 @@ namespace Oje.AccountService.Services
         {
             createUpdateValidation(input);
 
-            DashboardSection foundItem = db.DashboardSections.Where(t => t.Id == input.id).FirstOrDefault();
+            DashboardSection foundItem = db.DashboardSections.Include(t => t.DashboardSectionUserNotificationTypes).Where(t => t.Id == input.id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (foundItem.DashboardSectionUserNotificationTypes != null && foundItem.DashboardSectionUserNotificationTypes.Any())
+                for (var i = 0; i < foundItem.DashboardSectionUserNotificationTypes.Count; i++)
+                    db.Entry(foundItem.DashboardSectionUserNotificationTypes[i]).State = EntityState.Deleted;
 
             foundItem.ActionId = input.actionId.ToLongReturnZiro();
             foundItem.Class = input.@class;
@@ -163,6 +182,18 @@ namespace Oje.AccountService.Services
             foundItem.DashboardSectionCategoryId = input.catId;
             foundItem.Order = input.order;
             foundItem.Color = input.color;
+
+            if (input.types != null && input.types.Any())
+            {
+                foreach (var nt in input.types)
+                    db.Entry(new DashboardSectionUserNotificationType()
+                    {
+                        DashboardSectionId = foundItem.Id,
+                        Type = nt
+                    }).State = EntityState.Added;
+
+                db.SaveChanges();
+            }
 
             db.SaveChanges();
 
@@ -190,7 +221,8 @@ namespace Oje.AccountService.Services
                     gOrder = t.DashboardSectionCategory.Order,
                     gcssClass = t.DashboardSectionCategory.Css,
                     order = t.Order,
-                    color = t.Color
+                    color = t.Color,
+                    nTypes = t.DashboardSectionUserNotificationTypes.Select(tt => tt.Type.ToString()).ToList()
                 })
                 .ToList();
 
@@ -213,7 +245,8 @@ namespace Oje.AccountService.Services
                         label = t.label.Replace("تنظیمات ", "").Replace("صفحه ", ""),
                         url = t.type == Infrastructure.Enums.DashboardSectionType.Content || t.type == Infrastructure.Enums.DashboardSectionType.TabContent || t.type == Infrastructure.Enums.DashboardSectionType.Tab || t.type == Infrastructure.Enums.DashboardSectionType.TabContentDynamicContent ? t.url : putIndexAtEntOfUrl(t.url),
                         icon = t.icon,
-                        t.color
+                        t.color,
+                        t.nTypes
                     })
                     .ToList()
                 });

@@ -290,7 +290,7 @@ namespace Oje.ProposalFormService.Services
                     issueDate = t.issueDate != null ? t.issueDate.ToFaDate() : "",
                     startDate = t.startDate != null ? t.startDate.ToFaDate() : "",
                     endDate = t.endDate != null ? t.endDate.ToFaDate() : "",
-                    isAgent = roles != null && roles.Any(t => t == "agent"),
+                    isAgent = roles != null && roles.Any(tt => !string.IsNullOrEmpty(tt) && tt.StartsWith("agent")),
                     targetUserNationalCode = t.targetUserNationalCode
                 })
                 .ToList()
@@ -509,10 +509,23 @@ namespace Oje.ProposalFormService.Services
                 }
                 listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "وضعیت پرداخت", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
             }
+            GlobalInqueryResultVM inquiryInputs = null;
+            if (foundItem.GlobalInqueryId > 0)
+                inquiryInputs = GlobalInqueryService.GetInquiryDataList(foundItem.GlobalInqueryId.ToLongReturnZiro(), foundItem.ProposalFormId);
             foreach (var step in fFoundSw.steps)
             {
                 var allCtrls = step.GetAllListOf<ctrl>();
                 List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupItems = new();
+
+                if (inquiryInputs != null && inquiryInputs.inputItems != null && inquiryInputs.inputItems.Count > 0)
+                {
+                    var thisStepsInputs = inquiryInputs.inputItems.Where(t => t.step == step.id).ToList();
+                    if (thisStepsInputs != null && thisStepsInputs.Count > 0)
+                        foreach (var input in thisStepsInputs)
+                            if (!thisStepsInputs.Any(t => !string.IsNullOrEmpty(t.key) && t.key != input.key && t.key.StartsWith(input.key)) && input.value.IndexOf("tem.Collections.Generic.Lis") == -1)
+                                ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = input.title, value = input.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+                }
+
                 if (allCtrls != null && allCtrls.Count > 0)
                 {
                     foreach (var ctrl in allCtrls)
@@ -567,8 +580,29 @@ namespace Oje.ProposalFormService.Services
             result.id = foundItem.SiteSettingId + "/" + foundItem.ProposalFormId + "/" + foundItem.Id;
             result.price = foundItem.Price;
             result.ppfCreateDate = foundItem.CreateDate.ToFaDate();
-            if (foundItem.GlobalInqueryId > 0)
-                GlobalInqueryService.AppendInquiryData(foundItem.GlobalInqueryId.ToLongReturnZiro(), result.ProposalFilledFormPdfGroupVMs);
+            if (inquiryInputs != null && inquiryInputs.inquiryItems != null && inquiryInputs.inquiryItems.Count > 0)
+            {
+                if (listGroup == null)
+                    listGroup = new();
+                ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات استعلام", ProposalFilledFormPdfGroupItems = new() };
+                foreach (var item in inquiryInputs.inquiryItems)
+                    newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+                listGroup.Add(newGroupItem);
+            }
+            if (inquiryInputs != null && inquiryInputs.inputItems != null && inquiryInputs.inputItems.Any(t => string.IsNullOrEmpty(t.step)))
+            {
+                var exteraParametersList = inquiryInputs.inputItems.Where(t => string.IsNullOrEmpty(t.step)).ToList();
+                if (listGroup == null)
+                    listGroup = new();
+                ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات محاسبه استعلام حق بیمه", ProposalFilledFormPdfGroupItems = new() };
+                foreach (var item in exteraParametersList)
+                {
+                    if (!exteraParametersList.Any(t => !string.IsNullOrEmpty(t.key) && t.key != item.key && t.key.StartsWith(item.key)) && item.value.IndexOf("tem.Collections.Generic.Lis") == -1)
+                        newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+
+                }
+                listGroup.Add(newGroupItem);
+            }
             if (foundCompany != null)
             {
                 result.companyTitle = foundCompany.Title;
@@ -580,8 +614,8 @@ namespace Oje.ProposalFormService.Services
                 List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupPaymentItems = new();
                 ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام ", value = foundRefferAgent.FullName });
                 ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ", value = foundRefferAgent.Code });
-                if (foundCompany != null)
-                    ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "همراه ", value = foundRefferAgent.Mobile + "" });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "همراه ", value = foundRefferAgent.Mobile + "" });
+                ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "تلفن ", value = foundRefferAgent.Tell + "" });
                 ProposalFilledFormPdfGroupPaymentItems.Add(new ProposalFilledFormPdfGroupItem() { cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12", title = "آدرس ", value = foundRefferAgent.Address + "" });
 
                 listGroup.Add(new ProposalFilledFormPdfGroupVM() { title = "واحد معرف", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
@@ -836,6 +870,9 @@ namespace Oje.ProposalFormService.Services
         {
             var result = new ProposalFilledFormPdfVM();
             int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
+            long inquiryId = form.GetStringIfExist("inquiryId").ToLongReturnZiro();
+            if (proposalFormId <= 0)
+                return result;
             var foundProposalForm = ProposalFormService.GetById(proposalFormId, siteSettingId);
             PageForm jsonObj = null;
             try { jsonObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch (Exception) { }
@@ -848,11 +885,25 @@ namespace Oje.ProposalFormService.Services
             var fFoundSw = foundSw.FirstOrDefault();
             List<ProposalFilledFormPdfGroupVM> listGroup = new();
 
+            GlobalInqueryResultVM inquiryInputs = null;
+            if (inquiryId > 0)
+                inquiryInputs = GlobalInqueryService.GetInquiryDataList(inquiryId, proposalFormId);
+
             var values = form.Keys.Select(t => new { Key = t, Value = form.GetStringIfExist(t) }).ToList();
             foreach (var step in fFoundSw.steps)
             {
                 var allCtrls = step.GetAllListOf<ctrl>();
                 List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupItems = new();
+
+                if (inquiryInputs != null && inquiryInputs.inputItems != null && inquiryInputs.inputItems.Count > 0)
+                {
+                    var thisStepsInputs = inquiryInputs.inputItems.Where(t => t.step == step.id).ToList();
+                    if (thisStepsInputs != null && thisStepsInputs.Count > 0)
+                        foreach (var input in thisStepsInputs)
+                            if (!thisStepsInputs.Any(t => !string.IsNullOrEmpty(t.key) && t.key != input.key && t.key.StartsWith(input.key)) && input.value.IndexOf("tem.Collections.Generic.Lis") == -1)
+                                ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = input.title, value = input.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+                }
+
                 if (allCtrls != null && allCtrls.Count > 0)
                 {
                     foreach (var ctrl in allCtrls)
@@ -903,6 +954,29 @@ namespace Oje.ProposalFormService.Services
             result.ProposalFilledFormPdfGroupVMs = listGroup;
             result.ppfTitle = foundProposalForm.Title;
             result.ppfCreateDate = DateTime.Now.ToFaDate();
+            if (inquiryInputs != null && inquiryInputs.inquiryItems != null && inquiryInputs.inquiryItems.Count > 0)
+            {
+                if (listGroup == null)
+                    listGroup = new();
+                ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات استعلام", ProposalFilledFormPdfGroupItems = new() };
+                foreach (var item in inquiryInputs.inquiryItems)
+                    newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+                listGroup.Add(newGroupItem);
+            }
+            if (inquiryInputs != null && inquiryInputs.inputItems != null && inquiryInputs.inputItems.Any(t => string.IsNullOrEmpty(t.step)))
+            {
+                var exteraParametersList = inquiryInputs.inputItems.Where(t => string.IsNullOrEmpty(t.step)).ToList();
+                if (listGroup == null)
+                    listGroup = new();
+                ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات محاسبه استعلام حق بیمه", ProposalFilledFormPdfGroupItems = new() };
+                foreach (var item in exteraParametersList)
+                {
+                    if (!exteraParametersList.Any(t => !string.IsNullOrEmpty(t.key) && t.key != item.key && t.key.StartsWith(item.key)) && item.value.IndexOf("tem.Collections.Generic.Lis") == -1)
+                        newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+
+                }
+                listGroup.Add(newGroupItem);
+            }
 
             return result;
         }

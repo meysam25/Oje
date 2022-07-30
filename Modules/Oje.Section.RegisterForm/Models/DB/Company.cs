@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
@@ -15,6 +11,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         {
             UserCompanies = new();
             UserFilledRegisterFormCompanies = new();
+            UserRegisterFormCompanies = new();
         }
 
         [Key]
@@ -28,5 +25,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         public List<UserCompany> UserCompanies { get; set; }
         [InverseProperty("Company")]
         public List<UserFilledRegisterFormCompany> UserFilledRegisterFormCompanies { get; set; }
+        [InverseProperty("Company")]
+        public List<UserRegisterFormCompany> UserRegisterFormCompanies { get; set; }
     }
 }

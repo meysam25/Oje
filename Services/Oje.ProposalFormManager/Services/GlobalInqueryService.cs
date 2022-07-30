@@ -2,6 +2,7 @@
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
+using Oje.ProposalFormService.Models.View;
 using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace Oje.ProposalFormService.Services
                             title = tt.Title,
                             value = tt.Value,
                             key = tt.Key,
+                            step = tt.ShowInDetailes
                         }).ToList()
                     }).FirstOrDefault();
                 if (foundItem != null && foundItem.inquiryItems.Count > 0)
@@ -98,6 +100,32 @@ namespace Oje.ProposalFormService.Services
         public int GetCompanyId(long id, int? siteSettingId)
         {
             return db.GlobalInqueries.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => t.CompanyId).FirstOrDefault();
+        }
+
+        public GlobalInqueryResultVM GetInquiryDataList(long id, int proposalFormId)
+        {
+            if (id > 0)
+            {
+                return db.GlobalInqueries
+                    .Where(t => t.Id == id && t.ProposalFormId == proposalFormId)
+                    .Select(t => new GlobalInqueryResultVM
+                    {
+                        inquiryItems = t.GlobalInquiryItems.OrderBy(t => t.Order).Select(tt => new GlobalInqueryItemResultVM
+                        {
+                            title = tt.Title,
+                            value = tt.Price.ToString("###,###") + "ریال"
+                        }).ToList(),
+                        inputItems = t.GlobalInputInquery.GlobalInqueryInputParameters.Select(tt => new GlobalInqueryItemResultVM
+                        {
+                            title = tt.Title,
+                            value = tt.Value,
+                            key = tt.Key,
+                            step = tt.ShowInDetailes
+                        }).ToList()
+                    }).FirstOrDefault();
+            }
+
+            return null;
         }
 
         public object GetSumPrice(long inquiryId, int proposalFormId, int? siteSettingId)

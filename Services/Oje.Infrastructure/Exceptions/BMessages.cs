@@ -666,5 +666,13 @@ namespace Oje.Infrastructure.Exceptions
         Dublicate_User_RefferCode = 329,
         [Display(Name = "کد معرف مجاز نمی باشد")]
         Invalid_RefferCode = 330,
+        [Display(Name = "اطلاعات وارده طولانی می باشد")]
+        MaxLengthError = 331,
+        [Display(Name = "لطفا شماره کارت را وارد کنید")]
+        Please_Enter_BankCardNo = 332,
+        [Display(Name = "لطفا کد پیکیری را وارد کنید")]
+        Please_Enter_TraceCode = 333,
+        [Display(Name = "خطای کد تخفیف")]
+        Invalid_Discount_Code = 334,
     }
 }

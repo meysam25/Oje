@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "notificationTriger": [ "all" ],
           "id": "userAccountUserNotificationGrid",
           "exportToExcelUrl": "/UserAccount/UserNotification/Export",
           "showColumnConfigButton": true,

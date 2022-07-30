@@ -16,6 +16,14 @@ $.fn.initTreeView = function () {
                 $(curThis)[0].openButton(this);
             });
         };
+        $(this)[0].openButtonAllIfHasValue = function () {
+            var curThis = this;
+            $(this).find('.treeViewPMIcon').each(function () {
+                var parentQuiry = $(this).closest('.treeViewItem');
+                if (parentQuiry.find('input[type="checkbox"]:checked').length > 0)
+                    $(curThis)[0].openButton(this);
+            });
+        };
         $(this)[0].closeButton = function (curObj) {
             $(curObj).removeClass('fa-minus-square');
             $(curObj).addClass('fa-plus-square');
@@ -45,7 +53,7 @@ $.fn.initTreeView = function () {
                     console.log(isChekcedStr);
                 }
                 result += '<span class="treeViewItemTitle"><i class="' + (arrChilds && arrChilds.length > 0 ? 'fa fa-plus-square' : '') + ' treeViewPMIcon" ></i><input ' + isChekcedStr + ' name="a_' + index + '" value="' +
-                    dataItem[valueField] + '" type="checkbox" id="' + itemValue + '" /><label data-lc="' + dataItem['lc'] +'" for="' + itemValue + '" >' + dataItem[textField] + '</label></span>';
+                    dataItem[valueField] + '" type="checkbox" id="' + itemValue + '" /><label data-lc="' + dataItem['lc'] + '" for="' + itemValue + '" >' + dataItem[textField] + '</label></span>';
                 if (arrChilds && arrChilds.length > 0) {
                     result += '<span class="treeViewItems">';
                     for (var i = 0; i < arrChilds.length; i++) {
@@ -74,7 +82,7 @@ $.fn.initTreeView = function () {
                     if (res) {
                         $(this)[0].bindData(res, dataTextFeild, dataValueFeild, dataChildFeild, dataSelected);
                         $(this)[0].initCTRLs();
-                        $(this)[0].openButtonAll();
+                        $(this)[0].openButtonAllIfHasValue();
                         loadLangugesTranslate();
                     }
                 }.bind(this));

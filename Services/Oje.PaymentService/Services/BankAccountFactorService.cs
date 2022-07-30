@@ -16,13 +16,15 @@ namespace Oje.PaymentService.Services
         readonly IBankAccountService BankAccountService = null;
         readonly IWalletTransactionService WalletTransactionService = null;
         readonly IBankAccountDetectorService BankAccountDetectorService = null;
+        readonly IUserFilledRegisterFormService UserFilledRegisterFormService = null;
 
         public BankAccountFactorService(
                 PaymentDBContext db,
                 IProposalFilledFormService ProposalFilledFormService,
                 IBankAccountService BankAccountService,
                 IWalletTransactionService WalletTransactionService,
-                IBankAccountDetectorService BankAccountDetectorService
+                IBankAccountDetectorService BankAccountDetectorService,
+                IUserFilledRegisterFormService UserFilledRegisterFormService
             )
         {
             this.db = db;
@@ -30,6 +32,7 @@ namespace Oje.PaymentService.Services
             this.ProposalFilledFormService = ProposalFilledFormService;
             this.WalletTransactionService = WalletTransactionService;
             this.BankAccountDetectorService = BankAccountDetectorService;
+            this.UserFilledRegisterFormService = UserFilledRegisterFormService;
         }
 
         public string Create(int? bankAccountId, PaymentFactorVM payModel, int? siteSettingId, long? loginUserId)
@@ -38,6 +41,9 @@ namespace Oje.PaymentService.Services
             {
                 if (!BankAccountService.Exist(payModel.userId, bankAccountId, siteSettingId))
                     throw BException.GenerateNewException(BMessages.Validation_Error);
+                var newHashCode = (bankAccountId + ((int)payModel.type) + "_" + payModel.objectId + "_" + DateTime.Now.Ticks).GetHashCode32();
+                if (newHashCode < 0)
+                    newHashCode = newHashCode * -1;
                 var newItem = new BankAccountFactor()
                 {
                     BankAccountId = bankAccountId.ToIntReturnZiro(),
@@ -48,7 +54,8 @@ namespace Oje.PaymentService.Services
                     TargetLink = payModel.returnUrl,
                     Type = payModel.type,
                     UserId = loginUserId,
-                    BankAccountType = BankAccountDetectorService.GetByType(bankAccountId.ToIntReturnZiro(), siteSettingId)
+                    BankAccountType = BankAccountDetectorService.GetByType(bankAccountId.ToIntReturnZiro(), siteSettingId),
+                    KeyHash = newHashCode
                 };
                 db.Entry(newItem).State = EntityState.Added;
                 db.SaveChanges();
@@ -61,6 +68,12 @@ namespace Oje.PaymentService.Services
         public bool ExistBy(string traceNo)
         {
             return db.BankAccountFactors.Any(t => t.TraceCode == traceNo);
+        }
+
+        public BankAccountFactor GetBy(string keyHash, int? siteSettingId)
+        {
+            var intKeyHAsh = keyHash.GetHashCode32();
+            return db.BankAccountFactors.Where(t => t.SiteSettingId == siteSettingId && t.KeyHash == intKeyHAsh).AsNoTracking().FirstOrDefault();
         }
 
         public BankAccountFactor GetById(string bankAccountFactorId, int? siteSettingId)
@@ -82,7 +95,7 @@ namespace Oje.PaymentService.Services
             long objectId = splitIds[2].ToLongReturnZiro();
             DateTime createDate = new DateTime(splitIds[3].ToLongReturnZiro());
 
-            return db.BankAccountFactors.Where(t => t.BankAccountId == bankAccoundId && t.Type == type.Value && t.ObjectId == objectId && t.CreateDate == createDate).AsNoTracking().FirstOrDefault();
+            return db.BankAccountFactors.Where(t => t.BankAccountId == bankAccoundId && t.Type == type.Value && t.ObjectId == objectId && t.CreateDate == createDate).FirstOrDefault();
         }
 
         public List<ProposalFilledFormPaymentVM> GetListBy(BankAccountFactorType type, long objectId, int? siteSettingId)
@@ -110,6 +123,11 @@ namespace Oje.PaymentService.Services
                 ;
         }
 
+        public void Save()
+        {
+            db.SaveChanges();
+        }
+
         public void UpdatePaymentInfor(BankAccountFactor foundAccount, string traceNo, int? siteSettingId, DateTime? payDate = null)
         {
             if (foundAccount == null)
@@ -124,6 +142,8 @@ namespace Oje.PaymentService.Services
                 ProposalFilledFormService.UpdateTraceCode(foundItem.ObjectId, traceNo);
             else if (foundItem.Type == BankAccountFactorType.Wallet)
                 WalletTransactionService.Create(foundItem.Price, siteSettingId, foundItem.ObjectId, "افزایش موجودی", traceNo);
+            else if (foundItem.Type == BankAccountFactorType.UserRegister)
+                UserFilledRegisterFormService.UpdateTraceCode(foundItem.ObjectId, siteSettingId, traceNo);
             else
                 throw BException.GenerateNewException(BMessages.No_Imprement_Yet);
 
