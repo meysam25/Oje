@@ -81,7 +81,6 @@ namespace Oje.ProposalFormService.Services
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl)
         {
-            throw BException.GenerateNewException(BMessages.Accident_Driver_Penalty);
             createValidation(siteSettingId, form);
 
             long inquiryId = form.GetStringIfExist("inquiryId").ToLongReturnZiro();
@@ -98,7 +97,12 @@ namespace Oje.ProposalFormService.Services
             if (inquiryId > 0)
                 companyId = GlobalInqueryService.GetCompanyId(inquiryId, siteSettingId);
 
-            createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId);
+            if (ppfObj == null || ppfObj.panels == null || ppfObj.panels.Count == 0)
+                throw BException.GenerateNewException(BMessages.Json_Convert_Error);
+
+            var allCtrls = ppfObj.GetAllListOf<ctrl>();
+
+            createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId, allCtrls);
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -118,7 +122,7 @@ namespace Oje.ProposalFormService.Services
                     ProposalFilledFormUseService.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id);
                     if (PaymentMethodService.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryService.HasAnyCashDiscount(inquiryId))
                         ProposalFilledFormDocumentService.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
-                    ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form);
+                    ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form, allCtrls);
                     createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
 
                     if (loginUserId == ownerUserId)
@@ -186,15 +190,10 @@ namespace Oje.ProposalFormService.Services
             return newItem;
         }
 
-        private void createCtrlValidation(IFormCollection form, PageForm ppfObj, List<ProposalFormRequiredDocument> allRequiredFileUpload, int? siteSettingId, int companyId)
+        private void createCtrlValidation(IFormCollection form, PageForm ppfObj, List<ProposalFormRequiredDocument> allRequiredFileUpload, int? siteSettingId, int companyId, List<ctrl> allCtrls)
         {
-            if (ppfObj == null || ppfObj.panels == null || ppfObj.panels.Count == 0)
-                throw BException.GenerateNewException(BMessages.Json_Convert_Error);
-
             validateCompanyAndAgent(ppfObj, form, siteSettingId, companyId);
             validateIfInquiryRequired(form, ppfObj, siteSettingId);
-
-            var allCtrls = ppfObj.GetAllListOf<ctrl>();
 
             foreach (ctrl ctrl in allCtrls)
             {
@@ -363,7 +362,12 @@ namespace Oje.ProposalFormService.Services
             if (inquiryId > 0)
                 companyId = GlobalInqueryService.GetCompanyId(inquiryId, siteSettingId);
 
-            createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId);
+            if (ppfObj == null || ppfObj.panels == null || ppfObj.panels.Count == 0)
+                throw BException.GenerateNewException(BMessages.Json_Convert_Error);
+
+            var allCtrls = ppfObj.GetAllListOf<ctrl>();
+
+            createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId, allCtrls);
         }
     }
 }

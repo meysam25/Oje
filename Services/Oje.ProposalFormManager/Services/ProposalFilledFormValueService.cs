@@ -8,6 +8,7 @@ using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Oje.ProposalFormService.Services
@@ -30,14 +31,12 @@ namespace Oje.ProposalFormService.Services
                 ProposalFilledFormKeyId = keyId,
                 Value = currValue
             }).State = EntityState.Added;
-            db.SaveChanges();
         }
 
-        public void CreateByJsonConfig(PageForm ppfObj, long proposalFilledFormId, IFormCollection form, bool? isEdit = false)
+        public void CreateByJsonConfig(PageForm ppfObj, long proposalFilledFormId, IFormCollection form, List<ctrl> allCtrls, bool? isEdit = false)
         {
             if (ppfObj != null && form != null && proposalFilledFormId > 0)
             {
-                var allCtrls = ppfObj.GetAllListOf<ctrl>();
                 foreach (ctrl ctrl in allCtrls)
                 {
                     if (ctrl.isCtrlVisible(form, allCtrls))
@@ -103,9 +102,11 @@ namespace Oje.ProposalFormService.Services
 
         public void UpdateBy(long proposalFilledFormId, IFormCollection form, PageForm jsonObj)
         {
+            if (jsonObj == null)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
             updateValidation(jsonObj, form);
             removeChekBoxCtrls(jsonObj, proposalFilledFormId);
-            CreateByJsonConfig(jsonObj, proposalFilledFormId, form, true);
+            CreateByJsonConfig(jsonObj, proposalFilledFormId, form, jsonObj.GetAllListOf<ctrl>(), true);
         }
 
         private void removeChekBoxCtrls(PageForm jsonObj, long proposalFilledFormId)
