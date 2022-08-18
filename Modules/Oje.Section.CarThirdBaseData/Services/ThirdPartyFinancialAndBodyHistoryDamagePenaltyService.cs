@@ -29,7 +29,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Percent = input.percent.Value,
                 Title = input.title,
-                IsFinancial = input.isFinancial.ToBooleanReturnFalse()
+                IsFinancial = input.isFinancial.ToBooleanReturnFalse(),
+                Count = input.count
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -74,7 +75,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                     title = t.Title,
                     isActive = t.IsActive,
                     percent = t.Percent,
-                    isFinancial = t.IsFinancial == null ? false : t.IsFinancial.Value
+                    isFinancial = t.IsFinancial == null ? false : t.IsFinancial.Value,
+                    count = t.Count
                 }).FirstOrDefault();
         }
 
@@ -130,6 +132,7 @@ namespace Oje.Section.CarThirdBaseData.Services
             foundItem.Percent = input.percent.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.IsFinancial = input.isFinancial.ToBooleanReturnFalse();
+            foundItem.Count = input.count;
 
             db.SaveChanges();
 

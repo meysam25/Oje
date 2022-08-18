@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +9,8 @@ namespace Oje.AccountService.Models.DB
     {
         public SiteSetting()
         {
-            Roles = new List<Role>();
+            Roles = new();
+            Childs = new();
         }
 
         [Key]
@@ -38,7 +38,12 @@ namespace Oje.AccountService.Models.DB
         public string Image512 { get; set; }
         [MaxLength(200)]
         public string ImageText { get; set; }
+        public int? ParentId { get; set; }
+        [ForeignKey("ParentId "), InverseProperty("Childs")]
+        public SiteSetting Parent { get; set; }
 
+        [InverseProperty("Parent")]
+        public List<SiteSetting> Childs { get; set; }
         [InverseProperty("SiteSetting")]
         public List<Role> Roles { get; set; }
     }

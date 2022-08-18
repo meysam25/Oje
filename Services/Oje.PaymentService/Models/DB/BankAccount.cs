@@ -11,6 +11,7 @@ namespace Oje.PaymentService.Models.DB
             BankAccountSizpaies = new();
             BankAccountFactors = new();
             BankAccountSadads = new();
+            BankAccountSeps = new();
         }
 
         [Key]
@@ -37,5 +38,7 @@ namespace Oje.PaymentService.Models.DB
         public List<BankAccountFactor> BankAccountFactors { get; set; }
         [InverseProperty("BankAccount")]
         public List<BankAccountSadad> BankAccountSadads { get; set; }
+        [InverseProperty("BankAccount")]
+        public List<BankAccountSep> BankAccountSeps { get; set; }
     }
 }

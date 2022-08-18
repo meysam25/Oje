@@ -23,7 +23,7 @@ namespace Oje.Section.Account
             AccountConfig.Config(services);
 
             var sBuilder = services.BuildServiceProvider();
-            sBuilder.GetService<ISectionService>().UpdateModuals();
+            //sBuilder.GetService<ISectionService>().UpdateModuals();
             sBuilder.GetService<ITempSqlCommService>().SetFlagForGooglePointPerformanceProblem();
         }
     }

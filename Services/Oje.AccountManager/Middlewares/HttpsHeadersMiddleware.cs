@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Oje.AccountService.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Oje.AccountService.Middlewares
@@ -17,7 +13,7 @@ namespace Oje.AccountService.Middlewares
             this.next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext, ISiteSettingService SiteSettingService, IHttpContextAccessor HttpContextAccessor)
+        public async Task Invoke(HttpContext httpContext, ISiteSettingService SiteSettingService)
         {
             var foundSiteSetting = SiteSettingService.GetSiteSetting();
             if (foundSiteSetting == null)

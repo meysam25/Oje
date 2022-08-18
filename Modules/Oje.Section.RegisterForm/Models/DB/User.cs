@@ -68,6 +68,9 @@ namespace Oje.Section.RegisterForm.Models.DB
         public string RefferCode { get; set; }
         public PersonType? RealOrLegaPerson { get; set; }
         public DateTime? LicenceExpireDate { get; set; }
+        public int? StartHour { get; set; }
+        public int? EndHour { get; set; }
+        public bool? WorkingHolyday { get; set; }
         public int? SiteSettingId { get; set; }
 
 

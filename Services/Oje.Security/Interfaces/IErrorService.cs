@@ -7,8 +7,9 @@ namespace Oje.Security.Interfaces
 {
     public interface IErrorService
     {
-        void Create(long? UserId, string requestId, ApiResultErrorCode? type, BMessages? bMessageCode, string cMessages, IpSections ip, string cLineNumbers, string cFilenames);
+        void Create(long? UserId, string requestId, ApiResultErrorCode? type, BMessages? bMessageCode, string cMessages, IpSections ip, string cLineNumbers, string cFilenames, string refferUrl, string curUrl);
         object GetBy(string requestId);
         GridResultVM<ErrorMainGridResultVM> GetList(ErrorMainGrid searchInput);
+        object GetParameters(long? id);
     }
 }

@@ -23,6 +23,14 @@ namespace Oje.ProposalFormService.Services
             this.InquiryCompanyLimitService = InquiryCompanyLimitService;
         }
 
+        public List<int> GetAllAcitve()
+        {
+            return db.ThirdPartyRequiredFinancialCommitments
+                           .Where(t => t.IsActive == true)
+                           .Select(t => t.Id)
+                           .ToList();
+        }
+
         public List<ThirdPartyRequiredFinancialCommitment> GetByIds(List<int> coverIds)
         {
             return db.ThirdPartyRequiredFinancialCommitments

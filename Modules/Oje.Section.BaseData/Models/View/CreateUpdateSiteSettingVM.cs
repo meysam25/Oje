@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Models.View
 {
@@ -19,5 +14,6 @@ namespace Oje.Section.BaseData.Models.View
         public IFormFile minPic { get; set; }
         public IFormFile textPic { get; set; }
         public string seo { get; set; }
+        public int? pKey { get; set; }
     }
 }

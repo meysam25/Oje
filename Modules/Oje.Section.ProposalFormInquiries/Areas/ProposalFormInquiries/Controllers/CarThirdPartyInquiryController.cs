@@ -7,11 +7,9 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.View;
+using Oje.Sanab.Models.View;
 using Oje.Security.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controllers
@@ -39,6 +37,8 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly ICarTypeService CarTypeService = null;
         readonly IVehicleSpecsService VehicleSpecsService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+        readonly Sanab.Interfaces.ICarInquiry CarInquiry = null;
+        readonly Sanab.Interfaces.ISanabCarThirdPartyPlaqueInquiryService SanabCarThirdPartyPlaqueInquiryService = null;
 
         public CarThirdPartyInquiryController(
             ICompanyService CompanyService,
@@ -58,7 +58,9 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             IInsuranceContractDiscountService InsuranceContractDiscountService,
             ICarTypeService CarTypeService,
             IVehicleSpecsService VehicleSpecsService,
-            IBlockAutoIpService BlockAutoIpService
+            IBlockAutoIpService BlockAutoIpService,
+            Sanab.Interfaces.ICarInquiry CarInquiry,
+            Sanab.Interfaces.ISanabCarThirdPartyPlaqueInquiryService SanabCarThirdPartyPlaqueInquiryService
             )
         {
             this.BlockAutoIpService = BlockAutoIpService;
@@ -79,6 +81,8 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             this.InsuranceContractDiscountService = InsuranceContractDiscountService;
             this.CarTypeService = CarTypeService;
             this.VehicleSpecsService = VehicleSpecsService;
+            this.CarInquiry = CarInquiry;
+            this.SanabCarThirdPartyPlaqueInquiryService = SanabCarThirdPartyPlaqueInquiryService;
         }
 
         [AreaConfig(Title = "استعلام ثالث", Icon = "fa-car-crash", IsMainMenuItem = true)]
@@ -109,6 +113,16 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
             return Json(tempResult);
         }
 
+        [AreaConfig(Title = "استعلام ثالث با پلاک", Icon = "fa-car")]
+        [HttpPost]
+        public async Task<ActionResult> PlaqueInquiry([FromForm] CarThirdPartyPlaqueVM input)
+        {
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CarThirdPlaqueInquiry, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var tempResult = await SanabCarThirdPartyPlaqueInquiryService.Discount(SiteSettingService.GetSiteSetting()?.Id, input, HttpContext.GetIpAddress());
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CarThirdPlaqueInquiry, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            return Json(tempResult);
+        }
+
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
@@ -120,7 +134,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult GetCompanyListGridFilter()
         {
-            return Json(CompanyService.GetLightList(HttpContext.GetLoginUser()?.UserId));
+            return Json(CompanyService.GetLightListForType(SiteSettingService.GetSiteSetting()?.Id, InquiryCompanyLimitType.ThirdParty));
         }
 
         [AreaConfig(Title = "مشاهده لیست تعهد های مالی", Icon = "fa-list-alt")]

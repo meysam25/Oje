@@ -49,7 +49,11 @@ namespace Oje.Section.RegisterForm.Services
                 newItem.SecountFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.secoundFile, null, null, newItem.Id, ".pdf,.doc,.docx", false);
             if (input.anotherFile != null && input.anotherFile.Length > 0)
                 newItem.AnotherFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.anotherFile, null, null, newItem.Id, ".pdf,.doc,.docx", false);
-
+            if (input.anotherFile2 != null && input.anotherFile2.Length > 0)
+                newItem.AnotherFile2 = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.anotherFile2, null, null, newItem.Id, ".pdf,.doc,.docx", false);
+            if (input.roleIds != null)
+                foreach (var roleid in input.roleIds)
+                    db.Entry(new UserRegisterFormRole() { RoleId = roleid, UserRegisterFormId = newItem.Id }).State = EntityState.Added;
 
             db.SaveChanges();
 
@@ -84,10 +88,14 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.UserRegisterForms.FirstOrDefault(t => t.SiteSettingId == siteSettingId && t.Id == id);
+            var foundItem = db.UserRegisterForms.Include(t => t.UserRegisterFormRoles).FirstOrDefault(t => t.SiteSettingId == siteSettingId && t.Id == id);
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (foundItem.UserRegisterFormRoles != null)
+                foreach (var role in foundItem.UserRegisterFormRoles)
+                    db.Entry(role).State = EntityState.Deleted;
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -97,18 +105,21 @@ namespace Oje.Section.RegisterForm.Services
 
         public UserRegisterFormCreateUpdateVM GetById(int? id, int? siteSettingId)
         {
-            return db.UserRegisterForms.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).Select(t => new UserRegisterFormCreateUpdateVM
-            {
-                id = t.Id,
-                isActive = t.IsActive,
-                jConfig = t.JsonConfig,
-                name = t.Name,
-                userId = t.PaymentUserId,
-                userId_Title = t.PaymentUserId > 0 ? t.PaymentUser.Username + " (" + t.PaymentUser.Firstname + " " + t.PaymentUser.Lastname + ")" : "",
-                description = t.SeoDescription,
-                title = t.Title,
-                termT = t.TermDescription
-            }).FirstOrDefault();
+            return db.UserRegisterForms
+                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .Select(t => new UserRegisterFormCreateUpdateVM
+                {
+                    id = t.Id,
+                    isActive = t.IsActive,
+                    jConfig = t.JsonConfig,
+                    name = t.Name,
+                    userId = t.PaymentUserId,
+                    userId_Title = t.PaymentUserId > 0 ? t.PaymentUser.Username + " (" + t.PaymentUser.Firstname + " " + t.PaymentUser.Lastname + ")" : "",
+                    description = t.SeoDescription,
+                    title = t.Title,
+                    termT = t.TermDescription,
+                    roleIds = t.UserRegisterFormRoles.Select(tt => tt.RoleId).ToList()
+                }).FirstOrDefault();
         }
 
         public GridResultVM<UserRegisterFormMainGridResultVM> GetList(UserRegisterFormMainGrid searchInput, int? siteSettingId)
@@ -161,7 +172,7 @@ namespace Oje.Section.RegisterForm.Services
         {
             createValidation(input, siteSettingId);
 
-            var foundItem = db.UserRegisterForms.FirstOrDefault(t => t.SiteSettingId == siteSettingId && t.Id == input.id);
+            var foundItem = db.UserRegisterForms.Include(t => t.UserRegisterFormRoles).FirstOrDefault(t => t.SiteSettingId == siteSettingId && t.Id == input.id);
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -174,12 +185,22 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.Title = input.title;
             foundItem.TermDescription = input.termT;
 
+            if (foundItem.UserRegisterFormRoles != null)
+                foreach (var role in foundItem.UserRegisterFormRoles)
+                    db.Entry(role).State = EntityState.Deleted;
+
             if (input.rules != null && input.rules.Length > 0)
                 foundItem.RuleFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.rules, null, null, foundItem.Id, ".pdf,.doc,.docx", false);
             if (input.secoundFile != null && input.secoundFile.Length > 0)
                 foundItem.SecountFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.secoundFile, null, null, foundItem.Id, ".pdf,.doc,.docx", false);
             if (input.anotherFile != null && input.anotherFile.Length > 0)
                 foundItem.AnotherFile = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.anotherFile, null, null, foundItem.Id, ".pdf,.doc,.docx", false);
+            if (input.anotherFile2 != null && input.anotherFile2.Length > 0)
+                foundItem.AnotherFile2 = UploadedFileService.UploadNewFile(FileType.UserRegisterFormRules, input.anotherFile2, null, null, foundItem.Id, ".pdf,.doc,.docx", false);
+
+            if (input.roleIds != null)
+                foreach (var roleid in input.roleIds)
+                    db.Entry(new UserRegisterFormRole() { RoleId = roleid, UserRegisterFormId = foundItem.Id }).State = EntityState.Added;
 
             db.SaveChanges();
 
@@ -251,6 +272,14 @@ namespace Oje.Section.RegisterForm.Services
             }).ToList());
 
             return result;
+        }
+
+        public string GetAnotherFile2Url(int? id, int? siteSettingId)
+        {
+            var tempStrResult = db.UserRegisterForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => t.AnotherFile2).FirstOrDefault();
+            if (!string.IsNullOrEmpty(tempStrResult))
+                tempStrResult = GlobalConfig.FileAccessHandlerUrl + tempStrResult;
+            return tempStrResult;
         }
     }
 }

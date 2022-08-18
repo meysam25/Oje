@@ -1,0 +1,52 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/SanabAdmin/SanabUser/Get",
+      "title": "نام کاربری سناب",
+      "ctrls": [
+        {
+          "name": "id",
+          "type": "hidden"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "username",
+          "type": "text",
+          "label": "نام کاربری",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "password",
+          "type": "text",
+          "label": "کلمه عبور",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "isActive",
+          "type": "dropDown",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/Core/BaseData/Get/IsActive",
+          "label": "وضعیت",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "token",
+          "type": "text",
+          "label": "توکن",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/SanabAdmin/SanabUser/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

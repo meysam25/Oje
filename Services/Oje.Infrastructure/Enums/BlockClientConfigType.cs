@@ -83,6 +83,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "کارت به کارت ثبت نام کاربر")]
         RegisterCardPayment = 41,
         [Display(Name = "دانلود پی دی اف ثبت نام")]
-        RegisterDownloadPDF = 42
+        RegisterDownloadPDF = 42,
+        [Display(Name = "اضافه کردن دستی در فایروال (استفاده نشود)")]
+        ManualAdded = 43,
+        [Display(Name = "استعلام بر اساس پلاک و کد ملی ثالث")]
+        CarThirdPlaqueInquiry = 44
     }
 }

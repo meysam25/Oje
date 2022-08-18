@@ -33,6 +33,7 @@ namespace Oje.Section.BaseData
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<ITaxService, TaxService>();
             services.AddScoped<IDutyService, DutyService>();
+            services.AddScoped<IColorService, ColorService>();
         }
     }
 }

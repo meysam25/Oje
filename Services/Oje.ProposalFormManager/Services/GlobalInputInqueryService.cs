@@ -58,7 +58,8 @@ namespace Oje.ProposalFormService.Services
                                 GlobalInputInqueryId = result,
                                 Key = ePrameter.Title,
                                 Value = ePrameter.Value,
-                                Title = ePrameter.Title
+                                Title = ePrameter.Title,
+                                ShowInDetailes = ePrameter.step
                             };
 
                             if (!string.IsNullOrEmpty(newInqueryParameter.Value) && !string.IsNullOrEmpty(newInqueryParameter.Key))

@@ -14,7 +14,7 @@ namespace Oje.AccountService.Interfaces
         CreateUpdateUserVM GetById(long? id);
         ApiResult Update(CreateUpdateUserVM input, long? userId);
         GridResultVM<AdminUserGridResult> GetList(UserServiceMainGrid searchInput);
-        List<Models.DB.Action> GetUserSections(long userId);
+        List<Action> GetUserSections(long userId);
         LoginUserVM GetLoginUser();
         void Logout(LoginUserVM loginUserVM);
         List<long> GetUserIdByRoleIds(List<int> roleIds);
@@ -55,5 +55,6 @@ namespace Oje.AccountService.Interfaces
         (int? province, int? cityid, List<int> companyIds) GetUserCityCompany(long? userId);
         object GetAgentInfo(long userId);
         void CreateUserAccessRequest(long userId, string requestPath);
+        void UpdateUserInfoIfEmpty(long? loginUserId, string firstname, string lastname, string nationalCode);
     }
 }

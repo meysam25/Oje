@@ -34,5 +34,7 @@ namespace Oje.ProposalFormService.Models.View
         public bool isAgent { get; set; }
         [Display(Name = "کد ملی بیمه گذار")]
         public string targetUserNationalCode { get; set; }
+        [Display(Name = "فایل صدور")]
+        public string issueFile { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetTopologySuite.Index.HPRtree;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -15,6 +16,21 @@ namespace Oje.Infrastructure.Services
         private readonly ICryptoTransform EncryptorTransform;
         private readonly ICryptoTransform DecryptorTransform;
         private readonly System.Text.UTF8Encoding UTFEncoder;
+        static C_EDSecure todayInstance { get; set; }
+        static string todayCacheTime { get; set; }
+
+        public static C_EDSecure generateNewIfNeeded(byte[] key, byte[] value)
+        {
+            if(
+                (todayCacheTime == null || todayInstance == null) || 
+                (todayCacheTime != DateTime.Now.ToString("yyyy-MM-dd"))
+              )
+            {
+                todayInstance = new C_EDSecure(key, value);
+                todayCacheTime = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            return todayInstance;
+        }
 
         public C_EDSecure()
         {

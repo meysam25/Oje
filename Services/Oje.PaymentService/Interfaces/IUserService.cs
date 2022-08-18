@@ -1,4 +1,5 @@
-﻿using Oje.PaymentService.Models.DB;
+﻿using Oje.Infrastructure.Models;
+using Oje.PaymentService.Models.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Oje.PaymentService.Interfaces
     {
         User GetBy(long? loginUserId, int? siteSettingId);
         long GetMainPaymentUserId(int? siteSettingId);
+        PPFUserTypes GetUserType(long? userId);
     }
 }

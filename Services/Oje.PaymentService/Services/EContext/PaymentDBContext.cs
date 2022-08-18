@@ -21,6 +21,7 @@ namespace Oje.PaymentService.Services.EContext
         public DbSet<TitakUser> TitakUsers { get; set; }
         public DbSet<BankAccountSadad> BankAccountSadads { get; set; }
         public DbSet<UserFilledRegisterForm> UserFilledRegisterForms { get; set; }
+        public DbSet<BankAccountSep> BankAccountSeps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

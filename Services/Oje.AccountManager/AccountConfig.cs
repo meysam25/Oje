@@ -48,6 +48,7 @@ namespace Oje.AccountService
             services.AddScoped<ITempSqlCommService, TempSqlCommService>();
             services.AddScoped<ILoginDescrptionService, LoginDescrptionService>();
             services.AddScoped<ILoginBackgroundImageService, LoginBackgroundImageService>();
+            services.AddScoped<IHolydayService, HolydayService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)

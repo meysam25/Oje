@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.BaseData.Models.DB
 {
@@ -13,6 +10,7 @@ namespace Oje.Section.BaseData.Models.DB
     {
         public SiteSetting()
         {
+            Childs = new();
         }
 
         [Key]
@@ -52,5 +50,11 @@ namespace Oje.Section.BaseData.Models.DB
         public string Image512 { get; set; }
         [MaxLength(200)]
         public string ImageText { get; set; }
+        public int? ParentId { get; set; }
+        [ForeignKey("ParentId "), InverseProperty("Childs")]
+        public SiteSetting Parent { get; set; }
+
+        [InverseProperty("Parent")]
+        public List<SiteSetting> Childs { get; set; }
     }
 }

@@ -52,5 +52,8 @@ namespace Oje.AccountService.Models.View
         public int? bankId { get; set; }
         public string refferCode { get; set; }
         public string licenceExpireDate { get; set; }
+        public int? startHour { get; set; }
+        public int? endHour { get; set; }
+        public bool? isHolydayWork { get; set; }
     }
 }

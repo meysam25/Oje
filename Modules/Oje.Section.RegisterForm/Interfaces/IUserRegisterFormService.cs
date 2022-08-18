@@ -19,5 +19,6 @@ namespace Oje.Section.RegisterForm.Interfaces
         string GetSecoundFileUrl(int? id, int? siteSettingId);
         string GetAnotherFileUrl(int? id, int? siteSettingId);
         object GetLightList2(int? siteSettingId);
+        string GetAnotherFile2Url(int? id, int? siteSettingId);
     }
 }

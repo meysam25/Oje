@@ -8,9 +8,11 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
+using Oje.Sanab.Interfaces;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.View;
 using Oje.Security.Interfaces;
+using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Areas.WebMain.Controllers
 {
@@ -29,6 +31,9 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         readonly IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService = null;
         readonly IShortLinkService ShortLinkService = null;
 
+        readonly IUserInquiry UserInquiry = null;
+        readonly ICarInquiry CarInquiry = null;
+
         public HomeController
             (
                 IPropertyService PropertyService,
@@ -42,7 +47,9 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 IUploadedFileService UploadedFileService,
                 IBlockAutoIpService BlockAutoIpService,
                 IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService,
-                IShortLinkService ShortLinkService
+                IShortLinkService ShortLinkService,
+                IUserInquiry UserInquiry,
+                ICarInquiry CarInquiry
             )
         {
             this.PropertyService = PropertyService;
@@ -57,6 +64,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.BlockAutoIpService = BlockAutoIpService;
             this.ExternalNotificationServicePushSubscriptionService = ExternalNotificationServicePushSubscriptionService;
             this.ShortLinkService = ShortLinkService;
+            this.UserInquiry = UserInquiry;
+            this.CarInquiry = CarInquiry;
         }
 
         [Route("/")]
@@ -330,6 +339,15 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Redirect(foundLink.TargetLink);
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpGet]
+        public async Task<ActionResult> LoginTest()
+        {
+            //return Json(await UserInquiry.GetUserInfo(SiteSettingService.GetSiteSetting()?.Id, "3501511663", "09904561385", "1986-12-08"));
+            //return Json(await UserInquiry.GetDriverLicence(SiteSettingService.GetSiteSetting()?.Id, "3501511663", "09904561385"));
+            return Json(await CarInquiry.CarDiscount(SiteSettingService.GetSiteSetting()?.Id, 44 + "", 11 + "", 5 + "", 416 + "", "0938674919"));
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Oje.ProposalFormService
     {
         public static void Config(IServiceCollection services)
         {
-            services.AddDbContext<ProposalFormDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddDbContextPool<ProposalFormDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IGlobalInputInqueryService, GlobalInputInqueryService>();
@@ -69,9 +69,10 @@ namespace Oje.ProposalFormService
             services.AddScoped<IProposalFormReminderService, ProposalFormReminderService>();
             services.AddScoped<IProposalFormPrintDescrptionService, ProposalFormPrintDescrptionService>();
             services.AddScoped<IAgentRefferService, AgentRefferService>();
+            services.AddScoped<IColorService, ColorService>();
 
 
-            services.AddDbContext<ProposalFormReportDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddDbContextPool<ProposalFormReportDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
             services.AddScoped<IProposalFilledFormReportService, ProposalFilledFormReportService>();
         }
     }

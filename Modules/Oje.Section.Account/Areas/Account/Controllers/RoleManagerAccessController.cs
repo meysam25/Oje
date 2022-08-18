@@ -15,6 +15,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
     public class RoleManagerAccessController : Controller
     {
         readonly ISectionService SectionService = null;
+
         public RoleManagerAccessController(ISectionService SectionService)
         {
             this.SectionService = SectionService;
@@ -50,6 +51,14 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         public IActionResult Update([FromForm]CreateUpdateRoleAccessVM input)
         {
             return Json(SectionService.UpdateAccess(input));
+        }
+
+        [AreaConfig(Title = "به روز رسانی لیست مازول ها")]
+        [HttpPost]
+        public IActionResult UpdateModals()
+        {
+            SectionService.UpdateModuals();
+            return Json(true);
         }
 
     }

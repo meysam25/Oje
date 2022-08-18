@@ -18,6 +18,8 @@ using System.IO;
 using Newtonsoft.Json;
 using NetTopologySuite.Geometries;
 using Oje.AccountService.Filters;
+using Microsoft.AspNetCore.Mvc;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Oje.AccountService.Services
 {
@@ -34,6 +36,7 @@ namespace Oje.AccountService.Services
         readonly Security.Interfaces.IUserLoginConfigService UserLoginConfigService = null;
         readonly Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService = null;
         readonly Security.Interfaces.IBlockLoginUserService BlockLoginUserService = null;
+        readonly IHolydayService HolydayService = null;
         public UserService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor,
@@ -45,7 +48,8 @@ namespace Oje.AccountService.Services
                 ICompanyService CompanyService,
                 Security.Interfaces.IUserLoginConfigService UserLoginConfigService,
                 Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService,
-                Security.Interfaces.IBlockLoginUserService BlockLoginUserService
+                Security.Interfaces.IBlockLoginUserService BlockLoginUserService,
+                IHolydayService HolydayService
             )
         {
             this.db = db;
@@ -59,6 +63,7 @@ namespace Oje.AccountService.Services
             this.UserLoginConfigService = UserLoginConfigService;
             this.UserLoginLogoutLogService = UserLoginLogoutLogService;
             this.BlockLoginUserService = BlockLoginUserService;
+            this.HolydayService = HolydayService;
         }
 
         private void LoginValidation(LoginVM input)
@@ -208,7 +213,11 @@ namespace Oje.AccountService.Services
             if (input.rememberMe == true)
                 cOption.Expires = DateTime.Now.AddDays(1);
             if (httpContextAccessor.HttpContext.Request.IsHttps == true)
+            {
                 cOption.Secure = true;
+                cOption.SameSite = SameSiteMode.Strict;
+            }
+            Logout(null);
             httpContextAccessor.HttpContext.Response.Cookies.Append("login", cookiValue.Encrypt2(), cOption);
             MySession.Create(sessionFileName);
             if (!string.IsNullOrEmpty(newUser.LastSessionFileName))
@@ -660,6 +669,9 @@ namespace Oje.AccountService.Services
             newUser.RefferCode = input.refferCode;
             newUser.RealOrLegaPerson = input.realOrLegaPerson;
             newUser.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
+            newUser.StartHour = input.startHour;
+            newUser.EndHour = input.endHour;
+            newUser.WorkingHolyday = input.isHolydayWork;
 
             if (input.mapLon != null && input.mapLon != null)
             {
@@ -771,6 +783,12 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.roleIds.Count > 1)
                 throw BException.GenerateNewException(BMessages.Jsut_One_Role);
+            if (input.startHour != null && (input.startHour.Value < 0 || input.startHour.Value > 24))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (input.endHour != null && (input.endHour.Value < 0 || input.endHour.Value > 24))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (input.startHour != null && input.endHour != null && input.startHour.Value > input.endHour.Value)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
 
             var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
             foreach (var rid in input.roleIds)
@@ -861,7 +879,10 @@ namespace Oje.AccountService.Services
                     t.BankId,
                     t.RealOrLegaPerson,
                     t.RefferCode,
-                    t.LicenceExpireDate
+                    t.LicenceExpireDate,
+                    t.StartHour,
+                    t.EndHour,
+                    t.WorkingHolyday
                 })
                 .Take(1)
                 .ToList()
@@ -903,7 +924,10 @@ namespace Oje.AccountService.Services
                     bankId = t.BankId,
                     realOrLegaPerson = t.RealOrLegaPerson,
                     refferCode = t.RefferCode,
-                    licenceExpireDate = t.LicenceExpireDate.ToFaDate()
+                    licenceExpireDate = t.LicenceExpireDate.ToFaDate(),
+                    startHour = t.StartHour,
+                    endHour = t.EndHour,
+                    isHolydayWork = t.WorkingHolyday
                 })
                 .FirstOrDefault();
         }
@@ -963,6 +987,9 @@ namespace Oje.AccountService.Services
                     foundItem.RefferCode = input.refferCode;
                     foundItem.RealOrLegaPerson = input.realOrLegaPerson;
                     foundItem.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
+                    foundItem.StartHour = input.startHour;
+                    foundItem.EndHour = input.endHour;
+                    foundItem.WorkingHolyday = input.isHolydayWork;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -1136,14 +1163,26 @@ namespace Oje.AccountService.Services
             List<object> result = new List<object>();
 
             var hasPagination = false;
-            int take = 5;
             Point gm = null;
+            var curHour = DateTime.Now.Hour;
+            curHour++;
+            bool isTodayHolyday = HolydayService.IsHolyday(DateTime.Now);
 
             if (searchInput == null)
                 searchInput = new Select2SearchVM();
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
+            var firstResult = getSelectAgentResult(siteSettingId, companyId, proposalFormId, provinceAndCityInput, searchInput, mapLat, mapLon, curHour, isTodayHolyday, gm, false, 1);
+            result.AddRange(firstResult.Item1);
+            result.AddRange(getSelectAgentResult(siteSettingId, companyId, proposalFormId, provinceAndCityInput, searchInput, mapLat, mapLon, curHour, isTodayHolyday, gm, true, 4, firstResult.Item2).Item1);
+
+            return new { results = result, pagination = new { more = hasPagination } };
+        }
+
+        (List<object>, List<long>) getSelectAgentResult(int? siteSettingId, int companyId, int proposalFormId, ProvinceAndCityVM provinceAndCityInput, Select2SearchVM searchInput, string mapLat, string mapLon, int curHour, bool isTodayHolyday, Point gm, bool jusInactive, int take, List<long> prevUsers = null)
+        {
+            List<object> result = new List<object>();
             var qureResult = db.Users.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.UserRoles.Any(tt => tt.Role.Name.StartsWith("agent")));
 
             if (companyId > 0)
@@ -1161,7 +1200,7 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.CityId == provinceAndCityInput.cityId);
 
             if (!string.IsNullOrEmpty(searchInput.search))
-                qureResult = qureResult.Where(t => ((!string.IsNullOrEmpty(t.CompanyTitle) ? t.CompanyTitle : (t.Firstname + " " + t.Lastname)) + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + t.Address + ")"))).Contains(searchInput.search));
+                qureResult = qureResult.Where(t => ((!string.IsNullOrEmpty(t.CompanyTitle) ? t.CompanyTitle : (t.Firstname + " " + t.Lastname)) + " " + (String.IsNullOrEmpty(t.Address) ? "" : ("(" + (!string.IsNullOrEmpty(t.City.Title) ? t.City.Title : "") + " " + t.Address + ")")) + (t.AgentCode != null ? t.AgentCode : "")).Contains(searchInput.search));
 
             //if (qureResult.Count() >= take)
             //    hasPagination = false;
@@ -1173,7 +1212,19 @@ namespace Oje.AccountService.Services
                 if (x < 90 && x > -90 && y < 90 && y > -90)
                 {
                     gm = new Point(x, y) { SRID = 4326 };
-                    qureResult = qureResult.Where(t => t.MapLocation != null).OrderByDescending(t => t.IsActive).ThenBy(t => t.MapLocation.Distance(gm));
+                    if (jusInactive == false)
+                        qureResult = qureResult
+                            .Where(t => t.MapLocation != null)
+                            .OrderByDescending(t => t.IsActive == true && t.StartHour != null && t.EndHour != null && t.StartHour <= curHour && t.EndHour >= curHour && (t.WorkingHolyday == true || isTodayHolyday == false))
+                            .ThenByDescending(t => t.IsActive)
+                            .ThenBy(t => t.MapLocation.Distance(gm))
+                            ;
+                    else
+                        qureResult = qureResult
+                            .Where(t => !prevUsers.Contains(t.Id))
+                            .OrderBy(t => t.IsActive == true && t.StartHour != null && t.EndHour != null && t.StartHour <= curHour && t.EndHour >= curHour && (t.WorkingHolyday == true || isTodayHolyday == false))
+                            .OrderBy(t => t.IsActive)
+                            ;
                 }
             }
 
@@ -1182,22 +1233,26 @@ namespace Oje.AccountService.Services
             var tempResult = qureResult.Select(t => new User
             {
                 Id = t.Id,
-                IsActive = t.IsActive,
                 AgentCode = t.AgentCode,
                 Tell = t.Tell,
                 Firstname = t.Firstname,
                 Lastname = t.Lastname,
-                Address = t.Address,
+                Address = (!string.IsNullOrEmpty(t.City.Title) ? t.City.Title : "") + " " + t.Address,
                 MapLocation = t.MapLocation,
                 distance = gm != null ? t.MapLocation.Distance(gm) : 0,
-                CompanyTitle = t.CompanyTitle
+                CompanyTitle = t.CompanyTitle,
+                StartHour = t.StartHour,
+                EndHour = t.EndHour,
+                WorkingHolyday = t.WorkingHolyday,
+                IsActive = t.IsActive == true && t.StartHour != null && t.EndHour != null && t.StartHour <= curHour && t.EndHour >= curHour && (t.WorkingHolyday == true || isTodayHolyday == false),
             }).ToList();
 
-            if (!tempResult.Any(t => t.IsActive == true))
-            {
-                var fondUser = GetMainUser(siteSettingId, gm);
-                tempResult.Insert(0, fondUser);
-            }
+            if (jusInactive == false)
+                if (!tempResult.Any(t => t.IsActive == true))
+                {
+                    var fondUser = GetMainUser(siteSettingId, gm);
+                    tempResult.Insert(0, fondUser);
+                }
 
             string companyTitle = "";
 
@@ -1208,6 +1263,8 @@ namespace Oje.AccountService.Services
                     companyTitle = "نمایندگی " + foundCompanyTitle + " ";
             }
 
+
+
             result.AddRange(tempResult.Select(t => new
             {
                 id = t.Id,
@@ -1215,9 +1272,9 @@ namespace Oje.AccountService.Services
                 mapLat = t.MapLocation != null ? t.MapLocation.X : 0,
                 mapLng = t.MapLocation != null ? t.MapLocation.Y : 0,
                 isA = t.IsActive
-            }).ToList()); ;
+            }).ToList());
 
-            return new { results = result, pagination = new { more = hasPagination } };
+            return (result, tempResult.Select(t => t.Id).ToList());
         }
 
         User GetMainUser(int? siteSettingId, Point gm)
@@ -1231,7 +1288,7 @@ namespace Oje.AccountService.Services
                 Tell = t.Tell,
                 Firstname = t.Firstname,
                 Lastname = t.Lastname,
-                Address = t.Address,
+                Address = (!string.IsNullOrEmpty(t.City.Title) ? t.City.Title : "") + " " + t.Address,
                 MapLocation = t.MapLocation,
                 distance = gm != null && t.MapLocation != null ? t.MapLocation.Distance(gm) : 0
             }).FirstOrDefault();
@@ -1772,6 +1829,22 @@ namespace Oje.AccountService.Services
                 }
             }
             throw BException.GenerateNewException(BMessages.Not_Found);
+        }
+
+        public void UpdateUserInfoIfEmpty(long? loginUserId, string firstname, string lastname, string nationalCode)
+        {
+            var foundUser = db.Users.Where(t => t.Id == loginUserId).FirstOrDefault();
+            if (foundUser != null)
+            {
+                if (!string.IsNullOrEmpty(firstname) && (string.IsNullOrEmpty(foundUser.Firstname.Trim()) || foundUser.Firstname == " "))
+                    foundUser.Firstname = firstname;
+                if (!string.IsNullOrEmpty(lastname) && (string.IsNullOrEmpty(foundUser.Lastname.Trim()) || foundUser.Lastname == " "))
+                    foundUser.Lastname = lastname;
+                if (!string.IsNullOrEmpty(nationalCode) && nationalCode.IsCodeMeli() && string.IsNullOrEmpty(foundUser.Nationalcode))
+                    foundUser.Nationalcode = nationalCode;
+
+                db.SaveChanges();
+            }
         }
     }
 }

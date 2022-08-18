@@ -588,7 +588,7 @@ namespace Oje.Section.Blog.Services
                    summery = t.Summery,
                    description = t.Description,
                    aparatUrl = t.VideoUrl,
-                   mainImage_address = t.ImageUrl,
+                   mainImage_address = t.ImageUrl600,
                    mainSound_address = t.SoundUrl,
                    isActive = t.IsActive,
                    commCount = t.BlogReviews.Count(tt => tt.IsConfirm == true),

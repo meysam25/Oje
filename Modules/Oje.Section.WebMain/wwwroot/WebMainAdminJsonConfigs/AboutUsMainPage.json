@@ -51,21 +51,24 @@
           "name": "rightFile",
           "type": "file",
           "label": "تصویر سمت راست (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg"
+          "acceptEx": ".jpg,.png,.jpeg",
+          "deleteButton": "/WebMainAdmin/AboutUsMainPage/Delete?key=rightFile"
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
           "name": "centerFile",
           "type": "file",
           "label": "تصویر سمت وسط (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg"
+          "acceptEx": ".jpg,.png,.jpeg",
+          "deleteButton": "/WebMainAdmin/AboutUsMainPage/Delete?key=centerFile"
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
           "name": "leftFile",
           "type": "file",
           "label": "تصویر سمت چپ (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg"
+          "acceptEx": ".jpg,.png,.jpeg",
+          "deleteButton": "/WebMainAdmin/AboutUsMainPage/Delete?key=leftFile"
         },
         {
           "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",

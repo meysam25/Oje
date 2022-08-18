@@ -92,14 +92,14 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         [HttpPost]
         public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {
-            return Json(UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, null, null, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {
-            var result = UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id);
+            var result = UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, null, null, HttpContext.GetLoginUser()?.UserId);
             if (result == null || result.data == null || result.data.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);

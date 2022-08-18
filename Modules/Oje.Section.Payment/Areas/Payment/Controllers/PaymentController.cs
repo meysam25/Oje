@@ -74,6 +74,8 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
                         return RedirectToAction("Pay", "TITec", new { area = "Payment", factorId = factorId });
                     case BankAccountType.sadad:
                         return RedirectToAction("Pay", "Sadad", new { area = "Payment", factorId = factorId });
+                    case BankAccountType.Sep:
+                        return RedirectToAction("Pay", "Sep", new { area = "Payment", factorId = factorId });
                     case BankAccountType.unknown:
                     default:
                         break;

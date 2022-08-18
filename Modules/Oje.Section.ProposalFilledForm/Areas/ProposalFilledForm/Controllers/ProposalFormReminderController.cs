@@ -62,14 +62,14 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "حذف یادآوری", Icon = "fa-trash-o")]
         [HttpPost]
-        public IActionResult Delete([FromForm] string id)
+        public IActionResult Delete([FromForm] long? id)
         {
             return Json(ProposalFormReminderService.Delete(id, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده یک یادآوری", Icon = "fa-eye")]
         [HttpPost]
-        public IActionResult GetById([FromForm] string id)
+        public IActionResult GetById([FromForm] long? id)
         {
             return Json(ProposalFormReminderService.GetById(id, SiteSettingService.GetSiteSetting()?.Id));
         }

@@ -8,5 +8,6 @@ namespace Oje.Section.RegisterForm.Interfaces
         ApiResult Create(int? siteSettingId, UserFilledRegisterFormCardPaymentCreateUpdateVM input, long? loginUserId);
         object GetList(UserRegisterFormPaymentMainGrid searchInput, int? siteSettingId, bool? isPayed, bool? isDone);
         ApiResult Delete(long? id, int? siteSettingId, bool? isPayed, bool? isDone);
+        bool Any(int? siteSettingId, long userFilledRegisterFormId);
     }
 }

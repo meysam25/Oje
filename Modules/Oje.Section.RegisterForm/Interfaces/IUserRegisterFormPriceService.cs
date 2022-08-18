@@ -11,8 +11,8 @@ namespace Oje.Section.RegisterForm.Interfaces
         object GetById(int? id, int? siteSettingId);
         ApiResult Update(UserRegisterFormPriceCreateUpdateVM input, int? siteSettingId);
         GridResultVM<UserRegisterFormPriceMainGridResultVM> GetList(UserRegisterFormPriceMainGrid searchInput, int? siteSettingId);
-        object GetLightList(int? siteSettingId, int? formId, string groupKey);
-        UserRegisterFormPrice GetPriceBy(int formId, int? siteSettingId, int id, string groupTitle);
+        object GetLightList(int? siteSettingId, int? formId, string groupKey, string groupKey2);
+        UserRegisterFormPrice GetPriceBy(int formId, int? siteSettingId, int id, string groupTitle, string groupTitle2);
         UserRegisterFormPrice GetById(int id);
     }
 }

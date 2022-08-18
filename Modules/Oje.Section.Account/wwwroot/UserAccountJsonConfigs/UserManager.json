@@ -330,6 +330,27 @@
               "label": "شهر"
             },
             {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "startHour",
+              "type": "text",
+              "label": "ساعت شروع کار (1-24)"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "endHour",
+              "type": "text",
+              "label": "ساعت پایان کار (1-24)"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "isHolydayWork",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "کار در روز های تعطیل"
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-6 col-sm-12 col-xs-12",
               "name": "address",
               "type": "text",
@@ -621,6 +642,27 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/GetCityList",
               "label": "شهر"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "startHour",
+              "type": "text",
+              "label": "ساعت شروع کار (1-24)"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "endHour",
+              "type": "text",
+              "label": "ساعت پایان کار (1-24)"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "isHolydayWork",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/YesOrNo",
+              "label": "کار در روز های تعطیل"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-6 col-sm-12 col-xs-12",

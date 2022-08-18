@@ -39,7 +39,7 @@
                 "icon": "fa-credit-card ",
                 "prop": "id",
                 "modalId": "MyIssueProposalFilledFormviewDocuments",
-                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyIssueProposalFilledFormviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد مالی\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyIssueProposalFilledFormviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -47,6 +47,12 @@
                 "prop": "id",
                 "modalId": "MyIssueProposalFilledFormviewPPFStatusHistory",
                 "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyIssueProposalFilledFormviewPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "file-check",
+                "prop": "id",
+                "template": "function bindRow (curRow) { return  curRow.issueFile ? '<a target=\"_blank\" title=\"دانلود فایل صدور\" href=\"'+ curRow.issueFile +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-check\" ></i></a>' :  ''; };bindRow(data)"
               }
             ]
           },
@@ -168,7 +174,7 @@
         },
         {
           "id": "MyIssueProposalFilledFormviewDocuments",
-          "title": "اسناد فرم پیشنهاد",
+          "title": "اسناد مالی",
           "class": "modal-xl",
           "panels": [
             {
@@ -226,7 +232,7 @@
         },
         {
           "id": "MyIssueProposalFilledFormviewPPFStatusHistory",
-          "title": "اسناد فرم پیشنهاد",
+          "title": "تاریخچه وضعیت",
           "class": "modal-xl",
           "panels": [
             {

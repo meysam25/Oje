@@ -32,12 +32,18 @@ namespace Oje.Security.Services.EContext
         public DbSet<BlockLoginUser> BlockLoginUsers { get; set; }
         public DbSet<DebugEmail> DebugEmails { get; set; }
         public DbSet<DebugEmailReceiver> DebugEmailReceivers { get; set; }
+        public DbSet<ErrorParameter> ErrorParameters { get; set; }
+        public DbSet<ErrorFirewallManualAdd> ErrorFirewallManualAdds { get; set; }
+        public DbSet<ValidRangeIp> ValidRangeIps { get; set; }
+        public DbSet<InValidRangeIp> InValidRangeIps { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BlockAutoIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate, t.BlockClientConfigType, t.BlockAutoIpAction });
             modelBuilder.Entity<BlockFirewallIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4 });
+            modelBuilder.Entity<ErrorFirewallManualAdd>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4 });
+            modelBuilder.Entity<InValidRangeIp>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4 });
 
             base.OnModelCreating(modelBuilder);
         }

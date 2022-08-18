@@ -68,6 +68,8 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
             if (input.fid.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
+            if(input.mainImage == null || input.mainImage.Length == 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (!db.UserFilledRegisterForms.Any(t => t.Id == input.fid && t.UserId == loginUserId && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (string.IsNullOrEmpty(input.card))
@@ -174,6 +176,11 @@ namespace Oje.Section.RegisterForm.Services
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public bool Any(int? siteSettingId, long userFilledRegisterFormId)
+        {
+            return db.UserFilledRegisterFormCardPayments.Any(t => t.SiteSettingId == siteSettingId && t.UserFilledRegisterFormId == userFilledRegisterFormId);
         }
     }
 }

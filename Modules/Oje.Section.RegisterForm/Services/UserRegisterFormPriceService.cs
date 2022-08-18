@@ -29,6 +29,7 @@ namespace Oje.Section.RegisterForm.Services
             db.Entry(new UserRegisterFormPrice()
             {
                 GroupPriceTitle = input.gp,
+                GroupPriceTitle2 = input.gp2,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Price = input.price.ToLongReturnZiro(),
                 Title = input.title,
@@ -82,7 +83,8 @@ namespace Oje.Section.RegisterForm.Services
                     title = t.Title,
                     price = t.Price,
                     isActive = t.IsActive,
-                    gp = t.GroupPriceTitle
+                    gp = t.GroupPriceTitle,
+                    gp2 = t.GroupPriceTitle2
                 })
                 .FirstOrDefault();
         }
@@ -146,17 +148,18 @@ namespace Oje.Section.RegisterForm.Services
             foundnItem.Price = input.price.ToLongReturnZiro();
             foundnItem.Title = input.title;
             foundnItem.UserRegisterFormId = input.fid.Value;
+            foundnItem.GroupPriceTitle2 = input.gp2;
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetLightList(int? siteSettingId, int? formId, string groupKey)
+        public object GetLightList(int? siteSettingId, int? formId, string groupKey, string groupKey2)
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.UserRegisterFormPrices.Where(t => t.IsActive == true && t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.GroupPriceTitle == groupKey).OrderBy(t => t.Price).Select(t => new
+            result.AddRange(db.UserRegisterFormPrices.Where(t => t.IsActive == true && t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.GroupPriceTitle == groupKey && t.GroupPriceTitle2 == groupKey2).OrderBy(t => t.Price).Select(t => new
             {
                 id = t.Id,
                 title = t.Title
@@ -165,9 +168,9 @@ namespace Oje.Section.RegisterForm.Services
             return result;
         }
 
-        public UserRegisterFormPrice GetPriceBy(int formId, int? siteSettingId, int id, string groupTitle)
+        public UserRegisterFormPrice GetPriceBy(int formId, int? siteSettingId, int id, string groupTitle, string groupTitle2)
         {
-            return db.UserRegisterFormPrices.Where(t => t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.Id == id && t.IsActive == true && t.GroupPriceTitle == groupTitle).AsNoTracking().FirstOrDefault();
+            return db.UserRegisterFormPrices.Where(t => t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.Id == id && t.IsActive == true && t.GroupPriceTitle == groupTitle && t.GroupPriceTitle2 == groupTitle2).AsNoTracking().FirstOrDefault();
         }
 
         public UserRegisterFormPrice GetById(int id)

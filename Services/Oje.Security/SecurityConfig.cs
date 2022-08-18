@@ -33,6 +33,10 @@ namespace Oje.Security
             services.AddScoped<IBlockLoginUserService, BlockLoginUserService>();
             services.AddScoped<IDebugEmailService, DebugEmailService>();
             services.AddScoped<IDebugEmailReceiverService, DebugEmailReceiverService>();
+            services.AddScoped<IErrorFirewallManualAddService, ErrorFirewallManualAddService>();
+            services.AddScoped<IValidRangeIpService, ValidRangeIpService>();
+            services.AddScoped<IInValidRangeIpService, InValidRangeIpService>();
+            services.AddScoped<IIpapiService, IpapiService>();
 
             cacheServices = services;
         }
@@ -47,6 +51,9 @@ namespace Oje.Security
 
             services.AddSingleton<IDebugEmailService, DebugEmailService>();
             services.AddSingleton<IDebugEmailReceiverService, DebugEmailReceiverService>();
+            services.AddSingleton<IValidRangeIpService, ValidRangeIpService>();
+            services.AddSingleton<IInValidRangeIpService, InValidRangeIpService>();
+            services.AddSingleton<IIpapiService, IpapiService>();
 
             cacheServices = services;
         }

@@ -1,0 +1,198 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "SanabAdminSanabTypeFieldVehicleSpecGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('SanabAdminSanabTypeFieldVehicleSpecAddGridModal', this)",
+              "type": "add",
+              "modalId": "SanabAdminSanabTypeFieldVehicleSpecAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/SanabAdmin/SanabTypeFieldVehicleSpec/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/SanabAdmin/SanabTypeFieldVehicleSpec/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "SanabAdminSanabTypeFieldVehicleSpecEditModal",
+                "url": "/SanabAdmin/SanabTypeFieldVehicleSpec/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/SanabAdmin/SanabTypeFieldVehicleSpec/GetById\\', \\'SanabAdminSanabTypeFieldVehicleSpecEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/SanabAdmin/SanabTypeFieldVehicleSpec/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "vTitle",
+              "caption": "عنوان خودرو داخلی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "vSTitle",
+              "caption": "نوع خودرو داخلی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "code",
+              "caption": "کد",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "SanabAdminSanabTypeFieldVehicleSpecAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "vId",
+              "name": "vId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SanabAdmin/SanabTypeFieldVehicleSpec/GetVSystemList",
+              "label": "برند خودرو",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vsId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SanabAdmin/SanabTypeFieldVehicleSpec/GetVSpecList",
+              "label": "نوع خودرو",
+              "isRequired": true,
+              "exteraParameterIds": [ "vId" ]
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'SanabAdminSanabTypeFieldVehicleSpecGrid', '/SanabAdmin/SanabTypeFieldVehicleSpec/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "SanabAdminSanabTypeFieldVehicleSpecEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "vIdEdit",
+              "name": "vId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SanabAdmin/SanabTypeFieldVehicleSpec/GetVSystemList",
+              "label": "برند خودرو",
+              "isRequired": true,
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vsId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SanabAdmin/SanabTypeFieldVehicleSpec/GetVSpecList",
+              "label": "نوع خودرو",
+              "isRequired": true,
+              "exteraParameterIds": [ "vIdEdit" ]
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'SanabAdminSanabTypeFieldVehicleSpecGrid', '/SanabAdmin/SanabTypeFieldVehicleSpec/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

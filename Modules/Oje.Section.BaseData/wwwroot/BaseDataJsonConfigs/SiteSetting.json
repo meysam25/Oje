@@ -3,6 +3,7 @@
     {
       "grids": [
         {
+          "nlevel": true,
           "id": "baseDataSiteSettingGrid",
           "topActions": [
             {

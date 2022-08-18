@@ -23,7 +23,7 @@ namespace Oje.Section.BaseData.Services
         readonly IUploadedFileService UploadedFileService = null;
         public SiteSettingService(
                 BaseDataDBContext db,
-                Oje.AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService,
+                AccountService.Interfaces.ISiteSettingService GlobalSiteSettingService,
                 IUploadedFileService UploadedFileService
             )
         {
@@ -51,7 +51,8 @@ namespace Oje.Section.BaseData.Services
                         CreateUserId = userId.Value,
                         IsHttps = input.isHttps.ToBooleanReturnFalse(),
                         IsActive = input.isActive.ToBooleanReturnFalse(),
-                        SeoMainPage = input.seo
+                        SeoMainPage = input.seo,
+                        ParentId = input.pKey
                     };
 
                     db.Entry(newItem).State = EntityState.Added;
@@ -149,7 +150,7 @@ namespace Oje.Section.BaseData.Services
             if (searchInput == null)
                 searchInput = new SiteSettingMainGrid();
 
-            var qureResult = db.SiteSettings.AsQueryable();
+            var qureResult = db.SiteSettings.Where(t => t.ParentId == searchInput.pKey);
 
 
             if (!string.IsNullOrEmpty(searchInput.title))

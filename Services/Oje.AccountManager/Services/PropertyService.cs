@@ -9,12 +9,8 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {
@@ -121,6 +117,18 @@ namespace Oje.AccountService.Services
             }
 
             return result;
+        }
+
+        public ApiResult Delete(PropertyType type, int? siteSettingId, string key)
+        {
+            var foundItem = db.Properties.Where(t => t.Type == type && t.SiteSettingId == siteSettingId && t.Name == key).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            db.Entry(foundItem).State = EntityState.Deleted;
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
     }
 }

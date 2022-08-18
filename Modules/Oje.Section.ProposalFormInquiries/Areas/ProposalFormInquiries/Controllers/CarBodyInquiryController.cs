@@ -9,10 +9,6 @@ using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.View;
 using Oje.Security.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controllers
 {
@@ -124,7 +120,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         [HttpPost]
         public ActionResult GetCompanyListGridFilter()
         {
-            return Json(CompanyService.GetLightList(HttpContext.GetLoginUser()?.UserId));
+            return Json(CompanyService.GetLightListForType(SiteSettingService.GetSiteSetting()?.Id, InquiryCompanyLimitType.CarBody));
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه روزانه", Icon = "fa-list-alt")]

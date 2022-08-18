@@ -8,6 +8,11 @@ namespace Oje.Security.Models.DB
     [Table("Errors")]
     public class Error
     {
+        public Error()
+        {
+            ErrorParameters = new();
+        }
+
         [Key]
         public long Id { get; set; }
         [Required, MaxLength(50)]
@@ -33,5 +38,12 @@ namespace Oje.Security.Models.DB
         public bool? IsSuccessEmail { get; set; }
         public int? CountTry { get; set; }
         public string LastEmailErrorMessage { get; set; }
+        [MaxLength(200)]
+        public string Url { get; set; }
+        [MaxLength(200)]
+        public string RefferUrl { get; set; }
+
+        [InverseProperty("Error")]
+        public List<ErrorParameter> ErrorParameters { get; set; }
     }
 }

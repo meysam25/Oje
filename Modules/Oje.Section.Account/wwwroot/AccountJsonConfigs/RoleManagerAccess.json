@@ -1,6 +1,15 @@
 ﻿{
   "panels": [
     {
+      "ctrls": [
+        {
+          "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
+          "type": "button",
+          "title": "به روز رسانی دسترسی ها",
+          "onClick": "postModalData($('body'), 'accountRoleManagerGrid', '/Account/RoleManagerAccess/UpdateModals')",
+          "class": "btn-primary"
+        }
+      ],
       "treeViews": [
         {
           "dataUrl": "/Account/RoleManagerAccess/GetModaulsList",

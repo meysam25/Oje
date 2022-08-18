@@ -148,7 +148,7 @@
                 if(Model.paymentUserId.ToLongReturnZiro() > 0)
                 {
                     <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                        <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("2,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.paymentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت</a>
+                        <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(("2,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.paymentUserId).Encrypt2())" class="btn btn-primary btn-success btn-block" >پرداخت از طریق درگاه</a>
                     </div>
                 }
                 
@@ -237,8 +237,9 @@
                                       "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
                                       "name": "mainImage",
                                       "type": "file",
-                                      "label": "تصویر پرداخت",
-                                      "acceptEx": ".jpg,.png,.jpeg"
+                                      "label": "تصویر رسید پرداخت",
+                                      "acceptEx": ".jpg,.png,.jpeg",
+                                      "isRequired": true
                                     }
                                 ],
                                 actions:[
@@ -249,7 +250,7 @@
                                     },
                                     {
                                       "title": "ذخیره",
-                                      "onClick": "postModalData(this, '', '/Register/CardPayment')",
+                                      "onClick": "postModalData(this, '', '/Register/CardPayment', null, null, function() {location.reload();})",
                                       "class": "btn-primary"
                                     }
                                 ]
@@ -273,13 +274,10 @@
             }
         }
         @{
-            if( ViewBag.isPrint == false )
+            if(ViewBag.isPrint == false && Model.isPayed == true)
             {
                  <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                    <a  href="/Register/DownloadPdf?id=@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >دانلود پی دی اف</a>
-                </div>
-                <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                    <a  href="/" class="btn btn-primary btn-success btn-block" >متوجه شدم</a>
+                    <a  href="/Register/DownloadPdf?id=@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >دانلود PDF</a>
                 </div>
             }
         }

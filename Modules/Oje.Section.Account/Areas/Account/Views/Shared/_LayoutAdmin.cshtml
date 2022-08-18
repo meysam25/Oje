@@ -45,7 +45,7 @@
                 <a href="/Account/Dashboard/Index" class="sideMenuItem">
                     <span class="sideMenuItemInner">
                         <span class="fa fa-home menuIcon"></span>
-                        <span>داشبورد</span>
+                        <span class="dashboardTitle" >داشبورد</span>
                     </span>
                 </a>
                 <cache expires-after="@TimeSpan.FromMinutes(10)" vary-by-cookie="login" vary-by="@(Oje.Infrastructure.GlobalConfig.siteMenuCache)">
@@ -74,13 +74,15 @@
     <script>
         $('.notificationCount').click(function(e) { e.stopPropagation(); });
         $('.sideMenuHolder').initSideMenu();
-        $('.headerTopMenuButton').click(function () {
+        $('.headerTopMenuButton').click(function (e) {
             if ($('.sideMenuHolder').length > 0 && $('.sideMenuHolder')[0].toggleSideMenu) {
                 $('.sideMenuHolder')[0].toggleSideMenu();
+                e.stopPropagation();
             }
         });
-        $('.closeSideMenuButton').click(function() {
+        $('.closeSideMenuButton').click(function(e) {
             $('.sideMenuHolder')[0].closeSideMenu();
+            e.stopPropagation();
         });
         $('.loginUserSecitonHeader').click(function (e) {
             $('.notificationHolder').removeClass('showLoginMenu');

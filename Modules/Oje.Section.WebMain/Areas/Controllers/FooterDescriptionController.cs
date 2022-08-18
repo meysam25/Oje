@@ -5,11 +5,6 @@ using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Section.WebMain.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Areas.Controllers
 {
@@ -60,6 +55,13 @@ namespace Oje.Section.WebMain.Areas.Controllers
         public IActionResult Get()
         {
             return Json(PropertyService.GetBy<FooterDescrptionVM>(PropertyType.FooterDescrption, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "حذف", Icon = "fa-trash")]
+        [HttpPost]
+        public IActionResult Delete([FromQuery] string key)
+        {
+            return Json(PropertyService.Delete(PropertyType.FooterDescrption, SiteSettingService.GetSiteSetting()?.Id, key));
         }
     }
 }

@@ -7,7 +7,7 @@ using Oje.Sms.Services.EContext;
 
 namespace Oje.Sanab
 {
-    public static class SmsConfig
+    public static class SanabConfig
     {
         public static void Config(IServiceCollection services)
         {
@@ -19,6 +19,21 @@ namespace Oje.Sanab
             services.AddScoped<ISanabLoginService, SanabLoginService>();
             services.AddScoped<ICarInquiry, CarInquiry>();
             services.AddScoped<IUserInquiry, UserInquiry>();
+            services.AddScoped<ISanabSystemFieldVehicleSystemService, SanabSystemFieldVehicleSystemService>();
+            services.AddScoped<IVehicleSystemService, VehicleSystemService>();
+            services.AddScoped<IVehicleSpecService, VehicleSpecService>();
+            services.AddScoped<ISanabTypeFieldVehicleSpecService, SanabTypeFieldVehicleSpecService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ISanabCompanyService, SanabCompanyService>();
+            services.AddScoped<ISanabCarThirdPartyPlaqueInquiryService, SanabCarThirdPartyPlaqueInquiryService>();
+            services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+            services.AddScoped<ISanabVehicleTypeService, SanabVehicleTypeService>();
+            services.AddScoped<ICarTypeService, CarTypeService>();
+            services.AddScoped<ISanabCarTypeService, SanabCarTypeService>();
+            services.AddScoped<IThirdPartyBodyNoDamageDiscountHistoryService, ThirdPartyBodyNoDamageDiscountHistoryService>();
+            services.AddScoped<IThirdPartyDriverHistoryDamagePenaltyService, ThirdPartyDriverHistoryDamagePenaltyService>();
+            services.AddScoped<IThirdPartyDriverNoDamageDiscountHistoryService, ThirdPartyDriverNoDamageDiscountHistoryService>();
+            services.AddScoped<IThirdPartyFinancialAndBodyHistoryDamagePenaltyService, ThirdPartyFinancialAndBodyHistoryDamagePenaltyService>();
         }
     }
 }

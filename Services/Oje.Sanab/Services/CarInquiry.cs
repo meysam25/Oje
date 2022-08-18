@@ -1,46 +1,72 @@
 ﻿using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Oje.Infrastructure;
+using Oje.Infrastructure.Exceptions;
 using Oje.Sanab.Interfaces;
 using Oje.Sanab.Models.View;
+using System.Text;
 
 namespace Oje.Sanab.Services
 {
     public class CarInquiry : ICarInquiry
     {
         readonly IHttpClientFactory HttpClientFactory = null;
+        readonly ISanabLoginService SanabLoginService = null;
         public CarInquiry(
-                IHttpClientFactory HttpClientFactory
+                IHttpClientFactory HttpClientFactory,
+                ISanabLoginService SanabLoginService
             )
         {
             this.HttpClientFactory = HttpClientFactory;
+            this.SanabLoginService = SanabLoginService;
         }
 
         /// <summary>
         /// تخفیفات خودرو
         /// </summary>
-        /// <param name="token">توکن</param>
         /// <param name="PlkSrl">شماره سریال پلاک خودرو</param>
         /// <param name="Plk1">دو رقم سمت چپ پلاک خودرو</param>
         /// <param name="Plk2">کد حرف وسط</param>
         /// <param name="Plk3">سه رقم سمت راست پلاک</param>
         /// <param name="NationalCode">کد ملی مالک</param>
-        public async Task<CarDiscountResultVM> CarDiscount(string token, int PlkSrl, int Plk1, int Plk2, int Plk3, string NationalCode)
+        public async Task<CarDiscountResultVM> CarDiscount(int? siteSettingId, string PlkSrl, string Plk1, string Plk2, string Plk3, string NationalCode)
         {
             CarDiscountResultVM result = null;
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, GlobalConfig.Configuration["SanabConfig:baseUrl"] + "/cii/test/v2/IIXGetCarAndDis/2/api/CarAndDiscountInquiry/IIXGetCarAndDiscountInquiry?PlkSrl=" + PlkSrl + "&Plk1=" + Plk1 + "&Plk2=" + Plk2 + "&Plk3=" + Plk3 + "&NationalCode=" + NationalCode)
+            var switchToken = await SanabLoginService.GenerateAccessToken(siteSettingId);
+            var loginToke = await SanabLoginService.LoginAsync(siteSettingId);
+
+            if (string.IsNullOrEmpty(switchToken) || string.IsNullOrEmpty(loginToke))
+                throw BException.GenerateNewException(BMessages.Sanab_Empty_Token);
+
+            using (var stringContent = new StringContent(JsonConvert.SerializeObject(new 
+            { 
+                NationalCode = NationalCode, 
+                plk1 = Plk1, 
+                plk2 = Plk2, 
+                plk3 = Plk3, 
+                plkSrl = PlkSrl,
+                queryType = 0
+            }, Formatting.Indented), Encoding.UTF8, "application/json"))
             {
-                Headers =
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalConfig.Configuration["SanabConfig:baseUrl"] + "/cii/test/SPIn/2/api/SanhabPolicyInquiry/GetSanhabPolicyInquiry")
                 {
-                    { HeaderNames.Authorization, "Bearer " + token}
+                    Headers =
+                    {
+                        { "token", "Bearer " + switchToken},
+                        { HeaderNames.Authorization, "Bearer " + loginToke}
+                    },
+                    Content = stringContent
+                };
+                var httpResponseMessage = await HttpClientFactory.CreateClient().SendAsync(httpRequestMessage);
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<CarDiscountResultVM>(contentStream);
+                    if (result != null && string.IsNullOrEmpty(result.SystemField))
+                        result = null;
                 }
-            };
-            var httpResponseMessage = await HttpClientFactory.CreateClient().SendAsync(httpRequestMessage);
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-                result = JsonConvert.DeserializeObject<CarDiscountResultVM>(contentStream);
+
             }
 
             return result;

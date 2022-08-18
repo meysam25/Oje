@@ -36,6 +36,7 @@ namespace Oje.ProposalFormService.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IColorService ColorService = null;
 
         public ProposalFilledFormService(
                 ProposalFormDBContext db,
@@ -54,7 +55,8 @@ namespace Oje.ProposalFormService.Services
                 IUploadedFileService UploadedFileService,
                 IUserNotifierService UserNotifierService,
                 IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
-                AccountService.Interfaces.IRoleService RoleService
+                AccountService.Interfaces.IRoleService RoleService,
+                IColorService ColorService
             )
         {
             this.db = db;
@@ -74,10 +76,12 @@ namespace Oje.ProposalFormService.Services
             this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
             this.UserNotifierService = UserNotifierService;
             this.RoleService = RoleService;
+            this.ColorService = ColorService;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl)
         {
+            throw BException.GenerateNewException(BMessages.Accident_Driver_Penalty);
             createValidation(siteSettingId, form);
 
             long inquiryId = form.GetStringIfExist("inquiryId").ToLongReturnZiro();
@@ -116,6 +120,13 @@ namespace Oje.ProposalFormService.Services
                         ProposalFilledFormDocumentService.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
                     ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form);
                     createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
+
+                    if (loginUserId == ownerUserId)
+                        UserService.UpdateUserInfoIfEmpty(loginUserId,
+                            form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("firstName") : form.GetStringIfExist("firstAgentName"),
+                            form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("lastName") : form.GetStringIfExist("lastAgentName"),
+                            form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("nationalCode") : null
+                            );
 
                     UserNotifierService.Notify
                         (
@@ -201,8 +212,28 @@ namespace Oje.ProposalFormService.Services
                 }
                 validateFileUpload(ctrl, allRequiredFileUpload, form);
             }
+
+            validateColor(form, allCtrls);
         }
 
+        private void validateColor(IFormCollection form, List<ctrl> allCtrls)
+        {
+            if(allCtrls != null)
+            {
+                var foundColorCtrl = allCtrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/ProposalFilledForm/Proposal/GetColorList".ToLower()).FirstOrDefault();
+                if(foundColorCtrl != null && !string.IsNullOrEmpty(foundColorCtrl.name))
+                {
+                    var colorValue = form.GetStringIfExist(foundColorCtrl.name);
+                    if(!string.IsNullOrEmpty(colorValue))
+                    {
+                        var foundColor = ColorService.GetById(colorValue.ToIntReturnZiro());
+                        if (foundColor == null)
+                            throw BException.GenerateNewException(BMessages.Validation_Error);
+                        foundColorCtrl.defV = foundColor.Title;
+                    }
+                }
+            }
+        }
 
         private void validateCompanyAndAgent(PageForm ppfObj, IFormCollection form, int? siteSettingId, int companyId)
         {

@@ -15,6 +15,7 @@ namespace Oje.Section.RegisterForm.Models.DB
             UserRegisterFormDiscountCodes = new();
             UserRegisterFormCompanies = new();
             UserRegisterFormPrintDescrptions = new();
+            UserRegisterFormRoles = new();
         }
 
         [Key]
@@ -39,6 +40,8 @@ namespace Oje.Section.RegisterForm.Models.DB
         public string SecountFile { get; set; }
         [MaxLength(200)]
         public string AnotherFile { get; set; }
+        [MaxLength(200)]
+        public string AnotherFile2 { get; set; }
         public int SiteSettingId { get; set; }
 
 
@@ -54,5 +57,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         public List<UserRegisterFormCompany> UserRegisterFormCompanies { get; set; }
         [InverseProperty("UserRegisterForm")]
         public List<UserRegisterFormPrintDescrption> UserRegisterFormPrintDescrptions { get; set; }
+        [InverseProperty("UserRegisterForm")]
+        public List<UserRegisterFormRole> UserRegisterFormRoles { get; set; }
     }
 }

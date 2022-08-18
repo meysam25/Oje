@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.ProposalFormService.Models.View
 {
@@ -12,7 +7,7 @@ namespace Oje.ProposalFormService.Models.View
         [Display(Name = "ردیف")]
         public int row { get; set; }
         [Display(Name = "شناسه")]
-        public string id { get; set; }
+        public long id { get; set; }
         [Display(Name = "فرم پیشنهاد")]
         public string ppfTitle { get; set; }
         [Display(Name = "شماره همراه")]

@@ -352,7 +352,7 @@
     border-left:none !important;
 }
 .loadMoreButton{
-    display:none;
+    display:none !important;
     margin-left:auto;
     margin-right:auto;
 }
@@ -393,10 +393,10 @@
 }
 @media (max-width: 500px){
     .holderPagination{
-        display:none;
+        display:none !important;
     }
-    .loadMoreButton{
-        display:block;
+    .loadMoreButton {
+        display: block !important;
     }
 }
 @media (max-width: 480px){

@@ -13,6 +13,8 @@ namespace Oje.Sanab.Models.DB
         [Required, MaxLength(100)]
         public string Password { get; set; }
         public bool IsActive { get; set; }
+        [Required, MaxLength(4000)]
+        public string Token { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

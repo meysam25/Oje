@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
@@ -22,5 +18,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         [ForeignKey("UserId"), InverseProperty("UserRoles")]
         public User User { get; set; }
         public int RoleId { get; set; }
+        [ForeignKey("RoleId"), InverseProperty("UserRoles")]
+        public Role Role { get; set; }
     }
 }

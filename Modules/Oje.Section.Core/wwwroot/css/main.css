@@ -533,6 +533,7 @@ input[type=checkbox] + label, input[type=checkbox] {
     padding: 2px 5px;
     cursor: pointer;
     margin: 4px;
+    min-width:192px;
 }
 
     .multiSelectImageBodyItem:hover {

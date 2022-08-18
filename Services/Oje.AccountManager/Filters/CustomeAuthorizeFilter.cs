@@ -108,7 +108,7 @@ namespace Oje.AccountService.Filters
                         try { var tempResultX = context.HttpContext.Request.Cookies["ignoreCIP"]; ignoreIp = tempResultX.Decrypt2() == "true" ? true : false; } catch { }
                     }
 
-                    if (loginUser.browserName == context.HttpContext.GetBroswerName())
+                    if (loginUser.browserName == context.HttpContext.GetBroswerName() || ignoreIp == true)
                     {
                         if ((ignoreIp == true || loginUser.Ip == context.HttpContext.GetIpAddress()?.ToString()) && (loginUser.siteSettingId == null || loginUser.siteSettingId == foundSetting.Id))
                         {

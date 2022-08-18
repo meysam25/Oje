@@ -131,6 +131,8 @@ namespace Oje.ProposalFormService.Services
             {
                 CarThirdPartyInquiryObjects objPack = fillRequiredObjectsAndValidate(input, siteSettingId);
                 List<InqeryExteraParameter> InqeryExteraParameters = fillExteraParamters(objPack);
+                if (objPack.CarSpecification != null)
+                    InqeryExteraParameters.Add(new InqeryExteraParameter() { Title = "سیلندر", Value = objPack.CarSpecification.Title, step = "carSpecifications" });
 
                 long GlobalInputInqueryId = GlobalInputInqueryService.Create(input, InqeryExteraParameters, siteSettingId);
                 if (GlobalInputInqueryId > 0 && objPack.ThirdPartyDriverFinancialCommitment != null && objPack.ThirdPartyRates != null &&
@@ -242,14 +244,14 @@ namespace Oje.ProposalFormService.Services
                     targetArea = targetArea
                 }).ToList();
 
-            if(objPack.CashPayDiscounts != null)
+            if (objPack.CashPayDiscounts != null)
             {
                 if (input.showStatus == 2)
                     result = result.Where(t => t.hcd == true).ToList();
                 else if (input.showStatus == 3)
                     result = result.Where(t => t.hcd == true).ToList();
             }
-            
+
             return new { total = result.Count, data = result };
         }
 
@@ -1225,6 +1227,9 @@ namespace Oje.ProposalFormService.Services
             result.validCompanies = InquiryCompanyLimitService.GetCompanies(siteSettingId, InquiryCompanyLimitType.ThirdParty);
             if (result.validCompanies != null && result.validCompanies.Count > 0 && input.comIds != null && input.comIds.Count > 0)
                 result.validCompanies = result.validCompanies.Where(t => input.comIds.Contains(t.Id)).ToList();
+
+            if (result.validCompanies != null && result.validCompanies.Count == 1 && (input.coverIds == null || input.coverIds.Count == 0))
+                input.coverIds = ThirdPartyRequiredFinancialCommitmentService.GetAllAcitve();
 
 
             if (result.validCompanies != null && result.validCompanies.Count > 0)

@@ -33,11 +33,13 @@ namespace Oje.Section.RegisterForm.Services.EContext
         public DbSet<UserRegisterFormDiscountCodeUse> UserRegisterFormDiscountCodeUses { get; set; }
         public DbSet<UserRegisterFormCompany> UserRegisterFormCompanies { get; set; }
         public DbSet<UserRegisterFormPrintDescrption> UserRegisterFormPrintDescrptions { get; set; }
+        public DbSet<UserRegisterFormRole> UserRegisterFormRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserCompany>().HasKey(t => new { t.UserId, t.CompanyId });
             modelBuilder.Entity<UserFilledRegisterFormCompany>().HasKey(t => new { t.CompanyId, t.UserFilledRegisterFormId });
+            modelBuilder.Entity<UserRegisterFormRole>().HasKey(t => new { t.RoleId, t.UserRegisterFormId });
 
             modelBuilder.Entity<User>().Property(e => e.MapLat).HasPrecision(18, 15);
             modelBuilder.Entity<User>().Property(e => e.MapLon).HasPrecision(18, 15);

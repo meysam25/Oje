@@ -96,7 +96,7 @@
     }
 
 .articleContentMainImage {
-    width: 100%;
+    max-width: 800px;
     height: auto;
 }
 
@@ -159,7 +159,7 @@
         border-bottom: none;
     }
 
-    .otherArticleRelatedItem > div {
+    .otherArticleRelatedItem > div:last-child {
         -webkit-flex-grow: 1;
         flex-grow: 1;
     }
@@ -256,8 +256,8 @@
 .blogTags {
     text-align: center;
     padding: 10px;
-    padding-top:0px;
-    float:right;
+    padding-top: 0px;
+    float: right;
 }
 
 

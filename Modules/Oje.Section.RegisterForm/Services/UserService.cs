@@ -12,6 +12,7 @@ using Oje.Section.RegisterForm.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Oje.Section.RegisterForm.Services
 {
@@ -90,6 +91,14 @@ namespace Oje.Section.RegisterForm.Services
                                     new Point(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLatRecivePlace_lat").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().Value, userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "mapLonRecivePlace_lon").Select(t => t.Value).FirstOrDefault().ToDoubleReturnNull().ToDoubleReturnNull().Value) { SRID = 4326 } :
                                     null;
                     newUser.CompanyTitle = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "companyNameLegal").Select(t => t.Value).FirstOrDefault();
+
+                    string startHour = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "startTime").Select(t => t.Value).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(startHour) && Regex.Match(startHour, @"\d+").Success)
+                        newUser.StartHour = Regex.Match(startHour, @"\d+").Value.ToIntReturnZiro();
+                    string endHour = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "endTime").Select(t => t.Value).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(endHour) && Regex.Match(endHour, @"\d+").Success)
+                        newUser.EndHour = Regex.Match(endHour, @"\d+").Value.ToIntReturnZiro();
+                    newUser.WorkingHolyday = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "holyDayWork").Select(t => t.Value).FirstOrDefault() == "بلی" ? true : false;
 
                     db.SaveChanges();
 

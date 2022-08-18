@@ -1,0 +1,87 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "InValidRangeIpMainGrid",
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "ignoreParentButton": true,
+                "template": "function bindRow (curRow) { return '<span data-url=\"/Security/InValidRangeIp/BlockFirewall\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.ip +'\" title=\"اظافه کردن به فایر وال\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.iB== 'بلی' ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "exportToExcelUrl": "/Security/InValidRangeIp/Export",
+          "showColumnConfigButton": true,
+          "key": "id",
+          "url": "/Security/InValidRangeIp/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "ip",
+              "caption": "ای پی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "lastDate",
+              "caption": "تاریخ",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "count",
+              "caption": "تعداد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "message",
+              "caption": "متن خطا",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isSuccess",
+              "caption": "موفقیت؟",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "iB",
+              "caption": "فایروال؟",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -91,18 +91,18 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربران پرداخت کرده انجام شده", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربران پرداخت کرده انجام شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {
-            return Json(UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
+            return Json(UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone, HttpContext.GetLoginUser()?.UserId));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {
-            var result = UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone);
+            var result = UserFilledRegisterFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone, HttpContext.GetLoginUser()?.UserId);
             if (result == null || result.data == null || result.data.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);

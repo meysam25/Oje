@@ -705,6 +705,20 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static string GetFullRefererUrl(this HttpRequest input)
+        {
+            try
+            {
+                var currPath = new Uri(input.Headers["Referer"][0]);
+
+                return currPath.PathAndQuery;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static string GetTargetAreaByRefferForPPFDetailes(this HttpRequest input)
         {
             try
@@ -1011,11 +1025,19 @@ namespace Oje.Infrastructure.Services
             return result;
         }
 
+
+        static Dictionary<string, List<EKeyVM>> keyCache = null;
         private static List<EKeyVM> GetTodayKeysValue()
         {
+            if (keyCache == null)
+                keyCache = new Dictionary<string, List<EKeyVM>>();
+            string filename = DateTime.Now.ToString("yyyy-MM-dd");
+            if (keyCache.Keys.Any(t => t == filename) && keyCache[filename] != null && keyCache[filename].Count > 0)
+                return keyCache[filename];
+
             List<EKeyVM> result = new List<EKeyVM>();
             string rootPath = GlobalConfig.WebHostEnvironment.ContentRootPath + "\\KeyValues";
-            string todayKeyValue = rootPath + "\\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+            string todayKeyValue = rootPath + "\\" + filename + ".txt";
             if (!Directory.Exists(rootPath))
                 Directory.CreateDirectory(rootPath);
 
@@ -1023,10 +1045,7 @@ namespace Oje.Infrastructure.Services
             {
                 File.WriteAllText(todayKeyValue,
                         (
-                            string.Join(',', GetNewKey(32)) + "&:-:&" + string.Join(',', GetNewKey(16)) + Environment.NewLine +
-                            string.Join(',', GetNewKey(32)) + "&:-:&" + string.Join(',', GetNewKey(16)) + Environment.NewLine +
-                            string.Join(',', GetNewKey(32)) + "&:-:&" + string.Join(',', GetNewKey(16)) + Environment.NewLine +
-                            string.Join(',', GetNewKey(32)) + "&:-:&" + string.Join(',', GetNewKey(16)) + Environment.NewLine
+                            string.Join(',', GetNewKey(32)) + "&:-:&" + string.Join(',', GetNewKey(16)) + Environment.NewLine 
                         ).Encrypt()
                     );
             }
@@ -1038,10 +1057,13 @@ namespace Oje.Infrastructure.Services
             {
                 var allSections = tStringArr[i].Split(new string[] { "&:-:&" }, StringSplitOptions.RemoveEmptyEntries);
                 EKeyVM newResult = new EKeyVM();
+                newResult.filename = filename;
                 newResult.key = allSections[0].Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.ToByteReturnZiro()).ToArray();
                 newResult.value = allSections[1].Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(t => t.ToByteReturnZiro()).ToArray();
                 result.Add(newResult);
             }
+
+            keyCache[filename] = result;
 
             return result;
         }
@@ -1061,10 +1083,10 @@ namespace Oje.Infrastructure.Services
         public static string Decrypt2(this string input)
         {
             var resultKeys = GetTodayKeysValue();
-            resultKeys.Reverse();
             string result = input;
-            foreach (var item in resultKeys)
+            for (var i = resultKeys.Count; i > 0; i--)
             {
+                var item = resultKeys[i - 1];
                 result = (new C_EDSecure(item.key, item.value)).Decrypt(Convert.FromBase64String(result));
             }
             return result;
@@ -1072,10 +1094,10 @@ namespace Oje.Infrastructure.Services
 
         public static LoginUserVM Decrypt2AndGetUserVM(this string input)
         {
-            LoginUserVM result = null;
 
             try
             {
+                LoginUserVM result = null;
                 if (string.IsNullOrEmpty(input))
                     return result;
                 string dycriptText = input.Decrypt2();
@@ -1096,13 +1118,13 @@ namespace Oje.Infrastructure.Services
                     return null;
                 result.browserName = dycriptTextArr[7];
                 result.hasAutoRefres = dycriptTextArr[8].ToBooleanReturnFalse();
+
+                return result;
             }
             catch
             {
                 return null;
             }
-
-            return result;
         }
 
         public static LoginUserVM Decrypt2AndGetUserVMT(this string input)
@@ -1141,12 +1163,13 @@ namespace Oje.Infrastructure.Services
             {
                 if (!string.IsNullOrEmpty(input) && input.IndexOf(".") > 0)
                 {
+                    var arrItems = input.Split('.');
                     return new IpSections()
                     {
-                        Ip1 = input.Split('.')[0].ToByteReturnZiro(),
-                        Ip2 = input.Split('.')[1].ToByteReturnZiro(),
-                        Ip3 = input.Split('.')[2].ToByteReturnZiro(),
-                        Ip4 = input.Split('.')[3].ToByteReturnZiro()
+                        Ip1 = arrItems[0].ToByteReturnZiro(),
+                        Ip2 = arrItems[1].ToByteReturnZiro(),
+                        Ip3 = arrItems[2].ToByteReturnZiro(),
+                        Ip4 = arrItems[3].ToByteReturnZiro()
                     };
                 }
 

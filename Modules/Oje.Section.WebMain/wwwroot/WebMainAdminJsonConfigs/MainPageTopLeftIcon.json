@@ -45,21 +45,24 @@
           "name": "mainFile1",
           "type": "file",
           "label": "لوگوی اول (77*85)",
-          "acceptEx": ".jpg,.png,.jpeg"
+          "acceptEx": ".jpg,.png,.jpeg",
+          "deleteButton": "/WebMainAdmin/MainPageTopLeftIcon/Delete?key=mainFile1"
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12",
           "name": "mainFile2",
           "type": "file",
           "label": "لوگوی دوم (77*85)",
-          "acceptEx": ".jpg,.png,.jpeg"
+          "acceptEx": ".jpg,.png,.jpeg",
+          "deleteButton": "/WebMainAdmin/MainPageTopLeftIcon/Delete?key=mainFile2"
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12",
           "name": "mainFile3",
           "type": "file",
           "label": "لوگوی سوم (77*85)",
-          "acceptEx": ".jpg,.png,.jpeg"
+          "acceptEx": ".jpg,.png,.jpeg",
+          "deleteButton": "/WebMainAdmin/MainPageTopLeftIcon/Delete?key=mainFile3"
         },
         {
           "parentCL": "col-xl-9 col-lg-9 col-md-9 col-sm-12 col-xs-12",

@@ -18,6 +18,7 @@ using Oje.AccountService.Middlewares;
 using Oje.Section.Core.Services;
 using Oje.Security.Filters;
 using Microsoft.AspNetCore.Http.Features;
+using Oje.Security.Middlewares;
 
 namespace Oje.Web
 {
@@ -90,6 +91,7 @@ namespace Oje.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.HttpsStuff();
+            app.PreventIps();
             app.UseResponseCompression();
             app.UseStaticFiles(CoreConfig.GetStaticFileOptions());
 

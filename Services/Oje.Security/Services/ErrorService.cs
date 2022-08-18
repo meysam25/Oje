@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -7,25 +8,30 @@ using Oje.Security.Interfaces;
 using Oje.Security.Models.DB;
 using Oje.Security.Models.View;
 using Oje.Security.Services.EContext;
+using System.Text;
 
 namespace Oje.Security.Services
 {
     public class ErrorService : IErrorService
     {
         readonly SecurityDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public ErrorService
             (
-                SecurityDBContext db
+                SecurityDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
-        public void Create(long? UserId, string requestId, ApiResultErrorCode? type, BMessages? bMessageCode, string cMessages, IpSections ip, string cLineNumbers, string cFilenames)
+        public void Create(long? UserId, string requestId, ApiResultErrorCode? type, BMessages? bMessageCode, string cMessages, IpSections ip, string cLineNumbers, string cFilenames, string refferUrl, string curUrl)
         {
             if (!string.IsNullOrEmpty(requestId) && !string.IsNullOrEmpty(cMessages) && ip != null && !string.IsNullOrEmpty(cLineNumbers) && !string.IsNullOrEmpty(cFilenames))
             {
-                db.Entry(new Error()
+                var errorModel = new Error()
                 {
                     UserId = UserId,
                     RequestId = requestId,
@@ -38,9 +44,35 @@ namespace Oje.Security.Services
                     Ip3 = ip.Ip3,
                     Ip4 = ip.Ip4,
                     LineNumber = cLineNumbers,
-                    Message = cMessages
-                }).State = EntityState.Added;
+                    Message = cMessages,
+                    RefferUrl = refferUrl,
+                    Url = curUrl
+                };
+                db.Entry(errorModel).State = EntityState.Added;
                 db.SaveChanges();
+
+                IFormCollection tempForm = null;
+
+                try { tempForm = HttpContextAccessor?.HttpContext?.Request?.Form; } catch { }
+
+                if (tempForm != null)
+                    createParams(errorModel.Id, tempForm);
+            }
+        }
+
+        private void createParams(long errorId, IFormCollection form)
+        {
+            if (errorId > 0 && form != null)
+            {
+                StringBuilder parameters = new StringBuilder();
+                foreach (var item in form)
+                    parameters.Append(item.Key + "=" + item.Value + Environment.NewLine);
+                var newParameter = new ErrorParameter() { ErrorId = errorId, Parameters = parameters.ToString() };
+                if (!string.IsNullOrEmpty(newParameter.Parameters))
+                {
+                    db.Entry(newParameter).State = EntityState.Added;
+                    db.SaveChanges();
+                }
             }
         }
 
@@ -80,6 +112,12 @@ namespace Oje.Security.Services
                 quiryResult = quiryResult.Where(t => t.BMessageCode == searchInput.bMessageCode);
             if (searchInput.type != null)
                 quiryResult = quiryResult.Where(t => t.Type == searchInput.type);
+            if (!string.IsNullOrEmpty(searchInput.url))
+                quiryResult = quiryResult.Where(t => (!string.IsNullOrEmpty(t.Url) && t.Url.Contains(searchInput.url)) || (!string.IsNullOrEmpty(t.RefferUrl) && t.Url.Contains(searchInput.url)));
+            if (searchInput.iB == true)
+                quiryResult = quiryResult.Where(t => db.ErrorFirewallManualAdds.Any(tt => tt.Ip4 == t.Ip4 && tt.Ip3 == t.Ip3 && t.Ip2 == tt.Ip2 && tt.Ip1 == t.Ip1));
+            if (searchInput.iB == false)
+                quiryResult = quiryResult.Where(t => !db.ErrorFirewallManualAdds.Any(tt => tt.Ip4 == t.Ip4 && tt.Ip3 == t.Ip3 && t.Ip2 == tt.Ip2 && tt.Ip1 == t.Ip1));
 
 
             switch (searchInput.sortField)
@@ -147,7 +185,10 @@ namespace Oje.Security.Services
                     t.LineNumber,
                     t.FileName,
                     t.BMessageCode,
-                    t.Type
+                    t.Type,
+                    t.Url,
+                    t.RefferUrl,
+                    isBlocked = db.ErrorFirewallManualAdds.Any(tt => tt.Ip4 == t.Ip4 && tt.Ip3 == t.Ip3 && t.Ip2 == tt.Ip2 && tt.Ip1 == t.Ip1)
                 })
                 .ToList()
                 .Select(t => new ErrorMainGridResultVM
@@ -162,9 +203,16 @@ namespace Oje.Security.Services
                     fileName = t.FileName.Replace(Environment.NewLine, "<br />"),
                     bMessageCode = (t.BMessageCode != null ? ((int)t.BMessageCode.Value) : -1).ToString(),
                     type = (t.Type != null ? ((int)t.Type.Value) : -1).ToString(),
+                    url = t.Url + "<br />" + t.RefferUrl,
+                    iB = t.isBlocked == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName()
                 })
                 .ToList()
             };
+        }
+
+        public object GetParameters(long? id)
+        {
+            return db.ErrorParameters.Where(t => t.ErrorId == id).Select(t => new { parameters = t.Parameters }).FirstOrDefault();
         }
     }
 }

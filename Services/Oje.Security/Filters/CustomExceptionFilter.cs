@@ -13,10 +13,16 @@ namespace Oje.Security.Filters
 {
     public class CustomExceptionFilter : IExceptionFilter
     {
-        private readonly IModelMetadataProvider _modelMetadataProvider;
-        public CustomExceptionFilter(IModelMetadataProvider modelMetadataProvider)
+        readonly IModelMetadataProvider modelMetadataProvider;
+        readonly IErrorService ErrorService = null;
+        public CustomExceptionFilter
+            (
+                IModelMetadataProvider modelMetadataProvider,
+                IErrorService ErrorService
+            )
         {
-            _modelMetadataProvider = modelMetadataProvider;
+            this.modelMetadataProvider = modelMetadataProvider;
+            this.ErrorService = ErrorService;
         }
         public void OnException(ExceptionContext context)
         {
@@ -31,7 +37,7 @@ namespace Oje.Security.Filters
             if (string.IsNullOrEmpty(ajaxStr))
             {
                 var result = new ViewResult { ViewName = "CustomError" };
-                result.ViewData = new ViewDataDictionary(_modelMetadataProvider, context.ModelState);
+                result.ViewData = new ViewDataDictionary(modelMetadataProvider, context.ModelState);
                 if (be == null)
                     result.ViewData.Add("Exception", "خطا در انجام عملیات");
                 else
@@ -75,13 +81,11 @@ namespace Oje.Security.Filters
                 tempEx = tempEx.InnerException;
             }
 
+            
+
             var curIp = context.HttpContext.GetIpAddress();
             if (curIp != null)
-            {
-                IErrorService ErrorService = context.HttpContext.RequestServices.GetService(typeof(IErrorService)) as IErrorService;
-                if (ErrorService != null)
-                    ErrorService.Create(context.HttpContext.GetLoginUser()?.UserId, context.HttpContext.TraceIdentifier, be?.Code, be?.BMessages, cMessages, curIp, cLineNumbers, cFilenames);
-            }
+                ErrorService.Create(context.HttpContext.GetLoginUser()?.UserId, context.HttpContext.TraceIdentifier, be?.Code, be?.BMessages, cMessages, curIp, cLineNumbers, cFilenames, context.HttpContext?.Request?.GetFullRefererUrl(), context.HttpContext?.Request?.Path != null ? context.HttpContext?.Request?.Path.Value : "");
         }
     }
 }

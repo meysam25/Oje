@@ -1,11 +1,10 @@
-﻿using Oje.Infrastructure.Models;
+﻿using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Services;
 using Oje.Section.RegisterForm.Interfaces;
 using Oje.Section.RegisterForm.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Services
 {
@@ -15,6 +14,15 @@ namespace Oje.Section.RegisterForm.Services
         public RoleService(RegisterFormDBContext db)
         {
             this.db = db;
+        }
+
+        public object GetLightList(int? siteSettingId)
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(db.Roles.Where(t => t.SiteSettingId == null || t.SiteSettingId == siteSettingId).Select(t => new { id = t.Id, title = t.Title }).ToList());
+
+            return result;
         }
 
         public object GetList(int? siteSettingId, Select2SearchVM searchInput)

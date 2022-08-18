@@ -39,6 +39,7 @@ namespace Oje.Section.RegisterForm.Services
         readonly IUserRegisterFormCompanyService UserRegisterFormCompanyService = null;
         readonly IUserRegisterFormPrintDescrptionService UserRegisterFormPrintDescrptionService = null;
         readonly IBankService BankService = null;
+        readonly IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService = null;
 
         public UserFilledRegisterFormService
             (
@@ -58,7 +59,8 @@ namespace Oje.Section.RegisterForm.Services
                 IUserRegisterFormDiscountCodeService UserRegisterFormDiscountCodeService,
                 IUserRegisterFormCompanyService UserRegisterFormCompanyService,
                 IUserRegisterFormPrintDescrptionService UserRegisterFormPrintDescrptionService,
-                IBankService BankService
+                IBankService BankService,
+                IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService
             )
         {
             this.db = db;
@@ -78,6 +80,7 @@ namespace Oje.Section.RegisterForm.Services
             this.UserRegisterFormDiscountCodeService = UserRegisterFormDiscountCodeService;
             this.UserRegisterFormCompanyService = UserRegisterFormCompanyService;
             this.BankService = BankService;
+            this.UserFilledRegisterFormCardPaymentService = UserFilledRegisterFormCardPaymentService;
         }
 
         public object Create(int? siteSettingId, IFormCollection form, IpSections ipSections, long? parentUserId, long? userId)
@@ -95,7 +98,7 @@ namespace Oje.Section.RegisterForm.Services
 
             var allCtrls = ppfObj.GetAllListOf<ctrl>();
 
-            var foundPrice = UserRegisterFormPriceService.GetPriceBy(formId, siteSettingId, form.GetStringIfExist("price").ToIntReturnZiro(), form.GetStringIfExist("likeToMarketing"));
+            var foundPrice = UserRegisterFormPriceService.GetPriceBy(formId, siteSettingId, form.GetStringIfExist("price").ToIntReturnZiro(), form.GetStringIfExist("likeSubdomain"), form.GetStringIfExist("likeToMarketing"));
             if (form.GetStringIfExist("price").ToIntReturnZiro() > 0 && foundPrice == null)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
 
@@ -528,7 +531,7 @@ namespace Oje.Section.RegisterForm.Services
                                     }
                                 }
                             }
-                            else if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
+                            else if (ctrl.hideOnPrint != true && ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value))))
                                 ProposalFilledFormPdfGroupItems.Add(new userFilledRegisterFormDetailesGroupItemVM() { cssClass = ctrl.parentCL, title = title, value = value });
                         }
                     }
@@ -550,6 +553,8 @@ namespace Oje.Section.RegisterForm.Services
             result.headerTemplate = UserRegisterFormPrintDescrptionService.GetBy(siteSettingId, foundItem.UserRegisterFormId, ProposalFormPrintDescrptionType.Header);
             result.footerTemplate = UserRegisterFormPrintDescrptionService.GetBy(siteSettingId, foundItem.UserRegisterFormId, ProposalFormPrintDescrptionType.Footer);
 
+            result.isPayed = (foundPaymentList != null && foundPaymentList.Count > 0) || UserFilledRegisterFormCardPaymentService.Any(siteSettingId, foundItem.Id);
+
             Company foundCompany = CompanyService.GetByUserFilledRegisterFormId(foundItem.Id);
             if (foundCompany != null)
             {
@@ -560,12 +565,16 @@ namespace Oje.Section.RegisterForm.Services
             return result;
         }
 
-        public GridResultVM<UserFilledRegisterFormMainGridResultVM> GetList(UserFilledRegisterFormMainGrid searchInput, int? siteSettingId, bool? isPayed = null, bool? isDone = null)
+        public GridResultVM<UserFilledRegisterFormMainGridResultVM> GetList(UserFilledRegisterFormMainGrid searchInput, int? siteSettingId, bool? isPayed = null, bool? isDone = null, long? userId = null)
         {
             if (searchInput == null)
                 searchInput = new();
 
-            var qureResult = db.UserFilledRegisterForms.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.UserFilledRegisterForms
+                .Where(t =>
+                        t.SiteSettingId == siteSettingId &&
+                        (!t.UserRegisterForm.UserRegisterFormRoles.Any() || t.UserRegisterForm.UserRegisterFormRoles.Any(tt => tt.Role.UserRoles.Any(ttt => ttt.UserId == userId)))
+                    );
 
             if (isPayed != null)
                 if (isPayed == true)
@@ -693,6 +702,8 @@ namespace Oje.Section.RegisterForm.Services
         public object CreateNewUser(long? id, int? siteSettingId, long? parentId, List<int> roleIds, long? loginUserId, bool? isPayed = null, bool? isDone = null)
         {
             var foundItem = db.UserFilledRegisterForms
+                .Include(t => t.User)
+                .Include(t => t.UserRegisterForm)
                 .Include(t => t.UserFilledRegisterFormValues).ThenInclude(t => t.UserFilledRegisterFormKey)
                 .Include(t => t.UserFilledRegisterFormCompanies)
                 .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
@@ -710,7 +721,14 @@ namespace Oje.Section.RegisterForm.Services
             {
                 foundItem.IsDone = true;
                 db.SaveChanges();
-                UserNotifierService.Notify(loginUserId, UserNotificationType.AddRoleToNewUser, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(result.data.ToLongReturnZiro(), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "ثبت نام", siteSettingId, "/RegisterFormAdmin/UserFilledRegisterForm/Index");
+                UserNotifierService.Notify(
+                    loginUserId,
+                    UserNotificationType.AddRoleToNewUser,
+                    new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(result.data.ToLongReturnZiro(), ProposalFilledFormUserType.OwnerUser) },
+                    foundItem.Id, foundItem?.UserRegisterForm?.Title,
+                    siteSettingId, "/RegisterFormAdmin/UserFilledRegisterForm/Index",
+                    new { userFullname = foundItem?.User.Firstname + " " + foundItem.User.Lastname }
+                    );
             }
 
             return result;

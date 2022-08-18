@@ -26,6 +26,8 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         readonly AccountService.Interfaces.IUserService UserService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
         readonly IProposalFilledFormAdminService ProposalFilledFormAdminService = null;
+        readonly IColorService ColorService = null;
+
         public ProposalController(
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
                 IProposalFormRequiredDocumentService ProposalFormRequiredDocumentService,
@@ -36,7 +38,8 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
                 IBankService BankService,
                 AccountService.Interfaces.IUserService UserService,
                 IBlockAutoIpService BlockAutoIpService,
-                IProposalFilledFormAdminService ProposalFilledFormAdminService
+                IProposalFilledFormAdminService ProposalFilledFormAdminService,
+                IColorService ColorService
             )
         {
             this.SiteSettingService = SiteSettingService;
@@ -49,6 +52,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.UserService = UserService;
             this.BlockAutoIpService = BlockAutoIpService;
             this.ProposalFilledFormAdminService = ProposalFilledFormAdminService;
+            this.ColorService = ColorService;
         }
 
         [AreaConfig(Title = "ثبت فرم", Icon = "fa-file-powerpoint")]
@@ -152,6 +156,13 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         public ActionResult GetBankList()
         {
             return Json(BankService.GetLightList());
+        }
+
+        [AreaConfig(Title = "مشاهده لیست رنگ", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetColorList()
+        {
+            return Json(ColorService.GetLightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست نماینده", Icon = "fa-list-alt")]

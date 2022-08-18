@@ -1,0 +1,147 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "SanabAdminSanabCompanyGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('SanabAdminSanabCompanyAddGridModal', this)",
+              "type": "add",
+              "modalId": "SanabAdminSanabCompanyAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/SanabAdmin/SanabCompany/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/SanabAdmin/SanabCompany/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "SanabAdminSanabCompanyEditModal",
+                "url": "/SanabAdmin/SanabCompany/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/SanabAdmin/SanabCompany/GetById\\', \\'SanabAdminSanabCompanyEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/SanabAdmin/SanabCompany/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "company",
+              "caption": "شرکت",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "code",
+              "caption": "کد",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "SanabAdminSanabCompanyAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SanabAdmin/SanabCompany/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'SanabAdminSanabCompanyGrid', '/SanabAdmin/SanabCompany/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "SanabAdminSanabCompanyEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SanabAdmin/SanabCompany/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'SanabAdminSanabCompanyGrid', '/SanabAdmin/SanabCompany/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

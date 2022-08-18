@@ -29,5 +29,10 @@ namespace Oje.Security.Models.View
         public string bMessageCode { get; set; }
         [Display(Name = "نوع")]
         public string type { get; set; }
+        [Display(Name = "مسیر")]
+        [IgnoreStringEncode]
+        public MyHtmlString url { get; set; }
+        [Display(Name = "فایروال؟")]
+        public string iB { get; set; }
     }
 }

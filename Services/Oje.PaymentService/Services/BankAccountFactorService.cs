@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.PaymentService.Interfaces;
@@ -17,6 +18,8 @@ namespace Oje.PaymentService.Services
         readonly IWalletTransactionService WalletTransactionService = null;
         readonly IBankAccountDetectorService BankAccountDetectorService = null;
         readonly IUserFilledRegisterFormService UserFilledRegisterFormService = null;
+        readonly IUserNotifierService UserNotifierService = null;
+        readonly IUserService UserService = null;
 
         public BankAccountFactorService(
                 PaymentDBContext db,
@@ -24,7 +27,9 @@ namespace Oje.PaymentService.Services
                 IBankAccountService BankAccountService,
                 IWalletTransactionService WalletTransactionService,
                 IBankAccountDetectorService BankAccountDetectorService,
-                IUserFilledRegisterFormService UserFilledRegisterFormService
+                IUserFilledRegisterFormService UserFilledRegisterFormService,
+                IUserNotifierService UserNotifierService,
+                IUserService UserService
             )
         {
             this.db = db;
@@ -33,6 +38,8 @@ namespace Oje.PaymentService.Services
             this.WalletTransactionService = WalletTransactionService;
             this.BankAccountDetectorService = BankAccountDetectorService;
             this.UserFilledRegisterFormService = UserFilledRegisterFormService;
+            this.UserNotifierService = UserNotifierService;
+            this.UserService = UserService;
         }
 
         public string Create(int? bankAccountId, PaymentFactorVM payModel, int? siteSettingId, long? loginUserId)
@@ -72,7 +79,7 @@ namespace Oje.PaymentService.Services
 
         public BankAccountFactor GetBy(string keyHash, int? siteSettingId)
         {
-            var intKeyHAsh = keyHash.GetHashCode32();
+            var intKeyHAsh = keyHash.ToLongReturnZiro();
             return db.BankAccountFactors.Where(t => t.SiteSettingId == siteSettingId && t.KeyHash == intKeyHAsh).AsNoTracking().FirstOrDefault();
         }
 
@@ -151,6 +158,16 @@ namespace Oje.PaymentService.Services
             foundItem.IsPayed = true;
             foundItem.PayDate = payDate != null ? payDate.Value : DateTime.Now;
             db.SaveChanges();
+
+            UserNotifierService.Notify
+                                    (
+                                        foundItem.UserId,
+                                        UserNotificationType.Payment,
+                                        new List<PPFUserTypes>() { UserService.GetUserType(foundItem.UserId) },
+                                        foundItem.ObjectId,
+                                        "پرداخت",
+                                        siteSettingId, foundItem.TargetLink
+                                    );
 
         }
     }

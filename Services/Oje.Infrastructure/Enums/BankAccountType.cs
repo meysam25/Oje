@@ -10,7 +10,9 @@ namespace Oje.Infrastructure.Enums
         titec = 2,
         [Display(Name = "سداد")]
         sadad = 3,
+        [Display(Name = "سپ")]
+        Sep = 4,
         [Display(Name = "نامشخص")]
-        unknown = 999
+        unknown = 999,
     }
 }

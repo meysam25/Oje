@@ -127,6 +127,13 @@ namespace Oje.Section.RegisterForm.Controllers
             return Content(UserRegisterFormService.GetAnotherFileUrl(fid, SiteSettingService.GetSiteSetting()?.Id));
         }
 
+        [HttpPost]
+        [Route("[Controller]/[Action]")]
+        public IActionResult GetAnotherFile2Url([FromForm] int? fid)
+        {
+            return Content(UserRegisterFormService.GetAnotherFile2Url(fid, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
         [HttpGet]
         [Route("[Controller]/[Action]")]
         public IActionResult DownloadPdf([FromQuery] GlobalLongId input)
@@ -184,9 +191,9 @@ namespace Oje.Section.RegisterForm.Controllers
 
         [HttpPost]
         [Route("[Controller]/[Action]")]
-        public ActionResult GetPriceList([FromQuery] string id, [FromForm] int? fid)
+        public ActionResult GetPriceList([FromQuery] string likeSubdomain, [FromQuery] string likeToMarketing, [FromForm] int? fid)
         {
-            return Json(UserRegisterFormPriceService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, fid, id));
+            return Json(UserRegisterFormPriceService.GetLightList(SiteSettingService.GetSiteSetting()?.Id, fid, likeSubdomain, likeToMarketing));
         }
 
         [HttpPost]

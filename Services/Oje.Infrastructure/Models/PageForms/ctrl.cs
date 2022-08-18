@@ -44,6 +44,7 @@ namespace Oje.Infrastructure.Models.PageForms
         public int? maxLengh { get; set; }
         public string mask { get; set; }
         public bool? ltr { get; set; }
+        public bool? hideOnPrint { get; set; }
         public MapName names { get; set; }
         public List<ctrl> ctrls { get; set; }
         public List<IdTitle> values { get; set; }

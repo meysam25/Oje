@@ -12,6 +12,8 @@ namespace Oje.Security.Models.View
         public string description { get; set; }
         public string lineNumber { get; set; }
         public string fileName { get; set; }
+        public string url { get; set; }
+        public bool? iB { get; set; }
         public BMessages? bMessageCode { get; set; }
         public ApiResultErrorCode? type { get; set; }
     }

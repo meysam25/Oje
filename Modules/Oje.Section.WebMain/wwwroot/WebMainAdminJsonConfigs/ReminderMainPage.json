@@ -21,7 +21,8 @@
           "name": "mainImage",
           "type": "file",
           "label": "لوگو (64*64)",
-          "acceptEx": ".jpg,.png,.jpeg"
+          "acceptEx": ".jpg,.png,.jpeg",
+          "deleteButton": "/WebMainAdmin/ReminderMainPage/Delete?key=mainImage"
         },
         {
           "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",

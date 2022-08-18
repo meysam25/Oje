@@ -80,6 +80,16 @@ function updateMappIfNeeded(curQuiry) {
     }
 }
 
+function findInArray(res, key) {
+    if (res && res.constructor == Array) {
+        for (var i = 0; i < res.length; i++) {
+            if (res[i].key == key)
+                return res[i].value;
+        }
+    }
+    
+}
+
 function bindingForm(selector, key, value, ignoreChanges, res) {
     if (key && key.indexOf('[') > 0 && key.indexOf(']') > 0) {
         var newKey = key.split('[')[0];
@@ -140,7 +150,6 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
         $(this).val(value + '');
         if (!$(this).val()) {
             var foundItemByTextValue = '';
-
             $(this).find('option').each(function () {
                 if (value && $(this).text() && $(this).text().trim() == (value + '').trim()) {
                     foundItemByTextValue = $(this).attr('value');
@@ -149,16 +158,19 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
             $(this).val(foundItemByTextValue);
         }
         if ($(this).data('select2')) {
-            if (res[key + '_Title'])
+            if (res[key + '_Title']) {
                 $(this).append(new Option(res[key + '_Title'], value, true, true)).trigger('change');
+            } else if (findInArray(res, key + '_Title')) {
+                $(this).append(new Option(findInArray(res, key + '_Title'), value, true, true)).trigger('change');
+            }
+            $(this).data('select2').val([value]);
         }
         if (!ignoreChanges) {
             setTimeout(function () {
-                $(this).change();
+                if (!$(this).attr('data-ignore-change-onBinding'))
+                    $(this).change();
             }.bind(this), 100);
         }
-
-
     });
     $(selector).find('img[data-name="' + key + '"]').each(function () {
         $(this).attr('src', value);
@@ -295,22 +307,62 @@ function bindingPendingCTRLs(url) {
     }
 }
 
+function addCtrlsToFormData(curObj, exteraParameterIds, postData) {
+    if (curObj && exteraParameterIds && postData && exteraParameterIds.length > 0) {
+        for (var i = 0; i < exteraParameterIds.length; i++) {
+            if ($('#' + exteraParameterIds[i]).length > 0) {
+                var curValue = $('#' + exteraParameterIds[i]).find('option:selected').attr('value');
+                if (!curValue)
+                    curValue = $('#' + exteraParameterIds[i]).val();
+                if (curValue) {
+                    postData.append($('#' + exteraParameterIds[i]).attr('name'), curValue);
+                }
+            }
+        }
+    }
+}
+
+function addCtrlsToUrl(curObj, exteraParameterIds, url) {
+    if (curObj && exteraParameterIds && url && exteraParameterIds.length > 0) {
+        for (var i = 0; i < exteraParameterIds.length; i++) {
+            if ($('#' + exteraParameterIds[i]).length > 0) {
+                var curValue = $('#' + exteraParameterIds[i]).find('option:selected').attr('value');
+                if (!curValue)
+                    curValue = $('#' + exteraParameterIds[i]).val();
+                if (curValue) {
+                    if (url.indexOf('?') > -1)
+                        url = url + '&' + $('#' + exteraParameterIds[i]).attr('name') + '=' + curValue;
+                    else
+                        url = url + '?' + $('#' + exteraParameterIds[i]).attr('name') + '=' + curValue;
+                }
+            }
+        }
+    }
+    return url;
+}
+
 function initDropdown(curObj, dontUseCache, parentValue) {
+    if ($(curObj).length == 0)
+        return;
     var url = $(curObj).attr('data-url');
     var textField = $(curObj).attr('data-textfield');
     var valueField = $(curObj).attr('data-valuefield');
     var hasAttrBindFormUrl = $(curObj).attr('bindFormUrl');
     if (url && textField && valueField) {
+        if ($(curObj)[0].exteraParameterIds)
+            url = addCtrlsToUrl(curObj, $(curObj)[0].exteraParameterIds, url);
         var postData = new FormData();
         if ($(curObj).closest('.modal').length > 0 && $(curObj).closest('.modal')[0].pKey)
             postData.append('pKey', $(curObj).closest('.modal')[0].pKey);
         if (dontUseCache == true || isExistInRequestQ(url) == false) {
-            allRequestQ.push({ url: url });
+            if (isExistInRequestQ(url) == false)
+                allRequestQ.push({ url: url });
             if (parentValue)
                 postData.append('id', parentValue);
             if (url.indexOf("/Core/BaseData") == -1 && window['exteraModelParams'])
                 for (var prop in exteraModelParams)
                     postData.append(prop, exteraModelParams[prop]);
+
             postForm(url, postData, function (res) {
                 $(this.curObj)[0].resData = res;
                 fillResponse(this.url, res);
@@ -798,6 +850,8 @@ function postPage(link, formData) {
     $('#' + formId).submit();
 }
 
+var modalZIndex = 1000;
+
 $.fn.modal = function (action) {
     function closeModal(curThis) {
         setTimeout(function () {
@@ -807,10 +861,11 @@ $.fn.modal = function (action) {
             }
         }, 100);
         $(curThis).removeClass('show');
-        $('body').find('.modal-backdrop:last-child').removeClass('show')
+        $('body').find('.modal-backdrop:last-child').remove();
     }
     function openModal(curThis) {
-        $(curThis).css('display', 'block');
+        modalZIndex++;
+        $(curThis).css('cssText', 'display:block;z-index:' + modalZIndex + '!important');
         setTimeout(function () {
             $(curThis).addClass('show');
         }, 100);
@@ -818,7 +873,7 @@ $.fn.modal = function (action) {
             $(this).modal('hide');
         });
         $(curThis).find('.modal-dialog').click(function (e) { e.stopPropagation(); if (window['closeAllDropdownInPage']) closeAllDropdownInPage(); });
-        $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
+        $('body').addClass('modal-open').append('<div style="z-index:' + (modalZIndex - 1) + ' !important;" class="modal-backdrop fade show"></div>');
         setTimeout(function () { $(curThis).find('input:visible:eq(0)').focus(); $(curThis).find('input:visible:eq(0)').click(); }, 200);
     }
     function bindCloseButton(curThis) {

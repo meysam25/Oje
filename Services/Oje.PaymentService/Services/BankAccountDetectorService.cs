@@ -7,14 +7,17 @@ namespace Oje.PaymentService.Services
     {
         readonly IBankAccountSizpayService BankAccountSizpayService = null;
         readonly IBankAccountSadadService BankAccountSadadService = null;
+        readonly IBankAccountSepService BankAccountSepService = null;
         public BankAccountDetectorService
             (
                 IBankAccountSizpayService BankAccountSizpayService,
-                IBankAccountSadadService BankAccountSadadService
+                IBankAccountSadadService BankAccountSadadService,
+                IBankAccountSepService BankAccountSepService
             )
         {
             this.BankAccountSizpayService = BankAccountSizpayService;
             this.BankAccountSadadService = BankAccountSadadService;
+            this.BankAccountSepService = BankAccountSepService;
         }
 
         public BankAccountType GetByType(int bankAccountId, int? siteSettingId)
@@ -23,6 +26,8 @@ namespace Oje.PaymentService.Services
                 return BankAccountType.sizpay;
             else if (BankAccountSadadService.Exist(bankAccountId, siteSettingId))
                 return BankAccountType.sadad;
+            else if (BankAccountSepService.Exist(bankAccountId, siteSettingId))
+                return BankAccountType.Sep;
             else
                 return BankAccountType.titec;
 

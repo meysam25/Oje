@@ -17,5 +17,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         public bool IsActive { get; set; }
         [MaxLength(50)]
         public string GroupPriceTitle { get; set; }
+        [MaxLength(50)]
+        public string GroupPriceTitle2 { get; set; }
     }
 }

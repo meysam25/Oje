@@ -41,7 +41,7 @@
                 "icon": "fa-credit-card ",
                 "prop": "id",
                 "modalId": "MyNotIssueProposalFilledFormviewDocuments",
-                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyNotIssueProposalFilledFormviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد مالی\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyNotIssueProposalFilledFormviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -170,7 +170,7 @@
         },
         {
           "id": "MyNotIssueProposalFilledFormviewDocuments",
-          "title": "اسناد فرم پیشنهاد",
+          "title": "اسناد مالی",
           "class": "modal-xl",
           "panels": [
             {
@@ -228,7 +228,7 @@
         },
         {
           "id": "MyNotIssueProposalFilledFormviewPPFStatusHistory",
-          "title": "اسناد فرم پیشنهاد",
+          "title": "تاریخچه وضعیت",
           "class": "modal-xl",
           "panels": [
             {

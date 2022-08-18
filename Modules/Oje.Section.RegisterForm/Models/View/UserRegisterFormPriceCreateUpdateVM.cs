@@ -8,5 +8,6 @@
         public long? price { get; set; }
         public bool? isActive { get; set; }
         public string gp { get; set; }
+        public string gp2 { get; set; }
     }
 }

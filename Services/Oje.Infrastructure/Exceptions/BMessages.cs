@@ -674,5 +674,23 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_TraceCode = 333,
         [Display(Name = "خطای کد تخفیف")]
         Invalid_Discount_Code = 334,
+        [Display(Name = "لطفا توکن را وارد کنید")]
+        Please_Enter_Token = 335,
+        [Display(Name = "تنظیمات سناب وارد نشده")]
+        No_Config_For_Sanab = 336,
+        [Display(Name = "پاسخ سناب قابل پردازش نمی باشد")]
+        Sanab_Miss_JsonResult = 337,
+        [Display(Name = "خطای نامشخص سناب")]
+        Sanab_Global_Error = 338,
+        [Display(Name = "توکن سناب خالی می باشد")]
+        Sanab_Empty_Token = 339,
+        [Display(Name = "متن طولانی")]
+        String_Length_Is_Not_Acceptable = 340,
+        [Display(Name = "ای پی شما یافت نشد")]
+        Ip_Can_Not_Be_Found = 341,
+        [Display(Name = "لطفا از وی پی ان استفاده نکنید ({0})")]
+        Please_Dont_Use_VPN = 342,
+        [Display(Name = "شماره پلاک صحیح نمی باشد")]
+        Invalid_Plaque = 343,
     }
 }

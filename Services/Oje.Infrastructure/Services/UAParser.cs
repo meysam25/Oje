@@ -316,6 +316,8 @@ namespace UAParser
             return new Parser(new MinimalYamlParser(yaml), parserOptions);
         }
 
+
+        static Parser cacheTemp = null;
         /// <summary>
         /// Returns a <see cref="Parser"/> instance based on the embedded regex definitions.
         /// <remarks>The embedded regex definitions may be outdated. Consider passing in external yaml definitions using <see cref="Parser.FromYaml"/></remarks>
@@ -324,11 +326,15 @@ namespace UAParser
         /// <returns></returns>
         public static Parser GetDefault(ParserOptions parserOptions = null)
         {
-           
+            if (cacheTemp != null)
+                return cacheTemp;
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Oje.Infrastructure.MyResources.regexes.yaml"))
             // ReSharper disable once AssignNullToNotNullAttribute
             using (var reader = new StreamReader(stream))
-                return new Parser(new MinimalYamlParser(reader.ReadToEnd()), parserOptions);
+            {
+                cacheTemp = new Parser(new MinimalYamlParser(reader.ReadToEnd()), parserOptions);
+                return cacheTemp;
+            }
         }
 
         /// <summary>
@@ -336,10 +342,15 @@ namespace UAParser
         /// </summary>
         public ClientInfo Parse(string uaString)
         {
-            var os     = ParseOS(uaString);
-            var device = ParseDevice(uaString);
+            //var os     = ParseOS(uaString);
+            //var device = ParseDevice(uaString);
             var ua     = ParseUserAgent(uaString);
-            return new ClientInfo(uaString, os, device, ua);
+            return new ClientInfo
+                (
+                uaString, 
+                null, //os, 
+                null,//device, 
+                ua);
         }
 
         /// <summary>

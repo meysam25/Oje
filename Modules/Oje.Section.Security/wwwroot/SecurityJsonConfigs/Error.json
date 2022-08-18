@@ -4,6 +4,25 @@
       "grids": [
         {
           "id": "ErrorMainGrid",
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "AdminBlockClientConfigEditGridModal",
+                "url": "/Security/Error/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/Security/Error/GetById\\', \\'ErrorEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "ignoreParentButton": true,
+                "template": "function bindRow (curRow) { return '<span data-url=\"/Security/Error/BlockFirewall\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.ip +'\" title=\"اظافه کردن به فایر وال\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.iB== 'بلی' ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
           "exportToExcelUrl": "/Security/Error/Export",
           "showColumnConfigButton": true,
           "key": "id",
@@ -81,6 +100,47 @@
               "search": {
                 "searchType": "text"
               }
+            },
+            {
+              "field": "url",
+              "caption": "مسیر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "iB",
+              "caption": "فایروال؟",
+              "sort": true,
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/YesOrNo",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "ErrorEditGridModal",
+          "title": "مشاهده پارامتر ها",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "parameters",
+              "ltr": true,
+              "type": "textarea",
+              "label": "پارامتر"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
             }
           ]
         }

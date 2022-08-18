@@ -56,5 +56,12 @@ namespace Oje.Section.WebMain.Areas.Controllers
         {
             return Json(PropertyService.GetBy<AboutUsMainPageVM>(PropertyType.AboutUsMainPage, SiteSettingService.GetSiteSetting()?.Id));
         }
+
+        [AreaConfig(Title = "حذف", Icon = "fa-trash")]
+        [HttpPost]
+        public IActionResult Delete([FromQuery] string key)
+        {
+            return Json(PropertyService.Delete(PropertyType.AboutUsMainPage, SiteSettingService.GetSiteSetting()?.Id, key));
+        }
     }
 }

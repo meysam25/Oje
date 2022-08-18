@@ -25,7 +25,7 @@ body {
     -o-transition: 0.3s;
     -webkit-transition: 0.3s;
     transition: 0.3s;
-    position:fixed;
+    position: fixed;
 }
 
 header {
@@ -48,7 +48,7 @@ header {
 }
 
 .closeSideMenu header {
-    right:0;
+    right: 0;
 }
 
 main {
@@ -57,7 +57,7 @@ main {
     -o-transition: 0.3s;
     -webkit-transition: 0.3s;
     transition: 0.3s;
-    padding-top:50px;
+    padding-top: 50px;
 }
 
 a:hover {
@@ -95,7 +95,7 @@ a:hover {
 .sideMenu {
     white-space: nowrap;
     overflow: hidden;
-    padding-bottom:130px;
+    padding-bottom: 130px;
 }
 
 .sideMenuItem, .sideSumMenuItem {
@@ -107,20 +107,21 @@ a:hover {
 }
 
     .sideMenuItem .sideMenuItem {
-        padding-right:10px;
+        padding-right: 10px;
     }
 
-    .sideMenuItemInner {
-        padding-left: 10px;
-    }
+.sideMenuItemInner {
+    padding-left: 10px;
+}
+
     .sideMenuItemInner > .sideSumMenuItems {
-        display:none;
+        display: none;
     }
 
-    .sideMenuItem:hover, .sideSumMenuItemShow {
-        background-color: #162029;
-        color: white;
-    }
+.sideMenuItem:hover, .sideSumMenuItemShow {
+    background-color: #162029;
+    color: white;
+}
 
 .sideSumMenuItems {
     display: block;
@@ -148,8 +149,9 @@ a:hover {
 .closeSideMenu .sideMenuHolder {
     left: -100%;
 }
-.sideMenuHolder *{
-    font-size:0.8rem !important;
+
+.sideMenuHolder * {
+    font-size: 0.8rem !important;
 }
 
 .closeSideMenu main {
@@ -211,7 +213,7 @@ a:hover {
 
     .loginUserSecitonHeader .loginArrowMenu {
         font-size: 16px;
-        margin-right:5px;
+        margin-right: 5px;
     }
 
 .loginUserMenu {
@@ -392,7 +394,7 @@ a:hover {
     top: 0px;
     height: 100vh;
     width: 100vw;
-    overflow:hidden;
+    overflow: hidden;
     z-index: 11;
     -moz-transition: 0.4s;
     -o-transition: 0.4s;
@@ -408,8 +410,8 @@ a:hover {
         margin-left: -100px;
     }
 
-.mainLoaderForAdminAreaClose{
-    opacity:0;
+.mainLoaderForAdminAreaClose {
+    opacity: 0;
 }
 
 .sMenuTitle, .subItemTitle {
@@ -422,8 +424,9 @@ a:hover {
     display: inline-block;
     vertical-align: top;
 }
+
 .subItemTitle {
-    width:80%;
+    width: 80%;
 }
 
 @keyframes ldio-sb2ixs780v {
@@ -504,9 +507,10 @@ a:hover {
 
 
 
-.notificationCount:empty{
-    display:none;
+.notificationCount:empty {
+    display: none;
 }
+
 .notificationCount {
     position: absolute;
     right: -20px;
@@ -522,15 +526,55 @@ a:hover {
     line-height: 22px;
     text-align: center;
 }
+
 .sideMenuHolder .closeSideMenuButton {
     font-size: 1.5em !important;
     margin-right: 10px;
     vertical-align: -4px;
     margin-left: 3px;
-    cursor:pointer;
+    cursor: pointer;
 }
+
+.closeSideMenu .sMenuTitle {
+    display:none;
+}
+.closeSideMenu aside {
+    right:0px !important;
+    width:80px;
+}
+.closeSideMenu main {
+    margin-right: 80px !important;
+}
+.closeSideMenu header {
+    right: 80px;
+}
+.closeSideMenu .sideMenuHeader {
+    display:none;
+}
+.closeSideMenu .dashboardTitle {
+    display: none;
+}
+
 @media (max-width: 600px) {
     header {
-        right:0px;
+        right: 0px;
+    }
+}
+@media (max-width: 400px) {
+    .loginUserSecitonHeader .loginUserName {
+        width:80px;
+    }
+
+    .closeSideMenu aside {
+        right: 0px !important;
+        width: 64px;
+    }
+
+    .closeSideMenu main {
+        margin-right: 64px !important;
+    }
+
+    .closeSideMenu header {
+        right: 64px;
     }
 }

@@ -245,11 +245,6 @@ function getPanelTemplate(panel, isInsideModal) {
                 result += getModualTemplate(panel.moduals[i]);
             }
         }
-        if (panel.treeViews) {
-            for (var i = 0; i < panel.treeViews.length; i++) {
-                result += getTreeViewTemplate(panel.treeViews[i]);
-            }
-        }
 
         if (panel.ctrls) {
             result += '<div class="row">';
@@ -257,6 +252,12 @@ function getPanelTemplate(panel, isInsideModal) {
                 result += getInputTemplate(panel.ctrls[i]);
             }
             result += '</div>';
+        }
+
+        if (panel.treeViews) {
+            for (var i = 0; i < panel.treeViews.length; i++) {
+                result += getTreeViewTemplate(panel.treeViews[i]);
+            }
         }
 
         if (panel.actions && panel.actions.length > 0) {
@@ -379,15 +380,14 @@ function getChartTemplate(chart) {
     if (chart && chart.config && chart.url && chart.dataSchmea) {
         if (!chart.id)
             chart.id = uuidv4RemoveDash();
-        result += '<div ' + getChartNotificationAttributes(chart.notificationTriger) +' id="' + chart.id + '" class="chartHolderDiv" >';
+        result += '<div ' + getChartNotificationAttributes(chart.notificationTriger) + ' id="' + chart.id + '" class="chartHolderDiv" >';
 
         result += '</div>';
 
 
         functionsList.push(function () {
             var curObj = $('#' + this.id)[0];
-            curObj.refreshChart = function ()
-            {
+            curObj.refreshChart = function () {
                 $('#' + this.id).html('');
                 postForm(chart.url, new FormData(), function (res) {
                     this.config[this.dataSchmea] = res;
@@ -984,28 +984,19 @@ function getPlaqueDropdownItem(ctrl) {
             "itemsClass": "makeFAP",
             "values": [
                 { title: "الف" },
-                { title: "" },
                 { title: "ب" },
                 { title: "پ" },
                 { title: "ت" },
-                { title: "ث" },
                 { title: "ج" },
-                { title: "ح" },
                 { title: "د" },
                 { title: "ر" },
-                { title: "ز" },
                 { title: "ژ" },
                 { title: "س" },
-                { title: "ش" },
                 { title: "ص" },
-                { title: "ض" },
                 { title: "ط" },
-                { title: "ظ" },
                 { title: "ع" },
-                { title: "ف" },
                 { title: "ق" },
                 { title: "ک" },
-                { title: "گ" },
                 { title: "ل" },
                 { title: "م" },
                 { title: "ن" },
@@ -1612,7 +1603,7 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     if (ctrl.nationalCodeValidation || hasNumberValidation(ctrl.validations))
@@ -1854,7 +1845,7 @@ function getTextAreaTemplate(ctrl) {
     var id = (ctrl.id ? ctrl.id : uuidv4RemoveDash());
     if (!ctrl.id)
         ctrl.id = id;
-    result += '<textarea id="' + ctrl.id + '" autocomplete="off" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control ' + (ctrl.type == 'ck' ? 'ckEditor' : '') + '" ></textarea>';
+    result += '<textarea ' + (ctrl.ltr ? 'dir="ltr"' : '') + ' id="' + ctrl.id + '" autocomplete="off" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control ' + (ctrl.type == 'ck' ? 'ckEditor' : '') + '" ></textarea>';
     result += '</div>';
 
     functionsList.push(function () {
@@ -1957,11 +1948,14 @@ function getFileCTRLTemplate(ctrl) {
         $('#' + fileId).change(function () {
             readFileFromInput(this, imgId);
         });
-        if (this.ctrl.cropper) {
-            $('#' + fileId).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' }, [{ icon: 'fa-crop', onClick: function () { showCopModal($('#' + imgId), this.ctrl.cropperValidation ? this.ctrl.cropperValidation.min : null, this.ctrl.cropperValidation ? this.ctrl.cropperValidation.max : null) }.bind({ ctrl: this.ctrl }) }]);
-        } else {
-            $('#' + fileId).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' });
-        }
+        var allCButtons = [];
+        if (this.ctrl.cropper)
+            allCButtons.push({ icon: 'fa-crop', onClick: function () { showCopModal($('#' + imgId), this.ctrl.cropperValidation ? this.ctrl.cropperValidation.min : null, this.ctrl.cropperValidation ? this.ctrl.cropperValidation.max : null) }.bind({ ctrl: this.ctrl }) });
+        if (this.ctrl.deleteButton)
+            allCButtons.push({ icon: 'fa-trash', onClick: function () { postForm(this.ctrl.deleteButton, new FormData(), function () { }); }.bind({ ctrl: this.ctrl }) });
+
+        $('#' + fileId).closest('.myFileUpload').find('.holderUploadImage').addStatusBarToElement(null, null, null, { close: 'hide' }, allCButtons);
+
     }.bind({ id: ctrl.id, ctrl: ctrl }));
 
     return result;
@@ -2046,7 +2040,7 @@ function getDropdownCTRLTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label id="' + labelId + '" for="' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<select ' + (ctrl.reInitOnShowModal ? 'reInitOnShowModal="true" ' : '') + (ctrl.ignoreOnChange ? 'ignoreOnChange="ignoreOnChange" ' : '') + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
+    result += '<select ' + (ctrl.ignoreChangeOnBinding ? 'data-ignore-change-onBinding="true"' : '') + ' ' + (ctrl.reInitOnShowModal ? 'reInitOnShowModal="true" ' : '') + (ctrl.ignoreOnChange ? 'ignoreOnChange="ignoreOnChange" ' : '') + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
         for (var i = 0; i < ctrl.values.length; i++) {
             result += '<option value="' + ctrl.values[i][ctrl.valuefield] + '" >' + ctrl.values[i][ctrl.textfield] + '</option>';
@@ -2072,6 +2066,9 @@ function getDropdownCTRLTemplate(ctrl) {
 
     if (ctrl.type == 'dropDown')
         functionsList.push(function () {
+            if (this.ctrl.exteraParameterIds) {
+                $('#' + this.id)[0].exteraParameterIds = this.ctrl.exteraParameterIds;
+            }
             if (!this.moveNameToParent)
                 $('#' + this.id).closest('.myDropdown').initMyDropdown();
             initDropdown($('#' + this.id));
@@ -2083,7 +2080,7 @@ function getDropdownCTRLTemplate(ctrl) {
                     eval(tempOnChange);
                 }.bind({ sOnChange: this.onChange, id: this.id }));
             }
-        }.bind({ id: ctrl.id, moveNameToParent: ctrl.moveNameToParent, onChange: ctrl.onChange }));
+        }.bind({ id: ctrl.id, moveNameToParent: ctrl.moveNameToParent, onChange: ctrl.onChange, ctrl: ctrl }));
     else {
         functionsList.push(function () {
             var exteraSelect2Parameters = {};
@@ -2389,11 +2386,17 @@ function initDropDownExteraFunctions(ctrl) {
                         $('#' + this.childId).html('<option value=""></option>');
                         $('#' + this.childId).closest('.myDropdown')[0].updateItemFromSelect();
                     }
-
                 }.bind({ childId: this.childId, id: this.id }));
             }.bind({ id: this.id, childId: this.childId }), 1000);
 
         }.bind({ id: ctrl.id, childId: ctrl.childId }));
+    }
+}
+
+function reinitDropdown(ddId) {
+    if ($('#' + ddId).length > 0) {
+        $('#' + ddId)[0].resData = null;
+        initDropdown($('#' + ddId));
     }
 }
 
@@ -2683,7 +2686,7 @@ function refreshMapIfExist(quirySelector) {
 
 function initSWFunctions(curId, actionOnLastStep) {
     if ($('#' + curId).length > 0) {
-        $('#' + curId)[0].moveNext = function () {
+        $('#' + curId)[0].moveNext = function (ignoreDDChanges) {
             if (!validateForm($(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive')))
                 return;
             var nextStep = $(this).find('>.panelSWizardHolderHeader>.panelSWizardHolderHeaderItemActive').next();
@@ -2700,7 +2703,8 @@ function initSWFunctions(curId, actionOnLastStep) {
             if (nextContent.length > 0) {
                 $(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive').removeClass('panelSWizardHolderContentItemActive');
                 nextContent.addClass('panelSWizardHolderContentItemActive');
-                $(nextContent).find('select:not([ignoreOnChange])').change();
+                if (!ignoreDDChanges)
+                    $(nextContent).find('select:not([ignoreOnChange])').change();
                 refreshMapIfExist($(nextContent));
                 $([document.documentElement, document.body]).animate({
                     scrollTop: $(nextContent).offset().top - 300
@@ -2865,6 +2869,18 @@ function getGridTemplate(grid, isInsideModal) {
     }
 
     return result;
+}
+
+function getOs() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if (/windows phone/i.test(userAgent))
+        return "Windows Phone";
+    if (/android/i.test(userAgent))
+        return "Android";
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+        return "iOS";
+
+    return "unknown";
 }
 
 function reinitCtrls(targetModal) {
@@ -3083,7 +3099,52 @@ function closeThisModal(curElement) {
     }
 }
 
+function hasValidValueProperty(input, res) {
+    if (res && res.length > 0) {
+        for (var i = 0; i < res.length; i++) {
+            if (res[i].key == input)
+                if (res[i].value && res[i].value != '0')
+                    return true;
+        }
+    }
+    return false;
+}
 
+function postBindSW(curElement, url) {
+    if (curElement && url && $(curElement).length > 0) {
+        var targetObj = $(curElement).closest('.panelSWizard');
+        if (targetObj.length > 0) {
+            showLoader(targetObj);
+            postForm(url, getFormData(targetObj), function (res) {
+                if (res && res.isSuccess == undefined) {
+                    if (
+                        hasValidValueProperty('vehicleTypeId', res),
+                        hasValidValueProperty('carTypeId', res),
+                        hasValidValueProperty('brandId', res),
+                        hasValidValueProperty('specId', res)
+
+                    ) {
+                        bindForm(res, targetObj, true);
+                        targetObj[0].moveNext(true);
+                    }
+                    else {
+                        $.toast({
+                            heading: 'خطا',
+                            position: 'bottom-right',
+                            textAlign: 'right',
+                            text: 'پاسخ مناسب یافت نشد',
+                            showHideTransition: 'slide',
+                            icon: 'error'
+                        });
+                    }
+
+                }
+            }, null, function () {
+                hideLoader(targetObj);
+            });
+        }
+    }
+}
 
 function bindPanelByUrl(querySelector) {
     if (querySelector.length > 0) {
@@ -3202,6 +3263,21 @@ function uploadFile(fileName, accepts, url, curButton) {
         });
         $('#' + id).click();
     }
+}
+
+function needToBeLoginFirst(curButton) {
+    if (window['isUserLogin'] != undefined) {
+        if (!isUserLogin) {
+            $('.holderRigAndLogUser .secountBtn').click();
+            whatToDoAfterUserLogin.push({
+                curFun: function () {
+                    location.href = $(this.curButton).attr('href');
+                }.bind({ curButton: curButton })
+            });
+            return false;
+        }
+    }
+    return true;
 }
 
 function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished) {

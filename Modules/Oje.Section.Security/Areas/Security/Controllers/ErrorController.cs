@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Filters;
+using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Filters;
@@ -14,12 +15,22 @@ namespace Oje.Section.Security.Areas.Security.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "امنیت", Icon = "fa-user-secret", Title = "لاگ خطا ها")]
     [CustomeAuthorizeFilter]
-    public class ErrorController: Controller
+    public class ErrorController : Controller
     {
         readonly IErrorService ErrorService = null;
-        public ErrorController(IErrorService ErrorService)
+        readonly IErrorFirewallManualAddService ErrorFirewallManualAddService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+
+        public ErrorController
+            (
+                IErrorService ErrorService,
+                IErrorFirewallManualAddService ErrorFirewallManualAddService,
+                ISiteSettingService SiteSettingService
+            )
         {
             this.ErrorService = ErrorService;
+            this.SiteSettingService = SiteSettingService;
+            this.ErrorFirewallManualAddService = ErrorFirewallManualAddService;
         }
 
         [AreaConfig(Title = "لاگ خطا ها", Icon = "fa-bug", IsMainMenuItem = true)]
@@ -39,7 +50,21 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Security", "Error")));
         }
 
-        [AreaConfig(Title = "مشاهده لیست لاگ خطا ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده جزئیات خطای لاگ", Icon = "fa-eye")]
+        [HttpPost]
+        public IActionResult GetById([FromForm] long? id)
+        {
+            return Json(ErrorService.GetParameters(id));
+        }
+
+        [AreaConfig(Title = "بلاک کردن در فایروال", Icon = "fa-pencil")]
+        [HttpPost]
+        public IActionResult BlockFirewall([FromForm] string id)
+        {
+            return Json(ErrorFirewallManualAddService.Block(id, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست لاگ خطا ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ErrorMainGrid searchInput)
         {

@@ -35,6 +35,7 @@ namespace Oje.Section.Ticket.Services
             this.db = db;
             this.UploadedFileService = UploadedFileService;
             this.TicketUserService = TicketUserService;
+            this.UserNotifierService = UserNotifierService;
         }
 
         public ApiResult Create(TicketUserAnswerCreateUpdateVM input, int? siteSettingId, long? loginUserId)

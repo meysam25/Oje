@@ -1,0 +1,147 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "BankAccountSepGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('BankAccountSepAddGridModal', this)",
+              "type": "add",
+              "modalId": "BankAccountSepAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/FinancialBaseData/BankAccountSep/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/FinancialBaseData/BankAccountSep/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "BankAccountSepModal",
+                "url": "/FinancialBaseData/BankAccountSep/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/FinancialBaseData/BankAccountSep/GetById\\', \\'BankAccountSepModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/FinancialBaseData/BankAccountSep/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "bankAcount",
+              "caption": "حساب",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "terminalId",
+              "caption": "شناسه ترمینال",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "BankAccountSepAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12",
+              "name": "baId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FinancialBaseData/BankAccountSep/GetBankAccounts",
+              "label": "حساب",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "terminalId",
+              "type": "text",
+              "label": "شناسه ترمینال",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'BankAccountSepGrid', '/FinancialBaseData/BankAccountSep/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "BankAccountSepModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12",
+              "name": "baId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/FinancialBaseData/BankAccountSep/GetBankAccounts",
+              "label": "حساب",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "terminalId",
+              "type": "text",
+              "label": "شناسه ترمینال",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'BankAccountSepGrid', '/FinancialBaseData/BankAccountSep/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,15 @@
-
 $.fn.initSideMenu = function () {
+
+    function bodyClickCloseSideMenu() {
+        $('body').click(function () {
+            if ($('.sideMenuHolder').length > 0 && $('body').width() <= 550) {
+                $('.sideMenuHolder')[0].closeSideMenu();
+            }
+        });
+    }
+
+    bodyClickCloseSideMenu();
+
     return this.each(function () {
 
         $(this).find('.sideMenuItem').click(function (e) {
@@ -8,10 +18,14 @@ $.fn.initSideMenu = function () {
                 $(this).removeClass('sideSumMenuItemShow');
                 $(this).find('> .sideMenuItemInner > .sideSumMenuItems').slideUp();
                 $(this).find('> .sideMenuItemInner > .sideMenuSubIcon').removeClass('fa-chevron-down').addClass('fa-chevron-left');
+                $(this).closest('.sideMenuHolder')[0].openSideMenu();
             } else {
                 $(this).addClass('sideSumMenuItemShow');
                 $(this).find('> .sideMenuItemInner > .sideSumMenuItems').slideDown();
                 $(this).find('> .sideMenuItemInner > .sideMenuSubIcon').removeClass('fa-chevron-left').addClass('fa-chevron-down');
+                $(this).closest('.sideMenuHolder')[0].openSideMenu();
+
+
             }
         });
 
@@ -33,9 +47,16 @@ $.fn.initSideMenu = function () {
                         $(lastObj).click();
                     } else {
                         clearInterval(openMenuInterval);
-                        $('.sideMenuHolder2').animate({
-                            scrollTop: $('a[href="' + curURL +'"]').offset().top
-                        }, 1000);
+                        if ($('a[href="' + curURL + '"]').closest('.sideMenuItemInner').length > 0) {
+                            $('.sideMenuHolder2').animate({
+                                scrollTop: $('a[href="' + curURL + '"]').closest('.sideMenuItemInner').offset().top
+                            }, 1000);
+                        } else {
+                            $('.sideMenuHolder2').animate({
+                                scrollTop: $('a[href="' + curURL + '"]').offset().top
+                            }, 1000);
+                        }
+
                     }
                 }, 300);
                 hasFound = true;
@@ -74,7 +95,9 @@ $.fn.initSideMenu = function () {
             $('body').toggleClass('closeSideMenu');
         }
         if ($(window).width() <= 900 && location.pathname != '/Account/Dashboard/Index') {
-            $(this)[0].closeSideMenu();
+            setTimeout(function () {
+                $('.sideMenuHolder')[0].closeSideMenu();
+            }, 2500);
         }
     })
 }

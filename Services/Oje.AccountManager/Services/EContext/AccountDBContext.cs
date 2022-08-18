@@ -47,6 +47,7 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<LoginBackgroundImage> LoginBackgroundImages { get; set; }
         public DbSet<UserRequestAction> UserRequestActions { get; set; }
         public DbSet<DashboardSectionUserNotificationType> DashboardSectionUserNotificationTypes { get; set; }
+        public DbSet<Holyday> Holydays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

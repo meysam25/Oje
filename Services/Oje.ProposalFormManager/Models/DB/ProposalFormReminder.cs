@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFormReminders")]
     public class ProposalFormReminder
     {
+        [Key]
+        public long Id { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime CreateDate { get; set; }
         public byte Ip1 { get; set; }

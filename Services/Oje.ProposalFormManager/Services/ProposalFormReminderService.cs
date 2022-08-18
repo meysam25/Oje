@@ -76,12 +76,9 @@ namespace Oje.ProposalFormService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public ApiResult Delete(string id, int? siteSettingId)
+        public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var idObj = keyCL.convertStrIdToKeyObj(id);
-            if (idObj == null)
-                throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundItem = db.ProposalFormReminders.Where(t => t.SiteSettingId == siteSettingId && t.CreateDate == idObj.createDate && t.Ip1 == idObj.ip1 && t.Ip2 == idObj.ip2 && t.Ip3 == idObj.ip3 && t.Ip4 == idObj.ip4).FirstOrDefault();
+            var foundItem = db.ProposalFormReminders.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -91,15 +88,11 @@ namespace Oje.ProposalFormService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetById(string id, int? siteSettingId)
+        public object GetById(long? id, int? siteSettingId)
         {
-            var idObj = keyCL.convertStrIdToKeyObj(id);
-            if (idObj == null)
-                throw BException.GenerateNewException(BMessages.Not_Found);
-
             return db.ProposalFormReminders
                 .OrderByDescending(t => t.CreateDate)
-                .Where(t => t.SiteSettingId == siteSettingId && t.CreateDate == idObj.createDate && t.Ip1 == idObj.ip1 && t.Ip2 == idObj.ip2 && t.Ip3 == idObj.ip3 && t.Ip4 == idObj.ip4)
+                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
                 .Select(t => new
                 {
                     t.CreateDate,
@@ -115,12 +108,13 @@ namespace Oje.ProposalFormService.Services
                     t.Mobile,
                     t.Description,
                     t.NationalCardImage,
-                    t.PrevInsuranceImage
+                    t.PrevInsuranceImage,
+                    t.Id
                 })
                 .ToList()
                 .Select(t => new
                 {
-                    id = keyCL.convertkeyCLToStringId(new keyCL() { createDate = t.CreateDate, ip1 = t.Ip1, ip2 = t.Ip2, ip3 = t.Ip3, ip4 = t.Ip4 }),
+                    id = t.Id,
                     appfCatId = t.catId,
                     appfCatId_Title = t.catId_title,
                     fid = t.ProposalFormId,
@@ -148,7 +142,7 @@ namespace Oje.ProposalFormService.Services
                 qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.ppfTitle));
             if (searchInput.mobile.ToLongReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.Mobile == searchInput.mobile);
-            if(!string.IsNullOrEmpty(searchInput.td) && searchInput.td.ToEnDate() != null)
+            if (!string.IsNullOrEmpty(searchInput.td) && searchInput.td.ToEnDate() != null)
             {
                 var tdOb = searchInput.td.ToEnDate().Value;
                 qureResult = qureResult.Where(t => t.TargetDate.Year == tdOb.Year && t.TargetDate.Month == tdOb.Month && t.TargetDate.Day == tdOb.Day);
@@ -156,13 +150,13 @@ namespace Oje.ProposalFormService.Services
 
             int row = searchInput.skip;
 
-            return new GridResultVM<ProposalFormReminderMainGridResultVM>() 
+            return new GridResultVM<ProposalFormReminderMainGridResultVM>()
             {
                 total = qureResult.Count(),
                 data = qureResult
                 .Skip(searchInput.skip)
                 .Take(searchInput.take)
-                .Select(t => new 
+                .Select(t => new
                 {
                     t.CreateDate,
                     t.Ip1,
@@ -171,13 +165,14 @@ namespace Oje.ProposalFormService.Services
                     t.Ip4,
                     ppfTitle = t.ProposalForm.Title,
                     mobile = t.Mobile,
-                    td = t.TargetDate
+                    td = t.TargetDate,
+                    t.Id
                 })
                 .ToList()
-                .Select(t => new ProposalFormReminderMainGridResultVM 
+                .Select(t => new ProposalFormReminderMainGridResultVM
                 {
                     row = ++row,
-                    id = keyCL.convertkeyCLToStringId(new keyCL() { createDate = t.CreateDate, ip1 = t.Ip1, ip2 = t.Ip2, ip3 = t.Ip3, ip4 = t.Ip4 }),
+                    id = t.Id,
                     mobile = "0" + t.mobile,
                     ppfTitle = t.ppfTitle,
                     td = t.td.ToFaDate()
@@ -191,10 +186,7 @@ namespace Oje.ProposalFormService.Services
         {
             CreateValidation(input, siteSettingId, null, true);
 
-            var idObj = keyCL.convertStrIdToKeyObj(input.id);
-            if (idObj == null)
-                throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundItem = db.ProposalFormReminders.Where(t => t.CreateDate == idObj.createDate && t.Ip1 == idObj.ip1 && t.Ip2 == idObj.ip2 && t.Ip3 == idObj.ip3 && t.Ip4 == idObj.ip4 && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.ProposalFormReminders.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -242,32 +234,32 @@ namespace Oje.ProposalFormService.Services
 
 
 
-        public class keyCL
-        {
-            public DateTime? createDate { get; set; }
-            public byte ip1 { get; set; }
-            public byte ip2 { get; set; }
-            public byte ip3 { get; set; }
-            public byte ip4 { get; set; }
+        //public class keyCL
+        //{
+        //    public DateTime? createDate { get; set; }
+        //    public byte ip1 { get; set; }
+        //    public byte ip2 { get; set; }
+        //    public byte ip3 { get; set; }
+        //    public byte ip4 { get; set; }
 
-            public static keyCL convertStrIdToKeyObj(string id)
-            {
-                if (!string.IsNullOrEmpty(id) && id.IndexOf(",") > -1)
-                {
-                    var allParts = id.Split(',');
-                    if (allParts.Length == 5)
-                    {
-                        return new keyCL { createDate = allParts[0].ToDateTimeFromTick(), ip1 = allParts[1].ToByteReturnZiro(), ip2 = allParts[2].ToByteReturnZiro(), ip3 = allParts[3].ToByteReturnZiro(), ip4 = allParts[4].ToByteReturnZiro() };
-                    }
-                }
+        //    public static keyCL convertStrIdToKeyObj(string id)
+        //    {
+        //        if (!string.IsNullOrEmpty(id) && id.IndexOf(",") > -1)
+        //        {
+        //            var allParts = id.Split(',');
+        //            if (allParts.Length == 5)
+        //            {
+        //                return new keyCL { createDate = allParts[0].ToDateTimeFromTick(), ip1 = allParts[1].ToByteReturnZiro(), ip2 = allParts[2].ToByteReturnZiro(), ip3 = allParts[3].ToByteReturnZiro(), ip4 = allParts[4].ToByteReturnZiro() };
+        //            }
+        //        }
 
-                return null;
-            }
+        //        return null;
+        //    }
 
-            public static string convertkeyCLToStringId(keyCL input)
-            {
-                return input?.createDate?.Ticks + "," + input?.ip1 + "," + input?.ip2 + "," + input?.ip3 + "," + input?.ip4;
-            }
-        }
+        //    public static string convertkeyCLToStringId(keyCL input)
+        //    {
+        //        return input?.createDate?.Ticks + "," + input?.ip1 + "," + input?.ip2 + "," + input?.ip3 + "," + input?.ip4;
+        //    }
+        //}
     }
 }

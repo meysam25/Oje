@@ -74,7 +74,7 @@
                       "class": "btn-primary btn-block ",
                       "type": "button",
                       "title": "استعلام سابقه",
-                      "onClick": "alert('وب سرویس پیاده سازی نشده')"
+                      "onClick": "postBindSW(this, '/ProposalFormInquiries/CarThirdPartyInquiry/PlaqueInquiry')"
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
@@ -114,6 +114,63 @@
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
                       "showHideClass": "normalInquiry",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "ادامه",
+                      "onClick": "moveToNextStepForSW(this)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 1.1,
+              "id": "secoundStep",
+              "title": "برند و سال ساخت",
+              "hideMoveNextButton": true,
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "brandId",
+                      "type": "dropDown2",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarBrandList",
+                      "label": "برند خودرو",
+                      "name": "brandId",
+                      "holderStatusId": "searchPanelTitle",
+                      "isRequired": true,
+                      "exteraParameterIds": [ "vehicleTypeId" ]
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "specId",
+                      "type": "dropDown2",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarSpecList",
+                      "label": "مدل",
+                      "holderStatusId": "searchPanelTitle",
+                      "name": "specId",
+                      "isRequired": true,
+                      "exteraParameterIds": [ "brandId", "vehicleTypeId" ]
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "createYear",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "holderStatusId": "searchPanelTitle",
+                      "valuefield": "id",
+                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCreateDateList",
+                      "label": "سال ساخت",
+                      "name": "createYear",
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
                       "class": "btn-primary btn-block ",
                       "type": "button",
                       "title": "ادامه",
@@ -226,63 +283,6 @@
                       "label": "تاریخ اتمام بیمه نامه قبلی",
                       "isRequired": true,
                       "yearFromKnow": 0
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
-                      "class": "btn-primary btn-block ",
-                      "type": "button",
-                      "title": "ادامه",
-                      "onClick": "moveToNextStepForSW(this)"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 1.1,
-              "id": "secoundStep",
-              "title": "برند و سال ساخت",
-              "hideMoveNextButton": true,
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "brandId",
-                      "type": "dropDown2",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarBrandList",
-                      "label": "برند خودرو",
-                      "name": "brandId",
-                      "holderStatusId": "searchPanelTitle",
-                      "isRequired": true,
-                      "exteraParameterIds": [ "vehicleTypeId" ]
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "specId",
-                      "type": "dropDown2",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarSpecList",
-                      "label": "مدل",
-                      "holderStatusId": "searchPanelTitle",
-                      "name": "specId",
-                      "isRequired": true,
-                      "exteraParameterIds": [ "brandId", "vehicleTypeId" ]
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "createYear",
-                      "type": "dropDown",
-                      "textfield": "title",
-                      "holderStatusId": "searchPanelTitle",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCreateDateList",
-                      "label": "سال ساخت",
-                      "name": "createYear",
-                      "isRequired": true
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
@@ -643,7 +643,7 @@
                         "url": "/ProposalFilledForm/Proposal/Form?fn=CarBody&id=",
                         "icon": "fa-cart-plus",
                         "prop": "id",
-                        "template": "function bindRow (curRow) { return '<a href=\"'+ curRow.targetArea +'/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
+                        "template": "function bindRow (curRow) { return '<a onclick=\"return needToBeLoginFirst(this);\" href=\"'+ curRow.targetArea +'/Proposal/Form?fid='+ curRow.fid +'&inquiryId='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-cart-plus\" ></i></a>' };bindRow(data)"
                       }
                     ]
                   },
@@ -671,7 +671,7 @@
                     },
                     {
                       "field": "trsj",
-                      "caption": "عهد راننده سال جاری"
+                      "caption": "تعهد راننده سال جاری"
                     },
                     {
                       "field": "expandButton",

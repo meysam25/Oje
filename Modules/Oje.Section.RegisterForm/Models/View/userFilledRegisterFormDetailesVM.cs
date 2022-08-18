@@ -17,6 +17,7 @@ namespace Oje.Section.RegisterForm.Models.View
         public int userRegisterFormId { get; set; }
         public string headerTemplate { get; set; }
         public string footerTemplate { get; set; }
+        public bool isPayed { get; set; }
 
         public List<userFilledRegisterFormDetailesGroupVM> groups { get; set; }
     }

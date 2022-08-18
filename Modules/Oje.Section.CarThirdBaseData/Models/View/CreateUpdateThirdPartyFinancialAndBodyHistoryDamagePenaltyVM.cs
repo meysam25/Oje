@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Oje.Section.CarThirdBaseData.Models.View
+﻿namespace Oje.Section.CarThirdBaseData.Models.View
 {
     public class CreateUpdateThirdPartyFinancialAndBodyHistoryDamagePenaltyVM
     {
@@ -13,5 +7,6 @@ namespace Oje.Section.CarThirdBaseData.Models.View
         public int? percent { get; set; }
         public bool? isActive { get; set; }
         public bool? isFinancial { get; set; }
+        public int? count { get; set; }
     }
 }

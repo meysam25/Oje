@@ -165,7 +165,8 @@
         border:none !important;
     }
     .floatingTopSectionMakeFloat.removeInquirySectionMarginTop {
-        border-bottom:1px solid silver;
+        border-bottom: 1px solid #c0c0c0;
+        border-top: 1px solid #c0c0c0;
     }
     .removeInquirySectionMarginTop .inquirySectionTabHeaderItemInner > div {
         display: none;

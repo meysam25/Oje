@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
+using System.Collections.Generic;
 
 namespace Oje.Section.RegisterForm.Models.View
 {
@@ -19,6 +20,8 @@ namespace Oje.Section.RegisterForm.Models.View
         public IFormFile rules { get; set; }
         public IFormFile secoundFile { get; set; }
         public IFormFile anotherFile { get; set; }
+        public IFormFile anotherFile2 { get; set; }
         public bool? isActive { get; set; }
+        public List<int> roleIds { get; set; }
     }
 }

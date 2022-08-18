@@ -21,6 +21,7 @@ namespace Oje.Section.BaseData.Services.EContext
         public DbSet<Tax> Taxs { get; set; }
         public DbSet<Duty> Duties { get; set; }
         public DbSet<ProposalForm> ProposalForms { get; set; }
+        public DbSet<Color> Colors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

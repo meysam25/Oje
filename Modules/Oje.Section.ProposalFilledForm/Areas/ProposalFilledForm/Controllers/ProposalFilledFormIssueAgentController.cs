@@ -134,19 +134,19 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(ProposalFilledFormAdminService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Issuing));
         }
 
-        [AreaConfig(Title = "مشاهده وضعیت فرم پیشنهاد صادر شده نماینده", Icon = "fa-eye")]
-        [HttpPost]
-        public IActionResult GetStatus([FromForm] GlobalLongId input)
-        {
-            return Json(ProposalFilledFormAdminService.GetStatus(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Issuing));
-        }
+        //[AreaConfig(Title = "مشاهده وضعیت فرم پیشنهاد صادر شده نماینده", Icon = "fa-eye")]
+        //[HttpPost]
+        //public IActionResult GetStatus([FromForm] GlobalLongId input)
+        //{
+        //    return Json(ProposalFilledFormAdminService.GetStatus(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Issuing));
+        //}
 
-        [AreaConfig(Title = "تغییر وضعیت فرم پیشنهاد صادر شده نماینده", Icon = "fa-pencil")]
-        [HttpPost]
-        public IActionResult UpdateStatus([FromForm] ProposalFilledFormChangeStatusVM input)
-        {
-            return Json(ProposalFilledFormAdminService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Issuing));
-        }
+        //[AreaConfig(Title = "تغییر وضعیت فرم پیشنهاد صادر شده نماینده", Icon = "fa-pencil")]
+        //[HttpPost]
+        //public IActionResult UpdateStatus([FromForm] ProposalFilledFormChangeStatusVM input)
+        //{
+        //    return Json(ProposalFilledFormAdminService.UpdateStatus(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.Issuing));
+        //}
 
         [AreaConfig(Title = "مشاهده لیست شرکت ها", Icon = "fa-list-alt")]
         [HttpPost]

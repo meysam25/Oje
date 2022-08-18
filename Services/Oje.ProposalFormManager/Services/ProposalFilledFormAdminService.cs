@@ -38,6 +38,7 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService = null;
         readonly IAgentRefferService AgentRefferService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly IColorService ColorService = null;
 
         public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
@@ -54,7 +55,8 @@ namespace Oje.ProposalFormService.Services
                 Interfaces.IUserService UserService,
                 IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService,
                 IAgentRefferService AgentRefferService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                IColorService ColorService
             )
         {
             this.db = db;
@@ -72,6 +74,7 @@ namespace Oje.ProposalFormService.Services
             this.ProposalFormPrintDescrptionService = ProposalFormPrintDescrptionService;
             this.AgentRefferService = AgentRefferService;
             this.ProposalFormService = ProposalFormService;
+            this.ColorService = ColorService;
         }
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
@@ -272,7 +275,8 @@ namespace Oje.ProposalFormService.Services
                     targetUserNationalCode = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.CreateUser).Select(tt => tt.User.Nationalcode).FirstOrDefault(),
                     issueDate = t.IssueDate,
                     startDate = t.InsuranceStartDate,
-                    endDate = t.InsuranceEndDate
+                    endDate = t.InsuranceEndDate,
+                    issueFile = t.IssueFile
                 })
                 .ToList()
                 .Select(t => new ProposalFilledFormMainGridResult
@@ -291,7 +295,8 @@ namespace Oje.ProposalFormService.Services
                     startDate = t.startDate != null ? t.startDate.ToFaDate() : "",
                     endDate = t.endDate != null ? t.endDate.ToFaDate() : "",
                     isAgent = roles != null && roles.Any(tt => !string.IsNullOrEmpty(tt) && tt.StartsWith("agent")),
-                    targetUserNationalCode = t.targetUserNationalCode
+                    targetUserNationalCode = t.targetUserNationalCode,
+                    issueFile = !string.IsNullOrEmpty(t.issueFile) ? (GlobalConfig.FileAccessHandlerUrl + t.issueFile) : ""
                 })
                 .ToList()
             };
@@ -843,7 +848,8 @@ namespace Oje.ProposalFormService.Services
                     createUserfullname = t.ProposalFilledFormUsers.Where(tt => tt.Type == ProposalFilledFormUserType.CreateUser).Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
                     issueDate = t.IssueDate,
                     startDate = t.InsuranceStartDate,
-                    endDate = t.InsuranceEndDate
+                    endDate = t.InsuranceEndDate,
+                    issueFile = t.IssueFile
                 })
                 .ToList()
                 .Select(t => new ProposalFilledFormMainGridResult
@@ -860,7 +866,8 @@ namespace Oje.ProposalFormService.Services
                     targetUserMobileNumber = t.targetUserMobileNumber,
                     issueDate = t.issueDate != null ? t.issueDate.ToFaDate() : "",
                     startDate = t.startDate != null ? t.startDate.ToFaDate() : "",
-                    endDate = t.endDate != null ? t.endDate.ToFaDate() : ""
+                    endDate = t.endDate != null ? t.endDate.ToFaDate() : "",
+                    issueFile = !string.IsNullOrEmpty(t.issueFile) ? (GlobalConfig.FileAccessHandlerUrl + t.issueFile) : ""
                 })
                 .ToList()
             };
@@ -922,6 +929,12 @@ namespace Oje.ProposalFormService.Services
                                     if (foundItem != null)
                                         value = foundItem.title;
                                 }
+                            }
+                            if (!string.IsNullOrEmpty(ctrl.dataurl) && ctrl.dataurl.ToLower() == "/ProposalFilledForm/Proposal/GetColorList".ToLower())
+                            {
+                                var foundColor = ColorService.GetById(form.GetStringIfExist(ctrl.name).ToIntReturnZiro());
+                                if (foundColor != null)
+                                    value = foundColor.Title;
                             }
                             if (ctrl.type == ctrlType.checkBox)
                                 title = "";

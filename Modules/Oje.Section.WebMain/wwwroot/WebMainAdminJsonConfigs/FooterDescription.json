@@ -46,21 +46,24 @@
           "name": "logo1",
           "type": "file",
           "label": "لوگوی 1 (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg,.svg"
+          "acceptEx": ".jpg,.png,.jpeg,.svg",
+          "deleteButton": "/WebMainAdmin/FooterDescription/Delete?key=logo1"
         },
         {
           "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
           "name": "logo2",
           "type": "file",
           "label": "لوگوی 2 (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg,.svg"
+          "acceptEx": ".jpg,.png,.jpeg,.svg",
+          "deleteButton": "/WebMainAdmin/FooterDescription/Delete?key=logo2"
         },
         {
           "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
           "name": "logo3",
           "type": "file",
           "label": "لوگوی 3 (80*80)",
-          "acceptEx": ".jpg,.png,.jpeg,.svg"
+          "acceptEx": ".jpg,.png,.jpeg,.svg",
+          "deleteButton": "/WebMainAdmin/FooterDescription/Delete?key=logo3"
         },
         {
           "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",

@@ -128,7 +128,7 @@ namespace Oje.PaymentService.Services
                             var confirmResult = JsonConvert.DeserializeObject<VerifyResultData>(temp);
                             if (clientResult.IsSuccessStatusCode)
                             {
-                                if (confirmResult.Succeed == true && confirmResult.OrderId == input.OrderId && confirmResult.Amount.ToLongReturnZiro() > 0 && confirmResult.Amount.ToLongReturnZiro() == foundFactor.Price && !string.IsNullOrEmpty(confirmResult.RetrivalRefNo))
+                                if (((confirmResult.ResCode == "0") || (confirmResult.ResCode == "100")) && confirmResult.OrderId == input.OrderId && confirmResult.Amount.ToLongReturnZiro() > 0 && confirmResult.Amount.ToLongReturnZiro() == foundFactor.Price && !string.IsNullOrEmpty(confirmResult.RetrivalRefNo))
                                 {
                                     if (lockObj == null)
                                         lockObj = new object();
@@ -156,7 +156,7 @@ namespace Oje.PaymentService.Services
 
         private bool validateConfirmPaymentInput(PurchaseResult input)
         {
-            return !(input == null || string.IsNullOrEmpty(input.OrderId) || string.IsNullOrEmpty(input.Token) || input.ResCode != "0");
+            return (input != null && !string.IsNullOrEmpty(input.OrderId) && !string.IsNullOrEmpty(input.token) && input.ResCode == "0");
         }
     }
 }
