@@ -69,6 +69,7 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
         public DbSet<AgentReffer> AgentReffers { get; set; }
         public DbSet<Color> Colors { get; set; }
+        public DbSet<ProposalFilledFormCacheJson> ProposalFilledFormCacheJsons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

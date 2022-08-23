@@ -4,7 +4,9 @@ var isUserLogin = false;
 $.fn.initLoginButton = function (url, modalId) {
     return this.each(function () {
         loadLoginConfigIfNotExist(url, modalId);
-        $(this).click(function () {
+        $(this).click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             if ($('#' + modalId).length > 0) {
                 $('#' + modalId).modal('show');
             }
@@ -17,6 +19,7 @@ $.fn.initLoginButton = function (url, modalId) {
                 }
                 loadLoginConfigIfNotExist(url, modalId, true);
             }
+            return false;
         });
     });
 }

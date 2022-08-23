@@ -77,13 +77,6 @@
                 "modalId": "ProposalFilledFormIssueAgentviewDocuments",
                 "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد مالی\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormIssueAgentviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
               },
-              //{
-              //  "type": "edit",
-              //  "icon": "fa-thumbs-up",
-              //  "prop": "id",
-              //  "modalId": "issueChangeStatusModal",
-              //  "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormIssueAgent/GetStatus\\', \\'issueChangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
-              //},
               {
                 "type": "edit",
                 "icon": "fa-history",
@@ -925,44 +918,6 @@
             }
           ]
         },
-        //{
-        //  "id": "issueChangeStatusModal",
-        //  "title": "تغییر وضعیت",
-        //  "class": "modal-xl",
-        //  "ctrls": [
-        //    {
-        //      "name": "id",
-        //      "type": "hidden"
-        //    },
-        //    {
-        //      "parentCL": "col-xl-12 col-lg-4 col-md-4 col-sm-6 col-xs-12",
-        //      "name": "status",
-        //      "type": "dropDown",
-        //      "textfield": "title",
-        //      "valuefield": "id",
-        //      "dataurl": "/Core/BaseData/Get/ProposalFilledFormStatus",
-        //      "label": "وضعیت"
-        //    },
-        //    {
-        //      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-        //      "name": "description",
-        //      "type": "text",
-        //      "label": "توضیحات"
-        //    }
-        //  ],
-        //  "actions": [
-        //    {
-        //      "title": "بستن",
-        //      "onClick": "closeThisModal(this)",
-        //      "class": "btn-secondary"
-        //    },
-        //    {
-        //      "title": "ذخیره",
-        //      "onClick": "postModalData(this, 'ProposalFilledFormIssueAgentGrid', '/ProposalFilledForm/ProposalFilledFormIssueAgent/UpdateStatus')",
-        //      "class": "btn-primary"
-        //    }
-        //  ]
-        //},
         {
           "id": "ProposalFilledFormIssueAgentviewPPFStatusHistory",
           "title": "تاریخچه تغییرات",

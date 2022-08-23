@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -22,17 +19,40 @@ namespace Oje.ProposalFormService.Services
 
         public void Create(long proposalFilledFormId, string jsonConfig)
         {
+            var tempHash = jsonConfig.GetSha1();
+            var curHash = tempHash.GetHashCode32();
+
+            var foundId = db.ProposalFilledFormCacheJsons.Where(t => t.HashCode == curHash).Select(t => t.Id).FirstOrDefault();
+            if(foundId <= 0)
+            {
+                var newCacheJson = new ProposalFilledFormCacheJson() 
+                {
+                    HashCode = curHash,
+                    JsonConfig = jsonConfig
+                };
+
+                db.Entry(newCacheJson).State = EntityState.Added;
+                db.SaveChanges();
+
+                foundId = newCacheJson.Id;
+            }
+                
             db.Entry(new ProposalFilledFormJson()
             {
                 ProposalFilledFormId = proposalFilledFormId,
-                JsonConfig = jsonConfig
-            }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                ProposalFilledFormCacheJsonId = foundId
+            }).State = EntityState.Added;
             db.SaveChanges();
         }
 
         public ProposalFilledFormJson GetBy(long proposalFilledFormId)
         {
             return db.ProposalFilledFormJsons.Where(t => t.ProposalFilledFormId == proposalFilledFormId).AsNoTracking().FirstOrDefault();
+        }
+
+        public ProposalFilledFormCacheJson GetCacheBy(long id)
+        {
+            return db.ProposalFilledFormJsons.Where(t => t.ProposalFilledFormId == id).Select(t => t.ProposalFilledFormCacheJson).AsNoTracking().FirstOrDefault();
         }
     }
 }

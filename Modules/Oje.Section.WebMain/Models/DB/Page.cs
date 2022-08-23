@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,6 +21,7 @@ namespace Oje.Section.WebMain.Models.DB
         public string Title { get; set; }
         [MaxLength(200)]
         public string SubTitle { get; set; }
+        public DateTime CreateDate { get; set; }
         [MaxLength(20)]
         public string TitleAndSubtitleColorCode { get; set; }
         [Required, MaxLength(1000)]

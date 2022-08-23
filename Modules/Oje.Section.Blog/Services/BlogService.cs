@@ -12,9 +12,9 @@ using Oje.Section.Blog.Services.EContext;
 using Oje.Security.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Services
 {
@@ -585,12 +585,14 @@ namespace Oje.Section.Blog.Services
                    catTitle = t.BlogCategory.Title,
                    title = t.Title,
                    publishDate = t.PublisheDate,
+                   createDate = t.CreateDate,
                    summery = t.Summery,
                    description = t.Description,
                    aparatUrl = t.VideoUrl,
                    mainImage_address = t.ImageUrl600,
                    mainSound_address = t.SoundUrl,
                    isActive = t.IsActive,
+                   user = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
                    commCount = t.BlogReviews.Count(tt => tt.IsConfirm == true),
                    likeCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.Like),
                    didILikeIt = t.BlogLastLikeAndViews.Any(tt => tt.Type == BlogLastLikeAndViewType.Like && tt.Ip1 == ipSections.Ip1 && tt.Ip2 == ipSections.Ip2 && tt.Ip3 == ipSections.Ip3 && tt.Ip4 == ipSections.Ip4),
@@ -615,6 +617,8 @@ namespace Oje.Section.Blog.Services
                    catTitle = t.catTitle,
                    title = t.title,
                    publishDate = t.publishDate.ToFaDate(),
+                   publishDateEn = t.publishDate.ToString("yyyy-MM-dd"),
+                   createDateEn = t.createDate.ToString("yyyy-MM-ddTHH:mm:ss"),
                    summery = t.summery,
                    url = GenerateUrlForBlog(t.catTitle, t.title, t.id),
                    description = t.description,
@@ -624,6 +628,7 @@ namespace Oje.Section.Blog.Services
                    mainSound_address = !string.IsNullOrEmpty(t.mainSound_address) ? (GlobalConfig.FileAccessHandlerUrl + t.mainSound_address) : "",
                    isActive = t.isActive,
                    tags = t.tags.Select(tt => new BlogTagVM { id = tt.id + "", title = tt.title }).ToList(),
+                   user = t.user,
                    rBlogs = t.rBlogs.Select(tt => new BlogVM
                    {
                        id = tt.id,
@@ -634,6 +639,58 @@ namespace Oje.Section.Blog.Services
                    }).ToList()
                })
                .FirstOrDefault();
+        }
+
+        public string GetBlogSiteMap(int? siteSettingId, string baseUrl)
+        {
+            string siteMapBaseFolder = GlobalConfig.GetSiteMapBaseFolder();
+            string siteMapFilename = Path.Combine(siteMapBaseFolder, "BlogSiteMap.xml");
+
+            if (File.Exists(siteMapFilename))
+            {
+                var fileCreateTime = File.GetCreationTime(siteMapFilename);
+                if ((DateTime.Now - fileCreateTime).TotalDays > 1)
+                {
+                    File.Delete(siteMapFilename);
+                    File.WriteAllText(siteMapFilename, getArticleXml(siteSettingId, baseUrl));
+                }
+            }
+            else
+                File.WriteAllText(siteMapFilename, getArticleXml(siteSettingId, baseUrl));
+
+            return File.ReadAllText(siteMapFilename);
+        }
+
+        string getArticleXml(int? siteSettingId, string baseUrl)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            sb.Append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+
+            var allBlogs = db.Blogs
+                .OrderByDescending(t => t.Id)
+                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.PublisheDate <= DateTime.Now)
+               .Select(t => new
+               {
+                   id = t.Id,
+                   catTitle = t.BlogCategory.Title,
+                   title = t.Title,
+                   publishDate = t.PublisheDate,
+               })
+               .ToList();
+
+            foreach (var blog in allBlogs)
+            {
+                sb.Append("<url>");
+                sb.Append("<loc>" + baseUrl + "/" + GenerateUrlForBlog(blog.catTitle, blog.title, blog.id) + "</loc>");
+                sb.Append("<lastmod>" + blog.publishDate.ToString("yyyy-MM-dd") + "</lastmod>");
+                sb.Append("</url>");
+            }
+
+            sb.Append("</urlset>");
+
+            return sb.ToString();
         }
     }
 }

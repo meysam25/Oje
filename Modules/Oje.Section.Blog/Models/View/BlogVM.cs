@@ -1,10 +1,6 @@
 ﻿using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Models.View
 {
@@ -14,6 +10,8 @@ namespace Oje.Section.Blog.Models.View
         public int catId { get; internal set; }
         public string title { get; internal set; }
         public string publishDate { get; internal set; }
+        public string publishDateEn { get; set; }
+        public string createDateEn { get; set; }
         public string summery { get; internal set; }
         [IgnoreStringEncode]
         public MyHtmlString description { get; internal set; }
@@ -29,5 +27,6 @@ namespace Oje.Section.Blog.Models.View
         public int likeCount { get; set; }
         public bool didILikeIt { get; set; }
         public string url { get; set; }
+        public string user { get; set; }
     }
 }

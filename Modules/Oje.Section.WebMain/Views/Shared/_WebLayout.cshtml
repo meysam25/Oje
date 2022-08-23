@@ -23,6 +23,16 @@
     <meta property="og:site_name" content="@(curSetting.Title)" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>@ViewBag.Title</title>
+    @{
+        if (!string.IsNullOrEmpty(ViewData["ldJson"] + ""))
+        {
+            ViewContext.Writer.Write("<script type=\"application/ld+json\">" + ViewData["ldJson"] + "</script>");
+        }
+        if (!string.IsNullOrEmpty(ViewData["breadcrumbldObj"] + ""))
+        {
+            ViewContext.Writer.Write("<script type=\"application/ld+json\">" + ViewData["breadcrumbldObj"] + "</script>");
+        }
+    }
     <meta name="twitter:title" content="@ViewData["Title"]" />
     <meta property="og:title" content="@ViewData["Title"]" />
     @{
@@ -85,7 +95,7 @@
     <link rel="preload" as="font" href="/Modules/webfonts/fa-light-300.woff2" type="font/woff2" crossorigin="anonymous">
     <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" sizes="32x32">
     <script>
-        var isLH =  @(Context.Request.IsLighthouse().ToString().ToLower())
+        var isLH = @(Context.Request.IsLighthouse().ToString().ToLower())
     </script>
     <link rel="manifest" href="/manifest.json" />
     <!-- ios support -->
@@ -135,9 +145,9 @@
                         @{
                             if (ViewBag.HideLoginButton != true)
                             {
-                                <a class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
+                                <a href="#" class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
                                 <script>
-                                    $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig','loginForgetPasswordModal');
+                                    $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig', 'loginForgetPasswordModal');
                                 </script>
                             }
                         }
@@ -154,7 +164,7 @@
         </header>
         <div id="headerTagHolderDesctination"></div>
         <script>
-            if($(document).width() <= 650) {
+            if ($(document).width() <= 650) {
                 $('#headerTagHolderS1').initFloatingTop('headerTagHolderS1Desctination');
             }
             $('#headerMenu').initFloatingTop('headerMenuDesctination', 'makeHeaderFloot2', 'floatTopMenue');
@@ -294,14 +304,12 @@
         bindFooterSambole();
         bindFooterPhoneAndAddress();
         $('img[data-src]').loadImageOnScroll();
-         if(isLH == false)
-         {
-             if($(document).width() > 450)
+        if (isLH == false) {
+            if ($(document).width() > 450)
                 $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
             $('.animationOnScroll').initScrollAnimation();
-         }
-        else
-        {
+        }
+        else {
             $('.animationOnScrollOpacity').removeClass('animationOnScrollOpacity');
             $('.animationOnScrollMarginTop').removeClass('animationOnScrollMarginTop');
             $('.animationOnScrollOpacityFlip').removeClass('animationOnScrollOpacityFlip');
@@ -312,7 +320,7 @@
         @{
             if (Context.Request.IsHttps)
             {
-                 ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+                ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
             }
         }
     </script>

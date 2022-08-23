@@ -211,7 +211,7 @@ namespace Oje.AccountService.Services
             string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," + newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName() + "," + hasAutoRefres;
             var cOption = new CookieOptions() { HttpOnly = true };
             if (input.rememberMe == true)
-                cOption.Expires = DateTime.Now.AddDays(1);
+                cOption.Expires = DateTime.Now.AddDays(2);
             if (httpContextAccessor.HttpContext.Request.IsHttps == true)
             {
                 cOption.Secure = true;
@@ -1222,8 +1222,10 @@ namespace Oje.AccountService.Services
                     else
                         qureResult = qureResult
                             .Where(t => !prevUsers.Contains(t.Id))
-                            .OrderBy(t => t.IsActive == true && t.StartHour != null && t.EndHour != null && t.StartHour <= curHour && t.EndHour >= curHour && (t.WorkingHolyday == true || isTodayHolyday == false))
+                            .Where(t => t.MapLocation != null)
+                            //.OrderBy(t => t.IsActive == true && t.StartHour != null && t.EndHour != null && t.StartHour <= curHour && t.EndHour >= curHour && (t.WorkingHolyday == true || isTodayHolyday == false))
                             .OrderBy(t => t.IsActive)
+                            .ThenBy(t => t.MapLocation.Distance(gm))
                             ;
                 }
             }

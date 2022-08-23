@@ -61,7 +61,7 @@ namespace Oje.Infrastructure.Models.PageForms
 
         public static void requiredValidationForCtrl(ctrl ctrl, IFormCollection form)
         {
-            if (ctrl.isRequired == true )
+            if (ctrl.isRequired == true)
                 if (!form.Keys.Contains(ctrl.name) || string.IsNullOrEmpty(form.GetStringIfExist(ctrl.name)))
                     if (!needToBeIgnore(ctrl.name))
                         throw BException.GenerateNewException
@@ -122,7 +122,7 @@ namespace Oje.Infrastructure.Models.PageForms
             }
             else if (ctrl.type == ctrlType.carPlaque)
             {
-                string currValue = form.GetStringIfExist(ctrl.name + "_1") +" " + form.GetStringIfExist(ctrl.name + "_2") + " " + form.GetStringIfExist(ctrl.name + "_3") + " "+ form.GetStringIfExist(ctrl.name + "_4");
+                string currValue = form.GetStringIfExist(ctrl.name + "_1") + " " + form.GetStringIfExist(ctrl.name + "_2") + " " + form.GetStringIfExist(ctrl.name + "_3") + " " + form.GetStringIfExist(ctrl.name + "_4");
                 if (!string.IsNullOrEmpty(currValue))
                     ctrl.defV = currValue;
             }
@@ -184,8 +184,7 @@ namespace Oje.Infrastructure.Models.PageForms
                 {
                     foreach (var validation in ctrl.validations)
                     {
-                        Regex rx = new Regex(validation.reg, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                        if (!rx.IsMatch(curCTRLValue))
+                        if (!RegexCache.getRegexInstance(validation.reg).IsMatch(curCTRLValue))
                             throw BException.GenerateNewException(ctrl.label + ": " + validation.msg);
                     }
                 }
@@ -208,7 +207,7 @@ namespace Oje.Infrastructure.Models.PageForms
                         {
                             var curChildCTrl = newClones[i];
                             curChildCTrl.name = baseName + "[" + (startIndex - 1) + "]." + curChildCTrl.name;
-                            curChildCTrl.defV = !string.IsNullOrEmpty( form.GetStringIfExist(curChildCTrl.name + "_Title")) ? form.GetStringIfExist(curChildCTrl.name + "_Title") : form.GetStringIfExist(curChildCTrl.name);
+                            curChildCTrl.defV = !string.IsNullOrEmpty(form.GetStringIfExist(curChildCTrl.name + "_Title")) ? form.GetStringIfExist(curChildCTrl.name + "_Title") : form.GetStringIfExist(curChildCTrl.name);
                             if (ppfObj.panels.FirstOrDefault().ctrls == null)
                                 ppfObj.panels.FirstOrDefault().ctrls = new List<ctrl>();
                             ppfObj.panels.FirstOrDefault().ctrls.Add(curChildCTrl);
@@ -244,7 +243,7 @@ namespace Oje.Infrastructure.Models.PageForms
             }
         }
 
-        public static void dublicateMapValueIfNeeded(ctrl ctrl, PageForm ppfObj, IFormCollection form)
+        public static List<IdTitle> dublicateMapValueIfNeeded(ctrl ctrl, PageForm ppfObj, IFormCollection form)
         {
             if (ctrl.type == ctrlType.map && ctrl.names != null && ppfObj != null && ppfObj.panels.Count > 0)
             {
@@ -255,17 +254,15 @@ namespace Oje.Infrastructure.Models.PageForms
                 double? lon = form.GetStringIfExist(ctrl.names.lon).ToDoubleReturnNull();
                 int? zoom = form.GetStringIfExist(ctrl.names.zoom).ToIntReturnZiro();
 
-                if(lat != null && lon != null && zoom > 0)
+                if (lat != null && lon != null && zoom > 0)
                 {
                     var tempPoint = new Point(lat.Value, lon.Value);
                     if (!tempPoint.IsValid)
                         throw BException.GenerateNewException(BMessages.Validation_Error);
-
-                    ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lat", name = ctrl.names.lat });
-                    ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه lon", name = ctrl.names.lon });
-                    ppfObj.panels[0].ctrls.Add(new ctrl() { type = ctrlType.text, label = "نقشه zoom", name = ctrl.names.zoom });
+                    return new List<IdTitle>() { new IdTitle() { id = ctrl.names.lat, title = "نقشه لت" }, new IdTitle() { id = ctrl.names.lon, title = "نقشه لان" }, new IdTitle() { id = ctrl.names.zoom, title = "نقشه زوم" } };
                 }
             }
+            return new List<IdTitle>();
         }
 
         public static void validateMinAndMaxDayForDateInput(ctrl ctrl, IFormCollection form)

@@ -79,11 +79,11 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         //[CustomeAuthorizeFilter]
         public IActionResult Create()
         {
-            var loginUserId = HttpContext.GetLoginUser()?.UserId;
-            if (loginUserId.ToLongReturnZiro() <= 0)
+            var loginUser = HttpContext.GetLoginUser();
+            if (loginUser == null || loginUser.UserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CreateProposalFilledForm, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, loginUserId, Request.GetTargetAreaByRefferForPPFDetailes());
+            var tempResult = ProposalFilledFormService.Create(SiteSettingService.GetSiteSetting()?.Id, Request.Form, loginUser.UserId, Request.GetTargetAreaByRefferForPPFDetailes(), loginUser);
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CreateProposalFilledForm, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }

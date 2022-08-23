@@ -12,6 +12,7 @@ using Oje.Sanab.Interfaces;
 using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.View;
 using Oje.Security.Interfaces;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Areas.WebMain.Controllers
@@ -84,8 +85,27 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                    Request.Scheme + "://" + Request.Host + "/",
                    Request.Scheme + "://" + Request.Host + "/",
                    WebSiteTypes.website,
-                   Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
-                   null
+                   Request.Scheme + "://" + Request.Host + GlobalConfig.FileAccessHandlerUrl + curSetting.Image512,
+                   null,
+                   LdJsonService.GetCorporation(
+                        curSetting.Title,
+                        curSetting.WebsiteUrl.Split('.')[0],
+                        Request.Scheme + "://" + Request.Host + "/",
+                        Request.Scheme + "://" + Request.Host + GlobalConfig.FileAccessHandlerUrl + curSetting.Image512,
+                        curSetting.User?.Email,
+                        new List<Dictionary<string, object>>()
+                        {
+                            LdJsonService.GetContactTell(curSetting.User?.Tell),
+                            LdJsonService.GetAddress
+                                (
+                                    curSetting.User?.Address,
+                                    curSetting.User?.Province?.Title + " " + curSetting.User?.City?.Title,
+                                    curSetting.User?.PostalCode,
+                                    LdJsonService.GetGEO(curSetting.User?.MapLocation?.X, curSetting.User?.MapLocation?.Y)
+                                ),
+                            LdJsonService.GetFounder(curSetting.User?.Firstname + " " + curSetting.User?.Lastname, ( !string.IsNullOrEmpty(curSetting.User?.UserPic) ? GlobalConfig.FileAccessHandlerUrl + curSetting.User?.UserPic : "" ) )
+                        }
+                       )
                    );
 
             //PushNotificationService.Send();

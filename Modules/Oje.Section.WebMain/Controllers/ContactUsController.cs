@@ -32,7 +32,8 @@ namespace Oje.Section.WebMain.Controllers
         [HttpGet]
         public ActionResult ContactUs()
         {
-            var foundDescription = PropertyService.GetBy<ContactUsVM>(PropertyType.ContactUs, SiteSettingService.GetSiteSetting()?.Id);
+            var curSetting = SiteSettingService.GetSiteSetting();
+            var foundDescription = PropertyService.GetBy<ContactUsVM>(PropertyType.ContactUs, curSetting?.Id);
             if (foundDescription != null)
                 GlobalServices.FillSeoInfo(
                      ViewData,
@@ -41,10 +42,18 @@ namespace Oje.Section.WebMain.Controllers
                       Request.Scheme + "://" + Request.Host + "/",
                       Request.Scheme + "://" + Request.Host + "/",
                       WebSiteTypes.website,
-                      Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
-                      null
+                      Request.Scheme + "://" + Request.Host + GlobalConfig.FileAccessHandlerUrl + curSetting.Image512,
+                      null,
+                      LdJsonService.GetAboutUsJSObject(
+                          Request.Scheme + "://" + Request.Host + "/",
+                          Request.Scheme + "://" + Request.Host + GlobalConfig.FileAccessHandlerUrl + curSetting.Image512,
+                          foundDescription.title,
+                          foundDescription.description,
+                          LdJsonService.GetGEO(curSetting.User.MapLocation?.X, curSetting.User.MapLocation?.Y)
+                          )
                       );
             ViewBag.subTitle = foundDescription?.subTitle;
+
             return View();
         }
 
@@ -53,7 +62,7 @@ namespace Oje.Section.WebMain.Controllers
         public IActionResult Get()
         {
             var tempResult = PropertyService.GetBy<ContactUsVM>(PropertyType.ContactUs, SiteSettingService.GetSiteSetting()?.Id);
-            return Json(new 
+            return Json(new
             {
                 mapLat = tempResult?.mapLat,
                 mapLon = tempResult?.mapLon,

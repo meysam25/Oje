@@ -42,6 +42,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             return View("Pay", payUrl);
         }
 
+        [HttpPost]
         public async Task<ActionResult> Confirm([FromForm] TiTecConfirmPaymentInput input)
         {
             string redirectUrl = await TiTecService.ConfirmPayment(input, SiteSettingService.GetSiteSetting()?.Id);

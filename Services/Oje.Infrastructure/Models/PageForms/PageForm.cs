@@ -8,6 +8,8 @@ namespace Oje.Infrastructure.Models.PageForms
 {
     public class PageForm
     {
+        public List<IdTitle> exteraCtrls;
+
         public PageForm()
         {
         }

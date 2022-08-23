@@ -1,11 +1,7 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using Oje.Section.Blog.Models.View;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Interfaces
 {
@@ -23,5 +19,6 @@ namespace Oje.Section.Blog.Interfaces
         List<BlogVM> GetMostTypeBlogs(int? siteSettingId, int count, BlogLastLikeAndViewType type, long id);
         object BlogActions(long id, BlogWebAction input, int? siteSettingId, IpSections ipSections);
         BlogVM GetByIdForWeb(long? id, int? siteSettingId, IpSections ipSections);
+        string GetBlogSiteMap(int? siteSettingId, string baseUrl);
     }
 }

@@ -11,7 +11,9 @@ using Oje.Section.WebMain.Models.View;
 using Oje.Section.WebMain.Services.EContext;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Oje.Section.WebMain.Services
 {
@@ -53,7 +55,8 @@ namespace Oje.Section.WebMain.Services
                 Summery = input.summery,
                 MainImage = " ",
                 MainImageSmall = " ",
-                TitleAndSubtitleColorCode = input.stColor
+                TitleAndSubtitleColorCode = input.stColor,
+                CreateDate = DateTime.Now
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -256,7 +259,8 @@ namespace Oje.Section.WebMain.Services
                 mainImage = GlobalConfig.FileAccessHandlerUrl + foundPage.MainImage,
                 mainImageSmall = GlobalConfig.FileAccessHandlerUrl + foundPage.MainImageSmall,
                 id = foundPage.Id,
-                url = GenerateUrlForPage(foundPage.Title, foundPage.Id)
+                url = GenerateUrlForPage(foundPage.Title, foundPage.Id),
+                createDate = foundPage.CreateDate,
             };
             
             result.Items.AddRange(PageLeftRightDesignService.GetListForWeb(id, siteSettingId));
@@ -269,6 +273,57 @@ namespace Oje.Section.WebMain.Services
         public bool Exist(long? id, int? siteSettingId)
         {
             return db.Pages.Any(t => t.Id == id && t.SiteSettingId == siteSettingId);
+        }
+
+        public string GetSiteMap(int? siteSettingId, string baseUrl)
+        {
+            string siteMapBaseFolder = GlobalConfig.GetSiteMapBaseFolder();
+            string siteMapFilename = Path.Combine(siteMapBaseFolder, "SiteMap.xml");
+
+            if (File.Exists(siteMapFilename))
+            {
+                var fileCreateTime = File.GetCreationTime(siteMapFilename);
+                if ((DateTime.Now - fileCreateTime).TotalDays > 1)
+                {
+                    File.Delete(siteMapFilename);
+                    File.WriteAllText(siteMapFilename, getPageXml(siteSettingId, baseUrl));
+                }
+            }
+            else
+                File.WriteAllText(siteMapFilename, getPageXml(siteSettingId, baseUrl));
+
+            return File.ReadAllText(siteMapFilename);
+        }
+
+        string getPageXml(int? siteSettingId, string baseUrl)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            sb.Append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+
+            var allBlogs = db.Pages
+                .OrderByDescending(t => t.Id)
+                .Where(t => t.SiteSettingId == siteSettingId)
+               .Select(t => new
+               {
+                   id = t.Id,
+                   title = t.Title,
+                   publishDate = t.CreateDate,
+               })
+               .ToList();
+
+            foreach (var blog in allBlogs)
+            {
+                sb.Append("<url>");
+                sb.Append("<loc>" + baseUrl + "/" + GenerateUrlForPage(blog.title, blog.id) + "</loc>");
+                sb.Append("<lastmod>" + blog.publishDate.ToString("yyyy-MM-dd") + "</lastmod>");
+                sb.Append("</url>");
+            }
+
+            sb.Append("</urlset>");
+
+            return sb.ToString();
         }
     }
 }

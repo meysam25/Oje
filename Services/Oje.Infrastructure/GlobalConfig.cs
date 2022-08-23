@@ -23,6 +23,14 @@ namespace Oje.Infrastructure
             return Configuration.GetSection("appSettings").Get<WebAppSettings>();
         }
 
+        public static string GetSiteMapBaseFolder()
+        {
+            string result = Path.Combine(WebHostEnvironment.ContentRootPath, "SiteMaps");
+            if (!Directory.Exists(result))
+                Directory.CreateDirectory(result);
+            return result;
+        }
+
         public static string GetAppVersion()
         {
             return Configuration.GetSection("ver").Get<string>();

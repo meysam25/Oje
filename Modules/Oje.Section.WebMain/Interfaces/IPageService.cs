@@ -14,5 +14,6 @@ namespace Oje.Section.WebMain.Interfaces
         PageWebVM GetBy(long? id, string pTitle, int? siteSettingId);
         string GenerateUrlForPage(string title, long? pageId);
         bool Exist(long? id, int? siteSettingId);
+        string GetSiteMap(int? siteSettingId, string baseUrl);
     }
 }

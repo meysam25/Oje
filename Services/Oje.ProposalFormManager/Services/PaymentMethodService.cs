@@ -9,14 +9,16 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
     public class PaymentMethodService : IPaymentMethodService
     {
         readonly ProposalFormDBContext db = null;
+        static Dictionary<string, bool> hasAnyPaymentMethod = new();
+        static DateTime? lastFillHasAnyPaymentMethod = null;
+        static object lockObj = new();
+
         public PaymentMethodService(ProposalFormDBContext db)
         {
             this.db = db;
@@ -24,7 +26,30 @@ namespace Oje.ProposalFormService.Services
 
         public bool Exist(int? siteSettingId, int proposalFormId, int companyId)
         {
-            return db.PaymentMethods.Any(t => t.SiteSettingId == siteSettingId && t.ProposalFormId == proposalFormId && t.IsActive == true && t.PaymentMethodCompanies.Any(tt => tt.CompanyId == companyId));
+            if (lockObj == null)
+                lockObj = new();
+
+            if (hasAnyPaymentMethod == null)
+                hasAnyPaymentMethod = new();
+
+            if (lastFillHasAnyPaymentMethod != null && (DateTime.Now - lastFillHasAnyPaymentMethod.Value).TotalMinutes >= 5)
+            {
+                lastFillHasAnyPaymentMethod = DateTime.Now;
+                hasAnyPaymentMethod.Clear();
+            }
+
+            var curKey = siteSettingId + "_" + proposalFormId + "_" + companyId;
+            if (hasAnyPaymentMethod.Keys.Any(t => t == curKey))
+                return hasAnyPaymentMethod[curKey];
+
+            lock(lockObj)
+            {
+                if (hasAnyPaymentMethod.Keys.Any(t => t == curKey))
+                    return hasAnyPaymentMethod[curKey];
+                hasAnyPaymentMethod[curKey] = db.PaymentMethods.Any(t => t.SiteSettingId == siteSettingId && t.ProposalFormId == proposalFormId && t.IsActive == true && t.PaymentMethodCompanies.Any(tt => tt.CompanyId == companyId));
+            }
+
+            return hasAnyPaymentMethod[curKey];
         }
 
         public PaymentMethodDetailesVM GetItemDetailes(int paymentMethodId, int? siteSettingId, long inquiryPrice, int proposalFormId)
@@ -55,7 +80,7 @@ namespace Oje.ProposalFormService.Services
             if (paymentMethod.PaymentMethodFiles != null && paymentMethod.PaymentMethodFiles.Count > 0)
             {
                 foreach (var file in paymentMethod.PaymentMethodFiles)
-                    paymentRequreFiles.Add(new PaymentMethodDetailesFilesVM 
+                    paymentRequreFiles.Add(new PaymentMethodDetailesFilesVM
                     {
                         isRequired = file.IsRequired,
                         title = file.Title,

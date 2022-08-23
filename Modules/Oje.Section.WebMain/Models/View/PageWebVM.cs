@@ -1,4 +1,5 @@
 ﻿using Oje.Section.WebMain.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace Oje.Section.WebMain.Models.View
@@ -21,6 +22,7 @@ namespace Oje.Section.WebMain.Models.View
         public string bTitle { get; set; }
         public string bLink { get; set; }
         public string url { get; set; }
+        public DateTime createDate { get; set; }
 
         public List<IPageWebItemVM> Items { get; set; }
         public List<PageWebSliderVM> PageWebSliderVMs { get; set; }

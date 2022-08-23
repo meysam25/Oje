@@ -21,7 +21,6 @@ namespace Oje.AccountService.Services
 
 
         static List<SiteSetting> SS { get; set; }
-        static object lockObject = new object();
 
         public SiteSettingService(
                 AccountDBContext db,
@@ -45,15 +44,14 @@ namespace Oje.AccountService.Services
 
         public SiteSetting GetSiteSetting()
         {
-            if (lockObject == null)
-                lockObject = new object();
             if (SS == null || SS.Count == 0)
             {
-                lock (lockObject)
-                {
-                    if (SS == null || SS.Count == 0)
-                        SS = db.SiteSettings.Include(t => t.User).AsNoTracking().ToList();
-                }
+                if (SS == null || SS.Count == 0)
+                    SS = db.SiteSettings
+                        .Include(t => t.User).ThenInclude(t => t.Province)
+                        .Include(t => t.User).ThenInclude(t => t.City)
+                        .AsNoTracking()
+                        .ToList();
             }
             string host = httpContextAccessor.HttpContext?.Request?.Host.Host;
             if (!string.IsNullOrEmpty(host))

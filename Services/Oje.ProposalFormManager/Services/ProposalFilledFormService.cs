@@ -79,18 +79,29 @@ namespace Oje.ProposalFormService.Services
             this.ColorService = ColorService;
         }
 
-        public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl)
+        public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId, string targetUrl, LoginUserVM loginUser)
         {
             createValidation(siteSettingId, form);
-
             long inquiryId = form.GetStringIfExist("inquiryId").ToLongReturnZiro();
             int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
             var foundProposalForm = ProposalFormService.GetById(proposalFormId, siteSettingId);
             int payCondationId = form.GetStringIfExist("payCondation").ToIntReturnZiro();
             var allRequiredFileUpload = ProposalFormRequiredDocumentService.GetProposalFormRequiredDocuments(foundProposalForm?.Id, siteSettingId);
             long newFormId = 0;
+
             PageForm ppfObj = null;
-            try { ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig); } catch (Exception ) {  } 
+            try
+            {
+                if (foundProposalForm.PageForm != null)
+                    ppfObj = foundProposalForm.PageForm;
+                else
+                {
+                    ppfObj = JsonConvert.DeserializeObject<PageForm>(foundProposalForm.JsonConfig);
+                    foundProposalForm.PageForm = ppfObj;
+                }
+            }
+            catch (Exception) { }
+
             //catch { };// catch (Exception) { throw; }
             int companyId = 0;
 
@@ -101,15 +112,16 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Json_Convert_Error);
 
             var allCtrls = ppfObj.GetAllListOf<ctrl>();
-
             createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId, allCtrls);
 
-            using (var tr = db.Database.BeginTransaction())
+            //using (var tr = db.Database.BeginTransaction())
             {
                 try
                 {
                     ProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, inquiryId, proposalFormId);
+                    newFormId = newForm.Id;
                     ProposalFilledFormJsonService.Create(newForm.Id, foundProposalForm.JsonConfig);
+
                     if (ppfObj.panels?.FirstOrDefault()?.hasInquiry == true && companyId > 0)
                         ProposalFilledFormCompanyService.Create(inquiryId, siteSettingId, newForm.Id, newForm.Price, companyId, true, loginUserId);
                     else if (ppfObj.panels?.FirstOrDefault()?.isCompanyListRequired == true)
@@ -120,9 +132,12 @@ namespace Oje.ProposalFormService.Services
                     if (ppfObj.panels?.FirstOrDefault().isAgentRequired == true)
                         ProposalFilledFormUseService.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id);
                     ProposalFilledFormUseService.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id);
+
                     if (PaymentMethodService.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryService.HasAnyCashDiscount(inquiryId))
                         ProposalFilledFormDocumentService.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
+
                     ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form, allCtrls);
+
                     createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
 
                     if (loginUserId == ownerUserId)
@@ -134,32 +149,67 @@ namespace Oje.ProposalFormService.Services
 
                     UserNotifierService.Notify
                         (
-                            loginUserId, 
-                            UserNotificationType.NewProposalFilledForm, 
-                            ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()), 
-                            newForm.Id, 
-                            foundProposalForm.Title, 
+                            loginUserId,
+                            UserNotificationType.NewProposalFilledForm,
+                            ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()),
+                            newForm.Id,
+                            foundProposalForm.Title,
                             siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id,
                             UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro())
                         );
 
-                    tr.Commit();
+                    //tr.Commit();
 
-                    newFormId = newForm.Id;
-
-                    if (RoleService.IsUserInRole(loginUserId, "user"))
+                    if (loginUser != null && loginUser.roles != null && loginUser.roles.Any(t => t == "user"))
                         targetUrl = "/Proposal/Detaile";
                     else
                         targetUrl = "";
                 }
                 catch (Exception)
                 {
-                    tr.Rollback();
+                    //tr.Rollback();
+                    //if (newFormId > 0)
+                    //    removePPfs(newFormId);
                     throw;
                 }
             }
 
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(), data = new { url = targetUrl, id = newFormId } };
+        }
+
+        private void removePPfs(long newFormId)
+        {
+            if (newFormId > 0)
+            {
+                var foundPPF = db.ProposalFilledForms
+                    .Where(t => t.Id == newFormId)
+                    .Include(t => t.ProposalFilledFormJsons)
+                    .Include(t => t.ProposalFilledFormCompanies)
+                    .Include(t => t.ProposalFilledFormUsers)
+                    .Include(t => t.ProposalFilledFormDocuments)
+                    .Include(t => t.ProposalFilledFormValues)
+                    .FirstOrDefault();
+
+                if (foundPPF.ProposalFilledFormJsons != null)
+                    foreach (var item in foundPPF.ProposalFilledFormJsons)
+                        db.Entry(item).State = EntityState.Deleted;
+                if (foundPPF.ProposalFilledFormCompanies != null)
+                    foreach (var item in foundPPF.ProposalFilledFormCompanies)
+                        db.Entry(item).State = EntityState.Deleted;
+                if (foundPPF.ProposalFilledFormUsers != null)
+                    foreach (var item in foundPPF.ProposalFilledFormUsers)
+                        db.Entry(item).State = EntityState.Deleted;
+                if (foundPPF.ProposalFilledFormDocuments != null)
+                    foreach (var item in foundPPF.ProposalFilledFormDocuments)
+                        db.Entry(item).State = EntityState.Deleted;
+                if (foundPPF.ProposalFilledFormValues != null)
+                    foreach (var item in foundPPF.ProposalFilledFormValues)
+                        db.Entry(item).State = EntityState.Deleted;
+
+                db.Entry(foundPPF).State = EntityState.Deleted;
+                db.SaveChanges();
+
+            }
         }
 
         private void createUploadedFiles(int? siteSettingId, IFormCollection form, long? loginUserId, long proposalFilledFormId)
@@ -195,6 +245,8 @@ namespace Oje.ProposalFormService.Services
             validateCompanyAndAgent(ppfObj, form, siteSettingId, companyId);
             validateIfInquiryRequired(form, ppfObj, siteSettingId);
 
+            List<IdTitle> exteraTextBox = new List<IdTitle>();
+
             foreach (ctrl ctrl in allCtrls)
             {
                 if (ctrl.isCtrlVisible(form, allCtrls) == true)
@@ -207,23 +259,25 @@ namespace Oje.ProposalFormService.Services
                     ctrl.validateAndUpdateCtrl(ctrl, form, allCtrls);
                     ctrl.validateAndUpdateMultiRowInputCtrl(ctrl, form, ppfObj);
                     ctrl.validateMinAndMaxDayForDateInput(ctrl, form);
-                    ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form);
+                    exteraTextBox.AddRange(ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form));
                 }
                 validateFileUpload(ctrl, allRequiredFileUpload, form);
             }
+
+            ppfObj.exteraCtrls = exteraTextBox;
 
             validateColor(form, allCtrls);
         }
 
         private void validateColor(IFormCollection form, List<ctrl> allCtrls)
         {
-            if(allCtrls != null)
+            if (allCtrls != null)
             {
                 var foundColorCtrl = allCtrls.Where(t => !string.IsNullOrEmpty(t.dataurl) && t.dataurl.ToLower() == "/ProposalFilledForm/Proposal/GetColorList".ToLower()).FirstOrDefault();
-                if(foundColorCtrl != null && !string.IsNullOrEmpty(foundColorCtrl.name))
+                if (foundColorCtrl != null && !string.IsNullOrEmpty(foundColorCtrl.name))
                 {
                     var colorValue = form.GetStringIfExist(foundColorCtrl.name);
-                    if(!string.IsNullOrEmpty(colorValue))
+                    if (!string.IsNullOrEmpty(colorValue))
                     {
                         var foundColor = ColorService.GetById(colorValue.ToIntReturnZiro());
                         if (foundColor == null)
@@ -342,7 +396,7 @@ namespace Oje.ProposalFormService.Services
             int proposalFormId = form.GetStringIfExist("fid").ToIntReturnZiro();
             if (proposalFormId <= 0)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
-            if (!ProposalFormService.Exist(proposalFormId, siteSettingId))
+            if (ProposalFormService.GetById(proposalFormId, siteSettingId) == null)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
 

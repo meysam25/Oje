@@ -4,6 +4,7 @@ using Oje.Infrastructure.Models;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,10 @@ namespace Oje.ProposalFormService.Services
     public class ProposalFormService : IProposalFormService
     {
         readonly ProposalFormDBContext db = null;
+        static Dictionary<string, ProposalForm> ppfCache = new();
+        static DateTime? lastDate = null;
+        static object lockObj = new();
+
         public ProposalFormService(ProposalFormDBContext db)
         {
             this.db = db;
@@ -24,7 +29,30 @@ namespace Oje.ProposalFormService.Services
 
         public ProposalForm GetById(int id, int? siteSettingId)
         {
-            return db.ProposalForms.Where(t => t.Id == id && (t.SiteSettingId == null || t.SiteSettingId == siteSettingId)).AsNoTracking().FirstOrDefault();
+            if (lockObj == null)
+                lockObj = new();
+
+            var curKey = id + "_" + siteSettingId;
+            if (ppfCache == null)
+                ppfCache = new Dictionary<string, ProposalForm>();
+
+            if (lastDate != null && (DateTime.Now - lastDate.Value).TotalMinutes >= 5)
+            {
+                lastDate = DateTime.Now;
+                ppfCache.Clear();
+            }
+
+            if (ppfCache.Keys.Any(t => t == curKey) && ppfCache[curKey] != null)
+                return ppfCache[curKey];
+
+            lock(lockObj)
+            {
+                if (ppfCache.Keys.Any(t => t == curKey) && ppfCache[curKey] != null)
+                    return ppfCache[curKey];
+                ppfCache[curKey] = db.ProposalForms.Where(t => t.Id == id && (t.SiteSettingId == null || t.SiteSettingId == siteSettingId)).AsNoTracking().FirstOrDefault();
+            }
+
+            return ppfCache[curKey];
         }
 
         public ProposalForm GetByType(ProposalFormType type, int? siteSettingId)

@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models.PageForms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -82,5 +83,8 @@ namespace Oje.ProposalFormService.Models.DB
         public List<ProposalFormReminder> ProposalFormReminders { get; set; }
         [InverseProperty("ProposalForm")]
         public List<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
+
+        [NotMapped]
+        public PageForm PageForm { get; set; }
     }
 }

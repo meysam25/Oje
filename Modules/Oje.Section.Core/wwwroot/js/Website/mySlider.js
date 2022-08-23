@@ -25,7 +25,7 @@ $.fn.initSlider = function (options) {
         var result = '';
 
         if (item.img) {
-            result += '<a target="_blank"' + (item.url ? (' href="' + item.url + '"') : '') + '" style="width:' + getImageWidth(options, curWindowWidth) + 'px" class="mySliderItem">';
+            result += '<a ' + (item.url ? 'target="_blank"' : '') + (' href="' + (item.url ? item.url : '#') + '"') + '" style="width:' + getImageWidth(options, curWindowWidth) + 'px" class="mySliderItem">';
             result += '<img width="300" height="300" class="mySliderMainImage"  alt="' + (item.title ? item.title : '') + '" data-src="' + item.img + '" />';
             if (item.title && !options.dontShowTitle)
                 result += '<div class="mySliderItemTitle">' + item.title + '</div>';
@@ -108,6 +108,7 @@ $.fn.initSlider = function (options) {
 
         $(curThis).find('.mySliderItemArrowLeft').click(function () { $(this).closest('.mySlider')[0].moveNext() });
         $(curThis).find('.mySliderItemArrowRight').click(function () { $(this).closest('.mySlider')[0].movePrev() });
+        $(curThis).find('a.mySliderItem').click(function (e) { if ($(this).attr('href') == '#') { e.preventDefault(); return false; } });
     }
 
     return this.each(function () {

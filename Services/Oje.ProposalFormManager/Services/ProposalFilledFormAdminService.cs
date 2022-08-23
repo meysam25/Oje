@@ -107,7 +107,7 @@ namespace Oje.ProposalFormService.Services
                 .FirstOrDefault();
             if (item == null || item.id <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundJson = ProposalFilledFormJsonService.GetBy(item.id);
+            var foundJson = ProposalFilledFormJsonService.GetCacheBy(item.id);
             if (foundJson == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
             var jsonObj = JsonConvert.DeserializeObject<PageForm>(foundJson.JsonConfig);
@@ -177,7 +177,7 @@ namespace Oje.ProposalFormService.Services
                 .FirstOrDefault();
             if (foundId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundJson = ProposalFilledFormJsonService.GetBy(foundId);
+            var foundJson = ProposalFilledFormJsonService.GetCacheBy(foundId);
             if (foundJson == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
             var jsonObj = JsonConvert.DeserializeObject<PageForm>(foundJson.JsonConfig);
@@ -489,7 +489,7 @@ namespace Oje.ProposalFormService.Services
                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-            var foundJson = ProposalFilledFormJsonService.GetBy(foundItem.Id);
+            var foundJson = ProposalFilledFormJsonService.GetCacheBy(foundItem.Id);
             if (foundJson == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
             var jsonObj = JsonConvert.DeserializeObject<PageForm>(foundJson.JsonConfig);

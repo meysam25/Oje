@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.DB
 {
@@ -15,7 +10,8 @@ namespace Oje.ProposalFormService.Models.DB
         public long ProposalFilledFormId { get; set; }
         [ForeignKey("ProposalFilledFormId"), InverseProperty("ProposalFilledFormJsons")]
         public ProposalFilledForm ProposalFilledForm { get; set; }
-        [Required]
-        public string JsonConfig { get; set; }
+        public long ProposalFilledFormCacheJsonId { get; set; }
+        [ForeignKey("ProposalFilledFormCacheJsonId"), InverseProperty("ProposalFilledFormJsons")]
+        public ProposalFilledFormCacheJson ProposalFilledFormCacheJson { get; set; }
     }
 }

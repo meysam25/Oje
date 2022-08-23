@@ -6,6 +6,8 @@ using Oje.Infrastructure.Services;
 using Oje.Section.Blog.Interfaces;
 using Oje.Section.Blog.Models.View;
 using Oje.Infrastructure.Exceptions;
+using System.Collections.Generic;
+using Oje.Infrastructure.Models;
 
 namespace Oje.Section.Blog.Areas.Blog.Controllers
 {
@@ -30,6 +32,14 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
             this.BlogTagService = BlogTagService;
         }
 
+        [HttpGet]
+        [Route("BlogSiteMap.xml", Order = int.MaxValue - 1000)]
+        public ActionResult BlogSiteMap()
+        {
+            Response.ContentType = "application/xml; charset=utf-8";
+            return Content(BlogService.GetBlogSiteMap(SiteSettingService.GetSiteSetting()?.Id, Request.Scheme + "://" + Request.Host));
+        }
+
         [Route("[Area]/[Controller]/[Action]")]
         [HttpPost]
         public ActionResult GetAddReviewJsonConfig()
@@ -51,22 +61,17 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
         [HttpGet]
         public ActionResult Blogs(string KeywordTitle, long? keyWordId, string catTitle, int? catId)
         {
+            var curSetting = SiteSettingService.GetSiteSetting();
+            string title;
+            string description;
             if (keyWordId.ToLongReturnZiro() > 0)
             {
                 var foundTag = BlogTagService.GetBy(keyWordId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
                 if (foundTag == null || foundTag.Title.Replace(" ", "-").Replace("--", "-") != KeywordTitle)
                     throw BException.GenerateNewException(BMessages.Not_Found);
                 ViewBag.keyWordId = keyWordId;
-                GlobalServices.FillSeoInfo(
-                   ViewData,
-                    "کلیه اخبار، مقاله‌ها و ویدیوهای مرتبط با " + foundTag.Title,
-                    "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.Title,
-                    Request.Scheme + "://" + Request.Host + "/Blogs/" + foundTag.Title.Trim().Replace(" ", "-").Replace("--", "-") + "/" + foundTag.Id,
-                    Request.Scheme + "://" + Request.Host + "/Blogs" + foundTag.Title.Trim().Replace(" ", "-").Replace("--", "-") + "/" + foundTag.Id,
-                    WebSiteTypes.website,
-                    Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
-                    null
-                    );
+                title = "کلیه اخبار، مقاله‌ها و ویدیوهای مرتبط با " + foundTag.Title;
+                description = "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.Title;
             }
             else if (catId.ToIntReturnZiro() > 0)
             {
@@ -76,30 +81,33 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
                 ViewBag.catId = catId;
                 ViewData["metaDescription"] = "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.title;
 
-                GlobalServices.FillSeoInfo(
-                   ViewData,
-                    "کلیه اخبار، مقاله‌ها و ویدیوهای مرتبط با " + foundTag.title,
-                    "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.title,
-                    Request.Scheme + "://" + Request.Host + "/Blogs",
-                    Request.Scheme + "://" + Request.Host + "/Blogs",
-                    WebSiteTypes.website,
-                    Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
-                    null
-                    );
+                title = "کلیه اخبار، مقاله‌ها و ویدیوهای مرتبط با " + foundTag.title;
+                description = "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.title;
             }
             else
             {
-                GlobalServices.FillSeoInfo(
+                title = "جدیدترین اخبار، مقاله‌ها و ویدیوهای ‌" + curSetting.Title + " را در این صفحه دنبال کنید";
+                description = "آخرین اخبار گروه ستاد بیمه ، اطلاع‌رسانی، بیانیه مطبوعاتی، رویدادها، مسئولیت‌های اجتماعی و سایر فعالیت‌های روابط عمومی " + curSetting.Title + "";
+            }
+
+            GlobalServices.FillSeoInfo(
                     ViewData,
-                     "جدیدترین اخبار، مقاله‌ها و ویدیوهای ‌ستاد بیمه را در این صفحه دنبال کنید",
-                     "آخرین اخبار گروه ستاد بیمه ، اطلاع‌رسانی، بیانیه مطبوعاتی، رویدادها، مسئولیت‌های اجتماعی و سایر فعالیت‌های روابط عمومی ستاد بیمه",
+                    title,
+                     description,
                      Request.Scheme + "://" + Request.Host + "/Blogs",
                      Request.Scheme + "://" + Request.Host + "/Blogs",
                      WebSiteTypes.website,
-                     Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
-                     null
+                     Request.Scheme + "://" + Request.Host + "/Modules/Images/news.png",
+                     null,
+                     LdJsonService.GetAboutUsJSObject(
+                          Request.Scheme + "://" + Request.Host + "/",
+                          Request.Scheme + "://" + Request.Host + "/Modules/Images/news.png",
+                          title,
+                          description,
+                          null,
+                          "NewsMediaOrganization"
+                          )
                      );
-            }
 
             return View();
         }
@@ -108,6 +116,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
         [HttpGet]
         public ActionResult Blog(long id)
         {
+            var curSetting = SiteSettingService.GetSiteSetting();
             var foundBlog = BlogService.GetByIdForWeb(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetIpAddress());
             if (foundBlog == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -126,8 +135,14 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
                    Request.Scheme + "://" + Request.Host + foundBlog.url,
                    Request.Scheme + "://" + Request.Host + foundBlog.url,
                    WebSiteTypes.article,
-                    Request.Scheme + "://" + Request.Host + foundBlog.mainImage_address,
-                   foundBlog.publishDate.ToEnDate()
+                   Request.Scheme + "://" + Request.Host + foundBlog.mainImage_address,
+                   foundBlog.publishDate.ToEnDate(),
+                   LdJsonService.GetNews(foundBlog.title, ViewBag.curDomain + foundBlog.mainImage_address, foundBlog.createDateEn, foundBlog.publishDateEn, foundBlog.user, foundBlog.catTitle, ViewBag.curDomain + foundBlog.url, foundBlog.summery),
+                   LdJsonService.GetBreadcrumb(new List<KeyValue>() 
+                    { 
+                       new KeyValue() { key = curSetting.Title, value = Request.Scheme + "://" + Request.Host } , 
+                       new KeyValue() { key = "مقالات", value = Request.Scheme + "://" + Request.Host + "/Blogs" }, 
+                       new KeyValue() { key = foundBlog.title, value = "" } })
                    );
 
             return View(foundBlog);

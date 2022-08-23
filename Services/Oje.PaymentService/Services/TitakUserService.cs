@@ -9,7 +9,7 @@ using Oje.PaymentService.Services.EContext;
 
 namespace Oje.PaymentService.Services
 {
-    public class TitakUserService: ITitakUserService
+    public class TitakUserService : ITitakUserService
     {
         readonly PaymentDBContext db = null;
         public TitakUserService(PaymentDBContext db)
@@ -46,7 +46,7 @@ namespace Oje.PaymentService.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Username);
             if (string.IsNullOrEmpty(input.password))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Password);
-            if(input.password.Length > 30)
+            if (input.password.Length > 30)
                 throw BException.GenerateNewException(BMessages.Password_Can_Not_Be_More_Then_30_Chars);
             if (input.username.Length > 50)
                 throw BException.GenerateNewException(BMessages.Username_Can_Not_Be_More_Then_50_chars);
@@ -54,10 +54,20 @@ namespace Oje.PaymentService.Services
 
         public object GetBy(int? siteSettingId)
         {
-            return db.TitakUsers.Where(t => t.SiteSettingId == siteSettingId).Select(t => new 
-            {
-                username = t.Username,
-            }).FirstOrDefault();
+            return db.TitakUsers
+                .OrderByDescending(t => t.SiteSettingId)
+                .Where(t => t.SiteSettingId == siteSettingId)
+                .Select(t => new
+                {
+                    username = t.Username
+                })
+                .Take(1)
+                .ToList()
+                .Select(t => new 
+                {
+                    t.username
+                })
+                .FirstOrDefault();
         }
 
         public TitakUser GetDbModelBy(int? siteSettingId)

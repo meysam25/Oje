@@ -21,6 +21,14 @@ namespace Oje.Section.WebMain.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
+        [HttpGet]
+        [Route("SiteMap.xml", Order = int.MaxValue - 1000)]
+        public ActionResult SiteMap()
+        {
+            Response.ContentType = "application/xml; charset=utf-8";
+            return Content(PageService.GetSiteMap(SiteSettingService.GetSiteSetting()?.Id, Request.Scheme + "://" + Request.Host));
+        }
+
         [Route("Page/{pid}/{pTitle}")]
         [HttpGet]
         public IActionResult Index(long? pid, string pTitle)
@@ -29,6 +37,8 @@ namespace Oje.Section.WebMain.Controllers
             if (foundPage == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            var curDomain = Request.Scheme + "://" + Request.Host;
+
             GlobalServices.FillSeoInfo(
                 ViewData,
                  foundPage.title,
@@ -36,8 +46,9 @@ namespace Oje.Section.WebMain.Controllers
                  Request.Scheme + "://" + Request.Host + foundPage.url,
                  Request.Scheme + "://" + Request.Host + foundPage.url,
                  WebSiteTypes.website,
-                  Request.Scheme + "://" + Request.Host + foundPage.mainImageSmall,
-                 null
+                 Request.Scheme + "://" + Request.Host + foundPage.mainImageSmall,
+                 null,
+                 LdJsonService.GetNews2(foundPage.title, curDomain + foundPage.mainImage, curDomain + foundPage.mainImageSmall, curDomain + foundPage.url, foundPage.summery, foundPage.createDate)
                  );
 
             return View(foundPage);

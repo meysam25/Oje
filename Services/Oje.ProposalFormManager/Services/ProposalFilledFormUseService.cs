@@ -19,9 +19,9 @@ namespace Oje.ProposalFormService.Services
 
         public void Create(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId)
         {
-            if (userId.ToLongReturnZiro() > 0 && proposalFilledFormId > 0 &&
-                !db.ProposalFilledFormUsers.Any(t => t.UserId == userId && t.ProposalFilledFormId == proposalFilledFormId && t.Type == type))
-            {
+            //if (userId.ToLongReturnZiro() > 0 && proposalFilledFormId > 0 &&
+            //    !db.ProposalFilledFormUsers.Any(t => t.UserId == userId && t.ProposalFilledFormId == proposalFilledFormId && t.Type == type))
+            //{
                 db.Entry(new ProposalFilledFormUser()
                 {
                     FromUserId = fromUserId,
@@ -30,7 +30,7 @@ namespace Oje.ProposalFormService.Services
                     UserId = userId.ToLongReturnZiro()
                 }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 db.SaveChanges();
-            }
+            //}
         }
 
         public List<PPFUserTypes> GetProposalFilledFormUserIds(long proposalFilledFormId)
