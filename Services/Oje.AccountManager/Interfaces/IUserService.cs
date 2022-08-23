@@ -53,7 +53,7 @@ namespace Oje.AccountService.Interfaces
         bool isWebsiteUser(long userId);
         (int? cityId, int? provinceId) GetCityAndProvince(long? loginUserId);
         (int? province, int? cityid, List<int> companyIds) GetUserCityCompany(long? userId);
-        object GetAgentInfo(long userId);
+        object GetAgentInfo(long userId, int companyId);
         void CreateUserAccessRequest(long userId, string requestPath);
         void UpdateUserInfoIfEmpty(long? loginUserId, string firstname, string lastname, string nationalCode);
     }

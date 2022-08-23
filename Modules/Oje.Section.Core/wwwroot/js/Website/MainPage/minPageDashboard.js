@@ -14,7 +14,6 @@ function showLoginUserPanelInMainPage() {
                 $('#adminPanel').css('display', 'block');
                 initShortCutItemClick();
                 $('#adminPanel .quickAccessSection').addStatusBarToElement(null, function () { location.href = "/Account/Dashboard/Index"; return true; }, null);
-                disableFloatingFooter();
                 hideOtherExteraSections();
             }
         });

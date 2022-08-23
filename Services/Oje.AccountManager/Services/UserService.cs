@@ -1222,10 +1222,9 @@ namespace Oje.AccountService.Services
                     else
                         qureResult = qureResult
                             .Where(t => !prevUsers.Contains(t.Id))
-                            .Where(t => t.MapLocation != null)
+                            .Where(t => t.MapLocation != null && (t.IsActive != true || t.StartHour == null || t.EndHour == null || t.StartHour > curHour || t.EndHour < curHour  ))
                             //.OrderBy(t => t.IsActive == true && t.StartHour != null && t.EndHour != null && t.StartHour <= curHour && t.EndHour >= curHour && (t.WorkingHolyday == true || isTodayHolyday == false))
-                            .OrderBy(t => t.IsActive)
-                            .ThenBy(t => t.MapLocation.Distance(gm))
+                            .OrderBy(t => t.MapLocation.Distance(gm))
                             ;
                 }
             }
@@ -1678,7 +1677,7 @@ namespace Oje.AccountService.Services
             db.SaveChanges();
         }
 
-        public object GetAgentInfo(long userId)
+        public object GetAgentInfo(long userId, int companyId)
         {
             return db.Users
                 .Where(t => t.Id == userId)
@@ -1689,7 +1688,7 @@ namespace Oje.AccountService.Services
                     agentFirstName = t.Firstname,
                     agentLastName = t.Lastname,
                     companyTitle = t.CompanyTitle,
-                    uCompany = t.UserCompanies.Select(tt => tt.Company.Title).ToList(),
+                    uCompany = t.UserCompanies.Where(tt => companyId <= 0 || tt.CompanyId == companyId).Select(tt => tt.Company.Title).ToList(),
                     agentCode = t.AgentCode,
                     agentMobile = t.Mobile
                 })

@@ -42,6 +42,7 @@ function bindIfUserAreadyLogin(modalId) {
             var userFullname = res.firstname ? (res.firstname + ' ' + res.lastname) : res.username;
             localStorage.setItem('curLogin', JSON.stringify(res));
             userLoginWeb(userFullname, res.isUser);
+            disableFloatingFooter();
         } else {
             isUserLogin = false;
             $('.newTicketMainPageButton').click(function (e) {

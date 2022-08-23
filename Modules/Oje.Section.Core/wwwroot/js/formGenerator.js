@@ -292,6 +292,12 @@ function getPanelTemplate(panel, isInsideModal) {
             bindPanelByUrl($('#' + this.panelId));
         }.bind({ panelId: panel.id }));
         result += '</div>';
+
+        if (panel.autoScrollToHtml)
+            functionsList.push(function ()
+            {
+                $('html').animate({ scrollTop: $(this.targetElement).offset().top }, 1000);
+            }.bind({ targetElement: panel.autoScrollToHtml }));
     }
     return result;
 }

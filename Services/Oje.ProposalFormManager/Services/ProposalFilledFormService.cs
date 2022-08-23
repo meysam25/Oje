@@ -155,7 +155,7 @@ namespace Oje.ProposalFormService.Services
                             newForm.Id,
                             foundProposalForm.Title,
                             siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id,
-                            UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro())
+                            UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro(), companyId)
                         );
 
                     //tr.Commit();
