@@ -275,7 +275,8 @@ namespace Oje.Infrastructure.Models.PageForms
                     var enDate = curCTRLValue.ToEnDate();
                     if (enDate == null)
                         throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
-                    if (enDate.Value <= DateTime.Now.AddDays(ctrl.minDateValidation.Value).AddDays(-1))
+                    var curDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    if (enDate.Value <= curDate.AddDays(ctrl.minDateValidation.Value).AddDays(-1))
                         throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
                 }
             }
@@ -287,7 +288,8 @@ namespace Oje.Infrastructure.Models.PageForms
                     var enDate = curCTRLValue.ToEnDate();
                     if (enDate == null)
                         throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
-                    if (enDate.Value >= DateTime.Now.AddDays(ctrl.maxDateValidation.Value).AddDays(1))
+                    var curDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    if (enDate.Value >= curDate.AddDays(ctrl.maxDateValidation.Value).AddDays(1))
                         throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
                 }
             }

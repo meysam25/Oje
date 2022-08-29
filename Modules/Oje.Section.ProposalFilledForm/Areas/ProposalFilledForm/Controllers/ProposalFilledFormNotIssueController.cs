@@ -269,7 +269,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         {
             ViewBag.isPrint = isPrint;
             ViewBag.cName = ControllerContext.ActionDescriptor.ControllerName;
-            return View(ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.NotIssue));
+            return View(ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId, ProposalFilledFormStatus.NotIssue));
         }
 
         [AreaConfig(Title = "مشاهده شرکت تعیین قیمت فرم پیشنهاد رد شده", Icon = "fa-eye")]

@@ -1,0 +1,10 @@
+﻿@model Oje.PaymentService.Models.View.BankAccountFactorVM
+@using Oje.Infrastructure.Services
+
+<form id="tryAginForm" action="/Payment/Payment/GetWayList" method="post">
+    <input name="status" type="hidden" value="@((((int) Model.Type ) +","+ Model.ObjectId +","+ Model.Price +"," + Model.TargetLink + "," + Model.UserId + "," + Model.errorMessage).Encrypt2())" />
+</form>
+
+<script>
+    document.getElementById('tryAginForm').submit()
+</script>

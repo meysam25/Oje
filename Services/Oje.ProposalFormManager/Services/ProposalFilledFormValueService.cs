@@ -96,6 +96,20 @@ namespace Oje.ProposalFormService.Services
                         }
                     }
                 }
+
+                if(ppfObj.exteraCtrls != null)
+                {
+                    foreach(var item in ppfObj.exteraCtrls)
+                    {
+                        var currValue = form.GetStringIfExist(item.id);
+                        if(!string.IsNullOrEmpty(currValue))
+                        {
+                            int keyId = ProposalFilledFormKeyService.CreateIfNeeded(item.id);
+                            addNewRow(proposalFilledFormId, keyId, currValue);
+                        }
+                    }
+                }
+
                 db.SaveChanges();
             }
         }

@@ -37,6 +37,7 @@ namespace Oje.Security
             services.AddScoped<IValidRangeIpService, ValidRangeIpService>();
             services.AddScoped<IInValidRangeIpService, InValidRangeIpService>();
             services.AddScoped<IIpapiService, IpapiService>();
+            services.AddScoped<IDebugInfoService, DebugInfoService>();
 
             cacheServices = services;
         }

@@ -10,17 +10,7 @@
           "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormIssueAgent/Export",
           "showColumnConfigButton": true,
           "actions": {
-            "delete": {
-              "url": "/ProposalFilledForm/ProposalFilledFormIssueAgent/Delete"
-            },
             "cActions": [
-              {
-                "type": "edit",
-                "icon": "fa-pen",
-                "prop": "id",
-                "url": "/ProposalFilledForm/ProposalFilledFormIssueAgent/GetById",
-                "template": "function bindRow (curRow) { return '<a title=\"ویرایش\" href=\"/ProposalFilledForm/ProposalFilledFormIssueAgent/Edit?fid='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></a>' };bindRow(data)"
-              },
               {
                 "type": "edit",
                 "icon": "fa-share",
@@ -44,24 +34,10 @@
               },
               {
                 "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "modalId": "ProposalFilledFormIssueAgentchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormIssueAgentdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "modalId": "ProposalFilledFormIssueAgentchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/ProposalFilledForm/ProposalFilledFormIssueAgent/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
                 "icon": "fa-file-powerpoint",
                 "prop": "id",
                 "modalId": "ProposalFilledFormIssueAgentchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/ProposalFilledFormIssueAgent/PdfDetailesForAdmin?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/ProposalFilledFormIssueAgent/PdfDetailesForAdmin?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -69,6 +45,13 @@
                 "prop": "id",
                 "modalId": "ProposalFilledFormIssueAgentchangeAgentModal",
                 "template": "function bindRow (curRow) { return '<span title=\"مشاهده مدارک فرم پیشنهاد\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormIssueAgentviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-image\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "ProposalFilledFormIssueAgentchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormIssueAgentdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -116,6 +99,7 @@
             {
               "field": "createDate",
               "caption": "تاریخ ایجاد",
+              "width": "110px",
               "search": {
                 "searchType": "persianDateTime"
               }
@@ -123,6 +107,7 @@
             {
               "field": "targetUserfullname",
               "caption": "بیمه گذار",
+              "width": "170px",
               "search": {
                 "searchType": "text"
               }
@@ -130,6 +115,7 @@
             {
               "field": "targetUserMobileNumber",
               "caption": "همراه بیمه گذار",
+              "width": "125px",
               "search": {
                 "searchType": "text"
               }
@@ -137,6 +123,7 @@
             {
               "field": "targetUserNationalCode",
               "caption": "کد ملی بیمه گذار",
+              "width": "125px",
               "search": {
                 "searchType": "text"
               }
@@ -144,6 +131,7 @@
             {
               "field": "price",
               "caption": "مبلغ",
+              "width": "115px",
               "search": {
                 "searchType": "text"
               }
@@ -151,6 +139,7 @@
             {
               "field": "createUserfullname",
               "caption": "ثبت کننده",
+              "width": "170px",
               "search": {
                 "searchType": "text"
               }

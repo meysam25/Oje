@@ -1,6 +1,7 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Models;
 using Oje.PaymentService.Models.DB;
+using Oje.PaymentService.Models.View;
 
 namespace Oje.PaymentService.Interfaces
 {
@@ -13,5 +14,6 @@ namespace Oje.PaymentService.Interfaces
         List<ProposalFilledFormPaymentVM> GetListBy(BankAccountFactorType type, long objectId, int? siteSettingId);
         BankAccountFactor GetBy(string keyHash, int? siteSettingId);
         void Save();
+        BankAccountFactorVM GetByIdView(string bankAccountFactorId, int? siteSettingId);
     }
 }

@@ -10,17 +10,7 @@
           "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNotIssueAgent/Export",
           "showColumnConfigButton": true,
           "actions": {
-            "delete": {
-              "url": "/ProposalFilledForm/ProposalFilledFormNotIssueAgent/Delete"
-            },
             "cActions": [
-              {
-                "type": "edit",
-                "icon": "fa-pen",
-                "prop": "id",
-                "url": "/ProposalFilledForm/ProposalFilledFormNotIssueAgent/GetById",
-                "template": "function bindRow (curRow) { return '<a title=\"ویرایش\" href=\"/ProposalFilledForm/ProposalFilledFormNotIssueAgent/Edit?fid='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></a>' };bindRow(data)"
-              },
               {
                 "type": "edit",
                 "icon": "fa-share",
@@ -44,24 +34,10 @@
               },
               {
                 "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "modalId": "ProposalFilledFormNotIssueAgentchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNotIssueAgentdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "modalId": "ProposalFilledFormNotIssueAgentchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/ProposalFilledForm/ProposalFilledFormNotIssueAgent/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
                 "icon": "fa-file-powerpoint",
                 "prop": "id",
                 "modalId": "ProposalFilledFormNotIssueAgentchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/ProposalFilledFormNotIssueAgent/PdfDetailesForAdmin?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/ProposalFilledForm/ProposalFilledFormNotIssueAgent/PdfDetailesForAdmin?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -72,17 +48,17 @@
               },
               {
                 "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "modalId": "ProposalFilledFormNotIssueAgentchangeAgentModal",
+                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNotIssueAgentdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
                 "icon": "fa-credit-card ",
                 "prop": "id",
                 "modalId": "ProposalFilledFormNotIssueAgentviewDocuments",
                 "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد مالی\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNotIssueAgentviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-thumbs-up",
-                "prop": "id",
-                "modalId": "ProposalFilledFormNotIssueAgentchangeStatusModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormNotIssueAgent/GetStatus\\', \\'ProposalFilledFormNotIssueAgentchangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -117,6 +93,7 @@
             {
               "field": "createDate",
               "caption": "تاریخ ایجاد",
+              "width": "110px",
               "search": {
                 "searchType": "persianDateTime"
               }
@@ -124,6 +101,7 @@
             {
               "field": "targetUserfullname",
               "caption": "بیمه گذار",
+              "width": "170px",
               "search": {
                 "searchType": "text"
               }
@@ -131,6 +109,7 @@
             {
               "field": "targetUserMobileNumber",
               "caption": "همراه بیمه گذار",
+              "width": "125px",
               "search": {
                 "searchType": "text"
               }
@@ -138,6 +117,7 @@
             {
               "field": "targetUserNationalCode",
               "caption": "کد ملی بیمه گذار",
+              "width": "125px",
               "search": {
                 "searchType": "text"
               }
@@ -145,6 +125,7 @@
             {
               "field": "price",
               "caption": "مبلغ",
+              "width": "115px",
               "search": {
                 "searchType": "text"
               }
@@ -152,6 +133,7 @@
             {
               "field": "createUserfullname",
               "caption": "ثبت کننده",
+              "width": "170px",
               "search": {
                 "searchType": "text"
               }
@@ -915,44 +897,6 @@
             {
               "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNotIssueAgentdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNotIssueAgent/UpdateDocument')",
-              "class": "btn-primary"
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormNotIssueAgentchangeStatusModal",
-          "title": "تغییر وضعیت",
-          "class": "modal-xl",
-          "ctrls": [
-            {
-              "name": "id",
-              "type": "hidden"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-4 col-md-4 col-sm-6 col-xs-12",
-              "name": "status",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/Core/BaseData/Get/ProposalFilledFormStatus",
-              "label": "وضعیت"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "description",
-              "type": "text",
-              "label": "توضیحات"
-            }
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "ذخیره",
-              "onClick": "postModalData(this, 'ppfProposalFilledFormNotIssueAgentGrid', '/ProposalFilledForm/ProposalFilledFormNotIssueAgent/UpdateStatus')",
               "class": "btn-primary"
             }
           ]

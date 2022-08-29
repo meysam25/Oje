@@ -294,8 +294,7 @@ function getPanelTemplate(panel, isInsideModal) {
         result += '</div>';
 
         if (panel.autoScrollToHtml)
-            functionsList.push(function ()
-            {
+            functionsList.push(function () {
                 $('html').animate({ scrollTop: $(this.targetElement).offset().top }, 1000);
             }.bind({ targetElement: panel.autoScrollToHtml }));
     }
@@ -1613,7 +1612,8 @@ function getTextBoxTemplate(ctrl) {
     result += '</div>';
 
     if (ctrl.nationalCodeValidation || hasNumberValidation(ctrl.validations))
-        ctrl.type = 'number';
+        if (!ctrl.nationalCodeValidation)
+            ctrl.type = 'number';
 
 
     functionsList.push(function () {
@@ -1675,17 +1675,34 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.type == "persianDateTime") {
         functionsList.push(function () {
             setTimeout(function () {
+                var curQuiery = $('#' + this.id);
                 var jdtOption = {
                     formatDate: "YYYY/0M/0D",
                     cellWidth: 38,
                     cellHeight: 30,
                     fontSize: 16
                 };
+
                 if (this.ctrl.minDateValidation)
-                    jdtOption.startDate = $('#' + this.id).attr('data-jdp-min-date')
+                    jdtOption.startDate = curQuiery.attr('data-jdp-min-date');
                 if (this.ctrl.maxDateValidation)
-                    jdtOption.endDate = $('#' + this.id).attr('data-jdp-max-date')
-                $('#' + this.id).persianDatepicker(jdtOption);
+                    jdtOption.endDate = curQuiery.attr('data-jdp-max-date');
+
+                if (curQuiery.val()) {
+                    //jdtOption.selectedBefore = true;
+                    jdtOption.selectedDate = curQuiery.val();
+                }
+
+                curQuiery.persianDatepicker(jdtOption);
+
+                //if (curQuiery.val() && curQuiery.attr('pdp-id')) {
+                //    var ppId = curQuiery.attr('pdp-id');
+                //    if ($('#' + ppId).length > 0) {
+                //        $('#' + ppId).find('div[data-jdate="' + curQuiery.val() + '"]').click();
+                //        alert($('#' + ppId).find('div[data-jdate="' + curQuiery.val() + '"]').length);
+                //    }
+                //}
+
 
             }.bind({ id: this.id, ctrl: ctrl }), 100);
         }.bind({ id: ctrl.id }));

@@ -820,8 +820,16 @@ namespace Oje.Infrastructure.Services
                     if (dCryptStatus.IndexOf(",") > 0)
                     {
                         string[] allParamsArr = dCryptStatus.Split(',');
-                        if (allParamsArr.Length == 5)
-                            return new PaymentFactorVM() { type = (Enums.BankAccountFactorType)allParamsArr[0].ToIntReturnZiro(), objectId = allParamsArr[1].ToLongReturnZiro(), price = allParamsArr[2].ToLongReturnZiro(), returnUrl = allParamsArr[3], userId = allParamsArr[4].ToLongReturnZiro() };
+                        if (allParamsArr.Length >= 5)
+                            return new PaymentFactorVM()
+                            {
+                                type = (Enums.BankAccountFactorType)allParamsArr[0].ToIntReturnZiro(),
+                                objectId = allParamsArr[1].ToLongReturnZiro(),
+                                price = allParamsArr[2].ToLongReturnZiro(),
+                                returnUrl = allParamsArr[3],
+                                userId = allParamsArr[4].ToLongReturnZiro(),
+                                errorMessage = allParamsArr.Length >= 6 ? allParamsArr[5] : ""
+                            };
                     }
                 }
             }
@@ -1045,7 +1053,7 @@ namespace Oje.Infrastructure.Services
             {
                 File.WriteAllText(todayKeyValue,
                         (
-                            string.Join(',', GetNewKey(32)) + "&:-:&" + string.Join(',', GetNewKey(16)) + Environment.NewLine 
+                            string.Join(',', GetNewKey(32)) + "&:-:&" + string.Join(',', GetNewKey(16)) + Environment.NewLine
                         ).Encrypt()
                     );
             }

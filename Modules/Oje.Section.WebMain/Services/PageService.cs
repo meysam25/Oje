@@ -278,7 +278,7 @@ namespace Oje.Section.WebMain.Services
         public string GetSiteMap(int? siteSettingId, string baseUrl)
         {
             string siteMapBaseFolder = GlobalConfig.GetSiteMapBaseFolder();
-            string siteMapFilename = Path.Combine(siteMapBaseFolder, "SiteMap.xml");
+            string siteMapFilename = Path.Combine(siteMapBaseFolder, "SiteMap_"+ siteSettingId + ".xml");
 
             if (File.Exists(siteMapFilename))
             {

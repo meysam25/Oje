@@ -1,9 +1,4 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Models
 {
@@ -14,5 +9,6 @@ namespace Oje.Infrastructure.Models
         public long price { get; set; }
         public string returnUrl { get; set; }
         public long? userId { get; set; }
+        public string errorMessage { get; set; }
     }
 }

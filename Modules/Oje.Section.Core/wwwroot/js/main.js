@@ -87,7 +87,7 @@ function findInArray(res, key) {
                 return res[i].value;
         }
     }
-    
+
 }
 
 function bindingForm(selector, key, value, ignoreChanges, res) {
@@ -851,7 +851,7 @@ function postPage(link, formData) {
     $('#' + formId).submit();
 }
 
-var modalZIndex = 1000;
+var modalZIndex = 1006;
 
 $.fn.modal = function (action) {
     function closeModal(curThis) {
@@ -865,8 +865,12 @@ $.fn.modal = function (action) {
         $('body').find('.modal-backdrop:last-child').remove();
     }
     function openModal(curThis) {
+        
         modalZIndex++;
-        $(curThis).css('cssText', 'display:block;z-index:' + modalZIndex + '!important');
+        if ($(window).width() > 650)
+            $(curThis).css('cssText', 'display:block;z-index:' + modalZIndex + '!important');
+        else
+            $(curThis).css('cssText', 'display:block;');
         setTimeout(function () {
             $(curThis).addClass('show');
         }, 100);
@@ -874,7 +878,10 @@ $.fn.modal = function (action) {
             $(this).modal('hide');
         });
         $(curThis).find('.modal-dialog').click(function (e) { e.stopPropagation(); if (window['closeAllDropdownInPage']) closeAllDropdownInPage(); });
-        $('body').addClass('modal-open').append('<div style="z-index:' + (modalZIndex - 1) + ' !important;" class="modal-backdrop fade show"></div>');
+        if ($(window).width() > 650)
+            $('body').addClass('modal-open').append('<div style="z-index:' + (modalZIndex - 1) + ' !important;" class="modal-backdrop fade show"></div>');
+        else
+            $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
         setTimeout(function () { $(curThis).find('input:visible:eq(0)').focus(); $(curThis).find('input:visible:eq(0)').click(); }, 200);
     }
     function bindCloseButton(curThis) {

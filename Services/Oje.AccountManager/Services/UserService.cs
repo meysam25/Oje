@@ -516,11 +516,11 @@ namespace Oje.AccountService.Services
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
 
-                    MySession.Clean(foundItem.LastSessionFileName);
-                    CustomeAuthorizeFilter.CleanCacheByUserId(foundItem.Id, this);
-
                     db.SaveChanges();
                     tr.Commit();
+
+                    MySession.Clean(foundItem.LastSessionFileName);
+                    CustomeAuthorizeFilter.CleanCacheByUserId(foundItem.Id, this);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }
@@ -1006,12 +1006,11 @@ namespace Oje.AccountService.Services
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
 
-                    MySession.Clean(foundItem.LastSessionFileName);
-                    CustomeAuthorizeFilter.CleanCacheByUserId(foundItem.Id, this);
-
-
                     db.SaveChanges();
                     tr.Commit();
+
+                    MySession.Clean(foundItem.LastSessionFileName);
+                    CustomeAuthorizeFilter.CleanCacheByUserId(foundItem.Id, this);
 
                     return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
                 }

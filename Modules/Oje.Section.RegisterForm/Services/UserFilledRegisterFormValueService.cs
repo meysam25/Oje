@@ -70,6 +70,20 @@ namespace Oje.Section.RegisterForm.Services
                         }
                     }
                 }
+
+                if (jsonOpject.exteraCtrls != null)
+                {
+                    foreach (var item in jsonOpject.exteraCtrls)
+                    {
+                        var currValue = requestForm.GetStringIfExist(item.id);
+                        if (!string.IsNullOrEmpty(currValue))
+                        {
+                            long keyId = UserFilledRegisterFormKeyService.CreateIfNeeded(item.id);
+                            addNewRow(formId, keyId, currValue);
+                        }
+                    }
+                }
+
                 db.SaveChanges();
             }
         }

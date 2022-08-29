@@ -49,7 +49,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             if (string.IsNullOrEmpty(redirectUrl))
                 throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
 
-            return Redirect(redirectUrl);
+            return View("RedirectToPage", redirectUrl);
         }
     }
 }

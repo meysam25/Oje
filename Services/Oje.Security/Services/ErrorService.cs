@@ -16,15 +16,18 @@ namespace Oje.Security.Services
     {
         readonly SecurityDBContext db = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+        readonly IDebugInfoService DebugInfoService = null;
 
         public ErrorService
             (
                 SecurityDBContext db,
-                IHttpContextAccessor HttpContextAccessor
+                IHttpContextAccessor HttpContextAccessor,
+                IDebugInfoService DebugInfoService
             )
         {
             this.db = db;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.DebugInfoService = DebugInfoService;
         }
 
         public void Create(long? UserId, string requestId, ApiResultErrorCode? type, BMessages? bMessageCode, string cMessages, IpSections ip, string cLineNumbers, string cFilenames, string refferUrl, string curUrl)
@@ -46,7 +49,9 @@ namespace Oje.Security.Services
                     LineNumber = cLineNumbers,
                     Message = cMessages,
                     RefferUrl = refferUrl,
-                    Url = curUrl
+                    Url = curUrl,
+                    Browser = HttpContextAccessor.HttpContext.GetBroswerName(),
+                    RequestType = HttpContextAccessor?.HttpContext?.Request?.Method
                 };
                 db.Entry(errorModel).State = EntityState.Added;
                 db.SaveChanges();
@@ -57,6 +62,12 @@ namespace Oje.Security.Services
 
                 if (tempForm != null)
                     createParams(errorModel.Id, tempForm);
+
+                var curHeader = HttpContextAccessor.HttpContext?.Request?.Headers;
+                if (!string.IsNullOrEmpty(errorModel.Browser) && errorModel.Browser.IndexOf("Other") > -1 && curHeader != null && curHeader.Keys.Any(t => t == "User-Agent"))
+                    DebugInfoService.Create(HttpContextAccessor.HttpContext?.Request?.Headers["User-Agent"] + "");
+                if (!string.IsNullOrEmpty(errorModel.Message) && errorModel.Message.IndexOf("وی پی ان") > -1 && curHeader != null && curHeader.Keys.Any(t => t == "User-Agent"))
+                    DebugInfoService.Create(HttpContextAccessor.HttpContext?.Request?.Headers["User-Agent"] + "");
             }
         }
 
@@ -118,6 +129,10 @@ namespace Oje.Security.Services
                 quiryResult = quiryResult.Where(t => db.ErrorFirewallManualAdds.Any(tt => tt.Ip4 == t.Ip4 && tt.Ip3 == t.Ip3 && t.Ip2 == tt.Ip2 && tt.Ip1 == t.Ip1));
             if (searchInput.iB == false)
                 quiryResult = quiryResult.Where(t => !db.ErrorFirewallManualAdds.Any(tt => tt.Ip4 == t.Ip4 && tt.Ip3 == t.Ip3 && t.Ip2 == tt.Ip2 && tt.Ip1 == t.Ip1));
+            if (!string.IsNullOrEmpty(searchInput.browser))
+                quiryResult = quiryResult.Where(t => t.Browser.Contains(searchInput.browser));
+            if (!string.IsNullOrEmpty(searchInput.requestType))
+                quiryResult = quiryResult.Where(t => t.RequestType.Contains(searchInput.requestType));
 
 
             switch (searchInput.sortField)
@@ -188,7 +203,9 @@ namespace Oje.Security.Services
                     t.Type,
                     t.Url,
                     t.RefferUrl,
-                    isBlocked = db.ErrorFirewallManualAdds.Any(tt => tt.Ip4 == t.Ip4 && tt.Ip3 == t.Ip3 && t.Ip2 == tt.Ip2 && tt.Ip1 == t.Ip1)
+                    isBlocked = db.ErrorFirewallManualAdds.Any(tt => tt.Ip4 == t.Ip4 && tt.Ip3 == t.Ip3 && t.Ip2 == tt.Ip2 && tt.Ip1 == t.Ip1),
+                    t.RequestType,
+                    t.Browser
                 })
                 .ToList()
                 .Select(t => new ErrorMainGridResultVM
@@ -204,7 +221,9 @@ namespace Oje.Security.Services
                     bMessageCode = (t.BMessageCode != null ? ((int)t.BMessageCode.Value) : -1).ToString(),
                     type = (t.Type != null ? ((int)t.Type.Value) : -1).ToString(),
                     url = t.Url + "<br />" + t.RefferUrl,
-                    iB = t.isBlocked == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName()
+                    iB = t.isBlocked == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
+                    requestType = t.RequestType,
+                    browser = t.Browser
                 })
                 .ToList()
             };

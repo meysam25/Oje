@@ -6,6 +6,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Models.DB;
+using Oje.PaymentService.Models.View;
 using Oje.PaymentService.Services.EContext;
 
 namespace Oje.PaymentService.Services
@@ -103,6 +104,35 @@ namespace Oje.PaymentService.Services
             DateTime createDate = new DateTime(splitIds[3].ToLongReturnZiro());
 
             return db.BankAccountFactors.Where(t => t.BankAccountId == bankAccoundId && t.Type == type.Value && t.ObjectId == objectId && t.CreateDate == createDate).FirstOrDefault();
+        }
+
+        public BankAccountFactorVM GetByIdView(string bankAccountFactorId, int? siteSettingId)
+        {
+            if (string.IsNullOrEmpty(bankAccountFactorId))
+                return null;
+            if (siteSettingId.ToIntReturnZiro() <= 0)
+                return null;
+            if (bankAccountFactorId.IndexOf("_") == -1)
+                return null;
+            var splitIds = bankAccountFactorId.Split('_');
+            if (splitIds.Length != 4)
+                return null;
+
+            int bankAccoundId = splitIds[0].ToIntReturnZiro();
+            int bankAccoundType = splitIds[1].ToIntReturnZiro();
+            BankAccountFactorType? type = null;
+            try { type = (BankAccountFactorType)bankAccoundType; } catch { return null; }
+            long objectId = splitIds[2].ToLongReturnZiro();
+            DateTime createDate = new DateTime(splitIds[3].ToLongReturnZiro());
+
+            return db.BankAccountFactors.Where(t => t.BankAccountId == bankAccoundId && t.Type == type.Value && t.ObjectId == objectId && t.CreateDate == createDate).Select(t => new BankAccountFactorVM 
+            {
+                Type = t.Type,
+                ObjectId = t.ObjectId,
+                Price = t.Price,
+                TargetLink = t.TargetLink,
+                UserId = t.BankAccount.UserId
+            }).FirstOrDefault();
         }
 
         public List<ProposalFilledFormPaymentVM> GetListBy(BankAccountFactorType type, long objectId, int? siteSettingId)

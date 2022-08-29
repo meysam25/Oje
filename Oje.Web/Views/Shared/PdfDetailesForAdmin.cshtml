@@ -147,36 +147,36 @@
         bool canSeeConfirm = true;
         bool canSeeIssue = true;
         bool canSeeReject = true;
-        if(ViewBag.isPrint == null || ViewBag.isPrint == false)
+        if((ViewBag.isPrint == null || ViewBag.isPrint == false) && ViewBag.cName != null)
         {
-            if(ViewBag.cName == "ProposalFilledFormConfirm")
+            if((ViewBag.cName + "").StartsWith("ProposalFilledFormConfirm"))
             {
                 canSeeW8ForConfirm = false;
                 canSeeNeedSpecialist = false;
                 canSeeConfirm = false;
                 canSeeReject = false;
-            } else if(ViewBag.cName == "ProposalFilledFormIssue")
+            } else if((ViewBag.cName + "").StartsWith("ProposalFilledFormIssue"))
             {
                 canSeeW8ForConfirm = false;
                 canSeeNeedSpecialist = false;
                 canSeeConfirm = false;
                 canSeeIssue = false;
                 canSeeReject = false;
-            } else if(ViewBag.cName == "ProposalFilledFormNeedSpecialist")
+            } else if((ViewBag.cName + "").StartsWith("ProposalFilledFormNeedSpecialist"))
             {
                 canSeeW8ForConfirm = false;
                 canSeeNeedSpecialist = false;
-            } else if(ViewBag.cName == "ProposalFilledFormNew")
+            } else if((ViewBag.cName + "").StartsWith("ProposalFilledFormNew"))
             {
                 
-            } else if(ViewBag.cName == "ProposalFilledFormNotIssue")
+            } else if((ViewBag.cName + "").StartsWith("ProposalFilledFormNotIssue"))
             {
                 canSeeW8ForConfirm = false;
                 canSeeNeedSpecialist = false;
                 canSeeConfirm = false;
                 canSeeIssue = false;
                 canSeeReject = false;
-            } else if(ViewBag.cName == "ProposalFilledFormW8ForConfirm")
+            } else if((ViewBag.cName + "").StartsWith("ProposalFilledFormW8ForConfirm"))
             {
                 canSeeW8ForConfirm = false;
             } else
@@ -192,33 +192,37 @@
                     if(canSeeW8ForConfirm == true)
                     {
                          <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormW8ForConfirm/Index" data-status="2" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >در انتظار تایید</button>
+                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormW8ForConfirm@((ViewBag.cName + "").IndexOf("Agent") > -1 ? "Agent" : "")/Index" data-status="2" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >در انتظار تایید</button>
                         </div>
                     }
                     if(canSeeNeedSpecialist == true)
                     {
                         <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormNeedSpecialist/Index" data-status="3" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >نیاز به کارشناسی</button>
+                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormNeedSpecialist@((ViewBag.cName + "").IndexOf("Agent") > -1 ? "Agent" : "")/Index" data-status="3" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >نیاز به کارشناسی</button>
                         </div>
                     }
                     if(canSeeConfirm == true)
                     {
                          <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormConfirm/Index" data-status="4" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >تایید شده</button>
+                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormConfirm@((ViewBag.cName + "").IndexOf("Agent") > -1 ? "Agent" : "")/Index" data-status="4" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >تایید شده</button>
                         </div>
                     }
                     if(canSeeIssue == true)
                     {
                         <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-issue data-success-url="/ProposalFilledForm/ProposalFilledFormIssue/Index" data-status="5" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >ارسال برای صدور</button>
+                            <button data-issue data-success-url="/ProposalFilledForm/ProposalFilledFormIssue@((ViewBag.cName + "").IndexOf("Agent") > -1 ? "Agent" : "")/Index" data-status="5" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-success btn-block" >ارسال برای صدور</button>
                         </div>
                     }
                     if(canSeeReject == true)
                     {
                          <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormNotIssue/Index" data-status="6" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-warning btn-block" >رد فرم پیشنهاد</button>
+                            <button data-change-status data-success-url="/ProposalFilledForm/ProposalFilledFormNotIssue@((ViewBag.cName + "").IndexOf("Agent") > -1 ? "Agent" : "")/Index" data-status="6" data-id="@Model.proposalFilledFormId" class="btn btn-primary btn-warning btn-block" >رد فرم پیشنهاد</button>
                         </div>
                     }
+
+                    <div class="col-md-2 col-lg-2 col-sm-2 col-xs-12" style="text-align:center;padding-top:10px;">
+                        <a href="/ProposalFilledForm/@(ViewBag.cName)/DownloadPdf?id=@Model.proposalFilledFormId" data-id="" class="btn btn-primary btn-warning btn-block" >دانلود فرم پیشنهاد</a>
+                    </div>
                 }
                 <script>
                     $('button[data-change-status]').click(function() 
@@ -245,6 +249,13 @@
                                 },
                                 {
                                     "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                                    "name": "insuranceNumber",
+                                    "type": "text",
+                                    "label": "شماره بیمه نامه یا کد یکتا",
+                                    "isRequired": true
+                                },
+                                {
+                                    "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
                                     "name": "startDate",
                                     "type": "persianDateTime",
                                     "label": "تاریخ شروع",
@@ -263,16 +274,17 @@
                                 },
                                 {
                                     "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-                                    "name": "insuranceNumber",
-                                    "type": "text",
-                                    "label": "شماره بیمه نامه",
-                                    "isRequired": true
-                                },
-                                {
-                                    "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
                                     "name": "description",
                                     "type": "text",
                                     "label": "توضیحات"
+                                },
+                                {
+                                  "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                                  "name": "mainFile",
+                                  "type": "file",
+                                  "label": "تصویر یا فایل بیمه نامه صادر شده",
+                                  "acceptEx": ".jpg,.jpeg,.png,.doc,.docx,.pdf",
+                                  "hideImagePreview": true
                                 }
                                 ],
                                 "actions": [

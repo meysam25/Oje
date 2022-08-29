@@ -4,7 +4,7 @@ using Oje.Security.Models.DB;
 
 namespace Oje.Security.Services.EContext
 {
-    public class SecurityDBContext: MyBaseDbContext
+    public class SecurityDBContext : MyBaseDbContext
     {
         public SecurityDBContext(DbContextOptions<SecurityDBContext> options) : base(options)
         {
@@ -36,6 +36,7 @@ namespace Oje.Security.Services.EContext
         public DbSet<ErrorFirewallManualAdd> ErrorFirewallManualAdds { get; set; }
         public DbSet<ValidRangeIp> ValidRangeIps { get; set; }
         public DbSet<InValidRangeIp> InValidRangeIps { get; set; }
+        public DbSet<DebugInfo> DebugInfos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

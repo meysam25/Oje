@@ -123,6 +123,8 @@ namespace Oje.Section.RegisterForm.Services
                         foreach (var userrole in newUser.UserRoles)
                             db.Entry(userrole).State = EntityState.Deleted;
 
+                    db.SaveChanges();
+
                     if (roleIds != null && roleIds.Count > 0)
                     {
                         foreach (var roleId in roleIds)

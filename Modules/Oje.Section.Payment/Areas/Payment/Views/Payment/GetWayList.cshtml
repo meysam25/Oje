@@ -56,10 +56,13 @@
         align-items: center;
         justify-content: center;
         min-height:100%;
+        flex-direction:column;
     }
 </style>
 
+
 <div class="holderItems">
+    <div style="font-weight:bold;color:red;font-size:25px;padding:10px;" >@ViewBag.lastErrorMessage</div>
     @{
         if (Model != null && Model.Count > 0)
         {

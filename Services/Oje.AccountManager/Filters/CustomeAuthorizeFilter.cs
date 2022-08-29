@@ -172,7 +172,7 @@ namespace Oje.AccountService.Filters
                 (context.Request.RouteValues.ContainsKey("action") ? "/" + context.Request.RouteValues["action"] : "");
         }
 
-        static void fillUserCache(long UserId, IUserService UserService)
+        static void fillUserCache(long UserId, IUserService UserService, bool forceToUpdate = false)
         {
             if (UserId <= 0)
                 return;
@@ -180,7 +180,7 @@ namespace Oje.AccountService.Filters
                 UserAccessCaches = new List<UserAccessCache>();
 
             if (!UserAccessCaches.Any(t => t.UserId == UserId) ||
-                UserAccessCaches.Where(t => t.UserId == UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null)
+                UserAccessCaches.Where(t => t.UserId == UserId && (DateTime.Now - t.CreateDate).TotalMinutes > 10).FirstOrDefault() != null || forceToUpdate == true)
             {
                 var userAccess = UserService.GetUserSections(UserId);
                 var foundItem = UserAccessCaches.Where(t => t.UserId == UserId).FirstOrDefault();
@@ -198,7 +198,7 @@ namespace Oje.AccountService.Filters
         internal static void CleanCacheByUserId(long userId, IUserService UserService)
         {
             if (UserAccessCaches != null)
-                fillUserCache(userId, UserService);
+                fillUserCache(userId, UserService, true);
         }
     }
 }

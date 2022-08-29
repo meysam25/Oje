@@ -69,11 +69,11 @@ $.fn.initMyGrid = function (option) {
 
             if (searchConfig.search) {
                 if (searchConfig.search.searchType == 'text') {
-                    result += '<input type="text" readonly onfocus="this.removeAttribute(\'readonly\');" autocomplete="off" value="" placeholder="' + searchConfig.caption + '" class="form-control" name="' + searchConfig.field + '" />';;
+                    result += '<input type="text" readonly onfocus="this.removeAttribute(\'readonly\');" autocomplete="off" value=""  class="form-control" name="' + searchConfig.field + '" />';;
                 } else if (searchConfig.search.searchType == 'date') {
-                    result += '<input type="text" autocomplete="off" placeholder="' + searchConfig.caption + '" class="form-control myGridPersianDP" name="' + searchConfig.field + '" />';;
+                    result += '<input type="text" autocomplete="off" class="form-control myGridPersianDP" name="' + searchConfig.field + '" />';;
                 } else if (searchConfig.search.searchType == 'dropdown') {
-                    result += '<select placeholder="' + searchConfig.caption + '" data-valueField = "' + searchConfig.search.valueField + '" data-textField="' + searchConfig.search.textField + '" data-url="' + searchConfig.search.url + '" class="form-control" name="' + searchConfig.field + '">/select>';
+                    result += '<select data-valueField = "' + searchConfig.search.valueField + '" data-textField="' + searchConfig.search.textField + '" data-url="' + searchConfig.search.url + '" class="form-control" name="' + searchConfig.field + '">/select>';
                 } else if (searchConfig.search.searchType == 'persianDateTime') {
                     result += '<input data-jdp value="" autocomplete="off" class="form-control myGridPersianDP" name="' + searchConfig.field + '" />';;
                 }

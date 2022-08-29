@@ -160,7 +160,7 @@ namespace Oje.Section.RegisterForm.Services
                     tr.Commit();
                     newFormId = newItem.Id;
 
-                    UserService.TemproryLogin(userId, siteSettingId, DateTime.Now.AddHours(2));
+                    //UserService.TemproryLogin(userId, siteSettingId, DateTime.Now.AddHours(2));
                 }
                 catch (Exception)
                 {
@@ -275,6 +275,8 @@ namespace Oje.Section.RegisterForm.Services
 
             var allCtrls = ppfObj.GetAllListOf<ctrl>();
 
+            List<IdTitle> exteraTextBox = new List<IdTitle>();
+
             foreach (ctrl ctrl in allCtrls)
             {
                 if (ctrl.isCtrlVisible(form, allCtrls) == true)
@@ -287,7 +289,7 @@ namespace Oje.Section.RegisterForm.Services
                     ctrl.validateAndUpdateCtrl(ctrl, form, allCtrls);
                     ctrl.validateAndUpdateMultiRowInputCtrl(ctrl, form, ppfObj);
                     ctrl.validateMinAndMaxDayForDateInput(ctrl, form);
-                    ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form);
+                    exteraTextBox.AddRange(ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form));
                     validateByUrl(ctrl, form);
 
                 }
@@ -298,6 +300,8 @@ namespace Oje.Section.RegisterForm.Services
             validatePriceCtrl(allCtrls, form);
             validateCompany(allCtrls, form, siteSettingId);
             validateBank(allCtrls, form);
+
+            ppfObj.exteraCtrls = exteraTextBox;
         }
 
         private void validateBank(List<ctrl> ctrls, IFormCollection form)
@@ -451,7 +455,6 @@ namespace Oje.Section.RegisterForm.Services
         {
             var result = new userFilledRegisterFormDetailesVM();
             var foundItem = db.UserFilledRegisterForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (isLoginRequired == false || loginUserId == t.UserId) && t.UserId != null)
-               .Where(t => t.Id == id)
                .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
                .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
                .Select(t => new

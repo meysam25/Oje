@@ -109,6 +109,20 @@
               }
             },
             {
+              "field": "requestType",
+              "caption": "نوع درخواست",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "browser",
+              "caption": "مرورگر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
               "field": "iB",
               "caption": "فایروال؟",
               "sort": true,

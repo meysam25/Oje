@@ -81,8 +81,6 @@ namespace Oje.Security.Filters
                 tempEx = tempEx.InnerException;
             }
 
-            
-
             var curIp = context.HttpContext.GetIpAddress();
             if (curIp != null)
                 ErrorService.Create(context.HttpContext.GetLoginUser()?.UserId, context.HttpContext.TraceIdentifier, be?.Code, be?.BMessages, cMessages, curIp, cLineNumbers, cFilenames, context.HttpContext?.Request?.GetFullRefererUrl(), context.HttpContext?.Request?.Path != null ? context.HttpContext?.Request?.Path.Value : "");

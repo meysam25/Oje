@@ -42,6 +42,12 @@ namespace Oje.Security.Models.DB
         public string Url { get; set; }
         [MaxLength(200)]
         public string RefferUrl { get; set; }
+        [MaxLength(50)]
+        public string RequestType { get; set; }
+        [MaxLength(200)]
+        public string Browser { get; set; }
+        
+
 
         [InverseProperty("Error")]
         public List<ErrorParameter> ErrorParameters { get; set; }

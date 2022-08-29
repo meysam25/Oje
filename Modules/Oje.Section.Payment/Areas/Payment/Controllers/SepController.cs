@@ -10,7 +10,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
 {
     [Area("Payment")]
     [Route("[Area]/[Controller]/[Action]")]
-    public class SepController: Controller
+    public class SepController : Controller
     {
         readonly IBankAccountFactorService BankAccountFactorService = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
@@ -48,9 +48,16 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
         {
             string redirectUrl = await BankAccountSepPaymentService.ConfirmPayment(input, SiteSettingService.GetSiteSetting()?.Id);
             if (string.IsNullOrEmpty(redirectUrl))
-                throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
+            {
+                var foundFactor = BankAccountFactorService.GetByIdView(input.ResNum, SiteSettingService.GetSiteSetting()?.Id);
+                if (foundFactor == null)
+                    throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
 
-            return Redirect(redirectUrl);
+                foundFactor.errorMessage = BMessages.Payment_Was_UnsuccessFull.GetEnumDisplayName();
+                return View("postToPaymentPage", foundFactor);
+            }
+
+            return View("RedirectToPage", redirectUrl);
         }
     }
 }

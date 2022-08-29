@@ -17,5 +17,6 @@ namespace Oje.FileService.Interfaces
         bool IsValidImageSize(IFormFile mainImage, bool isWidthCheck, decimal relatedRateStart, decimal relatedRateEnd);
         object Delete(long? id, int? siteSettingId);
         object GetList(UploadedFileMainGrid searchInput, int? siteSettingId);
+        UploadedFile GetFile(string fn);
     }
 }

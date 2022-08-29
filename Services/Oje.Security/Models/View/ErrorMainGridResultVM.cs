@@ -34,5 +34,9 @@ namespace Oje.Security.Models.View
         public MyHtmlString url { get; set; }
         [Display(Name = "فایروال؟")]
         public string iB { get; set; }
+        [Display(Name = "مروگر")]
+        public string browser { get; set; }
+        [Display(Name = "نوع درخواست")]
+        public string requestType { get; set; }
     }
 }

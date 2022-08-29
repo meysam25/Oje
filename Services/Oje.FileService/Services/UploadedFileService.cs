@@ -103,7 +103,7 @@ namespace Oje.FileService.Services
             newFile.FileName = GlobalConfig.GetUploadImageDirecotryRoot(subFolder) + (objectId != null ? "/" + objectId : "") + "/" + fn;
             newFile.FileSize = new FileInfo(newFile.FileNameOnServer).Length;
             new FileExtensionContentTypeProvider().TryGetContentType(new FileInfo(newFile.FileName).Name, out FileContentType);
-            newFile.FileContentType = FileContentType;
+            newFile.FileContentType = " ";
             db.SaveChanges();
 
             return "?fn=" + fn;
@@ -219,6 +219,7 @@ namespace Oje.FileService.Services
                 if (foundId > 0)
                 {
                     result = db.UploadedFiles
+                        .AsNoTracking()
                         .Where(t => t.Id == foundId)
                         .FirstOrDefault();
                     if (result != null && result.IsFileAccessRequired == true)
@@ -389,6 +390,25 @@ namespace Oje.FileService.Services
                 })
                 .ToList()
             };
+        }
+
+        public UploadedFile GetFile(string fn)
+        {
+            UploadedFile result = null;
+
+            if (!string.IsNullOrEmpty(fn) && fn.IndexOf("_") > 0)
+            {
+                long foundId = fn.Split('_')[0].ToLongReturnZiro();
+                if (foundId > 0)
+                {
+                    result = db.UploadedFiles
+                        .AsNoTracking()
+                        .Where(t => t.Id == foundId)
+                        .FirstOrDefault();
+                }
+            }
+
+            return result;
         }
     }
 }

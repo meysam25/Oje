@@ -644,7 +644,7 @@ namespace Oje.Section.Blog.Services
         public string GetBlogSiteMap(int? siteSettingId, string baseUrl)
         {
             string siteMapBaseFolder = GlobalConfig.GetSiteMapBaseFolder();
-            string siteMapFilename = Path.Combine(siteMapBaseFolder, "BlogSiteMap.xml");
+            string siteMapFilename = Path.Combine(siteMapBaseFolder, "BlogSiteMap_"+ siteSettingId + ".xml");
 
             if (File.Exists(siteMapFilename))
             {

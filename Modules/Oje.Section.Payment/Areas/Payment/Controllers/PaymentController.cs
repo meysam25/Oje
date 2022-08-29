@@ -42,6 +42,7 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
             ViewBag.status = status;
             ViewBag.Title = "پرداخت فاکتور به مبلغ " + payModel.price.ToString("###,###") + " ریال";
             ViewBag.price = "مبلغ " + payModel.price.ToString("###,###") + " ریال";
+            ViewBag.lastErrorMessage = payModel.errorMessage;
 
             return View(allUserGW);
         }
