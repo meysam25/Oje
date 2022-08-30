@@ -209,6 +209,39 @@ namespace Oje.PaymentService.Services
             }
         }
 
+        public async Task<FactorPayInquiryResultVM> PaymentVerifyAsync(FactorPayInquiryVM input, int? siteSettingId)
+        {
+            inquiryFactorValidation(input, siteSettingId);
+            var loginToken = await LoginAsync(siteSettingId);
+            if (loginToken == null)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+
+            try
+            {
+                using (var stringContent = new StringContent(JsonConvert.SerializeObject(input, Formatting.Indented), Encoding.UTF8, "application/json"))
+                using (var client = HttpClientFactory.CreateClient())
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginToken.token);
+                    client.BaseAddress = new Uri(GlobalConfig.Configuration["PaymentUrls:TitakPaymentG"] + ":6001");
+                    HttpResponseMessage clientResult = await client.PostAsync("/api/Factor/PaymentVerify", stringContent);
+                    var temp = await clientResult.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<FactorPayInquiryResultVM>(temp);
+                    if (clientResult.IsSuccessStatusCode)
+                        return result;
+                    else
+                        throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+                }
+            }
+            catch (BException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+            }
+        }
+
         private void inquiryFactorValidation(FactorPayInquiryVM input, int? siteSettingId)
         {
             if (input == null)

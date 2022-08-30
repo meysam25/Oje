@@ -9,6 +9,8 @@ using Oje.JoinServices.Interfaces;
 using Oje.Security.Interfaces;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Enums;
+using Oje.Infrastructure;
+using System.Collections.Generic;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -74,6 +76,21 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            var curSetting = SiteSettingService.GetSiteSetting();
+            if (curSetting == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            GlobalServices.FillSeoInfo(
+                  ViewData,
+                   curSetting.Title,
+                   curSetting.SeoMainPage,
+                   Request.Scheme + "://" + Request.Host + "/Account/Dashboard/Login",
+                   Request.Scheme + "://" + Request.Host + "/Account/Dashboard/Login",
+                   WebSiteTypes.website,
+                   Request.Scheme + "://" + Request.Host + GlobalConfig.FileAccessHandlerUrl + curSetting.Image512,
+                   null
+                   );
+
             ViewBag.HideLoginButton = true;
             return View();
         }

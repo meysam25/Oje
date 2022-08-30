@@ -76,7 +76,7 @@ namespace Oje.Section.Core.Areas.Controllers
             if (!string.IsNullOrEmpty(fi.Name))
                 new FileExtensionContentTypeProvider().TryGetContentType(new FileInfo(fi.Name).Name, out rFileContentType);
 
-            if (foundFile.FileContentType != null && rFileContentType != foundFile.FileContentType)
+            if (foundFile.FileContentType != " " && foundFile.FileContentType != null && rFileContentType != foundFile.FileContentType)
                 return Content("File Not Found");
 
             return File(System.IO.File.ReadAllBytes(foundFile.FileNameOnServer), rFileContentType, fi.Name);

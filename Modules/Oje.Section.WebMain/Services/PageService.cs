@@ -316,7 +316,7 @@ namespace Oje.Section.WebMain.Services
             foreach (var blog in allBlogs)
             {
                 sb.Append("<url>");
-                sb.Append("<loc>" + baseUrl + "/" + GenerateUrlForPage(blog.title, blog.id) + "</loc>");
+                sb.Append("<loc>" + baseUrl + GenerateUrlForPage(blog.title, blog.id) + "</loc>");
                 sb.Append("<lastmod>" + blog.publishDate.ToString("yyyy-MM-dd") + "</lastmod>");
                 sb.Append("</url>");
             }

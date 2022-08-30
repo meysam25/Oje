@@ -103,7 +103,7 @@ namespace Oje.FileService.Services
             newFile.FileName = GlobalConfig.GetUploadImageDirecotryRoot(subFolder) + (objectId != null ? "/" + objectId : "") + "/" + fn;
             newFile.FileSize = new FileInfo(newFile.FileNameOnServer).Length;
             new FileExtensionContentTypeProvider().TryGetContentType(new FileInfo(newFile.FileName).Name, out FileContentType);
-            newFile.FileContentType = " ";
+            newFile.FileContentType = FileContentType;
             db.SaveChanges();
 
             return "?fn=" + fn;
