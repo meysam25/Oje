@@ -31,7 +31,7 @@ $.fn.loadYourQuestionList = function (url, exteraParameters) {
             else {
                 $(this.curThis).hide();
             }
-        }.bind({ curThis: this }));
+        }.bind({ curThis: this }), null, null, null, 'GET');
     });
 };
 
@@ -40,7 +40,6 @@ function getYourQuestionBeginTemplate() {
         <section class="yourQuestion ">
             <div class="yourQuestionTitle">پرسش های شما</div>
             <div class="holderyourQuestionItems">
-        
 `;
 }
 

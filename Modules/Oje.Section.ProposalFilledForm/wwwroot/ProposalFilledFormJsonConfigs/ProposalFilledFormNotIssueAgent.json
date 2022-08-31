@@ -1,6 +1,7 @@
 ﻿{
   "panels": [
     {
+      "title": "پیشنهاد رد شده",
       "grids": [
         {
           "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangeNotIssue" ],

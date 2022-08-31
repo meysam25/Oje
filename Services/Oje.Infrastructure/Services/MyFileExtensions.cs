@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oje.Infrastructure.Services
 {
@@ -35,6 +31,7 @@ namespace Oje.Infrastructure.Services
             { ".pdf", new byte[] { 37, 80, 68, 70 }  },
             { ".xlsx", new byte[] { 80, 75, 3, 4 }  },
             { ".svg", new byte[] { 60, 115, 118, 103 }  },
+            { ".mp4", new byte[] { 0, 0, 0, 32, 102, 116, 121, 112 }  },
             { ".webm", new byte[] { 26, 69, 223, 163, 159 }  }
         };
     }

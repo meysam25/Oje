@@ -40,7 +40,7 @@ function bindTopLeftIcons() {
                 $('#' + modalId).modal('show');
             });
         }
-    });
+    }, null, null, null, 'GET');
 }
 
 function bindFooterIcons() {
@@ -77,7 +77,7 @@ function bindFooterIcons() {
             $('#aInestageram').css('display', 'none');
             $('#aLinkin').css('display', 'none');
         }
-    });
+    }, null, null, null, 'GET');
 }
 
 function addTopLeftIcons(title, imgSrc, des, isVisibleAllways) {

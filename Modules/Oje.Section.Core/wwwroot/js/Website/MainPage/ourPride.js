@@ -90,6 +90,6 @@ $.fn.loadAndBindOurPride = function (url) {
             $(this.curThis).find('.ourPrideSectionItems').html(template);
             $(this.curThis).find('img[data-src]').loadImageOnScroll();
             $(this.curThis).find('.ourPrideSectionItem').initAutoNumber(300);
-        }.bind({ curThis: this }));
+        }.bind({ curThis: this }), null, null, null, 'GET');
     });
 }

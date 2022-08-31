@@ -692,5 +692,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Dont_Use_VPN = 342,
         [Display(Name = "شماره پلاک صحیح نمی باشد")]
         Invalid_Plaque = 343,
+        [Display(Name = "لطفا نوع فایل را وارد کنید")]
+        Please_Enter_File_Type = 344,
     }
 }

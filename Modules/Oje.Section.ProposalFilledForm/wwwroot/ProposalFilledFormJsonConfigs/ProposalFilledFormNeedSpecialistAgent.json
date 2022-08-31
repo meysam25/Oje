@@ -1,6 +1,7 @@
 ﻿{
   "panels": [
     {
+      "title": "پیشنهاد نیاز به کارشناسی",
       "grids": [
         {
           "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangeNeedSpecialist" ],
@@ -471,7 +472,7 @@
         },
         {
           "id": "ProposalFilledFormNeedSpecialistAgentnewCompanyModal",
-          "title": "افزودن شرکت جدید",
+          "title": "افزودن تعیین قیمت جدید",
           "ctrls": [
             {
               "name": "id",
@@ -499,7 +500,7 @@
               "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
               "name": "mainFile",
               "type": "file",
-              "label": "فرم پیشنهاد",
+              "label": "الحاقیه تعیین قیمت",
               "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
             }
           ],
@@ -518,7 +519,7 @@
         },
         {
           "id": "ProposalFilledFormNeedSpecialistAgenteditCompanyModal",
-          "title": "ویرایش شرکت",
+          "title": "ویرایش تعیین قیمت",
           "ctrls": [
             {
               "name": "id",
@@ -547,7 +548,7 @@
               "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
               "name": "mainFile",
               "type": "file",
-              "label": "فرم پیشنهاد",
+              "label": "الحاقیه تعیین قیمت",
               "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
             }
           ],

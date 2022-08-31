@@ -113,7 +113,7 @@
         <header id="headerTagHolder">
             <section class="topHeader">
                 <div class="myContainer">
-                    <a id="mainSiteLogoIcon" title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" width="85" height="77" /></a>
+                    <a id="mainSiteLogoIcon" title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image192)" width="85" height="77" /></a>
                     <div id="placeholderTopLeftIcon"></div>
                     <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="@curSetting.Title" href="/">@curSetting.Title</a></h1>
                 </div>
@@ -145,7 +145,7 @@
                         @{
                             if (ViewBag.HideLoginButton != true)
                             {
-                                <a href="#" class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
+                                <a title="ورود | ثبت نام" href="#" class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
                                 <script>
                                     $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig', 'loginForgetPasswordModal');
                                 </script>
@@ -316,12 +316,12 @@
         }
 
         $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
-        localStorage.clear();
+        //localStorage.clear();
         @{
-            if (Context.Request.IsHttps)
-            {
-                ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
-            }
+            //if (Context.Request.IsHttps)
+            //{
+            //    ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+            //}
         }
     </script>
     @RenderSection("FooterR", required: false)

@@ -20,7 +20,7 @@ namespace Oje.Section.Question.Areas.Question.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetList()
         {
             return Json(YourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id));

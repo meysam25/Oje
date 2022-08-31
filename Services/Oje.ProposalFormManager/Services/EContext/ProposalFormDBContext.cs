@@ -70,6 +70,7 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<AgentReffer> AgentReffers { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<ProposalFilledFormCacheJson> ProposalFilledFormCacheJsons { get; set; }
+        public DbSet<ProposalFilledFormStatusLogFile> ProposalFilledFormStatusLogFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -83,7 +84,6 @@ namespace Oje.ProposalFormService.Services.EContext
             modelBuilder.Entity<CarSpecificationAmount>().Property(e => e.Rate).HasPrecision(7, 5);
 
             modelBuilder.Entity<InquiryCompanyLimitCompany>().HasKey(t => new { t.CompanyId, t.InquiryCompanyLimitId });
-            modelBuilder.Entity<ProposalFilledFormStatusLog>().HasKey(t => new { t.ProposalFilledFormId, t.Type, t.CreateDate });
             modelBuilder.Entity<UserCompany>().HasKey(t => new { t.CompanyId, t.UserId });
             modelBuilder.Entity<ProposalFilledFormCompany>().HasKey(t => new { t.CompanyId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormUser>().HasKey(t => new { t.ProposalFilledFormId, t.UserId, t.Type });

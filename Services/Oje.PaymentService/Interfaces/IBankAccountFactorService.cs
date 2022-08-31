@@ -15,5 +15,6 @@ namespace Oje.PaymentService.Interfaces
         BankAccountFactor GetBy(string keyHash, int? siteSettingId);
         void Save();
         BankAccountFactorVM GetByIdView(string bankAccountFactorId, int? siteSettingId);
+        BankAccountFactorVM GetByIdView(int keyHash, int? siteSettingId);
     }
 }

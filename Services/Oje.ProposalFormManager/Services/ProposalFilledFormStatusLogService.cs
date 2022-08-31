@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
@@ -15,28 +16,47 @@ namespace Oje.ProposalFormService.Services
     {
         readonly ProposalFormDBContext db = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
-        public ProposalFilledFormStatusLogService(ProposalFormDBContext db, IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService)
+        readonly IProposalFilledFormStatusLogFileService ProposalFilledFormStatusLogFileService = null;
+        public ProposalFilledFormStatusLogService
+            (
+                ProposalFormDBContext db, 
+                IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
+                IProposalFilledFormStatusLogFileService ProposalFilledFormStatusLogFileService
+            )
         {
             this.db = db;
             this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
+            this.ProposalFilledFormStatusLogFileService = ProposalFilledFormStatusLogFileService;
         }
 
-        public void Create(long? proposalFilledFormId, ProposalFilledFormStatus? status, DateTime now, long? userId, string description)
+        public void Create(long? proposalFilledFormId, ProposalFilledFormStatus? status, DateTime now, long? userId, string description, string fullname, List<ProposalFilledFormChangeStatusFileVM> fileList, int? siteSettingId)
         {
 
             if (proposalFilledFormId.ToLongReturnZiro() > 0 && status != null && userId.ToLongReturnZiro() > 0)
             {
                 if (!string.IsNullOrEmpty(description) && description.Length > 4000)
                     throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
-                db.Entry(new ProposalFilledFormStatusLog()
+
+                var newLog = new ProposalFilledFormStatusLog()
                 {
                     CreateDate = now,
                     ProposalFilledFormId = proposalFilledFormId.Value,
                     Type = status.Value,
                     UserId = userId.Value,
-                    Description = description
-                }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                    Description = description,
+                    FullName = fullname,
+                };
+
+                db.Entry(newLog).State = EntityState.Added;
                 db.SaveChanges();
+
+                if(fileList != null && fileList.Count > 0)
+                {
+                    foreach(var file in fileList)
+                    {
+                        ProposalFilledFormStatusLogFileService.Create(newLog.Id, file, siteSettingId, userId);
+                    }
+                }
             }
         }
 

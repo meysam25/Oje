@@ -25,7 +25,7 @@ $.fn.initSlider = function (options) {
         var result = '';
 
         if (item.img) {
-            result += '<a ' + (item.url ? 'target="_blank"' : '') + (' href="' + (item.url ? item.url : '#') + '"') + '" style="width:' + getImageWidth(options, curWindowWidth) + 'px" class="mySliderItem">';
+            result += '<a title="' + item.title +'" ' + (item.url ? 'target="_blank"' : '') + (' href="' + (item.url ? item.url : '#') + '"') + '" style="width:' + getImageWidth(options, curWindowWidth) + 'px" class="mySliderItem">';
             result += '<img width="300" height="300" class="mySliderMainImage"  alt="' + (item.title ? item.title : '') + '" data-src="' + item.img + '" />';
             if (item.title && !options.dontShowTitle)
                 result += '<div class="mySliderItemTitle">' + item.title + '</div>';

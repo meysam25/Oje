@@ -566,7 +566,27 @@ function getCookie(name) {
     return null;
 }
 
-function postForm(url, postData, success, error, completeEvent, ignoreAutoToast) {
+function fillUrlIfNeeded(rType, postData, url) {
+
+    if (rType == 'GET' && url) {
+        if (postData) {
+            for (var pair of postData.entries()) {
+                if (url.indexOf('?') > 0) {
+                    url = url + '&' + pair[0] + '=' + pair[1];
+                } else {
+                    url = url + '?' + pair[0] + '=' + pair[1];
+                }
+            }
+        }
+    }
+
+    return url;
+}
+
+function postForm(url, postData, success, error, completeEvent, ignoreAutoToast, rType) {
+    if (!rType)
+        rType = 'POST';
+    url = fillUrlIfNeeded(rType, postData, url)
     var foundDataFromCache = getDataFromLocalStorageCache(url);
     if (foundDataFromCache) {
         if (success)
@@ -579,7 +599,7 @@ function postForm(url, postData, success, error, completeEvent, ignoreAutoToast)
             data: postData,
             processData: false,
             contentType: false,
-            type: 'POST',
+            type: rType,
             success: function (res) {
                 cacheLocalstorage(this.url, res);
                 if (success) {

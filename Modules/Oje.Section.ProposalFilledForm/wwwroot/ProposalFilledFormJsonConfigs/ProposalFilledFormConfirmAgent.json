@@ -1,6 +1,7 @@
 ﻿{
   "panels": [
     {
+      "title": "پیشنهاد تایید شده",
       "grids": [
         {
           "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangeW8ForConfirm" ],
@@ -47,13 +48,6 @@
               },
               {
                 "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "modalId": "ProposalFilledFormConfirmAgentdeterminPriceModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormConfirmAgentdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
                 "icon": "fa-credit-card ",
                 "prop": "id",
                 "modalId": "ProposalFilledFormConfirmAgentviewDocuments",
@@ -65,13 +59,6 @@
                 "prop": "id",
                 "modalId": "ProposalFilledFormConfirmAgentviewPPFStatusHistory",
                 "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormConfirmAgentviewPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-check",
-                "prop": "id",
-                "modalId": "ProposalFilledFormConfirmAgentissuePPFModal",
-                "template": "function bindRow (curRow) { return '<span title=\"صدور\" onclick=\"showEditModal('+ curRow.id +', \\'/ProposalFilledForm/ProposalFilledFormConfirmAgent/GetDefaultValuesForIssue\\', \\'ProposalFilledFormConfirmAgentissuePPFModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-check\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -356,216 +343,6 @@
             {
               "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormConfirmAgentGrid', '/ProposalFilledForm/ProposalFilledFormConfirmAgent/UpdateAgent')",
-              "class": "btn-primary"
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormConfirmAgentdeterminPriceModal",
-          "title": "مشاهده تعیین قیمت",
-          "class": "modal-xl",
-          "panels": [
-            {
-              "grids": [
-                {
-                  "id": "ProposalFilledFormConfirmAgentpriceGrid",
-                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormConfirmAgent/PricingCompanyExport",
-                  "topActions": [
-                    {
-                      "title": "افزودن",
-                      "onClick": "showModal('ProposalFilledFormConfirmAgentnewCompanyModal', this)",
-                      "type": "add",
-                      "modalId": "ProposalFilledFormConfirmAgentnewCompanyModal"
-                    }
-                  ],
-                  "showColumnConfigButton": true,
-                  "actions": {
-                    "delete": {
-                      "url": "/ProposalFilledForm/ProposalFilledFormConfirmAgent/DeleteCompany"
-                    },
-                    "cActions": [
-                      {
-                        "type": "edit",
-                        "icon": "fa-usd",
-                        "prop": "id",
-                        "modalId": "ProposalFilledFormConfirmAgenteditCompanyModal",
-                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormConfirmAgent/GetPricingCompany\\', \\'ProposalFilledFormConfirmAgenteditCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
-                      },
-                      {
-                        "type": "edit",
-                        "icon": "fa-usd",
-                        "prop": "id",
-                        "ignoreParentButton": true,
-                        "template": "function bindRow (curRow) { return '<span data-url=\"/ProposalFilledForm/ProposalFilledFormConfirmAgent/SelectCompany\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.isSelectedBool== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
-                      }
-                    ]
-                  },
-                  "key": "id",
-                  "url": "/ProposalFilledForm/ProposalFilledFormConfirmAgent/GetPricingCompanyList",
-                  "itemPerPage": 10,
-                  "schema": {
-                    "data": "data",
-                    "total": "total"
-                  },
-                  "columns": [
-                    {
-                      "field": "row",
-                      "caption": "ردیف",
-                      "width": "50px",
-                      "textAlign": "center"
-                    },
-                    {
-                      "field": "cId",
-                      "caption": "شرکت بیمه",
-                      "search": {
-                        "searchType": "dropdown",
-                        "url": "/ProposalFilledForm/ProposalFilledFormConfirmAgent/GetCompanyList",
-                        "textField": "title",
-                        "valueField": "id"
-                      }
-                    },
-                    {
-                      "field": "price",
-                      "caption": "مبلغ",
-                      "search": {
-                        "searchType": "text"
-                      }
-                    },
-                    {
-                      "field": "createUser",
-                      "caption": "کاربر ایجاد کننده",
-                      "search": {
-                        "searchType": "text"
-                      }
-                    },
-                    {
-                      "field": "createDate",
-                      "caption": "تاریخ ایجاد",
-                      "search": {
-                        "searchType": "persianDateTime"
-                      }
-                    },
-                    {
-                      "field": "updateUser",
-                      "caption": "کاربر تغییر دهنده",
-                      "search": {
-                        "searchType": "text"
-                      }
-                    },
-                    {
-                      "field": "updateDate",
-                      "caption": "تاریخ تغییر",
-                      "search": {
-                        "searchType": "persianDateTime"
-                      }
-                    },
-                    {
-                      "field": "isSelected",
-                      "caption": "انتخاب شده؟",
-                      "search": {
-                        "searchType": "dropdown",
-                        "url": "/Core/BaseData/Get/YesOrNo",
-                        "textField": "title",
-                        "valueField": "id"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormConfirmAgentnewCompanyModal",
-          "title": "افزودن شرکت جدید",
-          "ctrls": [
-            {
-              "name": "id",
-              "type": "hidden"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "companyId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirmAgent/GetCompanyList",
-              "label": "شرکت",
-              "isRequired": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "price",
-              "type": "text",
-              "label": "مبلغ",
-              "isRequired": true,
-              "seperator": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "mainFile",
-              "type": "file",
-              "label": "فرم پیشنهاد",
-              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
-            }
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "ذخیره",
-              "onClick": "postModalData(this, 'ProposalFilledFormConfirmAgentpriceGrid', '/ProposalFilledForm/ProposalFilledFormConfirmAgent/CreatePricingCompany')",
-              "class": "btn-primary"
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormConfirmAgenteditCompanyModal",
-          "title": "ویرایش شرکت",
-          "ctrls": [
-            {
-              "name": "id",
-              "type": "hidden"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "companyId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormConfirmAgent/GetCompanyList",
-              "label": "شرکت",
-              "isRequired": true,
-              "disabled": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "price",
-              "type": "text",
-              "label": "مبلغ",
-              "isRequired": true,
-              "seperator": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "mainFile",
-              "type": "file",
-              "label": "فرم پیشنهاد",
-              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
-            }
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "ذخیره",
-              "onClick": "postModalData(this, 'ProposalFilledFormConfirmAgentpriceGrid', '/ProposalFilledForm/ProposalFilledFormConfirmAgent/UpdatePricingCompany')",
               "class": "btn-primary"
             }
           ]
@@ -903,67 +680,6 @@
             {
               "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormConfirmAgentdocumentGrid', '/ProposalFilledForm/ProposalFilledFormConfirmAgent/UpdateDocument')",
-              "class": "btn-primary"
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormConfirmAgentissuePPFModal",
-          "title": "صدور بیمه نامه",
-          "ctrls": [
-            {
-              "name": "id",
-              "type": "hidden"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "startDate",
-              "type": "persianDateTime",
-              "label": "تاریخ شروع",
-              "isRequired": true,
-              "minDateValidation": 1,
-              "maxDateValidation": 365
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "endDate",
-              "type": "persianDateTime",
-              "label": "تاریخ پایان",
-              "isRequired": true,
-              "minDateValidation": 2,
-              "maxDateValidation": 730
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "insuranceNumber",
-              "type": "text",
-              "label": "شماره بیمه نامه",
-              "isRequired": true
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "description",
-              "type": "text",
-              "label": "توضیحات"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "mainFile",
-              "type": "file",
-              "label": "تصویر یا فایل بیمه نامه صادر شده",
-              "acceptEx": ".jpg,.jpeg,.png,.doc,.docx,.pdf",
-              "hideImagePreview": true
-            }
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "ذخیره",
-              "onClick": "postModalData(this, 'ProposalFilledFormConfirmAgentGrid', '/ProposalFilledForm/ProposalFilledFormConfirmAgent/IssuePPF')",
               "class": "btn-primary"
             }
           ]

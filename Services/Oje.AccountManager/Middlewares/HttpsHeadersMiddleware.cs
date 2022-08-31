@@ -48,9 +48,9 @@ namespace Oje.AccountService.Middlewares
                 if (!httpContext.Response.Headers.Keys.Contains("X-Permitted-Cross-Domain-Policies"))
                     httpContext.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
                 if (!httpContext.Response.Headers.Keys.Contains("X-FRAME-OPTIONS"))
-                    httpContext.Response.Headers.Add("X-FRAME-OPTIONS", "SAMEORIGIN");
+                    httpContext.Response.Headers.Add("X-FRAME-OPTIONS", "ALLOW-FROM https://trustseal.enamad.ir");
                 if (!httpContext.Response.Headers.Keys.Contains("Permissions-Policy"))
-                    httpContext.Response.Headers.Add("Permissions-Policy", "geolocation=(self)");
+                    httpContext.Response.Headers.Add("Permissions-Policy", "geolocation=(self), microphone=(self)");
             }
 
             await next(httpContext);

@@ -48,7 +48,14 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
         {
             string redirectUrl = await BankAccountSadadPaymentService.ConfirmPayment(input, SiteSettingService.GetSiteSetting()?.Id);
             if (string.IsNullOrEmpty(redirectUrl))
-                throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
+            {
+                var foundFactor = BankAccountFactorService.GetByIdView(input.OrderId.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
+                if (foundFactor == null)
+                    throw BException.GenerateNewException(BMessages.Payment_Was_UnsuccessFull);
+
+                foundFactor.errorMessage = BMessages.Payment_Was_UnsuccessFull.GetEnumDisplayName();
+                return View("postToPaymentPage", foundFactor);
+            }
 
             return View("RedirectToPage", redirectUrl);
         }

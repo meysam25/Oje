@@ -198,7 +198,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetOtherInsuranceConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
@@ -206,7 +206,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetReminderConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
@@ -214,14 +214,14 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetAboutUsMainPage()
         {
             return Json(PropertyService.GetBy<AboutUsMainPageVM>(PropertyType.AboutUsMainPage, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetOurPrideMainPage()
         {
             return Json(PropertyService.GetBy<OurPrideVM>(PropertyType.OurPrideMainPage, SiteSettingService.GetSiteSetting()?.Id));
@@ -277,28 +277,28 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetTopLeftIconList()
         {
             return Json(PropertyService.GetBy<MainPageTopLeftIconVM>(PropertyType.MainPageTopLeftIcon, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetFooterSocialUrl()
         {
             return Json(PropertyService.GetBy<FooterSocialIconCreateUpdateVM>(PropertyType.FooterIcon, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetOurCustomerList()
         {
             return Json(OurObjectService.GetListWeb(SiteSettingService.GetSiteSetting()?.Id, OurObjectType.OurCustomers));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetOurCompanyList()
         {
             return Json(OurObjectService.GetListWeb(SiteSettingService.GetSiteSetting()?.Id, OurObjectType.OurContractCompanies));

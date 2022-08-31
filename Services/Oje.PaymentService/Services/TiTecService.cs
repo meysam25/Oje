@@ -360,7 +360,7 @@ namespace Oje.PaymentService.Services
                 var foundFactor = BankAccountFactorService.GetById(input.FactorNo, siteSettingId);
                 if (foundFactor != null && foundFactor.IsPayed != true && foundFactor.Price > 0 && foundFactor.PayDate == null)
                 {
-                    var eResult = await InquiryFactorAsync(new FactorPayInquiryVM() { factorNumber = input.FactorNo }, siteSettingId);
+                    var eResult = await PaymentVerifyAsync(new FactorPayInquiryVM() { factorNumber = input.FactorNo, Amount = input.Amount, TrackingNumber = input.TrackingNo }, siteSettingId);
                     if (eResult != null && eResult.status == true && input.Amount == input.Amount && input.FactorNo == eResult.factorNumber && eResult.payDate != null && input.FactorId == eResult.factorId)
                     {
                         BankAccountFactorService.UpdatePaymentInfor(foundFactor, eResult.factorId, siteSettingId);

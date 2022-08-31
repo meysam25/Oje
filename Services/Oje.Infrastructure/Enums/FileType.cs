@@ -91,6 +91,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تصویر اسلایدر صفحه", Prompt = "PageSlider", Description = "1900*380", AutoGenerateField = false)]
         PageSlider = 43,
         [Display(Name = "تصویر پرداخت کارت به کارت", Prompt = "UserRigisterPaymentFile", Description = "1000*1000")]
-        UserRigisterPaymentFile = 44
+        UserRigisterPaymentFile = 44,
+        [Display(Name = "مدارک تغییر وضعیت فرم پیشنهاد", Prompt = "ProposalFilledFormLogFile")]
+        ProposalFilledFormLogFile = 45
     }
 }

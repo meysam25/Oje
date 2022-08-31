@@ -39,7 +39,7 @@ namespace Oje.Section.WebMain.Controllers
             return Json(tempResult);
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetMainPageDescription()
         {
             return Json(PropertyService.GetBy<ReminderMainPageVM>(Infrastructure.Enums.PropertyType.RemindUsMainPage, SiteSettingService.GetSiteSetting()?.Id));

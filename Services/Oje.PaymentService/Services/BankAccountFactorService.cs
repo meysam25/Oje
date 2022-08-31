@@ -135,6 +135,18 @@ namespace Oje.PaymentService.Services
             }).FirstOrDefault();
         }
 
+        public BankAccountFactorVM GetByIdView(int keyHash, int? siteSettingId)
+        {
+            return db.BankAccountFactors.Where(t => t.SiteSettingId == siteSettingId && t.KeyHash == keyHash).Select(t => new BankAccountFactorVM
+            {
+                Type = t.Type,
+                ObjectId = t.ObjectId,
+                Price = t.Price,
+                TargetLink = t.TargetLink,
+                UserId = t.BankAccount.UserId
+            }).FirstOrDefault();
+        }
+
         public List<ProposalFilledFormPaymentVM> GetListBy(BankAccountFactorType type, long objectId, int? siteSettingId)
         {
             return db.BankAccountFactors

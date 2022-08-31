@@ -38,7 +38,7 @@ $.fn.initMyDropdown = function () {
             $('#' + itemId).css('top', $(this).offset().top + $(this).height() + 1);
             $('#' + itemId).css('left', $(this).offset().left);
             $(this).addClass('myDropdownMakeVisibleItems');
-            $('#' + itemId).css('display', 'block').css('opacity', '1').css('z-index', '1005');
+            $('#' + itemId).css('display', 'block').css('opacity', '1').css('z-index', '2005');
             $(this)[0].actionTimeoutInterval = setTimeout(function () { $(this).addClass('myDroppdownShowItem'); }.bind(this), 10);
             $(this)[0].bindSelectItemEventMMD();
         };

@@ -136,7 +136,24 @@ namespace Oje.AccountService.Services
             result += "'/Modules/Assets/MainPage/telegram.svg',";
             result += "'/Modules/Assets/MainPage/twitter.svg',";
             result += "'/Modules/Assets/MainPage/instagram.svg',";
-            result += "'/Modules/Assets/MainPage/linkedin.svg'";
+            result += "'/Modules/Assets/MainPage/linkedin.svg',";
+            result += "'/Home/GetReminderConfig',";
+            result += "'/Home/GetOurPrideMainPage',";
+            result += "'/Home/GetAboutUsMainPage',";
+            result += "'/Blog/Blog/GetMainBlog',";
+            result += "'/Question/YourQuestion/GetList',";
+            result += "'/Home/GetOtherInsuranceConfig',";
+            result += "'/ProposalFormInquiries/CarThirdPartyInquiry/GetJsonConfig',";
+            result += "'/ProposalFormInquiries/CarBodyInquiry/GetJsonConfig',";
+            result += "'/ProposalFormInquiries/FireInsurance/GetJsonConfig',";
+            result += "'/Reminder/GetMainPageDescription',";
+            result += "'/Question/ProposalFormYourQuestion/GetInquiryList?fid=3',";
+            result += "'/Question/ProposalFormYourQuestion/GetInquiryList?fid=2',";
+            result += "'/Question/ProposalFormYourQuestion/GetInquiryList?fid=1',";
+            result += "'/Home/GetTopLeftIconList',";
+            result += "'/home/GetFooterSocialUrl',";
+            result += "'/Home/GetOurCompanyList',";
+            result += "'/Home/GetOurCustomerList'";
             result += "];";
 
             result += @"
@@ -186,8 +203,6 @@ namespace Oje.AccountService.Services
                 });
             ";
 
-            //result += "setInterval(function() {self.registration.showNotification('PWA Notification!', { body: 'Testing Our Notification', icon: './bell.png',data: {url: 'https://localhost:5001/Contract/Index'}});}, 20000);";
-
             result += @"
                 self.addEventListener('push', function(e) {
                 if (!(self.Notification && self.Notification.permission === 'granted')) {
@@ -219,9 +234,6 @@ namespace Oje.AccountService.Services
                 });
             ";
 
-            //result += "self.showNotification('PWA Notification!', { body: 'Testing Our Notification', icon: './bell.png',data: {url: 'https://google.com'}});";
-
-
             return result;
         }
 
@@ -232,15 +244,12 @@ namespace Oje.AccountService.Services
 
             string result = @"
             function subscribeUser() {
-            Notification.requestPermission(status => {
-                if (status === 'granted') {
-                } else {
-                }
-            });
+            
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.ready.then(function (reg) {
             
-                    reg.pushManager.subscribe({
+            setTimeout(function() {
+                 reg.pushManager.subscribe({
                         userVisibleOnly: true
                         " + (getActiveNotificationConfig != null ? ",applicationServerKey: '" + getActiveNotificationConfig.PublicKey + "'" : "") + @"
                     }).then(function (sub) {
@@ -251,26 +260,35 @@ namespace Oje.AccountService.Services
                         postForm('/Home/PushNotificationSubscribe', postFormData);
                     }).catch(function (e) {
                         if (Notification.permission === 'denied') {
-                            console.warn('Permission for notifications was denied');
+                            console.log('Permission for notifications was denied');
                         } else {
-                            console.error('Unable to subscribe to push', e);
+                            console.log('Unable to subscribe to push', e);
                         }
                     });
+
+            }, 8000);
+
+                   
                 });
                 window.addEventListener('load', function () {
                     navigator.serviceWorker
                         .register('/serviceWorker.js?v=" + GlobalConfig.GetAppVersion() + @"')
                         .then(reg => {
-                            reg.pushManager.getSubscription().then(function (sub) {
-                                if (sub === null) {
-                                    // Update UI to ask user to register for Push
-                                    console.log('Not subscribed to push service!');
-                                } else {
-                                    
-                                    //sub.unsubscribe();
-                                    // We have a subscription, update the database
-                                }
-                            });
+
+                            setTimeout(function() {
+                                reg.pushManager.getSubscription().then(function (sub) {
+                                    if (sub === null) {
+                                        // Update UI to ask user to register for Push
+                                        console.log('Not subscribed to push service!');
+                                    } else {
+                                        console.log('subscribed to push service!');
+                                        //sub.unsubscribe();
+                                        // We have a subscription, update the database
+                                    }
+                                });
+                                
+                            }, 10000);
+                            
                         })
                         .catch(err => console.log('service worker not registered', err));
                 });
@@ -286,7 +304,7 @@ namespace Oje.AccountService.Services
             return window.btoa(binary);
         }
         subscribeUser();
-            
+
 ";
 
 

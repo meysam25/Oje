@@ -209,7 +209,7 @@
     </section>
 </div>
 <script>
-    loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'));
+    loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'), null, 'GET');
     $('#reminderSection').loadAndBindRemindUsSection('/Reminder/GetMainPageDescription');
 </script>
 @*<div class="myContainer">
@@ -255,13 +255,14 @@
                 normalCount: 2,
                 smallCount: 2,
                 autoStart:3000,
-                data: res
+                data: res,
+                dontShowTitle: true
             });
         }
          else
             $('#ourCustomers').css('display','none');
 
-    }, function() {$('#ourCustomers').css('display','none')});
+    }, function() {$('#ourCustomers').css('display','none')}, null, null, 'GET');
 
     postForm('/Home/GetOurCompanyList', new FormData(), function(res)
     {
@@ -271,18 +272,18 @@
                 normalCount: 2,
                 smallCount: 2,
                 autoStart:3000,
-                data: res
+                data: res,
+                dontShowTitle: true
             });
         }
          else
             $('#ourCompany').css('display','none');
 
-    }, function() {$('#ourCompany').css('display','none')});
+    }, function() {$('#ourCompany').css('display','none')}, null, null, 'GET');
 
     $('#ourPrideDiv').loadAndBindOurPride('/Home/GetOurPrideMainPage');
     $('#holderBlogs').bindBlog('/Blog/Blog/GetMainBlog');
     document.addEventListener("DOMContentLoaded", function(event) {
-
         $('.tabCtrl').initTabCtrl();
         $('.inquirySectionTab').initInquiryTab(function (curObj) {
             var fid = $(curObj).closest('.inquirySectionTabHeaderItem').attr('data-fid');

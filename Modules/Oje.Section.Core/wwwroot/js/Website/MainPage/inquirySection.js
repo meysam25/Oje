@@ -59,7 +59,7 @@ $.fn.initInquiryTab = function (whatToDoOnTabChangeEvent) {
                     isFirstTimeForInquiryTabs = false;
                 }
                 
-            }.bind({ holderSelector: holderSelector }));
+            }.bind({ holderSelector: holderSelector }), 'GET');
         };
 
         if ($(window).width() > 650)

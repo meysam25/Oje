@@ -1,6 +1,7 @@
 ﻿{
   "panels": [
     {
+      "title": "پیشنهاد جدید",
       "grids": [
         {
           "notificationTriger": [ "NewProposalFilledForm", "ProposalFilledFormDeleted", "ProposalFilledFormEdited", "ReferToUser", "ProposalFilledFormCompanyChanged", "ProposalFilledFormAgentChanged", "ProposalFilledFormPriceSelected", "ProposalFilledFormStatusChangedNew" ],
@@ -48,24 +49,10 @@
               },
               {
                 "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "modalId": "ProposalFilledFormNewAgentchangeAgentModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNewAgentdeterminPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
                 "icon": "fa-credit-card ",
                 "prop": "id",
                 "modalId": "ProposalFilledFormNewAgentviewDocuments",
                 "template": "function bindRow (curRow) { return '<span title=\"مشاهده اسناد مالی\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNewAgentviewDocuments\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-credit-card\" ></i></span>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-history",
-                "prop": "id",
-                "modalId": "ProposalFilledFormNewAgentviewPPFStatusHistory",
-                "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'ProposalFilledFormNewAgentviewPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -350,216 +337,6 @@
             {
               "title": "ذخیره",
               "onClick": "postModalData(this, 'ppfProposalFilledFormNewAgentGrid', '/ProposalFilledForm/ProposalFilledFormNewAgent/UpdateAgent')",
-              "class": "btn-primary"
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormNewAgentdeterminPriceModal",
-          "title": "مشاهده تعیین قیمت",
-          "class": "modal-xl",
-          "panels": [
-            {
-              "grids": [
-                {
-                  "id": "ProposalFilledFormNewAgentpriceGrid",
-                  "exportToExcelUrl": "/ProposalFilledForm/ProposalFilledFormNewAgent/PricingCompanyExport",
-                  "topActions": [
-                    {
-                      "title": "افزودن",
-                      "onClick": "showModal('ProposalFilledFormNewAgentnewCompanyModal', this)",
-                      "type": "add",
-                      "modalId": "ProposalFilledFormNewAgentnewCompanyModal"
-                    }
-                  ],
-                  "showColumnConfigButton": true,
-                  "actions": {
-                    "delete": {
-                      "url": "/ProposalFilledForm/ProposalFilledFormNewAgent/DeleteCompany"
-                    },
-                    "cActions": [
-                      {
-                        "type": "edit",
-                        "icon": "fa-usd",
-                        "prop": "id",
-                        "modalId": "ProposalFilledFormNewAgentchangeAgentModal",
-                        "template": "function bindRow (curRow) { return '<span title=\"ویرایش\" onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFilledFormNewAgent/GetPricingCompany\\', \\'ProposalFilledFormNewAgenteditCompanyModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
-                      },
-                      {
-                        "type": "edit",
-                        "icon": "fa-usd",
-                        "prop": "id",
-                        "ignoreParentButton": true,
-                        "template": "function bindRow (curRow) { return '<span data-url=\"/ProposalFilledForm/ProposalFilledFormNewAgent/SelectCompany\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.isSelectedBool== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
-                      }
-                    ]
-                  },
-                  "key": "id",
-                  "url": "/ProposalFilledForm/ProposalFilledFormNewAgent/GetPricingCompanyList",
-                  "itemPerPage": 10,
-                  "schema": {
-                    "data": "data",
-                    "total": "total"
-                  },
-                  "columns": [
-                    {
-                      "field": "row",
-                      "caption": "ردیف",
-                      "width": "50px",
-                      "textAlign": "center"
-                    },
-                    {
-                      "field": "cId",
-                      "caption": "شرکت بیمه",
-                      "search": {
-                        "searchType": "dropdown",
-                        "url": "/ProposalFilledForm/ProposalFilledFormNewAgent/GetCompanyList",
-                        "textField": "title",
-                        "valueField": "id"
-                      }
-                    },
-                    {
-                      "field": "price",
-                      "caption": "مبلغ",
-                      "search": {
-                        "searchType": "text"
-                      }
-                    },
-                    {
-                      "field": "createUser",
-                      "caption": "کاربر ایجاد کننده",
-                      "search": {
-                        "searchType": "text"
-                      }
-                    },
-                    {
-                      "field": "createDate",
-                      "caption": "تاریخ ایجاد",
-                      "search": {
-                        "searchType": "persianDateTime"
-                      }
-                    },
-                    {
-                      "field": "updateUser",
-                      "caption": "کاربر تغییر دهنده",
-                      "search": {
-                        "searchType": "text"
-                      }
-                    },
-                    {
-                      "field": "updateDate",
-                      "caption": "تاریخ تغییر",
-                      "search": {
-                        "searchType": "persianDateTime"
-                      }
-                    },
-                    {
-                      "field": "isSelected",
-                      "caption": "انتخاب شده؟",
-                      "search": {
-                        "searchType": "dropdown",
-                        "url": "/Core/BaseData/Get/YesOrNo",
-                        "textField": "title",
-                        "valueField": "id"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormNewAgentnewCompanyModal",
-          "title": "افزودن شرکت جدید",
-          "ctrls": [
-            {
-              "name": "id",
-              "type": "hidden"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "companyId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNewAgent/GetCompanyList",
-              "label": "شرکت",
-              "isRequired": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "price",
-              "type": "text",
-              "label": "مبلغ",
-              "isRequired": true,
-              "seperator": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "mainFile",
-              "type": "file",
-              "label": "فرم پیشنهاد",
-              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
-            }
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "ذخیره",
-              "onClick": "postModalData(this, 'ProposalFilledFormNewAgentpriceGrid', '/ProposalFilledForm/ProposalFilledFormNewAgent/CreatePricingCompany')",
-              "class": "btn-primary"
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormNewAgenteditCompanyModal",
-          "title": "ویرایش شرکت",
-          "ctrls": [
-            {
-              "name": "id",
-              "type": "hidden"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "companyId",
-              "type": "dropDown",
-              "textfield": "title",
-              "valuefield": "id",
-              "dataurl": "/ProposalFilledForm/ProposalFilledFormNewAgent/GetCompanyList",
-              "label": "شرکت",
-              "isRequired": true,
-              "disabled": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "price",
-              "type": "text",
-              "label": "مبلغ",
-              "isRequired": true,
-              "seperator": true
-            },
-            {
-              "parentCL": "col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12",
-              "name": "mainFile",
-              "type": "file",
-              "label": "فرم پیشنهاد",
-              "acceptEx": ".jpg,.png,.jpeg,.pdf,.doc,.docx"
-            }
-          ],
-          "actions": [
-            {
-              "title": "بستن",
-              "onClick": "closeThisModal(this)",
-              "class": "btn-secondary"
-            },
-            {
-              "title": "ذخیره",
-              "onClick": "postModalData(this, 'ProposalFilledFormNewAgentpriceGrid', '/ProposalFilledForm/ProposalFilledFormNewAgent/UpdatePricingCompany')",
               "class": "btn-primary"
             }
           ]
@@ -898,64 +675,6 @@
               "title": "ذخیره",
               "onClick": "postModalData(this, 'ProposalFilledFormNewAgentdocumentGrid', '/ProposalFilledForm/ProposalFilledFormNewAgent/UpdateDocument')",
               "class": "btn-primary"
-            }
-          ]
-        },
-        {
-          "id": "ProposalFilledFormNewAgentviewPPFStatusHistory",
-          "title": "تاریخچه وضعیت",
-          "class": "modal-xl",
-          "panels": [
-            {
-              "grids": [
-                {
-                  "id": "ProposalFilledFormNewAgentstatusHistoryGrid",
-                  "showColumnConfigButton": true,
-                  "key": "id",
-                  "url": "/ProposalFilledForm/ProposalFilledFormNewAgent/GetStatusLogList",
-                  "itemPerPage": 10,
-                  "schema": {
-                    "data": "data",
-                    "total": "total"
-                  },
-                  "columns": [
-                    {
-                      "field": "row",
-                      "caption": "ردیف",
-                      "width": "50px",
-                      "textAlign": "center"
-                    },
-                    {
-                      "field": "status",
-                      "caption": "وضعیت",
-                      "search": {
-                        "searchType": "dropdown",
-                        "url": "/Core/BaseData/Get/ProposalFilledFormStatus",
-                        "textField": "title",
-                        "valueField": "id"
-                      }
-                    },
-                    {
-                      "field": "userFullname",
-                      "caption": "کاربر",
-                      "search": {
-                        "searchType": "text"
-                      }
-                    },
-                    {
-                      "field": "createDate",
-                      "caption": "تاریخ ایجاد",
-                      "search": {
-                        "searchType": "persianDateTime"
-                      }
-                    },
-                    {
-                      "field": "desc",
-                      "caption": "توضیحات"
-                    }
-                  ]
-                }
-              ]
             }
           ]
         }

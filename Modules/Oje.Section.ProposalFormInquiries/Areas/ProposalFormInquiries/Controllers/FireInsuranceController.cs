@@ -74,6 +74,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
 
         [AreaConfig(Title = "تنظیمات صفحه استعلام آتش سوزی", Icon = "fa-cog")]
         [HttpPost]
+        [HttpGet]
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";

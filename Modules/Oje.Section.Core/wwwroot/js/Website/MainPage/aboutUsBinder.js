@@ -26,6 +26,6 @@ $.fn.initMainPageAboutUs = function (url) {
             } else {
                 selectQuery.css('display', 'none');
             }
-        }.bind({ curThis: this }), null, null);
+        }.bind({ curThis: this }), null, null, null, 'GET');
     });
 }

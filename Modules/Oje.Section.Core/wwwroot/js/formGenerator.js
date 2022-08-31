@@ -3303,7 +3303,9 @@ function needToBeLoginFirst(curButton) {
     return true;
 }
 
-function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished) {
+function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
+    if (!rType)
+        rType = 'POST';
     var postData = new FormData();
     if (window['exteraModelParams'])
         for (var prop in exteraModelParams)
@@ -3320,5 +3322,5 @@ function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished) {
         if (this.whatToDoAfterFinished) {
             this.whatToDoAfterFinished();
         }
-    }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }));
+    }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }), null, null, null, rType);
 }

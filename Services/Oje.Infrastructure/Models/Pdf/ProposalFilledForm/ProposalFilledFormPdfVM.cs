@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oje.Infrastructure.Models.Pdf.ProposalFilledForm
 {
@@ -21,5 +17,6 @@ namespace Oje.Infrastructure.Models.Pdf.ProposalFilledForm
         public string companyImage { get; set; }
         public long loginUserWalletBalance { get; set; }
         public List<ProposalFormPrintDescrptionVM> printDescriptions { get; set; }
+        public string issueUploadFile { get; set; }
     }
 }

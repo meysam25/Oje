@@ -49,7 +49,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
         }
 
         [Route("[Area]/[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetMainBlog()
         {
             return Json(BlogService.GetTopBlogs(4, SiteSettingService.GetSiteSetting()?.Id));

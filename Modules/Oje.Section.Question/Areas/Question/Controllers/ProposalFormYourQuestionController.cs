@@ -27,7 +27,7 @@ namespace Oje.Section.Question.Areas.Question.Controllers
             return Json(ProposalFormYourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id, fid, false));
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetInquiryList(int? fid)
         {
             return Json(ProposalFormYourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id, fid, true));

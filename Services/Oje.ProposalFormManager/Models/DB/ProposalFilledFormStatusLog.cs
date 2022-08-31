@@ -3,21 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFilledFormStatusLogs")]
     public class ProposalFilledFormStatusLog
     {
+        public ProposalFilledFormStatusLog()
+        {
+            ProposalFilledFormStatusLogFiles = new();
+        }
+
         [Key]
+        public long Id { get; set; }
         public long ProposalFilledFormId { get; set; }
         [ForeignKey("ProposalFilledFormId")]
         [InverseProperty("ProposalFilledFormStatusLogs")]
         public ProposalFilledForm ProposalFilledForm { get; set; }
         public ProposalFilledFormStatus Type { get; set; }
+        [Column(TypeName = "datetime")]
         public DateTime CreateDate { get; set; }
         public long UserId { get; set; }
         [ForeignKey("UserId")]
@@ -25,5 +29,10 @@ namespace Oje.ProposalFormService.Models.DB
         public User User { get; set; }
         [MaxLength(4000)]
         public string Description { get; set; }
+        [MaxLength(100)]
+        public string FullName { get; set; }
+
+        [InverseProperty("ProposalFilledFormStatusLog")]
+        public List<ProposalFilledFormStatusLogFile> ProposalFilledFormStatusLogFiles { get; set; }
     }
 }

@@ -60,7 +60,7 @@ $.fn.bindBlog = function (url) {
             }
         }.bind({ curThis: this }), null, function () {
 
-        });
+        }, null, 'GET');
 
     });
 };

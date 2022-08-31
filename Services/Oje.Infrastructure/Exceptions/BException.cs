@@ -48,5 +48,10 @@ namespace Oje.Infrastructure.Exceptions
         {
             throw new NotImplementedException();
         }
+
+        public static Exception GenerateNewException(object please_Enter_File_Type)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

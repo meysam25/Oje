@@ -470,6 +470,7 @@ namespace Oje.ProposalFormService.Services
                    t.PaymentTraceCode,
                    ppfTitle = t.ProposalForm.Title,
                    createUserFullname = t.ProposalFilledFormUsers.Where(t => t.Type == ProposalFilledFormUserType.OwnerUser).Select(t => t.User.Firstname + " " + t.User.Lastname).FirstOrDefault(),
+                   t.IssueFile,
                    selectAgent = t.ProposalFilledFormUsers.Where(t => t.Type == ProposalFilledFormUserType.Agent).Select(t => new
                    {
                        t.User.Firstname,
@@ -584,6 +585,7 @@ namespace Oje.ProposalFormService.Services
             result.agentUserId = foundItem.agentUserId;
             result.id = foundItem.SiteSettingId + "/" + foundItem.ProposalFormId + "/" + foundItem.Id;
             result.price = foundItem.Price;
+            result.issueUploadFile = !string.IsNullOrEmpty(foundItem.IssueFile) ? (GlobalConfig.FileAccessHandlerUrl + foundItem.IssueFile) : "";
             result.ppfCreateDate = foundItem.CreateDate.ToFaDate();
             if (inquiryInputs != null && inquiryInputs.inquiryItems != null && inquiryInputs.inquiryItems.Count > 0)
             {
@@ -706,12 +708,35 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Status);
             if (input.status == status)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!string.IsNullOrEmpty(input.description) && input.description.Length > 4000)
+                throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
 
             var foundItem =
             ProposalFilledFormAdminBaseQueryService
             .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
             .Where(t => t.Id == input.id)
             .FirstOrDefault();
+
+            if(foundItem.Status == ProposalFilledFormStatus.NeedSpecialist)
+            {
+                if (string.IsNullOrEmpty(input.fullname))
+                    throw BException.GenerateNewException(BMessages.Please_Enter_Name);
+                if (string.IsNullOrEmpty(input.description))
+                    throw BException.GenerateNewException(BMessages.Please_Enter_Description);
+                if (input.fileList == null || input.fileList.Count == 0)
+                    throw BException.GenerateNewException(BMessages.Please_Select_File);
+                foreach(var file in input.fileList)
+                {
+                    if (string.IsNullOrEmpty(file.fileType))
+                        throw BException.GenerateNewException(BMessages.Please_Enter_File_Type);
+                    if (file.fileType.Length > 100)
+                        throw BException.GenerateNewException(BMessages.Validation_Error);
+                    if (file.mainFile == null || file.mainFile.Length == 0)
+                        throw BException.GenerateNewException(BMessages.Please_Select_File);
+                    if(!file.mainFile.IsValidExtension(".jpg,.jpeg,.png,.mp4,.pdf"))
+                        throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                }
+            }
 
             if (input.status == ProposalFilledFormStatus.Issuing && (foundItem.InsuranceStartDate == null || foundItem.InsuranceEndDate == null || string.IsNullOrEmpty(foundItem.InsuranceNumber)))
                 throw BException.GenerateNewException(BMessages.Change_Status_Can_Not_Be_Done);
@@ -726,7 +751,7 @@ namespace Oje.ProposalFormService.Services
             foundItem.Status = input.status.Value;
             db.SaveChanges();
 
-            ProposalFilledFormStatusLogService.Create(input.id, input.status, DateTime.Now, userId, input.description);
+            ProposalFilledFormStatusLogService.Create(input.id, input.status, DateTime.Now, userId, input.description, input.fullname, input.fileList, siteSettingId);
 
             UserNotifierService.Notify(userId, UserNotifierService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
@@ -786,7 +811,7 @@ namespace Oje.ProposalFormService.Services
 
             db.SaveChanges();
 
-            ProposalFilledFormStatusLogService.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description);
+            ProposalFilledFormStatusLogService.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description, null, null, siteSettingId);
 
             UserNotifierService.Notify(userId, UserNotifierService.ConvertProposalFilledFormStatusToUserNotifiactionType(status), ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id, input.insuranceNumber, siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id);
 
@@ -817,9 +842,10 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (db.ProposalFilledForms.Any(t => t.SiteSettingId == siteSettingId && t.InsuranceNumber == input.insuranceNumber && t.Id != input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
+            if (input.mainFile == null || input.mainFile.Length == 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(".jpg,.jpeg,.png,.doc,.docx,.pdf"))
                 throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
-
         }
 
         public object GetListForUser(MyProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, List<ProposalFilledFormStatus> validStatus)

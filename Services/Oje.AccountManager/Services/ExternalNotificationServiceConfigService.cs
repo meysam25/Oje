@@ -14,6 +14,9 @@ namespace Oje.AccountService.Services
     public class ExternalNotificationServiceConfigService : IExternalNotificationServiceConfigService
     {
         readonly AccountDBContext db = null;
+        static Dictionary<int?, ExternalNotificationServiceConfig> cacheConfig = new Dictionary<int?, ExternalNotificationServiceConfig>();
+
+
         public ExternalNotificationServiceConfigService
             (
                 AccountDBContext db
@@ -151,7 +154,15 @@ namespace Oje.AccountService.Services
 
         public ExternalNotificationServiceConfig GetActiveConfig(int? siteSettingId)
         {
-            return db.ExternalNotificationServiceConfigs.Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true).FirstOrDefault();
+            if (cacheConfig == null)
+                cacheConfig = new Dictionary<int?, ExternalNotificationServiceConfig>();
+
+            if (cacheConfig.Keys.Any(t => t == siteSettingId) && cacheConfig[siteSettingId] != null)
+                return cacheConfig[siteSettingId];
+
+            cacheConfig[siteSettingId] = db.ExternalNotificationServiceConfigs.AsNoTracking().Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true).FirstOrDefault();
+
+            return cacheConfig[siteSettingId];
         }
 
         public List<ExternalNotificationServiceConfig> GetActiveConfig()

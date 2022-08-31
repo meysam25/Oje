@@ -23,7 +23,8 @@ function hideOtherExteraSections() {
     $('#ourPrideDiv').css('display', 'none');
 }
 function disableFloatingFooter() {
-    $('#floatingFooter').removeClass('floatingFooterSectionMakeFloat').addClass('makeMyContainer100')[0].disableFloating = true;
+    if ($('#floatingFooter').length > 0)
+        $('#floatingFooter').removeClass('floatingFooterSectionMakeFloat').addClass('makeMyContainer100')[0].disableFloating = true;
 
 }
 function initShortCutItemClick() {
