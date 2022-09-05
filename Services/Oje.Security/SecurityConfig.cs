@@ -38,8 +38,8 @@ namespace Oje.Security
             services.AddScoped<IInValidRangeIpService, InValidRangeIpService>();
             services.AddScoped<IIpapiService, IpapiService>();
             services.AddScoped<IDebugInfoService, DebugInfoService>();
-
-            cacheServices = services;
+            services.AddScoped<IGoogleBackupArchiveService, GoogleBackupArchiveService>();
+            services.AddScoped<IGoogleBackupArchiveLogService, GoogleBackupArchiveLogService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)
@@ -55,11 +55,6 @@ namespace Oje.Security
             services.AddSingleton<IValidRangeIpService, ValidRangeIpService>();
             services.AddSingleton<IInValidRangeIpService, InValidRangeIpService>();
             services.AddSingleton<IIpapiService, IpapiService>();
-
-            cacheServices = services;
         }
-
-
-        public static IServiceCollection cacheServices { get; set; }
     }
 }

@@ -17,5 +17,7 @@ namespace Oje.AccountService.Models.DB
         [ForeignKey("ExternalNotificationServiceConfigId"), InverseProperty("ExternalNotificationServicePushSubscriptionErrors")]
         public ExternalNotificationServiceConfig ExternalNotificationServiceConfig { get; set; }
         public int SiteSettingId { get; set; }
+        [MaxLength(1000)]
+        public string Message { get; set; }
     }
 }

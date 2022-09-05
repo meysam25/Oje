@@ -14,6 +14,7 @@ using Oje.Section.WebMain.Models.View;
 using Oje.Security.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IOurObjectService = Oje.Section.WebMain.Interfaces.IOurObjectService;
 
 namespace Oje.Section.WebMain.Areas.WebMain.Controllers
 {
@@ -190,7 +191,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetLoginModalConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
@@ -228,35 +229,35 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetFooterDescrption()
         {
             return Json(PropertyService.GetBy<FooterDescrptionVM>(PropertyType.FooterDescrption, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetFooterInfor()
         {
             return Json(UserService.GetUserInfoBy(SiteSettingService.GetSiteSetting()?.UserId));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetFooterSambole()
         {
             return Json(PropertyService.GetBy<FooterSymbolCreateUpdateVM>(PropertyType.FooterSymbol, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetFooterExteraLink()
         {
             return Json(FooterExteraLinkService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetFooterExteraLinkGroup()
         {
             return Json(FooterGroupExteraLinkService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));

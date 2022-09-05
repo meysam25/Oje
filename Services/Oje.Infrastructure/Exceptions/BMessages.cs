@@ -694,5 +694,13 @@ namespace Oje.Infrastructure.Exceptions
         Invalid_Plaque = 343,
         [Display(Name = "لطفا نوع فایل را وارد کنید")]
         Please_Enter_File_Type = 344,
+        [Display(Name = "بارگزاری در گوگل موفقیت آمیز نبود")]
+        Upload_To_Google_Was_Not_Successfull = 345,
+        [Display(Name = "ساخت فایل زیپ فایل های بارگزاری شده موفقیت آمیز بود")]
+        Generate_Image_Zip_Was_Successfull = 346,
+        [Display(Name = "بک اپ دیتا بیس با موفقیت ساخته شد")]
+        DB_Backup_Successfull = 347,
+        [Display(Name = "با موفقیت حذف شد")]
+        Delete_Successfull = 348,
     }
 }

@@ -231,35 +231,5 @@ namespace Oje.ProposalFormService.Services
             if (input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate() <= DateTime.Now)
                 throw BException.GenerateNewException(BMessages.Date_Should_Be_From_Tomarow);
         }
-
-
-
-        //public class keyCL
-        //{
-        //    public DateTime? createDate { get; set; }
-        //    public byte ip1 { get; set; }
-        //    public byte ip2 { get; set; }
-        //    public byte ip3 { get; set; }
-        //    public byte ip4 { get; set; }
-
-        //    public static keyCL convertStrIdToKeyObj(string id)
-        //    {
-        //        if (!string.IsNullOrEmpty(id) && id.IndexOf(",") > -1)
-        //        {
-        //            var allParts = id.Split(',');
-        //            if (allParts.Length == 5)
-        //            {
-        //                return new keyCL { createDate = allParts[0].ToDateTimeFromTick(), ip1 = allParts[1].ToByteReturnZiro(), ip2 = allParts[2].ToByteReturnZiro(), ip3 = allParts[3].ToByteReturnZiro(), ip4 = allParts[4].ToByteReturnZiro() };
-        //            }
-        //        }
-
-        //        return null;
-        //    }
-
-        //    public static string convertkeyCLToStringId(keyCL input)
-        //    {
-        //        return input?.createDate?.Ticks + "," + input?.ip1 + "," + input?.ip2 + "," + input?.ip3 + "," + input?.ip4;
-        //    }
-        //}
     }
 }

@@ -11,7 +11,7 @@ namespace Oje.EmailService
     {
         public static void Config(IServiceCollection services)
         {
-            services.AddDbContext<EmailServiceDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddDbContextPool<EmailServiceDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<IEmailTrigerService, EmailTrigerService>();
             services.AddScoped<IEmailTemplateService, EmailTemplateService>();
@@ -21,10 +21,6 @@ namespace Oje.EmailService
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailSenderService, EmailSenderService>();
-
-            cacheServices = services;
         }
-
-        public static IServiceCollection cacheServices { get; set; }
     }
 }

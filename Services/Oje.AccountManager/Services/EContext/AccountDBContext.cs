@@ -48,6 +48,8 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<UserRequestAction> UserRequestActions { get; set; }
         public DbSet<DashboardSectionUserNotificationType> DashboardSectionUserNotificationTypes { get; set; }
         public DbSet<Holyday> Holydays { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<OurObject> OurObjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

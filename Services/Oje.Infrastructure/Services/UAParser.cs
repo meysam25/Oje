@@ -21,6 +21,7 @@ using System.Reflection;
 
 namespace UAParser
 {
+    using Oje.Infrastructure.Services;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -432,7 +433,7 @@ namespace UAParser
 
                 //Singleline: User agent strings do not contain newline characters. RegexOptions.Singleline improves performance.
                 //CultureInvariant: The interpretation of a user agent never depends on the current locale.
-                RegexOptions options = RegexOptions.Singleline | RegexOptions.CultureInvariant;
+                RegexOptions options = RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled;
 
                 if ("i".Equals(regexFlag))
                 {

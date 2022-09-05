@@ -15,6 +15,7 @@ namespace Oje.Security.Filters
     {
         readonly IModelMetadataProvider modelMetadataProvider;
         readonly IErrorService ErrorService = null;
+
         public CustomExceptionFilter
             (
                 IModelMetadataProvider modelMetadataProvider,

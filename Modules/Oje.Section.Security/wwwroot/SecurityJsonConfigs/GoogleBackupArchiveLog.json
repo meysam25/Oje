@@ -1,0 +1,63 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "GoogleBackupArchiveLogMainGrid",
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "ignoreParentButton": true,
+                "template": "function bindRow (curRow) { return '<span data-url=\"/Security/GoogleBackupArchiveLog/BlockFirewall\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.ip +'\" title=\"اظافه کردن به فایر وال\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.iB== 'بلی' ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "exportToExcelUrl": "/Security/GoogleBackupArchiveLog/Export",
+          "showColumnConfigButton": true,
+          "key": "id",
+          "url": "/Security/GoogleBackupArchiveLog/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "message",
+              "caption": "پیام",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "type",
+              "caption": "نوع",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/GoogleBackupArchiveLogType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

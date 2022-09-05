@@ -33,5 +33,8 @@ namespace Oje.AccountService.Models.DB
 
         [InverseProperty("ExternalNotificationServicePushSubscription")]
         public List<ExternalNotificationServicePushSubscriptionError> ExternalNotificationServicePushSubscriptionErrors { get; set; }
+
+        [NotMapped]
+        public bool removeMe { get; set; }
     }
 }

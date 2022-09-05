@@ -10,10 +10,8 @@ namespace Oje.AccountService
 {
     public static class AccountConfig
     {
-        public static IServiceCollection cacheService { get; set; }
         public static void Config(IServiceCollection services)
         {
-            cacheService = services;
 
             FileServiceConfig.Config(services);
 
@@ -49,6 +47,8 @@ namespace Oje.AccountService
             services.AddScoped<ILoginDescrptionService, LoginDescrptionService>();
             services.AddScoped<ILoginBackgroundImageService, LoginBackgroundImageService>();
             services.AddScoped<IHolydayService, HolydayService>();
+            services.AddScoped<IBlogService, BlogService>();
+            services.AddScoped<IOurObjectService, OurObjectService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)

@@ -11,7 +11,7 @@ namespace Oje.FireInsuranceService
     {
         public static void Config(IServiceCollection services)
         {
-            services.AddDbContext<FireInsuranceServiceDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddDbContextPool<FireInsuranceServiceDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<IFireInsuranceBuildingUnitValueService, FireInsuranceBuildingUnitValueService>();
             services.AddScoped<IFireInsuranceBuildingTypeService, FireInsuranceBuildingTypeService>();

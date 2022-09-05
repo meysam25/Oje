@@ -21,7 +21,7 @@ namespace Oje.Section.Question.Areas.Question.Controllers
             this.SiteSettingService = SiteSettingService;
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetList(int? fid)
         {
             return Json(UserRegisterFormYourQuestionService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id, fid));

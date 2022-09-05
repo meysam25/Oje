@@ -10,6 +10,8 @@ using System.Linq;
 using Oje.AccountService.Services.EContext;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
+using Oje.Infrastructure.Enums;
+using Oje.AccountService.Models.View;
 
 namespace Oje.AccountService.Services
 {
@@ -18,19 +20,28 @@ namespace Oje.AccountService.Services
         readonly AccountDBContext db = null;
         readonly IHttpContextAccessor httpContextAccessor = null;
         readonly IExternalNotificationServiceConfigService ExternalNotificationServiceConfigService = null;
-
+        readonly IPropertyService PropertyService = null;
+        readonly IBlogService BlogService = null;
+        readonly IOurObjectService OurObjectService = null;
 
         static List<SiteSetting> SS { get; set; }
+        static Dictionary<string, string> mainServiceStr = new();
 
         public SiteSettingService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor,
-                IExternalNotificationServiceConfigService ExternalNotificationServiceConfigService
+                IExternalNotificationServiceConfigService ExternalNotificationServiceConfigService,
+                IPropertyService PropertyService,
+                IBlogService BlogService,
+                IOurObjectService OurObjectService
             )
         {
             this.db = db;
             this.httpContextAccessor = httpContextAccessor;
             this.ExternalNotificationServiceConfigService = ExternalNotificationServiceConfigService;
+            this.PropertyService = PropertyService;
+            this.BlogService = BlogService;
+            this.OurObjectService = OurObjectService;
         }
 
         public object GetightList()
@@ -110,9 +121,31 @@ namespace Oje.AccountService.Services
 
         public string GetMainService()
         {
+            var curVer = GlobalConfig.GetAppVersion();
+            var siteSetting = GetSiteSetting();
+            string curKey = curVer + "_" + siteSetting?.Id;
+
+            if (mainServiceStr == null)
+                mainServiceStr = new();
+
+            if(mainServiceStr != null && mainServiceStr.Keys.Any(t => t == curKey))
+            {
+                var tempResult = mainServiceStr[curKey];
+                if (!string.IsNullOrEmpty(tempResult))
+                    return tempResult;
+            }
+
             string result = "const mainServiceName = 'mainServiceName';" + Environment.NewLine;
 
-            var curVer = GlobalConfig.GetAppVersion();
+            
+            var topLeftIconList = PropertyService.GetBy<MainPageTopLeftIconVM>(PropertyType.MainPageTopLeftIcon, siteSetting?.Id);
+            var aboutUsMainPage = PropertyService.GetBy<AboutUsMainPageVM>(PropertyType.AboutUsMainPage, siteSetting?.Id);
+            var ourPrideMainPage = PropertyService.GetBy<OurPrideVM>(PropertyType.OurPrideMainPage, siteSetting?.Id);
+            var remindUsMainPage = PropertyService.GetBy<ReminderMainPageVM>(PropertyType.RemindUsMainPage, siteSetting?.Id);
+            var footerDescrption = PropertyService.GetBy<FooterDescrptionVM>(PropertyType.FooterDescrption, siteSetting?.Id);
+            var allMainBlog = BlogService.GetMainBlog(4, siteSetting?.Id);
+            var allOurObject = OurObjectService.GetList(siteSetting?.Id);
+
 
             result += "const assets = [";
             result += "'/',";
@@ -152,6 +185,87 @@ namespace Oje.AccountService.Services
             result += "'/Question/ProposalFormYourQuestion/GetInquiryList?fid=1',";
             result += "'/Home/GetTopLeftIconList',";
             result += "'/home/GetFooterSocialUrl',";
+            result += "'/Home/GetLoginModalConfig',";
+            result += "'/TopMenu/GetTopMenu',";
+            result += "'/Home/GetFooterDescrption',";
+            result += "'/Home/GetFooterExteraLink',";
+            result += "'/Home/GetFooterExteraLinkGroup',";
+            result += "'/Home/GetFooterSambole',";
+            result += "'/Home/GetFooterInfor',";
+            if (topLeftIconList != null)
+            {
+                if (!string.IsNullOrEmpty(topLeftIconList.mainFile1_address))
+                    result += "'" + topLeftIconList.mainFile1_address + "',";
+                if (!string.IsNullOrEmpty(topLeftIconList.mainFile2_address))
+                    result += "'" + topLeftIconList.mainFile2_address + "',";
+                if (!string.IsNullOrEmpty(topLeftIconList.mainFile3_address))
+                    result += "'" + topLeftIconList.mainFile3_address + "',";
+            }
+
+            if (aboutUsMainPage != null)
+            {
+                if (!string.IsNullOrEmpty(aboutUsMainPage.rightFile_address))
+                    result += "'" + aboutUsMainPage.rightFile_address + "',";
+                if (!string.IsNullOrEmpty(aboutUsMainPage.centerFile_address))
+                    result += "'" + aboutUsMainPage.centerFile_address + "',";
+                if (!string.IsNullOrEmpty(aboutUsMainPage.leftFile_address))
+                    result += "'" + aboutUsMainPage.leftFile_address + "',";
+            }
+
+            if (ourPrideMainPage != null)
+            {
+                if (!string.IsNullOrEmpty(ourPrideMainPage.image1_address))
+                    result += "'" + ourPrideMainPage.image1_address + "',";
+                if (!string.IsNullOrEmpty(ourPrideMainPage.image2_address))
+                    result += "'" + ourPrideMainPage.image2_address + "',";
+                if (!string.IsNullOrEmpty(ourPrideMainPage.image3_address))
+                    result += "'" + ourPrideMainPage.image3_address + "',";
+                if (!string.IsNullOrEmpty(ourPrideMainPage.image4_address))
+                    result += "'" + ourPrideMainPage.image4_address + "',";
+            }
+
+            if (remindUsMainPage != null)
+                if (!string.IsNullOrEmpty(remindUsMainPage.mainImage_address))
+                    result += "'" + remindUsMainPage.mainImage_address + "',";
+
+            if (footerDescrption != null)
+            {
+                if (!string.IsNullOrEmpty(footerDescrption.logo1_address))
+                    result += "'" + footerDescrption.logo1_address + "',";
+                if (!string.IsNullOrEmpty(footerDescrption.logo2_address))
+                    result += "'" + footerDescrption.logo2_address + "',";
+                if (!string.IsNullOrEmpty(footerDescrption.logo3_address))
+                    result += "'" + footerDescrption.logo3_address + "',";
+            }
+
+            if (allMainBlog != null)
+            {
+                foreach(var blog in allMainBlog)
+                {
+                    if (!string.IsNullOrEmpty(blog.ImageUrl200))
+                        result += "'" + GlobalConfig.FileAccessHandlerUrl + blog.ImageUrl200 + "',";
+                    if (!string.IsNullOrEmpty(blog.ImageUrl600))
+                        result += "'" + GlobalConfig.FileAccessHandlerUrl + blog.ImageUrl600 + "',";
+                }
+            }
+
+            if (allOurObject != null)
+                foreach (var ourO in allOurObject)
+                    if (!string.IsNullOrEmpty(ourO.ImageUrl))
+                        result += "'" + GlobalConfig.FileAccessHandlerUrl + ourO.ImageUrl + "',";
+
+            if (siteSetting != null)
+            {
+                if (!string.IsNullOrEmpty(siteSetting.Image96))
+                    result += "'" + GlobalConfig.FileAccessHandlerUrl + siteSetting.Image96 + "',";
+                if (!string.IsNullOrEmpty(siteSetting.Image192))
+                    result += "'" + GlobalConfig.FileAccessHandlerUrl + siteSetting.Image192 + "',";
+                if (!string.IsNullOrEmpty(siteSetting.Image512))
+                    result += "'" + GlobalConfig.FileAccessHandlerUrl + siteSetting.Image512 + "',";
+                if (!string.IsNullOrEmpty(siteSetting.ImageText))
+                    result += "'" + GlobalConfig.FileAccessHandlerUrl + siteSetting.ImageText + "',";
+            }
+
             result += "'/Home/GetOurCompanyList',";
             result += "'/Home/GetOurCustomerList'";
             result += "];";
@@ -233,6 +347,8 @@ namespace Oje.AccountService.Services
                     );
                 });
             ";
+
+            mainServiceStr[curKey] = result;
 
             return result;
         }

@@ -9,6 +9,7 @@ using Oje.Section.Blog.Interfaces;
 using Oje.Section.Blog.Models.View;
 using System;
 using Oje.Infrastructure.Exceptions;
+using IBlogService = Oje.Section.Blog.Interfaces.IBlogService;
 
 namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
 {

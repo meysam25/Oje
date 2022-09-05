@@ -85,7 +85,7 @@ namespace Oje.Section.Core.Areas.Controllers
         [HttpPost]
         public IActionResult Get(string id)
         {
-            return Json(EnumService.GetEnum(id));
+            return Json(EnumService.GetEnum(id, false));
         }
 
         [HttpPost]

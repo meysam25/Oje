@@ -128,7 +128,6 @@ $.fn.loadTopMenu = function (url) {
                             }
                             result += '</ul>';
                         }
-
                         result += '</li>';
                     }
                     result += '</ul>';
@@ -155,7 +154,7 @@ $.fn.loadTopMenu = function (url) {
             }
             $(this.curThis).html(template);
             $('.topMenuNewResponsiveButton').initTopMenuResponsiveButton();
-        }.bind({ curThis: $(this) }));
+        }.bind({ curThis: $(this) }), null, null, null, 'GET');
     });
 }
 
@@ -306,7 +305,7 @@ $.fn.bindFooterDescription = function (url) {
             }
             $(this.curThis).html(template);
             $(this.curThis).find('img[data-src]').loadImageOnScroll();
-        }.bind({ curThis: this }));
+        }.bind({ curThis: this }), null, null, null, 'GET');
     });
 }
 
@@ -317,7 +316,7 @@ function bindFooterPhoneAndAddress() {
         $('#footerTell2').html(res && res.mob ? res.mob : '');
         $('#footerEmail').html(res && res.email ? res.email : '');
         $('#supportPhone').html(res && res.email ? res.tell : '');
-    });
+    }, null, null, null, 'GET');
 }
 
 function bindFooterSambole() {
@@ -325,7 +324,7 @@ function bindFooterSambole() {
         $('#footerSharingIconSection').append(res && res.enamad ? res.enamad : '');
         $('#footerSharingIconSection').append(res && res.samandehi ? res.samandehi : '');
         $('#footerSharingIconSection').find('img[data-src]').loadImageOnScroll();
-    });
+    }, null, null, null, 'GET');
 }
 
 const popupCenter = ({ url, title, w, h }) => {
@@ -375,7 +374,7 @@ function bindFooterExteraLinks() {
 
         else
             $('#holderfooterProductMenuItems').closest('.footerProductMenu').find('.showMoreButton').css('display', 'none');
-    });
+    }, null, null, null, 'GET');
 }
 
 function bindFooterExteraLinkGroups() {
@@ -400,7 +399,7 @@ function bindFooterExteraLinkGroups() {
             return false;
         });
         $('#footerNavMenu').find('.footerNavGroupItems').click(function () { $(this).toggleClass('footerNavGroupItemsOpen'); });
-    });
+    }, null, null, null, 'GET');
 }
 
 function isElementInViewport(el) {

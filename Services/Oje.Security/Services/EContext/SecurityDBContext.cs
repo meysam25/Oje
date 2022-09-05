@@ -37,6 +37,9 @@ namespace Oje.Security.Services.EContext
         public DbSet<ValidRangeIp> ValidRangeIps { get; set; }
         public DbSet<InValidRangeIp> InValidRangeIps { get; set; }
         public DbSet<DebugInfo> DebugInfos { get; set; }
+        public DbSet<GoogleBackupArchiveLog> GoogleBackupArchiveLogs { get; set; }
+        public DbSet<GoogleBackupArchive> GoogleBackupArchives { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

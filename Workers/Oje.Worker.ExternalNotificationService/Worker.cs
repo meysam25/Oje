@@ -34,7 +34,7 @@ namespace Oje.Worker.ExternalNotificationService
                     await PushNotificationService.SendWebNotifications();
                 }
                 timePass += 1000;
-                if (timePass % 5000 == 0)
+                if (timePass % 50000 == 0)
                     await PushNotificationService.SendWebNotifications();
 
                 await Task.Delay(1000, stoppingToken);

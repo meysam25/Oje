@@ -31,7 +31,7 @@ function loadLoginConfigIfNotExist(url, modalId, showModal) {
         if (this.showModal) {
             $('#' + this.modalId).modal('show');
         }
-    }.bind({ modalId: modalId, showModal: showModal }));
+    }.bind({ modalId: modalId, showModal: showModal }), 'GET');
     bindIfUserAreadyLogin(modalId);
 }
 
@@ -45,20 +45,43 @@ function bindIfUserAreadyLogin(modalId) {
             disableFloatingFooter();
         } else {
             isUserLogin = false;
-            $('.newTicketMainPageButton').click(function (e) {
-                e.stopPropagation();
-                e.preventDefault();
-                $('#' + modalId).modal('show');
-            });
+            whatToDoAfterUserLogin.push({ curFun: function () { disableFloatingFooter() }, type: 'df' });
         }
+        $('.newTicketMainPageButton').click(function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (isUserLogin == false) {
+                $('#' + modalId).modal('show');
+                whatToDoAfterUserLogin.push({ curFun: function () { loadAndShowAddNewTicket() }, , type: 'nt' });
+            } else {
+                loadAndShowAddNewTicket();
+            }
+            return false;
+        });
     }, null, null, true);
+}
+
+function loadAndShowAddNewTicket() {
+    if ($('#TicketUserAddGridModal').length == 0) {
+        postForm('/Ticket/TicketUser/GetJsonConfig', new FormData(), function (res) {
+            if ($('#TicketUserAddGridModal').length == 0) {
+                if (res && res.panels && res.panels[0].moduals && res.panels[0].moduals.length > 0) {
+                    $('body').append(getModualTemplate(res.panels[0].moduals[0]));
+                    executeArrFunctions();
+                }
+            }
+            $('#TicketUserAddGridModal').modal('show');
+        });
+    } else {
+        clearForm($('#TicketUserAddGridModal'));
+        $('#TicketUserAddGridModal').modal('show');
+    }
 }
 
 function userLoginWeb(userfullname, isUser) {
     isUserLogin = true;
     $('.holderRigAndLogUser').find('a').css('display', 'none');
     $('.holderRigAndLogUser').append(getLoginUserMenuTemplate(userfullname, isUser));
-    $('.newTicketMainPageButton').unbind();
     if ($('#swPanelId').parent().parent().hasClass('onlineChatMessages')) {
         $('#swPanelId').remove();
     }

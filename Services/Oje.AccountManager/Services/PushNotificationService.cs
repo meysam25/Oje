@@ -7,6 +7,7 @@ using Oje.Infrastructure.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using UAParser;
 using WebPush;
 
 namespace Oje.AccountService.Services
@@ -61,10 +62,15 @@ namespace Oje.AccountService.Services
                 allItems = db.UserNotifications
                     .Include(t => t.User)
                     .ThenInclude(t => t.ExternalNotificationServicePushSubscriptions)
-                    .Where(t => t.LastTryDate != null && t.IsSuccess == false && curDT > t.LastTryDate && t.CountTry <= 2 && t.User.ExternalNotificationServicePushSubscriptions.Any(tt => tt.IsActive == true))
+                    .Where(t => (t.IsSuccess == null || t.IsSuccess == false) && t.LastTryDate != null && curDT > t.LastTryDate && (t.CountTry == null || t.CountTry <= 2) && t.User.ExternalNotificationServicePushSubscriptions.Any(tt => tt.IsActive == true))
                     .ToList();
             foreach (var item in allItems)
+            {
                 item.LastTryDate = DateTime.Now;
+                if (item.CountTry == null)
+                    item.CountTry = 0;
+                item.CountTry++;
+            }
 
             db.SaveChanges();
 
@@ -89,9 +95,9 @@ namespace Oje.AccountService.Services
                     }
                     catch (Exception ex)
                     {
-                        item.CountTry++;
                         item.IsSuccess = false;
                         ExternalNotificationServicePushSubscriptionErrorService.Create(device.EndpointHash, DateTime.Now, ex.Message, foundConfig.Id, item.SiteSettingId);
+                        device.removeMe = true;
                         continue;
                     };
                     if (resultNotificaiton != null && resultNotificaiton.isSuccess == true)
@@ -100,18 +106,29 @@ namespace Oje.AccountService.Services
                     }
                     else if (resultNotificaiton != null)
                     {
-                        item.CountTry++;
                         item.IsSuccess = false;
                         ExternalNotificationServicePushSubscriptionErrorService.Create(device.EndpointHash, DateTime.Now, resultNotificaiton.message, foundConfig.Id, item.SiteSettingId);
+                        device.removeMe = true;
                     }
                     else
                     {
-                        item.CountTry++;
                         item.IsSuccess = false;
                         ExternalNotificationServicePushSubscriptionErrorService.Create(device.EndpointHash, DateTime.Now, "علت خطا مشخص نمی باشد", foundConfig.Id, item.SiteSettingId);
+                        device.removeMe = true;
                     }
                 }
             }
+
+            var allItemNeedToBeRemoved = allItems
+                .Where(t => t.User != null)
+                .Select(t => t.User)
+                .Where(t => t.ExternalNotificationServicePushSubscriptions != null && t.ExternalNotificationServicePushSubscriptions.Count > 0)
+                .SelectMany(t => t.ExternalNotificationServicePushSubscriptions)
+                .Where(t => t.removeMe == true)
+                .ToList();
+            if (allItemNeedToBeRemoved != null)
+                for (var i = 0; i < allItemNeedToBeRemoved.Count; i++)
+                    db.Entry(allItemNeedToBeRemoved[i]).State = EntityState.Deleted;
 
             db.SaveChanges();
         }

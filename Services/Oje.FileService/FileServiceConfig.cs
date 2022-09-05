@@ -4,11 +4,6 @@ using Oje.FileService.Interfaces;
 using Oje.FileService.Services;
 using Oje.FileService.Services.EContext;
 using Oje.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.FileService
 {

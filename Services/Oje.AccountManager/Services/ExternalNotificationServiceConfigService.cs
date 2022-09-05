@@ -167,7 +167,7 @@ namespace Oje.AccountService.Services
 
         public List<ExternalNotificationServiceConfig> GetActiveConfig()
         {
-            return db.ExternalNotificationServiceConfigs.Where(t => t.IsActive == true).ToList();
+            return db.ExternalNotificationServiceConfigs.AsNoTracking().Where(t => t.IsActive == true).ToList();
         }
     }
 }

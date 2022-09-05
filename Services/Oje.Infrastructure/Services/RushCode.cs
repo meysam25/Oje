@@ -1197,6 +1197,7 @@ namespace Oje.Infrastructure.Services
                 if (input.Request.Cookies.ContainsKey("login"))
                 {
                     loginUser = input.Request.Cookies["login"].Decrypt2AndGetUserVM();
+                    //loginUser = new LoginUserVM() { browserName = "Chrome_104", Fullname = "test" , hasAutoRefres = false, Ip = "127.0.0.1", roles = new(), sessionFileName = "c979f3d1-3ad1-4a5a-a69b-4fe6a8e23d52", UserId = 1, Username = "09904561385" };
                     if (ignoreIpAndBrowser == false && loginUser != null && (input.GetBroswerName() != loginUser.browserName || input.GetIpAddress().ToString() != loginUser.Ip))
                         return null;
                 }

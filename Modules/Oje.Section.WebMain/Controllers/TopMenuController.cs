@@ -24,7 +24,7 @@ namespace Oje.Section.WebMain.Controllers
         }
 
         [Route("[Controller]/[Action]")]
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetTopMenu()
         {
             return Json(TopMenuService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id));

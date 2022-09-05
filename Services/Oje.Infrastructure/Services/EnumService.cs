@@ -12,6 +12,8 @@ namespace Oje.Infrastructure.Services
     {
         public static List<IdTitle> GetEnum(string enumName, bool ignoreEmpty = false)
         {
+            if (string.IsNullOrEmpty(enumName))
+                return new List<IdTitle>();
             List<IdTitle> result = new List<IdTitle>();
             if (ignoreEmpty == false)
                 result.Add(new IdTitle { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name });

@@ -36,7 +36,7 @@ namespace Oje.Worker.DebugEmail
                     await DebugEmailService.SendEmail();
                 }
                 timePass += 1000;
-                if (timePass % 60000 == 0)
+                if (timePass % 50000 == 0)
                     await DebugEmailService.SendEmail();
 
                 await Task.Delay(1000, stoppingToken);

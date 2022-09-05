@@ -124,11 +124,16 @@ namespace Oje.Security.Services
             if (ResiverEmailes == null || ResiverEmailes.Count == 0)
                 return;
             var curDT = DateTime.Now.AddSeconds(-55);
-            var allItems = db.Errors.Where(t => t.BMessageCode == null && t.LastTryDate == null && (t.IsSuccessEmail == null || t.IsSuccessEmail == false) && (t.CountTry == null || t.CountTry == 0)).ToList();
+            var allItems = db.Errors.Where(t => t.BMessageCode == null &&  (t.IsSuccessEmail == null || t.IsSuccessEmail == false) && t.LastTryDate == null && (t.CountTry == null || t.CountTry == 0)).ToList();
             if (allItems.Count == 0)
-                allItems = db.Errors.Where(t => t.BMessageCode == null && t.LastTryDate != null && (t.IsSuccessEmail == null || t.IsSuccessEmail == false) && curDT > t.LastTryDate && (t.CountTry == null || t.CountTry <= 2)).ToList();
+                allItems = db.Errors.Where(t => t.BMessageCode == null && (t.IsSuccessEmail == null || t.IsSuccessEmail == false) && t.LastTryDate != null &&  curDT > t.LastTryDate && (t.CountTry == null || t.CountTry <= 2)).ToList();
             foreach (var item in allItems)
+            {
                 item.LastTryDate = DateTime.Now;
+                if (item.CountTry == null)
+                    item.CountTry = 0;
+                item.CountTry++;
+            }
 
             if (allItems.Count == 0)
                 return;
@@ -146,7 +151,6 @@ namespace Oje.Security.Services
                     }
                     catch (Exception ex)
                     {
-                        item.CountTry++;
                         item.IsSuccessEmail = false;
                         item.LastEmailErrorMessage = ex.Message;
                         continue;
@@ -157,13 +161,11 @@ namespace Oje.Security.Services
                     }
                     else if (resultSms != null)
                     {
-                        item.CountTry++;
                         item.IsSuccessEmail = false;
                         item.LastEmailErrorMessage = resultSms.message;
                     }
                     else
                     {
-                        item.CountTry++;
                         item.IsSuccessEmail = false;
                         item.LastEmailErrorMessage = "علت خطا مشخص نمی باشد";
                     }

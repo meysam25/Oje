@@ -30,7 +30,8 @@ namespace Oje.AccountService.Services
                     CreateDate = now,
                     EndpointHash = endpointHash,
                     ExternalNotificationServiceConfigId = ExternalNotificationServiceConfigId,
-                    SiteSettingId = siteSettingId
+                    SiteSettingId = siteSettingId,
+                    Message = message
                 }).State = EntityState.Added;
                 db.SaveChanges();
             }

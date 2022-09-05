@@ -13,7 +13,7 @@ namespace Oje.Sanab
         {
             services.AddHttpClient();
 
-            services.AddDbContext<SanabDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            services.AddDbContextPool<SanabDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<ISanabUserService, SanabUserService>();
             services.AddScoped<ISanabLoginService, SanabLoginService>();
