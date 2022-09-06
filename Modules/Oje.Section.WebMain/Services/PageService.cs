@@ -302,7 +302,7 @@ namespace Oje.Section.WebMain.Services
             sb.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             sb.Append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
 
-            var allBlogs = db.Pages
+            var allPages = db.Pages
                 .OrderByDescending(t => t.Id)
                 .Where(t => t.SiteSettingId == siteSettingId)
                .Select(t => new
@@ -313,7 +313,27 @@ namespace Oje.Section.WebMain.Services
                })
                .ToList();
 
-            foreach (var blog in allBlogs)
+            sb.Append("<url>");
+            sb.Append("<loc>" + baseUrl + "/Reminder" + "</loc>");
+            sb.Append("<lastmod>2022-05-05</lastmod>");
+            sb.Append("</url>");
+
+            sb.Append("<url>");
+            sb.Append("<loc>" + baseUrl + "/CarThirdPartyInquiry" + "</loc>");
+            sb.Append("<lastmod>2022-05-06</lastmod>");
+            sb.Append("</url>");
+
+            sb.Append("<url>");
+            sb.Append("<loc>" + baseUrl + "/CarBodyInquiry" + "</loc>");
+            sb.Append("<lastmod>2022-05-09</lastmod>");
+            sb.Append("</url>");
+
+            sb.Append("<url>");
+            sb.Append("<loc>" + baseUrl + "/FireInsurance" + "</loc>");
+            sb.Append("<lastmod>2022-05-19</lastmod>");
+            sb.Append("</url>");
+
+            foreach (var blog in allPages)
             {
                 sb.Append("<url>");
                 sb.Append("<loc>" + baseUrl + GenerateUrlForPage(blog.title, blog.id) + "</loc>");

@@ -23,6 +23,6 @@
     </section>
 </div>
 <script>
-    loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'));
+    loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'), null, 'GET');
     $('#reminderSection').loadAndBindRemindUsSection('/Reminder/GetMainPageDescription');
 </script>
