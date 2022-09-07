@@ -27,6 +27,7 @@ $.fn.loadYourQuestionList = function (url, exteraParameters) {
                 $(this.curThis).html(template);
                 $(this.curThis).find('.yourQuestion .yourQuestionItem').initMyQuestionItem();
                 $(this.curThis).show();
+                addQuestionToJData(res);
             }
             else {
                 $(this.curThis).hide();
@@ -34,6 +35,29 @@ $.fn.loadYourQuestionList = function (url, exteraParameters) {
         }.bind({ curThis: this }), null, null, null, 'GET');
     });
 };
+
+function addQuestionToJData(res) {
+    if (res && res.length > 0) {
+        var result = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity" : []
+        };
+        for (var i = 0; i < res.length; i++) {
+            if (res[i].q && res[i].a) {
+                result.mainEntity.push({
+                    "@type": "Question",
+                    "name": res[i].q,
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": res[i].a
+                    }
+                });
+            }
+        }
+        $('head').append('<script type="application/ld+json" >' + JSON.stringify(result) +'</script>');
+    }
+}
 
 function getYourQuestionBeginTemplate() {
     return `

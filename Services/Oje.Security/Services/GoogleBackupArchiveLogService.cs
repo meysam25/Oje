@@ -52,6 +52,7 @@ namespace Oje.Security.Services
                 .ToList()
                 .Select(t => new GoogleBackupArchiveLogMainGridResultVM
                 {
+                    row = ++row,
                     id = t.id,
                     type = t.type.GetEnumDisplayName(),
                     createDate = t.createDate.ToFaDate() + " " + t.createDate.ToString("HH:mm"),

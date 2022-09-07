@@ -32,6 +32,7 @@ namespace Oje.Section.Core.Areas.Core.Controllers
         [Route("favicon.ico", Order = int.MaxValue - 1000)]
         [Route("apple-touch-icon-precomposed.png", Order = int.MaxValue - 1000)]
         [Route("apple-touch-icon.png", Order = int.MaxValue - 1000)]
+        [Route("apple-touch-icon-120x120.png", Order = int.MaxValue - 1000)]
         public IActionResult GetFile()
         {
             var curSetting = SiteSettingService.GetSiteSetting();

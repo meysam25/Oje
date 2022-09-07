@@ -10,7 +10,6 @@ using Oje.Security.Interfaces;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure;
-using System.Collections.Generic;
 
 namespace Oje.Section.Account.Areas.Account.Controllers
 {
@@ -159,7 +158,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             object tempResult = null;
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginRegister, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             try { tempResult = SMSUserService.LoginRegister(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
-            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginRegister, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginRegister, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }
 

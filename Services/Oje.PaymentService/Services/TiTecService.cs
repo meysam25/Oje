@@ -209,7 +209,7 @@ namespace Oje.PaymentService.Services
             }
         }
 
-        public async Task<FactorPayInquiryResultVM> PaymentVerifyAsync(FactorPayInquiryVM input, int? siteSettingId)
+        public async Task<bool> PaymentVerifyAsync(FactorPayInquiryVM input, int? siteSettingId)
         {
             inquiryFactorValidation(input, siteSettingId);
             var loginToken = await LoginAsync(siteSettingId);
@@ -224,12 +224,7 @@ namespace Oje.PaymentService.Services
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginToken.token);
                     client.BaseAddress = new Uri(GlobalConfig.Configuration["PaymentUrls:TitakPaymentG"] + ":6001");
                     HttpResponseMessage clientResult = await client.PostAsync("/api/Factor/PaymentVerify", stringContent);
-                    var temp = await clientResult.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<FactorPayInquiryResultVM>(temp);
-                    if (clientResult.IsSuccessStatusCode)
-                        return result;
-                    else
-                        throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+                    return clientResult.IsSuccessStatusCode;
                 }
             }
             catch (BException)
@@ -360,10 +355,9 @@ namespace Oje.PaymentService.Services
                 var foundFactor = BankAccountFactorService.GetById(input.FactorNo, siteSettingId);
                 if (foundFactor != null && foundFactor.IsPayed != true && foundFactor.Price > 0 && foundFactor.PayDate == null)
                 {
-                    var eResult = await PaymentVerifyAsync(new FactorPayInquiryVM() { factorNumber = input.FactorNo, Amount = input.Amount, TrackingNumber = input.TrackingNo }, siteSettingId);
-                    if (eResult != null && eResult.status == true && input.Amount == input.Amount && input.FactorNo == eResult.factorNumber && eResult.payDate != null && input.FactorId == eResult.factorId)
+                    if (await PaymentVerifyAsync(new FactorPayInquiryVM() { factorNumber = input.FactorNo, Amount = input.Amount, TrackingNumber = input.TrackingNo }, siteSettingId) == true)
                     {
-                        BankAccountFactorService.UpdatePaymentInfor(foundFactor, eResult.factorId, siteSettingId);
+                        BankAccountFactorService.UpdatePaymentInfor(foundFactor, input.TrackingNo, siteSettingId);
                         result = foundFactor.TargetLink;
                     }
                 }

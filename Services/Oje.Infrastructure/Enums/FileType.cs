@@ -22,7 +22,7 @@ namespace Oje.Infrastructure.Enums
         DebitSellRequredDocument = 8,
         [Display(Name = "تصویر بانک", Prompt = "BankPick", Description = "300*300")]
         BankLogo = 9,
-        [Display(Name = "مدارک فرم پیشنهاد", Prompt = "ProposalFilledForm", Description = "~1000*1000")]
+        [Display(Name = "مدارک فرم پیشنهاد", Prompt = "ProposalFilledForm", Description = "~1000*1000", AutoGenerateFilter = true)]
         ProposalFilledForm = 10,
         [Display(Name ="مدارک تعیین قیمت شرکت", Prompt = "ProposalFilledFormCompanies")]
         CompanyPrice = 11,

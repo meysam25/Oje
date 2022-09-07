@@ -4,17 +4,6 @@
       "grids": [
         {
           "id": "GoogleBackupArchiveMainGrid",
-          "actions": {
-            "cActions": [
-              {
-                "type": "edit",
-                "icon": "fa-usd",
-                "prop": "id",
-                "ignoreParentButton": true,
-                "template": "function bindRow (curRow) { return '<span data-url=\"/Security/GoogleBackupArchive/BlockFirewall\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.ip +'\" title=\"اظافه کردن به فایر وال\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.iB== 'بلی' ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
-              }
-            ]
-          },
           "exportToExcelUrl": "/Security/GoogleBackupArchive/Export",
           "showColumnConfigButton": true,
           "key": "id",
