@@ -262,8 +262,8 @@ namespace Oje.ProposalFormService.Services
                 {
                     if (objPack.Tax != null && objPack.Duty != null && newQueryItem != null && newQueryItem.GlobalInquiryItems != null && newQueryItem.GlobalInquiryItems.Count > 0)
                     {
-                        var sumPrice = newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true && t.CalcKey != "s9").Count() > 0 ?
-                            newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true && t.CalcKey != "s9").Sum(t => t.Price) : 0;
+                        var sumPrice = newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true && t.CalcKey != "s9" && t.CalcKey != "s9_2").Count() > 0 ?
+                            newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true && t.CalcKey != "s9" && t.CalcKey != "s9_2").Sum(t => t.Price) : 0;
                         if (sumPrice > 0)
                         {
                             var tax = RouteThisNumberIfConfigExist(Math.Ceiling((Convert.ToDecimal(sumPrice) * objPack.Tax.Percent) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
@@ -694,10 +694,13 @@ namespace Oje.ProposalFormService.Services
                         if (targetPercent > 70)
                             targetPercent = 70;
                     }
-                    targetPercent = targetPercent -
-                        (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial.Percent) -
-                         (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial.Percent)
-                        ;
+                    var temp1 = (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial.Percent);
+                    var temp2 = (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial.Percent);
+
+                    if (targetPercent > 0)
+                        targetPercent = targetPercent - ((temp1 > temp2 ? temp1 : temp2));
+                    else
+                        targetPercent = (temp1 > temp2 ? temp1 : temp2) * -1;
                     if (targetPercent > 0)
                     {
                         GlobalInquiryItem newITem = new GlobalInquiryItem();
@@ -777,13 +780,13 @@ namespace Oje.ProposalFormService.Services
                 {
                     if (ex.ThirdPartyRequiredFinancialCommitmentCompanies != null && ex.ThirdPartyRequiredFinancialCommitmentCompanies.Any(t => t.CompanyId == inquery.CompanyId))
                     {
-                        var listRate = ex.ThirdPartyExteraFinancialCommitments
-                            .Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitmentComs.Any(tt => tt.CompanyId == inquery.CompanyId)).ToList();
+                        var listRate = 
+                            ex.ThirdPartyExteraFinancialCommitments
+                            .Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitmentComs.Any(tt => tt.CompanyId == inquery.CompanyId))
+                            .ToList();
                         if (listRate.Count > 0 || ex.IsBase == true)
                         {
                             var foundWithType = listRate.OrderByDescending(t => t.Year).Where(t => t.CarSpecificationId == objPack.CarSpecification.Id).FirstOrDefault();
-                            if (foundWithType == null)
-                                foundWithType = listRate.OrderByDescending(t => t.Year).FirstOrDefault();
                             if (foundWithType != null || ex.IsBase == true)
                             {
                                 GlobalInquery newITem = new GlobalInquery();
@@ -973,11 +976,15 @@ namespace Oje.ProposalFormService.Services
                         if (targetPercent > 70)
                             targetPercent = 70;
                     }
-                    targetPercent =
-                        targetPercent -
-                        (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial.Percent) -
-                        (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial.Percent)
-                        ;
+
+                    var temp1 = (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyFinancial.Percent);
+                    var temp2 = (objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial == null ? 0 : objPack.ThirdPartyFinancialAndBodyHistoryDamagePenaltyNotFinancial.Percent);
+
+                    if (targetPercent > 0)
+                        targetPercent = targetPercent - ((temp1 > temp2 ? temp1 : temp2));
+                    else
+                        targetPercent = (temp1 > temp2 ? temp1 : temp2) * -1;
+
                     if (targetPercent > 0)
                     {
                         GlobalInquiryItem newITem = new GlobalInquiryItem();
@@ -1494,7 +1501,7 @@ namespace Oje.ProposalFormService.Services
                     throw BException.GenerateNewException(BMessages.Driver_NoDamage_Discount_IsNotValid);
                 input.driverNoDamageDiscountHistory_Title = result.ThirdPartyDriverNoDamageDiscountHistory.Title;
             }
-            else if (input.driverNoDamageDiscountHistory == 0 && input.havePrevInsurance > 0)
+            else if (input.driverNoDamageDiscountHistory.ToIntReturnZiro() == 0 && (input.havePrevInsurance.ToIntReturnZiro() > 0 || input.isNewCar == true))
             {
                 result.ThirdPartyDriverNoDamageDiscountHistory = new ThirdPartyDriverNoDamageDiscountHistory() { IsActive = true, Percent = 0, Title = BMessages.No_Damage.GetEnumDisplayName() };
             }
@@ -1514,7 +1521,7 @@ namespace Oje.ProposalFormService.Services
                     throw BException.GenerateNewException(BMessages.Body_NoDamage_Discount_IsNotValid);
                 input.bodyNoDamagePercentId_Title = result.bodyNoDamagePercent.Title;
             }
-            else if (input.bodyNoDamagePercentId == 0 && input.havePrevInsurance.ToIntReturnZiro() > 0)
+            else if (input.bodyNoDamagePercentId.ToIntReturnZiro() == 0 && (input.havePrevInsurance.ToIntReturnZiro() > 0 || input.isNewCar == true))
             {
                 result.bodyNoDamagePercent = new ThirdPartyBodyNoDamageDiscountHistory() { IsActive = true, Title = BMessages.No_Damage.GetEnumDisplayName(), Percent = 0 };
             }
