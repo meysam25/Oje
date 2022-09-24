@@ -24,6 +24,7 @@ namespace Oje.ProposalFormService.Models.DB
             CarSpecificationAmountCompanies = new();
             UserCompanies = new();
             AgentReffers = new();
+            ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies = new();
         }
 
         [Key]
@@ -74,6 +75,8 @@ namespace Oje.ProposalFormService.Models.DB
         public List<UserCompany> UserCompanies { get; set; }
         [InverseProperty("Company")]
         public List<AgentReffer> AgentReffers { get; set; }
+        [InverseProperty("Company")]
+        public List<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies { get; set; }
 
     }
 }

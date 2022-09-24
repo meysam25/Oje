@@ -54,7 +54,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Use_0_For_Format);
             if (input.format.Length > 20)
                 throw BException.GenerateNewException(BMessages.Format_Can_Not_Be_More_Then_20_Chars);
-            if (db.RoundInqueries.Any(t => t.ProposalFormId == input.formId && t.Id != input.id))
+            if (db.RoundInqueries.Any(t => t.ProposalFormId == input.formId && t.Id != input.id && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item)
 ;
         }

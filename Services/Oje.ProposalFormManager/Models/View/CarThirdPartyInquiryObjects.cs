@@ -1,9 +1,5 @@
 ﻿using Oje.ProposalFormService.Models.DB;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.View
 {
@@ -47,5 +43,6 @@ namespace Oje.ProposalFormService.Models.View
         public List<PaymentMethod> PaymentMethods { get; set; }
         public CarType CarType { get;  set; }
         public VehicleSpec VehicleSpec { get; set; }
+        public List<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts { get; set; }
     }
 }

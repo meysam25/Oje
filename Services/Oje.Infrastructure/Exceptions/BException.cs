@@ -43,15 +43,5 @@ namespace Oje.Infrastructure.Exceptions
         {
             return new BException(message, ApiResultErrorCode.ValidationError, UserId);
         }
-
-        public static Exception GenerateNewException(object dublicate_Email, ApiResultErrorCode validationError)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Exception GenerateNewException(object please_Enter_File_Type)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -75,6 +75,12 @@ namespace Oje.ProposalFormService.Models.View
         public string dayLimitation_Title { get; set; }
         [Display(Name = "کد تخفیف", Description = "carSpecifications")]
         public string discountCode { get; set; }
+        [Display(Name = "تاریخ تحویل خودرو", Description = "reciveCarDate")]
+        public string reciveCarDate { get; set; }
+        [Display(Name = "آیا تعویض پلاک داشته اید ؟", Description = "hasChangePlaque")]
+        public bool? hasChangePlaque { get; set; }
+        [Display(Name = "آیا تعویض پلاک داشته اید ؟", Description = "hasChangePlaque")]
+        public string hasChangePlaque_Title { get; set; }
 
 
         public List<int> coverIds { get; set; }

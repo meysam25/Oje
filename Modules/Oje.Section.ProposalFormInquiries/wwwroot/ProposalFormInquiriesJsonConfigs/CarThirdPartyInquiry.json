@@ -205,13 +205,13 @@
                         },
                         {
                           "value": "0",
-                          "classShow": [ "isNewCalDD" ],
-                          "classHide": [ "startAndEndDate" ]
+                          "classShow": [ "isNewCalDD", "reciveCarDate" ],
+                          "classHide": [ "startAndEndDate", "hasChangePlaque" ]
                         },
                         {
                           "value": "!0",
-                          "classShow": [ "startAndEndDate" ],
-                          "classHide": [ "isNewCalDD" ]
+                          "classShow": [ "startAndEndDate", "hasChangePlaque" ],
+                          "classHide": [ "isNewCalDD", "reciveCarDate" ]
                         }
                       ],
                       "isRequired": true,
@@ -264,7 +264,22 @@
                             "postName": "isNewCar"
                           }
                         ]
-                      }
+                      },
+                      "showHideCondation": [
+                        {
+                          "value": "",
+                          "classHide": [ "reciveCarDate" ],
+                          "isDefault": true
+                        },
+                        {
+                          "value": "true",
+                          "classShow": [ "reciveCarDate" ]
+                        },
+                        {
+                          "value": "false",
+                          "classHide": [ "reciveCarDate" ]
+                        }
+                      ]
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
@@ -281,6 +296,15 @@
                       "class": "startAndEndDate",
                       "type": "persianDateTime",
                       "label": "تاریخ اتمام بیمه نامه قبلی",
+                      "isRequired": true,
+                      "yearFromKnow": 0
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "name": "reciveCarDate",
+                      "class": "reciveCarDate",
+                      "type": "persianDateTime",
+                      "label": "تاریخ تحویل خودرو",
                       "isRequired": true,
                       "yearFromKnow": 0
                     },
@@ -435,6 +459,18 @@
                       "label": "انتخاب روش پرداخت",
                       "holderStatusId": "searchPanelTitle",
                       "name": "showStatus",
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "id": "hasChangePlaque",
+                      "type": "dropDown",
+                      "class": "hasChangePlaque",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/Core/BaseData/Get/YesOrNo",
+                      "label": "آیا تعویض پلاک داشته اید؟",
+                      "name": "hasChangePlaque",
                       "isRequired": true
                     },
                     {

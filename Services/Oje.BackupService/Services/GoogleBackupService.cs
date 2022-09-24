@@ -129,7 +129,13 @@ namespace Oje.BackupService.Services
                             GoogleBackupArchiveLogService.Create(BMessages.Operation_Was_Successfull.GetEnumDisplayName(), GoogleBackupArchiveLogType.UploadSection);
                         }
                         else
-                            GoogleBackupArchiveLogService.Create(BMessages.Upload_To_Google_Was_Not_Successfull.GetEnumDisplayName(), GoogleBackupArchiveLogType.UploadSection);
+                        {
+                            if(results != null && results.Exception != null && !string.IsNullOrEmpty(results.Exception.Message))
+                                GoogleBackupArchiveLogService.Create(BMessages.Upload_To_Google_Was_Not_Successfull.GetEnumDisplayName() + " " + results.Exception.Message, GoogleBackupArchiveLogType.UploadSection);
+                            else
+                                GoogleBackupArchiveLogService.Create(BMessages.Upload_To_Google_Was_Not_Successfull.GetEnumDisplayName(), GoogleBackupArchiveLogType.UploadSection);
+
+                        }
                     }
                 }
             }

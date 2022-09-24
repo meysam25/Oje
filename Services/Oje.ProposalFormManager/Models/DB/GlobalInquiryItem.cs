@@ -32,5 +32,7 @@ namespace Oje.ProposalFormService.Models.DB
 
         [NotMapped]
         public long? basePriceEC { get; set; }
+        [NotMapped]
+        public long? exPrice { get; internal set; }
     }
 }

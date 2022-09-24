@@ -28,12 +28,16 @@ namespace Oje.Section.CarThirdBaseData.Services.EContext
         public DbSet<ThirdPartyFinancialAndBodyHistoryDamagePenalty> ThirdPartyFinancialAndBodyHistoryDamagePenalties { get; set; }
         public DbSet<ThirdPartyDriverNoDamageDiscountHistory> ThirdPartyDriverNoDamageDiscountHistories { get; set; }
         public DbSet<ThirdPartyBodyNoDamageDiscountHistory> ThirdPartyBodyNoDamageDiscountHistories { get; set; }
+        public DbSet<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts { get; set; }
+        public DbSet<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies { get; set; }
+        public DbSet<VehicleType> VehicleTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ThirdPartyRate>().Property(e => e.Rate).HasPrecision(17, 15);
             modelBuilder.Entity<ThirdPartyExteraFinancialCommitment>().Property(e => e.Rate).HasPrecision(17, 15);
             modelBuilder.Entity<ThirdPartyPassengerRate>().Property(e => e.Rate).HasPrecision(8, 6);
+            modelBuilder.Entity<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany>().HasKey(t => new { t.CompanyId, t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountId });
 
             base.OnModelCreating(modelBuilder);
         }

@@ -71,6 +71,8 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<Color> Colors { get; set; }
         public DbSet<ProposalFilledFormCacheJson> ProposalFilledFormCacheJsons { get; set; }
         public DbSet<ProposalFilledFormStatusLogFile> ProposalFilledFormStatusLogFiles { get; set; }
+        public DbSet<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts { get; set; }
+        public DbSet<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -84,6 +86,7 @@ namespace Oje.ProposalFormService.Services.EContext
             modelBuilder.Entity<CarSpecificationAmount>().Property(e => e.Rate).HasPrecision(7, 5);
 
             modelBuilder.Entity<InquiryCompanyLimitCompany>().HasKey(t => new { t.CompanyId, t.InquiryCompanyLimitId });
+            modelBuilder.Entity<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany>().HasKey(t => new { t.CompanyId, t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountId });
             modelBuilder.Entity<UserCompany>().HasKey(t => new { t.CompanyId, t.UserId });
             modelBuilder.Entity<ProposalFilledFormCompany>().HasKey(t => new { t.CompanyId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormUser>().HasKey(t => new { t.ProposalFilledFormId, t.UserId, t.Type });

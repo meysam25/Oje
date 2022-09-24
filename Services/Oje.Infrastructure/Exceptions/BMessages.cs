@@ -702,5 +702,9 @@ namespace Oje.Infrastructure.Exceptions
         DB_Backup_Successfull = 347,
         [Display(Name = "با موفقیت حذف شد")]
         Delete_Successfull = 348,
+        [Display(Name = "لطفا تاریخ تحویل خودرو را وارد کنید")]
+        Please_Enter_Recive_Car_Date = 349,
+        [Display(Name = "لطفا وضعیت تغییر پلاک را انتخاب کنید")]
+        Please_Select_Change_Plaque = 350,
     }
 }

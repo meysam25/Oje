@@ -17,6 +17,7 @@ namespace Oje.Section.CarThirdBaseData.Models.DB
             ThirdPartyRequiredFinancialCommitmentCompanies = new List<ThirdPartyRequiredFinancialCommitmentCompany>();
             ThirdPartyExteraFinancialCommitmentComs = new List<ThirdPartyExteraFinancialCommitmentCom>();
             ThirdPartyPassengerRateCompanies = new List<ThirdPartyPassengerRateCompany>();
+            ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies = new();
         }
 
         [Key]
@@ -33,5 +34,7 @@ namespace Oje.Section.CarThirdBaseData.Models.DB
         public List<ThirdPartyExteraFinancialCommitmentCom> ThirdPartyExteraFinancialCommitmentComs { get; set; }
         [InverseProperty("Company")]
         public List<ThirdPartyPassengerRateCompany> ThirdPartyPassengerRateCompanies { get; set; }
+        [InverseProperty("Company")]
+        public List<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies { get; set; }
     }
 }

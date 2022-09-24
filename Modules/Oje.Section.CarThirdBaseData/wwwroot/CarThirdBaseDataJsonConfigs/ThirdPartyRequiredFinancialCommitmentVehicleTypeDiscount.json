@@ -1,0 +1,224 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountAddGridModal', this)",
+              "type": "add",
+              "modalId": "ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountModal",
+                "url": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetById\\', \\'ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "comId",
+              "caption": "شرکت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetCompanyList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "ctId",
+              "caption": "نوع خودرو",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetVicleList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "price",
+              "caption": "مبلغ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "percent",
+              "caption": "درصد",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "comIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vtId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetVicleList",
+              "label": "نوع خودرو",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "percent",
+              "type": "text",
+              "label": "درصد",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountGrid', '/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "comIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetCompanyList",
+              "label": "شرکت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vtId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/GetVicleList",
+              "label": "نوع خودرو",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "price",
+              "type": "text",
+              "label": "مبلغ",
+              "isRequired": true,
+              "seperator": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "percent",
+              "type": "text",
+              "label": "درصد",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountGrid', '/CarThirdBaseData/ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -50,6 +50,7 @@ namespace Oje.ProposalFormService.Services
         readonly IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService = null;
         readonly ICarTypeService CarTypeService = null;
         readonly IVehicleSpecsService VehicleSpecsService = null;
+        readonly IThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService = null;
 
 
         public ThirdPartyRateService(
@@ -85,7 +86,8 @@ namespace Oje.ProposalFormService.Services
             IPaymentMethodService PaymentMethodService,
             IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService,
             ICarTypeService CarTypeService,
-            IVehicleSpecsService VehicleSpecsService
+            IVehicleSpecsService VehicleSpecsService,
+            IThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService
             )
         {
             this.db = db;
@@ -121,6 +123,7 @@ namespace Oje.ProposalFormService.Services
             this.ThirdPartyBodyNoDamageDiscountHistoryService = ThirdPartyBodyNoDamageDiscountHistoryService;
             this.CarTypeService = CarTypeService;
             this.VehicleSpecsService = VehicleSpecsService;
+            this.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService = ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService;
         }
 
         public object Inquiry(int? siteSettingId, CarThirdPartyInquiryVM input, string targetArea)
@@ -151,12 +154,14 @@ namespace Oje.ProposalFormService.Services
                         InquiryCalceS15(objPack, newQueryItem);
                         InquiryCalceS9(objPack, newQueryItem, input);
                         InquiryCalceS9_2(objPack, newQueryItem, input);
+                        InquiryCalceS9_3(objPack, newQueryItem, input);
                     }
 
                     DublicateInqueryForExteraCommitment(result, objPack, input);
 
                     foreach (var newQueryItem in result)
                     {
+                        InquiryCalceSDisX(objPack, newQueryItem);
                         InquiryCalceS5(objPack, newQueryItem, input);
                         InquiryCalceS22(objPack, newQueryItem);
                         InquiryCalceS14(objPack, newQueryItem);
@@ -177,6 +182,30 @@ namespace Oje.ProposalFormService.Services
             }
 
             return new { total = 0, data = new List<object>() };
+        }
+
+        private void InquiryCalceSDisX(CarThirdPartyInquiryObjects objPack, GlobalInquery newQueryItem)
+        {
+            var foundS2 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s2").FirstOrDefault();
+            if (foundS2 != null && objPack.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts != null && objPack.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts.Count > 0 && foundS2.exPrice > 0)
+            {
+                var foundItem = objPack.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts
+                    .OrderByDescending(t => t.Price)
+                    .Where(t => t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies != null && t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId) && t.Price < foundS2.exPrice)
+                    .FirstOrDefault();
+                if (foundItem != null)
+                {
+                    GlobalInquiryItem newITem = new GlobalInquiryItem()
+                    {
+                        CalcKey = "SDisX",
+                        GlobalInquiryId = newQueryItem.Id,
+                        Title = foundItem.Title,
+                        Price = RouteThisNumberIfConfigExist(Math.Round((foundItem.Percent * Convert.ToDecimal(foundS2.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery) * -1
+                    };
+                    if (newITem.Price < 0)
+                        newQueryItem.GlobalInquiryItems.Add(newITem);
+                }
+            }
         }
 
         object calceResponeForInquiry(List<GlobalInquery> quiryObj, CarThirdPartyInquiryObjects objPack, CarThirdPartyInquiryVM input, string targetArea)
@@ -266,8 +295,8 @@ namespace Oje.ProposalFormService.Services
                             newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true && t.CalcKey != "s9" && t.CalcKey != "s9_2").Sum(t => t.Price) : 0;
                         if (sumPrice > 0)
                         {
-                            var tax = RouteThisNumberIfConfigExist(Math.Ceiling((Convert.ToDecimal(sumPrice) * objPack.Tax.Percent) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
-                            var duty = RouteThisNumberIfConfigExist(Math.Ceiling((Convert.ToDecimal(sumPrice) * objPack.Duty.Percent) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
+                            var tax = RouteThisNumberIfConfigExist(Math.Round((Convert.ToDecimal(sumPrice) * objPack.Tax.Percent) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
+                            var duty = RouteThisNumberIfConfigExist(Math.Round((Convert.ToDecimal(sumPrice) * objPack.Duty.Percent) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
 
                             if (tax > 0)
                             {
@@ -334,7 +363,7 @@ namespace Oje.ProposalFormService.Services
                             newItemItem2.GlobalInquiryId = newItem.Id;
                             newItemItem2.CalcKey = "BCash";
                             newItemItem2.Title = foundCurCashPayed.Title;
-                            newItemItem2.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling((Convert.ToDecimal(priceX) * foundCurCashPayed.Percent) / objPack.v100)) * -1, objPack.RoundInquery);
+                            newItemItem2.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Round((Convert.ToDecimal(priceX) * foundCurCashPayed.Percent) / objPack.v100)) * -1, objPack.RoundInquery);
                             newItem.GlobalInquiryItems.Add(newItemItem2);
                         }
                     }
@@ -357,7 +386,7 @@ namespace Oje.ProposalFormService.Services
                         newItem.GlobalInquiryId = newQueryItem.Id;
                         newItem.CalcKey = "DS";
                         newItem.Title = objPack.InquiryDuration.Title;
-                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling(((Convert.ToDecimal(price) * rPercent) / objPack.v100) * -1)), objPack.RoundInquery);
+                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Round(((Convert.ToDecimal(price) * rPercent) / objPack.v100) * -1)), objPack.RoundInquery);
 
                         newQueryItem.GlobalInquiryItems.Add(newItem);
                     }
@@ -387,7 +416,7 @@ namespace Oje.ProposalFormService.Services
                                 price = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == foundDiscountCode.InqueryCode).Select(t => t.Price).FirstOrDefault();
                             if (price > 0)
                             {
-                                newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling((Convert.ToDecimal((price)) * foundDiscountCode.Percent.Value) / objPack.v100)) * -1, objPack.RoundInquery);
+                                newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Round((Convert.ToDecimal((price)) * foundDiscountCode.Percent.Value) / objPack.v100)) * -1, objPack.RoundInquery);
                                 if (foundDiscountCode.MaxPrice > 0 && newItem.Price > foundDiscountCode.MaxPrice)
                                     newItem.Price = foundDiscountCode.MaxPrice;
                                 newQueryItem.maxDiscount += foundDiscountCode.Percent.Value;
@@ -428,7 +457,7 @@ namespace Oje.ProposalFormService.Services
                         price = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == foundDiscountCode.InqueryCode).Select(t => t.Price).FirstOrDefault();
                     if (price > 0)
                     {
-                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling((Convert.ToDecimal((price)) * foundDiscountCode.Percent.Value) / objPack.v100)) * -1, objPack.RoundInquery);
+                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Round((Convert.ToDecimal((price)) * foundDiscountCode.Percent.Value) / objPack.v100)) * -1, objPack.RoundInquery);
                         if (foundDiscountCode.MaxPrice > 0 && newItem.Price > foundDiscountCode.MaxPrice)
                             newItem.Price = foundDiscountCode.MaxPrice;
                         newQueryItem.maxDiscount += foundDiscountCode.Percent.Value;
@@ -463,7 +492,7 @@ namespace Oje.ProposalFormService.Services
                     var sumItemPrice = newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true).Select(t => t.Price).Sum();
                     if (objPack.InsuranceContractDiscount.Percent > 0)
                     {
-                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling((Convert.ToDecimal((sumItemPrice)) * objPack.InsuranceContractDiscount.Percent) / objPack.v100)) * -1, objPack.RoundInquery);
+                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Round((Convert.ToDecimal((sumItemPrice)) * objPack.InsuranceContractDiscount.Percent) / objPack.v100)) * -1, objPack.RoundInquery);
                         newQueryItem.maxDiscount += objPack.InsuranceContractDiscount.Percent;
                         if (objPack.InquiryMaxDiscounts.Any(t => t.Percent < newQueryItem.maxDiscount && t.InquiryMaxDiscountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId)))
                         {
@@ -588,12 +617,12 @@ namespace Oje.ProposalFormService.Services
                             if (userInputPrice > rv.MaxValue)
                             {
                                 var def = Convert.ToDecimal(rv.MaxValue - rv.MinValue) * rv.Percent.Value;
-                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                                result += Convert.ToInt32(Math.Round(def / v100));
                             }
                             else if (userInputPrice >= rv.MinValue && userInputPrice <= rv.MaxValue)
                             {
                                 var def = Convert.ToDecimal(userInputPrice - rv.MinValue) * rv.Percent.Value;
-                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                                result += Convert.ToInt32(Math.Round(def / v100));
                             }
                         }
                     }
@@ -611,12 +640,12 @@ namespace Oje.ProposalFormService.Services
                             if (basePrice > rv.MaxValue)
                             {
                                 var def = Convert.ToDecimal(rv.MaxValue - rv.MinValue) * rv.Percent.Value;
-                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                                result += Convert.ToInt32(Math.Round(def / v100));
                             }
                             else if (basePrice >= rv.MinValue && basePrice <= rv.MaxValue)
                             {
                                 var def = Convert.ToDecimal(basePrice - rv.MinValue) * rv.Percent.Value;
-                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                                result += Convert.ToInt32(Math.Round(def / v100));
                             }
                         }
                     }
@@ -640,7 +669,7 @@ namespace Oje.ProposalFormService.Services
                                 if (defYear > rv.MaxValue || (defYear >= rv.MinValue && defYear <= rv.MaxValue))
                                 {
                                     var def = Convert.ToDecimal(userInputPrice) * rv.Percent.Value;
-                                    result += Convert.ToInt32(Math.Ceiling(def / v100));
+                                    result += Convert.ToInt32(Math.Round(def / v100));
                                 }
                             }
                             else if (calculateType == CarExteraDiscountCalculateType.OnFirstResult)
@@ -648,7 +677,7 @@ namespace Oje.ProposalFormService.Services
                                 if (defYear > rv.MaxValue || (defYear >= rv.MinValue && defYear <= rv.MaxValue))
                                 {
                                     var def = Convert.ToDecimal(basePrice) * rv.Percent.Value;
-                                    result += Convert.ToInt32(Math.Ceiling(def / v100));
+                                    result += Convert.ToInt32(Math.Round(def / v100));
                                 }
                             }
                         }
@@ -718,7 +747,7 @@ namespace Oje.ProposalFormService.Services
                         newITem.CalcKey = "s20";
                         newITem.Title = BMessages.DamagePenalty_Body_Financial_Extera.GetEnumDisplayName();
                         newITem.GlobalInquiryId = newQueryItem.Id;
-                        newITem.Price = RouteThisNumberIfConfigExist(Math.Ceiling((targetPercent / objPack.v100) * Convert.ToDecimal(foundS2.Price + foundS5.Price + foundS22.Price)).ToLongReturnZiro() * -1, objPack.RoundInquery);
+                        newITem.Price = RouteThisNumberIfConfigExist(Math.Round((targetPercent / objPack.v100) * Convert.ToDecimal(foundS2.Price + foundS5.Price + foundS22.Price)).ToLongReturnZiro() * -1, objPack.RoundInquery);
                         if (newITem.Price > 0)
                             newQueryItem.GlobalInquiryItems.Add(newITem);
                     }
@@ -736,7 +765,7 @@ namespace Oje.ProposalFormService.Services
                 newITem.CalcKey = "s22";
                 newITem.GlobalInquiryId = newQueryItem.Id;
                 newITem.Title = BMessages.Extera_CarUsage_Price.GetEnumDisplayName();
-                newITem.Price = RouteThisNumberIfConfigExist(Math.Ceiling((objPack.VehicleUsage.ThirdPartyPercent.Value * Convert.ToDecimal(foundS2.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
+                newITem.Price = RouteThisNumberIfConfigExist(Math.Round((objPack.VehicleUsage.ThirdPartyPercent.Value * Convert.ToDecimal(foundS2.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
                 if (newITem.Price > 0)
                     newQueryItem.GlobalInquiryItems.Add(newITem);
             }
@@ -758,7 +787,7 @@ namespace Oje.ProposalFormService.Services
                             CalcKey = "s5",
                             GlobalInquiryId = newQueryItem.Id,
                             Title = BMessages.Extera_CreateDate_Price.GetEnumDisplayName(),
-                            Price = RouteThisNumberIfConfigExist(Math.Ceiling((foundTargetRate.Percent * Convert.ToDecimal(foundS2.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery)
+                            Price = RouteThisNumberIfConfigExist(Math.Round((foundTargetRate.Percent * Convert.ToDecimal(foundS2.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery)
                         };
                         if (newITem.Price > 0)
                             newQueryItem.GlobalInquiryItems.Add(newITem);
@@ -780,7 +809,7 @@ namespace Oje.ProposalFormService.Services
                 {
                     if (ex.ThirdPartyRequiredFinancialCommitmentCompanies != null && ex.ThirdPartyRequiredFinancialCommitmentCompanies.Any(t => t.CompanyId == inquery.CompanyId))
                     {
-                        var listRate = 
+                        var listRate =
                             ex.ThirdPartyExteraFinancialCommitments
                             .Where(t => t.IsActive == true && t.ThirdPartyExteraFinancialCommitmentComs.Any(tt => tt.CompanyId == inquery.CompanyId))
                             .ToList();
@@ -815,10 +844,11 @@ namespace Oje.ProposalFormService.Services
                                         newITem.GlobalInquiryItems.Add(new GlobalInquiryItem()
                                         {
                                             CalcKey = "s2",
-                                            Price = Math.Ceiling(Convert.ToDecimal(ex.Price - objPack.ThirdPartyFinancialCommitment.Price) * foundWithType.Rate).ToLongReturnZiro(),
+                                            Price = RouteThisNumberIfConfigExist(Math.Round(Convert.ToDecimal(ex.Price - objPack.ThirdPartyFinancialCommitment.Price) * foundWithType.Rate).ToLongReturnZiro(), objPack.RoundInquery),
                                             Title = "تعهد مالی " + ex.Title,
                                             GlobalInquiryId = newITem.Id,
-                                            basePriceEC = foundWithType?.ThirdPartyRequiredFinancialCommitment?.Price
+                                            basePriceEC = foundWithType?.ThirdPartyRequiredFinancialCommitment?.Price,
+                                            exPrice = ex.Price
                                         });
                                         result.Add(newITem);
                                     }
@@ -862,6 +892,39 @@ namespace Oje.ProposalFormService.Services
             }
         }
 
+        void InquiryCalceS9_3(CarThirdPartyInquiryObjects objPack, GlobalInquery newQueryItem, CarThirdPartyInquiryVM input)
+        {
+            if (input.havePrevInsurance != null && input.havePrevInsurance == 0 && input.isNewCar != null && input.isNewCar == true &&
+                !string.IsNullOrEmpty(input.reciveCarDate) && input.reciveCarDate.ToEnDate() != null)
+            {
+                var endDate = input.reciveCarDate.ToEnDate().Value;
+                var foundS1 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").FirstOrDefault();
+                var foundS4 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s4").FirstOrDefault();
+                var foundS6 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s6").FirstOrDefault();
+                var defDay = Math.Floor((DateTime.Now - endDate).TotalDays).ToIntReturnZiro();
+
+                if (foundS4 == null)
+                    foundS4 = new();
+
+                if (foundS6 == null)
+                    foundS6 = new GlobalInquiryItem();
+
+                if (defDay > 0 && foundS1 != null)
+                {
+                    decimal v365 = 365;
+                    if (defDay > 365)
+                        defDay = 365;
+                    GlobalInquiryItem newITem = new GlobalInquiryItem();
+                    newITem.CalcKey = "s9_3";
+                    newITem.GlobalInquiryId = newQueryItem.Id;
+                    newITem.Title = string.Format(BMessages.Delay_Day.GetEnumDisplayName(), defDay);
+                    newITem.Price = RouteThisNumberIfConfigExist((Math.Round(Convert.ToDecimal(foundS1.Price + foundS4.Price + foundS6.Price) / v365) * Convert.ToDecimal(defDay)).ToLongReturnZiro(), objPack.RoundInquery);
+                    if (newITem.Price > 0)
+                        newQueryItem.GlobalInquiryItems.Add(newITem);
+                }
+            }
+        }
+
         void InquiryCalceS9(CarThirdPartyInquiryObjects objPack, GlobalInquery newQueryItem, CarThirdPartyInquiryVM input)
         {
             if (input.havePrevInsurance > 0 && !string.IsNullOrEmpty(input.prevEndDate) && input.prevEndDate.ConvertPersianNumberToEnglishNumber().ToEnDate() != null &&
@@ -869,9 +932,12 @@ namespace Oje.ProposalFormService.Services
             {
                 var endDate = input.prevEndDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
                 var foundS1 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").FirstOrDefault();
+                var foundS4 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s4").FirstOrDefault();
                 var foundS6 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s6").FirstOrDefault();
                 var defDay = Math.Floor((DateTime.Now - endDate).TotalDays).ToIntReturnZiro();
 
+                if (foundS4 == null)
+                    foundS4 = new();
                 if (foundS6 == null)
                     foundS6 = new GlobalInquiryItem();
 
@@ -884,7 +950,7 @@ namespace Oje.ProposalFormService.Services
                     newITem.CalcKey = "s9";
                     newITem.GlobalInquiryId = newQueryItem.Id;
                     newITem.Title = string.Format(BMessages.Delay_Day.GetEnumDisplayName(), defDay);
-                    newITem.Price = RouteThisNumberIfConfigExist((Math.Ceiling(Convert.ToDecimal(foundS1.Price + foundS6.Price) / v365) * Convert.ToDecimal(defDay)).ToLongReturnZiro(), objPack.RoundInquery);
+                    newITem.Price = RouteThisNumberIfConfigExist((Math.Round(Convert.ToDecimal(foundS1.Price + foundS4.Price + foundS6.Price) / v365) * Convert.ToDecimal(defDay)).ToLongReturnZiro(), objPack.RoundInquery);
                     if (newITem.Price > 0)
                         newQueryItem.GlobalInquiryItems.Add(newITem);
                 }
@@ -926,7 +992,7 @@ namespace Oje.ProposalFormService.Services
                     newITem.CalcKey = "s15";
                     newITem.GlobalInquiryId = newQueryItem.Id;
                     newITem.Title = BMessages.Discount_Accident_Driver.GetEnumDisplayName();
-                    newITem.Price = RouteThisNumberIfConfigExist((Math.Ceiling((Convert.ToDecimal(foundS3.Price + foundS8.Price + foundS4_2.Price) * targetPercent) / objPack.v100)).ToLongReturnZiro() * -1, objPack.RoundInquery);
+                    newITem.Price = RouteThisNumberIfConfigExist((Math.Round((Convert.ToDecimal(foundS3.Price + foundS8.Price + foundS4_2.Price) * targetPercent) / objPack.v100)).ToLongReturnZiro() * -1, objPack.RoundInquery);
                     if (newITem.Price < 0)
                         newQueryItem.GlobalInquiryItems.Add(newITem);
                 }
@@ -936,7 +1002,7 @@ namespace Oje.ProposalFormService.Services
                     newITem.CalcKey = "s21";
                     newITem.Title = BMessages.Accident_Driver_Penalty.GetEnumDisplayName();
                     newITem.GlobalInquiryId = newQueryItem.Id;
-                    newITem.Price = RouteThisNumberIfConfigExist((Math.Ceiling((Convert.ToDecimal(foundS3.Price + foundS8.Price + foundS4_2.Price) * targetPercent) / objPack.v100)).ToLongReturnZiro() * -1, objPack.RoundInquery);
+                    newITem.Price = RouteThisNumberIfConfigExist((Math.Round((Convert.ToDecimal(foundS3.Price + foundS8.Price + foundS4_2.Price) * targetPercent) / objPack.v100)).ToLongReturnZiro() * -1, objPack.RoundInquery);
                     if (newITem.Price > 0)
                         newQueryItem.GlobalInquiryItems.Add(newITem);
                 }
@@ -992,7 +1058,7 @@ namespace Oje.ProposalFormService.Services
                         newITem.GlobalInquiryId = newQueryItem.Id;
                         newITem.Title = BMessages.NoDamage_Discount.GetEnumDisplayName();
                         newITem.Price =
-                            RouteThisNumberIfConfigExist(Math.Ceiling((targetPercent / objPack.v100) * Convert.ToDecimal(foundS1.Price + foundS6.Price + foundS4.Price)).ToLongReturnZiro() * -1, objPack.RoundInquery);
+                            RouteThisNumberIfConfigExist(Math.Round((targetPercent / objPack.v100) * Convert.ToDecimal(foundS1.Price + foundS6.Price + foundS4.Price)).ToLongReturnZiro() * -1, objPack.RoundInquery);
                         if (newITem.Price < 0)
                             newQueryItem.GlobalInquiryItems.Add(newITem);
                     }
@@ -1002,7 +1068,7 @@ namespace Oje.ProposalFormService.Services
                         newITem.CalcKey = "s19";
                         newITem.GlobalInquiryId = newQueryItem.Id;
                         newITem.Title = BMessages.Damage_Penalty_Finanical_And_Body.GetEnumDisplayName();
-                        newITem.Price = RouteThisNumberIfConfigExist(Math.Ceiling((targetPercent / objPack.v100) * Convert.ToDecimal(foundS1.Price + foundS6.Price + foundS4.Price)).ToLongReturnZiro() * -1, objPack.RoundInquery);
+                        newITem.Price = RouteThisNumberIfConfigExist(Math.Round((targetPercent / objPack.v100) * Convert.ToDecimal(foundS1.Price + foundS6.Price + foundS4.Price)).ToLongReturnZiro() * -1, objPack.RoundInquery);
                         if (newITem.Price > 0)
                             newQueryItem.GlobalInquiryItems.Add(newITem);
                     }
@@ -1023,7 +1089,7 @@ namespace Oje.ProposalFormService.Services
                 newITem.CalcKey = "s10";
                 newITem.Title = BMessages.Car_Cargo_Price.GetEnumDisplayName();
                 newITem.GlobalInquiryId = newQueryItem.Id;
-                newITem.Price = RouteThisNumberIfConfigExist((Math.Ceiling(Convert.ToDecimal(foundS1.Price + foundS4.Price) * objPack.CarSpecification.CarRoomRate.Value)).ToLongReturnZiro(), objPack.RoundInquery);
+                newITem.Price = RouteThisNumberIfConfigExist((Math.Round(Convert.ToDecimal(foundS1.Price + foundS4.Price) * objPack.CarSpecification.CarRoomRate.Value)).ToLongReturnZiro(), objPack.RoundInquery);
                 if (newITem.Price > 0)
                     newQueryItem.GlobalInquiryItems.Add(newITem);
             }
@@ -1041,7 +1107,7 @@ namespace Oje.ProposalFormService.Services
                 newITem.CalcKey = "s8";
                 newITem.GlobalInquiryId = newQueryItem.Id;
                 newITem.Title = BMessages.Driver_Car_Usage_Price.GetEnumDisplayName();
-                newITem.Price = RouteThisNumberIfConfigExist(Math.Ceiling((objPack.VehicleUsage.ThirdPartyPercent.Value * Convert.ToDecimal(foundS3.Price)) / v100).ToLongReturnZiro(), objPack.RoundInquery);
+                newITem.Price = RouteThisNumberIfConfigExist(Math.Round((objPack.VehicleUsage.ThirdPartyPercent.Value * Convert.ToDecimal(foundS3.Price)) / v100).ToLongReturnZiro(), objPack.RoundInquery);
                 if (newITem.Price > 0)
                     newQueryItem.GlobalInquiryItems.Add(newITem);
             }
@@ -1057,7 +1123,7 @@ namespace Oje.ProposalFormService.Services
                 newITem.CalcKey = "s6";
                 newITem.GlobalInquiryId = newQueryItem.Id;
                 newITem.Title = BMessages.CarUsage_BasePrice.GetEnumDisplayName();
-                newITem.Price = RouteThisNumberIfConfigExist(Math.Ceiling((objPack.VehicleUsage.ThirdPartyPercent.Value * Convert.ToDecimal(foundS1.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
+                newITem.Price = RouteThisNumberIfConfigExist(Math.Round((objPack.VehicleUsage.ThirdPartyPercent.Value * Convert.ToDecimal(foundS1.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
                 if (newITem.Price > 0)
                     newQueryItem.GlobalInquiryItems.Add(newITem);
             }
@@ -1078,7 +1144,7 @@ namespace Oje.ProposalFormService.Services
                         newITem.CalcKey = "s4_2";
                         newITem.Title = BMessages.Base_CreateDate_Driver_Accident_Price.GetEnumDisplayName();
                         newITem.GlobalInquiryId = newQueryItem.Id;
-                        newITem.Price = RouteThisNumberIfConfigExist(Math.Ceiling((foundTargetRate.Percent * Convert.ToDecimal(foundS3.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
+                        newITem.Price = RouteThisNumberIfConfigExist(Math.Round((foundTargetRate.Percent * Convert.ToDecimal(foundS3.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
                         if (newITem.Price > 0)
                             newQueryItem.GlobalInquiryItems.Add(newITem);
                     }
@@ -1101,7 +1167,7 @@ namespace Oje.ProposalFormService.Services
                         newITem.CalcKey = "s4";
                         newITem.Title = BMessages.Base_CreateDate_Price.GetEnumDisplayName();
                         newITem.GlobalInquiryId = newQueryItem.Id;
-                        newITem.Price = RouteThisNumberIfConfigExist(Math.Ceiling((foundTargetRate.Percent * Convert.ToDecimal(s1Price.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
+                        newITem.Price = RouteThisNumberIfConfigExist(Math.Round((foundTargetRate.Percent * Convert.ToDecimal(s1Price.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery);
                         if (newITem.Price > 0)
                             newQueryItem.GlobalInquiryItems.Add(newITem);
                     }
@@ -1125,7 +1191,7 @@ namespace Oje.ProposalFormService.Services
                     newITem.Title = BMessages.Driver_Accident_Price.GetEnumDisplayName();
                     newITem.Price = RouteThisNumberIfConfigExist
                         (
-                            Math.Ceiling
+                            Math.Round
                             (
                                 foundRate.Rate * Convert.ToDecimal(carThirdPartyInquiryObjects.ThirdPartyDriverFinancialCommitment.Price)
                             ).ToLongReturnZiro(),
@@ -1176,7 +1242,7 @@ namespace Oje.ProposalFormService.Services
                 newITem.GlobalInquiryId = newQueryItem.Id;
                 newITem.Title = BMessages.BasePrice.GetEnumDisplayName();
                 newITem.Price = RouteThisNumberIfConfigExist
-                    (Math.Ceiling(
+                    (Math.Round(
                             foundRate.Rate *
                             Convert.ToDecimal(carThirdPartyInquiryObjects.ThirdPartyFinancialCommitment.Price + carThirdPartyInquiryObjects.ThirdPartyLifeCommitment.Price)).ToLongReturnZiro(),
                             carThirdPartyInquiryObjects.RoundInquery
@@ -1241,6 +1307,9 @@ namespace Oje.ProposalFormService.Services
 
             if (result.validCompanies != null && result.validCompanies.Count > 0)
             {
+                if (!string.IsNullOrEmpty(input.reciveCarDate) && input.reciveCarDate.ToEnDate() == null)
+                    throw BException.GenerateNewException(BMessages.Invalid_Date);
+
                 if (input.havePrevInsurance.ToIntReturnZiro() < 0)
                     throw BException.GenerateNewException(BMessages.Selected_Company_Is_Not_Valid);
                 else if (input.havePrevInsurance.ToIntReturnZiro() > 0)
@@ -1292,6 +1361,14 @@ namespace Oje.ProposalFormService.Services
                     result.ThirdPartyLifeCommitmentLong = result.ThirdPartyLifeCommitment.Price;
                 if (result.ThirdPartyFinancialCommitment != null)
                     result.ThirdPartyFinancialCommitmentLong = result.ThirdPartyFinancialCommitment.Price;
+
+                if (input.hasChangePlaque == true)
+                {
+                    result.usMinus5ForNoDamageDiscount = true;
+                    result.bodyNoDamagePercent = new ThirdPartyBodyNoDamageDiscountHistory() { IsActive = true, Title = BMessages.No_Damage.GetEnumDisplayName(), Percent = 0 };
+                    result.ThirdPartyDriverNoDamageDiscountHistory = new ThirdPartyDriverNoDamageDiscountHistory() { IsActive = true, Percent = 0, Title = BMessages.No_Damage.GetEnumDisplayName() };
+                }
+                result.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts = ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService.GetListBy(input.vehicleTypeId, siteSettingId);
             }
             else
                 throw BException.GenerateNewException(BMessages.No_Company_Exist);
@@ -1534,11 +1611,20 @@ namespace Oje.ProposalFormService.Services
 
         void initIfHavePrevInsurance(CarThirdPartyInquiryObjects result, CarThirdPartyInquiryVM input)
         {
+            if (input.hasChangePlaque == null)
+                throw BException.GenerateNewException(BMessages.Please_Select_Change_Plaque);
+
+            if (input.hasChangePlaque == true)
+                input.hasChangePlaque_Title = "بلی";
+            else
+                input.hasChangePlaque_Title = "خیر";
+
             result.prevInsuranceCompany = CompanyService.GetById(input.havePrevInsurance);
             if (result.prevInsuranceCompany == null)
                 throw BException.GenerateNewException(BMessages.Selected_Company_Is_Not_Valid);
             input.havePrevInsurance_Title = result.prevInsuranceCompany.Title;
             input.isNewCar = false;
+            input.reciveCarDate = null;
             if (string.IsNullOrEmpty(input.prevEndDate) || input.prevEndDate.ConvertPersianNumberToEnglishNumber().ToEnDate() == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Previus_Insurance_Expired_Date);
             if (string.IsNullOrEmpty(input.prevStartDate) || input.prevStartDate.ConvertPersianNumberToEnglishNumber().ToEnDate() == null)
@@ -1596,6 +1682,9 @@ namespace Oje.ProposalFormService.Services
             input.prevEndDate = null;
             input.prevStartDate = null;
             input.havePrevInsurance_Title = "ندارم";
+
+            if (input.isNewCar == true && (string.IsNullOrEmpty(input.reciveCarDate) || input.reciveCarDate.ToEnDate() == null))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Recive_Car_Date);
         }
 
         bool IsValidInquiry(CarThirdPartyInquiryVM input)

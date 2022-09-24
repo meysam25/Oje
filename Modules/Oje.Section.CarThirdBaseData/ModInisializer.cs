@@ -37,6 +37,8 @@ namespace Oje.Section.CarThirdBaseData
             services.AddScoped<IThirdPartyFinancialAndBodyHistoryDamagePenaltyService, ThirdPartyFinancialAndBodyHistoryDamagePenaltyService>();
             services.AddScoped<IThirdPartyDriverNoDamageDiscountHistoryService, ThirdPartyDriverNoDamageDiscountHistoryService>();
             services.AddScoped<IThirdPartyBodyNoDamageDiscountHistoryService, ThirdPartyBodyNoDamageDiscountHistoryService>();
+            services.AddScoped<IThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService, ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService>();
+            services.AddScoped<IVehicleTypeService, VehicleTypeService>();
         }
     }
 }

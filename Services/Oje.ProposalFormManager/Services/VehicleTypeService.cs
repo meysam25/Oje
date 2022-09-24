@@ -26,7 +26,7 @@ namespace Oje.ProposalFormService.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-                result.AddRange(db.VehicleTypes.OrderBy(t => t.Order).Where(t => t.IsActive == true).Select(t => new { id = t.Id, title = t.Title }).ToList());
+            result.AddRange(db.VehicleTypes.OrderBy(t => t.Order).Where(t => t.IsActive == true).Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
         }

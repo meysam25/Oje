@@ -71,6 +71,7 @@ namespace Oje.ProposalFormService
             services.AddScoped<IAgentRefferService, AgentRefferService>();
             services.AddScoped<IColorService, ColorService>();
             services.AddScoped<IProposalFilledFormStatusLogFileService, ProposalFilledFormStatusLogFileService>();
+            services.AddScoped<IThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService, ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService>();
 
 
             services.AddDbContextPool<ProposalFormReportDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
