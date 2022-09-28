@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Models.PageForms;
+﻿using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Models.PageForms;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.Tender.Models.DB
 {
     [Table("TenderProposalFormJsonConfigs")]
-    public class TenderProposalFormJsonConfig
+    public class TenderProposalFormJsonConfig: IEntityWithSiteSettingId
     {
         public TenderProposalFormJsonConfig()
         {

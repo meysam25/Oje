@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Security.Models.DB
 {
     [Table("UserAdminLogs")]
-    public class UserAdminLog
+    public class UserAdminLog: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }

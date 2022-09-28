@@ -15,6 +15,7 @@ namespace Oje.Security.Services
     {
         readonly SecurityDBContext db = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public UserLoginLogoutLogService
             (
                 SecurityDBContext db,
@@ -52,7 +53,8 @@ namespace Oje.Security.Services
         {
             searchInput = searchInput ?? new UserLoginLogoutLogMainGrid();
 
-            var quiryResult = db.UserLoginLogoutLogs.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.UserLoginLogoutLogs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.userfullname))
                 quiryResult = quiryResult

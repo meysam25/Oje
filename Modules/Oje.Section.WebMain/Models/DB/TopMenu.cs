@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("TopMenus")]
-    public class TopMenu
+    public class TopMenu: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }

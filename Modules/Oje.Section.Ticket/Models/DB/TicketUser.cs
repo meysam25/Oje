@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.Ticket.Models.DB
 {
     [Table("TicketUsers")]
-    public class TicketUser
+    public class TicketUser: IEntityWithSiteSettingId
     {
         public TicketUser()
         {

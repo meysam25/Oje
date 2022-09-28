@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -16,14 +17,17 @@ namespace Oje.Section.RegisterForm.Services
     {
         readonly RegisterFormDBContext db = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
         public UserRegisterFormCompanyService
             (
                 RegisterFormDBContext db,
-                IUserRegisterFormService UserRegisterFormService
+                IUserRegisterFormService UserRegisterFormService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UserRegisterFormService = UserRegisterFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(UserRegisterFormCompanyCreateUpdateVM input, int? siteSettingId)
@@ -60,7 +64,10 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.UserRegisterFormCompanies.Where(t => t.Id == id).FirstOrDefault();
+            var foundItem = db.UserRegisterFormCompanies
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -73,7 +80,8 @@ namespace Oje.Section.RegisterForm.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.UserRegisterFormCompanies
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -88,7 +96,7 @@ namespace Oje.Section.RegisterForm.Services
         {
             searchInput = searchInput ?? new();
 
-            var quiryResult = db.UserRegisterFormCompanies.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.UserRegisterFormCompanies.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.isActive != null)
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
@@ -130,7 +138,10 @@ namespace Oje.Section.RegisterForm.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.UserRegisterFormCompanies.Where(t => t.Id == input.id).FirstOrDefault();
+            var foundItem = db.UserRegisterFormCompanies
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

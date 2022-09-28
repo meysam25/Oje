@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -13,12 +14,16 @@ namespace Oje.Security.Services
     {
         readonly SecurityDBContext db = null;
         static List<UserAdminLogConfig> userAdminLogConfigs = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public UserAdminLogConfigService
             (
-                SecurityDBContext db
+                SecurityDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(UserAdminLogConfigCreateUpdateVM input, int? siteSettingId)
@@ -52,7 +57,10 @@ namespace Oje.Security.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.UserAdminLogConfigs.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.UserAdminLogConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -66,20 +74,23 @@ namespace Oje.Security.Services
 
         public object GetById(long? id, int? siteSettingId)
         {
-            return db.UserAdminLogConfigs.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => new
-            {
-                id = t.Id,
-                aId = t.ActionId,
-                aId_Title = t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title,
-                isActive = t.IsActive
-            }).FirstOrDefault();
+            return db.UserAdminLogConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    aId = t.ActionId,
+                    aId_Title = t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title,
+                    isActive = t.IsActive
+                }).FirstOrDefault();
         }
 
         public GridResultVM<UserAdminLogConfigMainGridResultVM> GetList(UserAdminLogConfigMainGrid searchInput, int? siteSettingId)
         {
             searchInput = searchInput ?? new UserAdminLogConfigMainGrid();
 
-            var quiryResult = db.UserAdminLogConfigs.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.UserAdminLogConfigs.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 quiryResult = quiryResult.Where(t => (t.Action.Controller.Title + "/" + t.Action.Title).Contains(searchInput.title));
@@ -117,7 +128,11 @@ namespace Oje.Security.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.UserAdminLogConfigs.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.UserAdminLogConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

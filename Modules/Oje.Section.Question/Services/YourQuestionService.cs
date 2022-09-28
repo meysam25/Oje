@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -13,16 +14,22 @@ namespace Oje.Section.Question.Services
     public class YourQuestionService : IYourQuestionService
     {
         readonly QuestionDBContext db = null;
-        public YourQuestionService(QuestionDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public YourQuestionService
+            (
+                QuestionDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(YourQuestionCreateUpdateVM input, int? siteSettingId)
         {
             createUpdateValidation(input, siteSettingId);
 
-            db.Entry(new YourQuestion() 
+            db.Entry(new YourQuestion()
             {
                 Answer = input.answer,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
@@ -36,7 +43,11 @@ namespace Oje.Section.Question.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.YourQuestions.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+
+            var foundItem = db.YourQuestions
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -49,8 +60,9 @@ namespace Oje.Section.Question.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.YourQuestions
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
-                .Select(t => new 
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .Select(t => new
                 {
                     id = t.Id,
                     answer = t.Answer,
@@ -65,7 +77,7 @@ namespace Oje.Section.Question.Services
             if (searchInput == null)
                 searchInput = new YourQuestionMainGrid();
 
-            var qureResult = db.YourQuestions.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.YourQuestions.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
@@ -74,21 +86,21 @@ namespace Oje.Section.Question.Services
 
             int row = searchInput.skip;
 
-            return new GridResultVM<YourQuestionMainGridResultVM>() 
+            return new GridResultVM<YourQuestionMainGridResultVM>()
             {
                 total = qureResult.Count(),
                 data = qureResult
                 .OrderByDescending(t => t.Id)
                 .Skip(searchInput.skip)
                 .Take(searchInput.take)
-                .Select(t => new 
-                { 
+                .Select(t => new
+                {
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
                 })
                 .ToList()
-                .Select(t => new YourQuestionMainGridResultVM 
+                .Select(t => new YourQuestionMainGridResultVM
                 {
                     row = ++row,
                     id = t.id,
@@ -103,7 +115,7 @@ namespace Oje.Section.Question.Services
         {
             return db.YourQuestions
                 .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true)
-                .Select(t => new 
+                .Select(t => new
                 {
                     q = t.Title,
                     a = t.Answer
@@ -115,7 +127,10 @@ namespace Oje.Section.Question.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.YourQuestions.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.YourQuestions
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

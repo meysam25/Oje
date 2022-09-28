@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -19,15 +20,18 @@ namespace Oje.Section.RegisterForm.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly RegisterFormDBContext db = null;
         static readonly string validExtension = ".jpg,.jpeg,.png";
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public UserFilledRegisterFormCardPaymentService
             (
                 RegisterFormDBContext db,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(int? siteSettingId, UserFilledRegisterFormCardPaymentCreateUpdateVM input, long? loginUserId)
@@ -94,7 +98,9 @@ namespace Oje.Section.RegisterForm.Services
         {
             searchInput = searchInput ?? new UserRegisterFormPaymentMainGrid();
 
-            var quiryResult = db.UserFilledRegisterFormCardPayments.Where(t => t.SiteSettingId == siteSettingId && t.UserFilledRegisterFormId == searchInput.pKey);
+            var quiryResult = db.UserFilledRegisterFormCardPayments
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.UserFilledRegisterFormId == searchInput.pKey);
 
             if (isPayed != null)
                 if (isPayed == true)
@@ -154,7 +160,9 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Delete(long? id, int? siteSettingId, bool? isPayed, bool? isDone)
         {
-            var quiryResult = db.UserFilledRegisterFormCardPayments.Where(t => t.Id == id && t.SiteSettingId == siteSettingId);
+            var quiryResult = db.UserFilledRegisterFormCardPayments
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id);
 
             if (isPayed != null)
                 if (isPayed == true)

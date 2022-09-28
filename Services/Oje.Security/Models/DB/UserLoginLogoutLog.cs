@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Security.Models.DB
 {
     [Table("UserLoginLogoutLogs")]
-    public class UserLoginLogoutLog
+    public class UserLoginLogoutLog: IEntityWithSiteSettingId
     {
         [Key]
         public Guid Id { get; set; }

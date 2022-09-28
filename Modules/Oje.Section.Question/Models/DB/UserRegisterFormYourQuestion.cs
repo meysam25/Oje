@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.Question.Models.DB
 {
     [Table("UserRegisterFormYourQuestions")]
-    public class UserRegisterFormYourQuestion
+    public class UserRegisterFormYourQuestion: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }

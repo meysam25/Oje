@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -6,7 +7,6 @@ using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
 using Oje.Section.Tender.Models.View;
 using Oje.Section.Tender.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,15 +16,18 @@ namespace Oje.Section.Tender.Services
     {
         readonly TenderDBContext db = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public TenderProposalFormJsonConfigService
             (
                 TenderDBContext db,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.ProposalFormService = ProposalFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(TenderProposalFormJsonConfigCreateUpdateVM input, int? siteSettingId)
@@ -64,7 +67,10 @@ namespace Oje.Section.Tender.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.TenderProposalFormJsonConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.TenderProposalFormJsonConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -77,7 +83,8 @@ namespace Oje.Section.Tender.Services
         public TenderProposalFormJsonConfigCreateUpdateVM GetById(int? id, int? siteSettingId)
         {
             return db.TenderProposalFormJsonConfigs
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .OrderByDescending(t => t.Id)
                 .Take(1)
                 .Select(t => new
@@ -106,7 +113,7 @@ namespace Oje.Section.Tender.Services
         {
             searchInput = searchInput ?? new TenderProposalFormJsonConfigMainGrid();
 
-            var quiryResult = db.TenderProposalFormJsonConfigs.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.TenderProposalFormJsonConfigs.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.ppfTitle))
                 quiryResult = quiryResult.Where(t => t.ProposalForm.Title.Contains(searchInput.ppfTitle));
@@ -144,7 +151,11 @@ namespace Oje.Section.Tender.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.TenderProposalFormJsonConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.TenderProposalFormJsonConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

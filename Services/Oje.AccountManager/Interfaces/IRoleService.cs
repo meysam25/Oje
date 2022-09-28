@@ -34,5 +34,6 @@ namespace Oje.AccountService.Interfaces
         bool IsUserInRole(long? loginUserId, string roleName);
         List<int> GetRoleIdsByProposalFormId(int proposalFormId);
         bool HasAnyAutoRefreshRole(long id);
+        bool HasAnySeeOtherSiteRoleConfig(long userId);
     }
 }

@@ -71,9 +71,11 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
         }
 
-        public ApiResult Delete(int? id, int? siteSettingID)
+        public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.SmsTrigers.Where(t => t.SiteSettingId == siteSettingID && t.Id == id).FirstOrDefault();
+            var foundItem = db.SmsTrigers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -83,11 +85,12 @@ namespace Oje.Sms.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetById(int? id, int? siteSettingID)
+        public object GetById(int? id, int? siteSettingId)
         {
             return db.SmsTrigers
                 .OrderByDescending(t => t.Id)
-                .Where(t => t.SiteSettingId == siteSettingID && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -108,12 +111,12 @@ namespace Oje.Sms.Services
                 .FirstOrDefault();
         }
 
-        public GridResultVM<SmsTrigerMainGridResultVM> GetList(SmsTrigerMainGrid searchInput, int? siteSettingID)
+        public GridResultVM<SmsTrigerMainGridResultVM> GetList(SmsTrigerMainGrid searchInput, int? siteSettingId)
         {
             if (searchInput == null)
                 searchInput = new SmsTrigerMainGrid();
 
-            var qureResult = db.SmsTrigers.Where(t => t.SiteSettingId == siteSettingID);
+            var qureResult = db.SmsTrigers.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.type != null)
                 qureResult = qureResult.Where(t => t.UserNotificationType == searchInput.type);
@@ -148,11 +151,15 @@ namespace Oje.Sms.Services
             };
         }
 
-        public ApiResult Update(CreateUpdateSmsTrigerVM input, int? siteSettingID)
+        public ApiResult Update(CreateUpdateSmsTrigerVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingID);
+            CreateUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.SmsTrigers.Where(t => t.SiteSettingId == siteSettingID && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.SmsTrigers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

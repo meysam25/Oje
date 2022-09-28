@@ -13,5 +13,6 @@ namespace Oje.Infrastructure.Models
         public List<string> roles { get; set; }
         public string browserName { get; set; }
         public bool? hasAutoRefres { get; set; }
+        public bool? canSeeOtherWebsites { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -13,9 +14,11 @@ namespace Oje.Sms.Services
     public class SmsValidationHistoryService : ISmsValidationHistoryService
     {
         readonly SmsDBContext db = null;
-        public SmsValidationHistoryService(SmsDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public SmsValidationHistoryService(SmsDBContext db, IHttpContextAccessor HttpContextAccessor)
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public int Create(IpSections ipSections, string mobile, int? siteSettingId, SmsValidationHistoryType type)
@@ -63,7 +66,7 @@ namespace Oje.Sms.Services
         {
             searchInput = searchInput ?? new SmsValidationHistoryMainGrid();
 
-            var quiryResult = db.SmsValidationHistories.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.SmsValidationHistories.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.ip) && searchInput.ip.ToIp() != null)
             {

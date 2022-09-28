@@ -13,6 +13,7 @@ namespace Oje.AccountService.Models.View
         public RoleType? type { get; set; }
         public int? sitesettingId { get; set; }
         public bool? refreshGrid { get; set; }
+        public bool? canSeeOtherSites { get; set; }
         public List<int> formIds { get; set; }
     }
 }

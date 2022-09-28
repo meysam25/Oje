@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -14,9 +15,12 @@ namespace Oje.Section.Ticket.Services
     public class TicketCategoryService : ITicketCategoryService
     {
         readonly TicketDBContext db = null;
-        public TicketCategoryService(TicketDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public TicketCategoryService(TicketDBContext db, IHttpContextAccessor HttpContextAccessor)
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(TicketCategoryCreateUpdateVM input, int? siteSettingId)
@@ -52,7 +56,10 @@ namespace Oje.Section.Ticket.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.TicketCategories.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.TicketCategories
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -66,7 +73,8 @@ namespace Oje.Section.Ticket.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.TicketCategories
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -81,7 +89,9 @@ namespace Oje.Section.Ticket.Services
         {
             searchInput = searchInput ?? new TicketCategoryMainGrid();
 
-            var qureResult = db.TicketCategories.Where(t => t.SiteSettingId == siteSettingId && t.ParentId == searchInput.pKey);
+            var qureResult = db.TicketCategories
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.ParentId == searchInput.pKey);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
@@ -119,7 +129,11 @@ namespace Oje.Section.Ticket.Services
         {
             createValidation(input, siteSettingId);
 
-            var foundItem = db.TicketCategories.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.TicketCategories
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

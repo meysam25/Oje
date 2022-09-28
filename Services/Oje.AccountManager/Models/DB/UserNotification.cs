@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.AccountService.Models.DB
 {
     [Table("UserNotifications")]
-    public class UserNotification : IEntityWithUserId<User, long>
+    public class UserNotification : IEntityWithUserId<User, long>, IEntityWithSiteSettingId
     {
         public long UserId { get; set; }
         [ForeignKey("UserId"), InverseProperty("UserNotifications")]

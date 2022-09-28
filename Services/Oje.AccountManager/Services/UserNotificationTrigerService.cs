@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.View;
@@ -10,8 +11,6 @@ using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {
@@ -22,12 +21,15 @@ namespace Oje.AccountService.Services
         readonly IUserService UserService = null;
         readonly IRoleService RoleService = null;
         readonly IUserNotificationService UserNotificationService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public UserNotificationTrigerService(
             AccountDBContext db,
             IUserNotificationTemplateService UserNotificationTemplateService,
             IUserService UserService,
             IRoleService RoleService,
-            IUserNotificationService UserNotificationService
+            IUserNotificationService UserNotificationService,
+            IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -35,6 +37,7 @@ namespace Oje.AccountService.Services
             this.UserService = UserService;
             this.RoleService = RoleService;
             this.UserNotificationService = UserNotificationService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateUserNotificationTrigerVM input, int? siteSettingId)
@@ -112,7 +115,7 @@ namespace Oje.AccountService.Services
                 }
                 else if (foundTemplate != null && !string.IsNullOrEmpty(foundTemplate.Subject) && !string.IsNullOrEmpty(foundTemplate.Description) && foundTemplate.ProposalFilledFormUserType != null && exteraUserList != null)
                 {
-                    var foundTargetUsers = exteraUserList.Where(t => t.ProposalFilledFormUserType == foundTemplate.ProposalFilledFormUserType ).ToList();
+                    var foundTargetUsers = exteraUserList.Where(t => t.ProposalFilledFormUserType == foundTemplate.ProposalFilledFormUserType).ToList();
                     if (foundTargetUsers != null)
                     {
                         foreach (var foundTargetUser in foundTargetUsers)
@@ -137,7 +140,7 @@ namespace Oje.AccountService.Services
                 }
             }
 
-            if(foundTemplates != null && foundTemplates.Count > 0)
+            if (foundTemplates != null && foundTemplates.Count > 0)
                 UserNotificationService.SaveChange();
         }
 
@@ -164,8 +167,10 @@ namespace Oje.AccountService.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-
-            var foundItem = db.UserNotificationTrigers.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.UserNotificationTrigers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -179,7 +184,8 @@ namespace Oje.AccountService.Services
         {
             return db.UserNotificationTrigers
                 .OrderByDescending(t => t.Id)
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -205,7 +211,7 @@ namespace Oje.AccountService.Services
             if (searchInput == null)
                 searchInput = new UserNotificationTrigerMainGrid();
 
-            var qureResult = db.UserNotificationTrigers.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.UserNotificationTrigers.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.type != null)
                 qureResult = qureResult.Where(t => t.UserNotificationType == searchInput.type);
@@ -244,7 +250,11 @@ namespace Oje.AccountService.Services
         {
             CreateUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.UserNotificationTrigers.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.UserNotificationTrigers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -268,7 +278,5 @@ namespace Oje.AccountService.Services
             if (input.roleId.ToIntReturnZiro() <= 0 && input.userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
         }
-
-
     }
 }

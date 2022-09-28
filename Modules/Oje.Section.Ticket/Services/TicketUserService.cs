@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -22,18 +23,22 @@ namespace Oje.Section.Ticket.Services
         readonly ITicketCategoryService TicketCategoryService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public TicketUserService
             (
                 TicketDBContext db,
                 ITicketCategoryService TicketCategoryService,
                 IUploadedFileService UploadedFileService,
-                IUserNotifierService UserNotifierService
+                IUserNotifierService UserNotifierService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.TicketCategoryService = TicketCategoryService;
             this.UploadedFileService = UploadedFileService;
             this.UserNotifierService = UserNotifierService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(TicketUserCreateUpdateVM input, int? siteSettingId, long? loginUserId)
@@ -172,7 +177,9 @@ namespace Oje.Section.Ticket.Services
         {
             searchInput = searchInput ?? new TicketUserAdminMainGrid();
 
-            var quiryResult = db.TicketUsers.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true);
+            var quiryResult = db.TicketUsers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.IsDelete != true);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 quiryResult = quiryResult.Where(t => t.Title.Contains(searchInput.title));

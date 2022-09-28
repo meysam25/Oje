@@ -33,6 +33,7 @@ namespace Oje.AccountService.Models.DB
         [ForeignKey("SiteSettingId")]
         [InverseProperty("Roles")]
         public SiteSetting SiteSetting { get; set; }
+        public bool? CanSeeOtherSites { get; set; }
 
         [InverseProperty("Role")]
         public List<RoleAction> RoleActions { get; set; }

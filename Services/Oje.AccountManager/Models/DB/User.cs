@@ -4,14 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
     [Table("Users")]
-    public class User : IEntityWithId<User, long>, EntityWithParent<User>
+    public class User : IEntityWithId<User, long>, EntityWithParent<User>, IEntityWithSiteSettingIdNullable
     {
         public User()
         {
@@ -127,6 +124,7 @@ namespace Oje.AccountService.Models.DB
         public int? EndHour { get; set; }
         public bool? WorkingHolyday { get; set; }
         public int? SiteSettingId { get; set; }
+        public bool? CanSeeOtherSites { get; set; }
 
         [NotMapped]
         public double distance { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -13,6 +14,7 @@ namespace Oje.Security.Services
     {
         readonly SecurityDBContext db = null;
         readonly IAdminBlockClientConfigService AdminBlockClientConfigService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public UserAdminLogService
             (
@@ -63,7 +65,9 @@ namespace Oje.Security.Services
         {
             searchInput = searchInput ?? new UserAdminLogMainGrid();
 
-            var quiryResult = db.UserAdminLogs.Where(t => t.SiteSettingId == siteSettingId && t.IsStart == true);
+            var quiryResult = db.UserAdminLogs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.IsStart == true);
 
             if (!string.IsNullOrEmpty(searchInput.userFullname))
                 quiryResult = quiryResult.Where(t => (string.IsNullOrEmpty((t.User.Firstname + " " + t.User.Lastname).Trim()) ? t.User.Username : t.User.Firstname + " " + t.User.Lastname).Contains(searchInput.userFullname));

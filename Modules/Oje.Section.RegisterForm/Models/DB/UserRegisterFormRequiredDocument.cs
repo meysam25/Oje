@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserRegisterFormRequiredDocuments")]
-    public class UserRegisterFormRequiredDocument
+    public class UserRegisterFormRequiredDocument: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }

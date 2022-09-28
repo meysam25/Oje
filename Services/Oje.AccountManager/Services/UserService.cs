@@ -18,8 +18,6 @@ using System.IO;
 using Newtonsoft.Json;
 using NetTopologySuite.Geometries;
 using Oje.AccountService.Filters;
-using Microsoft.AspNetCore.Mvc;
-using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Oje.AccountService.Services
 {
@@ -37,6 +35,7 @@ namespace Oje.AccountService.Services
         readonly Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService = null;
         readonly Security.Interfaces.IBlockLoginUserService BlockLoginUserService = null;
         readonly IHolydayService HolydayService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
         public UserService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor,
@@ -49,7 +48,8 @@ namespace Oje.AccountService.Services
                 Security.Interfaces.IUserLoginConfigService UserLoginConfigService,
                 Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService,
                 Security.Interfaces.IBlockLoginUserService BlockLoginUserService,
-                IHolydayService HolydayService
+                IHolydayService HolydayService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -64,6 +64,7 @@ namespace Oje.AccountService.Services
             this.UserLoginLogoutLogService = UserLoginLogoutLogService;
             this.BlockLoginUserService = BlockLoginUserService;
             this.HolydayService = HolydayService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         private void LoginValidation(LoginVM input)
@@ -103,7 +104,7 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Inactive_User, ApiResultErrorCode.InActiveUser, foundUser.Id);
             else if (foundUser != null && foundUser.Password == input.password.GetSha1())
             {
-                setCookieForThisUser(foundUser, input, RoleService.HasAnyAutoRefreshRole(foundUser.Id));
+                setCookieForThisUser(foundUser, input, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
                 UpdateUserSessionFileName(foundUser.Id, foundUser.LastSessionFileName);
 
                 UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPassword, siteSettingId, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
@@ -190,7 +191,7 @@ namespace Oje.AccountService.Services
                     newUserRole.Role = foundRole;
                     newUser.UserRoles.Add(newUserRole);
 
-                    setCookieForThisUser(newUser, input, RoleService.HasAnyAutoRefreshRole(newUser.Id));
+                    setCookieForThisUser(newUser, input, RoleService.HasAnyAutoRefreshRole(newUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(newUser.Id));
                     UpdateUserSessionFileName(newUser.Id, newUser.LastSessionFileName);
                     return new ApiResult() { isSuccess = true };
                 }
@@ -202,13 +203,15 @@ namespace Oje.AccountService.Services
             }
         }
 
-        public void setCookieForThisUser(User newUser, LoginVM input, bool hasAutoRefres)
+        public void setCookieForThisUser(User newUser, LoginVM input, bool hasAutoRefres, bool hasSeeOtherSiteRoleConfig)
         {
             string sessionFileName = Guid.NewGuid().ToString();
             string userRoles = "";
             if (newUser.UserRoles != null)
                 userRoles = string.Join("-", newUser.UserRoles.Where(t => t.Role != null).Select(t => t.Role.Name).ToList());
-            string cookiValue = newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," + newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName() + "," + hasAutoRefres;
+            string cookiValue =
+                newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," +
+                newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName() + "," + hasAutoRefres + "," + (hasSeeOtherSiteRoleConfig == true || newUser.CanSeeOtherSites == true);
             var cOption = new CookieOptions() { HttpOnly = true };
             if (input.rememberMe == true)
                 cOption.Expires = DateTime.Now.AddDays(2);
@@ -328,6 +331,7 @@ namespace Oje.AccountService.Services
             newUser.RefferCode = input.refferCode;
             newUser.RealOrLegaPerson = input.realOrLegaPerson;
             newUser.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
+            newUser.CanSeeOtherSites = input.canSeeOtherSites;
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -422,7 +426,8 @@ namespace Oje.AccountService.Services
                     cityId = t.CityId,
                     t.RealOrLegaPerson,
                     t.RefferCode,
-                    t.LicenceExpireDate
+                    t.LicenceExpireDate,
+                    t.CanSeeOtherSites
                 })
                 .Take(1)
                 .Select(t => new CreateUpdateUserVM
@@ -455,7 +460,8 @@ namespace Oje.AccountService.Services
                     cityId = t.cityId,
                     realOrLegaPerson = t.RealOrLegaPerson,
                     refferCode = t.RefferCode,
-                    licenceExpireDate = t.LicenceExpireDate.ToFaDate()
+                    licenceExpireDate = t.LicenceExpireDate.ToFaDate(),
+                    canSeeOtherSites = t.CanSeeOtherSites
                 })
                 .FirstOrDefault();
         }
@@ -500,6 +506,7 @@ namespace Oje.AccountService.Services
                     foundItem.RefferCode = input.refferCode;
                     foundItem.RealOrLegaPerson = input.realOrLegaPerson;
                     foundItem.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
+                    foundItem.CanSeeOtherSites = input.canSeeOtherSites;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -1221,7 +1228,7 @@ namespace Oje.AccountService.Services
                     else
                         qureResult = qureResult
                             .Where(t => !prevUsers.Contains(t.Id))
-                            .Where(t => t.MapLocation != null && (t.IsActive != true || t.StartHour == null || t.EndHour == null || t.StartHour > curHour || t.EndHour < curHour  ))
+                            .Where(t => t.MapLocation != null && (t.IsActive != true || t.StartHour == null || t.EndHour == null || t.StartHour > curHour || t.EndHour < curHour))
                             //.OrderBy(t => t.IsActive == true && t.StartHour != null && t.EndHour != null && t.StartHour <= curHour && t.EndHour >= curHour && (t.WorkingHolyday == true || isTodayHolyday == false))
                             .OrderBy(t => t.MapLocation.Distance(gm))
                             ;
@@ -1328,7 +1335,9 @@ namespace Oje.AccountService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Users.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.Users
+                .OrderByDescending(t => t.Id)
+                .getSiteSettingQuiryNullable(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => (t.Username + "(" + t.Firstname + " " + t.Lastname + ")").Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

@@ -43,7 +43,7 @@ namespace Oje.AccountService.Interfaces
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId, int companyId);
         bool IsValidAgent(long id, int? siteSettingId, int proposalFormId);
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
-        void setCookieForThisUser(User newUser, LoginVM input, bool hasAutoRefres);
+        void setCookieForThisUser(User newUser, LoginVM input, bool hasAutoRefres, bool hasSeeOtherSiteRoleConfig);
         void UpdatePassword(User user, string password);
         void UpdateUserSessionFileName(long? id, string lastSessionFileName);
         object CreateForUserFromJson(GlobalExcelFile input, long? userId, LoginUserVM loginUserVM, int? siteSettingId, string websiteUrl);

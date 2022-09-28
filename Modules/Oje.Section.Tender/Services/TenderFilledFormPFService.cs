@@ -1,13 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Oje.Infrastructure;
-using Oje.Infrastructure.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Models;
-using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
-using Oje.Section.Tender.Models.View;
 using Oje.Section.Tender.Services.EContext;
-using System;
 using System.Linq;
 
 namespace Oje.Section.Tender.Services
@@ -15,7 +11,11 @@ namespace Oje.Section.Tender.Services
     public class TenderFilledFormPFService: ITenderFilledFormPFService
     {
         readonly TenderDBContext db = null;
-        public TenderFilledFormPFService(TenderDBContext db)
+
+        public TenderFilledFormPFService
+            (
+                TenderDBContext db
+            )
         {
             this.db = db;
         }

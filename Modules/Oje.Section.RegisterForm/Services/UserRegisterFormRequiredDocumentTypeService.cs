@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -6,11 +7,8 @@ using Oje.Section.RegisterForm.Interfaces;
 using Oje.Section.RegisterForm.Models.DB;
 using Oje.Section.RegisterForm.Models.View;
 using Oje.Section.RegisterForm.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Services
 {
@@ -18,10 +16,17 @@ namespace Oje.Section.RegisterForm.Services
     {
         readonly RegisterFormDBContext db = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
-        public UserRegisterFormRequiredDocumentTypeService(RegisterFormDBContext db, IUserRegisterFormService UserRegisterFormService)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public UserRegisterFormRequiredDocumentTypeService
+            (
+                RegisterFormDBContext db,
+                IUserRegisterFormService UserRegisterFormService,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
             this.UserRegisterFormService = UserRegisterFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(UserRegisterFormRequiredDocumentTypeCreateUpdateVM input, int? siteSettingId)
@@ -58,7 +63,10 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.UserRegisterFormRequiredDocumentTypes.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.UserRegisterFormRequiredDocumentTypes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -70,13 +78,17 @@ namespace Oje.Section.RegisterForm.Services
 
         public object GetById(int? id, int? siteSettingId)
         {
-            return db.UserRegisterFormRequiredDocumentTypes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => new
-            {
-                id = t.Id,
-                isActive = t.IsActive,
-                title = t.Title,
-                userRegisterFormId = t.UserRegisterFormId
-            }).FirstOrDefault();
+            return db.UserRegisterFormRequiredDocumentTypes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    isActive = t.IsActive,
+                    title = t.Title,
+                    userRegisterFormId = t.UserRegisterFormId
+                })
+                .FirstOrDefault();
         }
 
         public GridResultVM<UserRegisterFormRequiredDocumentTypeMainGridResultVM> GetList(UserRegisterFormRequiredDocumentTypeMainGrid searchInput, int? siteSettingId)
@@ -84,7 +96,7 @@ namespace Oje.Section.RegisterForm.Services
             if (searchInput == null)
                 searchInput = new();
 
-            var qureResult = db.UserRegisterFormRequiredDocumentTypes.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.UserRegisterFormRequiredDocumentTypes.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
@@ -126,7 +138,10 @@ namespace Oje.Section.RegisterForm.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.UserRegisterFormRequiredDocumentTypes.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.UserRegisterFormRequiredDocumentTypes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -143,7 +158,10 @@ namespace Oje.Section.RegisterForm.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.UserRegisterFormRequiredDocumentTypes.Where(t => t.SiteSettingId == siteSettingId).Select(t => new { id = t.Id, title = t.Title }).ToList());
+            result.AddRange(
+                db.UserRegisterFormRequiredDocumentTypes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
         }

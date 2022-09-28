@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserRegisterForms")]
-    public class UserRegisterForm
+    public class UserRegisterForm: IEntityWithSiteSettingId
     {
         public UserRegisterForm()
         {

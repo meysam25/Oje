@@ -20,9 +20,15 @@ namespace Oje.FileService.Services
     public class UploadedFileService : IUploadedFileService
     {
         readonly FileDBContext db = null;
-        public UploadedFileService(FileDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public UploadedFileService
+            (
+                FileDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
         public string UploadNewFile(FileType fileType, IFormFile userPic, long? loginUserId, int? siteSettingId, long? objectId, string extensions, bool isAccessRequired, string objectIdStr = null, string title = null, long? userId = null)
         {
@@ -343,7 +349,11 @@ namespace Oje.FileService.Services
 
         public object Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.UploadedFiles.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.UploadedFiles
+                .getSiteSettingQuiryNullable(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             db.Entry(foundItem).State = EntityState.Deleted;
@@ -356,7 +366,7 @@ namespace Oje.FileService.Services
         {
             searchInput = searchInput ?? new();
 
-            var quiryResult = db.UploadedFiles.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.UploadedFiles.getSiteSettingQuiryNullable(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             return new
             {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -16,14 +17,18 @@ namespace Oje.Section.RegisterForm.Services
     {
         readonly RegisterFormDBContext db = null;
         readonly IUserRegisterFormService UserRegisterFormService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public UserRegisterFormDiscountCodeService
             (
               RegisterFormDBContext db,
-              IUserRegisterFormService UserRegisterFormService
+              IUserRegisterFormService UserRegisterFormService,
+              IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UserRegisterFormService = UserRegisterFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(UserRegisterFormDiscountCodeCreateUpdateVM input, int? siteSettingId)
@@ -88,7 +93,9 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.UserRegisterFormDiscountCodes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+            var foundItem = db.UserRegisterFormDiscountCodes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -102,7 +109,8 @@ namespace Oje.Section.RegisterForm.Services
         public object GetBy(long? id, int? siteSettingId)
         {
             return db.UserRegisterFormDiscountCodes
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     countUse = t.MaxUse,
@@ -144,7 +152,7 @@ namespace Oje.Section.RegisterForm.Services
             if (searchInput == null)
                 searchInput = new UserRegisterFormDiscountCodeMainGrid();
 
-            var qureResult = db.UserRegisterFormDiscountCodes.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.UserRegisterFormDiscountCodes.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.ppfTitle))
                 qureResult = qureResult.Where(t => t.UserRegisterForm.Title.Contains(searchInput.ppfTitle));
@@ -204,11 +212,12 @@ namespace Oje.Section.RegisterForm.Services
         {
             createValidationValidation(input, siteSettingId);
 
-            var foundItem = db.UserRegisterFormDiscountCodes.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+            var foundItem = db.UserRegisterFormDiscountCodes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
                 .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-
 
             foundItem.Code = input.discountCode;
             foundItem.FromDate = input.fromDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
@@ -237,9 +246,9 @@ namespace Oje.Section.RegisterForm.Services
 
         public void DiscountUsed(int userRegisterFormDiscountCodeId, long? userId, long userFilledRegisterFormId)
         {
-            if(userRegisterFormDiscountCodeId > 0 && userId > 0 && userFilledRegisterFormId > 0)
+            if (userRegisterFormDiscountCodeId > 0 && userId > 0 && userFilledRegisterFormId > 0)
             {
-                db.Entry(new UserRegisterFormDiscountCodeUse() 
+                db.Entry(new UserRegisterFormDiscountCodeUse()
                 {
                     UserFilledRegisterFormId = userFilledRegisterFormId,
                     UserId = userId.Value,

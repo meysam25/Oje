@@ -40,6 +40,7 @@ namespace Oje.Section.RegisterForm.Services
         readonly IUserRegisterFormPrintDescrptionService UserRegisterFormPrintDescrptionService = null;
         readonly IBankService BankService = null;
         readonly IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public UserFilledRegisterFormService
             (
@@ -60,7 +61,8 @@ namespace Oje.Section.RegisterForm.Services
                 IUserRegisterFormCompanyService UserRegisterFormCompanyService,
                 IUserRegisterFormPrintDescrptionService UserRegisterFormPrintDescrptionService,
                 IBankService BankService,
-                IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService
+                IUserFilledRegisterFormCardPaymentService UserFilledRegisterFormCardPaymentService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -81,6 +83,7 @@ namespace Oje.Section.RegisterForm.Services
             this.UserRegisterFormCompanyService = UserRegisterFormCompanyService;
             this.BankService = BankService;
             this.UserFilledRegisterFormCardPaymentService = UserFilledRegisterFormCardPaymentService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public object Create(int? siteSettingId, IFormCollection form, IpSections ipSections, long? parentUserId, long? userId)
@@ -454,7 +457,9 @@ namespace Oje.Section.RegisterForm.Services
         public userFilledRegisterFormDetailesVM PdfDetailes(long? id, int? siteSettingId, long? loginUserId, bool isLoginRequired = false, bool? isPayed = null, bool? isDone = null)
         {
             var result = new userFilledRegisterFormDetailesVM();
-            var foundItem = db.UserFilledRegisterForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (isLoginRequired == false || loginUserId == t.UserId) && t.UserId != null)
+            var foundItem = db.UserFilledRegisterForms
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.Id == id && (isLoginRequired == false || loginUserId == t.UserId) && t.UserId != null)
                .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
                .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
                .Select(t => new
@@ -574,8 +579,8 @@ namespace Oje.Section.RegisterForm.Services
                 searchInput = new();
 
             var qureResult = db.UserFilledRegisterForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t =>
-                        t.SiteSettingId == siteSettingId &&
                         (!t.UserRegisterForm.UserRegisterFormRoles.Any() || t.UserRegisterForm.UserRegisterFormRoles.Any(tt => tt.Role.UserRoles.Any(ttt => ttt.UserId == userId)))
                     );
 
@@ -676,7 +681,8 @@ namespace Oje.Section.RegisterForm.Services
                 .Include(t => t.UserFilledRegisterFormJsons)
                 .Include(t => t.UserFilledRegisterFormValues)
                 .Include(t => t.UserFilledRegisterFormCompanies)
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
                 .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
                 .FirstOrDefault();
@@ -743,7 +749,8 @@ namespace Oje.Section.RegisterForm.Services
                 input = new GlobalGridParentLong();
             var foundItemId =
                 db.UserFilledRegisterForms
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == input.pKey)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.pKey)
                 .Where(t => isPayed == null || (isPayed == true ? !string.IsNullOrEmpty(t.PaymentTraceCode) : string.IsNullOrEmpty(t.PaymentTraceCode)))
                 .Where(t => isDone == null || (isDone == true ? t.IsDone == true : (t.IsDone == null || t.IsDone == false)))
                 .Select(t => t.Id)

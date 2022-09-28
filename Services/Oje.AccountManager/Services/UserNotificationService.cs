@@ -22,19 +22,22 @@ namespace Oje.AccountService.Services
         readonly ISiteSettingService SiteSettingService = null;
         readonly IUserService UserService = null;
         readonly IHubContext<NotificationHub> NotificationHubContext = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public UserNotificationService
             (
                 AccountDBContext db,
                 ISiteSettingService SiteSettingService,
                 IUserService UserService,
-                IHubContext<NotificationHub> NotificationHubContext
+                IHubContext<NotificationHub> NotificationHubContext,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
             this.UserService = UserService;
             this.NotificationHubContext = NotificationHubContext;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public void Create(UserNotification userNotification, int? siteSettingId)
@@ -84,7 +87,8 @@ namespace Oje.AccountService.Services
             else
             {
                 var foundNotification = db.UserNotifications
-                    .Where(t => t.SiteSettingId == siteSettingId && t.UserId == idUserId && t.Type == type &&
+                    .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                    .Where(t =>  t.UserId == idUserId && t.Type == type &&
                                 t.CreateDate == dt)
                         .FirstOrDefault();
                 if (foundNotification == null)
@@ -97,7 +101,6 @@ namespace Oje.AccountService.Services
                 return new { description = foundNotification.Description };
             }
 
-
             throw BException.GenerateNewException(BMessages.Not_Found);
         }
 
@@ -106,7 +109,7 @@ namespace Oje.AccountService.Services
             if (searchInput == null)
                 searchInput = new UserNotificationMainGrid();
             var canSeeAllItems = UserService.CanSeeAllItems(userId.ToLongReturnZiro());
-            var qureResult = db.UserNotifications.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.UserNotifications.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (searchInput.justMyNotification == true)
                 qureResult = qureResult.Where(t => t.UserId == userId);
             else

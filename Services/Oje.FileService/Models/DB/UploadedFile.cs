@@ -7,7 +7,7 @@ using Oje.Infrastructure.Interfac;
 namespace Oje.FileService.Models.DB
 {
     [Table("UploadedFiles")]
-    public class UploadedFile : EntityWithCreateByUser<User, long>
+    public class UploadedFile : EntityWithCreateByUser<User, long>, IEntityWithSiteSettingIdNullable
     {
         [Key]
         public long Id { get; set; }

@@ -1126,6 +1126,7 @@ namespace Oje.Infrastructure.Services
                     return null;
                 result.browserName = dycriptTextArr[7];
                 result.hasAutoRefres = dycriptTextArr[8].ToBooleanReturnFalse();
+                result.canSeeOtherWebsites = dycriptTextArr[9].ToBooleanReturnFalse();
 
                 return result;
             }

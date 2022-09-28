@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Ticket.Models.DB
 {
     [Table("TicketUserAnswers")]
-    public class TicketUserAnswer
+    public class TicketUserAnswer: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }

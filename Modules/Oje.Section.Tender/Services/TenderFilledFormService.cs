@@ -29,6 +29,7 @@ namespace Oje.Section.Tender.Services
         readonly ITenderFilledFormPFService TenderFilledFormPFService = null;
         readonly IUserService UserService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public TenderFilledFormService
             (
@@ -38,7 +39,8 @@ namespace Oje.Section.Tender.Services
                 ITenderProposalFormJsonConfigService TenderProposalFormJsonConfigService,
                 ITenderFilledFormPFService TenderFilledFormPFService,
                 IUserService UserService,
-                IUserNotifierService UserNotifierService
+                IUserNotifierService UserNotifierService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -48,6 +50,7 @@ namespace Oje.Section.Tender.Services
             this.TenderFilledFormPFService = TenderFilledFormPFService;
             this.UserService = UserService;
             this.UserNotifierService = UserNotifierService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId)
@@ -169,7 +172,8 @@ namespace Oje.Section.Tender.Services
             TenderFilledFormPdfVM result = new TenderFilledFormPdfVM();
 
             var foundItem = db.TenderFilledForms
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id && (loginUserId == null || t.UserId == loginUserId))
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id && (loginUserId == null || t.UserId == loginUserId))
                 .Select(t => new
                 {
                     id = t.Id,
@@ -254,7 +258,8 @@ namespace Oje.Section.Tender.Services
         public string GetDocument(long? id, int? tenderProposalFormJsonConfigId, int? siteSettingId, long? loginUserId)
         {
             var values = db.TenderFilledForms
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId && (loginUserId == null || t.UserId == loginUserId) && t.TenderFilledFormPFs.Any(tt => tt.TenderProposalFormJsonConfigId == tenderProposalFormJsonConfigId))
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id && (loginUserId == null || t.UserId == loginUserId) && t.TenderFilledFormPFs.Any(tt => tt.TenderProposalFormJsonConfigId == tenderProposalFormJsonConfigId))
                 .SelectMany(t => t.TenderFilledFormsValues)
                 .Select(t => new { key = t.TenderFilledFormKey.Key, value = t.Value })
                 .ToList();
@@ -339,7 +344,8 @@ namespace Oje.Section.Tender.Services
             (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
 
             var quiryResult = db.TenderFilledForms
-                .Where(t => t.SiteSettingId == siteSettingId && (t.CityId == null || t.CityId == cityid) && (t.ProvinceId == null || t.ProvinceId == province) && (!t.TenderFilledFormValidCompanies.Any() || t.TenderFilledFormValidCompanies.Any(tt => companyIds.Contains(tt.CompanyId))))
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => (t.CityId == null || t.CityId == cityid) && (t.ProvinceId == null || t.ProvinceId == province) && (!t.TenderFilledFormValidCompanies.Any() || t.TenderFilledFormValidCompanies.Any(tt => companyIds.Contains(tt.CompanyId))))
                 ;
 
             quiryResult = quiryResult
@@ -691,7 +697,8 @@ namespace Oje.Section.Tender.Services
 
             result
                 .AddRange(db.TenderFilledForms
-                                .Where(t => t.SiteSettingId == siteSettingId && t.Id == tenderFilledFormId)
+                                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                                .Where(t => t.Id == tenderFilledFormId)
                                 .SelectMany(t => t.TenderFilledFormPFs)
                                 .Select(t => new
                                 {

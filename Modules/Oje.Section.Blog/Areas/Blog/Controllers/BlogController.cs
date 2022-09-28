@@ -65,6 +65,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
             var curSetting = SiteSettingService.GetSiteSetting();
             string title;
             string description;
+            string exteraLink = "";
             if (keyWordId.ToLongReturnZiro() > 0)
             {
                 var foundTag = BlogTagService.GetBy(keyWordId.ToLongReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
@@ -73,6 +74,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
                 ViewBag.keyWordId = keyWordId;
                 title = "کلیه اخبار، مقاله‌ها و ویدیوهای مرتبط با " + foundTag.Title;
                 description = "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.Title;
+                exteraLink = "/" + foundTag.Title.Replace(" ", "-").Replace("--", "-") + "/" + keyWordId;
             }
             else if (catId.ToIntReturnZiro() > 0)
             {
@@ -84,6 +86,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
 
                 title = "کلیه اخبار، مقاله‌ها و ویدیوهای مرتبط با " + foundTag.title;
                 description = "اخرین اخبار و مقالات و ویدیو ها و پادکست های مرتبط با " + foundTag.title;
+                exteraLink = "/Category/" + foundTag.title.Replace(" ", "-").Replace("--", "-")  + "/" + catId;
             }
             else
             {
@@ -95,8 +98,8 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
                     ViewData,
                     title,
                      description,
-                     Request.Scheme + "://" + Request.Host + "/Blogs",
-                     Request.Scheme + "://" + Request.Host + "/Blogs",
+                     Request.Scheme + "://" + Request.Host + "/Blogs" + exteraLink,
+                     Request.Scheme + "://" + Request.Host + "/Blogs" + exteraLink,
                      WebSiteTypes.website,
                      Request.Scheme + "://" + Request.Host + "/Modules/Images/news.png",
                      null,

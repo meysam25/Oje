@@ -66,7 +66,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(UserService.Delete(input?.id));
         }
 
-        [AreaConfig(Title = "مشاهده  یک کاربر", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک کاربر", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input)
         {

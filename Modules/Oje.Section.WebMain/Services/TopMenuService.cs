@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -13,9 +14,16 @@ namespace Oje.Section.WebMain.Services
     public class TopMenuService : ITopMenuService
     {
         readonly WebMainDBContext db = null;
-        public TopMenuService(WebMainDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public TopMenuService
+            (
+                WebMainDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(TopMenuCreateUpdateVM input, int? siteSettingId)
@@ -54,7 +62,10 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.TopMenus.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.TopMenus
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -67,7 +78,8 @@ namespace Oje.Section.WebMain.Services
         public object GetById(long? id, int? siteSettingId)
         {
             return db.TopMenus
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -84,7 +96,9 @@ namespace Oje.Section.WebMain.Services
             if (searchInput == null)
                 searchInput = new TopMenuMainGrid();
 
-            var qureResult = db.TopMenus.Where(t => t.SiteSettingId == siteSettingId && t.ParentId == searchInput.pKey);
+            var qureResult = db.TopMenus
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.ParentId == searchInput.pKey);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
@@ -122,7 +136,10 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.TopMenus.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.TopMenus
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -141,25 +158,25 @@ namespace Oje.Section.WebMain.Services
             return db.TopMenus
                 .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.ParentId == null)
                 .OrderBy(t => t.Order)
-                .Select(t => new 
+                .Select(t => new
                 {
                     title = t.Title,
                     link = t.Link,
                     childs = t.Childs
                         .Where(tt => tt.IsActive == true)
                         .OrderBy(tt => tt.Order)
-                        .Select(tt => new 
+                        .Select(tt => new
                         {
                             title = tt.Title,
                             link = tt.Link,
                             childs = tt.Childs
                                 .Where(ttt => ttt.IsActive == true)
                                 .OrderBy(ttt => ttt.Order)
-                                .Select(ttt => new 
+                                .Select(ttt => new
                                 {
                                     title = ttt.Title,
                                     link = ttt.Link,
-                                    childs = ttt.Childs.Where(tttt => tttt.IsActive == true).OrderBy(tttt => tttt.Order).Select(tttt => new 
+                                    childs = ttt.Childs.Where(tttt => tttt.IsActive == true).OrderBy(tttt => tttt.Order).Select(tttt => new
                                     {
                                         title = tttt.Title,
                                         link = tttt.Link,

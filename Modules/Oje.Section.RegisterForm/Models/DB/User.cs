@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("Users")]
-    public class User
+    public class User: IEntityWithSiteSettingIdNullable
     {
         public User()
         {

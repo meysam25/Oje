@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.View;
@@ -10,17 +11,21 @@ using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {
     public class UserNotificationTemplateService : IUserNotificationTemplateService
     {
         readonly AccountDBContext db = null;
-        public UserNotificationTemplateService(AccountDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public UserNotificationTemplateService
+            (
+                AccountDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateUserNotificationTemplateVM input, int? siteSettingId)
@@ -42,7 +47,10 @@ namespace Oje.AccountService.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.UserNotificationTemplates.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.UserNotificationTemplates
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -60,7 +68,8 @@ namespace Oje.AccountService.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.UserNotificationTemplates.OrderByDescending(t => t.Id)
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -87,7 +96,7 @@ namespace Oje.AccountService.Services
             if (searchInput == null)
                 searchInput = new UserNotificationTemplateMainGrid();
 
-            var qureResult = db.UserNotificationTemplates.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.UserNotificationTemplates.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.subject))
                 qureResult = qureResult.Where(t => t.Subject.Contains(searchInput.subject));
@@ -128,7 +137,11 @@ namespace Oje.AccountService.Services
         public ApiResult Update(CreateUpdateUserNotificationTemplateVM input, int? siteSettingId)
         {
             createUpdateValidation(input, siteSettingId);
-            var foundItem = db.UserNotificationTemplates.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.UserNotificationTemplates
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

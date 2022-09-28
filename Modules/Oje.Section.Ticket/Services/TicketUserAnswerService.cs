@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -23,19 +24,22 @@ namespace Oje.Section.Ticket.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly ITicketUserService TicketUserService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public TicketUserAnswerService
             (
                 TicketDBContext db,
                 IUploadedFileService UploadedFileService,
                 ITicketUserService TicketUserService,
-                IUserNotifierService UserNotifierService
+                IUserNotifierService UserNotifierService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
             this.TicketUserService = TicketUserService;
             this.UserNotifierService = UserNotifierService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(TicketUserAnswerCreateUpdateVM input, int? siteSettingId, long? loginUserId)
@@ -176,7 +180,9 @@ namespace Oje.Section.Ticket.Services
         {
             searchInput = searchInput ?? new TicketUserAnswerMainGrid();
 
-            var quiryResult = db.TicketUserAnswers.Where(t => t.SiteSettingId == siteSettingId && t.TicketUser.SiteSettingId == siteSettingId && t.TicketUserId == searchInput.pKey);
+            var quiryResult = db.TicketUserAnswers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.TicketUserId == searchInput.pKey);
 
             var firstItem = TicketUserService.GetAsListBy(searchInput.pKey, siteSettingId);
 

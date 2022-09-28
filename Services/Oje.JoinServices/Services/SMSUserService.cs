@@ -81,7 +81,7 @@ namespace Oje.JoinServices.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 
             UserService.UpdatePassword(foundUser, input.password);
-            UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id));
+            UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
             UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
 
             UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithChangePassword, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
@@ -165,7 +165,7 @@ namespace Oje.JoinServices.Services
 
             if (foundUser != null)
             {
-                UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id));
+                UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
                 UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
                 UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
             }
@@ -192,7 +192,7 @@ namespace Oje.JoinServices.Services
                 foundUser = UserService.GetBy(input.username, siteSettingId);
                 if (foundUser == null)
                     throw BException.GenerateNewException(BMessages.UnknownError, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
-                UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id));
+                UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
                 UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
 
                 List<SmsTemplate> foundTemplate = null;

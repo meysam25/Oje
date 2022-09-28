@@ -38,6 +38,7 @@ namespace Oje.AccountService.Services
             newItem.Type = input.type;
             newItem.SiteSettingId = input.sitesettingId;
             newItem.RefreshGrid = input.refreshGrid.ToBooleanReturnFalse();
+            newItem.CanSeeOtherSites = input.canSeeOtherSites.ToBooleanReturnFalse();
 
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
@@ -147,7 +148,8 @@ namespace Oje.AccountService.Services
                 disabledOnlyMyStuff = t.DisabledOnlyMyStuff == null ? false : t.DisabledOnlyMyStuff,
                 sitesettingId = t.SiteSettingId,
                 formIds = t.RoleProposalForms.Select(tt => new { id = tt.ProposalFormId, title = tt.ProposalForm.Title }).ToList(),
-                refreshGrid = t.RefreshGrid.ToBooleanReturnFalse()
+                refreshGrid = t.RefreshGrid,
+                canSeeOtherSites = t.CanSeeOtherSites
             }).FirstOrDefault();
         }
 
@@ -170,6 +172,7 @@ namespace Oje.AccountService.Services
             foundItem.Type = input.type;
             foundItem.RefreshGrid = input.refreshGrid.ToBooleanReturnFalse();
             foundItem.SiteSettingId = input.sitesettingId;
+            foundItem.CanSeeOtherSites = input.canSeeOtherSites;
 
             if (input.formIds != null && input.formIds.Count > 0)
                 foreach (var formId in input.formIds)
@@ -483,9 +486,14 @@ namespace Oje.AccountService.Services
             return db.Roles.Where(t => t.RoleProposalForms.Any(tt => tt.ProposalFormId == proposalFormId)).Select(t => t.Id).ToList();
         }
 
-        public bool HasAnyAutoRefreshRole(long id)
+        public bool HasAnyAutoRefreshRole(long userId)
         {
-            return db.UserRoles.Any(t => t.Role.RefreshGrid == true);
+            return db.UserRoles.Any(t => t.UserId == userId && t.Role.RefreshGrid == true);
+        }
+
+        public bool HasAnySeeOtherSiteRoleConfig(long userId)
+        {
+            return db.UserRoles.Any(t => t.UserId == userId && t.Role.CanSeeOtherSites == true);
         }
     }
 }

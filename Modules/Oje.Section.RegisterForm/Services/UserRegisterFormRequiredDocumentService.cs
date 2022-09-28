@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -19,16 +20,19 @@ namespace Oje.Section.RegisterForm.Services
         readonly RegisterFormDBContext db = null;
         readonly IUserRegisterFormRequiredDocumentTypeService UserRegisterFormRequiredDocumentTypeService = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public UserRegisterFormRequiredDocumentService(
                 RegisterFormDBContext db,
                 IUserRegisterFormRequiredDocumentTypeService UserRegisterFormRequiredDocumentTypeService,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UserRegisterFormRequiredDocumentTypeService = UserRegisterFormRequiredDocumentTypeService;
             this.UploadedFileService = UploadedFileService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(UserRegisterFormRequiredDocumentCreateUpdateVM input, int? siteSettingId)
@@ -74,7 +78,10 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.UserRegisterFormRequiredDocuments.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.UserRegisterFormRequiredDocuments
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -87,7 +94,8 @@ namespace Oje.Section.RegisterForm.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.UserRegisterFormRequiredDocuments
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -104,7 +112,7 @@ namespace Oje.Section.RegisterForm.Services
             if (searchInput == null)
                 searchInput = new UserRegisterFormRequiredDocumentMainGrid();
 
-            var qureResult = db.UserRegisterFormRequiredDocuments.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.UserRegisterFormRequiredDocuments.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (!string.IsNullOrEmpty(searchInput.typeTitle))
@@ -149,16 +157,17 @@ namespace Oje.Section.RegisterForm.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.UserRegisterFormRequiredDocuments.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.UserRegisterFormRequiredDocuments
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-
 
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.IsRequired = input.isRequird.ToBooleanReturnFalse();
             foundItem.Title = input.title;
             foundItem.UserRegisterFormRequiredDocumentTypeId = input.typeId.Value;
-
 
             if (input.downloadFile != null && input.downloadFile.Length > 0)
                 foundItem.DownloadFile = UploadedFileService.UploadNewFile(FileType.RegisterDownloadSampleDocuments, input.downloadFile, null, siteSettingId, foundItem.Id, ".jpg,.png,.doc,.docx,.pdf,.jpeg", false);

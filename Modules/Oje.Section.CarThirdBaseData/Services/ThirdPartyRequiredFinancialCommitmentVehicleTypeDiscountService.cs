@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NPOI.OpenXmlFormats.Shared;
-using NPOI.POIFS.Properties;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -16,12 +15,15 @@ namespace Oje.Section.CarThirdBaseData.Services
     public class ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService : IThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService
     {
         readonly CarThirdBaseDataDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
         public ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService
             (
-                CarThirdBaseDataDBContext db
+                CarThirdBaseDataDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCreateUpdateVM input, int? siteSettingId)
@@ -79,7 +81,8 @@ namespace Oje.Section.CarThirdBaseData.Services
         {
             var foundItem = db.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts
               .Include(t => t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies)
-              .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+              .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+              .Where(t => t.Id == id)
               .FirstOrDefault();
 
             if (foundItem == null)
@@ -99,7 +102,8 @@ namespace Oje.Section.CarThirdBaseData.Services
         {
             return db.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts
               .Include(t => t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies)
-              .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+              .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+              .Where(t => t.Id == id)
               .Select(t => new 
               {
                   id = t.Id,
@@ -116,7 +120,7 @@ namespace Oje.Section.CarThirdBaseData.Services
         {
             searchInput = searchInput ?? new();
 
-            var quiryResult = db.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 quiryResult = quiryResult.Where(t => t.Title.Contains(searchInput.title));
@@ -168,7 +172,8 @@ namespace Oje.Section.CarThirdBaseData.Services
 
             var foundItem = db.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts
                 .Include(t => t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies)
-                .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
                 .FirstOrDefault();
 
             if (foundItem == null)
