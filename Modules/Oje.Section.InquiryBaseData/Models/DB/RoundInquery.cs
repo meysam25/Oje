@@ -1,16 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("RoundInqueries")]
-    public class RoundInquery
+    public class RoundInquery: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -21,5 +17,7 @@ namespace Oje.Section.InquiryBaseData.Models.DB
         [ForeignKey("ProposalFormId"), InverseProperty("RoundInqueries")]
         public ProposalForm ProposalForm { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("RoundInqueries")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

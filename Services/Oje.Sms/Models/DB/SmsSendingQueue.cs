@@ -1,16 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Sms.Models.DB
 {
     [Table("SmsSendingQueues")]
-    public class SmsSendingQueue
+    public class SmsSendingQueue: IEntityWithSiteSettingId
     {
 
         public SmsSendingQueue()
@@ -46,6 +42,8 @@ namespace Oje.Sms.Models.DB
         public string TraceCode { get; set; }
         public long? CreateUserId { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("SmsSendingQueues")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("SmsSendingQueue")]
         public List<SmsSendingQueueError> SmsSendingQueueErrors { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -15,9 +16,15 @@ namespace Oje.Section.Blog.Services
     public class BlogCategoryService : IBlogCategoryService
     {
         readonly BlogDBContext db = null;
-        public BlogCategoryService(BlogDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public BlogCategoryService
+            (
+                BlogDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(BlogCategoryCreateUpdateVM input, int? siteSettingId)
@@ -70,7 +77,7 @@ namespace Oje.Section.Blog.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.BlogCategories.Where(t => t.SiteSettingId == siteSettingId).Select(t => new
+            result.AddRange(db.BlogCategories.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId).Select(t => new
             {
                 id = t.Id,
                 title = t.Title
@@ -94,7 +101,11 @@ namespace Oje.Section.Blog.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.BlogCategories.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.BlogCategories
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -115,7 +126,8 @@ namespace Oje.Section.Blog.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.BlogCategories
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -129,12 +141,15 @@ namespace Oje.Section.Blog.Services
             if (searchInput == null)
                 searchInput = new();
 
-            var qureResult = db.BlogCategories.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.BlogCategories
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -149,7 +164,8 @@ namespace Oje.Section.Blog.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new BlogCategoryMainGridResultVM
@@ -157,7 +173,8 @@ namespace Oje.Section.Blog.Services
                     row = ++row,
                     id = t.id,
                     title = t.title,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -167,7 +184,11 @@ namespace Oje.Section.Blog.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.BlogCategories.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.BlogCategories
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

@@ -124,6 +124,8 @@ namespace Oje.AccountService.Models.DB
         public int? EndHour { get; set; }
         public bool? WorkingHolyday { get; set; }
         public int? SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("SiteSettingUsers")]
+        public SiteSetting SiteSetting { get; set; }
         public bool? CanSeeOtherSites { get; set; }
 
         [NotMapped]

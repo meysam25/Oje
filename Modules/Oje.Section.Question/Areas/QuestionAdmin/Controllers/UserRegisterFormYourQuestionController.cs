@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
@@ -102,9 +103,9 @@ namespace Oje.Section.Question.Areas.QuestionAdmin.Controllers
 
         [AreaConfig(Title = "مشاهده لیست فرم", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetFormList()
+        public ActionResult GetFormList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserRegisterFormService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserRegisterFormService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

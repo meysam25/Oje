@@ -23,6 +23,7 @@ namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
         readonly ISiteSettingService SiteSettingService = null;
         readonly IBlogCategoryService BlogCategoryService = null;
         readonly IBlogTagService BlogTagService = null;
+
         public BlogController(
                 IBlogService BlogService,
                 ISiteSettingService SiteSettingService,

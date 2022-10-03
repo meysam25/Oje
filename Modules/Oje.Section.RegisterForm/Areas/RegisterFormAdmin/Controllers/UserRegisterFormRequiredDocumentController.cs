@@ -101,9 +101,9 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
 
         [AreaConfig(Title = "مشاهده لیست فرم های ثبت نام", Icon = "fa-list-alt")]
         [HttpPost]
-        public IActionResult GetTypeList()
+        public IActionResult GetTypeList([FromQuery]int? cSOWSiteSettingId)
         {
-            return Json(UserRegisterFormRequiredDocumentTypeService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserRegisterFormRequiredDocumentTypeService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

@@ -12,5 +12,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
         public string title { get; set; }
         [Display(Name = "کد")]
         public string code { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

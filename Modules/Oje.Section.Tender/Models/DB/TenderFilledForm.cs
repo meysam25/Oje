@@ -35,6 +35,8 @@ namespace Oje.Section.Tender.Models.DB
         public City City { get; set; }
         public bool? IsPublished { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("TenderFilledForms")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("TenderFilledForm")]
         public List<TenderFilledFormsValue> TenderFilledFormsValues { get; set; }

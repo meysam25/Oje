@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("Pages")]
-    public class Page
+    public class Page: IEntityWithSiteSettingId
     {
         public Page()
         {
@@ -35,6 +36,8 @@ namespace Oje.Section.WebMain.Models.DB
         [MaxLength(200)]
         public string ButtonLink { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("Pages")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("Page")]
         public List<PageLeftRightDesign> PageLeftRightDesigns { get; set; }

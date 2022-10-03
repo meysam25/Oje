@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
@@ -17,16 +18,20 @@ namespace Oje.ProposalFormService.Services
         readonly ProposalFormDBContext db = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly IProposalFilledFormStatusLogFileService ProposalFilledFormStatusLogFileService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public ProposalFilledFormStatusLogService
             (
                 ProposalFormDBContext db, 
                 IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
-                IProposalFilledFormStatusLogFileService ProposalFilledFormStatusLogFileService
+                IProposalFilledFormStatusLogFileService ProposalFilledFormStatusLogFileService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
             this.ProposalFilledFormStatusLogFileService = ProposalFilledFormStatusLogFileService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public void Create(long? proposalFilledFormId, ProposalFilledFormStatus? status, DateTime now, long? userId, string description, string fullname, List<ProposalFilledFormChangeStatusFileVM> fileList, int? siteSettingId)
@@ -66,7 +71,7 @@ namespace Oje.ProposalFormService.Services
                 searchInput = new ProposalFilledFormLogMainGrid();
 
             var qureResult = ProposalFilledFormAdminBaseQueryService
-                .getProposalFilledFormBaseQuery(siteSettingId, userId)
+                .getProposalFilledFormBaseQuery(siteSettingId, userId, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == searchInput.pKey)
                 .Where(t => validStatus == null || validStatus.Contains(t.Status))
                 .SelectMany(t => t.ProposalFilledFormStatusLogs);

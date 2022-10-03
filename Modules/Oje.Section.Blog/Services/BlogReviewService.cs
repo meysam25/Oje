@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -7,19 +8,23 @@ using Oje.Section.Blog.Models.DB;
 using Oje.Section.Blog.Models.View;
 using Oje.Section.Blog.Services.EContext;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Services
 {
     public class BlogReviewService : IBlogReviewService
     {
         readonly BlogDBContext db = null;
-        public BlogReviewService(BlogDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public BlogReviewService
+            (
+                BlogDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(BlogWebAction input, int? siteSettingId, IpSections ipSections, long blogId)
@@ -66,8 +71,10 @@ namespace Oje.Section.Blog.Services
             }
             catch { }
             var foundItem = db.BlogReviews
-                .Where(t => t.SiteSettingId == siteSettingId && t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .Where(t => t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -98,7 +105,8 @@ namespace Oje.Section.Blog.Services
             catch { }
 
             return db.BlogReviews
-                .Where(t => t.SiteSettingId == siteSettingId && t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .Where(t => t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     descrption = t.Description
@@ -129,8 +137,10 @@ namespace Oje.Section.Blog.Services
             }
             catch { }
             var foundItem = db.BlogReviews
-                .Where(t => t.SiteSettingId == siteSettingId && t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.BlogId == blogId && t.CreateDate == cd)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -151,7 +161,8 @@ namespace Oje.Section.Blog.Services
             if (searchInput == null)
                 searchInput = new BlogReviewMainGrid();
 
-            var qureResult = db.BlogReviews.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.BlogReviews
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.blogTitle))
                 qureResult = qureResult.Where(t => t.Blog.Title.Contains(searchInput.blogTitle));
@@ -163,6 +174,8 @@ namespace Oje.Section.Blog.Services
                 qureResult = qureResult.Where(t => t.Email.Contains(searchInput.userEmail));
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsConfirm == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -186,7 +199,8 @@ namespace Oje.Section.Blog.Services
                     t.Mobile,
                     t.IsConfirm,
                     t.ConfirmDate,
-                    blogTitle = t.Blog.Title
+                    blogTitle = t.Blog.Title,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new BlogReviewMainGridResultVM
@@ -198,7 +212,8 @@ namespace Oje.Section.Blog.Services
                     isActive = t.IsConfirm == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     userFullname = t.Title,
                     userMobile = t.Mobile,
-                    userEmail = t.Email
+                    userEmail = t.Email,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
 

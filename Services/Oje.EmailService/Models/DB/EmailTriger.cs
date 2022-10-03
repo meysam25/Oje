@@ -1,16 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.EmailService.Models.DB
 {
     [Table("EmailTrigers")]
-    public class EmailTriger
+    public class EmailTriger: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -22,5 +18,7 @@ namespace Oje.EmailService.Models.DB
         [ForeignKey("UserId"), InverseProperty("EmailTrigers")]
         public User User { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("EmailTrigers")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
@@ -203,7 +204,8 @@ namespace Oje.Section.Ticket.Services
                 quiryResult = quiryResult.Where(t => (t.CreateUser.Firstname + " " + t.CreateUser.Lastname).Contains(searchInput.userfullname));
             if (!string.IsNullOrEmpty(searchInput.updateUserFullname))
                 quiryResult = quiryResult.Where(t => t.UpdateUserId > 0 && (t.UpdateUser.Firstname + " " + t.UpdateUser.Lastname).Contains(searchInput.updateUserFullname));
-
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -224,7 +226,8 @@ namespace Oje.Section.Ticket.Services
                     lastAnswerUserId = t.TicketUserAnswers.OrderByDescending(tt => tt.Id).Take(1).Select(tt => tt.CreateUserId).FirstOrDefault(),
                     catTitle = t.TicketCategory.Title,
                     userfullname = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
-                    updateUserFullname = t.UpdateUserId > 0 ? t.UpdateUser.Firstname + " " + t.UpdateUser.Lastname : ""
+                    updateUserFullname = t.UpdateUserId > 0 ? t.UpdateUser.Firstname + " " + t.UpdateUser.Lastname : "",
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new TicketUserAdminMainGridResultVM
@@ -237,7 +240,8 @@ namespace Oje.Section.Ticket.Services
                     isAnswer = t.lastAnswerUserId > 0 && t.lastAnswerUserId == t.CreateUserId ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                     categoryTitle = t.catTitle,
                     userfullname = t.userfullname,
-                    updateUserFullname = t.updateUserFullname
+                    updateUserFullname = t.updateUserFullname,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

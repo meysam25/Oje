@@ -14,5 +14,7 @@ namespace Oje.ProposalFormService.Models.View
         public string mobile { get; set; }
         [Display(Name = "تاریخ یادآوری")]
         public string td { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

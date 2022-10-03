@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.AccountService.Models.View
 {
@@ -33,5 +28,7 @@ namespace Oje.AccountService.Models.View
         public string link { get; set; }
         [Display(Name = "دیده نشده ها")]
         public string notSeen { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

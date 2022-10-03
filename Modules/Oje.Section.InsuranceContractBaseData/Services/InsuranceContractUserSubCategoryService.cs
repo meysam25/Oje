@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -14,10 +15,16 @@ namespace Oje.Section.InsuranceContractBaseData.Services
     public class InsuranceContractUserSubCategoryService : IInsuranceContractUserSubCategoryService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
-        public InsuranceContractUserSubCategoryService(InsuranceContractBaseDataDBContext db)
+        public InsuranceContractUserSubCategoryService
+            (
+                InsuranceContractBaseDataDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(InsuranceContractUserSubCategoryCreateUpdateVM input, int? siteSettingId)
@@ -52,7 +59,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.InsuranceContractUserSubCategories.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InsuranceContractUserSubCategories
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -64,24 +75,31 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public object GetById(int? id, int? siteSettingId)
         {
-            return db.InsuranceContractUserSubCategories.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => new
-            {
-                id = t.Id,
-                title = t.Title,
-                code = t.Code
-            }).FirstOrDefault();
+            return db.InsuranceContractUserSubCategories
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title,
+                    code = t.Code
+                })
+                .FirstOrDefault();
         }
 
         public GridResultVM<InsuranceContractUserSubCategoryMainGridResultVM> GetList(InsuranceContractUserSubCategoryMainGrid searchInput, int? siteSettingId)
         {
             searchInput = searchInput ?? new InsuranceContractUserSubCategoryMainGrid();
 
-            var quiryResult = db.InsuranceContractUserSubCategories.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.InsuranceContractUserSubCategories
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 quiryResult = quiryResult.Where(t => t.Title.Contains(searchInput.title));
             if (!string.IsNullOrEmpty(searchInput.code))
                 quiryResult = quiryResult.Where(t => t.Code.Contains(searchInput.code));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -97,6 +115,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     id = t.Id,
                     code = t.Code,
                     title = t.Title,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractUserSubCategoryMainGridResultVM
@@ -104,7 +123,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     row = ++row,
                     id = t.id,
                     code = t.code,
-                    title = t.title
+                    title = t.title,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -114,7 +134,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.InsuranceContractUserSubCategories.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InsuranceContractUserSubCategories
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

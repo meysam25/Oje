@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -17,15 +18,19 @@ namespace Oje.Section.WebMain.Services
     public class AutoAnswerOnlineChatMessageService : IAutoAnswerOnlineChatMessageService
     {
         readonly WebMainDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
         readonly IAutoAnswerOnlineChatMessageLikeService AutoAnswerOnlineChatMessageLikeService = null;
+
         public AutoAnswerOnlineChatMessageService
             (
-                    WebMainDBContext db,
-                    IAutoAnswerOnlineChatMessageLikeService AutoAnswerOnlineChatMessageLikeService
+                WebMainDBContext db,
+                IAutoAnswerOnlineChatMessageLikeService AutoAnswerOnlineChatMessageLikeService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.AutoAnswerOnlineChatMessageLikeService = AutoAnswerOnlineChatMessageLikeService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(AutoAnswerOnlineChatMessageCreateUpdateVM input, int? siteSettingId)
@@ -69,7 +74,11 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.AutoAnswerOnlineChatMessages.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.AutoAnswerOnlineChatMessages
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -80,24 +89,28 @@ namespace Oje.Section.WebMain.Services
 
         public object GetById(int? id, int? siteSettingId)
         {
-            return db.AutoAnswerOnlineChatMessages.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).Select(t => new
-            {
-                id = t.Id,
-                title = t.Title,
-                description = t.Description,
-                link = t.Link,
-                order = t.Order,
-                isActive = t.IsActive,
-                isMessage = t.IsMessage,
-                hasLike = t.HasLike
-            }).FirstOrDefault();
+            return db.AutoAnswerOnlineChatMessages
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title,
+                    description = t.Description,
+                    link = t.Link,
+                    order = t.Order,
+                    isActive = t.IsActive,
+                    isMessage = t.IsMessage,
+                    hasLike = t.HasLike
+                }).FirstOrDefault();
         }
 
         public GridResultVM<AutoAnswerOnlineChatMessageMainGridResultVM> GetList(AutoAnswerOnlineChatMessageMainGrid searchInput, int? siteSettingId)
         {
             searchInput = searchInput ?? new AutoAnswerOnlineChatMessageMainGrid();
 
-            var quiryResult = db.AutoAnswerOnlineChatMessages.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.AutoAnswerOnlineChatMessages
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.pKey.ToIntReturnZiro() > 0)
                 quiryResult = quiryResult.Where(t => t.ParentId == searchInput.pKey);
@@ -110,6 +123,8 @@ namespace Oje.Section.WebMain.Services
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.isMessage != null)
                 quiryResult = quiryResult.Where(t => t.IsMessage == searchInput.isMessage);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -127,7 +142,8 @@ namespace Oje.Section.WebMain.Services
                     t.IsActive,
                     t.IsMessage,
                     likeCount = t.AutoAnswerOnlineChatMessageLikes.Count(tt => tt.IsLike == true),
-                    dislikeCount = t.AutoAnswerOnlineChatMessageLikes.Count(tt => tt.IsLike == false)
+                    dislikeCount = t.AutoAnswerOnlineChatMessageLikes.Count(tt => tt.IsLike == false),
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList().Select(t => new AutoAnswerOnlineChatMessageMainGridResultVM
                 {
@@ -137,7 +153,8 @@ namespace Oje.Section.WebMain.Services
                     isActive = t.IsActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     isMessage = t.IsMessage == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                     likeCount = t.likeCount,
-                    dislikeCount = t.dislikeCount
+                    dislikeCount = t.dislikeCount,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -147,7 +164,11 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.AutoAnswerOnlineChatMessages.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.AutoAnswerOnlineChatMessages
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

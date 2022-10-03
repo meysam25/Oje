@@ -31,7 +31,9 @@ namespace Oje.Section.Question.Services
 
         public ApiResult Create(UserRegisterFormYourQuestionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new UserRegisterFormYourQuestion()
             {
@@ -39,7 +41,7 @@ namespace Oje.Section.Question.Services
                 UserRegisterFormId = input.fid.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Title = input.title,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -72,7 +74,9 @@ namespace Oje.Section.Question.Services
                    answer = t.Answer,
                    isActive = t.IsActive,
                    title = t.Title,
-                   fid = t.UserRegisterFormId
+                   fid = t.UserRegisterFormId,
+                   cSOWSiteSettingId = t.SiteSettingId,
+                   cSOWSiteSettingId_Title = t.SiteSetting.Title
                })
                .FirstOrDefault();
         }
@@ -90,6 +94,8 @@ namespace Oje.Section.Question.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (!string.IsNullOrEmpty(searchInput.form))
                 qureResult = qureResult.Where(t => t.UserRegisterForm.Title.Contains(searchInput.form));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -105,7 +111,8 @@ namespace Oje.Section.Question.Services
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
-                    form = t.UserRegisterForm.Title
+                    form = t.UserRegisterForm.Title,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserRegisterFormYourQuestionMainGridResultVM
@@ -114,7 +121,8 @@ namespace Oje.Section.Question.Services
                     id = t.id,
                     title = t.title,
                     form = t.form,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -134,7 +142,8 @@ namespace Oje.Section.Question.Services
 
         public ApiResult Update(UserRegisterFormYourQuestionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.UserRegisterFormYourQuestions
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -147,13 +156,14 @@ namespace Oje.Section.Question.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;
             foundItem.UserRegisterFormId = input.fid.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(UserRegisterFormYourQuestionCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(UserRegisterFormYourQuestionCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -169,7 +179,7 @@ namespace Oje.Section.Question.Services
                 throw BException.GenerateNewException(BMessages.Answer_Can_Not_Be_More_Then_4000_Chars);
             if (input.fid.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
-            if(!UserRegisterFormService.Exist(siteSettingId, input.fid))
+            if(!UserRegisterFormService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.fid))
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
     }

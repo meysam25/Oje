@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractProposalForms")]
-    public class InsuranceContractProposalForm
+    public class InsuranceContractProposalForm: IEntityWithSiteSettingId
     {
         public InsuranceContractProposalForm()
         {
@@ -32,6 +30,8 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         [Required, MinLength(4000)]
         public string TermTemplate { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractProposalForms")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InsuranceContractProposalForm")]
         public List<InsuranceContract> InsuranceContracts { get; set; }

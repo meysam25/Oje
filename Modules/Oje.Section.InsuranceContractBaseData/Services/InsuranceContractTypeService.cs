@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
@@ -20,15 +21,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly InsuranceContractBaseDataDBContext db = null;
         readonly IUserService UserService = null;
         readonly ISiteSettingService SiteSettingService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public InsuranceContractTypeService(
                 InsuranceContractBaseDataDBContext db,
                 IUserService UserService,
-                ISiteSettingService SiteSettingService
+                ISiteSettingService SiteSettingService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UserService = UserService;
             this.SiteSettingService = SiteSettingService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractTypeVM input)
@@ -78,7 +83,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
-            var foundItem = db.InsuranceContractTypes.Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+            var foundItem = db.InsuranceContractTypes
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
             if (foundItem == null)
@@ -97,7 +104,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
 
             return db.InsuranceContractTypes
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
                 .Select(t => new CreateUpdateInsuranceContractTypeVM
                 {
@@ -116,7 +124,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            var qureResult = db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId)
+            var qureResult = db.InsuranceContractTypes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems);
 
             if (!string.IsNullOrEmpty(searchInput.title))
@@ -130,6 +139,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             }
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -143,7 +154,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     title = t.Title,
                     createUser = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
                     createDate = t.CreateDate,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractTypeMainGridResultVM
@@ -153,7 +165,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     title = t.title,
                     createUser = t.createUser,
                     createDate = t.createDate.ToFaDate(),
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -166,9 +179,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             CreateValidation(input, loginUserId, siteSettingId);
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            var foundItem = db.InsuranceContractTypes.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+            var foundItem = db.InsuranceContractTypes
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -190,7 +206,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId)
+            result.AddRange(db.InsuranceContractTypes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
@@ -217,7 +234,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId && t.InsuranceContractInsuranceContractTypes.Any(tt => tt.InsuranceContractId == contractId))
+            result.AddRange(db.InsuranceContractTypes
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.InsuranceContractInsuranceContractTypes.Any(tt => tt.InsuranceContractId == contractId))
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractType, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
@@ -237,7 +256,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
 
-            result.AddRange(db.InsuranceContractTypes.Where(t => t.SiteSettingId == siteSettingId)
+            result.AddRange(db.InsuranceContractTypes.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,

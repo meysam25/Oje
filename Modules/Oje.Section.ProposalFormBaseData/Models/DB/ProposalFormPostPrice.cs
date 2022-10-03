@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Models.DB
 {
     [Table("ProposalFormPostPrices")]
-    public class ProposalFormPostPrice
+    public class ProposalFormPostPrice: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -23,5 +19,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public int Price { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("ProposalFormPostPrices")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

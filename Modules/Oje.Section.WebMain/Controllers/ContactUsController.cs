@@ -15,6 +15,7 @@ namespace Oje.Section.WebMain.Controllers
         readonly IPropertyService PropertyService = null;
         readonly IContactUsService ContactUsService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+
         public ContactUsController(
             ISiteSettingService SiteSettingService,
             IPropertyService PropertyService,

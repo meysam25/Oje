@@ -78,6 +78,14 @@
             {
               "field": "dislikeCount",
               "caption": "تعداد نپسندیدن"
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
             }
           ]
         }

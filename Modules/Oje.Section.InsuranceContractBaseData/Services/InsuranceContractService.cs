@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using Oje.FileService.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
@@ -28,6 +29,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractProposalFormService InsuranceContractProposalFormService = null;
         readonly Interfaces.IProposalFormService ProposalFormService = null;
         readonly IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public InsuranceContractService
             (
@@ -39,7 +41,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IUploadedFileService uploadedFileService,
                 IInsuranceContractProposalFormService InsuranceContractProposalFormService,
                 Interfaces.IProposalFormService ProposalFormService,
-                IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService
+                IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -51,6 +54,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.InsuranceContractProposalFormService = InsuranceContractProposalFormService;
             this.ProposalFormService = ProposalFormService;
             this.InsuranceContractTypeRequiredDocumentService = InsuranceContractTypeRequiredDocumentService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractVM input)
@@ -139,7 +143,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            var foundItem = db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+            var foundItem = db.InsuranceContracts
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
             if (foundItem == null)
@@ -158,7 +164,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             return db.InsuranceContracts
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .OrderByDescending(t => t.Id)
                 .Select(t => new
@@ -210,7 +217,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            var qureResult = db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId)
+            var qureResult = db.InsuranceContracts
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 ;
 
@@ -243,6 +251,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 var targetDate = searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
                 qureResult = qureResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
             }
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             var row = searchInput.skip;
 
@@ -262,7 +272,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     title = t.Title,
                     toDate = t.ToDate,
                     createDate = t.CreateDate,
-                    createUser = t.CreateUser.Firstname + " " + t.CreateUser.Lastname
+                    createUser = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractMainGridResultVM
@@ -278,7 +289,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     code = t.code + "",
                     fromDate = t.fromDate.ToFaDate(),
                     toDate = t.toDate.ToFaDate(),
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -292,9 +304,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             CreateValidation(input, loginUserId, siteSettingId);
 
-            var foundItem = db.InsuranceContracts.Include(t => t.InsuranceContractInsuranceContractTypes).Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id)
+            var foundItem =
+                db.InsuranceContracts
+                .Include(t => t.InsuranceContractInsuranceContractTypes)
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -340,7 +357,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             result.AddRange(db.InsuranceContracts
-                .Where(t => t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
@@ -509,11 +526,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId).Select(t => new
-            {
-                id = t.Id,
-                title = t.Title
-            }).ToList());
+            result.AddRange(db.InsuranceContracts.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    title = t.Title
+                }).ToList());
 
             return result;
         }

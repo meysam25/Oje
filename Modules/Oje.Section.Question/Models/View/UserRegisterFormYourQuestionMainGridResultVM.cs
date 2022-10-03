@@ -1,9 +1,8 @@
-﻿using Oje.Infrastructure.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.Question.Models.View
 {
-    public class UserRegisterFormYourQuestionMainGridResultVM: GlobalGrid
+    public class UserRegisterFormYourQuestionMainGridResultVM
     {
         [Display(Name = "ردیف")]
         public int row { get; set; }
@@ -15,5 +14,7 @@ namespace Oje.Section.Question.Models.View
         public string form { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

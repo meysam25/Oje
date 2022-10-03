@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.EmailService.Interfaces;
 using Oje.EmailService.Models.DB;
 using Oje.EmailService.Models.View;
@@ -17,12 +18,15 @@ namespace Oje.EmailService.Services
         readonly IUserService UserService = null;
         readonly IRoleService RoleService = null;
         readonly IEmailSendingQueueService EmailSendingQueueService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public EmailTrigerService(
                 EmailServiceDBContext db,
                 IEmailTemplateService EmailTemplateService,
                 IUserService UserService,
                 IRoleService RoleService,
-                IEmailSendingQueueService EmailSendingQueueService
+                IEmailSendingQueueService EmailSendingQueueService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -30,6 +34,7 @@ namespace Oje.EmailService.Services
             this.UserService = UserService;
             this.RoleService = RoleService;
             this.EmailSendingQueueService = EmailSendingQueueService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(EmailTrigerCreateUpdateVM input, int? siteSettingId)
@@ -60,9 +65,13 @@ namespace Oje.EmailService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
         }
 
-        public ApiResult Delete(int? id, int? siteSettingID)
+        public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.EmailTrigers.Where(t => t.SiteSettingId == siteSettingID && t.Id == id).FirstOrDefault();
+            var foundItem = db.EmailTrigers
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -72,11 +81,12 @@ namespace Oje.EmailService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetById(int? id, int? siteSettingID)
+        public object GetById(int? id, int? siteSettingId)
         {
             return db.EmailTrigers
                 .OrderByDescending(t => t.Id)
-                .Where(t => t.SiteSettingId == siteSettingID && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -97,12 +107,13 @@ namespace Oje.EmailService.Services
                 .FirstOrDefault();
         }
 
-        public GridResultVM<EmailTrigerMainGridResultVM> GetList(EmailTrigerMainGrid searchInput, int? siteSettingID)
+        public GridResultVM<EmailTrigerMainGridResultVM> GetList(EmailTrigerMainGrid searchInput, int? siteSettingId)
         {
             if (searchInput == null)
                 searchInput = new EmailTrigerMainGrid();
 
-            var qureResult = db.EmailTrigers.Where(t => t.SiteSettingId == siteSettingID);
+            var qureResult = db.EmailTrigers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.type != null)
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
@@ -110,6 +121,8 @@ namespace Oje.EmailService.Services
                 qureResult = qureResult.Where(t => t.RoleId > 0 && t.Role.Title.Contains(searchInput.roleName));
             if (!string.IsNullOrEmpty(searchInput.userName))
                 qureResult = qureResult.Where(t => t.UserId > 0 && (t.User.Firstname + " " + t.User.Lastname).Contains(searchInput.userName));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -122,7 +135,8 @@ namespace Oje.EmailService.Services
                     id = t.Id,
                     type = t.Type,
                     roleName = t.RoleId > 0 ? t.Role.Title : "",
-                    userName = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : ""
+                    userName = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : "",
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new EmailTrigerMainGridResultVM()
@@ -131,17 +145,22 @@ namespace Oje.EmailService.Services
                     row = ++row,
                     type = t.type.GetEnumDisplayName(),
                     roleName = t.roleName,
-                    userName = t.userName
+                    userName = t.userName,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
         }
 
-        public ApiResult Update(EmailTrigerCreateUpdateVM input, int? siteSettingID)
+        public ApiResult Update(EmailTrigerCreateUpdateVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingID);
+            CreateUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.EmailTrigers.Where(t => t.SiteSettingId == siteSettingID && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.EmailTrigers
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

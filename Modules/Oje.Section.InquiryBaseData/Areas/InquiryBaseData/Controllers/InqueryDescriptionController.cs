@@ -21,6 +21,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         readonly ISiteSettingService SiteSettingService = null;
         readonly IProposalFormService ProposalFormService = null;
         readonly ICompanyService CompanyService = null;
+
         public InqueryDescriptionController(
                 IInqueryDescriptionService InqueryDescriptionService,
                 ISiteSettingService SiteSettingService,

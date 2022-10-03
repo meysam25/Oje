@@ -35,6 +35,8 @@ namespace Oje.Section.Ticket.Models.DB
         public string FileUrl { get; set; }
         public bool IsDelete { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("TicketUsers")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("TicketUser")]
         public List<TicketUserAnswer> TicketUserAnswers { get; set; }

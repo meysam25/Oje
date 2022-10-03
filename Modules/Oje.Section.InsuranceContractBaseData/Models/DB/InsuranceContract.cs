@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContracts")]
-    public class InsuranceContract : EntityWithCreateUser<User, long>
+    public class InsuranceContract : EntityWithCreateUser<User, long>, IEntityWithSiteSettingId
     {
         public InsuranceContract()
         {
@@ -52,6 +52,8 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public DateTime? UpdateDate { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContracts")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InsuranceContract")]
         public List<InsuranceContractValidUserForFullDebit> InsuranceContractValidUserForFullDebits { get; set; }

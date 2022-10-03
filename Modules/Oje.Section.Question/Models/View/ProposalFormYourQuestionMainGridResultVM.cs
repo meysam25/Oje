@@ -14,5 +14,7 @@ namespace Oje.Section.Question.Models.View
         public string form { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -16,12 +17,16 @@ namespace Oje.Section.WebMain.Services
     public class PageLeftRightDesignService : IPageLeftRightDesignService
     {
         readonly WebMainDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public PageLeftRightDesignService
             (
-                WebMainDBContext db
+                WebMainDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(PageLeftRightDesignCreateUpdateVM input, int? siteSettingId)
@@ -56,7 +61,11 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.PageLeftRightDesigns.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.PageLeftRightDesigns
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -70,7 +79,8 @@ namespace Oje.Section.WebMain.Services
         public PageLeftRightDesignCreateUpdateVM GetById(int? id, int? siteSettingId)
         {
             return db.PageLeftRightDesigns
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new PageLeftRightDesignCreateUpdateVM
                 {
                     id = t.Id,
@@ -89,12 +99,15 @@ namespace Oje.Section.WebMain.Services
             if (searchInput == null)
                 searchInput = new PageLeftRightDesignMainGrid();
 
-            var qureResult = db.PageLeftRightDesigns.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.PageLeftRightDesigns
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.pageTitle))
                 qureResult = qureResult.Where(t => t.Page.Title.Contains(searchInput.pageTitle));
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -109,7 +122,8 @@ namespace Oje.Section.WebMain.Services
                 {
                     id = t.Id,
                     pTitle = t.Page.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new PageLeftRightDesignMainGridResultVM
@@ -117,7 +131,8 @@ namespace Oje.Section.WebMain.Services
                     id = t.id,
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     pageTitle = t.pTitle,
-                    row = ++row
+                    row = ++row,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -127,7 +142,11 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.PageLeftRightDesigns.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.PageLeftRightDesigns
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -154,7 +173,7 @@ namespace Oje.Section.WebMain.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.PageLeftRightDesigns.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.PageLeftRightDesigns.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Page.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

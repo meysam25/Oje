@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -7,20 +8,18 @@ using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
 using Oje.Sms.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Sms.Services
 {
     public class SmsTemplateService : ISmsTemplateService
     {
         readonly SmsDBContext db = null;
-        public SmsTemplateService(SmsDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public SmsTemplateService(SmsDBContext db, IHttpContextAccessor HttpContextAccessor)
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateSmsTemplateVM input, int? siteSettingId)
@@ -62,7 +61,10 @@ namespace Oje.Sms.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.SmsTemplates.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.SmsTemplates
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -75,7 +77,8 @@ namespace Oje.Sms.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.SmsTemplates.OrderByDescending(t => t.Id)
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -102,7 +105,7 @@ namespace Oje.Sms.Services
             if (searchInput == null)
                 searchInput = new SmsTemplateMainGrid();
 
-            var qureResult = db.SmsTemplates.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.SmsTemplates.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.subject))
                 qureResult = qureResult.Where(t => t.Subject.Contains(searchInput.subject));
@@ -110,6 +113,8 @@ namespace Oje.Sms.Services
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
             if(searchInput.pffUserType != null)
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUserType == searchInput.pffUserType);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -125,7 +130,8 @@ namespace Oje.Sms.Services
                     id = t.Id,
                     subject = t.Subject,
                     type = t.Type,
-                    pffUserType = t.ProposalFilledFormUserType
+                    pffUserType = t.ProposalFilledFormUserType,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new SmsTemplateMainGridResultVM
@@ -134,7 +140,8 @@ namespace Oje.Sms.Services
                     id = t.id,
                     subject = t.subject,
                     type = t.type.GetEnumDisplayName(),
-                    pffUserType = t.pffUserType.GetEnumDisplayName()
+                    pffUserType = t.pffUserType.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -143,7 +150,10 @@ namespace Oje.Sms.Services
         public ApiResult Update(CreateUpdateSmsTemplateVM input, int? siteSettingId)
         {
             createUpdateValidation(input, siteSettingId);
-            var foundItem = db.SmsTemplates.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.SmsTemplates
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

@@ -25,9 +25,9 @@
     <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + currSiteSetting.Image96)">
     <script>
         @{
-            ViewContext.Writer.Write("var isUserLogin = " + (Context.GetLoginUser()?.UserId != null ? "true" : "false"));
+            ViewContext.Writer.Write("var isUserLogin = " + (Context.GetLoginUser()?.UserId != null ? "true" : "false") + ";");
+            ViewContext.Writer.Write("var cSOW = " + (Context.GetLoginUser()?.canSeeOtherWebsites == true ? "true" : "false") + ";");
         }
-
     </script>
 </head>
 <body class="makeRTL">

@@ -1,10 +1,4 @@
-﻿using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.AccountService.Models.View
 {
@@ -20,5 +14,7 @@ namespace Oje.AccountService.Models.View
         public string isActive { get; set; }
         [Display(Name = "نوع")]
         public string type { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

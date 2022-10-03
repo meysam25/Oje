@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("PageLeftRightDesignItems")]
-    public class PageLeftRightDesignItem
+    public class PageLeftRightDesignItem: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }
@@ -29,5 +25,7 @@ namespace Oje.Section.WebMain.Models.DB
         [MaxLength(50)]
         public string ButtonTitle { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("PageLeftRightDesignItems")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

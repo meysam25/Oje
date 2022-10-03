@@ -92,6 +92,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 qureResult = qureResult.Where(t => t.SiteSettingId == searchInput.siteId);
             if (!string.IsNullOrEmpty(searchInput.form))
                 qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.form));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             var row = searchInput.skip;
 
@@ -105,7 +107,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     title = t.Title,
                     form = t.ProposalForm.Title,
                     siteId = t.SiteSetting.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ProposalFormRequiredDocumentTypeMainGridResultVM
@@ -115,7 +118,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     title = t.title,
                     form = t.form,
                     siteId = t.siteId,
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

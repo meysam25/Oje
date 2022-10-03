@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -25,13 +26,16 @@ namespace Oje.Section.Blog.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly IBlogReviewService BlogReviewService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public BlogService
             (
                 BlogDBContext db,
                 IBlogTagService BlogTagService,
                 IUploadedFileService UploadedFileService,
                 IBlogReviewService BlogReviewService,
-                IBlockAutoIpService BlockAutoIpService
+                IBlockAutoIpService BlockAutoIpService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -39,6 +43,7 @@ namespace Oje.Section.Blog.Services
             this.UploadedFileService = UploadedFileService;
             this.BlogReviewService = BlogReviewService;
             this.BlockAutoIpService = BlockAutoIpService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(BlogCreateUpdateVM input, int? siteSettingId, long loginUserId)
@@ -128,7 +133,8 @@ namespace Oje.Section.Blog.Services
                db.Blogs
                .Include(t => t.BlogTagBlogs)
                .Include(t => t.BlogOwnBlogs)
-               .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+               .Where(t => t.Id == id)
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                .FirstOrDefault();
 
             if (foundItem == null)
@@ -153,9 +159,10 @@ namespace Oje.Section.Blog.Services
             return
                 db.Blogs
                 .OrderByDescending(t => t.Id)
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
-               .Select(t => new
-               {
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Select(t => new
+                {
                    id = t.Id,
                    catId = t.BlogCategoryId,
                    catTitle = t.BlogCategory.Title,
@@ -179,7 +186,7 @@ namespace Oje.Section.Blog.Services
                        src = tt.BlogRelated.ImageUrl200,
                        pDate = tt.BlogRelated.PublisheDate
                    }).ToList()
-               })
+                })
                .Take(1)
                .ToList()
                .Select(t => new BlogVM
@@ -217,7 +224,8 @@ namespace Oje.Section.Blog.Services
             if (searchInput == null)
                 searchInput = new BlogMainGrid();
 
-            var qureResult = db.Blogs.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.Blogs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
@@ -230,6 +238,8 @@ namespace Oje.Section.Blog.Services
             }
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -246,7 +256,8 @@ namespace Oje.Section.Blog.Services
                     title = t.Title,
                     createBy = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
                     publishDate = t.PublisheDate,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new BlogMainGridResultVM
@@ -256,7 +267,8 @@ namespace Oje.Section.Blog.Services
                     createBy = t.createBy,
                     title = t.title,
                     publishDate = t.publishDate.ToFaDate(),
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -270,7 +282,8 @@ namespace Oje.Section.Blog.Services
                 db.Blogs
                 .Include(t => t.BlogTagBlogs)
                 .Include(t => t.BlogOwnBlogs)
-                .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
 
             if (foundItem == null)
@@ -335,7 +348,9 @@ namespace Oje.Section.Blog.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Blogs.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.Blogs.OrderByDescending(t => t.Id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
@@ -644,7 +659,7 @@ namespace Oje.Section.Blog.Services
         public string GetBlogSiteMap(int? siteSettingId, string baseUrl)
         {
             string siteMapBaseFolder = GlobalConfig.GetSiteMapBaseFolder();
-            string siteMapFilename = Path.Combine(siteMapBaseFolder, "BlogSiteMap_"+ siteSettingId + ".xml");
+            string siteMapFilename = Path.Combine(siteMapBaseFolder, "BlogSiteMap_" + siteSettingId + ".xml");
 
             if (File.Exists(siteMapFilename))
             {

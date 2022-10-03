@@ -1,9 +1,24 @@
 ﻿
 $.fn.initMyGrid = function (option) {
+    if (!option)
+        return;
     if (option.nlevel) {
         option.detailes = JSON.parse(JSON.stringify(option));
         option.detailes.id = option.detailes.id + "1";
     }
+
+    if (option.columns) {
+        for (var i = 0; i < option.columns.length; i++) {
+            if (option.columns[i].showCondation) {
+                if (window[option.columns[i].showCondation]) {
+                    option.columns[i].hide = false;
+                } else {
+                    option.columns[i].hide = true;
+                }
+            }
+        }
+    }
+
     var templateFunctions = {
         getGridHeaderCellTemplateStyle: function (col) {
             var result = '';

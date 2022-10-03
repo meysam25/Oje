@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractInsuranceContractTypeMaxPrices")]
-    public class InsuranceContractInsuranceContractTypeMaxPrice
+    public class InsuranceContractInsuranceContractTypeMaxPrice: IEntityWithSiteSettingId
     {
         public int InsuranceContractId { get; set; }
         [ForeignKey("InsuranceContractId"), InverseProperty("InsuranceContractInsuranceContractTypeMaxPrices")]
@@ -13,5 +14,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public InsuranceContractType InsuranceContractType { get; set; }
         public long MaxPrice { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractInsuranceContractTypeMaxPrices")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

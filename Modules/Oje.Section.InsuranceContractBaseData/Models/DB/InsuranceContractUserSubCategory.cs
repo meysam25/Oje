@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractUserSubCategories")]
-    public class InsuranceContractUserSubCategory
+    public class InsuranceContractUserSubCategory: IEntityWithSiteSettingId
     {
         public InsuranceContractUserSubCategory()
         {
@@ -19,6 +20,8 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         [Required, MaxLength(20)]
         public string Code { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractUserSubCategories")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InsuranceContractUserSubCategory")]
         public List<InsuranceContractUser> InsuranceContractUsers { get; set; }

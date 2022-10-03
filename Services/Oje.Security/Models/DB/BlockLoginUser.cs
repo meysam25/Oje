@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Security.Models.DB
 {
     [Table("BlockLoginUsers")]
-    public class BlockLoginUser
+    public class BlockLoginUser: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -12,5 +13,7 @@ namespace Oje.Security.Models.DB
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("BlockLoginUsers")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

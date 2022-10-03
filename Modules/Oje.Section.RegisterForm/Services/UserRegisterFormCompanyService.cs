@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -104,7 +105,8 @@ namespace Oje.Section.RegisterForm.Services
                 quiryResult = quiryResult.Where(t => t.Company.Title.Contains(searchInput.company));
             if (!string.IsNullOrEmpty(searchInput.form))
                 quiryResult = quiryResult.Where(t => t.UserRegisterForm.Title.Contains(searchInput.form));
-
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
             int row = searchInput.skip;
 
             return new GridResultVM<UserRegisterFormCompanyMainGridResultVM>()
@@ -119,7 +121,8 @@ namespace Oje.Section.RegisterForm.Services
                     id = t.Id,
                     company = t.Company.Title,
                     form = t.UserRegisterForm.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserRegisterFormCompanyMainGridResultVM
@@ -128,7 +131,8 @@ namespace Oje.Section.RegisterForm.Services
                     id = t.id,
                     company = t.company,
                     form = t.form,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

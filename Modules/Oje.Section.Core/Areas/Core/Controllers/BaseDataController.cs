@@ -21,19 +21,22 @@ namespace Oje.Section.Core.Areas.Controllers
         readonly IProvinceService ProvinceService = null;
         readonly ICityService CityService = null;
         readonly ICompanyService CompanyService = null;
+        readonly ISiteSettingService SiteSettingService = null;
         //readonly IUserService UserService = null;
         public BaseDataController(
                 IUploadedFileService UploadedFileService,
                 IProvinceService ProvinceService,
                 ICityService CityService,
-                ICompanyService CompanyService//,
-                //IUserService UserService
+                ICompanyService CompanyService,
+                ISiteSettingService SiteSettingService//,
+                                                      //IUserService UserService
             )
         {
             this.UploadedFileService = UploadedFileService;
             this.ProvinceService = ProvinceService;
             this.CityService = CityService;
             this.CompanyService = CompanyService;
+            this.SiteSettingService = SiteSettingService;
             //this.UserService = UserService;
         }
 
@@ -43,6 +46,12 @@ namespace Oje.Section.Core.Areas.Controllers
             //var m = "test".Encrypt();
             ManageModalResource.Copy();
             return Json(true);
+        }
+
+        [HttpGet]
+        public IActionResult GetSettingList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(SiteSettingService.GetightList(HttpContext.GetLoginUser()?.canSeeOtherWebsites, searchInput));
         }
 
         //[HttpGet]

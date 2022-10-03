@@ -43,6 +43,9 @@ namespace Oje.ProposalFormService.Models.DB
         [MaxLength(200)]
         public string IssueFile { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("ProposalFilledForms")]
+        public SiteSetting SiteSetting { get; set; }
+
 
         [InverseProperty("ProposalFilledForm")]
         public List<ProposalFilledFormValue> ProposalFilledFormValues { get; set; }

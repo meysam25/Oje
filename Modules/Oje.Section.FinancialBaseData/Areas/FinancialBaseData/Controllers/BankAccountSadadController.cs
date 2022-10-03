@@ -21,6 +21,7 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
         readonly IBankAccountSadadService BankAccountSadadService = null;
         readonly IBankAccountService BankAccountService = null;
         readonly ISiteSettingService SiteSettingService = null;
+
         public BankAccountSadadController
             (
                 IBankAccountSadadService BankAccountSadadService,

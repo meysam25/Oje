@@ -26,5 +26,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         [MaxLength(200)]
         public string ImageUrl { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserFilledRegisterFormCardPayments")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

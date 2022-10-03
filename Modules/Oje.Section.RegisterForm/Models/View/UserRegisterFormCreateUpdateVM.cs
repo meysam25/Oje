@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Oje.Section.RegisterForm.Models.View
 {
-    public class UserRegisterFormCreateUpdateVM
+    public class UserRegisterFormCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string title { get; set; }

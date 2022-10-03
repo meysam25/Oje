@@ -11,6 +11,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InquiryBaseData.Services.EContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
@@ -20,17 +21,21 @@ namespace Oje.Section.InquiryBaseData.Services
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly Interfaces.IProposalFormService ProposalFormService = null;
         readonly IUserService UserService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public GlobalDiscountService(
                 InquiryBaseDataDBContext db,
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
                 Interfaces.IProposalFormService ProposalFormService,
-                IUserService UserService
+                IUserService UserService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
             this.ProposalFormService = ProposalFormService;
             this.UserService = UserService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateGlobalDiscountVM input)
@@ -112,7 +117,10 @@ namespace Oje.Section.InquiryBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+            GlobalDiscount foundItem = db.GlobalDiscounts
+                .Include(t => t.GlobalDiscountCompanies)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
             if (foundItem == null)
@@ -135,7 +143,8 @@ namespace Oje.Section.InquiryBaseData.Services
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
             return db.GlobalDiscounts
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
@@ -186,7 +195,9 @@ namespace Oje.Section.InquiryBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
-            var qureResult = db.GlobalDiscounts.Where(t => t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems);
+            var qureResult = db.GlobalDiscounts
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems);
 
             if (searchInput.company.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.GlobalDiscountCompanies.Any(tt => tt.CompanyId == searchInput.company));
@@ -213,6 +224,8 @@ namespace Oje.Section.InquiryBaseData.Services
             }
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -220,8 +233,8 @@ namespace Oje.Section.InquiryBaseData.Services
             {
                 total = qureResult.Count(),
                 data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
-                .Select(t => new  
-                { 
+                .Select(t => new
+                {
                     company = t.GlobalDiscountCompanies.Select(tt => tt.Company.Title).ToList(),
                     createDate = t.CreateDate,
                     createUser = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
@@ -230,21 +243,23 @@ namespace Oje.Section.InquiryBaseData.Services
                     isActive = t.IsActive,
                     ppfTitle = t.ProposalForm.Title,
                     title = t.Title,
-                    toDate = t.ToDate
+                    toDate = t.ToDate,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
-                .Select(t => new GlobalDiscountMainGridResult 
+                .Select(t => new GlobalDiscountMainGridResult
                 {
                     row = ++row,
                     id = t.id,
-                    company = string.Join( ",", t.company),
+                    company = string.Join(",", t.company),
                     ppfTitle = t.ppfTitle,
                     createUser = t.createUser,
                     createDate = t.createDate.ToFaDate(),
                     title = t.title,
                     fromDate = t.fromDate.ToFaDate(),
                     toDate = t.toDate.ToFaDate(),
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -257,9 +272,13 @@ namespace Oje.Section.InquiryBaseData.Services
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
             CreateValidation(input, siteSettingId, loginUserId);
 
-            GlobalDiscount foundItem = db.GlobalDiscounts.Include(t => t.GlobalDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+            GlobalDiscount foundItem = db.GlobalDiscounts
+                .Include(t => t.GlobalDiscountCompanies)
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<GlobalDiscount, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

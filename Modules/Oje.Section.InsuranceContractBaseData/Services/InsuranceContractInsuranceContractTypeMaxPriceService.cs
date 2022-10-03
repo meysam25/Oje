@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -16,16 +18,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly InsuranceContractBaseDataDBContext db = null;
         readonly IInsuranceContractTypeService InsuranceContractTypeService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public InsuranceContractInsuranceContractTypeMaxPriceService(
             InsuranceContractBaseDataDBContext db,
             IInsuranceContractTypeService InsuranceContractTypeService,
-            IInsuranceContractService InsuranceContractService
+            IInsuranceContractService InsuranceContractService,
+            IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.InsuranceContractTypeService = InsuranceContractTypeService;
             this.InsuranceContractService = InsuranceContractService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(InsuranceContractInsuranceContractTypeMaxPriceCreateUpdateVM input, int? siteSettingId)
@@ -74,7 +79,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (arrIds.Count != 2)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            var foundItem = db.InsuranceContractInsuranceContractTypeMaxPrices.Where(t => t.InsuranceContractTypeId == arrIds[0] && t.InsuranceContractId == arrIds[1] && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InsuranceContractInsuranceContractTypeMaxPrices
+                .Where(t => t.InsuranceContractTypeId == arrIds[0] && t.InsuranceContractId == arrIds[1])
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -93,7 +102,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             return db.InsuranceContractInsuranceContractTypeMaxPrices
-                .Where(t => t.InsuranceContractTypeId == arrIds[0] && t.InsuranceContractId == arrIds[1] && t.SiteSettingId == siteSettingId)
+                .Where(t => t.InsuranceContractTypeId == arrIds[0] && t.InsuranceContractId == arrIds[1])
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     staticCid = t.InsuranceContractId,
@@ -109,7 +119,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             searchInput = searchInput ?? new InsuranceContractInsuranceContractTypeMaxPriceMainGrid();
 
-            var quiryResult = db.InsuranceContractInsuranceContractTypeMaxPrices.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.InsuranceContractInsuranceContractTypeMaxPrices
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.typeId))
                 quiryResult = quiryResult.Where(t => t.InsuranceContractType.Title.Contains(searchInput.typeId));
@@ -117,6 +128,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 quiryResult = quiryResult.Where(t => t.InsuranceContract.Title.Contains(searchInput.cid));
             if (searchInput.price.ToLongReturnZiro() > 0)
                 quiryResult = quiryResult.Where(t => t.MaxPrice == searchInput.price);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -132,7 +145,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     InsuranceContractTile = t.InsuranceContract.Title,
                     InsuranceContractTypeTitle = t.InsuranceContractType.Title,
                     t.InsuranceContractTypeId,
-                    t.MaxPrice
+                    t.MaxPrice,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractInsuranceContractTypeMaxPriceMainGridResultVM
@@ -141,7 +155,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     id = t.InsuranceContractTypeId + "_" + t.InsuranceContractId,
                     typeId = t.InsuranceContractTile,
                     cid = t.InsuranceContractTypeTitle,
-                    price = t.MaxPrice.ToString("###,###")
+                    price = t.MaxPrice.ToString("###,###"),
+                    siteTitleMN2 = t.siteTitleMN2
                 }).ToList()
             };
         }
@@ -156,7 +171,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             {
                 try
                 {
-                    var foundItem = db.InsuranceContractInsuranceContractTypeMaxPrices.Where(t => t.InsuranceContractTypeId == input.staticTypeId && t.InsuranceContractId == input.staticCid).FirstOrDefault();
+                    var foundItem = db.InsuranceContractInsuranceContractTypeMaxPrices
+                        .Where(t => t.InsuranceContractTypeId == input.staticTypeId && t.InsuranceContractId == input.staticCid && t.SiteSettingId == siteSettingId)
+                        .FirstOrDefault();
 
                     if (foundItem == null)
                         throw BException.GenerateNewException(BMessages.Not_Found);

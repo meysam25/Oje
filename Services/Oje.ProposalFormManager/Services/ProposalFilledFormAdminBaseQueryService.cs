@@ -17,17 +17,23 @@ namespace Oje.ProposalFormService.Services
             this.UserService = UserService;
         }
 
-        public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId, ProposalFilledFormStatus status)
+        public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId, ProposalFilledFormStatus status, bool? canSeeOtherWebsites)
         {
-            return getProposalFilledFormBaseQuery(siteSettingId, userId)
+            return getProposalFilledFormBaseQuery(siteSettingId, userId, canSeeOtherWebsites)
                 .Where(t => t.Status == status);
         }
 
-        public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId)
+        public IQueryable<ProposalFilledForm> getProposalFilledFormBaseQuery(int? siteSettingId, long? userId, bool? canSeeOtherWebsites)
         {
             var allChildUserId = UserService.CanSeeAllItems(userId.ToLongReturnZiro());
-            return db.ProposalFilledForms
-                .Where(t => t.IsDelete != true && t.SiteSettingId == siteSettingId &&
+
+            var quiryResult = db.ProposalFilledForms.Where(t => t.IsDelete != true);
+
+            if (canSeeOtherWebsites != true)
+                quiryResult = quiryResult.Where(t => t.SiteSettingId == siteSettingId);
+
+            return quiryResult
+                .Where(t =>
                 (
                     allChildUserId == true || 
                     t.ProposalFilledFormUsers.Any

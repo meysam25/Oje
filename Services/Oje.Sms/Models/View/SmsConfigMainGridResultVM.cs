@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Sms.Models.View
 {
@@ -21,5 +16,7 @@ namespace Oje.Sms.Models.View
         public string isActive { get; set; }
         [Display(Name = "شماره")]
         public string ph { get;  set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

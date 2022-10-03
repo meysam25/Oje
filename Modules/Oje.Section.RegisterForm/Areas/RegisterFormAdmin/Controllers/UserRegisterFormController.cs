@@ -16,7 +16,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "ثبت نام کاربر", Icon = "fa-users", Title = "فرم ثبت نام کاربر")]
     [CustomeAuthorizeFilter]
-    public class UserRegisterFormController: Controller
+    public class UserRegisterFormController : Controller
     {
         readonly IUserRegisterFormService UserRegisterFormService = null;
         readonly ISiteSettingService SiteSettingService = null;
@@ -104,9 +104,9 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
 
         [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست نقش", Icon = "fa-list-alt")]

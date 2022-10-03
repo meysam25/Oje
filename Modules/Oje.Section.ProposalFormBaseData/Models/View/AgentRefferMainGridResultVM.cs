@@ -17,5 +17,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.View
         public string fullname { get; set; }
         [Display(Name = "همراه")]
         public string mobile { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

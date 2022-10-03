@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("PageSliders")]
-    public class PageSlider
+    public class PageSlider: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }
@@ -17,5 +18,7 @@ namespace Oje.Section.WebMain.Models.DB
         public string ImageUrl { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("PageSliders")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

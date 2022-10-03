@@ -43,6 +43,8 @@ namespace Oje.Section.RegisterForm.Models.DB
         [ForeignKey("RefferUserId"), InverseProperty("RefferUserFilledRegisterForms")]
         public User RefferUser { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserFilledRegisterForms")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("UserFilledRegisterForm")]
         public List<UserFilledRegisterFormJson> UserFilledRegisterFormJsons { get; set; }

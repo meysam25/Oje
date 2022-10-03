@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.RegisterForm.Models.View
 {
@@ -23,5 +18,7 @@ namespace Oje.Section.RegisterForm.Models.View
         public string userfullname { get; set; }
         [Display(Name = "مسیر")]
         public string url { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

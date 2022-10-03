@@ -11,6 +11,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InquiryBaseData.Services.EContext;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
@@ -19,11 +21,19 @@ namespace Oje.Section.InquiryBaseData.Services
         readonly InquiryBaseDataDBContext db = null;
         readonly IUserService UserService = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
-        public InquiryCompanyLimitService(InquiryBaseDataDBContext db, AccountService.Interfaces.ISiteSettingService SiteSettingService, IUserService UserService)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public InquiryCompanyLimitService
+            (
+                InquiryBaseDataDBContext db, 
+                AccountService.Interfaces.ISiteSettingService SiteSettingService, 
+                IUserService UserService,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
             this.UserService = UserService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateInquiryCompanyLimitVM input)
@@ -75,7 +85,12 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var foundItem = db.InquiryCompanyLimits.Include(t => t.InquiryCompanyLimitCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InquiryCompanyLimits
+                .Include(t => t.InquiryCompanyLimitCompanies)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -94,7 +109,8 @@ namespace Oje.Section.InquiryBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.InquiryCompanyLimits
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -119,7 +135,8 @@ namespace Oje.Section.InquiryBaseData.Services
 
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var quaryResult = db.InquiryCompanyLimits.Where(t => t.SiteSettingId == siteSettingId);
+            var quaryResult = db.InquiryCompanyLimits
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.type != null)
                 quaryResult = quaryResult.Where(t => t.Type == searchInput.type);
@@ -132,7 +149,8 @@ namespace Oje.Section.InquiryBaseData.Services
                 var createDate = searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
                 quaryResult = quaryResult.Where(t => t.CreateDate.Year == createDate.Year && t.CreateDate.Month == createDate.Month && t.CreateDate.Day == createDate.Day);
             }
-
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quaryResult = quaryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
             int row = searchInput.skip;
 
             return new GridResultVM<InquiryCompanyLimitMainGridResult>
@@ -145,7 +163,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     comId = t.InquiryCompanyLimitCompanies.Select(tt => tt.Company.Title).ToList(),
                     createDate = t.CreateDate,
                     createUser = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
-                    type = t.Type
+                    type = t.Type,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InquiryCompanyLimitMainGridResult
@@ -155,7 +174,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     comId = string.Join(",", t.comId),
                     createDate = t.createDate.ToFaDate(),
                     createUser = t.createUser,
-                    type = t.type.GetAttribute<DisplayAttribute>()?.Name
+                    type = t.type.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -167,7 +187,12 @@ namespace Oje.Section.InquiryBaseData.Services
             var loginUserId = UserService.GetLoginUser()?.UserId;
             createValidation(input, siteSettingId, loginUserId);
 
-            var editeItem = db.InquiryCompanyLimits.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).Include(t => t.InquiryCompanyLimitCompanies).FirstOrDefault();
+            var editeItem = db.InquiryCompanyLimits
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Include(t => t.InquiryCompanyLimitCompanies)
+                .FirstOrDefault();
+
             if (editeItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

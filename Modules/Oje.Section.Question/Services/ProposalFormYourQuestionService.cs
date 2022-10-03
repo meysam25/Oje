@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -14,14 +15,18 @@ namespace Oje.Section.Question.Services
     {
         readonly QuestionDBContext db = null;
         readonly IProposalFormService ProposalFormService;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public ProposalFormYourQuestionService
             (
                 QuestionDBContext db,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.ProposalFormService = ProposalFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(ProposalFormYourQuestionCreateUpdateVM input, int? siteSettingId)
@@ -44,7 +49,11 @@ namespace Oje.Section.Question.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.ProposalFormYourQuestions.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.ProposalFormYourQuestions
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -57,7 +66,8 @@ namespace Oje.Section.Question.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.ProposalFormYourQuestions
-               .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.Id == id)
                .Select(t => new
                {
                    id = t.Id,
@@ -76,7 +86,7 @@ namespace Oje.Section.Question.Services
             if (searchInput == null)
                 searchInput = new ProposalFormYourQuestionMainGrid();
 
-            var qureResult = db.ProposalFormYourQuestions.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.ProposalFormYourQuestions.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
@@ -84,6 +94,8 @@ namespace Oje.Section.Question.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (!string.IsNullOrEmpty(searchInput.form))
                 qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.form));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -99,7 +111,8 @@ namespace Oje.Section.Question.Services
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
-                    form = t.ProposalForm.Title
+                    form = t.ProposalForm.Title,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ProposalFormYourQuestionMainGridResultVM
@@ -108,7 +121,8 @@ namespace Oje.Section.Question.Services
                     id = t.id,
                     title = t.title,
                     form = t.form,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -118,7 +132,11 @@ namespace Oje.Section.Question.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.ProposalFormYourQuestions.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.ProposalFormYourQuestions
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

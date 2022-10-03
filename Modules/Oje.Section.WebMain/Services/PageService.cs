@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -24,6 +25,7 @@ namespace Oje.Section.WebMain.Services
         readonly IPageLeftRightDesignService PageLeftRightDesignService = null;
         readonly IPageManifestService PageManifestService = null;
         readonly IPageSliderService PageSliderService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public PageService
             (
@@ -31,7 +33,8 @@ namespace Oje.Section.WebMain.Services
                 IUploadedFileService UploadedFileService,
                 IPageLeftRightDesignService PageLeftRightDesignService,
                 IPageManifestService PageManifestService,
-                IPageSliderService PageSliderService
+                IPageSliderService PageSliderService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -39,6 +42,7 @@ namespace Oje.Section.WebMain.Services
             this.PageLeftRightDesignService = PageLeftRightDesignService;
             this.PageManifestService = PageManifestService;
             this.PageSliderService = PageSliderService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(PageCreateUpdateVM input, int? siteSettingId)
@@ -113,7 +117,11 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var fopundItem = db.Pages.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var fopundItem = db.Pages
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (fopundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -127,7 +135,8 @@ namespace Oje.Section.WebMain.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.Pages
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -153,12 +162,15 @@ namespace Oje.Section.WebMain.Services
             if (searchInput == null)
                 searchInput = new PageMainGrid();
 
-            var qureResult = db.Pages.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.Pages
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (!string.IsNullOrEmpty(searchInput.summery))
                 qureResult = qureResult.Where(t => t.Summery.Contains(searchInput.summery));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -173,7 +185,8 @@ namespace Oje.Section.WebMain.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    summery = t.Summery
+                    summery = t.Summery,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new PageMainGridResultVM
@@ -182,7 +195,8 @@ namespace Oje.Section.WebMain.Services
                     id = t.id,
                     title = t.title,
                     summery = t.summery,
-                    url = GenerateUrlForPage(t.title, t.id)
+                    url = GenerateUrlForPage(t.title, t.id),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -192,7 +206,11 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var fopundItem = db.Pages.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var fopundItem = db.Pages
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (fopundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -225,7 +243,7 @@ namespace Oje.Section.WebMain.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Pages.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.Pages.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

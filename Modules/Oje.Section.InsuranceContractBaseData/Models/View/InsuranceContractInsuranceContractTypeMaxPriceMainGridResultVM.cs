@@ -1,9 +1,8 @@
-﻿using Oje.Infrastructure.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.View
 {
-    public class InsuranceContractInsuranceContractTypeMaxPriceMainGridResultVM : GlobalGrid
+    public class InsuranceContractInsuranceContractTypeMaxPriceMainGridResultVM 
     {
         [Display(Name = "شناسه")]
         public string id { get; set; }
@@ -15,5 +14,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
         public string cid { get; set; }
         [Display(Name = "مبلغ")]
         public string price { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

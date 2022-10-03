@@ -18,5 +18,7 @@ namespace Oje.Section.Question.Models.DB
         public string Answer { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserRegisterFormYourQuestions")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

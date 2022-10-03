@@ -1,16 +1,13 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
+using Oje.Infrastructure.Interfac;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
     [Table("ExternalNotificationServiceConfigs")]
-    public class ExternalNotificationServiceConfig
+    public class ExternalNotificationServiceConfig: IEntityWithSiteSettingId
     {
         public ExternalNotificationServiceConfig()
         {
@@ -29,6 +26,8 @@ namespace Oje.AccountService.Models.DB
         public bool IsActive { get; set; }
         public ExternalNotificationServiceConfigType Type { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("ExternalNotificationServiceConfigs")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("ExternalNotificationServiceConfig")]
         public List<ExternalNotificationServicePushSubscription> ExternalNotificationServicePushSubscriptions { get; set; }

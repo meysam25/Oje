@@ -22,5 +22,7 @@ namespace Oje.Section.WebMain.Models.DB
         public int Order { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("TopMenus")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

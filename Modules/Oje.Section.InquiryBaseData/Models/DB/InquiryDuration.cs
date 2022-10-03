@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("InquiryDurations")]
-    public class InquiryDuration
+    public class InquiryDuration: IEntityWithSiteSettingId
     {
         public InquiryDuration()
         {
@@ -29,6 +26,8 @@ namespace Oje.Section.InquiryBaseData.Models.DB
         public int Day { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InquiryDurations")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InquiryDuration")]
         public List<InquiryDurationCompany> InquiryDurationCompanies { get; set; }

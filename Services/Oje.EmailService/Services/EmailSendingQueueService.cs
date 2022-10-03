@@ -15,6 +15,7 @@ namespace Oje.EmailService.Services
         readonly IHttpContextAccessor HttpContextAccessor = null;
         readonly IEmailSenderService EmailSenderService = null;
         readonly IEmailSendingQueueErrorService EmailSendingQueueErrorService = null;
+
         public EmailSendingQueueService(
                 EmailServiceDBContext db,
                 IHttpContextAccessor HttpContextAccessor,
@@ -47,7 +48,8 @@ namespace Oje.EmailService.Services
             if (searchInput == null)
                 searchInput = new();
 
-            var qureResult = db.EmailSendingQueues.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.EmailSendingQueues
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.type != null)
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
@@ -72,6 +74,8 @@ namespace Oje.EmailService.Services
                 var ipSections = searchInput.ip.GetIpSections();
                 qureResult = qureResult.Where(t => t.Ip1 == ipSections.Ip1 && t.Ip2 == ipSections.Ip2 && t.Ip3 == ipSections.Ip3 && t.Ip4 == ipSections.Ip4);
             }
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             var row = searchInput.skip;
 
@@ -95,7 +99,8 @@ namespace Oje.EmailService.Services
                         ip2 = t.Ip2,
                         ip3 = t.Ip3,
                         ip4 = t.Ip4,
-                        lastError = t.EmailSendingQueueErrors.OrderByDescending(tt => tt.CreateDate).Select(tt => tt.Description).FirstOrDefault()
+                        lastError = t.EmailSendingQueueErrors.OrderByDescending(tt => tt.CreateDate).Select(tt => tt.Description).FirstOrDefault(),
+                        siteTitleMN2 = t.SiteSetting.Title
                     })
                     .ToList()
                     .Select(t => new
@@ -109,7 +114,8 @@ namespace Oje.EmailService.Services
                         t.countTry,
                         isSuccess = t.isSuccess == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                         ip = t.ip1 + "." + t.ip2 + "." + t.ip3 + "." + t.ip4,
-                        t.lastError
+                        t.lastError,
+                        siteTitleMN2 = t.siteTitleMN2
                     })
                     .ToList()
             };

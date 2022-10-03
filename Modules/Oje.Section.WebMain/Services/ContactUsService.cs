@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -7,19 +8,23 @@ using Oje.Section.WebMain.Models.DB;
 using Oje.Section.WebMain.Models.View;
 using Oje.Section.WebMain.Services.EContext;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Services
 {
     public class ContactUsService : IContactUsService
     {
         readonly WebMainDBContext db = null;
-        public ContactUsService(WebMainDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public ContactUsService
+            (
+                WebMainDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(int? siteSettingId, IpSections ipSections, ContactUsWebVM input)
@@ -55,7 +60,14 @@ namespace Oje.Section.WebMain.Services
                     DateTime? cd = allParts[4].ToDateTimeFromTick();
                     if (cd != null)
                     {
-                        return new { description = db.ContactUses.Where(t => t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.CreateDate == cd && t.SiteSettingId == siteSettingId).Select(t => t.Description).FirstOrDefault() };
+                        return new 
+                        { description = 
+                            db.ContactUses
+                            .Where(t => t.Ip1 == ip1 && t.Ip2 == ip2 && t.Ip3 == ip3 && t.Ip4 == ip4 && t.CreateDate == cd)
+                            .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                            .Select(t => t.Description)
+                            .FirstOrDefault() 
+                        };
                     }
                 }
             }
@@ -68,7 +80,11 @@ namespace Oje.Section.WebMain.Services
             if (searchInput == null)
                 searchInput = new UserContactUsMainGrid();
 
-            var qureResult = db.ContactUses.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.ContactUses
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -88,7 +104,8 @@ namespace Oje.Section.WebMain.Services
                     t.CreateDate,
                     fullname = t.Fullname,
                     tell = t.Tell,
-                    email = t.Email
+                    email = t.Email,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserContactUsMainGridResultVM
@@ -98,7 +115,8 @@ namespace Oje.Section.WebMain.Services
                     email = t.email,
                     fullname = t.fullname,
                     row = ++row,
-                    tell = t.tell
+                    tell = t.tell,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

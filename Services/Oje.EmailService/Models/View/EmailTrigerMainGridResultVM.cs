@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.EmailService.Models.View
 {
@@ -19,5 +14,7 @@ namespace Oje.EmailService.Models.View
         public string roleName { get; set; }
         [Display(Name = "کاربر")]
         public string userName { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

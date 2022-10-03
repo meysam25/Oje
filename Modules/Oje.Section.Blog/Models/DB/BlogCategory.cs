@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Models.DB
 {
     [Table("BlogCategories")]
-    public class BlogCategory
+    public class BlogCategory: IEntityWithSiteSettingId
     {
         public BlogCategory()
         {
@@ -23,6 +20,8 @@ namespace Oje.Section.Blog.Models.DB
         public string Title { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("BlogCategories")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("BlogCategory")]
         public List<Blog> Blogs { get; set; }

@@ -80,7 +80,7 @@ namespace Oje.Section.SalesNetworkBaseData.Areas.SalesNetworkBaseData.Controller
             return Json(SalesNetworkService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شبکه فروش", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شبکه فروش", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] SalesNetworkMainGrid searchInput)
         {
@@ -101,21 +101,21 @@ namespace Oje.Section.SalesNetworkBaseData.Areas.SalesNetworkBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(ProposalFormService.GetSelect2List(searchInput));
         }
 
-        [AreaConfig(Title = "مشاهده لیست بازاریاب", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست بازاریاب", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetMarketerList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(UserService.GetSelect2ListByType(searchInput, RoleType.Marketer));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {

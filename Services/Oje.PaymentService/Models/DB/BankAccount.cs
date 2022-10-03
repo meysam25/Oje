@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.PaymentService.Models.DB
 {
     [Table("BankAccounts")]
-    public class BankAccount
+    public class BankAccount: IEntityWithSiteSettingId
     {
         public BankAccount()
         {
@@ -31,6 +32,8 @@ namespace Oje.PaymentService.Models.DB
         public bool IsForPayment { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("BankAccounts")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("BankAccount")]
         public List<BankAccountSizpay> BankAccountSizpaies { get; set; }

@@ -20,6 +20,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         readonly ICashPayDiscountService CashPayDiscountService = null;
         readonly ICompanyService CompanyService = null;
         readonly IProposalFormService ProposalFormService = null;
+
         public CashPayDiscountController(
                 ICashPayDiscountService CashPayDiscountService,
                 ICompanyService CompanyService,

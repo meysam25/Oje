@@ -20,6 +20,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         readonly IInquiryDurationService InquiryDurationService = null;
         readonly ICompanyService CompanyService = null;
         readonly IProposalFormService ProposalFormService = null;
+
         public InquiryDurationController(
                 IInquiryDurationService InquiryDurationService,
                 ICompanyService CompanyService,

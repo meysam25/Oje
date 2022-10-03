@@ -14,5 +14,7 @@ namespace Oje.Section.RegisterForm.Models.View
         public string type { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace Oje.Security.Services.EContext
         public DbSet<DebugInfo> DebugInfos { get; set; }
         public DbSet<GoogleBackupArchiveLog> GoogleBackupArchiveLogs { get; set; }
         public DbSet<GoogleBackupArchive> GoogleBackupArchives { get; set; }
-
+        public DbSet<SiteSetting> SiteSettings { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

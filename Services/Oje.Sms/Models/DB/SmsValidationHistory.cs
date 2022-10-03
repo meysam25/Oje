@@ -20,5 +20,7 @@ namespace Oje.Sms.Models.DB
         public bool? IsUsed { get; set; }
         public bool? PreUsed { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("SmsValidationHistories")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

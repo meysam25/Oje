@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -86,6 +87,8 @@ namespace Oje.Sms.Services
                 quiryResult = quiryResult.Where(t => t.InvalidCount == searchInput.invalidCount.Value);
             if (searchInput.isUsed != null)
                 quiryResult = quiryResult.Where(t => t.IsUsed == searchInput.isUsed);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             switch (searchInput.sortField)
             {
@@ -148,7 +151,8 @@ namespace Oje.Sms.Services
                     t.Type,
                     t.MobileNumber,
                     t.InvalidCount,
-                    t.IsUsed
+                    t.IsUsed,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new SmsValidationHistoryMainGridResultVM
@@ -160,7 +164,8 @@ namespace Oje.Sms.Services
                     type = t.Type.GetEnumDisplayName(),
                     mobile = t.MobileNumber.ToString(),
                     invalidCount = t.InvalidCount + "",
-                    isUsed = t.IsUsed == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName()
+                    isUsed = t.IsUsed == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

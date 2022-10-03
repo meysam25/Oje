@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Security.Models.DB
 {
     [Table("BlockAutoIps")]
-    public class BlockAutoIp
+    public class BlockAutoIp: IEntityWithSiteSettingId
     {
         public byte Ip1 { get; set; }
         public byte Ip2 { get; set; }
@@ -24,5 +25,7 @@ namespace Oje.Security.Models.DB
         [Required, MaxLength(50)]
         public string RequestId { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("BlockAutoIps")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

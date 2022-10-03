@@ -4,7 +4,7 @@ using Oje.Infrastructure.Models;
 
 namespace Oje.Section.RegisterForm.Models.View
 {
-    public class UserRegisterFormPrintDescrptionCreateUpdateVM
+    public class UserRegisterFormPrintDescrptionCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public int? pfid { get; set; }

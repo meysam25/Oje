@@ -1,6 +1,8 @@
-﻿namespace Oje.Section.Question.Models.View
+﻿using Oje.Infrastructure.Models;
+
+namespace Oje.Section.Question.Models.View
 {
-    public class YourQuestionCreateUpdateVM
+    public class YourQuestionCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string title { get; set; }

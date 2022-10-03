@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractUsers")]
-    public class InsuranceContractUser : EntityWithCreateUser<User, long>
+    public class InsuranceContractUser : EntityWithCreateUser<User, long>, IEntityWithSiteSettingId
     {
         public InsuranceContractUser()
         {
@@ -55,8 +55,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public DateTime? UpdateDate { get; set; }
         public bool HasConfilictWithUser { get; set; }
         public Custody? Custody { get; set; }
-        public int SiteSettingId { get; set; }
-
         [Required, MaxLength(50)]
         public string FirstName { get; set; }
         [Required, MaxLength(50)]
@@ -80,6 +78,9 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         [MaxLength(14)]
         public string Mobile { get; set; }
         public Gender? Gender { get; set; }
+        public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractUsers")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InsuranceContractUser")]
         public List<InsuranceContractProposalFilledFormUser> InsuranceContractProposalFilledFormUsers { get; set; }

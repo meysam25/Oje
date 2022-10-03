@@ -147,6 +147,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
     });
     $(selector).find('select[name="' + key + '"]').each(function () {
         $(this)[0].bindValue = value;
+        $(this)[0].startBinding = true;
         $(this).val(value + '');
         if (!$(this).val()) {
             var foundItemByTextValue = '';
@@ -171,6 +172,7 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
                     $(this).change();
             }.bind(this), 100);
         }
+        $(this)[0].startBinding = false;
     });
     $(selector).find('img[data-name="' + key + '"]').each(function () {
         $(this).attr('src', value);
@@ -339,6 +341,14 @@ function addCtrlsToUrl(curObj, exteraParameterIds, url) {
         }
     }
     return url;
+}
+
+function refreshDropdown(ddId) {
+    var quirySelect = $('#' + ddId);
+    if (quirySelect.length > 0) {
+        quirySelect[0].resData = null;
+        initDropdown(quirySelect);
+    }
 }
 
 function initDropdown(curObj, dontUseCache, parentValue) {

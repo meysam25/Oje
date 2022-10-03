@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -87,7 +88,8 @@ namespace Oje.Security.Services
                 quiryResult = quiryResult.Where(t => !db.Errors.Any(tt => tt.RequestId == t.RequestId));
             else if (searchInput.isSuccess == false)
                 quiryResult = quiryResult.Where(t => db.Errors.Any(tt => tt.RequestId == t.RequestId));
-
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             var tempDate = Convert.ToDateTime("1900/01/01");
 
@@ -172,7 +174,8 @@ namespace Oje.Security.Services
                     cDate = t.CreateDate,
                     endCreateDate = db.UserAdminLogs.Any(tt => tt.RequestId == t.RequestId && tt.IsStart == false) ? db.UserAdminLogs.Where(tt => tt.RequestId == t.RequestId && tt.IsStart == false).Select(tt => tt.CreateDate).FirstOrDefault() : tempDate,
                     hasError = db.Errors.Where(tt => tt.RequestId == t.RequestId).Any(),
-                    rid = t.RequestId
+                    rid = t.RequestId,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserAdminLogMainGridResultVM
@@ -185,7 +188,8 @@ namespace Oje.Security.Services
                     createDate = t.cDate.ToFaDate() + " " + t.cDate.ToString("HH:mm"),
                     duration = t.endCreateDate != tempDate ? ((t.endCreateDate - t.cDate).TotalMilliseconds + " ms") : "",
                     isSuccess = t.hasError == true ? BMessages.No.GetEnumDisplayName() : BMessages.Yes.GetEnumDisplayName(),
-                    rid = t.rid
+                    rid = t.rid,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

@@ -18,5 +18,7 @@ namespace Oje.AccountService.Models.DB
         [ForeignKey("UserId"), InverseProperty("UserNotificationTrigers")]
         public User User { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserNotificationTrigers")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

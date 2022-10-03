@@ -23,5 +23,7 @@ namespace Oje.Security.Models.DB
         public string Message { get; set; }
         public bool IsSuccess { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserLoginLogoutLogs")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

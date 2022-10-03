@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFormReminders")]
-    public class ProposalFormReminder
+    public class ProposalFormReminder: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }
@@ -31,5 +32,7 @@ namespace Oje.ProposalFormService.Models.DB
         [ForeignKey("LoginUserId"), InverseProperty("ProposalFormReminders")]
         public User LoginUser { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("ProposalFormReminders")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

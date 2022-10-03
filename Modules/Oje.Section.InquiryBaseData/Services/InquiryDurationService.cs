@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InquiryBaseData.Services.EContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
@@ -17,15 +18,19 @@ namespace Oje.Section.InquiryBaseData.Services
         readonly InquiryBaseDataDBContext db = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public InquiryDurationService(
                 InquiryBaseDataDBContext db,
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
             this.ProposalFormService = ProposalFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateInquiryDurationVM input)
@@ -85,7 +90,12 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var foundItem = db.InquiryDurations.Include(t => t.InquiryDurationCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InquiryDurations
+                .Include(t => t.InquiryDurationCompanies)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -103,7 +113,8 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             return db.InquiryDurations
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new CreateUpdateInquiryDurationVM
                 { 
                     cIds = t.InquiryDurationCompanies.Select(tt => tt.CompanyId).ToList(),
@@ -124,7 +135,8 @@ namespace Oje.Section.InquiryBaseData.Services
             if (searchInput == null)
                 searchInput = new InquiryDurationMainGrid();
 
-            var qureResult = db.InquiryDurations.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.InquiryDurations
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.company.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.InquiryDurationCompanies.Any(tt => tt.CompanyId == searchInput.company));
@@ -138,6 +150,8 @@ namespace Oje.Section.InquiryBaseData.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.day.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.Day == searchInput.day);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             var row = searchInput.skip;
 
@@ -153,7 +167,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     title = t.Title,
                     percent = t.Percent,
                     isActive = t.IsActive,
-                    day = t.Day
+                    day = t.Day,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InquiryDurationMainGridResultVM 
@@ -165,7 +180,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     percent = t.percent,
                     ppfTitle = t.ppfTitle,
                     title = t.title,
-                    day = t.day
+                    day = t.day,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -176,7 +192,12 @@ namespace Oje.Section.InquiryBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createValidation(input, siteSettingId);
 
-            var foundItem = db.InquiryDurations.Include(t => t.InquiryDurationCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InquiryDurations
+                .Include(t => t.InquiryDurationCompanies)
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

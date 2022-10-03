@@ -1,16 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.EmailService.Models.DB
 {
     [Table("EmailSendingQueues")]
-    public class EmailSendingQueue
+    public class EmailSendingQueue: IEntityWithSiteSettingId
     {
         public EmailSendingQueue()
         {
@@ -42,6 +38,8 @@ namespace Oje.EmailService.Models.DB
         public byte Ip3 { get; set; }
         public byte Ip4 { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("EmailSendingQueues")]
+        public SiteSetting SiteSetting { get; set; }
 
 
         [InverseProperty("EmailSendingQueue")]

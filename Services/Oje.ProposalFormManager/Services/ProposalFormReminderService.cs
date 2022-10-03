@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -20,17 +21,20 @@ namespace Oje.ProposalFormService.Services
         readonly ProposalFormDBContext db = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public ProposalFormReminderService
             (
                 ProposalFormDBContext db,
                 IUploadedFileService UploadedFileService,
-                IUserNotifierService UserNotifierService
+                IUserNotifierService UserNotifierService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
             this.UserNotifierService = UserNotifierService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(ReminderCreateVM input, int? siteSettingId, IpSections ipSections, long? loginUserId)
@@ -78,7 +82,10 @@ namespace Oje.ProposalFormService.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.ProposalFormReminders.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.ProposalFormReminders
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -92,7 +99,8 @@ namespace Oje.ProposalFormService.Services
         {
             return db.ProposalFormReminders
                 .OrderByDescending(t => t.CreateDate)
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     t.CreateDate,
@@ -136,7 +144,8 @@ namespace Oje.ProposalFormService.Services
             var curDate = DateTime.Now;
             var feacherDT = curDate.AddYears(300);
 
-            var qureResult = db.ProposalFormReminders.OrderBy(t => t.TargetDate >= curDate ? t.TargetDate : feacherDT).Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.ProposalFormReminders.OrderBy(t => t.TargetDate >= curDate ? t.TargetDate : feacherDT)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.ppfTitle))
                 qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.ppfTitle));
@@ -147,6 +156,8 @@ namespace Oje.ProposalFormService.Services
                 var tdOb = searchInput.td.ToEnDate().Value;
                 qureResult = qureResult.Where(t => t.TargetDate.Year == tdOb.Year && t.TargetDate.Month == tdOb.Month && t.TargetDate.Day == tdOb.Day);
             }
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -166,7 +177,8 @@ namespace Oje.ProposalFormService.Services
                     ppfTitle = t.ProposalForm.Title,
                     mobile = t.Mobile,
                     td = t.TargetDate,
-                    t.Id
+                    t.Id,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ProposalFormReminderMainGridResultVM
@@ -175,7 +187,8 @@ namespace Oje.ProposalFormService.Services
                     id = t.Id,
                     mobile = "0" + t.mobile,
                     ppfTitle = t.ppfTitle,
-                    td = t.td.ToFaDate()
+                    td = t.td.ToFaDate(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
 
@@ -186,7 +199,11 @@ namespace Oje.ProposalFormService.Services
         {
             CreateValidation(input, siteSettingId, null, true);
 
-            var foundItem = db.ProposalFormReminders.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.ProposalFormReminders
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -195,7 +212,6 @@ namespace Oje.ProposalFormService.Services
             foundItem.ProposalFormId = input.fid.ToIntReturnZiro();
             foundItem.TargetDate = input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.LoginUserId = userId;
-
 
             if (input.nationalCard != null && input.nationalCard.Length > 0)
                 foundItem.NationalCardImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.nationalCard, userId, siteSettingId, null, ".png,.jpg,.jpeg", true);

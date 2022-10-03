@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -6,11 +7,8 @@ using Oje.Section.ProposalFormBaseData.Interfaces;
 using Oje.Section.ProposalFormBaseData.Models.DB;
 using Oje.Section.ProposalFormBaseData.Models.View;
 using Oje.Section.ProposalFormBaseData.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
@@ -18,13 +16,17 @@ namespace Oje.Section.ProposalFormBaseData.Services
     {
         readonly ProposalFormBaseDataDBContext db = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public PaymentMethodService(
             ProposalFormBaseDataDBContext db,
-            AccountService.Interfaces.ISiteSettingService SiteSettingService
+            AccountService.Interfaces.ISiteSettingService SiteSettingService,
+            IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdatePaymentMethodVM input)
@@ -101,7 +103,11 @@ namespace Oje.Section.ProposalFormBaseData.Services
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var deleteItem = db.PaymentMethods.Include(t => t.PaymentMethodCompanies).Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var deleteItem = db.PaymentMethods
+                .Include(t => t.PaymentMethodCompanies)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (deleteItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -119,7 +125,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.PaymentMethods
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id )
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .OrderByDescending(t => t.Id)
                 .Select(t => new
                 {
@@ -162,7 +169,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
             if (searchInput == null)
                 searchInput = new PaymentMethodMainGrid();
 
-            var qureResult = db.PaymentMethods.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.PaymentMethods
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.form))
                 qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.form));
@@ -176,6 +184,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.isDefault != null)
                 qureResult = qureResult.Where(t => t.IsDefault == searchInput.isDefault);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -191,7 +201,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     comId = t.PaymentMethodCompanies.Select(tt => tt.Company.Title).ToList(),
                     type = t.Type,
                     isActive = t.IsActive,
-                    isDefault = t.IsDefault
+                    isDefault = t.IsDefault,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new PaymentMethodMainGridResult
@@ -203,7 +214,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     comId = string.Join(",", t.comId),
                     type = t.type.GetEnumDisplayName(),
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
-                    isDefault = t.isDefault == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName()
+                    isDefault = t.isDefault == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -214,7 +226,15 @@ namespace Oje.Section.ProposalFormBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
-            PaymentMethod editItem = db.PaymentMethods.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).Include(t => t.PaymentMethodCompanies).FirstOrDefault();
+            PaymentMethod editItem = db.PaymentMethods
+                .Where(t => t.Id == input.id)
+                .Include(t => t.PaymentMethodCompanies)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
+            if (editItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
             editItem.IsActive = input.isActive.ToBooleanReturnFalse();
             editItem.IsChek = input.isCheck.ToBooleanReturnFalse();
             editItem.IsDefault = input.isDefault.ToBooleanReturnFalse();

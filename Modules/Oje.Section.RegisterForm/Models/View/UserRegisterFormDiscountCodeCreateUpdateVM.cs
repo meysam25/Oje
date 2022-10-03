@@ -1,6 +1,8 @@
-﻿namespace Oje.Section.RegisterForm.Models.View
+﻿using Oje.Infrastructure.Models;
+
+namespace Oje.Section.RegisterForm.Models.View
 {
-    public class UserRegisterFormDiscountCodeCreateUpdateVM
+    public class UserRegisterFormDiscountCodeCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public int? formId { get; set; }

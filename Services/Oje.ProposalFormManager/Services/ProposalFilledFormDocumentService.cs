@@ -24,12 +24,15 @@ namespace Oje.ProposalFormService.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public ProposalFilledFormDocumentService(
             ProposalFormDBContext db,
             IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
             IUploadedFileService UploadedFileService,
             IProposalFilledFormUseService ProposalFilledFormUseService,
-            IUserNotifierService UserNotifierService
+            IUserNotifierService UserNotifierService,
+            IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -37,13 +40,14 @@ namespace Oje.ProposalFormService.Services
             this.UploadedFileService = UploadedFileService;
             this.ProposalFilledFormUseService = ProposalFilledFormUseService;
             this.UserNotifierService = UserNotifierService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(ProposalFilledFormDocumentCreateUpdateVM input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             createUpdateValidation(input, siteSettingId, userId);
 
-            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status).Where(t => t.Id == input.pKey).Select(t => t.Id).FirstOrDefault();
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites).Where(t => t.Id == input.pKey).Select(t => t.Id).FirstOrDefault();
             if (foundId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -80,7 +84,7 @@ namespace Oje.ProposalFormService.Services
         {
             createUpdateValidation(input, siteSettingId, userId);
 
-            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status).Where(t => t.Id == input.pKey).Select(t => t.Id).FirstOrDefault();
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites).Where(t => t.Id == input.pKey).Select(t => t.Id).FirstOrDefault();
             if (foundId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -166,7 +170,7 @@ namespace Oje.ProposalFormService.Services
 
         public ApiResult Delete(long? id, long? proposalFilledFormId, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status).Where(t => t.Id == proposalFilledFormId).Select(t => t.Id).FirstOrDefault();
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites).Where(t => t.Id == proposalFilledFormId).Select(t => t.Id).FirstOrDefault();
             if (foundId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -184,7 +188,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetBy(long? id, long? proposalFilledFormId, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status).Where(t => t.Id == proposalFilledFormId).Select(t => t.Id).FirstOrDefault();
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites).Where(t => t.Id == proposalFilledFormId).Select(t => t.Id).FirstOrDefault();
             if (foundId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -228,7 +232,7 @@ namespace Oje.ProposalFormService.Services
             if (searchInput == null)
                 searchInput = new ProposalFilledFormDocumentMainGrid();
 
-            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId)
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == searchInput.pKey)
                 .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status) || t.Status == status))
                 .Select(t => t.Id)

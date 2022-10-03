@@ -24,5 +24,7 @@ namespace Oje.Section.InquiryBaseData.Models.View
         public string toDate { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

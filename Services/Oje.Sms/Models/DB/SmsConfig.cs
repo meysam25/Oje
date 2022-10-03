@@ -1,16 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Sms.Models.DB
 {
     [Table("SmsConfigs")]
-    public class SmsConfig
+    public class SmsConfig: IEntityWithSiteSettingId
     {
         public SmsConfig()
         {
@@ -29,6 +25,8 @@ namespace Oje.Sms.Models.DB
         public string PhoneNumber { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("SmsConfigs")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("SmsConfig")]
         public List<SmsSendingQueueError> SmsSendingQueueErrors { get; set; }

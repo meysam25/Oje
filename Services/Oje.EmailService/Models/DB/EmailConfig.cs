@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.EmailService.Models.DB
 {
     [Table("EmailConfigs")]
-    public class EmailConfig
+    public class EmailConfig: IEntityWithSiteSettingId
     {
         public EmailConfig()
         {
@@ -32,6 +28,8 @@ namespace Oje.EmailService.Models.DB
         public int Timeout { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("EmailConfigs")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("EmailConfig")]
         public List<EmailSendingQueueError> EmailSendingQueueErrors { get; set; }

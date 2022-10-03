@@ -79,7 +79,7 @@ namespace Oje.Section.WebMain.Areas.Controllers
             return Json(PageSliderService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست اسلاید صفحه ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست اسلاید صفحه ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] PageSliderMainGrid searchInput)
         {
@@ -100,7 +100,7 @@ namespace Oje.Section.WebMain.Areas.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست صفحه ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست صفحه ها", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetPageLightList([FromForm] Select2SearchVM searchInput)
         {

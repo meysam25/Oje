@@ -15,7 +15,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "ثبت نام کاربر", Icon = "fa-users", Title = "توضیحات پرینت")]
     [CustomeAuthorizeFilter]
-    public class UserRegisterFormPrintDescrptionController: Controller
+    public class UserRegisterFormPrintDescrptionController : Controller
     {
         readonly IUserRegisterFormService UserRegisterFormService = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
@@ -100,9 +100,9 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpPost]
-        public ActionResult GetProposalFormList()
+        public ActionResult GetProposalFormList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserRegisterFormService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserRegisterFormService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

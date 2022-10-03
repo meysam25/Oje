@@ -18,5 +18,7 @@ namespace Oje.Section.CarThirdBaseData.Models.View
         public string ctId { get; set; }
         [Display(Name = "شرکت")]
         public string comId { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

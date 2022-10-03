@@ -3,14 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("GlobalDiscounts")]
-    public class GlobalDiscount : EntityWithCreateUser<User, long>
+    public class GlobalDiscount : EntityWithCreateUser<User, long>, IEntityWithSiteSettingId
     {
         public GlobalDiscount()
         {
@@ -48,6 +45,8 @@ namespace Oje.Section.InquiryBaseData.Models.DB
         public DateTime? UpdateDate { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("GlobalDiscounts")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("GlobalDiscount")]
         public List<GlobalDiscountCompany> GlobalDiscountCompanies { get; set; }

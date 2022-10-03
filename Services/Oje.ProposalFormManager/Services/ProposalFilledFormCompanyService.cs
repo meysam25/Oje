@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -13,8 +14,6 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -26,13 +25,16 @@ namespace Oje.ProposalFormService.Services
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormUseService ProposalFilledFormUseService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public ProposalFilledFormCompanyService(
             ProposalFormDBContext db,
             IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
             IUserService UserService,
             IProposalFilledFormUseService ProposalFilledFormUseService,
             IUploadedFileService UploadedFileService,
-            IUserNotifierService UserNotifierService
+            IUserNotifierService UserNotifierService,
+            IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -41,6 +43,7 @@ namespace Oje.ProposalFormService.Services
             this.UploadedFileService = UploadedFileService;
             this.ProposalFilledFormUseService = ProposalFilledFormUseService;
             this.UserNotifierService = UserNotifierService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public void Create(long inquiryId, int? siteSettingId, long proposalFilledFormId, long proposalFilledFormPrice, int companyId, bool isSelected, long? loginUserId)
@@ -87,7 +90,7 @@ namespace Oje.ProposalFormService.Services
         {
             createPriceCompanyValidation(input, siteSettingId, userId);
             var foundPPFId = ProposalFilledFormAdminBaseQueryService
-               .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+               .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                .Where(t => t.Id == input.pKey).Select(t => new { t.GlobalInqueryId, t.Id }).FirstOrDefault();
             if (foundPPFId == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -168,7 +171,7 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var foundItem =
                 ProposalFilledFormAdminBaseQueryService
-                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == ppfId)
                 .SelectMany(t => t.ProposalFilledFormCompanies)
                 .Where(t => t.CompanyId == cId)
@@ -190,7 +193,7 @@ namespace Oje.ProposalFormService.Services
                 searchInput = new ProposalFilledFormCompanyPriceMainGrid();
 
             var qureResult = ProposalFilledFormAdminBaseQueryService
-                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == searchInput.pKey)
                 .SelectMany(t => t.ProposalFilledFormCompanies);
 
@@ -265,7 +268,7 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var foundItem =
                 ProposalFilledFormAdminBaseQueryService
-                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == ppfId)
                 .SelectMany(t => t.ProposalFilledFormCompanies)
                 .Where(t => t.CompanyId == cId)
@@ -293,7 +296,7 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             var foundPPFId = ProposalFilledFormAdminBaseQueryService
-               .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+               .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                .Where(t => t.Id == ppfId).Select(t => new { t.GlobalInqueryId, t.Id }).FirstOrDefault();
             if (foundPPFId == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -328,7 +331,7 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var foundItem =
                 ProposalFilledFormAdminBaseQueryService
-                .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == ppfId)
                 .Include(t => t.ProposalFilledFormCompanies)
                 .FirstOrDefault();

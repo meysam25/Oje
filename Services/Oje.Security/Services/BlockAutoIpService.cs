@@ -111,7 +111,9 @@ namespace Oje.Security.Services
 
             var tempDate = Convert.ToDateTime("2000/01/01");
 
-            var quiryResult = db.BlockAutoIps.Where(t => t.SiteSettingId == siteSettingId && t.BlockAutoIpAction == BlockAutoIpAction.BeforeExecute);
+            var quiryResult = db.BlockAutoIps
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.BlockAutoIpAction == BlockAutoIpAction.BeforeExecute);
 
             if (!string.IsNullOrEmpty(searchInput.ip) && searchInput.ip.ToIp() != null)
             {
@@ -131,6 +133,8 @@ namespace Oje.Security.Services
                 quiryResult = quiryResult.Where(t => !db.Errors.Any(tt => tt.RequestId == t.RequestId));
             else if (searchInput.isSuccess == false)
                 quiryResult = quiryResult.Where(t => db.Errors.Any(tt => tt.RequestId == t.RequestId));
+            if(!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             switch (searchInput.sortField)
             {
@@ -185,7 +189,8 @@ namespace Oje.Security.Services
                     fullUsername = t.UserId > 0 && !string.IsNullOrEmpty((t.User.Firstname + " " + t.User.Lastname).Trim()) ? t.User.Firstname + " " + t.User.Lastname : t.UserId > 0 ? t.User.Username : "",
                     endDate = db.BlockAutoIps.Any(tt => tt.RequestId == t.RequestId && tt.BlockAutoIpAction == BlockAutoIpAction.AfterExecute) ? db.BlockAutoIps.Where(tt => tt.RequestId == t.RequestId && tt.BlockAutoIpAction == BlockAutoIpAction.AfterExecute).Select(tt => tt.CreateDate).FirstOrDefault() : tempDate,
                     isSuccess = !db.Errors.Any(tt => tt.RequestId == t.RequestId),
-                    t.RequestId
+                    t.RequestId,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new BlockAutoIpMainGridResultVM
@@ -198,7 +203,8 @@ namespace Oje.Security.Services
                     section = t.BlockClientConfigType.GetEnumDisplayName(),
                     duration = t.endDate != tempDate ? (t.endDate - t.CreateDate).TotalMilliseconds + " ms" : "",
                     isSuccess = t.isSuccess == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
-                    rid = t.RequestId
+                    rid = t.RequestId,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

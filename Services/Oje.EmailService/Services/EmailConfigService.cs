@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.EmailService.Interfaces;
 using Oje.EmailService.Models.DB;
 using Oje.EmailService.Models.View;
@@ -6,20 +7,21 @@ using Oje.EmailService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.EmailService.Services
 {
     public class EmailConfigService : IEmailConfigService
     {
         readonly EmailServiceDBContext db = null;
-        public EmailConfigService(EmailServiceDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public EmailConfigService(
+                EmailServiceDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(EmailConfigCreateUpdateVM input, int? siteSettingId)
@@ -54,7 +56,11 @@ namespace Oje.EmailService.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.EmailConfigs.Include(t => t.EmailSendingQueueErrors).Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.EmailConfigs
+                .Include(t => t.EmailSendingQueueErrors)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -75,7 +81,8 @@ namespace Oje.EmailService.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.EmailConfigs
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -95,7 +102,9 @@ namespace Oje.EmailService.Services
             if (searchInput == null)
                 searchInput = new EmailConfigMainGrid();
 
-            var qureResult = db.EmailConfigs.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.EmailConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (!string.IsNullOrEmpty(searchInput.eUsername))
@@ -110,6 +119,8 @@ namespace Oje.EmailService.Services
                 qureResult = qureResult.Where(t => t.Timeout == searchInput.timeout);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -129,7 +140,8 @@ namespace Oje.EmailService.Services
                         smtpHost = t.SmtpHost,
                         enableSsl = t.EnableSsl,
                         timeout = t.Timeout,
-                        isActive = t.IsActive
+                        isActive = t.IsActive,
+                        siteTitleMN2 = t.SiteSetting.Title
                     })
                     .ToList()
                     .Select(t => new EmailConfigMainGridResultVM
@@ -142,7 +154,8 @@ namespace Oje.EmailService.Services
                         smtpHost = t.smtpHost,
                         smtpPort = t.smtpPort,
                         timeout = t.timeout,
-                        title = t.title
+                        title = t.title,
+                        siteTitleMN2 = t.siteTitleMN2
                     })
                     .ToList()
             };
@@ -152,7 +165,10 @@ namespace Oje.EmailService.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.EmailConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.EmailConfigs
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

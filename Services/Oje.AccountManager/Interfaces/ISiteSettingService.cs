@@ -10,5 +10,6 @@ namespace Oje.AccountService.Interfaces
         object GetManifest();
         string GetMainService();
         string GetRegisterServices();
+        object GetightList(bool? canSeeAllWeb, Infrastructure.Models.Select2SearchVM searchInput);
     }
 }

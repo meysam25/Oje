@@ -67,6 +67,14 @@
                 "textField": "title",
                 "valueField": "id"
               }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
             }
           ]
         }
@@ -82,17 +90,31 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "cSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('pfidAdd')"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "pfidAdd",
               "name": "pfid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/RegisterFormAdmin/UserRegisterFormPrintDescrption/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "cSOWSiteSettingIdAdd" ]
             },
             {
-              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
@@ -102,7 +124,7 @@
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
@@ -141,17 +163,31 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "cSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('pfidEdit')"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "pfidEdit",
               "name": "pfid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/RegisterFormAdmin/UserRegisterFormPrintDescrption/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "cSOWSiteSettingIdEdit" ]
             },
             {
-              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
@@ -161,7 +197,7 @@
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",

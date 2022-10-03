@@ -66,6 +66,14 @@
                 "textField": "title",
                 "valueField": "id"
               }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
             }
           ]
         }
@@ -82,6 +90,18 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "cSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('fidAdd')"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
@@ -89,12 +109,14 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "fidAdd",
               "name": "fid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/QuestionAdmin/UserRegisterFormYourQuestion/GetFormList",
-              "label": "فرم"
+              "label": "فرم",
+              "exteraParameterIds": [ "cSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
@@ -137,6 +159,18 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "cSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('fidEdit')"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
@@ -144,12 +178,14 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "fidEdit",
               "name": "fid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/QuestionAdmin/UserRegisterFormYourQuestion/GetFormList",
-              "label": "فرم"
+              "label": "فرم",
+              "exteraParameterIds": [ "cSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",

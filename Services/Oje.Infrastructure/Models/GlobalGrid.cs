@@ -3,6 +3,7 @@ namespace Oje.Infrastructure.Models
 {
     public class GlobalGrid
     {
+        public string siteTitleMN2 { get; set; }
         public string sortField { get; set; }
         public bool? sortFieldIsAsc { get; set; }
         int? Skip;

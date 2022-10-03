@@ -68,6 +68,14 @@
               "search": {
                 "searchType": "persianDateTime"
               }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
             }
           ]
         }

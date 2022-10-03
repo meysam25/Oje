@@ -74,6 +74,14 @@
                 "textField": "title",
                 "valueField": "id"
               }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
             }
           ]
         }

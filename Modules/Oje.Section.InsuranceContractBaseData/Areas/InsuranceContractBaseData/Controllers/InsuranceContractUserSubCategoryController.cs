@@ -76,7 +76,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractUserSubCategoryService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست زیرگوره بیمه شدگان", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست زیرگوره بیمه شدگان", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractUserSubCategoryMainGrid searchInput)
         {

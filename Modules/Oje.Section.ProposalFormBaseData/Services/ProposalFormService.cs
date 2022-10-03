@@ -13,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
@@ -172,7 +170,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     name = t.Name,
                     category = t.ProposalFormCategory.Title,
                     isActive = t.IsActive,
-                    setting = t.SiteSetting.Title
+                    setting = t.SiteSetting.Title,
                 })
                 .ToList()
                 .Select(t => new ProposalFormMainGridResultVM

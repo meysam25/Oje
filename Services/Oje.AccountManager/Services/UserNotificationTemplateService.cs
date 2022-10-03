@@ -104,6 +104,8 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
             if (searchInput.pffUserType != null)
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUserType == searchInput.pffUserType);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -119,7 +121,8 @@ namespace Oje.AccountService.Services
                     id = t.Id,
                     subject = t.Subject,
                     type = t.Type,
-                    pffUserType = t.ProposalFilledFormUserType
+                    pffUserType = t.ProposalFilledFormUserType,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserNotificationTemplateMainGridResultVM
@@ -128,7 +131,8 @@ namespace Oje.AccountService.Services
                     id = t.id,
                     subject = t.subject,
                     type = t.type.GetEnumDisplayName(),
-                    pffUserType = t.pffUserType != null ? t.pffUserType.GetEnumDisplayName() : ""
+                    pffUserType = t.pffUserType != null ? t.pffUserType.GetEnumDisplayName() : "",
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

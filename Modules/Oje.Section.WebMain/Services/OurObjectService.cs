@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -17,14 +18,18 @@ namespace Oje.Section.WebMain.Services
     {
         readonly WebMainDBContext db = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public OurObjectService
             (
                 WebMainDBContext db,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(OurCustomerCreateUpdateVM input, int? siteSettingId, OurObjectType type)
@@ -71,7 +76,10 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(int? id, int? siteSettingId, OurObjectType type)
         {
-            var foundItem = db.OurObjects.Where(t => t.SiteSettingId == siteSettingId && t.Type == type && t.Id == id).FirstOrDefault();
+            var foundItem = db.OurObjects
+                .Where(t => t.Type == type && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -84,7 +92,8 @@ namespace Oje.Section.WebMain.Services
         public object GetById(int? id, int? siteSettingId, OurObjectType type)
         {
             return db.OurObjects
-                .Where(t => t.SiteSettingId == siteSettingId && t.Type == type && t.Id == id)
+                .Where(t => t.Type == type && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -102,11 +111,15 @@ namespace Oje.Section.WebMain.Services
             if (searchInput == null)
                 searchInput = new OurCustomerMainGrid();
 
-            var qureResult = db.OurObjects.Where(t => t.SiteSettingId == siteSettingId && t.Type == type);
+            var qureResult = db.OurObjects
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Type == type);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -121,7 +134,8 @@ namespace Oje.Section.WebMain.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    IsActive = t.IsActive
+                    IsActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new OurCustomerMainGridResultVM
@@ -129,7 +143,8 @@ namespace Oje.Section.WebMain.Services
                     row = ++row,
                     id = t.id,
                     title = t.title,
-                    isActive = t.IsActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.IsActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -139,7 +154,11 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.OurObjects.Where(t => t.SiteSettingId == siteSettingId && t.Type == type && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.OurObjects
+                .Where(t => t.Type == type && t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -153,7 +172,6 @@ namespace Oje.Section.WebMain.Services
                 foundItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.OurObject, input.mainImage, null, siteSettingId, foundItem.Id, ".jpg,.jpeg,.png", false);
 
             db.SaveChanges();
-
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }

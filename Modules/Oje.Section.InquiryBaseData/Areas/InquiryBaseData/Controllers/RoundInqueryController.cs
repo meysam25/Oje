@@ -71,7 +71,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(RoundInqueryService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست روند کردن جزییات استعلام", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست روند کردن جزییات استعلام", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] RoundInqueryMainGrid searchInput)
         {
@@ -92,7 +92,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {

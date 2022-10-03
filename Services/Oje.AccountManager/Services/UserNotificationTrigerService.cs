@@ -219,6 +219,8 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.RoleId > 0 && t.Role.Title.Contains(searchInput.roleName));
             if (!string.IsNullOrEmpty(searchInput.userName))
                 qureResult = qureResult.Where(t => t.UserId > 0 && (t.User.Firstname + " " + t.User.Lastname).Contains(searchInput.userName));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -231,7 +233,8 @@ namespace Oje.AccountService.Services
                     id = t.Id,
                     type = t.UserNotificationType,
                     roleName = t.RoleId > 0 ? t.Role.Title : "",
-                    userName = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : ""
+                    userName = t.UserId > 0 ? t.User.Firstname + " " + t.User.Lastname : "",
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserNotificationTrigerMainGridResultVM()
@@ -240,7 +243,8 @@ namespace Oje.AccountService.Services
                     row = ++row,
                     type = t.type.GetEnumDisplayName(),
                     roleName = t.roleName,
-                    userName = t.userName
+                    userName = t.userName,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

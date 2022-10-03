@@ -9,6 +9,7 @@ using System.Linq;
 using Oje.Section.ProposalFormBaseData.Services.EContext;
 using Oje.Section.ProposalFormBaseData.Interfaces;
 using Oje.Section.ProposalFormBaseData.Models.View;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.ProposalFormBaseData.Services
 {
@@ -17,15 +18,19 @@ namespace Oje.Section.ProposalFormBaseData.Services
         readonly ProposalFormBaseDataDBContext db = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public ProposalFormPostPriceService(
                 ProposalFormBaseDataDBContext db,
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
             this.ProposalFormService = ProposalFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateProposalFormPostPriceVM input)
@@ -69,7 +74,11 @@ namespace Oje.Section.ProposalFormBaseData.Services
         public ApiResult Delete(int? id)
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var foundItem = db.ProposalFormPostPrices.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.ProposalFormPostPrices
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -84,7 +93,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.ProposalFormPostPrices
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new CreateUpdateProposalFormPostPriceVM
                 {
                     id = t.Id,
@@ -103,7 +113,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var qureResult = db.ProposalFormPostPrices.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.ProposalFormPostPrices.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.ppf))
                 qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.ppf));
@@ -113,6 +123,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.price  != null && searchInput.price.ToIntReturnZiro() >= 0)
                 qureResult = qureResult.Where(t => t.Price == searchInput.price);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -126,7 +138,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     isActive = t.IsActive,
                     ppf = t.ProposalForm.Title,
                     price = t.Price,
-                    title = t.Title
+                    title = t.Title,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ProposalFormPostPriceMainGridResultVM
@@ -136,7 +149,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     ppf = t.ppf,
                     title = t.title,
                     price = t.price == 0 ? "0" : t.price.ToString("###,###"),
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -147,7 +161,10 @@ namespace Oje.Section.ProposalFormBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, siteSettingId);
 
-            var foundItem = db.ProposalFormPostPrices.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.ProposalFormPostPrices
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

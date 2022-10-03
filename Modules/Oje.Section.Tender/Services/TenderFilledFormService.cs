@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Oje.AccountService.Interfaces;
@@ -362,6 +363,8 @@ namespace Oje.Section.Tender.Services
                 var targetDate = searchInput.createDate.ToEnDate().Value;
                 quiryResult = quiryResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
             }
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -386,7 +389,8 @@ namespace Oje.Section.Tender.Services
                     cCount = t.TenderFilledFormValidCompanies.Count(),
                     pCount = t.TenderFilledFormPrices.Count(),
                     psCount = t.TenderFilledFormPrices.Count(t => t.IsConfirm == true),
-                    issPublished = t.IsPublished
+                    issPublished = t.IsPublished,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new TenderFilledFormMainGridResultVM
@@ -397,7 +401,8 @@ namespace Oje.Section.Tender.Services
                     createDate = t.createDate.ToFaDate() + " " + t.createDate.ToString("hh:mm"),
                     isPub = t.IsPublished == true ? true : false,
                     userfullname = t.userfullname,
-                    status = getStatus(t.hasIssueItem, t.OpenDate, t.ProvinceId, t.CityId, t.cCount, t.pCount, t.psCount, t.issPublished)
+                    status = getStatus(t.hasIssueItem, t.OpenDate, t.ProvinceId, t.CityId, t.cCount, t.pCount, t.psCount, t.issPublished),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

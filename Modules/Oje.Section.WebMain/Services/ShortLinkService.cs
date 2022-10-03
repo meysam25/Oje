@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -13,9 +14,12 @@ namespace Oje.Section.WebMain.Services
     public class ShortLinkService : IShortLinkService
     {
         readonly WebMainDBContext db = null;
-        public ShortLinkService(WebMainDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public ShortLinkService(WebMainDBContext db, IHttpContextAccessor HttpContextAccessor)
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(ShortLinkCreateUpdateVM input, int? siteSettingId)
@@ -54,7 +58,11 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.ShortLinks.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.ShortLinks
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -67,7 +75,8 @@ namespace Oje.Section.WebMain.Services
         public object GetById(long? id, int? siteSettingId)
         {
             return db.ShortLinks
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -82,7 +91,7 @@ namespace Oje.Section.WebMain.Services
         {
             searchInput = searchInput ?? new();
 
-            var quiryResult = db.ShortLinks.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.ShortLinks.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.code))
                 quiryResult = quiryResult.Where(t => t.Code.Contains(searchInput.code));
@@ -90,6 +99,8 @@ namespace Oje.Section.WebMain.Services
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
             if (!string.IsNullOrEmpty(searchInput.link))
                 quiryResult = quiryResult.Where(t => t.TargetLink.Contains(searchInput.link));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -105,7 +116,8 @@ namespace Oje.Section.WebMain.Services
                     id = t.Id,
                     code = t.Code,
                     link = t.TargetLink,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ShortLinkMainGridResultVM
@@ -114,7 +126,8 @@ namespace Oje.Section.WebMain.Services
                     id = t.id,
                     code = t.code,
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
-                    link = t.link
+                    link = t.link,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -124,7 +137,11 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.ShortLinks.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.ShortLinks
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

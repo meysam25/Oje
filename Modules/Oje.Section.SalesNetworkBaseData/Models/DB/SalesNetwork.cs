@@ -4,14 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.SalesNetworkBaseData.Models.DB
 {
     [Table("SalesNetworks")]
-    public class SalesNetwork: EntityWithCreateUser<User, long>
+    public class SalesNetwork: EntityWithCreateUser<User, long>, IEntityWithSiteSettingId
     {
         public SalesNetwork()
         {
@@ -41,6 +38,8 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         [MaxLength(4000)]
         public string Description { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("SalesNetworks")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("SalesNetwork")]
         public List<SalesNetworkCompany> SalesNetworkCompanies { get; set; }

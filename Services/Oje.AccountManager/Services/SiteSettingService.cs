@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.AccountService.Models.View;
+using Oje.Infrastructure.Models;
 
 namespace Oje.AccountService.Services
 {
@@ -51,6 +52,34 @@ namespace Oje.AccountService.Services
             result.AddRange(db.SiteSettings.Select(t => new { id = t.Id, title = t.Title + "(" + t.WebsiteUrl + ")" }).ToList());
 
             return result;
+        }
+
+        public object GetightList(bool? canSeeAllWeb, Infrastructure.Models.Select2SearchVM searchInput)
+        {
+            List<object> result = new List<object>();
+            int? siteSettingId = GetSiteSetting()?.Id;
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.SiteSettings.OrderByDescending(t => t.Id).AsQueryable();
+            if (canSeeAllWeb != true)
+                qureResult = qureResult.Where(t => t.Id == siteSettingId);
+
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => (t.Title + "(" + t.WebsiteUrl + ")").Contains(searchInput.search));
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Title + "(" + t.WebsiteUrl + ")" }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
         }
 
         public SiteSetting GetSiteSetting()
@@ -128,7 +157,7 @@ namespace Oje.AccountService.Services
             if (mainServiceStr == null)
                 mainServiceStr = new();
 
-            if(mainServiceStr != null && mainServiceStr.Keys.Any(t => t == curKey))
+            if (mainServiceStr != null && mainServiceStr.Keys.Any(t => t == curKey))
             {
                 var tempResult = mainServiceStr[curKey];
                 if (!string.IsNullOrEmpty(tempResult))
@@ -137,7 +166,7 @@ namespace Oje.AccountService.Services
 
             string result = "const mainServiceName = 'mainServiceName';" + Environment.NewLine;
 
-            
+
             var topLeftIconList = PropertyService.GetBy<MainPageTopLeftIconVM>(PropertyType.MainPageTopLeftIcon, siteSetting?.Id);
             var aboutUsMainPage = PropertyService.GetBy<AboutUsMainPageVM>(PropertyType.AboutUsMainPage, siteSetting?.Id);
             var ourPrideMainPage = PropertyService.GetBy<OurPrideVM>(PropertyType.OurPrideMainPage, siteSetting?.Id);
@@ -240,7 +269,7 @@ namespace Oje.AccountService.Services
 
             if (allMainBlog != null)
             {
-                foreach(var blog in allMainBlog)
+                foreach (var blog in allMainBlog)
                 {
                     if (!string.IsNullOrEmpty(blog.ImageUrl200))
                         result += "'" + GlobalConfig.FileAccessHandlerUrl + blog.ImageUrl200 + "',";

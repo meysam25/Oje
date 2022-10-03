@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -9,17 +10,22 @@ using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
     public class InsuranceContractProposalFormService : IInsuranceContractProposalFormService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
-        public InsuranceContractProposalFormService(InsuranceContractBaseDataDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public InsuranceContractProposalFormService
+            (
+                InsuranceContractBaseDataDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(InsuranceContractProposalFormCreateUpdateVM input, int? siteSettingId)
@@ -66,7 +72,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.InsuranceContractProposalForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalForms
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -79,7 +89,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public InsuranceContractProposalFormCreateUpdateVM GetById(int? id, int? siteSettingId)
         {
             return db.InsuranceContractProposalForms
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .OrderByDescending(t => t.Id)
                 .Select(t => new
                 {
@@ -110,12 +121,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (searchInput == null)
                 searchInput = new InsuranceContractProposalFormMainGrid();
 
-            var qureResult = db.InsuranceContractProposalForms.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.InsuranceContractProposalForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -130,7 +144,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractProposalFormMainGridResultVM
@@ -138,7 +153,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     row = ++row,
                     id = t.id,
                     title = t.title,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -148,7 +164,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.InsuranceContractProposalForms.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalForms
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -178,7 +198,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 searchInput.page = 1;
 
 
-            var qureResult = db.InsuranceContractProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.InsuranceContractProposalForms
+                .OrderByDescending(t => t.Id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

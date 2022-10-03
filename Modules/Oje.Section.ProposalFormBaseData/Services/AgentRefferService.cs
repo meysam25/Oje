@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -6,7 +7,6 @@ using Oje.Section.ProposalFormBaseData.Interfaces;
 using Oje.Section.ProposalFormBaseData.Models.DB;
 using Oje.Section.ProposalFormBaseData.Models.View;
 using Oje.Section.ProposalFormBaseData.Services.EContext;
-using System;
 using System.Linq;
 
 namespace Oje.Section.ProposalFormBaseData.Services
@@ -14,9 +14,16 @@ namespace Oje.Section.ProposalFormBaseData.Services
     public class AgentRefferService : IAgentRefferService
     {
         readonly ProposalFormBaseDataDBContext db = null;
-        public AgentRefferService(ProposalFormBaseDataDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public AgentRefferService
+            (
+                ProposalFormBaseDataDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(AgentRefferCreateUpdateVM input, int? siteSettingId)
@@ -64,7 +71,10 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.AgentReffers.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.AgentReffers
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -77,7 +87,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.AgentReffers
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -95,7 +106,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
         {
             searchInput = searchInput ?? new AgentRefferMainGrid();
 
-            var quiryResult = db.AgentReffers.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.AgentReffers
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.companyTitle))
                 quiryResult = quiryResult.Where(t => t.Company.Title.Contains(searchInput.companyTitle));
@@ -105,6 +117,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 quiryResult = quiryResult.Where(t => t.FullName.Contains(searchInput.fullname));
             if (!string.IsNullOrEmpty(searchInput.mobile))
                 quiryResult = quiryResult.Where(t => t.Mobile == searchInput.mobile);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -121,7 +135,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     companyTitle = t.Company.Title,
                     code = t.Code,
                     fullname = t.FullName,
-                    mobile = t.Mobile
+                    mobile = t.Mobile,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new AgentRefferMainGridResultVM
@@ -131,7 +146,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     code = t.code,
                     fullname = t.fullname,
                     companyTitle = t.companyTitle,
-                    mobile = t.mobile
+                    mobile = t.mobile,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -141,7 +157,11 @@ namespace Oje.Section.ProposalFormBaseData.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.AgentReffers.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.AgentReffers
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

@@ -72,7 +72,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(PaymentMethodService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرایط پرداخت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرایط پرداخت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] PaymentMethodMainGrid searchInput)
         {
@@ -93,14 +93,14 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList(HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {

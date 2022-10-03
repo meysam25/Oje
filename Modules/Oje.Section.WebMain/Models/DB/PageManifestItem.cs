@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("PageManifestItems")]
-    public class PageManifestItem
+    public class PageManifestItem: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }
@@ -18,5 +19,7 @@ namespace Oje.Section.WebMain.Models.DB
         public int Order { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("PageManifestItems")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

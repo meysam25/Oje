@@ -1,6 +1,8 @@
-﻿namespace Oje.Section.Question.Models.View
+﻿using Oje.Infrastructure.Models;
+
+namespace Oje.Section.Question.Models.View
 {
-    public class UserRegisterFormYourQuestionCreateUpdateVM
+    public class UserRegisterFormYourQuestionCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public int? fid { get; set; }

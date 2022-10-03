@@ -24,6 +24,8 @@ namespace Oje.Section.Ticket.Models.DB
         public int Order { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("TicketCategories")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("Parent")]
         public List<TicketCategory> Childs { get; set; }

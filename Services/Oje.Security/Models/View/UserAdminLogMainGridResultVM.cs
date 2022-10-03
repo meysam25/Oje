@@ -22,5 +22,7 @@ namespace Oje.Security.Models.View
         public string duration { get; set; }
         [Display(Name = "شناسه درخواست")]
         public string rid { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

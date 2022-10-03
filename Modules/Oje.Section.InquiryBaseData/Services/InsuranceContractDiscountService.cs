@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InquiryBaseData.Services.EContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
@@ -17,15 +18,19 @@ namespace Oje.Section.InquiryBaseData.Services
         readonly InquiryBaseDataDBContext db = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public InsuranceContractDiscountService(
                 InquiryBaseDataDBContext db,
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
-                IInsuranceContractService InsuranceContractService
+                IInsuranceContractService InsuranceContractService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
             this.InsuranceContractService = InsuranceContractService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractDiscountVM input)
@@ -77,7 +82,12 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            InsuranceContractDiscount foundItem = db.InsuranceContractDiscounts.Include(t => t.InsuranceContractDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            InsuranceContractDiscount foundItem = db.InsuranceContractDiscounts
+                .Include(t => t.InsuranceContractDiscountCompanies)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -95,7 +105,8 @@ namespace Oje.Section.InquiryBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.InsuranceContractDiscounts
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new CreateUpdateInsuranceContractDiscountVM
                 {
                     cIds = t.InsuranceContractDiscountCompanies.Select(tt => tt.CompanyId).ToList(),
@@ -114,7 +125,8 @@ namespace Oje.Section.InquiryBaseData.Services
                 searchInput = new InsuranceContractDiscountMainGrid();
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var qureResult = db.InsuranceContractDiscounts.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.InsuranceContractDiscounts
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (searchInput.company.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.InsuranceContractDiscountCompanies.Any(tt => tt.CompanyId == searchInput.company));
             if (!string.IsNullOrEmpty(searchInput.contract))
@@ -125,6 +137,8 @@ namespace Oje.Section.InquiryBaseData.Services
                 qureResult = qureResult.Where(t => t.Percent == searchInput.percent);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -139,7 +153,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     id = t.Id,
                     isActive = t.IsActive,
                     percent = t.Percent,
-                    title = t.Title
+                    title = t.Title,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractDiscountMainGridResultVM 
@@ -150,7 +165,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     contract = t.contract,
                     title = t.title,
                     percent = t.percent,
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -161,7 +177,12 @@ namespace Oje.Section.InquiryBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             CreateValidation(input, siteSettingId);
 
-            InsuranceContractDiscount foundItem = db.InsuranceContractDiscounts.Include(t => t.InsuranceContractDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            InsuranceContractDiscount foundItem = db.InsuranceContractDiscounts
+                .Include(t => t.InsuranceContractDiscountCompanies)
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

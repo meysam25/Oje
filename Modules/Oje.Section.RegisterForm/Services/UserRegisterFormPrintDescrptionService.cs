@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -29,14 +30,15 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Create(UserRegisterFormPrintDescrptionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new UserRegisterFormPrintDescrption()
             {
                 Description = input.description,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 UserRegisterFormId = input.pfid.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Type = input.type.Value
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -44,7 +46,7 @@ namespace Oje.Section.RegisterForm.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(UserRegisterFormPrintDescrptionCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(UserRegisterFormPrintDescrptionCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -52,13 +54,14 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.pfid.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!db.UserRegisterForms.Any(t => t.Id == input.pfid && t.SiteSettingId == siteSettingId))
+            if (!db.UserRegisterForms.Any(t => t.Id == input.pfid && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
             if (input.type == null)
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (string.IsNullOrEmpty(input.description))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Description);
-            if (db.UserRegisterFormPrintDescrptions.Any(t => t.Id != input.id && t.UserRegisterFormId == input.pfid && t.Type == input.type))
+            if (db.UserRegisterFormPrintDescrptions
+                .Any(t => t.Id != input.id && t.UserRegisterFormId == input.pfid && t.Type == input.type && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -90,7 +93,9 @@ namespace Oje.Section.RegisterForm.Services
                    t.UserRegisterFormId,
                    t.Description,
                    t.Type,
-                   t.IsActive
+                   t.IsActive,
+                   cSOWSiteSettingId = t.SiteSettingId,
+                   cSOWSiteSettingId_Title = t.SiteSetting.Title
                })
                .ToList()
                .Select(t => new UserRegisterFormPrintDescrptionCreateUpdateVM
@@ -99,7 +104,9 @@ namespace Oje.Section.RegisterForm.Services
                    description = t.Description,
                    isActive = t.IsActive,
                    pfid = t.UserRegisterFormId,
-                   type = t.Type
+                   type = t.Type,
+                   cSOWSiteSettingId = t.cSOWSiteSettingId,
+                   cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                })
                .FirstOrDefault();
         }
@@ -116,6 +123,8 @@ namespace Oje.Section.RegisterForm.Services
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.type != null)
                 quiryResult = quiryResult.Where(t => t.Type == searchInput.type);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -131,7 +140,8 @@ namespace Oje.Section.RegisterForm.Services
                     id = t.Id,
                     t.Type,
                     pfTitle = t.UserRegisterForm.Title,
-                    t.IsActive
+                    t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
 
                 })
                 .ToList()
@@ -141,19 +151,22 @@ namespace Oje.Section.RegisterForm.Services
                     id = t.id,
                     type = t.Type.GetEnumDisplayName(),
                     fTitle = t.pfTitle,
-                    isActive = t.IsActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.IsActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 }).ToList()
             };
         }
 
         public ApiResult Update(UserRegisterFormPrintDescrptionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.UserRegisterFormPrintDescrptions
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -161,6 +174,7 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.UserRegisterFormId = input.pfid.Value;
             foundItem.Type = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

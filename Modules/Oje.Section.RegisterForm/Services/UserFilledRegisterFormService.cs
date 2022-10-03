@@ -624,6 +624,8 @@ namespace Oje.Section.RegisterForm.Services
                 qureResult = qureResult.Where(t => t.IsDone == searchInput.isDone);
             if (!string.IsNullOrEmpty(searchInput.refferUser))
                 qureResult = qureResult.Where(t => t.RefferUserId > 0 && (t.RefferUser.Firstname + " " + t.RefferUser.Lastname).Contains(searchInput.refferUser));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -650,7 +652,8 @@ namespace Oje.Section.RegisterForm.Services
                     t.IsDone,
                     refferUser = t.RefferUserId > 0 ? t.RefferUser.Firstname + " " + t.RefferUser.Lastname : "",
                     company = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "company").Select(tt => tt.Value).FirstOrDefault(),
-                    agentCode = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "licenceNumber").Select(tt => tt.Value).FirstOrDefault()
+                    agentCode = t.UserFilledRegisterFormValues.Where(tt => tt.UserFilledRegisterFormKey.Key == "licenceNumber").Select(tt => tt.Value).FirstOrDefault(),
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserFilledRegisterFormMainGridResultVM
@@ -668,7 +671,8 @@ namespace Oje.Section.RegisterForm.Services
                     isDone = t.IsDone == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                     refferUser = t.refferUser,
                     company = t.company,
-                    agentCode = t.agentCode
+                    agentCode = t.agentCode,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

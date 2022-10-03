@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.PaymentService.Models.DB
 {
     [Table("BankAccountSadads")]
-    public class BankAccountSadad
+    public class BankAccountSadad: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -18,5 +19,7 @@ namespace Oje.PaymentService.Models.DB
         [Required, MaxLength(100)]
         public string TerminalKey { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("BankAccountSadads")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

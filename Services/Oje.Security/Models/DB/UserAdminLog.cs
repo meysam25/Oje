@@ -25,5 +25,7 @@ namespace Oje.Security.Models.DB
         [Column(TypeName = "datetime")]
         public DateTime CreateDate { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserAdminLogs")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

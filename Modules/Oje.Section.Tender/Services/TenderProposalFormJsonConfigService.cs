@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -119,6 +120,8 @@ namespace Oje.Section.Tender.Services
                 quiryResult = quiryResult.Where(t => t.ProposalForm.Title.Contains(searchInput.ppfTitle));
             if (searchInput.isActive != null)
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -134,6 +137,7 @@ namespace Oje.Section.Tender.Services
                     id = t.Id,
                     ppfTitle = t.ProposalForm.Title,
                     isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new TenderProposalFormJsonConfigMainGridResultVM
@@ -141,7 +145,8 @@ namespace Oje.Section.Tender.Services
                     row = ++row,
                     ppfTitle = t.ppfTitle,
                     id = t.id,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

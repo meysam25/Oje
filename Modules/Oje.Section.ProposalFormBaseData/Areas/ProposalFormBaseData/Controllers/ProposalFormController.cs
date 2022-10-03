@@ -20,7 +20,12 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         readonly IProposalFormService ProposalFormService = null;
         readonly ISiteSettingService SiteSettingService = null;
         readonly IProposalFormCategoryService ProposalFormCategoryService = null;
-        public ProposalFormController(IProposalFormService ProposalFormService, ISiteSettingService SiteSettingService, IProposalFormCategoryService ProposalFormCategoryService)
+        public ProposalFormController
+            (
+                IProposalFormService ProposalFormService, 
+                ISiteSettingService SiteSettingService, 
+                IProposalFormCategoryService ProposalFormCategoryService
+            )
         {
             this.ProposalFormService = ProposalFormService;
             this.SiteSettingService = SiteSettingService;
@@ -58,21 +63,21 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(ProposalFormService.Delete(input?.id));
         }
 
-        [AreaConfig(Title = "مشاهده  یک فرم های پیشنهاد", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک فرم های پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalIntId input)
         {
             return Json(ProposalFormService.GetById(input?.id));
         }
 
-        [AreaConfig(Title = "به روز رسانی  فرم های پیشنهاد", Icon = "fa-pencil")]
+        [AreaConfig(Title = "به روز رسانی فرم های پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult Update([FromForm] CreateUpdateProposalFormVM input)
         {
             return Json(ProposalFormService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormMainGrid searchInput)
         {
@@ -93,14 +98,14 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "لیست وب سایت ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "لیست وب سایت ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetSiteList()
         {
             return Json(SiteSettingService.GetLightList());
         }
 
-        [AreaConfig(Title = "لیست گروه بندی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "لیست گروه بندی", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCategoryList([FromQuery] Select2SearchVM searchInput)
         {

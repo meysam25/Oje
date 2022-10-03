@@ -31,5 +31,7 @@ namespace Oje.AccountService.Models.DB
         public int? CountTry { get; set; }
         public bool? IsModal { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserNotifications")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

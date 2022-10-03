@@ -22,5 +22,7 @@ namespace Oje.Section.Ticket.Models.DB
         [MaxLength(100)]
         public string FileUrl { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("TicketUserAnswers")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

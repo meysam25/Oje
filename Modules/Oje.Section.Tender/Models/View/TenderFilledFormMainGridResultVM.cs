@@ -21,5 +21,7 @@ namespace Oje.Section.Tender.Models.View
         public bool isPub { get; set; }
         [Display(Name = "وضعیت")]
         public string status { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

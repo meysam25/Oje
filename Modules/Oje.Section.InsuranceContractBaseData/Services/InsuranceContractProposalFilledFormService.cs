@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Newtonsoft.Json;
 using Oje.AccountService.Interfaces;
 using Oje.FileService.Interfaces;
@@ -29,6 +30,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService = null;
         readonly IUserNotifierService UserNotifierService = null;
         readonly IUserService UserService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         const int year18DaysCount = 365 * 18; //6570
         const int maxInputUsers = 21;
@@ -43,7 +45,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IUploadedFileService UploadedFileService,
                 IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService,
                 IUserNotifierService UserNotifierService,
-                IUserService UserService
+                IUserService UserService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -55,6 +58,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
             this.UserNotifierService = UserNotifierService;
             this.UserService = UserService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(long? loginUserId, int? siteSettingId, IFormCollection form)
@@ -225,7 +229,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             var result = new InsuranceContractProposalFilledFormDetaileVM();
             var foundItem = db.InsuranceContractProposalFilledForms
-               .Where(t => t.Id == id && (ignoreLoginUserId == true || t.CreateUserId == loginUserId) && t.SiteSettingId == siteSettingId && t.IsDelete != true)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.Id == id && (ignoreLoginUserId == true || t.CreateUserId == loginUserId) && t.IsDelete != true)
                .Where(t => status == null || t.InsuranceContractProposalFilledFormUsers.Any(tt => status.Contains(tt.Status)))
                .Select(t => new
                {
@@ -246,8 +251,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                    }).ToList()
                })
                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
             var foundJson = InsuranceContractProposalFilledFormJsonService.GetBy(foundItem.Id);
             if (string.IsNullOrEmpty(foundJson))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
@@ -328,9 +335,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
-            var foundItem = db.InsuranceContractProposalFilledForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status)).FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id && t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status))
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
             foundItem.IsDelete = true;
             db.SaveChanges();
 
@@ -341,7 +353,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             searchInput = searchInput ?? new InsuranceContractProposalFilledFormMainGrid();
 
-            var quiryResult = db.InsuranceContractProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status));
+            var quiryResult = db.InsuranceContractProposalFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status));
 
             if (!string.IsNullOrEmpty(searchInput.createUserfullname))
                 quiryResult = quiryResult.Where(t => (t.CreateUser.Firstname + " " + t.CreateUser.Lastname).Contains(searchInput.createUserfullname));
@@ -354,7 +368,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 var targetDate = searchInput.createDate.ToEnDate().Value;
                 quiryResult = quiryResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
             }
-
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -371,7 +386,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     createUserfullname = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
                     createDate = t.CreateDate,
                     contractTitle = t.InsuranceContract.Title,
-                    familyMemers = t.InsuranceContractProposalFilledFormUsers.Select(tt => tt.InsuranceContractUser.FirstName + " " + tt.InsuranceContractUser.LastName).ToList()
+                    familyMemers = t.InsuranceContractProposalFilledFormUsers.Select(tt => tt.InsuranceContractUser.FirstName + " " + tt.InsuranceContractUser.LastName).ToList(),
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractProposalFilledFormMainGridResultVM
@@ -382,7 +398,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     createDate = t.createDate.ToString("hh:mm") + " " + t.createDate.ToFaDate(),
                     createUserfullname = t.createUserfullname,
                     status = status.GetEnumDisplayName(),
-                    familyMemers = String.Join(",", t.familyMemers)
+                    familyMemers = String.Join(",", t.familyMemers),
+                    siteTitleMN2 = t.siteTitleMN2
                 }).ToList(),
             };
         }
@@ -395,6 +412,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .Where(t => t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.Status == status && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Id == input.pKey)
                 .Select(t => t.Id)
                 .FirstOrDefault();
+
             if (foundId <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -407,9 +425,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public object GetStatus(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
-            var foundItem = db.InsuranceContractProposalFilledFormUsers.Where(t => t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Id == id && t.Status== status).Any();
+            var foundItem = db.InsuranceContractProposalFilledFormUsers
+                .Where(t => t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Id == id && t.Status== status).Any();
             if (!foundItem)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
             return new { status = status, id = id };
         }
     }

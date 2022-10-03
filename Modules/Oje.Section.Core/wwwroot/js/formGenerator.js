@@ -39,6 +39,9 @@ function generateForm(res, targetId, canBeAppened) {
 function getInputTemplate(ctrl) {
     var result = '';
     if (ctrl) {
+        if (ctrl.showCondation && !window[ctrl.showCondation])
+            return result;
+
         if (ctrl.onChange)
             ctrl.onChange = ctrl.onChange.replace(/&#39;/g, '\'');
         if (!ctrl.id)
@@ -2143,13 +2146,15 @@ function getDropdownCTRLTemplate(ctrl) {
             setSelect2LabelAria(this.id);
             if (this.exteraParameterIds) {
                 for (var i = 0; i < this.exteraParameterIds.length; i++) {
-                    $('#' + this.exteraParameterIds).change(function () {
-                        var s2Obj = $('#' + this.id).data('select2');
-                        if (s2Obj) {
-                            s2Obj.val(['']);
-                            s2Obj.trigger('change');
+                    $('#' + this.exteraParameterIds[i]).change(function (e) {
+                        if (!$('#' + this.curId)[0].startBinding) {
+                            var s2Obj = $('#' + this.id).data('select2');
+                            if (s2Obj) {
+                                s2Obj.val(['']);
+                                s2Obj.trigger('change');
+                            }
                         }
-                    }.bind({ id: this.id }));
+                    }.bind({ id: this.id, curId: this.exteraParameterIds[i] }));
                 }
             }
             if (this.ctrl.showModalCondation) {

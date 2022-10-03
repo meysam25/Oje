@@ -18,5 +18,7 @@ namespace Oje.Sms.Models.DB
         [ForeignKey("UserId"), InverseProperty("SmsTrigers")]
         public User User { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("SmsTrigers")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

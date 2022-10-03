@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -12,12 +13,16 @@ namespace Oje.PaymentService.Services
     public class BankAccountSepService : IBankAccountSepService
     {
         readonly PaymentDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public BankAccountSepService
             (
-                PaymentDBContext db
+                PaymentDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(BankAccountSepCreateUpdateVM input, int? siteSettingId)
@@ -53,7 +58,10 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.BankAccountSeps.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.BankAccountSeps
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -66,7 +74,8 @@ namespace Oje.PaymentService.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.BankAccountSeps
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -79,12 +88,15 @@ namespace Oje.PaymentService.Services
         public GridResultVM<BankAccountSepMainGridResultVM> GetList(BankAccountSepMainGrid searchInput, int? siteSettingId)
         {
             searchInput = searchInput ?? new BankAccountSepMainGrid();
-            var quiryResult = db.BankAccountSeps.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.BankAccountSeps
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.bankAcount))
                 quiryResult = quiryResult.Where(t => (t.BankAccount.Title + "(" + t.BankAccount.CardNo + "-" + t.BankAccount.HesabNo + ")").Contains(searchInput.bankAcount));
             if (!string.IsNullOrEmpty(searchInput.terminalId))
                 quiryResult = quiryResult.Where(t => t.TerminalId.Contains(searchInput.terminalId));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -99,7 +111,8 @@ namespace Oje.PaymentService.Services
                 {
                     id = t.Id,
                     bankAcount = t.BankAccount.Title + "(" + t.BankAccount.CardNo + "-" + t.BankAccount.HesabNo + ")",
-                    terminalId = t.TerminalId
+                    terminalId = t.TerminalId,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new BankAccountSepMainGridResultVM
@@ -107,7 +120,8 @@ namespace Oje.PaymentService.Services
                     row = ++row,
                     id = t.id,
                     bankAcount = t.bankAcount,
-                    terminalId = t.terminalId
+                    terminalId = t.terminalId,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -117,7 +131,11 @@ namespace Oje.PaymentService.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.BankAccountSeps.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.BankAccountSeps
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

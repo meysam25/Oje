@@ -14,5 +14,7 @@ namespace Oje.PaymentService.Models.View
         public string merchantId { get; set; }
         [Display(Name = "شناسه ترمینال")]
         public string terminalId { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

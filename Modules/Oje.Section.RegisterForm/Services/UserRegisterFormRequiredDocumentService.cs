@@ -37,13 +37,14 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Create(UserRegisterFormRequiredDocumentCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var newItem = new UserRegisterFormRequiredDocument()
             {
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 IsRequired = input.isRequird.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 UserRegisterFormRequiredDocumentTypeId = input.typeId.Value
             };
@@ -60,7 +61,7 @@ namespace Oje.Section.RegisterForm.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(UserRegisterFormRequiredDocumentCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(UserRegisterFormRequiredDocumentCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -72,7 +73,7 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.typeId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
-            if (UserRegisterFormRequiredDocumentTypeService.GetById(input.typeId, siteSettingId) == null)
+            if (UserRegisterFormRequiredDocumentTypeService.GetById(input.typeId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
         }
 
@@ -103,7 +104,9 @@ namespace Oje.Section.RegisterForm.Services
                     typeId = t.UserRegisterFormRequiredDocumentTypeId,
                     isRequird = t.IsRequired,
                     isActive = t.IsActive,
-                    downloadFile_address = !string.IsNullOrEmpty(t.DownloadFile) ? GlobalConfig.FileAccessHandlerUrl + t.DownloadFile : ""
+                    downloadFile_address = !string.IsNullOrEmpty(t.DownloadFile) ? GlobalConfig.FileAccessHandlerUrl + t.DownloadFile : "",
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -121,6 +124,8 @@ namespace Oje.Section.RegisterForm.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.isRequired != null)
                 qureResult = qureResult.Where(t => t.IsRequired == searchInput.isRequired);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -137,7 +142,8 @@ namespace Oje.Section.RegisterForm.Services
                         title = t.Title,
                         isActive = t.IsActive,
                         t.IsRequired,
-                        typeTitle = t.UserRegisterFormRequiredDocumentType.Title
+                        typeTitle = t.UserRegisterFormRequiredDocumentType.Title,
+                        siteTitleMN2 = t.SiteSetting.Title
                     })
                     .ToList()
                     .Select(t => new UserRegisterFormRequiredDocumentMainGridResultVM
@@ -147,7 +153,8 @@ namespace Oje.Section.RegisterForm.Services
                         isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                         isRequired = t.IsRequired == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                         title = t.title,
-                        typeTitle = t.typeTitle
+                        typeTitle = t.typeTitle,
+                        siteTitleMN2 = t.siteTitleMN2
                     })
                     .ToList()
             };
@@ -155,7 +162,8 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Update(UserRegisterFormRequiredDocumentCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.UserRegisterFormRequiredDocuments
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -168,6 +176,7 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.IsRequired = input.isRequird.ToBooleanReturnFalse();
             foundItem.Title = input.title;
             foundItem.UserRegisterFormRequiredDocumentTypeId = input.typeId.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.downloadFile != null && input.downloadFile.Length > 0)
                 foundItem.DownloadFile = UploadedFileService.UploadNewFile(FileType.RegisterDownloadSampleDocuments, input.downloadFile, null, siteSettingId, foundItem.Id, ".jpg,.png,.doc,.docx,.pdf,.jpeg", false);

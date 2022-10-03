@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.InquiryBaseData.Models.View
 {
@@ -21,5 +16,7 @@ namespace Oje.Section.InquiryBaseData.Models.View
         public string createUser { get; set; }
         [Display(Name = "تاریخ ایجاد")]
         public string createDate { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

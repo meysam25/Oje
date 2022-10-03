@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.View;
@@ -14,15 +15,19 @@ namespace Oje.AccountService.Services
     public class ExternalNotificationServiceConfigService : IExternalNotificationServiceConfigService
     {
         readonly AccountDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         static Dictionary<int?, ExternalNotificationServiceConfig> cacheConfig = new Dictionary<int?, ExternalNotificationServiceConfig>();
 
 
         public ExternalNotificationServiceConfigService
             (
-                AccountDBContext db
+                AccountDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(ExternalNotificationServiceConfigCreateUpdateVM input, int? siteSettingId)
@@ -64,7 +69,12 @@ namespace Oje.AccountService.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            ExternalNotificationServiceConfig foundItem = db.ExternalNotificationServiceConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            ExternalNotificationServiceConfig foundItem = 
+                db.ExternalNotificationServiceConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -77,7 +87,8 @@ namespace Oje.AccountService.Services
         public ExternalNotificationServiceConfigCreateUpdateVM GetById(int? id, int? siteSettingId)
         {
             return db.ExternalNotificationServiceConfigs
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new ExternalNotificationServiceConfigCreateUpdateVM
                 { 
                     id = t.Id,
@@ -94,7 +105,9 @@ namespace Oje.AccountService.Services
         {
             searchInput = searchInput ?? new ExternalNotificationServiceConfigMainGrid();
 
-            var quiryResult = db.ExternalNotificationServiceConfigs.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = 
+                db.ExternalNotificationServiceConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.isActive != null)
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
@@ -102,6 +115,8 @@ namespace Oje.AccountService.Services
                 quiryResult = quiryResult.Where(t => t.Subject.Contains(searchInput.subject));
             if (searchInput.type != null)
                 quiryResult = quiryResult.Where(t => t.Type == searchInput.type);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -118,7 +133,8 @@ namespace Oje.AccountService.Services
                         id = t.Id,
                         subject = t.Subject,
                         isActive = t.IsActive,
-                        type = t.Type
+                        type = t.Type,
+                        siteTitleMN2 = t.SiteSetting.Title
                     })
                     .ToList()
                     .Select(t => new ExternalNotificationServiceConfigMainGridResultVM 
@@ -127,7 +143,8 @@ namespace Oje.AccountService.Services
                         id = t.id,
                         isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                         subject = t.subject,
-                        type = t.type.GetEnumDisplayName()
+                        type = t.type.GetEnumDisplayName(),
+                        siteTitleMN2 = t.siteTitleMN2
                     })
                     .ToList()
             };
@@ -137,7 +154,12 @@ namespace Oje.AccountService.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            ExternalNotificationServiceConfig foundItem = db.ExternalNotificationServiceConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            ExternalNotificationServiceConfig foundItem = 
+                db.ExternalNotificationServiceConfigs
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

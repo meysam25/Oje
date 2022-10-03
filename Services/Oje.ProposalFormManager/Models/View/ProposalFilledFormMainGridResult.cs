@@ -36,5 +36,7 @@ namespace Oje.ProposalFormService.Models.View
         public string targetUserNationalCode { get; set; }
         [Display(Name = "فایل صدور")]
         public string issueFile { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

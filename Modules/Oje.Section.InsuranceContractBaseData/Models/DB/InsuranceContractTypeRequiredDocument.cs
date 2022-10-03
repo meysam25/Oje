@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractTypeRequiredDocuments")]
-    public class InsuranceContractTypeRequiredDocument
+    public class InsuranceContractTypeRequiredDocument: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -29,5 +26,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public DateTime CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractTypeRequiredDocuments")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

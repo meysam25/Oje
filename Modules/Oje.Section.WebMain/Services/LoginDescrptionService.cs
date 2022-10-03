@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -13,12 +14,16 @@ namespace Oje.Section.WebMain.Services
     public class LoginDescrptionService : ILoginDescrptionService
     {
         readonly WebMainDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public LoginDescrptionService
             (
-                WebMainDBContext db
+                WebMainDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(LoginDescrptionCreateUpdateVM input, int? siteSettingId)
@@ -54,7 +59,10 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.LoginDescrptions.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.LoginDescrptions
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -67,7 +75,8 @@ namespace Oje.Section.WebMain.Services
         public LoginDescrptionCreateUpdateVM GetById(int? id, int? siteSettingId)
         {
             return db.LoginDescrptions
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new LoginDescrptionCreateUpdateVM
                 {
                     id = t.Id,
@@ -82,13 +91,16 @@ namespace Oje.Section.WebMain.Services
         {
             searchInput = searchInput ?? new();
 
-            var quiryResult = db.LoginDescrptions.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.LoginDescrptions
+                .OrderByDescending(t => t.Id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.url))
                 quiryResult = quiryResult.Where(t => t.ReturnUrl.Contains(searchInput.url));
             if (searchInput.isActive != null)
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
-
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -102,7 +114,8 @@ namespace Oje.Section.WebMain.Services
                 {
                     id = t.Id,
                     isActive = t.IsActive,
-                    url = t.ReturnUrl
+                    url = t.ReturnUrl,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new LoginDescrptionMainGridResultVM
@@ -111,6 +124,7 @@ namespace Oje.Section.WebMain.Services
                     id = t.id,
                     url = t.url,
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -120,7 +134,10 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.LoginDescrptions.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.LoginDescrptions
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);

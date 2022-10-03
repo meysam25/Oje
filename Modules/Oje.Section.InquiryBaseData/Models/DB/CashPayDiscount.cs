@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("CashPayDiscounts")]
-    public class CashPayDiscount
+    public class CashPayDiscount: IEntityWithSiteSettingId
     {
         public CashPayDiscount()
         {
@@ -28,6 +25,8 @@ namespace Oje.Section.InquiryBaseData.Models.DB
         public ProposalForm ProposalForm { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("CashPayDiscounts")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("CashPayDiscount")]
         public List<CashPayDiscountCompany> CashPayDiscountCompanies { get; set; }

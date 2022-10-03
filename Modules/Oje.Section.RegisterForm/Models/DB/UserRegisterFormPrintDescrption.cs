@@ -18,5 +18,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserRegisterFormPrintDescrptions")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.Ticket.Models.View
 {
@@ -27,5 +22,7 @@ namespace Oje.Section.Ticket.Models.View
         public string userfullname { get; set; }
         [Display(Name = "کاربر پاسخ دهنده")]
         public string updateUserFullname { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

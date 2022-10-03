@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Sms.Models.View
 {
@@ -21,5 +20,7 @@ namespace Oje.Sms.Models.View
         public string invalidCount { get; set; }
         [Display(Name = "استفاده شده")]
         public string isUsed { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

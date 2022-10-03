@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractProposalFilledForms")]
-    public class InsuranceContractProposalFilledForm
+    public class InsuranceContractProposalFilledForm: IEntityWithSiteSettingId
     {
         public InsuranceContractProposalFilledForm()
         {
@@ -37,6 +38,8 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public byte? ReciveZoom { get; set; }
         public NetTopologySuite.Geometries.Point ReciveMapLocation { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractProposalFilledForms")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InsuranceContractProposalFilledForm")]
         public List<InsuranceContractProposalFilledFormValue> InsuranceContractProposalFilledFormValues { get; set; }

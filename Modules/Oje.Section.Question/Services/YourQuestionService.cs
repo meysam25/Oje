@@ -27,6 +27,8 @@ namespace Oje.Section.Question.Services
 
         public ApiResult Create(YourQuestionCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new YourQuestion()
@@ -34,7 +36,7 @@ namespace Oje.Section.Question.Services
                 Answer = input.answer,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Title = input.title,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value :  siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -68,6 +70,8 @@ namespace Oje.Section.Question.Services
                     answer = t.Answer,
                     isActive = t.IsActive,
                     title = t.Title,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -83,6 +87,8 @@ namespace Oje.Section.Question.Services
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -98,6 +104,7 @@ namespace Oje.Section.Question.Services
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new YourQuestionMainGridResultVM
@@ -105,7 +112,8 @@ namespace Oje.Section.Question.Services
                     row = ++row,
                     id = t.id,
                     title = t.title,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -126,6 +134,7 @@ namespace Oje.Section.Question.Services
         public ApiResult Update(YourQuestionCreateUpdateVM input, int? siteSettingId)
         {
             createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
             var foundItem = db.YourQuestions
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -137,6 +146,7 @@ namespace Oje.Section.Question.Services
             foundItem.Answer = input.answer;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

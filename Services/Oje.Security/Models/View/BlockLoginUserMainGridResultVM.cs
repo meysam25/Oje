@@ -15,5 +15,7 @@ namespace Oje.Security.Models.View
         public string endDate { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.Blog.Models.DB
 {
     [Table("Blogs")]
-    public class Blog
+    public class Blog: IEntityWithSiteSettingId
     {
         public Blog()
         {
@@ -51,6 +52,8 @@ namespace Oje.Section.Blog.Models.DB
         public string SoundUrl { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("Blogs")]
+        public SiteSetting SiteSetting { get; set; }
 
 
         [InverseProperty("Blog")]

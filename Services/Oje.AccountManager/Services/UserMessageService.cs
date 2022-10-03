@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.DB;
 using Oje.AccountService.Models.View;
@@ -80,7 +81,7 @@ namespace Oje.AccountService.Services
             searchInput = searchInput ?? new UserMessageMainGrid();
 
             var quiryResult = db.UserMessages.Where(t => t.SiteSettingId == siteSettingId && (t.FromUserId == loginUserId || t.ToUserId == loginUserId));
-
+           
             int row = searchInput.skip;
 
             return new GridResultVM<UserMessageMainGridResultVM>()

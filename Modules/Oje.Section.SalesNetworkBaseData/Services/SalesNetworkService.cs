@@ -7,11 +7,11 @@ using Oje.Section.SalesNetworkBaseData.Interfaces;
 using Oje.Section.SalesNetworkBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.SalesNetworkBaseData.Services.EContext;
 using Oje.Section.SalesNetworkBaseData.Models.View;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.SalesNetworkBaseData.Services
 {
@@ -21,17 +21,21 @@ namespace Oje.Section.SalesNetworkBaseData.Services
         readonly Interfaces.IProposalFormService ProposalFormService = null;
         readonly IUserService UserService = null;
         readonly ISiteSettingService SiteSettingService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public SalesNetworkService(
                 SalesNetworkBaseDataDBContext db,
                 Interfaces.IProposalFormService ProposalFormService,
                 IUserService UserService,
-                ISiteSettingService SiteSettingService
+                ISiteSettingService SiteSettingService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.ProposalFormService = ProposalFormService;
             this.UserService = UserService;
             this.SiteSettingService = SiteSettingService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateSalesNetworkVM input)
@@ -107,8 +111,9 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             var foundItem = db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
                 .Include(t => t.SalesNetworkProposalForms)
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
 
             if (foundItem == null)
@@ -128,8 +133,9 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             return db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
                 .Include(t => t.SalesNetworkProposalForms)
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     userId = t.SalesNetworkMarketers.Where(tt => tt.ParentId == null).OrderBy(tt => t.Id).Select(t => t.UserId).FirstOrDefault(),
@@ -154,7 +160,9 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             var loginUserId = UserService.GetLoginUser()?.UserId;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            var qureResullt = db.SalesNetworks.Where(t => t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems);
+            var qureResullt = db.SalesNetworks
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResullt = qureResullt.Where(t => t.Title.Contains(searchInput.title));
@@ -175,6 +183,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 var targetDate = searchInput.createDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
                 qureResullt = qureResullt.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
             }
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResullt = qureResullt.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -192,7 +202,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                     title = t.Title,
                     type = t.Type,
                     createUser = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
-                    createDate = t.CreateDate
+                    createDate = t.CreateDate,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new SalesNetworkMainGridResulgVM
@@ -206,7 +217,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                     createDate = t.createDate.ToFaDate(),
                     type = t.type.GetAttribute<DisplayAttribute>()?.Name,
                     calceType = t.calceType.GetAttribute<DisplayAttribute>()?.Name,
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -223,8 +235,9 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             var foundItem = db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
                 .Include(t => t.SalesNetworkProposalForms)
-                .Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == input.id)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<SalesNetwork, User>(loginUserId, canSeeAllItems)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
 
             if (foundItem == null)

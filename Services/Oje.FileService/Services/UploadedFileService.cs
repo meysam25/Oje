@@ -14,6 +14,7 @@ using Imazen.WebP;
 using Microsoft.AspNetCore.StaticFiles;
 using Oje.FileService.Models.View;
 using Oje.Infrastructure.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace Oje.FileService.Services
 {

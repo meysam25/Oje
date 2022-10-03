@@ -59,6 +59,14 @@
                 "textField": "title",
                 "valueField": "id"
               }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
             }
           ]
         }
@@ -72,6 +80,16 @@
             {
               "name": "id",
               "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
@@ -118,6 +136,16 @@
             {
               "name": "id",
               "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",

@@ -1,16 +1,12 @@
 ﻿using Oje.Infrastructure.Interfac;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("InsuranceContracts")]
-    public class InsuranceContract : EntityWithCreateUser<User, long>
+    public class InsuranceContract : EntityWithCreateUser<User, long>, IEntityWithSiteSettingId
     {
         public InsuranceContract()
         {
@@ -30,6 +26,8 @@ namespace Oje.Section.InquiryBaseData.Models.DB
         [ForeignKey("CreateUserId"), InverseProperty("InsuranceContracts")]
         public User CreateUser { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContracts")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InsuranceContract")]
         public List<InsuranceContractDiscount> InsuranceContractDiscounts { get; set; }

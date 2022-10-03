@@ -32,6 +32,8 @@ namespace Oje.Section.RegisterForm.Models.DB
         public long MaxPrice { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserRegisterFormDiscountCodes")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("UserRegisterFormDiscountCode")]
         public List<UserRegisterFormDiscountCodeUse> UserRegisterFormDiscountCodeUses { get; set; }

@@ -3,15 +3,9 @@ using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
-using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.Blog.Interfaces;
 using Oje.Section.Blog.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
 {
@@ -23,6 +17,7 @@ namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
     {
         readonly IBlogReviewService BlogReviewService = null;
         readonly ISiteSettingService SiteSettingService = null;
+
         public BlogReviewController
             (
                 IBlogReviewService BlogReviewService,

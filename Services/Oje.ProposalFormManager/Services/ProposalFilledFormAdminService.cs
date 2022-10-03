@@ -39,6 +39,7 @@ namespace Oje.ProposalFormService.Services
         readonly IAgentRefferService AgentRefferService = null;
         readonly IProposalFormService ProposalFormService = null;
         readonly IColorService ColorService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public ProposalFilledFormAdminService(
                 ProposalFormDBContext db,
@@ -56,7 +57,8 @@ namespace Oje.ProposalFormService.Services
                 IProposalFormPrintDescrptionService ProposalFormPrintDescrptionService,
                 IAgentRefferService AgentRefferService,
                 IProposalFormService ProposalFormService,
-                IColorService ColorService
+                IColorService ColorService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -75,6 +77,7 @@ namespace Oje.ProposalFormService.Services
             this.AgentRefferService = AgentRefferService;
             this.ProposalFormService = ProposalFormService;
             this.ColorService = ColorService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
@@ -83,7 +86,7 @@ namespace Oje.ProposalFormService.Services
                 input = new GlobalGridParentLong();
             var foundItemId =
                 ProposalFilledFormAdminBaseQueryService
-                .getProposalFilledFormBaseQuery(siteSettingId, userId)
+                .getProposalFilledFormBaseQuery(siteSettingId, userId, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status)) || t.Status == status)
                 .Where(t => t.Id == input.pKey)
                 .Select(t => t.Id)
@@ -101,7 +104,7 @@ namespace Oje.ProposalFormService.Services
 
         public object Update(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status, IFormCollection form)
         {
-            var item = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var item = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .Select(t => new { id = t.Id, title = t.ProposalForm.Title })
                 .FirstOrDefault();
@@ -139,7 +142,7 @@ namespace Oje.ProposalFormService.Services
 
         public ApiResult Delete(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .FirstOrDefault();
 
@@ -157,7 +160,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetById(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var values = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var values = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormValues)
                 .Include(t => t.ProposalFilledFormKey)
@@ -171,7 +174,7 @@ namespace Oje.ProposalFormService.Services
 
         public string GetJsonConfir(int id, int? siteSettingId, long? userId, ProposalFilledFormStatus status, string loadUrl, string saveUrl)
         {
-            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .Select(t => t.Id)
                 .FirstOrDefault();
@@ -211,7 +214,7 @@ namespace Oje.ProposalFormService.Services
             if (searchInput == null)
                 searchInput = new ProposalFilledFormMainGrid();
 
-            var qureResult = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status);
+            var qureResult = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites);
 
             if (searchInput.cId.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.ProposalFilledFormCompanies.Any(tt => tt.CompanyId == searchInput.cId));
@@ -254,6 +257,8 @@ namespace Oje.ProposalFormService.Services
             }
             if (!string.IsNullOrEmpty(searchInput.targetUserMobileNumber))
                 qureResult = qureResult.Where(t => t.ProposalFilledFormUsers.Any(tt => tt.Type == ProposalFilledFormUserType.CreateUser && tt.User.Username.Contains(searchInput.createUserfullname)));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -276,7 +281,8 @@ namespace Oje.ProposalFormService.Services
                     issueDate = t.IssueDate,
                     startDate = t.InsuranceStartDate,
                     endDate = t.InsuranceEndDate,
-                    issueFile = t.IssueFile
+                    issueFile = t.IssueFile,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ProposalFilledFormMainGridResult
@@ -296,7 +302,8 @@ namespace Oje.ProposalFormService.Services
                     endDate = t.endDate != null ? t.endDate.ToFaDate() : "",
                     isAgent = roles != null && roles.Any(tt => !string.IsNullOrEmpty(tt) && tt.StartsWith("agent")),
                     targetUserNationalCode = t.targetUserNationalCode,
-                    issueFile = !string.IsNullOrEmpty(t.issueFile) ? (GlobalConfig.FileAccessHandlerUrl + t.issueFile) : ""
+                    issueFile = !string.IsNullOrEmpty(t.issueFile) ? (GlobalConfig.FileAccessHandlerUrl + t.issueFile) : "",
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -304,7 +311,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetRefferUsers(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var result = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var result = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Refer)
@@ -324,7 +331,7 @@ namespace Oje.ProposalFormService.Services
         public ApiResult CreateUserRefer(CreateUpdateProposalFilledFormUserReffer input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
             CreateUserReferValidation(input, siteSettingId);
-            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == input.id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Refer)
@@ -359,7 +366,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetCompanies(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormCompanies)
                 .Select(t => t.CompanyId)
@@ -372,7 +379,7 @@ namespace Oje.ProposalFormService.Services
         {
             UpdateCompaniesValidation(input, siteSettingId);
 
-            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
 
@@ -403,7 +410,7 @@ namespace Oje.ProposalFormService.Services
 
         public object GetAgent(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
-            var result = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            var result = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                .Where(t => t.Id == id)
                .SelectMany(t => t.ProposalFilledFormUsers)
                .Where(t => t.Type == ProposalFilledFormUserType.Agent)
@@ -424,7 +431,7 @@ namespace Oje.ProposalFormService.Services
         public object UpdateAgent(long? id, long? userId, int? siteSettingId, long? longUserId, ProposalFilledFormStatus status)
         {
             UpdateAgentValidation(id, userId, siteSettingId);
-            var foundUserId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, longUserId, status)
+            var foundUserId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, longUserId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Agent)
@@ -455,7 +462,7 @@ namespace Oje.ProposalFormService.Services
         public ProposalFilledFormPdfVM PdfDetailes(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)
         {
             var result = new ProposalFilledFormPdfVM();
-            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status)) || t.Status == status)
                .Where(t => t.Id == id)
                .Select(t => new
@@ -649,7 +656,7 @@ namespace Oje.ProposalFormService.Services
         {
             var foundItemId =
                ProposalFilledFormAdminBaseQueryService
-               .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+               .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                .Where(t => t.Id == proposalFilledFormId)
               .Select(t => t.Id)
                .FirstOrDefault();
@@ -669,7 +676,7 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             var foundItemId =
              ProposalFilledFormAdminBaseQueryService
-             .getProposalFilledFormBaseQuery(siteSettingId, userId)
+             .getProposalFilledFormBaseQuery(siteSettingId, userId, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
              .Where(t => t.Id == proposalFilledFormId)
              .Where(t => (status == null && validStatus != null && validStatus.Contains(t.Status)) || t.Status == status)
              .Select(t => t.Id)
@@ -688,7 +695,7 @@ namespace Oje.ProposalFormService.Services
         {
             var foundItemId =
             ProposalFilledFormAdminBaseQueryService
-            .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
             .Where(t => t.Id == id)
            .Select(t => t.Id)
             .FirstOrDefault();
@@ -713,11 +720,11 @@ namespace Oje.ProposalFormService.Services
 
             var foundItem =
             ProposalFilledFormAdminBaseQueryService
-            .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+            .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
             .Where(t => t.Id == input.id)
             .FirstOrDefault();
 
-            if(foundItem.Status == ProposalFilledFormStatus.NeedSpecialist)
+            if (foundItem.Status == ProposalFilledFormStatus.NeedSpecialist)
             {
                 if (string.IsNullOrEmpty(input.fullname))
                     throw BException.GenerateNewException(BMessages.Please_Enter_Name);
@@ -725,7 +732,7 @@ namespace Oje.ProposalFormService.Services
                     throw BException.GenerateNewException(BMessages.Please_Enter_Description);
                 if (input.fileList == null || input.fileList.Count == 0)
                     throw BException.GenerateNewException(BMessages.Please_Select_File);
-                foreach(var file in input.fileList)
+                foreach (var file in input.fileList)
                 {
                     if (string.IsNullOrEmpty(file.fileType))
                         throw BException.GenerateNewException(BMessages.Please_Enter_File_Type);
@@ -733,7 +740,7 @@ namespace Oje.ProposalFormService.Services
                         throw BException.GenerateNewException(BMessages.Validation_Error);
                     if (file.mainFile == null || file.mainFile.Length == 0)
                         throw BException.GenerateNewException(BMessages.Please_Select_File);
-                    if(!file.mainFile.IsValidExtension(".jpg,.jpeg,.png,.mp4,.pdf"))
+                    if (!file.mainFile.IsValidExtension(".jpg,.jpeg,.png,.mp4,.pdf"))
                         throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
                 }
             }
@@ -762,7 +769,7 @@ namespace Oje.ProposalFormService.Services
         {
             var foundItem =
            ProposalFilledFormAdminBaseQueryService
-           .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+           .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
            .Where(t => t.Id == id)
            .Select(t => new
            {
@@ -794,7 +801,7 @@ namespace Oje.ProposalFormService.Services
 
             var foundItem =
                    ProposalFilledFormAdminBaseQueryService
-                  .getProposalFilledFormBaseQuery(siteSettingId, userId, status)
+                  .getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
                   .Where(t => t.Id == input.id)
                   .FirstOrDefault();
 
@@ -852,7 +859,7 @@ namespace Oje.ProposalFormService.Services
         {
             searchInput = searchInput ?? new MyProposalFilledFormMainGrid();
 
-            var qureResult = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId).Where(t => validStatus.Contains(t.Status));
+            var qureResult = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites).Where(t => validStatus.Contains(t.Status));
 
 
             int row = searchInput.skip;

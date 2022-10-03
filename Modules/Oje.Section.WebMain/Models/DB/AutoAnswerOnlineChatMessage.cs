@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Oje.Infrastructure.Interfac;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("AutoAnswerOnlineChatMessages")]
-    public class AutoAnswerOnlineChatMessage
+    public class AutoAnswerOnlineChatMessage: IEntityWithSiteSettingId
     {
         public AutoAnswerOnlineChatMessage()
         {
@@ -30,6 +30,8 @@ namespace Oje.Section.WebMain.Models.DB
         public bool IsMessage { get; set; }
         public bool? HasLike { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("AutoAnswerOnlineChatMessages")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("Parent")]
         public List<AutoAnswerOnlineChatMessage> Childs { get; set; }

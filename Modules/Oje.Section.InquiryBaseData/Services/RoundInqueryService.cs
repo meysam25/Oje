@@ -8,6 +8,7 @@ using Oje.Section.InquiryBaseData.Models.DB;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InquiryBaseData.Services.EContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
@@ -15,10 +16,17 @@ namespace Oje.Section.InquiryBaseData.Services
     {
         readonly InquiryBaseDataDBContext db = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
-        public RoundInqueryService(InquiryBaseDataDBContext db, AccountService.Interfaces.ISiteSettingService SiteSettingService)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public RoundInqueryService(
+            InquiryBaseDataDBContext db, 
+            AccountService.Interfaces.ISiteSettingService SiteSettingService,
+            IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
             this.SiteSettingService = SiteSettingService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateRoundInqueryVM input)
@@ -62,7 +70,10 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Delete(int? id)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var deleteItem = db.RoundInqueries.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var deleteItem = db.RoundInqueries
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (deleteItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, Infrastructure.Enums.ApiResultErrorCode.NotFound);
 
@@ -77,7 +88,8 @@ namespace Oje.Section.InquiryBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             return
                 db.RoundInqueries
-                .Where(t => t.SiteSettingId == siteSettingId && t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -106,7 +118,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 searchInput = new RoundInqueryMainGrid();
 
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            var qureResult = db.RoundInqueries.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.RoundInqueries.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.proposalFormTitle))
                 qureResult = qureResult.Where(t => t.ProposalForm.Title.Contains(searchInput.proposalFormTitle));
@@ -114,6 +126,8 @@ namespace Oje.Section.InquiryBaseData.Services
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
             if (!string.IsNullOrEmpty(searchInput.format))
                 qureResult = qureResult.Where(t => t.Format == searchInput.format);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -126,7 +140,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     id = t.Id,
                     format = t.Format,
                     proposalFormTitle = t.ProposalForm.Title,
-                    type = t.Type
+                    type = t.Type,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new RoundInqueryMainGridResult 
@@ -135,7 +150,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     id = t.id,
                     format = t.format,
                     proposalFormTitle = t.proposalFormTitle,
-                    type = t.type.GetAttribute<DisplayAttribute>()?.Name
+                    type = t.type.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -146,7 +162,11 @@ namespace Oje.Section.InquiryBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createUpdateValidation(input, siteSettingId);
 
-            var editItem = db.RoundInqueries.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var editItem = db.RoundInqueries
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (editItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, Infrastructure.Enums.ApiResultErrorCode.NotFound);
 

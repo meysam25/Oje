@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -10,7 +11,6 @@ using Oje.Section.InsuranceContractBaseData.Models.DB;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
@@ -19,14 +19,18 @@ namespace Oje.Section.InsuranceContractBaseData.Services
     {
         readonly InsuranceContractBaseDataDBContext db = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public InsuranceContractTypeRequiredDocumentService
             (
                 InsuranceContractBaseDataDBContext db,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(InsuranceContractTypeRequiredDocumentCreateUpdateVM input, int? siteSettingId)
@@ -76,7 +80,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.InsuranceContractTypeRequiredDocuments.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.InsuranceContractTypeRequiredDocuments
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -90,7 +98,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             return db.InsuranceContractTypeRequiredDocuments
                 .OrderByDescending(t => t.Id)
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     t.Id,
@@ -118,7 +127,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             searchInput = searchInput ?? new InsuranceContractTypeRequiredDocumentMainGrid();
 
-            var qureResult = db.InsuranceContractTypeRequiredDocuments.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.InsuranceContractTypeRequiredDocuments
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
@@ -130,6 +140,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 qureResult = qureResult.Where(t => t.IsRequired == searchInput.isRequired);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -147,7 +159,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     cTitle = t.InsuranceContract.Title,
                     ctTitle = t.InsuranceContractType.Title,
                     t.IsActive,
-                    t.IsRequired
+                    t.IsRequired,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new InsuranceContractTypeRequiredDocumentMainGridResultVM
@@ -158,7 +171,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     ctId = t.ctTitle,
                     isActive = t.IsActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     isRequired = t.IsRequired == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
-                    title = t.Title
+                    title = t.Title,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -168,7 +182,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.InsuranceContractTypeRequiredDocuments.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.InsuranceContractTypeRequiredDocuments
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

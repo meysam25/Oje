@@ -19,6 +19,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
     {
         readonly IExternalNotificationServiceConfigService ExternalNotificationServiceConfigService = null;
         readonly ISiteSettingService SiteSettingService = null;
+
         public ExternalNotificationServiceConfigController
             (
                 IExternalNotificationServiceConfigService ExternalNotificationServiceConfigService,

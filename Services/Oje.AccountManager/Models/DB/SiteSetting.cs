@@ -11,6 +11,11 @@ namespace Oje.AccountService.Models.DB
         {
             Roles = new();
             Childs = new();
+            ExternalNotificationServiceConfigs = new();
+            UserNotifications = new();
+            UserNotificationTemplates = new();
+            UserNotificationTrigers = new();
+            SiteSettingUsers = new();
         }
 
         [Key]
@@ -46,5 +51,15 @@ namespace Oje.AccountService.Models.DB
         public List<SiteSetting> Childs { get; set; }
         [InverseProperty("SiteSetting")]
         public List<Role> Roles { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<ExternalNotificationServiceConfig> ExternalNotificationServiceConfigs { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<UserNotification> UserNotifications { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<UserNotificationTemplate> UserNotificationTemplates { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<UserNotificationTriger> UserNotificationTrigers { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<User> SiteSettingUsers { get; set; }
     }
 }

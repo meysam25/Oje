@@ -1,16 +1,13 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
+using Oje.Infrastructure.Interfac;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Models.DB
 {
     [Table("PaymentMethods")]
-    public class PaymentMethod
+    public class PaymentMethod : IEntityWithSiteSettingId
     {
         public PaymentMethod()
         {
@@ -33,6 +30,8 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public int? PrePayPercent { get; set; }
         public int? DebitCount { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("PaymentMethods")]
+        public SiteSetting SiteSetting { get; set; }
 
 
         [InverseProperty("PaymentMethod")]

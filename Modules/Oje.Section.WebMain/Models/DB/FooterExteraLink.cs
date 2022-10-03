@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("FooterExteraLinks")]
-    public class FooterExteraLink
+    public class FooterExteraLink: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -19,5 +15,7 @@ namespace Oje.Section.WebMain.Models.DB
         public string Link { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("FooterExteraLinks")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

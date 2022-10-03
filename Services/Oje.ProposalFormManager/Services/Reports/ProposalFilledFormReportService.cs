@@ -1,12 +1,11 @@
-﻿using Oje.Infrastructure.Services;
+﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces.Reports;
 using Oje.ProposalFormService.Models.DB.Reports;
 using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services.Reports
 {
@@ -14,19 +13,28 @@ namespace Oje.ProposalFormService.Services.Reports
     {
         readonly ProposalFormReportDBContext db = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public ProposalFilledFormReportService(
                 ProposalFormReportDBContext db,
-                AccountService.Interfaces.IUserService UserService
+                AccountService.Interfaces.IUserService UserService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UserService = UserService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         IQueryable<ProposalFilledForm> getBaseQueiry(int? siteSettingId, long? userId)
         {
+            bool? canSeeOtherWebsites = HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             var allChildUserId = UserService.CanSeeAllItems(userId.ToLongReturnZiro());
-            var resultObjQoury = db.ProposalFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete != true);
+            var resultObjQoury = db.ProposalFilledForms.Where(t =>t.IsDelete != true);
+
+            if (canSeeOtherWebsites != true)
+                resultObjQoury = resultObjQoury.Where(t => t.SiteSettingId == siteSettingId);
+
             resultObjQoury = resultObjQoury
                 .Where(t =>
                     (

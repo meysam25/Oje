@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Triangulate.QuadEdge;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -12,11 +14,17 @@ namespace Oje.Security.Services
     public class AdminBlockClientConfigService : IAdminBlockClientConfigService
     {
         readonly SecurityDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
         static List<AdminBlockClientConfig> AdminBlockClientConfigs = null;
 
-        public AdminBlockClientConfigService(SecurityDBContext db)
+        public AdminBlockClientConfigService
+            (
+                SecurityDBContext db,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(AdminBlockClientConfigCreateUpdateVM input, int? siteSettingId)
@@ -53,7 +61,11 @@ namespace Oje.Security.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.AdminBlockClientConfigs.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.AdminBlockClientConfigs
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -68,7 +80,8 @@ namespace Oje.Security.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.AdminBlockClientConfigs
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -84,7 +97,8 @@ namespace Oje.Security.Services
         {
             searchInput = searchInput ?? new();
 
-            var quiryResult = db.AdminBlockClientConfigs.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.AdminBlockClientConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.action))
                 quiryResult = quiryResult.Where(t => (t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title).Contains(searchInput.action));
@@ -92,6 +106,8 @@ namespace Oje.Security.Services
                 quiryResult = quiryResult.Where(t => t.MaxValue == searchInput.value);
             if (searchInput.isActive != null)
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -107,7 +123,8 @@ namespace Oje.Security.Services
                     id = t.Id,
                     action = t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title,
                     isActive = t.IsActive,
-                    value = t.MaxValue
+                    value = t.MaxValue,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new AdminBlockClientConfigMainGridResultVM
@@ -116,7 +133,8 @@ namespace Oje.Security.Services
                     id = t.id,
                     action = t.action,
                     value = t.value.ToString(),
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -126,7 +144,11 @@ namespace Oje.Security.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.AdminBlockClientConfigs.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.AdminBlockClientConfigs
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

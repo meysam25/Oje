@@ -19,5 +19,7 @@ namespace Oje.Section.RegisterForm.Models.DB
         [MaxLength(100)]
         public string DownloadFile { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserRegisterFormRequiredDocuments")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

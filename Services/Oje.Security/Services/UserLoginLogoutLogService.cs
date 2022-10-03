@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -76,6 +77,9 @@ namespace Oje.Security.Services
                 quiryResult = quiryResult.Where(t => t.Ip1 == curIp.Ip1 && t.Ip2 == curIp.Ip2 && t.Ip3 == curIp.Ip3 && t.Ip4 == curIp.Ip4);
             }
 
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
+
             switch (searchInput.sortField)
             {
                 case "userfullname":
@@ -140,7 +144,8 @@ namespace Oje.Security.Services
                     t.Ip4,
                     t.Type,
                     t.Message,
-                    t.IsSuccess
+                    t.IsSuccess,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserLoginLogoutLogMainGridResultVM
@@ -152,7 +157,8 @@ namespace Oje.Security.Services
                     ip = t.Ip1 + "." + t.Ip2 + "." + t.Ip3 + "." + t.Ip4,
                     type = t.Type.GetEnumDisplayName(),
                     message = t.Message,
-                    isSuccess = t.IsSuccess == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName()
+                    isSuccess = t.IsSuccess == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

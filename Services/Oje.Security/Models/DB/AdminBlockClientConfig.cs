@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Security.Models.DB
 {
     [Table("AdminBlockClientConfigs")]
-    public class AdminBlockClientConfig
+    public class AdminBlockClientConfig: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -14,5 +15,7 @@ namespace Oje.Security.Models.DB
         public int MaxValue { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("AdminBlockClientConfigs")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

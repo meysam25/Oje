@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -6,7 +7,6 @@ using Oje.Section.WebMain.Interfaces;
 using Oje.Section.WebMain.Models.DB;
 using Oje.Section.WebMain.Models.View;
 using Oje.Section.WebMain.Services.EContext;
-using System;
 using System.Linq;
 
 namespace Oje.Section.WebMain.Services
@@ -14,12 +14,16 @@ namespace Oje.Section.WebMain.Services
     public class PageManifestItemService : IPageManifestItemService
     {
         readonly WebMainDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public PageManifestItemService
             (
-                WebMainDBContext db
+                WebMainDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(PageManifestItemCreateUpdateVM input, int? siteSettingId)
@@ -60,7 +64,10 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Delete(long? id, int? siteSettingId)
         {
-            var foundItem = db.PageManifestItems.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.PageManifestItems
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -72,23 +79,28 @@ namespace Oje.Section.WebMain.Services
 
         public PageManifestItemCreateUpdateVM GetById(long? id, int? siteSettingId)
         {
-            return db.PageManifestItems.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => new PageManifestItemCreateUpdateVM
-            {
-                id = t.Id,
-                mid = t.PageManifestId,
-                mid_Title = t.PageManifest.Title,
-                title = t.Title,
-                description = t.Description,
-                order = t.Order,
-                isActive = t.IsActive
-            }).FirstOrDefault();
+            return db.PageManifestItems
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Select(t => new PageManifestItemCreateUpdateVM
+                {
+                    id = t.Id,
+                    mid = t.PageManifestId,
+                    mid_Title = t.PageManifest.Title,
+                    title = t.Title,
+                    description = t.Description,
+                    order = t.Order,
+                    isActive = t.IsActive
+                })
+                .FirstOrDefault();
         }
 
         public GridResultVM<PageManifestItemMainGridResultVM> GetList(PageManifestItemMainGrid searchInput, int? siteSettingId)
         {
             searchInput = searchInput ?? new PageManifestItemMainGrid();
 
-            var quiryResult = db.PageManifestItems.Where(t => t.SiteSettingId == siteSettingId);
+            var quiryResult = db.PageManifestItems
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.title))
                 quiryResult = quiryResult.Where(t => t.Title.Contains(searchInput.title));
@@ -98,6 +110,8 @@ namespace Oje.Section.WebMain.Services
                 quiryResult = quiryResult.Where(t => t.PageManifest.Page.Title.Contains(searchInput.pageTitle));
             if (searchInput.isActive != null)
                 quiryResult = quiryResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -114,7 +128,8 @@ namespace Oje.Section.WebMain.Services
                     title = t.Title,
                     midTitle = t.PageManifest.Title,
                     pageTitle = t.PageManifest.Page.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new PageManifestItemMainGridResultVM
@@ -124,7 +139,8 @@ namespace Oje.Section.WebMain.Services
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     title = t.title,
                     midTitle = t.midTitle,
-                    pageTitle = t.pageTitle
+                    pageTitle = t.pageTitle,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -134,7 +150,11 @@ namespace Oje.Section.WebMain.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.PageManifestItems.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.PageManifestItems
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

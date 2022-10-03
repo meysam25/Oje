@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -13,14 +14,17 @@ namespace Oje.Security.Services
     public class BlockClientConfigService : IBlockClientConfigService
     {
         readonly SecurityDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
         static List<BlockClientConfig> BlockClientConfigs = null;
 
         public BlockClientConfigService
             (
-                SecurityDBContext db
+                SecurityDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(BlockClientConfigCreateUpdateVM input, int? siteSettingId)
@@ -67,7 +71,11 @@ namespace Oje.Security.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.BlockClientConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).FirstOrDefault();
+            var foundItem = db.BlockClientConfigs
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -82,7 +90,8 @@ namespace Oje.Security.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.BlockClientConfigs
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -101,12 +110,15 @@ namespace Oje.Security.Services
             if (searchInput == null)
                 searchInput = new BlockClientConfigMainGrid();
 
-            var qureResult = db.BlockClientConfigs.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.BlockClientConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.type != null)
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -121,7 +133,8 @@ namespace Oje.Security.Services
                 {
                     id = t.Id,
                     type = t.Type,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new BlockClientConfigMainGridResultVM
@@ -129,7 +142,8 @@ namespace Oje.Security.Services
                     row = ++row,
                     id = t.id,
                     type = t.type.GetEnumDisplayName(),
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -139,7 +153,11 @@ namespace Oje.Security.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            var foundItem = db.BlockClientConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.id).FirstOrDefault();
+            var foundItem = db.BlockClientConfigs
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

@@ -1,24 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Sms.Interfaces;
 using Oje.Sms.Models.View;
 using Oje.Sms.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Sms.Services
 {
-    public class SmsConfigService: ISmsConfigService
+    public class SmsConfigService : ISmsConfigService
     {
         readonly SmsDBContext db = null;
-        public SmsConfigService(SmsDBContext db)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+        public SmsConfigService(SmsDBContext db, IHttpContextAccessor HttpContextAccessor)
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateSmsConfigVM input, int? siteSettingId)
@@ -32,7 +30,7 @@ namespace Oje.Sms.Services
                     item.IsActive = false;
             }
 
-            Models.DB.SmsConfig newItem = new Models.DB.SmsConfig() 
+            Models.DB.SmsConfig newItem = new Models.DB.SmsConfig()
             {
                 Domain = input.domain,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
@@ -59,8 +57,8 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.type == Infrastructure.Enums.SmsConfigType.Magfa)
                 magfaInputValidation(input, siteSettingId);
-          
-            
+
+
             if (db.SmsConfigs.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Type == input.type))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
@@ -81,7 +79,10 @@ namespace Oje.Sms.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            Models.DB.SmsConfig foundItem = db.SmsConfigs.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            Models.DB.SmsConfig foundItem = db.SmsConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -93,15 +94,18 @@ namespace Oje.Sms.Services
 
         public object GetById(int? id, int? siteSettingId)
         {
-            return db.SmsConfigs.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => new 
-            {
-                id = t.Id,
-                smsUsername = t.Username,
-                domain = t.Domain,
-                isActive = t.IsActive,
-                type = (int) t.Type,
-                ph = t.PhoneNumber
-            }).FirstOrDefault();
+            return db.SmsConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == id)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    smsUsername = t.Username,
+                    domain = t.Domain,
+                    isActive = t.IsActive,
+                    type = (int)t.Type,
+                    ph = t.PhoneNumber
+                }).FirstOrDefault();
         }
 
         public GridResultVM<SmsConfigMainGridResultVM> GetList(SmsConfigMainGrid searchInput, int? siteSettingId)
@@ -109,7 +113,7 @@ namespace Oje.Sms.Services
             if (searchInput == null)
                 searchInput = new SmsConfigMainGrid();
 
-            var qureResult = db.SmsConfigs.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.SmsConfigs.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.smsUsername))
                 qureResult = qureResult.Where(t => t.Username.Contains(searchInput.smsUsername));
@@ -117,34 +121,38 @@ namespace Oje.Sms.Services
                 qureResult = qureResult.Where(t => t.Type == searchInput.type);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
-            if(!string.IsNullOrEmpty(searchInput.ph))
+            if (!string.IsNullOrEmpty(searchInput.ph))
                 qureResult = qureResult.Where(t => t.PhoneNumber.Contains(searchInput.ph));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
-            return new GridResultVM<SmsConfigMainGridResultVM> 
-            { 
-                total = qureResult.Count() ,
+            return new GridResultVM<SmsConfigMainGridResultVM>
+            {
+                total = qureResult.Count(),
                 data = qureResult.OrderByDescending(t => t.Id)
                     .Skip(searchInput.skip)
                     .Take(searchInput.take)
-                    .Select(t => new 
+                    .Select(t => new
                     {
                         id = t.Id,
                         username = t.Username,
                         type = t.Type,
                         isActive = t.IsActive,
-                        ph = t.PhoneNumber
+                        ph = t.PhoneNumber,
+                        siteTitleMN2 = t.SiteSetting.Title
                     })
                     .ToList()
-                    .Select(t => new SmsConfigMainGridResultVM 
-                    { 
+                    .Select(t => new SmsConfigMainGridResultVM
+                    {
                         row = ++row,
                         id = t.id,
-                        isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName()  : BMessages.InActive.GetEnumDisplayName(),
+                        isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                         type = t.type.GetEnumDisplayName(),
                         smsUsername = t.username,
-                        ph = t.ph
+                        ph = t.ph,
+                        siteTitleMN2 = t.siteTitleMN2
                     })
                     .ToList()
             };
@@ -154,7 +162,11 @@ namespace Oje.Sms.Services
         {
             CreateUpdateValidation(input, siteSettingId);
 
-            Models.DB.SmsConfig foundItem = db.SmsConfigs.Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            Models.DB.SmsConfig foundItem = db.SmsConfigs
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.Id == input.id)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

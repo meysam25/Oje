@@ -33,7 +33,9 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Create(UserRegisterFormDiscountCodeCreateUpdateVM input, int? siteSettingId)
         {
-            createValidationValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+
+            createValidationValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new UserRegisterFormDiscountCode()
             {
@@ -46,7 +48,7 @@ namespace Oje.Section.RegisterForm.Services
                 Percent = input.percent,
                 Price = input.price,
                 UserRegisterFormId = input.formId.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value
             }).State = EntityState.Added;
@@ -55,7 +57,7 @@ namespace Oje.Section.RegisterForm.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidationValidation(UserRegisterFormDiscountCodeCreateUpdateVM input, int? siteSettingId)
+        private void createValidationValidation(UserRegisterFormDiscountCodeCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -63,7 +65,7 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!UserRegisterFormService.Exist(input.formId.ToIntReturnZiro(), siteSettingId))
+            if (!UserRegisterFormService.Exist(input.formId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
@@ -124,7 +126,9 @@ namespace Oje.Section.RegisterForm.Services
                     percent = t.Percent,
                     price = t.Price,
                     title = t.Title,
-                    toDate = t.ToDate
+                    toDate = t.ToDate,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .OrderByDescending(t => t.id)
                 .Take(1)
@@ -142,7 +146,9 @@ namespace Oje.Section.RegisterForm.Services
                     maxPrice = t.maxPrice,
                     id = t.id,
                     percent = t.percent,
-                    formId_Title = t.formId_Title
+                    formId_Title = t.formId_Title,
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -175,6 +181,8 @@ namespace Oje.Section.RegisterForm.Services
             }
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -190,7 +198,8 @@ namespace Oje.Section.RegisterForm.Services
                     isActive = t.IsActive,
                     ppfTitle = t.UserRegisterForm.Title,
                     title = t.Title,
-                    toDate = t.ToDate
+                    toDate = t.ToDate,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserRegisterFormDiscountCodeMainGridResultVM
@@ -202,7 +211,8 @@ namespace Oje.Section.RegisterForm.Services
                     title = t.title,
                     fromDate = t.fromDate.ToFaDate(),
                     toDate = t.toDate.ToFaDate(),
-                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name
+                    isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -210,7 +220,9 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Update(UserRegisterFormDiscountCodeCreateUpdateVM input, int? siteSettingId)
         {
-            createValidationValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+
+            createValidationValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.UserRegisterFormDiscountCodes
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -229,6 +241,7 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.UserRegisterFormId = input.formId.Value;
             foundItem.Title = input.title;
             foundItem.ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Models.DB
 {
@@ -13,8 +10,12 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
     {
         public SiteSetting()
         {
-            ProposalForms = new List<ProposalForm>();
-            ProposalFormRequiredDocumentTypes = new List<ProposalFormRequiredDocumentType>();
+            ProposalForms = new();
+            ProposalFormRequiredDocumentTypes = new();
+            AgentReffers = new();
+            PaymentMethods = new();
+            ProposalFormPostPrices = new();
+            ProposalFormPrintDescrptions = new();
         }
 
         [Key]
@@ -49,5 +50,13 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public List<ProposalForm> ProposalForms { get; set; }
         [InverseProperty("SiteSetting")]
         public List<ProposalFormRequiredDocumentType> ProposalFormRequiredDocumentTypes { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<AgentReffer> AgentReffers { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<PaymentMethod> PaymentMethods { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<ProposalFormPostPrice> ProposalFormPostPrices { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
     }
 }

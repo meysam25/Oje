@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Interfac;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Models.DB
 {
     [Table("BlogReviews")]
-    public class BlogReview
+    public class BlogReview: IEntityWithSiteSettingId
     {
         [Required]
         [MaxLength(200)]
@@ -39,5 +36,7 @@ namespace Oje.Section.Blog.Models.DB
         [InverseProperty("BlogReviews")]
         public User ConfirmUser { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("BlogReviews")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -132,6 +133,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                 quiryResult = quiryResult.Where(t => t.VehicleTypeId == searchInput.ctId);
             if (searchInput.comId.ToIntReturnZiro() > 0)
                 quiryResult = quiryResult.Where(t => t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies.Any(tt => tt.CompanyId == searchInput.comId));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                quiryResult = quiryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -149,7 +152,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                     price = t.Price,
                     percent = t.Percent,
                     comId = t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies.Select(tt => tt.Company.Title).ToList(),
-                    ctId = t.VehicleType.Title
+                    ctId = t.VehicleType.Title,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountMainGridResultVM 
@@ -160,7 +164,8 @@ namespace Oje.Section.CarThirdBaseData.Services
                     ctId = t.ctId,
                     percent = t.percent.ToString(),
                     price = t.price.ToString("###,###"),
-                    title = t.title 
+                    title = t.title,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

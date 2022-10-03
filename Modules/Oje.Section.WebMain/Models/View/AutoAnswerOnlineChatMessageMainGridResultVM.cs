@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.WebMain.Models.View
 {
@@ -23,5 +18,7 @@ namespace Oje.Section.WebMain.Models.View
         public int likeCount { get;  set; }
         [Display(Name = "تعداد نپسندیدن")]
         public int dislikeCount { get; set; }
+        [Display(Name = "وب سایت")]
+        public string siteTitleMN2 { get; set; }
     }
 }

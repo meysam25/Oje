@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -6,11 +7,6 @@ using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Models.DB;
 using Oje.PaymentService.Models.View;
 using Oje.PaymentService.Services.EContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.PaymentService.Services
 {
@@ -18,10 +14,17 @@ namespace Oje.PaymentService.Services
     {
         readonly PaymentDBContext db = null;
         readonly IBankAccountService BankAccountService = null;
-        public BankAccountSizpayService(PaymentDBContext db, IBankAccountService BankAccountService)
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
+        public BankAccountSizpayService(
+                PaymentDBContext db, 
+                IBankAccountService BankAccountService,
+                IHttpContextAccessor HttpContextAccessor
+            )
         {
             this.db = db;
             this.BankAccountService = BankAccountService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(BankAccountSizpayCreateUpdateVM input, int? siteSettingId)
@@ -71,7 +74,11 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Delete(int? id, int? siteSettingId)
         {
-            var foundItem = db.BankAccountSizpaies.Where(t => t.SiteSettingId == siteSettingId && t.BankAccountId == id).FirstOrDefault();
+            var foundItem = db.BankAccountSizpaies
+                .Where(t => t.BankAccountId == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -84,7 +91,8 @@ namespace Oje.PaymentService.Services
         public object GetById(int? id, int? siteSettingId)
         {
             return db.BankAccountSizpaies
-                .Where(t => t.BankAccountId == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.BankAccountId == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
                     bcId = t.BankAccountId,
@@ -103,7 +111,8 @@ namespace Oje.PaymentService.Services
             if (searchInput == null)
                 searchInput = new BankAccountSizpayMainGrid();
 
-            var qureResult = db.BankAccountSizpaies.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.BankAccountSizpaies
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.title))
                 qureResult = qureResult.Where(t => t.BankAccount.Title.Contains(searchInput.title));
             if (searchInput.terminalId.ToLongReturnZiro() > 0)
@@ -112,6 +121,8 @@ namespace Oje.PaymentService.Services
                 qureResult = qureResult.Where(t => t.MerchantId == searchInput.merchandId);
             if (!string.IsNullOrEmpty(searchInput.shbaNo))
                 qureResult = qureResult.Where(t => t.BankAccount.ShabaNo.Contains(searchInput.shbaNo));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -128,7 +139,8 @@ namespace Oje.PaymentService.Services
                         title = t.BankAccount.Title,
                         terminalId = t.TerminalId,
                         merchandId = t.MerchantId,
-                        shbaNo = t.BankAccount.ShabaNo
+                        shbaNo = t.BankAccount.ShabaNo,
+                        siteTitleMN2 = t.SiteSetting.Title
                     })
                     .ToList()
                     .Select(t => new BankAccountSizpayMainGridResultVM
@@ -138,7 +150,8 @@ namespace Oje.PaymentService.Services
                         title = t.title,
                         terminalId = t.terminalId + "",
                         merchandId = t.merchandId + "",
-                        shbaNo = "IR" + t.shbaNo
+                        shbaNo = "IR" + t.shbaNo,
+                        siteTitleMN2 = t.siteTitleMN2
                     })
                     .ToList()
             };
@@ -148,7 +161,11 @@ namespace Oje.PaymentService.Services
         {
             updateValidation(input, siteSettingId);
 
-            var foundItem = db.BankAccountSizpaies.Where(t => t.SiteSettingId == siteSettingId && t.BankAccountId == input.bcId).FirstOrDefault();
+            var foundItem = db.BankAccountSizpaies
+                .Where(t => t.BankAccountId == input.bcId)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

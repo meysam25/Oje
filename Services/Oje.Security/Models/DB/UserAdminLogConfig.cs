@@ -14,5 +14,7 @@ namespace Oje.Security.Models.DB
         public DB.Action Action { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserAdminLogConfigs")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

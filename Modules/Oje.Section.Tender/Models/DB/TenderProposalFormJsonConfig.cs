@@ -29,6 +29,8 @@ namespace Oje.Section.Tender.Models.DB
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("TenderProposalFormJsonConfigs")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("TenderProposalFormJsonConfig")]
         public List<TenderFilledFormJson> TenderFilledFormJsons { get; set; }

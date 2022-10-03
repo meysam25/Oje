@@ -1,16 +1,14 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.DB
 {
     [Table("InquiryCompanyLimits")]
-    public class InquiryCompanyLimit
+    public class InquiryCompanyLimit: IEntityWithSiteSettingId
     {
         public InquiryCompanyLimit()
         {
@@ -29,6 +27,8 @@ namespace Oje.Section.InquiryBaseData.Models.DB
         public DateTime CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InquiryCompanyLimits")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InquiryCompanyLimit")]
         public List<InquiryCompanyLimitCompany> InquiryCompanyLimitCompanies { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
@@ -34,7 +35,9 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Create(UserRegisterFormCreateUpdateVM input, int? siteSettingId)
         {
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             var newItem = new UserRegisterForm()
             {
@@ -43,7 +46,7 @@ namespace Oje.Section.RegisterForm.Services
                 Name = input.name,
                 PaymentUserId = input.userId,
                 SeoDescription = input.description,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 TermDescription = input.termT
             };
@@ -68,8 +71,10 @@ namespace Oje.Section.RegisterForm.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidation(UserRegisterFormCreateUpdateVM input, int? siteSettingId)
+        private void createValidation(UserRegisterFormCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
+
+
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (siteSettingId.ToIntReturnZiro() <= 0)
@@ -92,6 +97,11 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.termT.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            if (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0)
+                siteSettingId = input.cSOWSiteSettingId;
+            if (input.userId.ToLongReturnZiro() > 0 && !db.Users.Any(t => t.SiteSettingId == siteSettingId && t.Id == input.userId))
+                throw BException.GenerateNewException(BMessages.User_Not_Found);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -131,7 +141,9 @@ namespace Oje.Section.RegisterForm.Services
                     description = t.SeoDescription,
                     title = t.Title,
                     termT = t.TermDescription,
-                    roleIds = t.UserRegisterFormRoles.Select(tt => tt.RoleId).ToList()
+                    roleIds = t.UserRegisterFormRoles.Select(tt => tt.RoleId).ToList(),
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -150,7 +162,8 @@ namespace Oje.Section.RegisterForm.Services
                 queryResult = queryResult.Where(t => t.IsActive == searchInput.isActive);
             if (!string.IsNullOrEmpty(searchInput.userfullname))
                 queryResult = queryResult.Where(t => t.PaymentUserId != null && (t.PaymentUser.Firstname + " " + t.PaymentUser.Lastname).Contains(searchInput.userfullname));
-
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                queryResult = queryResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
             int row = searchInput.skip;
 
             return new GridResultVM<UserRegisterFormMainGridResultVM>()
@@ -164,7 +177,8 @@ namespace Oje.Section.RegisterForm.Services
                     name = t.Name,
                     isActive = t.IsActive,
                     t.PaymentUser.Firstname,
-                    t.PaymentUser.Lastname
+                    t.PaymentUser.Lastname,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserRegisterFormMainGridResultVM
@@ -175,7 +189,8 @@ namespace Oje.Section.RegisterForm.Services
                     name = t.name,
                     title = t.title,
                     userfullname = t.Firstname + " " + t.Lastname,
-                    url = "/Register/Users/" + t.name + "?fid=" + t.id
+                    url = "/Register/Users/" + t.name + "?fid=" + t.id,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -183,7 +198,9 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Update(UserRegisterFormCreateUpdateVM input, int? siteSettingId)
         {
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.UserRegisterForms
                 .Include(t => t.UserRegisterFormRoles)
@@ -201,6 +218,7 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.SeoDescription = input.description;
             foundItem.Title = input.title;
             foundItem.TermDescription = input.termT;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (foundItem.UserRegisterFormRoles != null)
                 foreach (var role in foundItem.UserRegisterFormRoles)
@@ -230,7 +248,7 @@ namespace Oje.Section.RegisterForm.Services
 
             result.AddRange(
                 db.UserRegisterForms
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.SiteSettingId == siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,

@@ -5,11 +5,6 @@ using Oje.EmailService.Interfaces;
 using Oje.EmailService.Models.View;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
 {

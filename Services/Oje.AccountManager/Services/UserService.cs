@@ -558,6 +558,8 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.Mobile.Contains(searchInput.mobile));
             if (searchInput.roleIds.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.UserRoles.Any(tt => tt.RoleId == searchInput.roleIds));
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -572,7 +574,8 @@ namespace Oje.AccountService.Services
                     lastname = t.Lastname,
                     mobile = t.Mobile,
                     isActive = t.IsActive,
-                    roleIds = t.UserRoles.Select(tt => tt.Role.Title).ToList()
+                    roleIds = t.UserRoles.Select(tt => tt.Role.Title).ToList(),
+                    siteTitleMN2 = t.SiteSetting.Title
                 }).ToList()
                 .Select(t => new AdminUserGridResult
                 {
@@ -583,7 +586,8 @@ namespace Oje.AccountService.Services
                     lastname = t.lastname,
                     mobile = t.mobile,
                     isActive = t.isActive == true ? IsActive.Active.GetAttribute<DisplayAttribute>()?.Name : IsActive.InActive.GetAttribute<DisplayAttribute>()?.Name,
-                    roleIds = string.Join(',', t.roleIds)
+                    roleIds = string.Join(',', t.roleIds),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -1149,7 +1153,9 @@ namespace Oje.AccountService.Services
 
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var qureResult = db.Users.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId && t.UserRoles.Any(tt => tt.Role.Type == rType));
+            var qureResult = db.Users.OrderByDescending(t => t.Id)
+                .getSiteSettingQuiryNullable(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.UserRoles.Any(tt => tt.Role.Type == rType));
 
             if (canSeeAllItem != true)
                 qureResult = qureResult.getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem);

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InquiryBaseData.Services.EContext;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
@@ -17,15 +18,19 @@ namespace Oje.Section.InquiryBaseData.Services
         readonly InquiryBaseDataDBContext db = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public CashPayDiscountService(
                 InquiryBaseDataDBContext db,
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
-            this.SiteSettingService = SiteSettingService;
             this.db = db;
+            this.SiteSettingService = SiteSettingService;
             this.ProposalFormService = ProposalFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateCashPayDiscountVM input)
@@ -80,7 +85,12 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
-            var foundItem = db.CashPayDiscounts.Include(t => t.CashPayDiscountCompanies).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.CashPayDiscounts
+                .Include(t => t.CashPayDiscountCompanies)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -97,8 +107,10 @@ namespace Oje.Section.InquiryBaseData.Services
         public CreateUpdateCashPayDiscountVM GetById(int? id)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+
             return db.CashPayDiscounts
-                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new CreateUpdateCashPayDiscountVM
                 {
                     cIds = t.CashPayDiscountCompanies.Select(tt => tt.CompanyId).ToList(),
@@ -118,7 +130,8 @@ namespace Oje.Section.InquiryBaseData.Services
             if (searchInput == null)
                 searchInput = new CashPayDiscountMainGrid();
 
-            var qureResult = db.CashPayDiscounts.Where(t => t.SiteSettingId == siteSettingId);
+            var qureResult = db.CashPayDiscounts
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
 
             if (searchInput.company.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.CashPayDiscountCompanies.Any(tt => tt.CompanyId == searchInput.company));
@@ -130,6 +143,8 @@ namespace Oje.Section.InquiryBaseData.Services
                 qureResult = qureResult.Where(t => t.Percent == searchInput.percent);
             if (searchInput.isActive != null)
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             var row = searchInput.skip;
 
@@ -144,7 +159,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     ppfTitle = t.ProposalForm.Title,
                     title = t.Title,
                     percent = t.Percent,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new CashPayDiscountMainGridResultVM
@@ -155,7 +171,8 @@ namespace Oje.Section.InquiryBaseData.Services
                     isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
                     percent = t.percent,
                     ppfTitle = t.ppfTitle,
-                    title = t.title
+                    title = t.title,
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };
@@ -166,7 +183,12 @@ namespace Oje.Section.InquiryBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             createValidation(input, siteSettingId);
 
-            var foundItem = db.CashPayDiscounts.Include(t => t.CashPayDiscountCompanies).Where(t => t.Id == input.id && t.SiteSettingId == siteSettingId).FirstOrDefault();
+            var foundItem = db.CashPayDiscounts
+                .Include(t => t.CashPayDiscountCompanies)
+                .Where(t => t.Id == input.id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 

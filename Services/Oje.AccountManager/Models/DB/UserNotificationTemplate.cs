@@ -17,5 +17,7 @@ namespace Oje.AccountService.Models.DB
         public string Description { get; set; }
         public ProposalFilledFormUserType? ProposalFilledFormUserType { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("UserNotificationTemplates")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

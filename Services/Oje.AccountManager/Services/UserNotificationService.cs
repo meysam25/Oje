@@ -139,6 +139,8 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.ViewDate == null);
             else if (searchInput.notSeen == false)
                 qureResult = qureResult.Where(t => t.ViewDate != null);
+            if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
+                qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
 
             int row = searchInput.skip;
 
@@ -156,7 +158,8 @@ namespace Oje.AccountService.Services
                     viewDate = t.ViewDate,
                     t.UserId,
                     link = t.TargetPageLink,
-                    notSeen = t.ViewDate == null
+                    notSeen = t.ViewDate == null,
+                    siteTitleMN2 = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new UserNotificationMainGridResultVM
@@ -172,6 +175,7 @@ namespace Oje.AccountService.Services
                     justMyNotification = t.UserId == userId ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                     link = !string.IsNullOrEmpty(t.link) ? t.link : "",
                     notSeen = t.notSeen == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
+                    siteTitleMN2 = t.siteTitleMN2
                 })
                 .ToList()
             };

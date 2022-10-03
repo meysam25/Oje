@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Interfac;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("ShortLinks")]
-    public class ShortLink
+    public class ShortLink: IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }
@@ -14,5 +15,7 @@ namespace Oje.Section.WebMain.Models.DB
         public string TargetLink { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("ShortLinks")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

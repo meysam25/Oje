@@ -1,4 +1,5 @@
-﻿using Oje.AccountService.Interfaces;
+﻿using Microsoft.AspNetCore.Http;
+using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.Section.InquiryBaseData.Interfaces;
@@ -15,15 +16,19 @@ namespace Oje.Section.InquiryBaseData.Services
         readonly InquiryBaseDataDBContext db = null;
         readonly IUserService UserService = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public InsuranceContractService(
                 InquiryBaseDataDBContext db,
                 IUserService UserService,
-                AccountService.Interfaces.ISiteSettingService SiteSettingService
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
             this.UserService = UserService;
             this.SiteSettingService = SiteSettingService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public bool Exist(int id)
@@ -32,7 +37,8 @@ namespace Oje.Section.InquiryBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
-            return db.InsuranceContracts.Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+            return db.InsuranceContracts.Where(t => t.Id == id)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems).Any();
         }
 
@@ -44,7 +50,8 @@ namespace Oje.Section.InquiryBaseData.Services
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             result.AddRange(db.InsuranceContracts
-                .Where(t => t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {
                     id = t.Id,

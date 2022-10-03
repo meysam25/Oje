@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Interfac;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.WebMain.Models.DB
 {
     [Table("OurObjects")]
-    public class OurObject
+    public class OurObject: IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }
@@ -20,5 +21,7 @@ namespace Oje.Section.WebMain.Models.DB
         public OurObjectType Type { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("OurObjects")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

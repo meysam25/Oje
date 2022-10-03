@@ -1,16 +1,12 @@
 ﻿using Oje.Infrastructure.Interfac;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractValidUserForFullDebits")]
-    public class InsuranceContractValidUserForFullDebit: EntityWithCreateUser<User, long>
+    public class InsuranceContractValidUserForFullDebit: EntityWithCreateUser<User, long>, IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }
@@ -37,5 +33,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public DateTime? UpdateDate { get; set; }
         public bool IsActive { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractValidUserForFullDebits")]
+        public SiteSetting SiteSetting { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.InsuranceContractBaseData.Models.DB
 {
     [Table("InsuranceContractTypes")]
-    public class InsuranceContractType : EntityWithCreateUser<User, long>
+    public class InsuranceContractType : EntityWithCreateUser<User, long>, IEntityWithSiteSettingId
     {
         public InsuranceContractType()
         {
@@ -36,6 +36,8 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         [MaxLength(4000)]
         public string Description { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractTypes")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("InsuranceContractType")]
         public List<InsuranceContractInsuranceContractType> InsuranceContractInsuranceContractTypes { get; set; }

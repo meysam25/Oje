@@ -23,6 +23,8 @@ namespace Oje.Section.CarThirdBaseData.Models.DB
         [ForeignKey("VehicleTypeId"), InverseProperty("ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts")]
         public VehicleType VehicleType { get; set; }
         public int SiteSettingId { get; set; }
+        [ForeignKey("SiteSettingId"), InverseProperty("ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts")]
+        public SiteSetting SiteSetting { get; set; }
 
         [InverseProperty("ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount")]
         public List<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies { get; set; }
