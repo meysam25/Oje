@@ -61,7 +61,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            CreateValidation(input, loginUserId, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+
+            CreateValidation(input, loginUserId, siteSettingId, canSetSiteSetting);
 
             var newItem = new InsuranceContract()
             {
@@ -74,7 +76,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 MonthlyPrice = input.monthlyPrice.ToLongReturnZiro(),
                 InsuranceContractProposalFormId = input.proposalFormId.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value,
                 ProposalFormId = input.rPFId
@@ -95,7 +97,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateValidation(CreateUpdateInsuranceContractVM input, long? loginUserId, int? siteSettingId)
+        private void CreateValidation(CreateUpdateInsuranceContractVM input, long? loginUserId, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
@@ -111,19 +113,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Code);
             if (input.insuranceContractTypeIds == null || input.insuranceContractTypeIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract_Type);
-            if (!InsuranceContractTypeService.Exist(input.insuranceContractTypeIds, siteSettingId, loginUserId))
+            if (!InsuranceContractTypeService.Exist(input.insuranceContractTypeIds, (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value), loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract_Type);
             if (input.insuranceContractCompanyId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Legal_Company);
-            if (!InsuranceContractCompanyService.Exist(input.insuranceContractCompanyId.ToIntReturnZiro(), siteSettingId, loginUserId))
+            if (!InsuranceContractCompanyService.Exist(input.insuranceContractCompanyId.ToIntReturnZiro(), (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value), loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Legal_Company);
             if (input.proposalFormId.ToIntReturnZiro() <= 0 && input.rPFId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (!string.IsNullOrEmpty(input.description) && input.description.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
-            if ((input.proposalFormId.ToIntReturnZiro() > 0 && !InsuranceContractProposalFormService.Exist(input.proposalFormId.ToIntReturnZiro(), siteSettingId)))
+            if ((input.proposalFormId.ToIntReturnZiro() > 0 && !InsuranceContractProposalFormService.Exist(input.proposalFormId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value)))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (input.rPFId.ToIntReturnZiro() > 0 && !ProposalFormService.Exist(input.rPFId.ToIntReturnZiro(), siteSettingId))
+            if (input.rPFId.ToIntReturnZiro() > 0 && !ProposalFormService.Exist(input.rPFId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.monthlyPrice != null && input.monthlyPrice < 0)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
@@ -133,7 +135,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_ToDate);
             if (input.fromDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value > input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value)
                 throw BException.GenerateNewException(BMessages.ToDate_Should_Be_Greader_Then_FromYear);
-            if (db.InsuranceContracts.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Code == input.code))
+            if (db.InsuranceContracts.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Code == input.code))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -184,7 +186,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     rPFId_Title = t.ProposalForm.Title,
                     title = t.Title,
                     toDate = t.ToDate,
-                    contractDocument_address = GlobalConfig.FileAccessHandlerUrl + t.ContractDocumentUrl
+                    contractDocument_address = GlobalConfig.FileAccessHandlerUrl + t.ContractDocumentUrl,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .ToList()
@@ -204,7 +208,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     rPFId_Title = string.IsNullOrEmpty(t.rPFId_Title) ? "" : t.rPFId_Title,
                     title = t.title,
                     toDate = t.toDate.ToFaDate(),
-                    contractDocument_address = t.contractDocument_address
+                    contractDocument_address = t.contractDocument_address,
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -301,8 +307,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
-            CreateValidation(input, loginUserId, siteSettingId);
+            CreateValidation(input, loginUserId, siteSettingId, canSetSiteSetting);
 
             var foundItem =
                 db.InsuranceContracts
@@ -328,6 +335,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.Title = input.title;
             foundItem.ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.ProposalFormId = input.rPFId;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (foundItem.InsuranceContractInsuranceContractTypes != null)
                 foreach (var item in foundItem.InsuranceContractInsuranceContractTypes)
@@ -526,7 +534,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.InsuranceContracts.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+            result.AddRange(db.InsuranceContracts.Where(t => t.SiteSettingId == siteSettingId)
                 .Select(t => new
                 {
                     id = t.Id,

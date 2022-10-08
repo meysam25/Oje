@@ -18,13 +18,13 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     public class InqueryDescriptionController : Controller
     {
         readonly IInqueryDescriptionService InqueryDescriptionService = null;
-        readonly ISiteSettingService SiteSettingService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly IProposalFormService ProposalFormService = null;
         readonly ICompanyService CompanyService = null;
 
         public InqueryDescriptionController(
                 IInqueryDescriptionService InqueryDescriptionService,
-                ISiteSettingService SiteSettingService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
                 IProposalFormService ProposalFormService,
                 ICompanyService CompanyService
             )
@@ -105,7 +105,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         [HttpPost]
         public ActionResult GetWebSiteList()
         {
-            return Json(SiteSettingService.GetLightList());
+            return Json(SiteSettingService.GetightList());
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
@@ -117,9 +117,9 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

@@ -8,7 +8,6 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,6 +29,7 @@ namespace Oje.AccountService.Services
 
         public ApiResult Create(CreateUpdateUserNotificationTemplateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new UserNotificationTemplate()
@@ -37,8 +37,8 @@ namespace Oje.AccountService.Services
                 Type = input.type.Value,
                 Description = input.description,
                 Subject = input.subject,
-                SiteSettingId = siteSettingId.Value,
-                ProposalFilledFormUserType = input.pffUserType
+                ProposalFilledFormUserType = input.pffUserType,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -76,7 +76,9 @@ namespace Oje.AccountService.Services
                     type = t.Type,
                     subject = t.Subject,
                     description = t.Description,
-                    pffUserType = t.ProposalFilledFormUserType
+                    pffUserType = t.ProposalFilledFormUserType,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .ToList()
@@ -86,7 +88,9 @@ namespace Oje.AccountService.Services
                     type = (int)t.type,
                     t.subject,
                     t.description,
-                    pffUserType = t.pffUserType != null ? ((int)t.pffUserType).ToString() : ""
+                    pffUserType = t.pffUserType != null ? ((int)t.pffUserType).ToString() : "",
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -140,9 +144,11 @@ namespace Oje.AccountService.Services
 
         public ApiResult Update(CreateUpdateUserNotificationTemplateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
+
             var foundItem = db.UserNotificationTemplates
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .getSiteSettingQuiry(canSetSiteSetting, siteSettingId)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
 
@@ -153,6 +159,7 @@ namespace Oje.AccountService.Services
             foundItem.Description = input.description;
             foundItem.Subject = input.subject;
             foundItem.ProposalFilledFormUserType = input.pffUserType;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

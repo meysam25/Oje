@@ -19,13 +19,17 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     {
         readonly IProposalFormPostPriceService ProposalFormPostPriceService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+
         public ProposalFormPostPriceController(
                 IProposalFormPostPriceService ProposalFormPostPriceService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.ProposalFormPostPriceService = ProposalFormPostPriceService;
             this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "هزینه پست", Icon = "fa-mail-bulk", IsMainMenuItem = true)]
@@ -73,7 +77,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(ProposalFormPostPriceService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست هزینه پست", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست هزینه پست", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormPostPriceMainGrid searchInput)
         {
@@ -94,11 +98,11 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

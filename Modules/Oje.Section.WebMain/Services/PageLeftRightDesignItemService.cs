@@ -34,7 +34,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(PageLeftRightDesignItemCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var newItem = new PageLeftRightDesignItem()
             {
@@ -42,7 +43,7 @@ namespace Oje.Section.WebMain.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Order = input.order.ToIntReturnZiro(),
                 PageLeftRightDesignId = input.dId.ToLongReturnZiro(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 MainImage = " ",
                 ButtonTitle = input.bTitle,
@@ -60,7 +61,7 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(PageLeftRightDesignItemCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(PageLeftRightDesignItemCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Operation_Was_Successfull);
@@ -78,7 +79,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
             if (input.id.ToLongReturnZiro() <= 0 && (input.mainImage == null || input.mainImage.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_Image);
-            if (!db.PageLeftRightDesigns.Any(t => t.SiteSettingId == siteSettingId && t.Id == input.dId))
+            if (!db.PageLeftRightDesigns.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Id == input.dId))
                 throw BException.GenerateNewException(BMessages.Not_Found);
         }
 
@@ -113,7 +114,9 @@ namespace Oje.Section.WebMain.Services
                     isActive = t.IsActive,
                     mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.MainImage,
                     bTitle = t.ButtonTitle,
-                    bLink = t.ButtonLink
+                    bLink = t.ButtonLink,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -169,7 +172,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(PageLeftRightDesignItemCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.PageLeftRightDesignItems
                 .Where(t => t.Id == input.id)
@@ -186,6 +190,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.Title = input.title;
             foundItem.ButtonLink = input.bLink;
             foundItem.ButtonTitle = input.bTitle;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
 
             if (input.mainImage != null && input.mainImage.Length > 0)

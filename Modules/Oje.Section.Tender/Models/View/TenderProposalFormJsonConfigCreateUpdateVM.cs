@@ -3,7 +3,7 @@ using Oje.Infrastructure.Models;
 
 namespace Oje.Section.Tender.Models.View
 {
-    public class TenderProposalFormJsonConfigCreateUpdateVM
+    public class TenderProposalFormJsonConfigCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public int? ppfId { get; set; }

@@ -35,9 +35,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Create(InsuranceContractInsuranceContractTypeMaxPriceCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
-            if (db.InsuranceContractInsuranceContractTypeMaxPrices.Any(t => t.InsuranceContractTypeId == input.typeId && t.InsuranceContractId == input.cid && t.SiteSettingId == siteSettingId))
+            if (db.InsuranceContractInsuranceContractTypeMaxPrices.Any(t => t.InsuranceContractTypeId == input.typeId && t.InsuranceContractId == input.cid && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value)))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
 
             db.Entry(new InsuranceContractInsuranceContractTypeMaxPrice()
@@ -45,14 +46,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 InsuranceContractId = input.cid.Value,
                 InsuranceContractTypeId = input.typeId.Value,
                 MaxPrice = input.price.Value,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(InsuranceContractInsuranceContractTypeMaxPriceCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(InsuranceContractInsuranceContractTypeMaxPriceCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -62,13 +63,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract_Type);
             if (input.cid.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
-            if (!InsuranceContractService.Exist(input.cid, siteSettingId))
+            if (!InsuranceContractService.Exist(input.cid, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
-            if (!InsuranceContractTypeService.Exist(input.typeId, siteSettingId))
+            if (!InsuranceContractTypeService.Exist(input.typeId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.price.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
-
         }
 
         public ApiResult Delete(string strId, int? siteSettingId)
@@ -110,7 +110,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     staticTypeId = t.InsuranceContractTypeId,
                     typeId = t.InsuranceContractTypeId,
                     cid = t.InsuranceContractId,
-                    price = t.MaxPrice
+                    price = t.MaxPrice,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -163,16 +165,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(InsuranceContractInsuranceContractTypeMaxPriceCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
-
-
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             using (var tr = db.Database.BeginTransaction())
             {
                 try
                 {
                     var foundItem = db.InsuranceContractInsuranceContractTypeMaxPrices
-                        .Where(t => t.InsuranceContractTypeId == input.staticTypeId && t.InsuranceContractId == input.staticCid && t.SiteSettingId == siteSettingId)
+                        .Where(t => t.InsuranceContractTypeId == input.staticTypeId && t.InsuranceContractId == input.staticCid && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                         .FirstOrDefault();
 
                     if (foundItem == null)

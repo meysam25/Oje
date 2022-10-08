@@ -79,7 +79,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             return Json(UserNotificationTrigerService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تنظیمات ارسال نوتیفیکیشن", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تنظیمات ارسال نوتیفیکیشن", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserNotificationTrigerMainGrid searchInput)
         {
@@ -101,14 +101,14 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
         }
 
 
-        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetRoleList()
         {

@@ -47,6 +47,7 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(PageCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var newItem = new Page()
@@ -54,7 +55,7 @@ namespace Oje.Section.WebMain.Services
                 Title = input.title,
                 ButtonLink = input.bLink,
                 ButtonTitle = input.bTitle,
-                SiteSettingId = siteSettingId.ToIntReturnZiro(),
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 SubTitle = input.subTitle,
                 Summery = input.summery,
                 MainImage = " ",
@@ -147,7 +148,9 @@ namespace Oje.Section.WebMain.Services
                     bLink = t.ButtonLink,
                     mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.MainImage,
                     mainImageSmall_address = GlobalConfig.FileAccessHandlerUrl + t.MainImageSmall,
-                    stColor = t.TitleAndSubtitleColorCode
+                    stColor = t.TitleAndSubtitleColorCode,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -204,27 +207,29 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(PageCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
-            var fopundItem = db.Pages
+            var foundItem = db.Pages
                 .Where(t => t.Id == input.id)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
 
-            if (fopundItem == null)
+            if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            fopundItem.Title = input.title;
-            fopundItem.ButtonLink = input.bLink;
-            fopundItem.ButtonTitle = input.bTitle;
-            fopundItem.SubTitle = input.subTitle;
-            fopundItem.Summery = input.summery;
-            fopundItem.TitleAndSubtitleColorCode = input.stColor;
+            foundItem.Title = input.title;
+            foundItem.ButtonLink = input.bLink;
+            foundItem.ButtonTitle = input.bTitle;
+            foundItem.SubTitle = input.subTitle;
+            foundItem.Summery = input.summery;
+            foundItem.TitleAndSubtitleColorCode = input.stColor;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.mainImage != null && input.mainImage.Length > 0)
-                fopundItem.MainImage = UploadedFileService.UploadNewFile(FileType.PageMainImage, input.mainImage, null, siteSettingId, fopundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.MainImage = UploadedFileService.UploadNewFile(FileType.PageMainImage, input.mainImage, null, siteSettingId, foundItem.Id, ".png,.jpg,.jpeg", false);
             if (input.mainImageSmall != null && input.mainImageSmall.Length > 0)
-                fopundItem.MainImageSmall = UploadedFileService.UploadNewFile(FileType.PageMainImageSmall, input.mainImageSmall, null, siteSettingId, fopundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.MainImageSmall = UploadedFileService.UploadNewFile(FileType.PageMainImageSmall, input.mainImageSmall, null, siteSettingId, foundItem.Id, ".png,.jpg,.jpeg", false);
 
             db.SaveChanges();
 
@@ -243,7 +248,7 @@ namespace Oje.Section.WebMain.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.Pages.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+            var qureResult = db.Pages.Where(t => t.SiteSettingId == siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

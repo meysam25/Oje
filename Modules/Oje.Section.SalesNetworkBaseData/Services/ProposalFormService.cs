@@ -1,5 +1,4 @@
-﻿using Oje.AccountService.Interfaces;
-using Oje.Infrastructure.Models;
+﻿using Oje.Infrastructure.Models;
 using Oje.Section.SalesNetworkBaseData.Services.EContext;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +8,11 @@ namespace Oje.Section.SalesNetworkBaseData.Services
     public class ProposalFormService : Interfaces.IProposalFormService
     {
         readonly SalesNetworkBaseDataDBContext db = null;
-        readonly ISiteSettingService SiteSettingService = null;
         public ProposalFormService(
-                SalesNetworkBaseDataDBContext db,
-                ISiteSettingService SiteSettingService
+                SalesNetworkBaseDataDBContext db
             )
         {
             this.db = db;
-            this.SiteSettingService = SiteSettingService;
         }
 
         public bool Exist(int id, int? siteSettingId)
@@ -24,7 +20,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             return db.ProposalForms.Any(t => t.Id == id && (t.SiteSettingId == siteSettingId || t.SiteSettingId == null));
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput)
+        public object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId)
         {
             List<object> result = new List<object>();
 
@@ -35,8 +31,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 searchInput = new Select2SearchVM();
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
-
-            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId || t.SiteSettingId == null);
             if (!string.IsNullOrEmpty(searchInput.search))

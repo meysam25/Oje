@@ -24,21 +24,22 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(ShortLinkCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new ShortLink()
             {
                 Code = input.code,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value,
-                TargetLink = input.link
+                TargetLink = input.link,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(ShortLinkCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(ShortLinkCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -52,7 +53,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Link);
             if (input.link.Length > 200)
                 throw BException.GenerateNewException(BMessages.Link_Can_Not_Be_More_Then_200_Chars);
-            if (db.ShortLinks.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Code == input.code))
+            if (db.ShortLinks.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.Code == input.code))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -82,7 +83,9 @@ namespace Oje.Section.WebMain.Services
                     id = t.Id,
                     code = t.Code,
                     isActive = t.IsActive,
-                    link = t.TargetLink
+                    link = t.TargetLink,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -135,7 +138,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(ShortLinkCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.ShortLinks
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -148,6 +152,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.Code = input.code;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.TargetLink = input.link;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

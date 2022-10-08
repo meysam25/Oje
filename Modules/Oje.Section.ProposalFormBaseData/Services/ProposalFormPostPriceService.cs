@@ -36,14 +36,15 @@ namespace Oje.Section.ProposalFormBaseData.Services
         public ApiResult Create(CreateUpdateProposalFormPostPriceVM input)
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            CreateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new ProposalFormPostPrice()
             {
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Price = input.price.ToIntReturnZiro(),
                 ProposalFormId = input.ppfId.ToIntReturnZiro(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -51,7 +52,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateValidation(CreateUpdateProposalFormPostPriceVM input, int? siteSettingId)
+        private void CreateValidation(CreateUpdateProposalFormPostPriceVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -59,7 +60,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.ppfId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormService.Exist(input.ppfId.ToIntReturnZiro(), siteSettingId))
+            if (!ProposalFormService.Exist(input.ppfId.ToIntReturnZiro(), (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
@@ -67,7 +68,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
             if (input.price.ToIntReturnZiro() < 0)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
-            if (db.ProposalFormPostPrices.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.ProposalFormId == input.ppfId && t.Title == input.title))
+            if (db.ProposalFormPostPrices.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.ProposalFormId == input.ppfId && t.Title == input.title))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -100,8 +101,11 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     id = t.Id,
                     isActive = t.IsActive,
                     ppfId = t.ProposalFormId,
+                    ppfId_Title = t.ProposalForm.Title,
                     price = t.Price,
-                    title = t.Title
+                    title = t.Title,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -159,12 +163,14 @@ namespace Oje.Section.ProposalFormBaseData.Services
         public ApiResult Update(CreateUpdateProposalFormPostPriceVM input)
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            CreateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.ProposalFormPostPrices
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -172,6 +178,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
             foundItem.Price = input.price.ToIntReturnZiro();
             foundItem.ProposalFormId = input.ppfId.ToIntReturnZiro();
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
+
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);

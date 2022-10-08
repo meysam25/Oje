@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Models;
 
 namespace Oje.ProposalFormService.Models.View
 {
-    public class ReminderCreateVM
+    public class ReminderCreateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public int? fid { get; set; }

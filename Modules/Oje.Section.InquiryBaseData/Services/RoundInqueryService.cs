@@ -32,13 +32,14 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Create(CreateUpdateRoundInqueryVM input)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new RoundInquery()
             {
                 Format = input.format,
                 ProposalFormId = input.formId.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Type = input.type.Value
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -46,7 +47,7 @@ namespace Oje.Section.InquiryBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(CreateUpdateRoundInqueryVM input, int? siteSettingId)
+        private void createUpdateValidation(CreateUpdateRoundInqueryVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -62,9 +63,10 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Use_0_For_Format);
             if (input.format.Length > 20)
                 throw BException.GenerateNewException(BMessages.Format_Can_Not_Be_More_Then_20_Chars);
-            if (db.RoundInqueries.Any(t => t.ProposalFormId == input.formId && t.Id != input.id && t.SiteSettingId == siteSettingId))
-                throw BException.GenerateNewException(BMessages.Dublicate_Item)
-;
+            if (db.RoundInqueries.Any(t => t.ProposalFormId == input.formId && t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
+                throw BException.GenerateNewException(BMessages.Dublicate_Item);
+            if (!db.ProposalForms.Any(t => t.Id == input.formId && (t.SiteSettingId == null || t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId))))
+                throw BException.GenerateNewException(BMessages.Not_Found);
         }
 
         public ApiResult Delete(int? id)
@@ -96,7 +98,9 @@ namespace Oje.Section.InquiryBaseData.Services
                     format = t.Format,
                     formId = t.ProposalFormId,
                     formId_Title = t.ProposalForm.Title,
-                    type = t.Type
+                    type = t.Type,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .OrderByDescending(t => t.id)
                 .Take(1)
@@ -107,7 +111,9 @@ namespace Oje.Section.InquiryBaseData.Services
                     t.format,
                     t.formId,
                     t.formId_Title,
-                    type = (int)t.type
+                    type = (int)t.type,
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -160,19 +166,21 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Update(CreateUpdateRoundInqueryVM input)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
-            var editItem = db.RoundInqueries
+            var foundItem = db.RoundInqueries
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
 
-            if (editItem == null)
+            if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, Infrastructure.Enums.ApiResultErrorCode.NotFound);
 
-            editItem.Format = input.format;
-            editItem.ProposalFormId = input.formId.Value;
-            editItem.Type = input.type.Value;
+            foundItem.Format = input.format;
+            foundItem.ProposalFormId = input.formId.Value;
+            foundItem.Type = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

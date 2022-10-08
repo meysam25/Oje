@@ -9,14 +9,11 @@ namespace Oje.Section.InquiryBaseData.Services
     public class ProposalFormService: IProposalFormService
     {
         readonly InquiryBaseDataDBContext db = null;
-        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         public ProposalFormService(
-                InquiryBaseDataDBContext db,
-                AccountService.Interfaces.ISiteSettingService SiteSettingService
+                InquiryBaseDataDBContext db
             )
         {
             this.db = db;
-            this.SiteSettingService = SiteSettingService;
         }
 
         public bool Exist(int id, int? siteSettingId)
@@ -24,7 +21,7 @@ namespace Oje.Section.InquiryBaseData.Services
             return db.ProposalForms.Any(t => t.Id == id && (t.SiteSettingId == siteSettingId || t.SiteSettingId == null));
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput)
+        public object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId)
         {
             List<object> result = new List<object>();
 
@@ -35,8 +32,6 @@ namespace Oje.Section.InquiryBaseData.Services
                 searchInput = new Select2SearchVM();
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
-
-            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId || t.SiteSettingId == null);
             if (!string.IsNullOrEmpty(searchInput.search))

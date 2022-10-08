@@ -1,7 +1,8 @@
-﻿
+﻿using Oje.Infrastructure.Models;
+
 namespace Oje.Section.WebMain.Models.View
 {
-    public class ShortLinkCreateUpdateVM
+    public class ShortLinkCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public string code { get; set; }

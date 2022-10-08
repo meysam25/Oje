@@ -65,7 +65,7 @@ namespace Oje.ProposalFormService.Services
             return db.ProposalForms.Where(t => t.Id == proposalFormId && (t.SiteSettingId == null || t.SiteSettingId == siteSettingId)).Select(t => t.JsonConfig).FirstOrDefault();
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput, int? proposalFormCategoryId)
+        public object GetSelect2List(Select2SearchVM searchInput, int? proposalFormCategoryId, int? siteSettingId)
         {
             List<object> result = new List<object>();
 
@@ -77,7 +77,7 @@ namespace Oje.ProposalFormService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).AsQueryable();
+            var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == null || t.SiteSettingId == siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             if (proposalFormCategoryId != null)

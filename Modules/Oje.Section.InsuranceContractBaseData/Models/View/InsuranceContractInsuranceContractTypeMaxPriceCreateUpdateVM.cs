@@ -1,7 +1,8 @@
-﻿
+﻿using Oje.Infrastructure.Models;
+
 namespace Oje.Section.InsuranceContractBaseData.Models.View
 {
-    public class InsuranceContractInsuranceContractTypeMaxPriceCreateUpdateVM
+    public class InsuranceContractInsuranceContractTypeMaxPriceCreateUpdateVM: GlobalSiteSetting
     {
         public int? typeId { get; set; }
         public int? cid { get; set; }

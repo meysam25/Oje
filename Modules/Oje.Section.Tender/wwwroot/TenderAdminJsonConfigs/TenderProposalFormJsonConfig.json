@@ -82,17 +82,31 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "TenderProposalFormJsonConfigcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "ppfId",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/TenderAdmin/TenderProposalFormJsonConfig/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "TenderProposalFormJsonConfigcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",
@@ -137,17 +151,31 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "TenderProposalFormJsonConfigcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "ppfId",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/TenderAdmin/TenderProposalFormJsonConfig/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "TenderProposalFormJsonConfigcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "isActive",
               "type": "dropDown",
               "textfield": "title",

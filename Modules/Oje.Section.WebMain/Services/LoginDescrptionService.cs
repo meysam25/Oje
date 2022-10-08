@@ -28,6 +28,7 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(LoginDescrptionCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new LoginDescrption()
@@ -35,7 +36,7 @@ namespace Oje.Section.WebMain.Services
                 ReturnUrl = input.url,
                 Description = input.desc,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -82,7 +83,9 @@ namespace Oje.Section.WebMain.Services
                     id = t.Id,
                     desc = t.Description,
                     isActive = t.IsActive,
-                    url = t.ReturnUrl
+                    url = t.ReturnUrl,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -132,6 +135,7 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(LoginDescrptionCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.LoginDescrptions
@@ -145,6 +149,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.ReturnUrl = input.url;
             foundItem.Description = input.desc;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

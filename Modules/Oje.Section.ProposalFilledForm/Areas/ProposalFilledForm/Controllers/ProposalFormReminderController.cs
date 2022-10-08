@@ -111,9 +111,9 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [HttpGet]
         [AreaConfig(Title = "مشاهده لیست فرم پیشنهاد", Icon = "fa-list-alt")]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? appfCatId)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? appfCatId, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput, appfCatId));
+            return Json(ProposalFormService.GetSelect2List(searchInput, appfCatId, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

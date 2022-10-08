@@ -29,12 +29,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Create(InsuranceContractUserBaseInsuranceCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new InsuranceContractUserBaseInsurance()
             {
                 Code = input.code,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -42,7 +43,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(InsuranceContractUserBaseInsuranceCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(InsuranceContractUserBaseInsuranceCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -52,7 +53,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
             if (string.IsNullOrEmpty(input.code))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Code);
-            if (db.InsuranceContractUserBaseInsurances.Any(t => t.SiteSettingId == siteSettingId && t.Id != input.id && t.Code == input.code))
+            if (db.InsuranceContractUserBaseInsurances.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Id != input.id && t.Code == input.code))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
 
         }
@@ -82,7 +83,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    code = t.Code
+                    code = t.Code,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -132,7 +135,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(InsuranceContractUserBaseInsuranceCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.InsuranceContractUserBaseInsurances
                 .Where(t => t.Id == input.id)
@@ -144,6 +148,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             foundItem.Code = input.code;
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

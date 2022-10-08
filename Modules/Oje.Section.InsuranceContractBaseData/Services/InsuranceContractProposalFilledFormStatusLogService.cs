@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Enums;
+﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.DB;
@@ -13,12 +14,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
     public class InsuranceContractProposalFilledFormStatusLogService : IInsuranceContractProposalFilledFormStatusLogService
     {
         readonly InsuranceContractBaseDataDBContext db = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
         public InsuranceContractProposalFilledFormStatusLogService
             (
-                InsuranceContractBaseDataDBContext db
+                InsuranceContractBaseDataDBContext db,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public void Create(long? InsuranceContractProposalFilledFormUserId, InsuranceContractProposalFilledFormType? status, DateTime now, long? loginUserId, string description)
@@ -41,9 +45,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             searchInput = searchInput ?? new InsuranceContractProposalFilledFormStatusLogGrid();
 
-            var quiryResult = db.InsuranceContractProposalFilledFormStatusLogs
-                .Where(t => t.InsuranceContractProposalFilledFormUserId == searchInput.pKey && t.InsuranceContractProposalFilledFormUser.Status == status && 
-                t.InsuranceContractProposalFilledFormUser.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledFormUser.InsuranceContractProposalFilledForm.IsDelete != true);
+            var quiryResult = db.InsuranceContractProposalFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status))
+                .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
+                .SelectMany(t => t.InsuranceContractProposalFilledFormStatusLogs)
+                .Where(t => t.InsuranceContractProposalFilledFormUserId == searchInput.pKey && t.InsuranceContractProposalFilledFormUser.Status == status);
+               
             if (searchInput.status != null)
                 quiryResult = quiryResult.Where(t => t.Status == searchInput.status);
             if (!string.IsNullOrEmpty(searchInput.userFullname))

@@ -1,7 +1,8 @@
-﻿
+﻿using Oje.Infrastructure.Models;
+
 namespace Oje.Section.WebMain.Models.View
 {
-    public class PageManifestCreateUpdateVM
+    public class PageManifestCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public long? pid { get; set; }

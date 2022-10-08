@@ -35,7 +35,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Create(InsuranceContractTypeRequiredDocumentCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var newItem = new InsuranceContractTypeRequiredDocument()
             {
@@ -44,7 +45,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 InsuranceContractTypeId = input.ctId.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 IsRequired = input.isRequired.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             };
             db.Entry(newItem).State = EntityState.Added;
@@ -59,7 +60,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(InsuranceContractTypeRequiredDocumentCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(InsuranceContractTypeRequiredDocumentCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -73,9 +74,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
             if (input.title.Length > 100)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
-            if (db.InsuranceContractTypeRequiredDocuments.Any(t => t.Id != input.id && t.Title == input.title && t.SiteSettingId == siteSettingId && t.InsuranceContractId == input.cid && t.InsuranceContractTypeId == input.ctId))
+            if (db.InsuranceContractTypeRequiredDocuments.Any(t => t.Id != input.id && t.Title == input.title && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.InsuranceContractId == input.cid && t.InsuranceContractTypeId == input.ctId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
-
+            if (!db.InsuranceContracts.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Id == input.cid))
+                throw BException.GenerateNewException(BMessages.Insurance_Conteract_Not_Found);
+            if (!db.InsuranceContractTypes.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Id == input.ctId))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -108,7 +112,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     t.Title,
                     t.IsActive,
                     t.IsRequired,
-                    t.DownloadFile
+                    t.DownloadFile,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .Select(t => new InsuranceContractTypeRequiredDocumentCreateUpdateVM
@@ -119,7 +125,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     id = t.Id,
                     isActive = t.IsActive,
                     isRequired = t.IsRequired,
-                    title = t.Title
+                    title = t.Title,
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 }).FirstOrDefault();
         }
 
@@ -180,7 +188,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(InsuranceContractTypeRequiredDocumentCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.InsuranceContractTypeRequiredDocuments
                 .Where(t => t.Id == input.id)
@@ -196,6 +205,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.IsRequired = input.isRequired.ToBooleanReturnFalse();
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.downloadFile != null && input.downloadFile.Length > 0)
                 foundItem.DownloadFile = UploadedFileService.UploadNewFile(FileType.ContractUploadFileSample, input.downloadFile, null, siteSettingId, foundItem.Id, ".doc,.docx,.jpg,.jpeg,.png,.pdf", false);

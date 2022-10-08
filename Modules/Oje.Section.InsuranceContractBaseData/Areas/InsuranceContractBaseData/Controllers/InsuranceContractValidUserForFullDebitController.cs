@@ -8,6 +8,7 @@ using Oje.Section.InsuranceContractBaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Oje.Infrastructure.Exceptions;
+using Oje.AccountService.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -19,14 +20,17 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
     {
         readonly IInsuranceContractValidUserForFullDebitService InsuranceContractValidUserForFullDebitService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
+        readonly ISiteSettingService SiteSettingService = null;
         public InsuranceContractValidUserForFullDebitController
             (
                 IInsuranceContractValidUserForFullDebitService InsuranceContractValidUserForFullDebitService,
-                IInsuranceContractService InsuranceContractService
+                IInsuranceContractService InsuranceContractService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.InsuranceContractValidUserForFullDebitService = InsuranceContractValidUserForFullDebitService;
             this.InsuranceContractService = InsuranceContractService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "فروش از دم قسط", Icon = "fa-credit-card", IsMainMenuItem = true)]
@@ -105,9 +109,9 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 
         [AreaConfig(Title = "مشاهده قرارداد", Icon = "fa-list-alt ")]
         [HttpPost]
-        public ActionResult GetContractList()
+        public ActionResult GetContractList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractService.GetLightList());
+            return Json(InsuranceContractService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

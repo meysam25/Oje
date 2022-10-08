@@ -19,10 +19,17 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
     {
         readonly IRoundInqueryService RoundInqueryService = null;
         readonly IProposalFormService ProposalFormService = null;
-        public RoundInqueryController(IRoundInqueryService RoundInqueryService, IProposalFormService ProposalFormService)
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+        public RoundInqueryController
+            (
+                IRoundInqueryService RoundInqueryService, 
+                IProposalFormService ProposalFormService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
+            )
         {
             this.RoundInqueryService = RoundInqueryService;
             this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "روند کردن جزییات استعلام", Icon = "fa-balance-scale", IsMainMenuItem = true)]
@@ -94,9 +101,9 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

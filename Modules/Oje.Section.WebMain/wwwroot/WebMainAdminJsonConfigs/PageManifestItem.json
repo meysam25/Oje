@@ -97,13 +97,31 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "WebMainAdminPageManifestItemcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-9 col-lg-9 col-md-8 col-sm-6 col-xs-12",
+              "type": "empty"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
               "name": "mid",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/WebMainAdmin/PageManifestItem/GetPageLightList",
               "label": "فهرست صفحه",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "WebMainAdminPageManifestItemcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -159,13 +177,31 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "WebMainAdminPageManifestItemcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-9 col-lg-9 col-md-8 col-sm-6 col-xs-12",
+              "type": "empty"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
               "name": "mid",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/WebMainAdmin/PageManifestItem/GetPageLightList",
               "label": "فهرست صفحه",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "WebMainAdminPageManifestItemcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",

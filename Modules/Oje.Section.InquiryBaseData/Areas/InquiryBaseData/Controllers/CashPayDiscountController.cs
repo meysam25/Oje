@@ -20,16 +20,19 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         readonly ICashPayDiscountService CashPayDiscountService = null;
         readonly ICompanyService CompanyService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
 
         public CashPayDiscountController(
                 ICashPayDiscountService CashPayDiscountService,
                 ICompanyService CompanyService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.CashPayDiscountService = CashPayDiscountService;
             this.CompanyService = CompanyService;
             this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "تخفیف نقدی خرید", Icon = "fa-percent", IsMainMenuItem = true)]
@@ -107,9 +110,9 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

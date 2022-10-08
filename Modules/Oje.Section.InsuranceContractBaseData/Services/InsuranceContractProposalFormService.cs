@@ -30,6 +30,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Create(InsuranceContractProposalFormCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new InsuranceContractProposalForm()
@@ -39,7 +40,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 JsonConfig = input.jConfig,
                 Name = input.name,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 TermTemplate = input.termsT,
                 Title = input.title
             }).State = EntityState.Added;
@@ -100,7 +101,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     t.JsonConfig,
                     t.Name,
                     t.TermTemplate,
-                    t.Title
+                    t.Title,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .Select(t => new InsuranceContractProposalFormCreateUpdateVM()
@@ -111,7 +114,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     jConfig = t.JsonConfig,
                     name = t.Name,
                     termsT = t.TermTemplate,
-                    title = t.Title
+                    title = t.Title,
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -162,6 +167,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(InsuranceContractProposalFormCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.InsuranceContractProposalForms
@@ -179,6 +185,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.Name = input.name;
             foundItem.TermTemplate = input.termsT;
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 
@@ -200,7 +207,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             var qureResult = db.InsuranceContractProposalForms
                 .OrderByDescending(t => t.Id)
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+                .Where(t => t.SiteSettingId == siteSettingId);
+
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

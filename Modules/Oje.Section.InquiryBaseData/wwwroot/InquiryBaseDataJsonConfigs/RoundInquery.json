@@ -80,7 +80,7 @@
       ],
       "moduals": [
         {
-          "class": "modal-xl",
+          "class": "",
           "id": "RoundInqueryAddGridModal",
           "title": "افزودن",
           "ctrls": [
@@ -89,24 +89,38 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "RoundInquerycSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "formId",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/RoundInquery/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "RoundInquerycSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "format",
               "type": "text",
               "label": "فرمت",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
@@ -130,7 +144,7 @@
           ]
         },
         {
-          "class": "modal-xl",
+          "class": "",
           "id": "RoundInqueryModal",
           "title": "ویرایش",
           "ctrls": [
@@ -139,24 +153,38 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "RoundInquerycSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "formId",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/RoundInquery/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "RoundInquerycSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "format",
               "type": "text",
               "label": "فرمت",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",

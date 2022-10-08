@@ -33,7 +33,8 @@ namespace Oje.Section.Tender.Services
 
         public ApiResult Create(TenderProposalFormJsonConfigCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new TenderProposalFormJsonConfig()
             {
@@ -41,14 +42,14 @@ namespace Oje.Section.Tender.Services
                 JsonConfig = input.jsonStr,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 ProposalFormId = input.ppfId.Value,
-                SiteSettingId = siteSettingId.Value
-            }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
+            }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(TenderProposalFormJsonConfigCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(TenderProposalFormJsonConfigCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -56,13 +57,13 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.ppfId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormService.Exist(input.ppfId, siteSettingId))
+            if (!ProposalFormService.Exist(input.ppfId, (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (string.IsNullOrEmpty(input.jsonStr))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
             if (string.IsNullOrEmpty(input.pdfDesc))
                 throw BException.GenerateNewException(BMessages.Please_Enter_PdfDesciption);
-            if (db.TenderProposalFormJsonConfigs.Any(t => t.SiteSettingId == siteSettingId && t.Id != input.id && t.ProposalFormId == input.ppfId))
+            if (db.TenderProposalFormJsonConfigs.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.Id != input.id && t.ProposalFormId == input.ppfId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -95,7 +96,9 @@ namespace Oje.Section.Tender.Services
                     ppfId_Title = t.ProposalForm.Title,
                     jsonStr = t.JsonConfig,
                     pdfDesc = t.Description,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new TenderProposalFormJsonConfigCreateUpdateVM
@@ -105,7 +108,9 @@ namespace Oje.Section.Tender.Services
                     jsonStr = t.jsonStr,
                     pdfDesc = t.pdfDesc,
                     ppfId = t.ppfId,
-                    ppfId_Title = t.ppfId_Title
+                    ppfId_Title = t.ppfId_Title,
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -154,7 +159,8 @@ namespace Oje.Section.Tender.Services
 
         public ApiResult Update(TenderProposalFormJsonConfigCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.TenderProposalFormJsonConfigs
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -168,6 +174,7 @@ namespace Oje.Section.Tender.Services
             foundItem.JsonConfig = input.jsonStr;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.ProposalFormId = input.ppfId.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

@@ -115,9 +115,9 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "تغییر نماینده فرم پیشنهاد جدید", Icon = "fa-pencil")]
         [HttpPost]
-        public IActionResult UpdateAgent([FromForm] long? userId, long? id)
+        public IActionResult UpdateAgent([FromForm] long? userId, long? id, [FromForm] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFilledFormAdminService.UpdateAgent(id, userId, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
+            return Json(ProposalFilledFormAdminService.UpdateAgent(id, userId, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
 
         [AreaConfig(Title = "مشاهده جزییات فرم پیشنهاد جدید", Icon = "fa-eye")]
@@ -171,9 +171,9 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "مشاهده لیست کاربران جهت ارجاع", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetUsers([FromQuery] Select2SearchVM searchInput, [FromQuery] int? roleId, [FromQuery] int? companyId, [FromQuery] int? provinceId, [FromQuery] int? cityId)
+        public ActionResult GetUsers([FromQuery] Select2SearchVM searchInput, [FromQuery] int? roleId, [FromQuery] int? companyId, [FromQuery] int? provinceId, [FromQuery] int? cityId, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserService.GetSelect2List(searchInput, roleId, companyId, provinceId, cityId, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.GetSelect2List(searchInput, roleId, companyId, provinceId, cityId, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست کاربران ارجاع داده شده فرم پیشنهاد جدید", Icon = "fa-eye")]
@@ -213,9 +213,9 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? ppfCatId)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? ppfCatId, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput, ppfCatId));
+            return Json(ProposalFormService.GetSelect2List(searchInput, ppfCatId, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "افزودن شرکت فرم پیشنهاد جدید", Icon = "fa-plus")]

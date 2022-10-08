@@ -1,14 +1,9 @@
 ﻿using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Models.View
 {
-    public class PageLeftRightDesignCreateUpdateVM
+    public class PageLeftRightDesignCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public long? pId { get; set; }

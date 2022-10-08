@@ -4,8 +4,9 @@ using Oje.Infrastructure.Models;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.View
 {
-    public class CreateUpdateInsuranceContractUserVM: GlobalLongId
+    public class CreateUpdateInsuranceContractUserVM: GlobalSiteSetting
     {
+        public long? id { get; set; }
         public int? insuranceContractId { get; set; }
         public string eCode { get; set; }
         public string firstName { get; set; }

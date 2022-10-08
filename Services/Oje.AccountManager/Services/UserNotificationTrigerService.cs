@@ -42,14 +42,15 @@ namespace Oje.AccountService.Services
 
         public ApiResult Create(CreateUpdateUserNotificationTrigerVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new UserNotificationTriger()
             {
                 RoleId = input.roleId,
                 UserId = input.userId,
                 UserNotificationType = input.type.Value,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -192,7 +193,9 @@ namespace Oje.AccountService.Services
                     type = t.UserNotificationType,
                     roleId = t.RoleId,
                     userId = t.UserId,
-                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : ""
+                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : "",
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .Select(t => new
@@ -201,7 +204,9 @@ namespace Oje.AccountService.Services
                     type = (int)t.type,
                     roleId = t.roleId == null ? "" : t.roleId.ToString(),
                     userId = t.userId == null ? "" : t.userId.ToString(),
-                    t.userId_Title
+                    t.userId_Title,
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -252,7 +257,8 @@ namespace Oje.AccountService.Services
 
         public ApiResult Update(CreateUpdateUserNotificationTrigerVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.UserNotificationTrigers
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -265,13 +271,14 @@ namespace Oje.AccountService.Services
             foundItem.RoleId = input.roleId;
             foundItem.UserId = input.userId;
             foundItem.UserNotificationType = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateUpdateValidation(CreateUpdateUserNotificationTrigerVM input, int? siteSettingId)
+        private void CreateUpdateValidation(CreateUpdateUserNotificationTrigerVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -281,6 +288,8 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.roleId.ToIntReturnZiro() <= 0 && input.userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
+            if (input.userId.ToLongReturnZiro() > 0 && !db.Users.Any(t => t.Id == input.userId && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
+                throw BException.GenerateNewException(BMessages.User_Not_Found);
         }
     }
 }

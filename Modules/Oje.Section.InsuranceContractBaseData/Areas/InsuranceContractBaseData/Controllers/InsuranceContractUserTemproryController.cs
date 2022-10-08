@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Exceptions;
+using Oje.PaymentService.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.Controllers
 {
@@ -22,16 +23,25 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         readonly IInsuranceContractUserService InsuranceContractUserService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
         readonly ISiteSettingService SiteSettingService = null;
+        readonly IInsuranceContractUserBaseInsuranceService InsuranceContractUserBaseInsuranceService = null;
+        readonly IInsuranceContractUserSubCategoryService InsuranceContractUserSubCategoryService = null;
+        readonly IBankService BankService = null;
 
         public InsuranceContractUserTemproryController(
                 IInsuranceContractUserService InsuranceContractUserService,
                 IInsuranceContractService InsuranceContractService,
-                ISiteSettingService SiteSettingService
+                ISiteSettingService SiteSettingService,
+                IInsuranceContractUserBaseInsuranceService InsuranceContractUserBaseInsuranceService,
+                IInsuranceContractUserSubCategoryService InsuranceContractUserSubCategoryService,
+                IBankService BankService
             )
         {
             this.InsuranceContractUserService = InsuranceContractUserService;
             this.InsuranceContractService = InsuranceContractService;
             this.SiteSettingService = SiteSettingService;
+            this.InsuranceContractUserBaseInsuranceService = InsuranceContractUserBaseInsuranceService;
+            this.InsuranceContractUserSubCategoryService = InsuranceContractUserSubCategoryService;
+            this.BankService = BankService;
         }
 
         [AreaConfig(Title = "لیست بیمه شدگان موقت", Icon = "fa-user-alt", IsMainMenuItem = true)]
@@ -93,7 +103,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractUserService.Update(input, InsuranceContractUserStatus.Temprory));
         }
 
-        [AreaConfig(Title = "مشاهده لیست بیمه شدگان موقت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست بیمه شدگان موقت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractUserMainGrid searchInput)
         {
@@ -114,11 +124,32 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست قرارداد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست قرارداد", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetContractList()
+        public ActionResult GetContractList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractService.GetLightList());
+            return Json(InsuranceContractService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست بیمه پایه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetBaseInsuranceList([FromQuery] int? cSOWSiteSettingId)
+        {
+            return Json(InsuranceContractUserBaseInsuranceService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست زیرگروه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetSubCatList([FromQuery] int? cSOWSiteSettingId)
+        {
+            return Json(InsuranceContractUserSubCategoryService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست بانک", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetBankList()
+        {
+            return Json(BankService.GetLightList());
         }
     }
 }

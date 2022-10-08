@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Models;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.View
 {
-    public class InsuranceContractTypeRequiredDocumentCreateUpdateVM
+    public class InsuranceContractTypeRequiredDocumentCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public int? cid { get; set; }

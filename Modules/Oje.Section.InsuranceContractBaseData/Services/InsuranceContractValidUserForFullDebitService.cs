@@ -44,8 +44,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             long? loginUserId = UserService.GetLoginUser()?.UserId;
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
-            CreateValidation(input, siteSettingId, loginUserId);
+            CreateValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             db.Entry(new InsuranceContractValidUserForFullDebit()
             {
@@ -56,14 +57,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Mobile = input.mobile,
                 NationalCode = input.nationalCode,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateValidation(CreateUpdateInsuranceContractValidUserForFullDebitVM input, int? siteSettingId, long? loginUserId)
+        private void CreateValidation(CreateUpdateInsuranceContractValidUserForFullDebitVM input, int? siteSettingId, long? loginUserId, bool? canSetSiteSetting)
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
@@ -73,19 +74,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (input.insuranceContractId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
-            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, loginUserId))
+            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (string.IsNullOrEmpty(input.mobile))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
             if (!input.mobile.IsMobile())
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
-            if (ExistByMobile(input.mobile, siteSettingId, input.id))
+            if (ExistByMobile(input.mobile, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Mobile);
             if (string.IsNullOrEmpty(input.nationalCode))
                 throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);
             if (!input.nationalCode.IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (ExistByNationalCode(input.nationalCode, siteSettingId, input.id))
+            if (ExistByNationalCode(input.nationalCode, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_NationalCode);
             if (input.countUse.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_CountUsed);
@@ -137,7 +138,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     insuranceContractId = t.InsuranceContractId,
                     isActive = t.IsActive,
                     mobile = t.Mobile,
-                    nationalCode = t.NationalCode
+                    nationalCode = t.NationalCode,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -215,13 +218,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToIntReturnZiro());
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
-            CreateValidation(input, siteSettingId, loginUserId);
+            CreateValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             var foundItem = db.InsuranceContractValidUserForFullDebits.Where(t => t.Id == input.id)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractValidUserForFullDebit, User>(loginUserId, canSeeAllItems)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -232,6 +237,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Mobile = input.mobile;
             foundItem.NationalCode = input.nationalCode;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

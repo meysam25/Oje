@@ -1,10 +1,5 @@
 ﻿using Oje.Infrastructure.Models;
 using Oje.Section.InsuranceContractBaseData.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Interfaces
 {
@@ -16,6 +11,6 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         ApiResult Update(CreateUpdateInsuranceContractCompanyVM input);
         GridResultVM<InsuranceContractCompanyMainGridResultVM> GetList(InsuranceContractCompanyMainGrid searchInput);
         bool Exist(int id, int? siteSettingId, long? childUserIds);
-        object GetLightList();
+        object GetLightList(int? siteSettingId);
     }
 }

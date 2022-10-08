@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -29,6 +28,7 @@ namespace Oje.Section.CarThirdBaseData.Services
 
         public ApiResult Create(ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var newItem = new ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount()
@@ -36,7 +36,7 @@ namespace Oje.Section.CarThirdBaseData.Services
                 Title = input.title,
                 Percent = input.percent.Value,
                 Price = input.price.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 VehicleTypeId = input.vtId.Value
             };
 
@@ -112,7 +112,9 @@ namespace Oje.Section.CarThirdBaseData.Services
                   price = t.Price,
                   percent = t.Percent,
                   vtId = t.VehicleTypeId,
-                  comIds = t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies.Select(tt => tt.CompanyId).ToList()
+                  comIds = t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies.Select(tt => tt.CompanyId).ToList(),
+                  cSOWSiteSettingId = t.SiteSettingId,
+                  cSOWSiteSettingId_Title = t.SiteSetting.Title
               })
               .FirstOrDefault();
         }
@@ -173,6 +175,7 @@ namespace Oje.Section.CarThirdBaseData.Services
 
         public ApiResult Update(ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts
@@ -192,6 +195,7 @@ namespace Oje.Section.CarThirdBaseData.Services
             foundItem.Price = input.price.Value;
             foundItem.Percent = input.percent.Value;
             foundItem.VehicleTypeId = input.vtId.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.comIds != null)
                 foreach (var cid in input.comIds)

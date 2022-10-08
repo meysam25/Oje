@@ -102,9 +102,9 @@ namespace Oje.Section.WebMain.Areas.Controllers
 
         [AreaConfig(Title = "مشاهده لیست صفحه ها", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetPageLightList([FromForm] Select2SearchVM searchInput)
+        public ActionResult GetPageLightList([FromForm] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(PageService.GetSelect2(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(PageService.GetSelect2(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

@@ -90,6 +90,18 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "QuestionAdminProposalFormcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
@@ -102,7 +114,10 @@
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/QuestionAdmin/ProposalFormYourQuestion/GetProposalFormList",
-              "label": "فرم"
+              "label": "فرم",
+              "exteraParameterIds": [ "QuestionAdminProposalFormcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true,
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
@@ -154,6 +169,18 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "QuestionAdminProposalFormcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
@@ -166,7 +193,10 @@
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/QuestionAdmin/ProposalFormYourQuestion/GetProposalFormList",
-              "label": "فرم"
+              "label": "فرم",
+              "exteraParameterIds": [ "QuestionAdminProposalFormcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true,
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",

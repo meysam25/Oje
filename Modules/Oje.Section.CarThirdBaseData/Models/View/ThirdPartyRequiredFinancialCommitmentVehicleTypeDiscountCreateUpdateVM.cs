@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Models;
+using System.Collections.Generic;
 
 namespace Oje.Section.CarThirdBaseData.Models.View
 {
-    public class ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCreateUpdateVM
+    public class ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string title { get; set; }

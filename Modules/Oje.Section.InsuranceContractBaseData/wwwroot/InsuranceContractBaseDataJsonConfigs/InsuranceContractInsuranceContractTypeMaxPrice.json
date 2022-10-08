@@ -82,15 +82,30 @@
           "ctrls": [
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractInsuranceContractTypeMaxPricecSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('InsuranceContractInsuranceContractTypeMaxPricetypeIdAdd');refreshDropdown('InsuranceContractInsuranceContractTypeMaxPricecidAdd');"
+            },
+            {
+              "id": "InsuranceContractInsuranceContractTypeMaxPricetypeIdAdd",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "typeId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetTypeList",
               "label": "نوع قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractInsuranceContractTypeMaxPricecSOWSiteSettingIdAdd" ]
             },
             {
+              "id": "InsuranceContractInsuranceContractTypeMaxPricecidAdd",
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cid",
               "type": "dropDown",
@@ -98,7 +113,8 @@
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractInsuranceContractTypeMaxPricecSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -136,15 +152,30 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractInsuranceContractTypeMaxPricecSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('InsuranceContractInsuranceContractTypeMaxPricetypeIdEdit');refreshDropdown('InsuranceContractInsuranceContractTypeMaxPricecidEdit');"
+            },
+            {
+              "id": "InsuranceContractInsuranceContractTypeMaxPricetypeIdEdit",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "typeId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetTypeList",
               "label": "نوع قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractInsuranceContractTypeMaxPricecSOWSiteSettingIdEdit" ]
             },
             {
+              "id": "InsuranceContractInsuranceContractTypeMaxPricecidEdit",
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cid",
               "type": "dropDown",
@@ -152,7 +183,8 @@
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractInsuranceContractTypeMaxPrice/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractInsuranceContractTypeMaxPricecSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

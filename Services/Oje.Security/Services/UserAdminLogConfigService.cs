@@ -29,13 +29,14 @@ namespace Oje.Security.Services
 
         public ApiResult Create(UserAdminLogConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new UserAdminLogConfig()
             {
                 ActionId = input.aId.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -83,7 +84,9 @@ namespace Oje.Security.Services
                     id = t.Id,
                     aId = t.ActionId,
                     aId_Title = t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -131,6 +134,7 @@ namespace Oje.Security.Services
 
         public ApiResult Update(UserAdminLogConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.UserAdminLogConfigs
@@ -143,6 +147,7 @@ namespace Oje.Security.Services
 
             foundItem.ActionId = input.aId.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             userAdminLogConfigs = null;
 

@@ -233,6 +233,18 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNotIssueAgentcSOWSiteSettingId",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "userIds",
               "type": "tokenBox2",
               "textfield": "title",
@@ -240,7 +252,8 @@
               "dataurl": "/ProposalFilledForm/ProposalFilledFormNotIssueAgent/GetUsers",
               "label": "کاربران",
               "isRequired": true,
-              "exteraParameterIds": [ "ProposalFilledFormNotIssueAgentroleId", "ProposalFilledFormNotIssueAgentcompanyId", "ProposalFilledFormNotIssueAgentprovinceId", "ProposalFilledFormNotIssueAgentcityId" ]
+              "exteraParameterIds": [ "ProposalFilledFormNotIssueAgentroleId", "ProposalFilledFormNotIssueAgentcompanyId", "ProposalFilledFormNotIssueAgentprovinceId", "ProposalFilledFormNotIssueAgentcityId", "ProposalFilledFormNotIssueAgentcSOWSiteSettingId" ],
+              "ignoreChangeOnBinding": true
             }
           ],
           "actions": [
@@ -340,6 +353,18 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFilledFormNotIssueAgentcSOWSiteSettingIdChangeAgent",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "userId",
               "type": "dropDown2",
               "textfield": "title",
@@ -347,7 +372,8 @@
               "dataurl": "/ProposalFilledForm/ProposalFilledFormNotIssueAgent/GetUsers",
               "label": "نماینده",
               "isRequired": true,
-              "exteraParameterIds": [ "ProposalFilledFormNotIssueAgentroleIdAgent", "ProposalFilledFormNotIssueAgentcompanyIdAgent", "ProposalFilledFormNotIssueAgentprovinceIdAgent", "ProposalFilledFormNotIssueAgentcityIdAgent" ]
+              "exteraParameterIds": [ "ProposalFilledFormNotIssueAgentroleIdAgent", "ProposalFilledFormNotIssueAgentcompanyIdAgent", "ProposalFilledFormNotIssueAgentprovinceIdAgent", "ProposalFilledFormNotIssueAgentcityIdAgent", "ProposalFilledFormNotIssueAgentcSOWSiteSettingIdChangeAgent" ],
+              "ignoreChangeOnBinding": true
             }
           ],
           "actions": [

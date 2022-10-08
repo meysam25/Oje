@@ -87,7 +87,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست قرارداد (تفاهم نامه)", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست قرارداد (تفاهم نامه)", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractMainGrid searchInput)
         {
@@ -109,32 +109,32 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده شرکت های بیمه گذار حقوقی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده شرکت های بیمه گذار حقوقی", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetContractCompanyList()
+        public ActionResult GetContractCompanyList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractCompanyService.GetLightList());
+            return Json(InsuranceContractCompanyService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده نوع قراردادها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده نوع قراردادها", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetContractTypeList()
+        public ActionResult GetContractTypeList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractTypeService.GetLightList());
+            return Json(InsuranceContractTypeService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد نمایشی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد نمایشی", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractProposalFormService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(InsuranceContractProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormRList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormRList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

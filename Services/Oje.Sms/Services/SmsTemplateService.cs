@@ -24,6 +24,7 @@ namespace Oje.Sms.Services
 
         public ApiResult Create(CreateUpdateSmsTemplateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new SmsTemplate()
@@ -31,7 +32,7 @@ namespace Oje.Sms.Services
                 Type = input.type.Value,
                 Description = input.description,
                 Subject = input.subject,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 ProposalFilledFormUserType = input.pffUserType
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -85,7 +86,9 @@ namespace Oje.Sms.Services
                     type = t.Type,
                     subject = t.Subject,
                     description = t.Description,
-                    pffUserType = t.ProposalFilledFormUserType
+                    pffUserType = t.ProposalFilledFormUserType,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .ToList()
@@ -95,7 +98,9 @@ namespace Oje.Sms.Services
                     type = (int)t.type,
                     t.subject,
                     t.description,
-                    pffUserType = t.pffUserType != null ?((int)t.pffUserType).ToString() : ""
+                    pffUserType = t.pffUserType != null ?((int)t.pffUserType).ToString() : "",
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -149,11 +154,14 @@ namespace Oje.Sms.Services
 
         public ApiResult Update(CreateUpdateSmsTemplateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
+
             var foundItem = db.SmsTemplates
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -161,6 +169,7 @@ namespace Oje.Sms.Services
             foundItem.Description = input.description;
             foundItem.Subject = input.subject;
             foundItem.ProposalFilledFormUserType = input.pffUserType;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

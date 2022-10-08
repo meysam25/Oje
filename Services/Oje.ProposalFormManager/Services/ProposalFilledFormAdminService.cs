@@ -330,8 +330,9 @@ namespace Oje.ProposalFormService.Services
 
         public ApiResult CreateUserRefer(CreateUpdateProposalFilledFormUserReffer input, int? siteSettingId, long? userId, ProposalFilledFormStatus status)
         {
+            bool? canSeeOtherWebsites = HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             CreateUserReferValidation(input, siteSettingId);
-            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
+            var foundItem = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, userId, status, canSeeOtherWebsites)
                 .Where(t => t.Id == input.id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Refer)
@@ -344,8 +345,13 @@ namespace Oje.ProposalFormService.Services
             if (input.userIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.No_New_User_Added);
 
+            if (canSeeOtherWebsites != true)
+                foreach (var tempUserId in input.userIds)
+                    if (!db.Users.Any(t => t.Id == tempUserId && t.SiteSettingId == siteSettingId))
+                        throw BException.GenerateNewException(BMessages.User_Not_Found);
+
             foreach (var newUserId in input.userIds)
-                ProposalFilledFormUseService.Create(newUserId, ProposalFilledFormUserType.Refer, userId, input.id.ToLongReturnZiro());
+                ProposalFilledFormUseService.Create(newUserId, ProposalFilledFormUserType.Refer, userId, input.id.ToLongReturnZiro(), (canSeeOtherWebsites == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId));
 
             UserNotifierService.Notify(userId, UserNotificationType.ReferToUser, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.id.ToLongReturnZiro()), input.id.ToLongReturnZiro(), "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.id.ToLongReturnZiro());
 
@@ -430,8 +436,9 @@ namespace Oje.ProposalFormService.Services
 
         public object UpdateAgent(long? id, long? userId, int? siteSettingId, long? longUserId, ProposalFilledFormStatus status)
         {
+            bool? canSeeOtherWebsites = HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             UpdateAgentValidation(id, userId, siteSettingId);
-            var foundUserId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, longUserId, status, HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites)
+            var foundUserId = ProposalFilledFormAdminBaseQueryService.getProposalFilledFormBaseQuery(siteSettingId, longUserId, status, canSeeOtherWebsites)
                 .Where(t => t.Id == id)
                 .SelectMany(t => t.ProposalFilledFormUsers)
                 .Where(t => t.Type == ProposalFilledFormUserType.Agent)
@@ -440,9 +447,9 @@ namespace Oje.ProposalFormService.Services
                 .FirstOrDefault();
 
             if (foundUserId <= 0)
-                ProposalFilledFormUseService.Create(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro());
+                ProposalFilledFormUseService.Create(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro(), siteSettingId);
             else
-                ProposalFilledFormUseService.Update(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro());
+                ProposalFilledFormUseService.Update(userId, ProposalFilledFormUserType.Agent, longUserId, id.ToLongReturnZiro(), siteSettingId);
 
             UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(id.ToLongReturnZiro()), id, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + id);
 
@@ -457,6 +464,8 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_One_User);
+            if (!db.Users.Any(t => t.Id == userId && t.SiteSettingId == siteSettingId))
+                throw BException.GenerateNewException(BMessages.User_Not_Found);
         }
 
         public ProposalFilledFormPdfVM PdfDetailes(long? id, int? siteSettingId, long? userId, ProposalFilledFormStatus? status, List<ProposalFilledFormStatus> validStatus = null)

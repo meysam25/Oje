@@ -3,7 +3,7 @@ using Oje.Infrastructure.Models;
 
 namespace Oje.Section.WebMain.Models.View
 {
-    public class LoginDescrptionCreateUpdateVM
+    public class LoginDescrptionCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string url { get; set; }

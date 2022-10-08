@@ -30,14 +30,14 @@ namespace Oje.ProposalFormService.Services
             var quiryResult = db.ProposalFilledForms.Where(t => t.IsDelete != true);
 
             if (canSeeOtherWebsites != true)
-                quiryResult = quiryResult.Where(t => t.SiteSettingId == siteSettingId);
+                quiryResult = quiryResult.Where(t => t.SiteSettingId == siteSettingId || t.ProposalFilledFormSiteSettings.Any(tt => tt.SiteSettingId == siteSettingId));
 
             return quiryResult
                 .Where(t =>
                 (
-                    allChildUserId == true || 
+                    allChildUserId == true ||
                     t.ProposalFilledFormUsers.Any
-                     (tt => tt.UserId == userId || 
+                     (tt => tt.UserId == userId ||
                         tt.User.Parent.Id == userId ||
                         tt.User.Parent.Parent.Id == userId ||
                         tt.User.Parent.Parent.Parent.Id == userId ||

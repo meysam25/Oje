@@ -306,7 +306,7 @@ namespace Oje.Section.RegisterForm.Services
 
             result.AddRange(
                 db.UserRegisterForms
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.SiteSettingId == siteSettingId)
                 .Select(t => new
                 {
                     id = "/" + t.Name + "?fid=" + t.Id,

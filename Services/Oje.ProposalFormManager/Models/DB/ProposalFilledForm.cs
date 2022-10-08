@@ -18,6 +18,7 @@ namespace Oje.ProposalFormService.Models.DB
             ProposalFilledFormJsons = new();
             ProposalFilledFormDocuments = new();
             ProposalFilledFormStatusLogs = new();
+            ProposalFilledFormSiteSettings = new();
         }
 
         [Key]
@@ -61,5 +62,7 @@ namespace Oje.ProposalFormService.Models.DB
         public List<ProposalFilledFormDocument> ProposalFilledFormDocuments { get; set; }
         [InverseProperty("ProposalFilledForm")]
         public List<ProposalFilledFormStatusLog> ProposalFilledFormStatusLogs { get; set; }
+        [InverseProperty("ProposalFilledForm")]
+        public List<ProposalFilledFormSiteSetting> ProposalFilledFormSiteSettings { get; set; }
     }
 }

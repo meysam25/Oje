@@ -36,7 +36,7 @@ namespace Oje.AccountService.Interfaces
         void DeleteFlag(long? userId, int? siteSettingId, long? childIds);
         bool IsValidUser(long userId, int? siteSettingId, List<long> childUserIds, RoleType? Type);
         bool HasCompany(long? userId, int? companyId);
-        object GetSelect2ListByType(Select2SearchVM searchInput, RoleType? rType);
+        object GetSelect2ListByType(Select2SearchVM searchInput, RoleType? rType, int? siteSettingId);
         object GetSelect2ListByPPFAndCompanyId(Select2SearchVM searchInput, int? siteSettingId, int proposalFormId, int companyId, ProvinceAndCityVM provinceAndCityInput, string mapLat, string mapLon);
         ApiResult UpdateUserProfile(UpdateUserForUserVM input, long? userId, int? siteSettingId);
         string GetUserFullName(int? siteSettingId, long? userId);

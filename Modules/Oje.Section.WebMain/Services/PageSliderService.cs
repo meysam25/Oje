@@ -37,14 +37,15 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(PageSliderCreateUpdateVM input, int? siteSettingId, long? loginUserId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var newItem = new PageSlider()
             {
                 ImageUrl = " ",
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 PageId = input.pid.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             };
 
@@ -57,7 +58,7 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(PageSliderCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(PageSliderCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -73,7 +74,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (input.mainImage != null && input.mainImage.Length > 0 && !input.mainImage.IsValidExtension(validFileExtension))
                 throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
-            if (!db.Pages.Any(t => t.Id == input.pid && t.SiteSettingId == siteSettingId))
+            if (!db.Pages.Any(t => t.Id == input.pid && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Please_Select_Page);
         }
 
@@ -104,7 +105,9 @@ namespace Oje.Section.WebMain.Services
                     pid_Title = t.Page.Title,
                     title = t.Title,
                     mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -160,7 +163,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(PageSliderCreateUpdateVM input, int? siteSettingId, long? loginUserId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.PageSliders
                 .Where(t => t.Id == input.id)
@@ -173,6 +177,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.PageId = input.pid.Value;
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.mainImage != null && input.mainImage.Length > 0)
                 foundItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.PageSlider, input.mainImage, loginUserId, siteSettingId, foundItem.Id, validFileExtension, false);

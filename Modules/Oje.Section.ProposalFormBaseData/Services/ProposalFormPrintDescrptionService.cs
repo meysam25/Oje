@@ -28,14 +28,15 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Create(ProposalFormPrintDescrptionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new ProposalFormPrintDescrption()
             {
                 Description = input.description,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 ProposalFormId = input.pfid.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Type = input.type.Value
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -43,7 +44,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(ProposalFormPrintDescrptionCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(ProposalFormPrintDescrptionCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -51,13 +52,13 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.pfid.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!db.ProposalForms.Any(t => t.Id == input.pfid && (t.SiteSettingId == null || t.SiteSettingId == siteSettingId)))
+            if (!db.ProposalForms.Any(t => t.Id == input.pfid && (t.SiteSettingId == null || (t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))))
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
             if (input.type == null)
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (string.IsNullOrEmpty(input.description))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Description);
-            if (db.ProposalFormPrintDescrptions.Any(t => t.Id != input.id && t.ProposalFormId == input.pfid && t.Type == input.type))
+            if (db.ProposalFormPrintDescrptions.Any(t => t.Id != input.id && t.ProposalFormId == input.pfid && t.Type == input.type && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -88,9 +89,12 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 {
                     t.Id,
                     t.ProposalFormId,
+                    t.ProposalForm.Title,
                     t.Description,
                     t.Type,
-                    t.IsActive
+                    t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new ProposalFormPrintDescrptionCreateUpdateVM
@@ -99,7 +103,10 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     description = t.Description,
                     isActive = t.IsActive,
                     pfid = t.ProposalFormId,
-                    type = t.Type
+                    pfid_Title = t.Title,
+                    type = t.Type,
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -151,12 +158,14 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Update(ProposalFormPrintDescrptionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.ProposalFormPrintDescrptions
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t => t.Id == input.id)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -164,6 +173,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.ProposalFormId = input.pfid.Value;
             foundItem.Type = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

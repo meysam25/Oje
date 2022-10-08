@@ -68,8 +68,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             int roleId = RoleService.CreateOrGetRole("بیمه شدگان گروهی", "InsuranceContractUsers", 1);
             long? parentId = null;
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
-            CreateValidation(input, siteSettingId, loginUserId?.UserId);
+            CreateValidation(input, siteSettingId, loginUserId?.UserId, canSetSiteSetting);
 
             if (input.familyRelation != InsuranceContractUserFamilyRelation.Self)
             {
@@ -106,7 +107,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                         shenasnameNo = input.shenasnameNo,
                         hireDate = input.hireDate,
                         bankId = input.bankId,
-                    }, loginUserId?.UserId, loginUserId, siteSettingId).data.ToLongReturnZiro();
+                    }, loginUserId?.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value).data.ToLongReturnZiro();
             }
             catch (Exception)
             {
@@ -125,7 +126,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 FamilyRelation = input.familyRelation.Value,
                 InsuranceContractId = input.insuranceContractId.Value,
                 ParentId = parentId,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Status = status,
                 UserId = foundUserId.ToLongReturnZiro() > 0 ? foundUserId : null,
                 FirstName = input.firstName,
@@ -159,9 +160,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             db.SaveChanges();
 
             if (input.familyRelation == InsuranceContractUserFamilyRelation.Self)
-                UserNotifierService.Notify(loginUserId?.UserId, UserNotificationType.NewInsuranceContractUser, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(foundUserId, ProposalFilledFormUserType.OwnerUser) }, newItem.Id, 
-                    "\n" + "کلمه عبور شما : " + newPassword + "\n" + "کد قرارداد شما : " + InsuranceContractService.GetIdByCode(input.insuranceContractId, siteSettingId), 
-                    siteSettingId, "/InsuranceContractUserPremanent/Index");
+                UserNotifierService.Notify(loginUserId?.UserId, UserNotificationType.NewInsuranceContractUser, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(foundUserId, ProposalFilledFormUserType.OwnerUser) }, newItem.Id,
+                    "\n" + "کلمه عبور شما : " + newPassword + "\n" + "کد قرارداد شما : " + InsuranceContractService.GetIdByCode(input.insuranceContractId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value),
+                    canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, "/InsuranceContractUserPremanent/Index");
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -179,9 +180,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .FirstOrDefault();
         }
 
-        private void CreateValidation(
-                CreateUpdateInsuranceContractUserVM input, int? siteSettingId, long? loginUserId
-            )
+        private void CreateValidation(CreateUpdateInsuranceContractUserVM input, int? siteSettingId, long? loginUserId, bool? canSetSiteSetting)
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
@@ -199,7 +198,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);
             if (!input.nationalCode.IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), siteSettingId, loginUserId))
+            if (!InsuranceContractService.Exist(input.insuranceContractId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, loginUserId))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (input.familyRelation == null)
                 throw BException.GenerateNewException(BMessages.Please_Select_FamilyRelation);
@@ -213,13 +212,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Clear_Main_Person_ECode);
             if (!string.IsNullOrEmpty(input.mainPersonNationalCode) && !input.mainPersonNationalCode.IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (!string.IsNullOrEmpty(input.mainPersonNationalCode) && !existByNationalCode(input.id, siteSettingId, loginUserId, input.mainPersonNationalCode, input.insuranceContractId))
+            if (!string.IsNullOrEmpty(input.mainPersonNationalCode) && !existByNationalCode(input.id, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, loginUserId, input.mainPersonNationalCode, input.insuranceContractId))
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
-            if (!string.IsNullOrEmpty(input.mainPersonECode) && !existByECode(input.id, siteSettingId, input.mainPersonECode, input.insuranceContractId, loginUserId))
+            if (!string.IsNullOrEmpty(input.mainPersonECode) && !existByECode(input.id, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.mainPersonECode, input.insuranceContractId, loginUserId))
                 throw BException.GenerateNewException(BMessages.Main_Person_Code_Is_Not_Valid);
-            if (input.baseInsuranceId.ToIntReturnZiro() > 0 && !InsuranceContractUserBaseInsuranceService.Exist(siteSettingId, input.baseInsuranceId))
+            if (input.baseInsuranceId.ToIntReturnZiro() > 0 && !InsuranceContractUserBaseInsuranceService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.baseInsuranceId))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
-            if (input.subCatId.ToIntReturnZiro() > 0 && !InsuranceContractUserSubCategoryService.Exist(siteSettingId, input.subCatId))
+            if (input.subCatId.ToIntReturnZiro() > 0 && !InsuranceContractUserSubCategoryService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.subCatId))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
@@ -311,7 +310,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     hireDate = t.User != null ? t.User.HireDate : null,
                     tell = t.User != null ? t.User.Tell : "",
                     insuranceMiniBookNumber = t.InsuranceMiniBookNumber,
-                    custody = t.Custody
+                    custody = t.Custody,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .OrderByDescending(t => t.id)
                 .Take(1)
@@ -347,7 +348,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     hireDate = t.hireDate.ToFaDate(),
                     tell = t.tell,
                     insuranceMiniBookNumber = t.insuranceMiniBookNumber,
-                    custody = t.custody
+                    custody = t.custody,
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
 
@@ -442,8 +445,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.UserId.ToLongReturnZiro());
             var tempId = loginUserId?.UserId;
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
-            CreateValidation(input, siteSettingId, loginUserId?.UserId);
+            CreateValidation(input, siteSettingId, loginUserId?.UserId, canSetSiteSetting);
 
             var foundItem = db.InsuranceContractUsers
                 .Where(t => t.Id == input.id && t.Status == status)
@@ -459,7 +463,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             if (input.familyRelation == InsuranceContractUserFamilyRelation.Self)
             {
-                var foundUser = UserService.GetByIdForUser(foundItem.UserId, loginUserId, siteSettingId);
+                var foundUser = UserService.GetByIdForUser(foundItem.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value);
                 if (foundUser == null)
                     throw BException.GenerateNewException(BMessages.User_Not_Found);
 
@@ -479,7 +483,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 foundUser.bankId = input.bankId;
                 foundUser.shenasnameNo = input.shenasnameNo;
 
-                if (UserService.UpdateForUser(foundUser, loginUserId?.UserId, loginUserId, siteSettingId).isSuccess == false)
+                if (UserService.UpdateForUser(foundUser, loginUserId?.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value).isSuccess == false)
                     throw BException.GenerateNewException(BMessages.UnknownError);
             }
 
@@ -500,7 +504,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.Gender = input.gender;
             foundItem.Mobile = input.mobile;
             foundItem.Custody = input.custody;
-
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.nationalcodeImage != null && input.nationalcodeImage.Length > 0)
                 foundItem.KartMeliFileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.nationalcodeImage, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);

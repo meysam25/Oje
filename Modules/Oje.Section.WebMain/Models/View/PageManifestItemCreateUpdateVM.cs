@@ -1,10 +1,9 @@
-﻿
-using Oje.Infrastructure.Filters;
+﻿using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 
 namespace Oje.Section.WebMain.Models.View
 {
-    public class PageManifestItemCreateUpdateVM
+    public class PageManifestItemCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public long? mid { get; set; }

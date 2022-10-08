@@ -1,13 +1,10 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
+using Oje.Infrastructure.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.SalesNetworkBaseData.Models.View
 {
-    public class CreateUpdateSalesNetworkVM
+    public class CreateUpdateSalesNetworkVM: GlobalSiteSetting
     {
         public int id { get; set; }
         public string title { get; set; }

@@ -130,13 +130,28 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true,
+              "onChange": "refreshDropdown('InsuranceContractinsuranceContractCompanyIdAdd');refreshDropdown('InsuranceContractinsuranceContractTypeIdsAdd')"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractinsuranceContractCompanyIdAdd",
               "name": "insuranceContractCompanyId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractCompanyList",
               "label": "شرکت بیمه گذار حقوقی",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -146,7 +161,9 @@
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormList",
               "label": "فرم پیشنهاد نمایشی",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -156,7 +173,9 @@
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormRList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -210,13 +229,15 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractinsuranceContractTypeIdsAdd",
               "name": "insuranceContractTypeIds",
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractTypeList",
               "label": "نوع قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -249,13 +270,28 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true,
+              "onChange": "refreshDropdown('InsuranceContractinsuranceContractCompanyIdEdit');refreshDropdown('InsuranceContractinsuranceContractTypeIdsEdit')"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractinsuranceContractCompanyIdEdit",
               "name": "insuranceContractCompanyId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractCompanyList",
               "label": "شرکت بیمه گذار حقوقی",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -265,7 +301,9 @@
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormList",
               "label": "فرم پیشنهاد نمایشی",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -275,7 +313,9 @@
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetProposalFormRList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -329,13 +369,15 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractinsuranceContractTypeIdsEdit",
               "name": "insuranceContractTypeIds",
               "type": "tokenBox",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContract/GetContractTypeList",
               "label": "نوع قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

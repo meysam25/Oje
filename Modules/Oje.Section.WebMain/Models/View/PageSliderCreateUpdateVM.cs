@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Models;
 
 namespace Oje.Section.WebMain.Models.View
 {
-    public class PageSliderCreateUpdateVM
+    public class PageSliderCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public long? pid { get; set; }

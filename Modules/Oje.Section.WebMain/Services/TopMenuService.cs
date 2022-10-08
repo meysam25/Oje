@@ -28,7 +28,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(TopMenuCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new TopMenu()
             {
@@ -37,14 +38,14 @@ namespace Oje.Section.WebMain.Services
                 Order = input.order.ToIntReturnZiro(),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Link = input.link,
-                SiteSettingId = siteSettingId.ToIntReturnZiro()
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(TopMenuCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(TopMenuCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -56,7 +57,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (!string.IsNullOrEmpty(input.link) && input.link.Length > 1000)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
-            if (input.pKey.ToLongReturnZiro() > 0 && !db.TopMenus.Any(t => t.Id == input.pKey && t.SiteSettingId == siteSettingId))
+            if (input.pKey.ToLongReturnZiro() > 0 && !db.TopMenus.Any(t => t.Id == input.pKey && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
@@ -86,7 +87,9 @@ namespace Oje.Section.WebMain.Services
                     title = t.Title,
                     link = t.Link,
                     isActive = t.IsActive,
-                    order = t.Order
+                    order = t.Order,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -138,7 +141,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(TopMenuCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.TopMenus
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -151,6 +155,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.Order = input.order.ToIntReturnZiro();
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Link = input.link;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

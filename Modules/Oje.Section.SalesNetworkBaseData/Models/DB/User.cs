@@ -1,11 +1,7 @@
 ﻿using Oje.Infrastructure.Interfac;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.SalesNetworkBaseData.Models.DB
 {
@@ -33,6 +29,7 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         public long? ParentId { get; set; }
         [ForeignKey("ParentId"), InverseProperty("Childs")]
         public User Parent { get; set; }
+        public int? SiteSettingId { get; set; }
 
         [InverseProperty("Parent")]
         public List<User> Childs { get; set; }

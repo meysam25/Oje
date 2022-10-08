@@ -91,13 +91,27 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "id": "ProposalFormPrintDescrptioncSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "pfid",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/ProposalFormBaseData/ProposalFormPrintDescrption/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "ProposalFormPrintDescrptioncSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
@@ -150,13 +164,27 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+              "id": "ProposalFormPrintDescrptioncSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "pfid",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/ProposalFormBaseData/ProposalFormPrintDescrption/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "ProposalFormPrintDescrptioncSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12",

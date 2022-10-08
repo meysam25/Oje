@@ -19,11 +19,12 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     {
         readonly IProposalFormRequiredDocumentTypeService ProposalFormRequiredDocumentTypeService = null;
         readonly IProposalFormService ProposalFormService = null;
-        readonly ISiteSettingService SiteSettingService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+
         public ProposalFormRequiredDocumentTypeController(
             IProposalFormRequiredDocumentTypeService ProposalFormRequiredDocumentTypeService, 
-            IProposalFormService ProposalFormService, 
-            ISiteSettingService SiteSettingService
+            IProposalFormService ProposalFormService,
+            AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.ProposalFormRequiredDocumentTypeService = ProposalFormRequiredDocumentTypeService;
@@ -76,7 +77,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(ProposalFormRequiredDocumentTypeService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نوع مدارک مورد نیاز", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نوع مدارک مورد نیاز", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormRequiredDocumentTypeMainGrid searchInput)
         {
@@ -97,18 +98,18 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست وب سایت ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست وب سایت ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetSiteList()
         {
-            return Json(SiteSettingService.GetLightList());
+            return Json(SiteSettingService.GetightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

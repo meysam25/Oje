@@ -11,6 +11,7 @@ namespace Oje.ProposalFormService.Models.DB
         {
             ProposalFormReminders = new();
             ProposalFilledForms = new();
+            ProposalFilledFormSiteSettings = new();
         }
 
         [Key]
@@ -22,5 +23,7 @@ namespace Oje.ProposalFormService.Models.DB
         public List<ProposalFormReminder> ProposalFormReminders { get; set; }
         [InverseProperty("SiteSetting")]
         public List<ProposalFilledForm> ProposalFilledForms { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<ProposalFilledFormSiteSetting> ProposalFilledFormSiteSettings { get; set; }
     }
 }

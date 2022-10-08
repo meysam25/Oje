@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Oje.Infrastructure.Models;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.View
 {
-    public class CreateUpdateInsuranceContractValidUserForFullDebitVM
+    public class CreateUpdateInsuranceContractValidUserForFullDebitVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public int? insuranceContractId { get; set; }

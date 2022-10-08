@@ -28,7 +28,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(PageManifestItemCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new PageManifestItem()
             {
@@ -37,14 +38,14 @@ namespace Oje.Section.WebMain.Services
                 Description = input.description,
                 Order = input.order.ToIntReturnZiro(),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(PageManifestItemCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(PageManifestItemCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -52,7 +53,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.mid.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-            if (!db.PageManifests.Any(t => t.Id == input.mid && t.SiteSettingId == siteSettingId))
+            if (!db.PageManifests.Any(t => t.Id == input.mid && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
@@ -90,7 +91,9 @@ namespace Oje.Section.WebMain.Services
                     title = t.Title,
                     description = t.Description,
                     order = t.Order,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -148,7 +151,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(PageManifestItemCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.PageManifestItems
                 .Where(t => t.Id == input.id)
@@ -163,6 +167,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.Description = input.description;
             foundItem.Order = input.order.ToIntReturnZiro();
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

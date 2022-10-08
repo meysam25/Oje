@@ -104,16 +104,16 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 
         [AreaConfig(Title = "لیست نوع قرارداد", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetContractTypeList([FromQuery]int? id)
+        public ActionResult GetContractTypeList([FromQuery]int? id, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractTypeService.GetLightList(id));
+            return Json(InsuranceContractTypeService.GetLightList(id, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "لیست قرارداد", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetContractList()
+        public ActionResult GetContractList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractService.GetLightList());
+            return Json(InsuranceContractService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

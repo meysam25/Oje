@@ -29,12 +29,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Create(InsuranceContractUserSubCategoryCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new InsuranceContractUserSubCategory()
             {
                 Code = input.code,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -82,7 +83,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    code = t.Code
+                    code = t.Code,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -132,17 +135,20 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public ApiResult Update(InsuranceContractUserSubCategoryCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.InsuranceContractUserSubCategories
                 .Where(t => t.Id == input.id)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             foundItem.Code = input.code;
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Services\fere4vht.kqf~" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Oje.AccountManager\Oje.AccountService.csproj" />
     <ProjectReference Include="..\Oje.Infrastructure\Oje.Infrastructure.csproj" />
     <ProjectReference Include="..\Oje.JoinServices\Oje.JoinServices.csproj" />

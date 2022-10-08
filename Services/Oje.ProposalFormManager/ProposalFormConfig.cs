@@ -72,6 +72,7 @@ namespace Oje.ProposalFormService
             services.AddScoped<IColorService, ColorService>();
             services.AddScoped<IProposalFilledFormStatusLogFileService, ProposalFilledFormStatusLogFileService>();
             services.AddScoped<IThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService, ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountService>();
+            services.AddScoped<IProposalFilledFormSiteSettingService, ProposalFilledFormSiteSettingService>();
 
 
             services.AddDbContextPool<ProposalFormReportDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));

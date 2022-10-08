@@ -26,6 +26,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractInsuranceContractTypeMaxPriceService InsuranceContractInsuranceContractTypeMaxPriceService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public InsuranceContractProposalFilledFormUserService(
                 InsuranceContractBaseDataDBContext db,
@@ -34,7 +35,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IUserService UserService,
                 IInsuranceContractInsuranceContractTypeMaxPriceService InsuranceContractInsuranceContractTypeMaxPriceService,
                 IInsuranceContractService InsuranceContractService,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -44,6 +46,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.InsuranceContractInsuranceContractTypeMaxPriceService = InsuranceContractInsuranceContractTypeMaxPriceService;
             this.InsuranceContractService = InsuranceContractService;
             this.UploadedFileService = UploadedFileService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public void Create(List<IdTitle> familyRelations, List<IdTitle> familyCTypes, long insuranceContractProposalFilledFormId, contractUserInput contractInfo, int? siteSettingId, string fileName, IFormCollection form, long? loginUserId)
@@ -95,11 +98,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
 
-            var foundItem =
-            db.InsuranceContractProposalFilledFormUsers
-            .Include(t => t.InsuranceContractProposalFilledForm).ThenInclude(t => t.InsuranceContract)
-            .Where(t => t.Id == input.id && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Status == status)
-            .FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalFilledForms
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.IsDelete != true)
+               .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
+               .Include(t => t.InsuranceContractProposalFilledForm).ThenInclude(t => t.InsuranceContract)
+               .Where(t => t.Id == input.id && t.Status == status)
+               .FirstOrDefault();
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -128,10 +133,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
 
-            var foundItem = db.InsuranceContractProposalFilledFormUsers
-                .Include(t => t.InsuranceContractProposalFilledForm).ThenInclude(t => t.InsuranceContract)
-                .Where(t => t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Id == input.id && t.Status == status)
-                .FirstOrDefault();
+            var foundItem = db.InsuranceContractProposalFilledForms
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.IsDelete != true)
+               .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
+               .Include(t => t.InsuranceContractProposalFilledForm).ThenInclude(t => t.InsuranceContract)
+               .Where(t => t.Id == input.id && t.Status == status)
+               .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
@@ -160,8 +169,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public object GetPrice(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
-            return db.InsuranceContractProposalFilledFormUsers
-                .Where(t => t.Id == id && t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Status == status)
+            return db.InsuranceContractProposalFilledForms
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.IsDelete != true)
+               .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
+               .Where(t => t.Id == id && t.Status == status)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -173,7 +185,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             searchInput = searchInput ?? new InsuranceContractProposalFilledFormDetailesMainGrid();
 
-            var quiryResult = db.InsuranceContractProposalFilledFormUsers.Where(t => t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.Status == status && t.InsuranceContractProposalFilledFormId == searchInput.pKey);
+            var quiryResult =
+                db.InsuranceContractProposalFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status) && t.Id == searchInput.pKey)
+                .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
+                .Where(t => t.Status == status);
 
             if (!string.IsNullOrEmpty(searchInput.userFullname))
                 quiryResult = quiryResult.Where(t => (t.InsuranceContractUser.FirstName + " " + t.InsuranceContractUser.LastName).Contains(searchInput.userFullname));

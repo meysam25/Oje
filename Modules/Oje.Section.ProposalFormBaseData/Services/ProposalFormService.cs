@@ -222,7 +222,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             return db.ProposalForms.Any(t => t.Id == id && (t.SiteSettingId == siteSettingId || t.SiteSettingId == null));
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput)
+        public object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId)
         {
             List<object> result = new List<object>();
 
@@ -233,8 +233,6 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 searchInput = new Select2SearchVM();
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
-
-            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             var qureResult = db.ProposalForms.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId || t.SiteSettingId == null);
             if (!string.IsNullOrEmpty(searchInput.search))

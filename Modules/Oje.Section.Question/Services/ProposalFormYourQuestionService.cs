@@ -31,7 +31,8 @@ namespace Oje.Section.Question.Services
 
         public ApiResult Create(ProposalFormYourQuestionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new ProposalFormYourQuestion()
             {
@@ -39,7 +40,7 @@ namespace Oje.Section.Question.Services
                 ProposalFormId = input.fid.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Title = input.title,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 IsInquiry = input.isInquiry
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -76,7 +77,9 @@ namespace Oje.Section.Question.Services
                    title = t.Title,
                    fid = t.ProposalFormId,
                    fid_Title = t.ProposalForm.Title,
-                   isInquiry = t.IsInquiry
+                   isInquiry = t.IsInquiry,
+                   cSOWSiteSettingId = t.SiteSettingId,
+                   cSOWSiteSettingId_Title = t.SiteSetting.Title
                })
                .FirstOrDefault();
         }
@@ -130,7 +133,8 @@ namespace Oje.Section.Question.Services
 
         public ApiResult Update(ProposalFormYourQuestionCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.ProposalFormYourQuestions
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -145,13 +149,14 @@ namespace Oje.Section.Question.Services
             foundItem.Title = input.title;
             foundItem.ProposalFormId = input.fid.Value;
             foundItem.IsInquiry = input.isInquiry;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(ProposalFormYourQuestionCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(ProposalFormYourQuestionCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -167,7 +172,7 @@ namespace Oje.Section.Question.Services
                 throw BException.GenerateNewException(BMessages.Answer_Can_Not_Be_More_Then_4000_Chars);
             if (input.fid.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
-            if (!ProposalFormService.Exist(siteSettingId, input.fid))
+            if (!ProposalFormService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId, input.fid))
                 throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
         }
 

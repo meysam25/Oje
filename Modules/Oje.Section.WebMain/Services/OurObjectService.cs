@@ -34,6 +34,7 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(OurCustomerCreateUpdateVM input, int? siteSettingId, OurObjectType type)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var newItem = new OurObject();
@@ -43,7 +44,7 @@ namespace Oje.Section.WebMain.Services
             newItem.Url = input.url;
             newItem.Type = type;
             newItem.IsActive = input.isActive.ToBooleanReturnFalse();
-            newItem.SiteSettingId = siteSettingId.Value;
+            newItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             newItem.ImageUrl = " ";
 
             db.Entry(newItem).State = EntityState.Added;
@@ -101,7 +102,9 @@ namespace Oje.Section.WebMain.Services
                     subtitle = t.Subtitle,
                     isActive = t.IsActive,
                     url = t.Url,
-                    mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl
+                    mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -152,6 +155,7 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(OurCustomerCreateUpdateVM input, int? siteSettingId, OurObjectType type)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.OurObjects
@@ -166,7 +170,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.Subtitle = input.subtitle;
             foundItem.Url = input.url;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
-
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.mainImage != null && input.mainImage.Length > 0)
                 foundItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.OurObject, input.mainImage, null, siteSettingId, foundItem.Id, ".jpg,.jpeg,.png", false);

@@ -1,10 +1,5 @@
 ﻿using Oje.Infrastructure.Models;
 using Oje.Section.ProposalFormBaseData.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFormBaseData.Interfaces
 {
@@ -15,7 +10,7 @@ namespace Oje.Section.ProposalFormBaseData.Interfaces
         GetByIdProposalFormVM GetById(int? id);
         ApiResult Update(CreateUpdateProposalFormVM input, long? userId);
         GridResultVM<ProposalFormMainGridResultVM> GetList(ProposalFormMainGrid searchInput);
-        object GetSelect2List(Select2SearchVM searchInput);
+        object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
         bool Exist(int id, int? siteSettingId);
     }
 }

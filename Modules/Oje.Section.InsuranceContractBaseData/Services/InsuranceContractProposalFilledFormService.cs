@@ -408,8 +408,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             input = input ?? new GlobalGridParentLong();
 
-            var foundId = db.InsuranceContractProposalFilledFormUsers
-                .Where(t => t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.Status == status && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Id == input.pKey)
+            var foundId = db.InsuranceContractProposalFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status))
+                .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
+                .Where(t => t.Status == status &&  t.Id == input.pKey)
                 .Select(t => t.Id)
                 .FirstOrDefault();
 
@@ -425,8 +428,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public object GetStatus(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
         {
-            var foundItem = db.InsuranceContractProposalFilledFormUsers
-                .Where(t => t.InsuranceContractProposalFilledForm.SiteSettingId == siteSettingId && t.InsuranceContractProposalFilledForm.IsDelete != true && t.Id == id && t.Status== status).Any();
+            var foundItem = db.InsuranceContractProposalFilledForms
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Id == id && tt.Status == status))
+               .Any();
+          
             if (!foundItem)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 

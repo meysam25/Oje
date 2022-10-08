@@ -1,9 +1,10 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Models;
 using System.Collections.Generic;
 
 namespace Oje.Section.ProposalFormBaseData.Models.View
 {
-    public class CreateUpdatePaymentMethodVM
+    public class CreateUpdatePaymentMethodVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public List<int> comIds { get; set; }

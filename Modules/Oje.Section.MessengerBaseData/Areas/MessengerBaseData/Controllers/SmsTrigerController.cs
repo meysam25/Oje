@@ -15,7 +15,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
     [Route("[Area]/[Controller]/[Action]")]
     [AreaConfig(ModualTitle = "تنظیمات پیام رسان", Icon = "fa-flag", Title = "تنظیمات ارسال پیامک")]
     [CustomeAuthorizeFilter]
-    public class SmsTrigerController: Controller
+    public class SmsTrigerController : Controller
     {
         readonly ISmsTrigerService SmsTrigerService = null;
         readonly AccountService.Interfaces.IRoleService RoleService = null;
@@ -103,9 +103,9 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
 
         [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]
         [HttpGet]
-        public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt ")]

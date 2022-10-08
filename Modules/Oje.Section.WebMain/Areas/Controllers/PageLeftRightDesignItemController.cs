@@ -78,7 +78,7 @@ namespace Oje.Section.WebMain.Areas.Controllers
             return Json(PageLeftRightDesignItemService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست جزییات دیزاین چپ و راست", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست جزییات دیزاین چپ و راست", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] PageLeftRightDesignItemMainGrid searchInput)
         {
@@ -99,11 +99,11 @@ namespace Oje.Section.WebMain.Areas.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست صفحه ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست صفحه ها", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetPageLightList([FromForm] Select2SearchVM searchInput)
+        public ActionResult GetPageLightList([FromForm] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(PageLeftRightDesignService.GetSelect2(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(PageLeftRightDesignService.GetSelect2(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

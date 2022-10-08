@@ -87,6 +87,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFormRemindercSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
               "id": "ProposalFormReminderppfCatId2",
               "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
               "name": "appfCatId",
@@ -104,9 +116,10 @@
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/ProposalFilledForm/ProposalFormReminder/GetProposalFormList",
-              "exteraParameterIds": [ "ProposalFormReminderppfCatId2" ],
+              "exteraParameterIds": [ "ProposalFormReminderppfCatId2", "ProposalFormRemindercSOWSiteSettingIdAdd" ],
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
@@ -183,6 +196,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFormRemindercSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
               "id": "ProposalFormReminderppfCatId2x",
               "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
               "name": "appfCatId",
@@ -200,9 +225,10 @@
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/ProposalFilledForm/ProposalFormReminder/GetProposalFormList",
-              "exteraParameterIds": [ "ProposalFormReminderppfCatId2x" ],
+              "exteraParameterIds": [ "ProposalFormReminderppfCatId2x", "ProposalFormRemindercSOWSiteSettingIdEdit" ],
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",

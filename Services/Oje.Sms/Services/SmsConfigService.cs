@@ -21,11 +21,12 @@ namespace Oje.Sms.Services
 
         public ApiResult Create(CreateUpdateSmsConfigVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             if (input.isActive == true)
             {
-                var allItems = db.SmsConfigs.Where(t => t.SiteSettingId == siteSettingId).ToList();
+                var allItems = db.SmsConfigs.Where(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)).ToList();
                 foreach (var item in allItems)
                     item.IsActive = false;
             }
@@ -35,7 +36,7 @@ namespace Oje.Sms.Services
                 Domain = input.domain,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Password = input.smsPassword.Encrypt(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Username = input.smsUsername,
                 Type = input.type.Value,
                 PhoneNumber = input.ph
@@ -47,7 +48,7 @@ namespace Oje.Sms.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateUpdateValidation(CreateUpdateSmsConfigVM input, int? siteSettingId)
+        private void CreateUpdateValidation(CreateUpdateSmsConfigVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -59,7 +60,7 @@ namespace Oje.Sms.Services
                 magfaInputValidation(input, siteSettingId);
 
 
-            if (db.SmsConfigs.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.Type == input.type))
+            if (db.SmsConfigs.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.Type == input.type))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -104,7 +105,9 @@ namespace Oje.Sms.Services
                     domain = t.Domain,
                     isActive = t.IsActive,
                     type = (int)t.Type,
-                    ph = t.PhoneNumber
+                    ph = t.PhoneNumber,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -160,7 +163,8 @@ namespace Oje.Sms.Services
 
         public ApiResult Update(CreateUpdateSmsConfigVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             Models.DB.SmsConfig foundItem = db.SmsConfigs
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -172,7 +176,7 @@ namespace Oje.Sms.Services
 
             if (input.isActive == true)
             {
-                var allItems = db.SmsConfigs.Where(t => t.SiteSettingId == siteSettingId && t.Id != input.id).ToList();
+                var allItems = db.SmsConfigs.Where(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.Id != input.id).ToList();
                 foreach (var item in allItems)
                     item.IsActive = false;
             }
@@ -183,6 +187,7 @@ namespace Oje.Sms.Services
                 foundItem.Password = input.smsPassword.Encrypt();
             foundItem.Username = input.smsUsername;
             foundItem.PhoneNumber = input.ph;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

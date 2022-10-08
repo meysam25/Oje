@@ -248,16 +248,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return db.InsuranceContractCompanies.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractCompany, User>(loginUserId, canSeeAllItems).Any();
         }
 
-        public object GetLightList()
+        public object GetLightList(int? siteSettingId)
         {
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
 
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
 
             result.AddRange(db.InsuranceContractCompanies
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.SiteSettingId == siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContractCompany, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {

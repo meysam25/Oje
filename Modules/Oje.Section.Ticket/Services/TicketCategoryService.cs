@@ -25,7 +25,8 @@ namespace Oje.Section.Ticket.Services
 
         public ApiResult Create(TicketCategoryCreateUpdateVM input, int? siteSettingId)
         {
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new TicketCategory()
             {
@@ -33,14 +34,14 @@ namespace Oje.Section.Ticket.Services
                 ParentId = input.pKey,
                 Order = input.order.ToIntReturnZiro(),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.ToIntReturnZiro()
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidation(TicketCategoryCreateUpdateVM input, int? siteSettingId)
+        private void createValidation(TicketCategoryCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -50,7 +51,7 @@ namespace Oje.Section.Ticket.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
             if (input.title.Length > 100)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
-            if (input.pKey.ToLongReturnZiro() > 0 && !db.TicketCategories.Any(t => t.Id == input.pKey && t.SiteSettingId == siteSettingId))
+            if (input.pKey.ToLongReturnZiro() > 0 && !db.TicketCategories.Any(t => t.Id == input.pKey && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
@@ -80,7 +81,9 @@ namespace Oje.Section.Ticket.Services
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
-                    order = t.Order
+                    order = t.Order,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -131,7 +134,8 @@ namespace Oje.Section.Ticket.Services
 
         public ApiResult Update(TicketCategoryCreateUpdateVM input, int? siteSettingId)
         {
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.TicketCategories
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -144,6 +148,7 @@ namespace Oje.Section.Ticket.Services
             foundItem.Title = input.title;
             foundItem.Order = input.order.ToIntReturnZiro();
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

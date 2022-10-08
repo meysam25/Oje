@@ -45,21 +45,22 @@ namespace Oje.Sms.Services
 
         public ApiResult Create(CreateUpdateSmsTrigerVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new SmsTriger()
             {
                 RoleId = input.roleId,
                 UserId = input.userId,
                 UserNotificationType = input.type.Value,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateUpdateValidation(CreateUpdateSmsTrigerVM input, int? siteSettingId)
+        private void CreateUpdateValidation(CreateUpdateSmsTrigerVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -69,6 +70,8 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.roleId.ToIntReturnZiro() <= 0 && input.userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
+            if (input.userId.ToLongReturnZiro() > 0 && !db.Users.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.Id == input.userId))
+                throw BException.GenerateNewException(BMessages.User_Not_Found);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -97,7 +100,9 @@ namespace Oje.Sms.Services
                     type = t.UserNotificationType,
                     roleId = t.RoleId,
                     userId = t.UserId,
-                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : ""
+                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : "",
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .Select(t => new
@@ -107,6 +112,8 @@ namespace Oje.Sms.Services
                     roleId = t.roleId == null ? "" : t.roleId.ToString(),
                     userId = t.userId == null ? "" : t.userId.ToString(),
                     t.userId_Title,
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -157,7 +164,8 @@ namespace Oje.Sms.Services
 
         public ApiResult Update(CreateUpdateSmsTrigerVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.SmsTrigers
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -170,6 +178,7 @@ namespace Oje.Sms.Services
             foundItem.RoleId = input.roleId;
             foundItem.UserId = input.userId;
             foundItem.UserNotificationType = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

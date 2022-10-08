@@ -129,13 +129,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('insuranceContractIdAdd')"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "insuranceContractIdAdd",
               "name": "insuranceContractId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -192,13 +206,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('insuranceContractIdEdit')"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "insuranceContractIdEdit",
               "name": "insuranceContractId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractValidUserForFullDebit/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

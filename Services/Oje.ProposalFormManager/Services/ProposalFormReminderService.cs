@@ -39,7 +39,8 @@ namespace Oje.ProposalFormService.Services
 
         public ApiResult Create(ReminderCreateVM input, int? siteSettingId, IpSections ipSections, long? loginUserId)
         {
-            CreateValidation(input, siteSettingId, ipSections);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, ipSections, false, canSetSiteSetting);
 
             var newItem = new ProposalFormReminder()
             {
@@ -51,7 +52,7 @@ namespace Oje.ProposalFormService.Services
                 Ip4 = ipSections.Ip4,
                 Mobile = input.mobile.ToLongReturnZiro(),
                 ProposalFormId = input.fid.ToIntReturnZiro(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 TargetDate = input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value,
                 LoginUserId = loginUserId
             };
@@ -117,7 +118,9 @@ namespace Oje.ProposalFormService.Services
                     t.Description,
                     t.NationalCardImage,
                     t.PrevInsuranceImage,
-                    t.Id
+                    t.Id,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new
@@ -131,7 +134,9 @@ namespace Oje.ProposalFormService.Services
                     mobile = "0" + t.Mobile,
                     summery = t.Description,
                     insuranceImage_address = !string.IsNullOrEmpty(t.PrevInsuranceImage) ? (GlobalConfig.FileAccessHandlerUrl + t.PrevInsuranceImage) : "",
-                    nationalCard_address = !string.IsNullOrEmpty(t.NationalCardImage) ? (GlobalConfig.FileAccessHandlerUrl + t.NationalCardImage) : ""
+                    nationalCard_address = !string.IsNullOrEmpty(t.NationalCardImage) ? (GlobalConfig.FileAccessHandlerUrl + t.NationalCardImage) : "",
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -197,7 +202,8 @@ namespace Oje.ProposalFormService.Services
 
         public ApiResult Update(ReminderCreateVM input, int? siteSettingId, long? userId)
         {
-            CreateValidation(input, siteSettingId, null, true);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, null, true, canSetSiteSetting);
 
             var foundItem = db.ProposalFormReminders
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -212,6 +218,7 @@ namespace Oje.ProposalFormService.Services
             foundItem.ProposalFormId = input.fid.ToIntReturnZiro();
             foundItem.TargetDate = input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.LoginUserId = userId;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.nationalCard != null && input.nationalCard.Length > 0)
                 foundItem.NationalCardImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.nationalCard, userId, siteSettingId, null, ".png,.jpg,.jpeg", true);
@@ -224,7 +231,7 @@ namespace Oje.ProposalFormService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateValidation(ReminderCreateVM input, int? siteSettingId, IpSections ipSections, bool ignoreIpSection = false)
+        private void CreateValidation(ReminderCreateVM input, int? siteSettingId, IpSections ipSections, bool ignoreIpSection = false, bool? canSetSiteSetting = null)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -246,6 +253,8 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
             if (input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate() <= DateTime.Now)
                 throw BException.GenerateNewException(BMessages.Date_Should_Be_From_Tomarow);
+            if (!db.ProposalForms.Any(t => t.Id == input.fid && (t.SiteSettingId == null || t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId))))
+                throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
         }
     }
 }

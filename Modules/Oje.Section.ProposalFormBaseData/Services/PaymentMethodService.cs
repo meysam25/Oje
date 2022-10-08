@@ -32,7 +32,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
         public ApiResult Create(CreateUpdatePaymentMethodVM input)
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             PaymentMethod newItem = new PaymentMethod()
             {
@@ -41,7 +42,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 IsDefault = input.isDefault.ToBooleanReturnFalse(),
                 Order = input.order.ToIntReturnZiro(),
                 ProposalFormId = input.formId.ToIntReturnZiro(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 Type = input.type.Value,
                 PrePayPercent = input.prePayPercent,
@@ -79,7 +80,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 item.IsDefault = false;
         }
 
-        void createUpdateValidation(CreateUpdatePaymentMethodVM input, int? siteSettingId)
+        void createUpdateValidation(CreateUpdatePaymentMethodVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -97,6 +98,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
             if (input.prePayPercent != null && (input.prePayPercent < 0 || input.prePayPercent > 100))
                 throw BException.GenerateNewException(BMessages.Invalid_Percent);
+            if (!db.ProposalForms.Any(t => t.Id == input.formId && (t.SiteSettingId == null || t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId))))
+                throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
         }
 
         public ApiResult Delete(int? id)
@@ -125,7 +128,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
 
             return db.PaymentMethods
-                .Where(t => t.Id == id )
+                .Where(t => t.Id == id)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .OrderByDescending(t => t.Id)
                 .Select(t => new
@@ -141,7 +144,9 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     isDefault = t.IsDefault,
                     isCheck = t.IsChek,
                     prePayPercent = t.PrePayPercent,
-                    debitCount = t.DebitCount
+                    debitCount = t.DebitCount,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .ToList()
@@ -158,7 +163,9 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     t.isDefault,
                     t.isCheck,
                     t.prePayPercent,
-                    t.debitCount
+                    t.debitCount,
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -224,29 +231,31 @@ namespace Oje.Section.ProposalFormBaseData.Services
         public ApiResult Update(CreateUpdatePaymentMethodVM input)
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
-            PaymentMethod editItem = db.PaymentMethods
+            PaymentMethod foundItem = db.PaymentMethods
                 .Where(t => t.Id == input.id)
                 .Include(t => t.PaymentMethodCompanies)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
 
-            if (editItem == null)
+            if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            editItem.IsActive = input.isActive.ToBooleanReturnFalse();
-            editItem.IsChek = input.isCheck.ToBooleanReturnFalse();
-            editItem.IsDefault = input.isDefault.ToBooleanReturnFalse();
-            editItem.Order = input.order.ToIntReturnZiro();
-            editItem.ProposalFormId = input.formId.ToIntReturnZiro();
-            editItem.Title = input.title;
-            editItem.Type = input.type.Value;
-            editItem.PrePayPercent = input.prePayPercent;
-            editItem.DebitCount = input.debitCount;
+            foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.IsChek = input.isCheck.ToBooleanReturnFalse();
+            foundItem.IsDefault = input.isDefault.ToBooleanReturnFalse();
+            foundItem.Order = input.order.ToIntReturnZiro();
+            foundItem.ProposalFormId = input.formId.ToIntReturnZiro();
+            foundItem.Title = input.title;
+            foundItem.Type = input.type.Value;
+            foundItem.PrePayPercent = input.prePayPercent;
+            foundItem.DebitCount = input.debitCount;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
-            if (editItem.PaymentMethodCompanies != null)
-                foreach (var company in editItem.PaymentMethodCompanies)
+            if (foundItem.PaymentMethodCompanies != null)
+                foreach (var company in foundItem.PaymentMethodCompanies)
                     db.Entry(company).State = EntityState.Deleted;
 
             if (input.comIds != null && input.comIds.Count > 0)
@@ -256,7 +265,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     db.Entry(new PaymentMethodCompany()
                     {
                         CompanyId = comId,
-                        PaymentMethodId = editItem.Id
+                        PaymentMethodId = foundItem.Id
                     }).State = EntityState.Added;
                 }
             }

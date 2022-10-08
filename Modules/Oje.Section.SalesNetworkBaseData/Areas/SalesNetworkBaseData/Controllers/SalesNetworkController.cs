@@ -22,17 +22,20 @@ namespace Oje.Section.SalesNetworkBaseData.Areas.SalesNetworkBaseData.Controller
         readonly IProposalFormService ProposalFormService = null;
         readonly ICompanyService CompanyService = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         public SalesNetworkController(
                 ISalesNetworkService SalesNetworkService,
                 IProposalFormService ProposalFormService,
                 ICompanyService CompanyService,
-                AccountService.Interfaces.IUserService UserService
+                AccountService.Interfaces.IUserService UserService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.SalesNetworkService = SalesNetworkService;
             this.ProposalFormService = ProposalFormService;
             this.CompanyService = CompanyService;
             this.UserService = UserService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "شبکه فروش", Icon = "fa-project-diagram", IsMainMenuItem = true)]
@@ -103,16 +106,16 @@ namespace Oje.Section.SalesNetworkBaseData.Areas.SalesNetworkBaseData.Controller
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست بازاریاب", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetMarketerList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetMarketerList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserService.GetSelect2ListByType(searchInput, RoleType.Marketer));
+            return Json(UserService.GetSelect2ListByType(searchInput, RoleType.Marketer, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست شرکت", Icon = "fa-list-alt")]

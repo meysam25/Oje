@@ -42,7 +42,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var loginUserId = UserService.GetLoginUser()?.UserId;
-            createValidation(input, siteSettingId, loginUserId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             SalesNetwork newItem = new SalesNetwork()
             {
@@ -51,7 +52,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 CreateUserId = loginUserId.Value,
                 Description = input.description,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 Type = input.type.Value
             };
@@ -73,7 +74,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidation(CreateUpdateSalesNetworkVM input, int? siteSettingId, long? loginUserId)
+        private void createValidation(CreateUpdateSalesNetworkVM input, int? siteSettingId, long? loginUserId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -89,7 +90,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             if (input.ppfIds == null || input.ppfIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             foreach (var ppfid in input.ppfIds)
-                if (!ProposalFormService.Exist(ppfid, siteSettingId))
+                if (!ProposalFormService.Exist(ppfid, (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                     throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.cIds == null || input.cIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
@@ -101,6 +102,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_One_User);
             if (db.SalesNetworkMarketers.Any(t => t.SalesNetworkId == input.id && t.UserId == input.userId && t.ParentId != null))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
+            if (!db.Users.Any(t => t.Id == input.userId && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
+                throw BException.GenerateNewException(BMessages.User_Not_Found);
         }
 
         public ApiResult Delete(int? id)
@@ -147,7 +150,9 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                     isActive = t.IsActive,
                     ppfIds = t.SalesNetworkProposalForms.Select(tt => new { id = tt.ProposalFormId, title = tt.ProposalForm.Title }).ToList(),
                     title = t.Title,
-                    type = t.Type
+                    type = t.Type,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -229,8 +234,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var loginUserId = UserService.GetLoginUser()?.UserId;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
-
-            createValidation(input, siteSettingId, loginUserId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             var foundItem = db.SalesNetworks
                 .Include(t => t.SalesNetworkCompanies)
@@ -270,6 +275,7 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;
             foundItem.Type = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

@@ -35,13 +35,14 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(LoginBackgroundImageCreateUpdateVM input, int? siteSettingId, long? loginUserId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId, loginUserId);
 
             var newItem = new LoginBackgroundImage()
             {
                 ImageUrl = " ",
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             };
 
@@ -98,7 +99,9 @@ namespace Oje.Section.WebMain.Services
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
-                    mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl
+                    mainImage_address = GlobalConfig.FileAccessHandlerUrl + t.ImageUrl,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -147,17 +150,20 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(LoginBackgroundImageCreateUpdateVM input, int? siteSettingId, long? loginUserId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId, loginUserId);
 
             var foundItem = db.LoginBackgroundImages
                 .Where(t => t.Id == input.id)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             if (input.mainImage != null && input.mainImage.Length > 0)
                 foundItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.LoginBackground, input.mainImage, loginUserId, siteSettingId, null, mainFileExtension, false);
 

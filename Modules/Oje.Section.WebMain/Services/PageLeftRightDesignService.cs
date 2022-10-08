@@ -31,7 +31,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(PageLeftRightDesignCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new PageLeftRightDesign()
             {
@@ -39,7 +40,7 @@ namespace Oje.Section.WebMain.Services
                 Description = input.description,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Order = input.order.ToIntReturnZiro(),
-                SiteSettingId = siteSettingId.ToIntReturnZiro(),
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -47,7 +48,7 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(PageLeftRightDesignCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(PageLeftRightDesignCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -55,7 +56,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.pId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Page);
-            if (!db.Pages.Any(t => t.SiteSettingId == siteSettingId && t.Id == input.pId))
+            if (!db.Pages.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.Id == input.pId))
                 throw BException.GenerateNewException(BMessages.Not_Found);
         }
 
@@ -89,7 +90,9 @@ namespace Oje.Section.WebMain.Services
                     title = t.Title,
                     description = t.Description,
                     order = t.Order,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -140,7 +143,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(PageLeftRightDesignCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.PageLeftRightDesigns
                 .Where(t => t.Id == input.id)
@@ -155,6 +159,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Order = input.order.ToIntReturnZiro();
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 
@@ -173,7 +178,7 @@ namespace Oje.Section.WebMain.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.PageLeftRightDesigns.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+            var qureResult = db.PageLeftRightDesigns.Where(t => t.SiteSettingId == siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Page.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

@@ -12,24 +12,33 @@ namespace Oje.ProposalFormService.Services
     public class ProposalFilledFormUseService : IProposalFilledFormUseService
     {
         readonly ProposalFormDBContext db = null;
-        public ProposalFilledFormUseService(ProposalFormDBContext db)
+        readonly IProposalFilledFormSiteSettingService ProposalFilledFormSiteSettingService = null;
+
+        public ProposalFilledFormUseService
+            (
+                ProposalFormDBContext db,
+                IProposalFilledFormSiteSettingService ProposalFilledFormSiteSettingService
+            )
         {
             this.db = db;
+            this.ProposalFilledFormSiteSettingService = ProposalFilledFormSiteSettingService;
         }
 
-        public void Create(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId)
+        public void Create(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId, int? siteSettingId)
         {
             //if (userId.ToLongReturnZiro() > 0 && proposalFilledFormId > 0 &&
             //    !db.ProposalFilledFormUsers.Any(t => t.UserId == userId && t.ProposalFilledFormId == proposalFilledFormId && t.Type == type))
             //{
-                db.Entry(new ProposalFilledFormUser()
-                {
-                    FromUserId = fromUserId,
-                    ProposalFilledFormId = proposalFilledFormId,
-                    Type = type,
-                    UserId = userId.ToLongReturnZiro()
-                }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-                db.SaveChanges();
+            db.Entry(new ProposalFilledFormUser()
+            {
+                FromUserId = fromUserId,
+                ProposalFilledFormId = proposalFilledFormId,
+                Type = type,
+                UserId = userId.ToLongReturnZiro()
+            }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            db.SaveChanges();
+
+            ProposalFilledFormSiteSettingService.Create(proposalFilledFormId, siteSettingId);
             //}
         }
 
@@ -37,7 +46,7 @@ namespace Oje.ProposalFormService.Services
         {
             return db.ProposalFilledFormUsers
                 .Where(t => t.ProposalFilledFormId == proposalFilledFormId)
-                .Select(t => new 
+                .Select(t => new
                 {
                     userId = t.UserId,
                     ProposalFilledFormUserType = t.Type,
@@ -46,8 +55,8 @@ namespace Oje.ProposalFormService.Services
                     emaile = t.User.Email
                 })
                 .ToList()
-                .Select(t => new PPFUserTypes 
-                { 
+                .Select(t => new PPFUserTypes
+                {
                     userId = t.userId,
                     emaile = t.emaile,
                     mobile = t.mobile,
@@ -62,7 +71,7 @@ namespace Oje.ProposalFormService.Services
             return db.ProposalFilledFormUsers.Any(t => t.ProposalFilledFormId == proposalFilledFormId && t.Type == type);
         }
 
-        public void Update(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId)
+        public void Update(long? userId, ProposalFilledFormUserType type, long? fromUserId, long proposalFilledFormId, int? siteSettingId)
         {
             if (userId.ToLongReturnZiro() > 0 && fromUserId.ToLongReturnZiro() > 0 && proposalFilledFormId > 0)
             {
@@ -71,7 +80,7 @@ namespace Oje.ProposalFormService.Services
                 {
                     db.Entry(foundItem).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
                     db.SaveChanges();
-                    Create(userId, type, fromUserId, proposalFilledFormId);
+                    Create(userId, type, fromUserId, proposalFilledFormId, siteSettingId);
                 }
             }
         }

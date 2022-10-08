@@ -33,13 +33,14 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Create(UserRegisterFormCompanyCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new UserRegisterFormCompany()
             {
                 CompanyId = input.cid.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 UserRegisterFormId = input.fid.Value
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -47,7 +48,7 @@ namespace Oje.Section.RegisterForm.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(UserRegisterFormCompanyCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(UserRegisterFormCompanyCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -57,9 +58,9 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
             if (input.fid.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!UserRegisterFormService.Exist(input.fid, siteSettingId))
+            if (!UserRegisterFormService.Exist(input.fid, (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (db.UserRegisterFormCompanies.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.UserRegisterFormId == input.fid && t.CompanyId == input.cid))
+            if (db.UserRegisterFormCompanies.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.UserRegisterFormId == input.fid && t.CompanyId == input.cid))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -88,7 +89,9 @@ namespace Oje.Section.RegisterForm.Services
                     id = t.Id,
                     fid = t.UserRegisterFormId,
                     cid = t.CompanyId,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -140,7 +143,8 @@ namespace Oje.Section.RegisterForm.Services
 
         public ApiResult Update(UserRegisterFormCompanyCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.UserRegisterFormCompanies
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -152,6 +156,7 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.CompanyId = input.cid.Value;
             foundItem.UserRegisterFormId = input.fid.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

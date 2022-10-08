@@ -1,13 +1,9 @@
 ﻿using Oje.Infrastructure.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Models;
 
 namespace Oje.Section.InquiryBaseData.Models.View
 {
-    public class CreateUpdateRoundInqueryVM
+    public class CreateUpdateRoundInqueryVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string format { get; set; }

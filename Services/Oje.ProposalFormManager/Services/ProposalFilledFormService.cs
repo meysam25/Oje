@@ -128,10 +128,10 @@ namespace Oje.ProposalFormService.Services
                         ProposalFilledFormCompanyService.Create(form.GetStringIfExist("cIds"), newForm.Id, loginUserId);
 
                     long ownerUserId = InternalUserService.CreateUserForProposalFormIfNeeded(form, siteSettingId, loginUserId);
-                    ProposalFilledFormUseService.Create(loginUserId, ProposalFilledFormUserType.CreateUser, loginUserId, newForm.Id);
+                    ProposalFilledFormUseService.Create(loginUserId, ProposalFilledFormUserType.CreateUser, loginUserId, newForm.Id, siteSettingId);
                     if (ppfObj.panels?.FirstOrDefault().isAgentRequired == true)
-                        ProposalFilledFormUseService.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id);
-                    ProposalFilledFormUseService.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id);
+                        ProposalFilledFormUseService.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id, siteSettingId);
+                    ProposalFilledFormUseService.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id, siteSettingId);
 
                     if (PaymentMethodService.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryService.HasAnyCashDiscount(inquiryId))
                         ProposalFilledFormDocumentService.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);

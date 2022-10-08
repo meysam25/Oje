@@ -88,6 +88,20 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-8 col-lg-8 col-md-8 col-sm-12 col-xs-12",
+              "type": "empty"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
               "name": "title",
               "type": "text",
               "label": "عنوان",
@@ -178,6 +192,20 @@
             {
               "name": "id",
               "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-8 col-lg-8 col-md-8 col-sm-12 col-xs-12",
+              "type": "empty"
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12",

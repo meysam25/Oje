@@ -73,6 +73,7 @@ namespace Oje.ProposalFormService.Services.EContext
         public DbSet<ProposalFilledFormStatusLogFile> ProposalFilledFormStatusLogFiles { get; set; }
         public DbSet<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscount> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscounts { get; set; }
         public DbSet<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany> ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompanies { get; set; }
+        public DbSet<ProposalFilledFormSiteSetting> ProposalFilledFormSiteSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,6 +95,7 @@ namespace Oje.ProposalFormService.Services.EContext
             modelBuilder.Entity<VehicleTypeCarType>().HasKey(t => new { t.CarTypeId, t.VehicleTypeId });
             modelBuilder.Entity<VehicleSystemVehicleType>().HasKey(t => new { t.VehicleSystemId, t.VehicleTypeId });
             modelBuilder.Entity<CarSpecificationVehicleSpec>().HasKey(t => new { t.CarSpecificationId, t.VehicleSpecId });
+            modelBuilder.Entity<ProposalFilledFormSiteSetting>().HasKey(t => new { t.SiteSettingId, t.ProposalFilledFormId });
 
             base.OnModelCreating(modelBuilder);
         }

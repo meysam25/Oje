@@ -92,7 +92,17 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
@@ -102,14 +112,14 @@
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "subject",
               "type": "text",
               "label": "عنوان",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "pffUserType",
               "type": "dropDown",
               "textfield": "title",
@@ -148,7 +158,17 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "type",
               "type": "dropDown",
               "textfield": "title",
@@ -158,14 +178,14 @@
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "subject",
               "type": "text",
               "label": "عنوان",
               "isRequired": true
             },
             {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
               "name": "pffUserType",
               "type": "dropDown",
               "textfield": "title",

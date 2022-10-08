@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Oje.Infrastructure.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.View
 {
-    public class CreateUpdateProposalFilledFormUserReffer
+    public class CreateUpdateProposalFilledFormUserReffer: GlobalSiteSetting
     {
         public long? id { get; set; }
         public List<long> userIds { get; set; }

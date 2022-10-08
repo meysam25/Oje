@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Models.View
 {
-    public class PageLeftRightDesignItemCreateUpdateVM
+    public class PageLeftRightDesignItemCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public long? dId { get; set; }

@@ -1136,7 +1136,7 @@ namespace Oje.AccountService.Services
             return db.Users.Any(t => t.SiteSettingId == siteSettingId && t.Id == userId && t.UserRoles.Any(tt => tt.Role.Type == Type) && (childUserIdsNullable == null || childUserIdsNullable.Contains(t.CreateByUserId)));
         }
 
-        public object GetSelect2ListByType(Select2SearchVM searchInput, RoleType? rType)
+        public object GetSelect2ListByType(Select2SearchVM searchInput, RoleType? rType, int? siteSettingId)
         {
             List<object> result = new List<object>();
             long? loginUserId = GetLoginUser()?.UserId;
@@ -1151,11 +1151,8 @@ namespace Oje.AccountService.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-
             var qureResult = db.Users.OrderByDescending(t => t.Id)
-                .getSiteSettingQuiryNullable(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
-                .Where(t => t.UserRoles.Any(tt => tt.Role.Type == rType));
+                .Where(t => t.SiteSettingId == siteSettingId && t.UserRoles.Any(tt => tt.Role.Type == rType));
 
             if (canSeeAllItem != true)
                 qureResult = qureResult.getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem);
@@ -1343,7 +1340,8 @@ namespace Oje.AccountService.Services
 
             var qureResult = db.Users
                 .OrderByDescending(t => t.Id)
-                .getSiteSettingQuiryNullable(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+                .Where(t => t.SiteSettingId == siteSettingId);
+
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => (t.Username + "(" + t.Firstname + " " + t.Lastname + ")").Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

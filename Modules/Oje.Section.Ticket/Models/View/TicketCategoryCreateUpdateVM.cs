@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Oje.Infrastructure.Models;
 
 namespace Oje.Section.Ticket.Models.View
 {
-    public class TicketCategoryCreateUpdateVM
+    public class TicketCategoryCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public int? pKey { get; set; }

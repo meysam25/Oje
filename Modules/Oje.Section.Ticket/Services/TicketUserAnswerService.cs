@@ -66,7 +66,7 @@ namespace Oje.Section.Ticket.Services
                 db.SaveChanges();
             }
 
-            string ticketTitle =  TicketUserService.UpdateUserIdAndUdateDate(input.pKey, loginUserId);
+            string ticketTitle = TicketUserService.UpdateUserIdAndUdateDate(input.pKey, loginUserId);
 
             UserNotifierService.Notify(loginUserId, UserNotificationType.NewTicket, null, newItem.Id, ticketTitle, siteSettingId, "/Ticket/TicketUserAdmin/Index");
 
@@ -89,7 +89,6 @@ namespace Oje.Section.Ticket.Services
                 throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
             if (input.pKey.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
-
         }
 
         public object GetList(TicketUserAnswerMainGrid searchInput, int? siteSettingId, long? loginUserId)

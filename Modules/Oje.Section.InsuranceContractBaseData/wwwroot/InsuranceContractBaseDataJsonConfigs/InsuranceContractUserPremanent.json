@@ -175,31 +175,49 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractUserPremanentcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('InsuranceContractUserPremanentinsuranceContractId');refreshDropdown('InsuranceContractUserPremanentbaseInsuranceId');refreshDropdown('InsuranceContractUserPremanentsubCatId')"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractUserPremanentinsuranceContractId",
               "name": "insuranceContractId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractUserPremanentcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractUserPremanentbaseInsuranceId",
               "name": "baseInsuranceId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetBaseInsuranceList",
-              "label": "بیمه پایه"
+              "label": "بیمه پایه",
+              "exteraParameterIds": [ "InsuranceContractUserPremanentcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "subCatId",
+              "id": "InsuranceContractUserPremanentsubCatId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetSubCatList",
-              "label": "زیرگروه"
+              "label": "زیرگروه",
+              "exteraParameterIds": [ "InsuranceContractUserPremanentcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
@@ -409,31 +427,49 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractUserPremanentcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('InsuranceContractUserPremanentinsuranceContractIdEdit');refreshDropdown('InsuranceContractUserPremanentbaseInsuranceIdEdit');refreshDropdown('InsuranceContractUserPremanentsubCatIdEdit')"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractUserPremanentinsuranceContractIdEdit",
               "name": "insuranceContractId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractUserPremanentcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractUserPremanentbaseInsuranceIdEdit",
               "name": "baseInsuranceId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetBaseInsuranceList",
-              "label": "بیمه پایه"
+              "label": "بیمه پایه",
+              "exteraParameterIds": [ "InsuranceContractUserPremanentcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "id": "InsuranceContractUserPremanentsubCatIdEdit",
               "name": "subCatId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InsuranceContractBaseData/InsuranceContractUserPremanent/GetSubCatList",
-              "label": "زیرگروه"
+              "label": "زیرگروه",
+              "exteraParameterIds": [ "InsuranceContractUserPremanentcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",

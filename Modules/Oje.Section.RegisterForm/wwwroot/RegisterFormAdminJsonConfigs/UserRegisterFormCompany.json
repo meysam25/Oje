@@ -88,13 +88,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "cSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('fidAdd')"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "fidAdd",
               "name": "fid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/RegisterFormAdmin/UserRegisterFormCompany/GetFormList",
               "label": "فرم",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "cSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -140,13 +154,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "cSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('fidEdit')"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "fidEdit",
               "name": "fid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/RegisterFormAdmin/UserRegisterFormCompany/GetFormList",
               "label": "فرم",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "cSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

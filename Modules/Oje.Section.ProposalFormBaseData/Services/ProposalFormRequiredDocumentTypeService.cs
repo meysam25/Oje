@@ -5,7 +5,6 @@ using Oje.Infrastructure.Services;
 using Oje.Section.ProposalFormBaseData.Interfaces;
 using Oje.Section.ProposalFormBaseData.Models.DB;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -48,6 +47,8 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type, ApiResultErrorCode.ValidationError);
             if (db.ProposalFormRequiredDocumentTypes.Any(t => t.Id != input.id && t.ProposalFormId == input.formId && t.Title == input.title && t.SiteSettingId == input.siteId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Title, ApiResultErrorCode.ValidationError);
+            if (!db.ProposalForms.Any(t => t.Id == input.formId && (t.SiteSettingId == null || t.SiteSettingId == input.siteId)))
+                throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
         }
 
         public ApiResult Delete(int? id)

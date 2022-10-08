@@ -20,13 +20,19 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
         readonly INoDamageDiscountService NoDamageDiscountService = null;
         readonly ICompanyService CompanyService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+
         public NoDamageDiscountController(
-                INoDamageDiscountService NoDamageDiscountService, ICompanyService CompanyService, IProposalFormService ProposalFormService
+                INoDamageDiscountService NoDamageDiscountService, 
+                ICompanyService CompanyService, 
+                IProposalFormService ProposalFormService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.NoDamageDiscountService = NoDamageDiscountService;
             this.CompanyService = CompanyService;
             this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "تخفیف عدم خسارت", Icon = "fa-percent", IsMainMenuItem = true)]
@@ -104,9 +110,9 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
 
         [AreaConfig(Title = "مشاهده لیست شرکت های بیمه", Icon = "fa-list-alt ")]
         [HttpGet]
-        public ActionResult GetPPFList(Select2SearchVM searchInput)
+        public ActionResult GetPPFList(Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

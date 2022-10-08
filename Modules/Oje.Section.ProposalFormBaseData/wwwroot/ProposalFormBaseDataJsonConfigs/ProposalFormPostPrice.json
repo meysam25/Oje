@@ -95,13 +95,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFormPostPricecSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "ppfId",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/ProposalFormBaseData/ProposalFormPostPrice/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "ProposalFormPostPricecSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -152,13 +166,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFormPostPricecSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "ppfId",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/ProposalFormBaseData/ProposalFormPostPrice/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "ProposalFormPostPricecSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

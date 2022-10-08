@@ -20,11 +20,19 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         readonly IPaymentMethodService PaymentMethodService = null;
         readonly IProposalFormService ProposalFormService = null;
         readonly ICompanyService CompanyService = null;
-        public PaymentMethodController(IPaymentMethodService PaymentMethodService, IProposalFormService ProposalFormService, ICompanyService CompanyService)
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+
+        public PaymentMethodController(
+                IPaymentMethodService PaymentMethodService, 
+                IProposalFormService ProposalFormService, 
+                ICompanyService CompanyService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
+            )
         {
             this.PaymentMethodService = PaymentMethodService;
             this.ProposalFormService = ProposalFormService;
             this.CompanyService = CompanyService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "شرایط پرداخت", Icon = "fa-dollar-sign", IsMainMenuItem = true)]
@@ -102,9 +110,9 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
 
         [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

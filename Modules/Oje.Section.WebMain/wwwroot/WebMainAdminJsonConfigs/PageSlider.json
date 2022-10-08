@@ -89,13 +89,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "WebMainAdminPageSlidercSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "pid",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/WebMainAdmin/PageSlider/GetPageLightList",
               "label": "صفحه",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "WebMainAdminPageSlidercSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -151,13 +165,27 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "WebMainAdminPageSlidercSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "pid",
               "type": "dropDown2",
               "textfield": "text",
               "valuefield": "id",
               "dataurl": "/WebMainAdmin/PageSlider/GetPageLightList",
               "label": "صفحه",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "WebMainAdminPageSlidercSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Oje.Infrastructure.Models;
 
 namespace Oje.Section.WebMain.Models.View
 {
-    public class OurCustomerCreateUpdateVM
+    public class OurCustomerCreateUpdateVM : GlobalSiteSetting
     {
         public int? id { get; set; }
         public string title { get; set; }

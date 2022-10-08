@@ -20,15 +20,19 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         readonly IGlobalDiscountService GlobalDiscountService = null;
         readonly ICompanyService CompanyService = null;
         readonly IProposalFormService ProposalFormService = null;
+        readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
+
         public GlobalDiscountController(
                 IGlobalDiscountService GlobalDiscountService,
                 ICompanyService CompanyService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService
             )
         {
             this.GlobalDiscountService = GlobalDiscountService;
             this.CompanyService = CompanyService;
             this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "تخفیفات (کمپین)", Icon = "fa-percent", IsMainMenuItem = true)]
@@ -76,7 +80,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(GlobalDiscountService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تخفیفات (کمپین)", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تخفیفات (کمپین)", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] GlobalDiscountMainGrid searchInput)
         {
@@ -99,18 +103,18 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 
 
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(ProposalFormService.GetSelect2List(searchInput));
+            return Json(ProposalFormService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
 
