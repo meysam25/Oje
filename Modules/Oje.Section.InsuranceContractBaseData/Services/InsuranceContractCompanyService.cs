@@ -41,6 +41,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
             CreateValidation(input, loginUserId, siteSettingId);
 
@@ -56,7 +57,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 RabeteSazmaniName = input.rabeteSazmaniName,
                 ShenaseMeli = input.shenaseMeli,
                 ShomareSabt = input.shomareSabt,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -134,7 +135,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     rabeteSazmaniName = t.RabeteSazmaniName,
                     shenaseMeli = t.ShenaseMeli,
                     shomareSabt = t.ShomareSabt,
-                    title = t.Title
+                    title = t.Title,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -211,6 +214,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
 
             CreateValidation(input, loginUserId, siteSettingId);
 
@@ -236,6 +240,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.ShenaseMeli = input.shenaseMeli;
             foundItem.ShomareSabt = input.shomareSabt;
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

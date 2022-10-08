@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Oje.Infrastructure.Models;
 
 namespace Oje.EmailService.Models.View
 {
-    public class EmailConfigCreateUpdateVM
+    public class EmailConfigCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string title { get; set; }

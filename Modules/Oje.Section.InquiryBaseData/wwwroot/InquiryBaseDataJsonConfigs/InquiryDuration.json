@@ -113,6 +113,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "InquiryDurationcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cIds",
               "type": "tokenBox",
@@ -130,7 +142,9 @@
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/InquiryDuration/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InquiryDurationcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -186,6 +200,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "InquiryDurationcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cIds",
               "type": "tokenBox",
@@ -203,7 +229,9 @@
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/InquiryDuration/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InquiryDurationcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",

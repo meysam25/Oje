@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.EmailService.Models.DB
 {
+    [Table("SiteSettings")]
     public class SiteSetting
     {
         public SiteSetting()

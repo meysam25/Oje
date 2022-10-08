@@ -32,6 +32,7 @@ namespace Oje.AccountService.Services
 
         public ApiResult Create(ExternalNotificationServiceConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new ExternalNotificationServiceConfig()
@@ -39,7 +40,7 @@ namespace Oje.AccountService.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 PrivateKey = input.prKey,
                 PublicKey = input.puKey,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Subject = input.subject,
                 Type = input.type.Value
             }).State = EntityState.Added;
@@ -96,7 +97,9 @@ namespace Oje.AccountService.Services
                     prKey = t.PrivateKey,
                     puKey = t.PublicKey,
                     subject = t.Subject,
-                    type = t.Type
+                    type = t.Type,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -152,6 +155,7 @@ namespace Oje.AccountService.Services
 
         public ApiResult Update(ExternalNotificationServiceConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             ExternalNotificationServiceConfig foundItem = 
@@ -168,6 +172,7 @@ namespace Oje.AccountService.Services
             foundItem.PublicKey = input.puKey;
             foundItem.Subject = input.subject;
             foundItem.Type = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

@@ -27,13 +27,14 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Create(BankAccountSadadCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new BankAccountSadad()
             {
                 BankAccountId = input.baId.Value,
                 MerchantId = input.merchantId,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 TerminalId = input.terminalId,
                 TerminalKey = input.terminalKey
             }).State = EntityState.Added;
@@ -42,7 +43,7 @@ namespace Oje.PaymentService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(BankAccountSadadCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(BankAccountSadadCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -50,7 +51,7 @@ namespace Oje.PaymentService.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input.baId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_BankAccount);
-            if (!db.BankAccounts.Any(t => t.SiteSettingId == siteSettingId && t.Id == input.baId))
+            if (!db.BankAccounts.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Id == input.baId))
                 throw BException.GenerateNewException(BMessages.Please_Select_BankAccount);
             if (string.IsNullOrEmpty(input.merchantId))
                 throw BException.GenerateNewException(BMessages.Please_Enter_MerchandId);
@@ -58,7 +59,7 @@ namespace Oje.PaymentService.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_TerimanId);
             if (input.id.ToIntReturnZiro() <= 0 && string.IsNullOrEmpty(input.terminalKey))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Private_Key);
-            if (db.BankAccountSadads.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.BankAccountId == input.baId))
+            if (db.BankAccountSadads.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.BankAccountId == input.baId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
 
         }
@@ -90,7 +91,9 @@ namespace Oje.PaymentService.Services
                     baId = t.BankAccountId,
                     baId_Title = t.BankAccount.Title,
                     merchantId = t.MerchantId,
-                    terminalId = t.TerminalId
+                    terminalId = t.TerminalId,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -143,7 +146,8 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Update(BankAccountSadadCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.BankAccountSadads
                 .Where(t => t.Id == input.id)
@@ -156,6 +160,7 @@ namespace Oje.PaymentService.Services
             foundItem.BankAccountId = input.baId.Value;
             foundItem.MerchantId = input.merchantId;
             foundItem.TerminalId = input.terminalId;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             if (!string.IsNullOrEmpty(input.terminalKey))
                 foundItem.TerminalKey = input.terminalKey;
 

@@ -29,13 +29,14 @@ namespace Oje.Section.Blog.Services
 
         public ApiResult Create(BlogCategoryCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new BlogCategory()
             {
                 Title = input.title,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.ToIntReturnZiro()
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -77,7 +78,7 @@ namespace Oje.Section.Blog.Services
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.BlogCategories.getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId).Select(t => new
+            result.AddRange(db.BlogCategories.Where(t => t.SiteSettingId == siteSettingId).Select(t => new
             {
                 id = t.Id,
                 title = t.Title
@@ -132,7 +133,9 @@ namespace Oje.Section.Blog.Services
                 {
                     id = t.Id,
                     title = t.Title,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -182,6 +185,7 @@ namespace Oje.Section.Blog.Services
 
         public ApiResult Update(BlogCategoryCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.BlogCategories
@@ -194,6 +198,7 @@ namespace Oje.Section.Blog.Services
 
             foundItem.Title = input.title;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

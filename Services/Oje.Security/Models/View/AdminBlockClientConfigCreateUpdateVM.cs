@@ -1,7 +1,8 @@
-﻿
+﻿using Oje.Infrastructure.Models;
+
 namespace Oje.Security.Models.View
 {
-    public class AdminBlockClientConfigCreateUpdateVM
+    public class AdminBlockClientConfigCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public long? aid { get; set; }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Oje.Infrastructure.Models;
 
 namespace Oje.Section.Blog.Models.View
 {
-    public class BlogCategoryCreateUpdateVM
+    public class BlogCategoryCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string title { get; set; }

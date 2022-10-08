@@ -1,6 +1,8 @@
-﻿namespace Oje.Section.ProposalFormBaseData.Models.View
+﻿using Oje.Infrastructure.Models;
+
+namespace Oje.Section.ProposalFormBaseData.Models.View
 {
-    public class AgentRefferCreateUpdateVM
+    public class AgentRefferCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public int? cid { get; set; }

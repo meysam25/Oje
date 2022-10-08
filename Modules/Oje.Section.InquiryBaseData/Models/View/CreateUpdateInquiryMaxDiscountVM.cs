@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Oje.Infrastructure.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.View
 {
-    public class CreateUpdateInquiryMaxDiscountVM
+    public class CreateUpdateInquiryMaxDiscountVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public List<int> cIds { get; set; }

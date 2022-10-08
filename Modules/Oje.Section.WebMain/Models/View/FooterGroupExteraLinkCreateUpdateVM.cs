@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Oje.Infrastructure.Models;
 
 namespace Oje.Section.WebMain.Models.View
 {
-    public class FooterGroupExteraLinkCreateUpdateVM
+    public class FooterGroupExteraLinkCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public int? pKey { get; set; }

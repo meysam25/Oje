@@ -81,7 +81,7 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
             return Json(BankAccountService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست حساب بانکی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست حساب بانکی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] BankAccountMainGrid searchInput)
         {
@@ -102,18 +102,18 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست بانک", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست بانک", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetBankList()
         {
             return Json(BankService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetUsers([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetUsers([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(UserService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

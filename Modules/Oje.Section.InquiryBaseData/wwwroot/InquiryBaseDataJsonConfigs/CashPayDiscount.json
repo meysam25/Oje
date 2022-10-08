@@ -3,13 +3,13 @@
     {
       "grids": [
         {
-          "id": "FireInsuranceTypeOfActivityGrid",
+          "id": "CashPayDiscountGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('FireInsuranceTypeOfActivityAddGridModal', this)",
+              "onClick": "showModal('CashPayDiscountAddGridModal', this)",
               "type": "add",
-              "modalId": "FireInsuranceTypeOfActivityAddGridModal"
+              "modalId": "CashPayDiscountAddGridModal"
             }
           ],
           "exportToExcelUrl": "/InquiryBaseData/CashPayDiscount/Export",
@@ -23,9 +23,9 @@
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "FireInsuranceTypeOfActivityModal",
+                "modalId": "CashPayDiscountModal",
                 "url": "/InquiryBaseData/CashPayDiscount/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/CashPayDiscount/GetById\\', \\'FireInsuranceTypeOfActivityModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InquiryBaseData/CashPayDiscount/GetById\\', \\'CashPayDiscountModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
@@ -98,7 +98,7 @@
       "moduals": [
         {
           "class": "modal-xl",
-          "id": "FireInsuranceTypeOfActivityAddGridModal",
+          "id": "CashPayDiscountAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -106,6 +106,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "CashPayDiscountcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cIds",
               "type": "tokenBox",
@@ -123,7 +135,9 @@
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/CashPayDiscount/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "CashPayDiscountcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -157,14 +171,14 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'FireInsuranceTypeOfActivityGrid', '/InquiryBaseData/CashPayDiscount/Create')",
+              "onClick": "postModalData(this, 'CashPayDiscountGrid', '/InquiryBaseData/CashPayDiscount/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "modal-xl",
-          "id": "FireInsuranceTypeOfActivityModal",
+          "id": "CashPayDiscountModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -172,6 +186,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "CashPayDiscountcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cIds",
               "type": "tokenBox",
@@ -189,7 +215,9 @@
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/CashPayDiscount/GetProposalFormList",
               "label": "فرم پیشنهاد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "CashPayDiscountcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -223,7 +251,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'FireInsuranceTypeOfActivityGrid', '/InquiryBaseData/CashPayDiscount/Update')",
+              "onClick": "postModalData(this, 'CashPayDiscountGrid', '/InquiryBaseData/CashPayDiscount/Update')",
               "class": "btn-primary"
             }
           ]

@@ -42,7 +42,8 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            CreateValidation(input, siteSettingId, loginUserId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             GlobalDiscount newItem = new GlobalDiscount()
             {
@@ -57,7 +58,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 Percent = input.percent,
                 Price = input.price,
                 ProposalFormId = input.formId.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value
             };
@@ -71,7 +72,7 @@ namespace Oje.Section.InquiryBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateValidation(CreateUpdateGlobalDiscountVM input, int? siteSettingId, long? loginUserId)
+        private void CreateValidation(CreateUpdateGlobalDiscountVM input, int? siteSettingId, long? loginUserId, bool? canSetSiteSetting)
         {
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
@@ -83,7 +84,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormService.Exist(input.formId.ToIntReturnZiro(), siteSettingId))
+            if (!ProposalFormService.Exist(input.formId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
@@ -161,7 +162,9 @@ namespace Oje.Section.InquiryBaseData.Services
                     percent = t.Percent,
                     price = t.Price,
                     title = t.Title,
-                    toDate = t.ToDate
+                    toDate = t.ToDate,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .OrderByDescending(t => t.id)
                 .Take(1)
@@ -181,7 +184,9 @@ namespace Oje.Section.InquiryBaseData.Services
                     maxPrice = t.maxPrice,
                     id = t.id,
                     percent = t.percent,
-                    formId_Title = t.formId_Title
+                    formId_Title = t.formId_Title,
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -270,7 +275,8 @@ namespace Oje.Section.InquiryBaseData.Services
             long? loginUserId = UserService.GetLoginUser()?.UserId;
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.Value);
-            CreateValidation(input, siteSettingId, loginUserId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             GlobalDiscount foundItem = db.GlobalDiscounts
                 .Include(t => t.GlobalDiscountCompanies)
@@ -300,6 +306,7 @@ namespace Oje.Section.InquiryBaseData.Services
             foundItem.ProposalFormId = input.formId.Value;
             foundItem.Title = input.title;
             foundItem.ToDate = input.toDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             foreach (int cId in input.cIds)
                 db.Entry(new GlobalDiscountCompany() { CompanyId = cId, GlobalDiscountId = foundItem.Id }).State = EntityState.Added;

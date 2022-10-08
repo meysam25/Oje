@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Oje.Section.InquiryBaseData.Interfaces
+﻿namespace Oje.Section.InquiryBaseData.Interfaces
 {
     public interface IInsuranceContractService
     {
-        object GetLightList();
-        bool Exist(int id);
+        object GetLightList(int? siteSettingId);
+        bool Exist(int id, int? siteSettingId);
     }
 }

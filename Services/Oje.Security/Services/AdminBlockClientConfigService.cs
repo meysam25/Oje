@@ -29,6 +29,7 @@ namespace Oje.Security.Services
 
         public ApiResult Create(AdminBlockClientConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new AdminBlockClientConfig()
@@ -36,7 +37,7 @@ namespace Oje.Security.Services
                 ActionId = input.aid.ToLongReturnZiro(),
                 MaxValue = input.value.ToIntReturnZiro(),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.ToIntReturnZiro()
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -88,7 +89,9 @@ namespace Oje.Security.Services
                     aid = t.ActionId,
                     aid_Title = t.Action.Controller.Section.Title + "/" + t.Action.Controller.Title + "/" + t.Action.Title,
                     value = t.MaxValue,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -142,6 +145,7 @@ namespace Oje.Security.Services
 
         public ApiResult Update(AdminBlockClientConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.AdminBlockClientConfigs
@@ -155,6 +159,7 @@ namespace Oje.Security.Services
             foundItem.ActionId = input.aid.ToLongReturnZiro();
             foundItem.MaxValue = input.value.ToIntReturnZiro();
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

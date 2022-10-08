@@ -31,10 +31,9 @@ namespace Oje.Section.InquiryBaseData.Services
             this.HttpContextAccessor = HttpContextAccessor;
         }
 
-        public bool Exist(int id)
+        public bool Exist(int id, int? siteSettingId)
         {
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             return db.InsuranceContracts.Where(t => t.Id == id)
@@ -42,15 +41,14 @@ namespace Oje.Section.InquiryBaseData.Services
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems).Any();
         }
 
-        public object GetLightList()
+        public object GetLightList(int? siteSettingId)
         {
             List<object> result = new() { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
             long? loginUserId = UserService.GetLoginUser()?.UserId;
-            int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             result.AddRange(db.InsuranceContracts
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.SiteSettingId == siteSettingId)
                 .getWhereCreateUserMultiLevelForUserOwnerShip<InsuranceContract, User>(loginUserId, canSeeAllItems)
                 .Select(t => new
                 {

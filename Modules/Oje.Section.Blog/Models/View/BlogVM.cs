@@ -28,5 +28,7 @@ namespace Oje.Section.Blog.Models.View
         public bool didILikeIt { get; set; }
         public string url { get; set; }
         public string user { get; set; }
+        public int cSOWSiteSettingId { get;  set; }
+        public string cSOWSiteSettingId_Title { get;  set; }
     }
 }

@@ -39,21 +39,22 @@ namespace Oje.EmailService.Services
 
         public ApiResult Create(EmailTrigerCreateUpdateVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new EmailTriger()
             {
                 RoleId = input.roleId,
                 UserId = input.userId,
                 Type = input.type.Value,
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateUpdateValidation(EmailTrigerCreateUpdateVM input, int? siteSettingId)
+        private void CreateUpdateValidation(EmailTrigerCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -63,6 +64,8 @@ namespace Oje.EmailService.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.roleId.ToIntReturnZiro() <= 0 && input.userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_User_Or_Role);
+            if (input.userId.ToLongReturnZiro() > 0 && !db.Users.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Id == input.userId))
+                throw BException.GenerateNewException(BMessages.User_Not_Found);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -93,7 +96,9 @@ namespace Oje.EmailService.Services
                     type = t.Type,
                     roleId = t.RoleId,
                     userId = t.UserId,
-                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : ""
+                    userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : "",
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .Select(t => new
@@ -103,6 +108,8 @@ namespace Oje.EmailService.Services
                     roleId = t.roleId == null ? "" : t.roleId.ToString(),
                     userId = t.userId == null ? "" : t.userId.ToString(),
                     t.userId_Title,
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -154,7 +161,8 @@ namespace Oje.EmailService.Services
 
         public ApiResult Update(EmailTrigerCreateUpdateVM input, int? siteSettingId)
         {
-            CreateUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.EmailTrigers
                 .Where(t => t.Id == input.id)
@@ -167,6 +175,7 @@ namespace Oje.EmailService.Services
             foundItem.RoleId = input.roleId;
             foundItem.UserId = input.userId;
             foundItem.Type = input.type.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

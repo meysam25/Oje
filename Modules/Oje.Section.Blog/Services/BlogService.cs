@@ -48,7 +48,8 @@ namespace Oje.Section.Blog.Services
 
         public ApiResult Create(BlogCreateUpdateVM input, int? siteSettingId, long loginUserId)
         {
-            createUpdateValidation(input, siteSettingId, loginUserId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             Models.DB.Blog newItem = new Models.DB.Blog()
             {
@@ -59,7 +60,7 @@ namespace Oje.Section.Blog.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Title = input.title,
                 Summery = input.summery,
-                SiteSettingId = siteSettingId.ToIntReturnZiro(),
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 PublisheDate = input.publishDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value,
                 VideoUrl = input.aparatUrl
             };
@@ -71,7 +72,7 @@ namespace Oje.Section.Blog.Services
             {
                 foreach (var tag in input.tags)
                 {
-                    long tagId = BlogTagService.CreateIfNotExist(tag, siteSettingId);
+                    long tagId = BlogTagService.CreateIfNotExist(tag, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value);
                     if (tagId > 0)
                         db.Entry(new BlogTagBlog() { BlogId = newItem.Id, BlogTagId = tagId }).State = EntityState.Added;
                 }
@@ -83,21 +84,21 @@ namespace Oje.Section.Blog.Services
 
             if (input.mainImage != null && input.mainImage.Length > 0)
             {
-                newItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.BlogBigImage, input.mainImage, loginUserId, siteSettingId, newItem.Id, ".png,.jpg,.jpeg", false);
-                newItem.ImageUrl600 = UploadedFileService.UploadNewFile(FileType.BlogBigImage600, input.mainImage, loginUserId, siteSettingId, newItem.Id, ".png,.jpg,.jpeg", false);
-                newItem.ImageUrl200 = UploadedFileService.UploadNewFile(FileType.BlogMedImage, input.mainImage, loginUserId, siteSettingId, newItem.Id, ".png,.jpg,.jpeg", false);
-                newItem.ImageUrl50 = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainImage, loginUserId, siteSettingId, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.BlogBigImage, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.ImageUrl600 = UploadedFileService.UploadNewFile(FileType.BlogBigImage600, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.ImageUrl200 = UploadedFileService.UploadNewFile(FileType.BlogMedImage, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, newItem.Id, ".png,.jpg,.jpeg", false);
+                newItem.ImageUrl50 = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, newItem.Id, ".png,.jpg,.jpeg", false);
             }
 
             if (input.mainSound != null && input.mainSound.Length > 0)
-                newItem.SoundUrl = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainSound, loginUserId, siteSettingId, newItem.Id, ".mp3", false);
+                newItem.SoundUrl = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainSound, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, newItem.Id, ".mp3", false);
 
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(BlogCreateUpdateVM input, int? siteSettingId, long loginUserId)
+        private void createUpdateValidation(BlogCreateUpdateVM input, int? siteSettingId, long loginUserId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -125,6 +126,12 @@ namespace Oje.Section.Blog.Services
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
             if (input.id.ToLongReturnZiro() <= 0 && (input.mainImage == null || input.mainImage.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_Image);
+            if (!db.BlogCategories.Any(t => t.Id == input.catId && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value)))
+                throw BException.GenerateNewException(BMessages.Please_Select_Category);
+            if(input.rBlogs != null && input.rBlogs.Count > 0)
+                foreach (var item in input.rBlogs)
+                    if (!db.Blogs.Any(t => t.Id == item && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value)))
+                        throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
         public ApiResult Delete(long? id, int? siteSettingId)
@@ -163,29 +170,31 @@ namespace Oje.Section.Blog.Services
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Select(t => new
                 {
-                   id = t.Id,
-                   catId = t.BlogCategoryId,
-                   catTitle = t.BlogCategory.Title,
-                   title = t.Title,
-                   publishDate = t.PublisheDate,
-                   summery = t.Summery,
-                   description = t.Description,
-                   aparatUrl = t.VideoUrl,
-                   mainImage_address = t.ImageUrl,
-                   mainSound_address = t.SoundUrl,
-                   isActive = t.IsActive,
-                   commCount = t.BlogReviews.Count(tt => tt.IsConfirm == true),
-                   likeCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.Like),
-                   didILikeIt = t.BlogLastLikeAndViews.Any(tt => tt.Type == BlogLastLikeAndViewType.Like && tt.Ip1 == ipSections.Ip1 && tt.Ip2 == ipSections.Ip2 && tt.Ip3 == ipSections.Ip3 && tt.Ip4 == ipSections.Ip4),
-                   tags = t.BlogTagBlogs.Select(tt => tt.BlogTag.Title).ToList(),
-                   rBlogs = t.BlogOwnBlogs.Select(tt => new
-                   {
-                       id = tt.BlogRelatedId,
-                       title = tt.BlogRelated.Title,
-                       catTitle = tt.BlogRelated.BlogCategory.Title,
-                       src = tt.BlogRelated.ImageUrl200,
-                       pDate = tt.BlogRelated.PublisheDate
-                   }).ToList()
+                    id = t.Id,
+                    catId = t.BlogCategoryId,
+                    catTitle = t.BlogCategory.Title,
+                    title = t.Title,
+                    publishDate = t.PublisheDate,
+                    summery = t.Summery,
+                    description = t.Description,
+                    aparatUrl = t.VideoUrl,
+                    mainImage_address = t.ImageUrl,
+                    mainSound_address = t.SoundUrl,
+                    isActive = t.IsActive,
+                    commCount = t.BlogReviews.Count(tt => tt.IsConfirm == true),
+                    likeCount = t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.Like),
+                    didILikeIt = t.BlogLastLikeAndViews.Any(tt => tt.Type == BlogLastLikeAndViewType.Like && tt.Ip1 == ipSections.Ip1 && tt.Ip2 == ipSections.Ip2 && tt.Ip3 == ipSections.Ip3 && tt.Ip4 == ipSections.Ip4),
+                    tags = t.BlogTagBlogs.Select(tt => tt.BlogTag.Title).ToList(),
+                    rBlogs = t.BlogOwnBlogs.Select(tt => new
+                    {
+                        id = tt.BlogRelatedId,
+                        title = tt.BlogRelated.Title,
+                        catTitle = tt.BlogRelated.BlogCategory.Title,
+                        src = tt.BlogRelated.ImageUrl200,
+                        pDate = tt.BlogRelated.PublisheDate
+                    }).ToList(),
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                .Take(1)
                .ToList()
@@ -214,7 +223,9 @@ namespace Oje.Section.Blog.Services
                        mainImage_address = !string.IsNullOrEmpty(tt.src) ? (GlobalConfig.FileAccessHandlerUrl + tt.src) : "",
                        url = GenerateUrlForBlog(tt.catTitle, tt.title, tt.id),
                        publishDate = tt.pDate.ToFaDate()
-                   }).ToList()
+                   }).ToList(),
+                   cSOWSiteSettingId = t.cSOWSiteSettingId,
+                   cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                })
                .FirstOrDefault();
         }
@@ -276,7 +287,8 @@ namespace Oje.Section.Blog.Services
 
         public ApiResult Update(BlogCreateUpdateVM input, int? siteSettingId, long loginUserId)
         {
-            createUpdateValidation(input, siteSettingId, loginUserId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, loginUserId, canSetSiteSetting);
 
             var foundItem =
                 db.Blogs
@@ -310,7 +322,7 @@ namespace Oje.Section.Blog.Services
             {
                 foreach (var tag in input.tags)
                 {
-                    long tagId = BlogTagService.CreateIfNotExist(tag, siteSettingId);
+                    long tagId = BlogTagService.CreateIfNotExist(tag, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value);
                     if (tagId > 0)
                         db.Entry(new BlogTagBlog() { BlogId = foundItem.Id, BlogTagId = tagId }).State = EntityState.Added;
                 }
@@ -322,14 +334,14 @@ namespace Oje.Section.Blog.Services
 
             if (input.mainImage != null && input.mainImage.Length > 0)
             {
-                foundItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.BlogBigImage, input.mainImage, loginUserId, siteSettingId, foundItem.Id, ".png,.jpg,.jpeg", false);
-                foundItem.ImageUrl600 = UploadedFileService.UploadNewFile(FileType.BlogBigImage600, input.mainImage, loginUserId, siteSettingId, foundItem.Id, ".png,.jpg,.jpeg", false);
-                foundItem.ImageUrl200 = UploadedFileService.UploadNewFile(FileType.BlogMedImage, input.mainImage, loginUserId, siteSettingId, foundItem.Id, ".png,.jpg,.jpeg", false);
-                foundItem.ImageUrl50 = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainImage, loginUserId, siteSettingId, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.ImageUrl = UploadedFileService.UploadNewFile(FileType.BlogBigImage, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.ImageUrl600 = UploadedFileService.UploadNewFile(FileType.BlogBigImage600, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.ImageUrl200 = UploadedFileService.UploadNewFile(FileType.BlogMedImage, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, foundItem.Id, ".png,.jpg,.jpeg", false);
+                foundItem.ImageUrl50 = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainImage, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, foundItem.Id, ".png,.jpg,.jpeg", false);
             }
 
             if (input.mainSound != null && input.mainSound.Length > 0)
-                foundItem.SoundUrl = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainSound, loginUserId, siteSettingId, foundItem.Id, ".mp3", false);
+                foundItem.SoundUrl = UploadedFileService.UploadNewFile(FileType.BlogSmallImage, input.mainSound, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, foundItem.Id, ".mp3", false);
 
             db.SaveChanges();
 
@@ -349,7 +361,7 @@ namespace Oje.Section.Blog.Services
                 searchInput.page = 1;
 
             var qureResult = db.Blogs.OrderByDescending(t => t.Id)
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+                .Where(t => t.SiteSettingId == siteSettingId);
 
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));

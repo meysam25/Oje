@@ -28,14 +28,15 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(FooterGroupExteraLinkCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new FooterGroupExteraLink()
             {
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Link = input.link,
                 ParentId = input.pKey,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 Order = input.order.ToIntReturnZiro()
             }).State = EntityState.Added;
@@ -44,7 +45,7 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(FooterGroupExteraLinkCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(FooterGroupExteraLinkCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -58,7 +59,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Link);
             if (!string.IsNullOrEmpty(input.link) && input.link.Length > 200)
                 throw BException.GenerateNewException(BMessages.Link_Can_Not_Be_More_Then_200_Chars);
-            if (input.pKey.ToIntReturnZiro() > 0 && !db.FooterGroupExteraLinks.Any(t => t.SiteSettingId == siteSettingId && t.Id == input.pKey))
+            if (input.pKey.ToIntReturnZiro() > 0 && !db.FooterGroupExteraLinks.Any(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Id == input.pKey))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
@@ -88,7 +89,9 @@ namespace Oje.Section.WebMain.Services
                     title = t.Title,
                     isActive = t.IsActive,
                     link = t.Link,
-                    order = t.Order
+                    order = t.Order,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -135,7 +138,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(FooterGroupExteraLinkCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.FooterGroupExteraLinks
                 .Where(t => t.Id == input.id)
@@ -149,6 +153,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.Link = input.link;
             foundItem.Title = input.title;
             foundItem.Order = input.order.ToIntReturnZiro();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

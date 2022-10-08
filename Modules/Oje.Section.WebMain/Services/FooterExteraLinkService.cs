@@ -27,13 +27,14 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(FooterExteraLinkCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new FooterExteraLink()
             {
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Link = input.link,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -83,7 +84,9 @@ namespace Oje.Section.WebMain.Services
                     id = t.Id,
                     title = t.Title,
                     link = t.Link,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -134,6 +137,7 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(FooterExteraLinkCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.FooterExteraLinks
@@ -147,6 +151,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Link = input.link;
             foundItem.Title = input.title;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

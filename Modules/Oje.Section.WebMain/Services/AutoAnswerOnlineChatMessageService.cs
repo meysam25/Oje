@@ -8,9 +8,7 @@ using Oje.Section.WebMain.Models.DB;
 using Oje.Section.WebMain.Models.View;
 using Oje.Section.WebMain.Services.EContext;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Oje.Section.WebMain.Services
@@ -35,7 +33,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Create(AutoAnswerOnlineChatMessageCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new AutoAnswerOnlineChatMessage()
             {
@@ -43,7 +42,7 @@ namespace Oje.Section.WebMain.Services
                 Link = input.link,
                 Order = input.order.ToIntReturnZiro(),
                 ParentId = input.pKey,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 IsMessage = input.isMessage.ToBooleanReturnFalse(),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
@@ -54,7 +53,7 @@ namespace Oje.Section.WebMain.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(AutoAnswerOnlineChatMessageCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(AutoAnswerOnlineChatMessageCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -68,7 +67,7 @@ namespace Oje.Section.WebMain.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Url);
             if (!string.IsNullOrEmpty(input.link) && string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
-            if (input.pKey.ToIntReturnZiro() > 0 && !db.AutoAnswerOnlineChatMessages.Any(t => t.Id == input.pKey && t.SiteSettingId == siteSettingId))
+            if (input.pKey.ToIntReturnZiro() > 0 && !db.AutoAnswerOnlineChatMessages.Any(t => t.Id == input.pKey && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value)))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
         }
 
@@ -101,7 +100,9 @@ namespace Oje.Section.WebMain.Services
                     order = t.Order,
                     isActive = t.IsActive,
                     isMessage = t.IsMessage,
-                    hasLike = t.HasLike
+                    hasLike = t.HasLike,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -162,7 +163,8 @@ namespace Oje.Section.WebMain.Services
 
         public ApiResult Update(AutoAnswerOnlineChatMessageCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.AutoAnswerOnlineChatMessages
                 .Where(t => t.Id == input.id)
@@ -179,6 +181,7 @@ namespace Oje.Section.WebMain.Services
             foundItem.IsMessage = input.isMessage.ToBooleanReturnFalse();
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.HasLike = input.hasLike.ToBooleanReturnFalse();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

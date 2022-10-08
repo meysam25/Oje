@@ -97,13 +97,28 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "blogAdminBlogcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true,
+              "onChange": "refreshDropdown('blogAdminBlogcatIdAdd')"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "blogAdminBlogcatIdAdd",
               "name": "catId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetCatList",
               "label": "گروه بندی",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "blogAdminBlogcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
@@ -156,7 +171,9 @@
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetTagList",
               "label": "تگ",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "blogAdminBlogcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -165,7 +182,9 @@
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetBlogLightist",
-              "label": "مرتبط"
+              "label": "مرتبط",
+              "exteraParameterIds": [ "blogAdminBlogcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
@@ -206,13 +225,28 @@
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "blogAdminBlogcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true,
+              "onChange": "refreshDropdown('blogAdminBlogcatIdEdit')"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "blogAdminBlogcatIdEdit",
               "name": "catId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetCatList",
               "label": "گروه بندی",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "blogAdminBlogcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
@@ -265,7 +299,9 @@
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetTagList",
               "label": "تگ",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "blogAdminBlogcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -274,7 +310,9 @@
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/BlogAdmin/Blog/GetBlogLightist",
-              "label": "مرتبط"
+              "label": "مرتبط",
+              "exteraParameterIds": [ "blogAdminBlogcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",

@@ -1,6 +1,8 @@
-﻿namespace Oje.PaymentService.Models.View
+﻿using Oje.Infrastructure.Models;
+
+namespace Oje.PaymentService.Models.View
 {
-    public class BankAccountSadadCreateUpdateVM
+    public class BankAccountSadadCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public int? baId { get; set; }

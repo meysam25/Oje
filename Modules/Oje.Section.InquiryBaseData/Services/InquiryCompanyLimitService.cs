@@ -12,7 +12,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Oje.Section.InquiryBaseData.Services.EContext;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Rewrite;
 
 namespace Oje.Section.InquiryBaseData.Services
 {
@@ -22,6 +21,7 @@ namespace Oje.Section.InquiryBaseData.Services
         readonly IUserService UserService = null;
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+
         public InquiryCompanyLimitService
             (
                 InquiryBaseDataDBContext db, 
@@ -40,11 +40,12 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var loginUserId = UserService.GetLoginUser()?.UserId;
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createValidation(input, siteSettingId, loginUserId);
 
             InquiryCompanyLimit addItem = new InquiryCompanyLimit()
             {
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Type = input.type.Value,
                 CreateDate = DateTime.Now,
                 CreateUserId = loginUserId.Value
@@ -115,7 +116,9 @@ namespace Oje.Section.InquiryBaseData.Services
                 {
                     id = t.Id,
                     type = t.Type,
-                    comIds = t.InquiryCompanyLimitCompanies.Select(tt => tt.CompanyId).ToList()
+                    comIds = t.InquiryCompanyLimitCompanies.Select(tt => tt.CompanyId).ToList(),
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .ToList()
@@ -123,7 +126,9 @@ namespace Oje.Section.InquiryBaseData.Services
                 {
                     t.id,
                     type = (int)t.type,
-                    t.comIds
+                    t.comIds,
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -185,31 +190,33 @@ namespace Oje.Section.InquiryBaseData.Services
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
             var loginUserId = UserService.GetLoginUser()?.UserId;
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createValidation(input, siteSettingId, loginUserId);
 
-            var editeItem = db.InquiryCompanyLimits
+            var foundItem = db.InquiryCompanyLimits
                 .Where(t => t.Id == input.id)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Include(t => t.InquiryCompanyLimitCompanies)
                 .FirstOrDefault();
 
-            if (editeItem == null)
+            if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
-            if (editeItem.InquiryCompanyLimitCompanies != null && editeItem.InquiryCompanyLimitCompanies.Count > 0)
-                foreach (var item in editeItem.InquiryCompanyLimitCompanies)
+            if (foundItem.InquiryCompanyLimitCompanies != null)
+                foreach (var item in foundItem.InquiryCompanyLimitCompanies)
                     db.Entry(item).State = EntityState.Deleted;
 
-            editeItem.Type = input.type.Value;
-            editeItem.UpdateDate = DateTime.Now;
-            editeItem.UpdateUserId = loginUserId.Value;
+            foundItem.Type = input.type.Value;
+            foundItem.UpdateDate = DateTime.Now;
+            foundItem.UpdateUserId = loginUserId.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (input.comIds != null && input.comIds.Count > 0)
                 foreach (var comId in input.comIds)
                     db.Entry(new InquiryCompanyLimitCompany()
                     {
                         CompanyId = comId,
-                        InquiryCompanyLimitId = editeItem.Id
+                        InquiryCompanyLimitId = foundItem.Id
                     }).State = EntityState.Added;
             db.SaveChanges();
 

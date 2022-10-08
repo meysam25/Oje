@@ -26,11 +26,12 @@ namespace Oje.EmailService.Services
 
         public ApiResult Create(EmailConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             if (input.isActive == true)
             {
-                var allItems = db.EmailConfigs.Where(t => t.SiteSettingId == siteSettingId).ToList();
+                var allItems = db.EmailConfigs.Where(t => t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value)).ToList();
                 foreach (var item in allItems)
                     item.IsActive = false;
             }
@@ -40,7 +41,7 @@ namespace Oje.EmailService.Services
                 EnableSsl = input.enableSsl.ToBooleanReturnFalse(),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Password = input.ePassword.Encrypt(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 SmtpHost = input.smtpHost,
                 SmtpPort = input.smtpPort.Value,
                 Timeout = input.timeout.Value,
@@ -93,7 +94,9 @@ namespace Oje.EmailService.Services
                     enableSsl = t.EnableSsl,
                     useDefaultCredentials = t.UseDefaultCredentials,
                     timeout = t.Timeout,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -163,6 +166,7 @@ namespace Oje.EmailService.Services
 
         public ApiResult Update(EmailConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.EmailConfigs
@@ -182,6 +186,7 @@ namespace Oje.EmailService.Services
             foundItem.Title = input.title;
             foundItem.UseDefaultCredentials = input.useDefaultCredentials.ToBooleanReturnFalse();
             foundItem.Username = input.eUsername;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             if (foundItem.IsActive == true)
             {

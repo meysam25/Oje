@@ -23,25 +23,28 @@ namespace Oje.Section.InquiryBaseData.Services
         public InquiryMaxDiscountService(
                 InquiryBaseDataDBContext db,
                 AccountService.Interfaces.ISiteSettingService SiteSettingService,
-                IProposalFormService ProposalFormService
+                IProposalFormService ProposalFormService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
-            this.SiteSettingService = SiteSettingService;
             this.db = db;
+            this.SiteSettingService = SiteSettingService;
             this.ProposalFormService = ProposalFormService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         public ApiResult Create(CreateUpdateInquiryMaxDiscountVM input)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             var newItem = new InquiryMaxDiscount()
             {
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Percent = input.percent.Value,
                 ProposalFormId = input.formId.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title
             };
 
@@ -55,7 +58,7 @@ namespace Oje.Section.InquiryBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidation(CreateUpdateInquiryMaxDiscountVM input, int? siteSettingId)
+        private void createValidation(CreateUpdateInquiryMaxDiscountVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -71,11 +74,11 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Percent);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormService.Exist(input.formId.ToIntReturnZiro(), siteSettingId))
+            if (!ProposalFormService.Exist(input.formId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.cIds == null || input.cIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
-            if (db.InquiryMaxDiscounts.Any(t => t.Id != input.id && t.Title == input.title && t.SiteSettingId == siteSettingId && t.ProposalFormId == input.formId))
+            if (db.InquiryMaxDiscounts.Any(t => t.Id != input.id && t.Title == input.title && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.ProposalFormId == input.formId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -115,7 +118,9 @@ namespace Oje.Section.InquiryBaseData.Services
                     isActive = t.IsActive,
                     percent = t.Percent,
                     title = t.Title,
-                    id = t.Id
+                    id = t.Id,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -177,7 +182,8 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Update(CreateUpdateInquiryMaxDiscountVM input)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.InquiryMaxDiscounts
                 .Include(t => t.InquiryMaxDiscountCompanies)
@@ -195,7 +201,7 @@ namespace Oje.Section.InquiryBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Percent = input.percent.Value;
             foundItem.ProposalFormId = input.formId.Value;
-            foundItem.SiteSettingId = siteSettingId.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             foundItem.Title = input.title;
 
             foreach (var cid in input.cIds)

@@ -36,14 +36,15 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Create(CreateUpdateInquiryDurationVM input)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             var newItem = new InquiryDuration()
             {
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Percent = input.percent.Value,
                 ProposalFormId = input.formId.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 Day = input.day.ToIntReturnZiro()
             };
@@ -58,7 +59,7 @@ namespace Oje.Section.InquiryBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidation(CreateUpdateInquiryDurationVM input, int? siteSettingId)
+        private void createValidation(CreateUpdateInquiryDurationVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -78,11 +79,11 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Day);
             if (input.formId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
-            if (!ProposalFormService.Exist( input.formId.ToIntReturnZiro(),siteSettingId))
+            if (!ProposalFormService.Exist( input.formId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.cIds == null || input.cIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
-            if (db.InquiryDurations.Any(t => t.Id != input.id && t.Title == input.title && t.SiteSettingId == siteSettingId && t.ProposalFormId == input.formId))
+            if (db.InquiryDurations.Any(t => t.Id != input.id && t.Title == input.title && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.ProposalFormId == input.formId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
         }
 
@@ -124,7 +125,9 @@ namespace Oje.Section.InquiryBaseData.Services
                     percent = t.Percent,
                     title = t.Title,
                     id = t.Id,
-                    day = t.Day
+                    day = t.Day,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -190,7 +193,8 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Update(CreateUpdateInquiryDurationVM input)
         {
             var siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.InquiryDurations
                 .Include(t => t.InquiryDurationCompanies)
@@ -208,7 +212,7 @@ namespace Oje.Section.InquiryBaseData.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Percent = input.percent.Value;
             foundItem.ProposalFormId = input.formId.Value;
-            foundItem.SiteSettingId = siteSettingId.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             foundItem.Title = input.title;
             foundItem.Day = input.day.ToIntReturnZiro();
 

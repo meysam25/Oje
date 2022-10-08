@@ -102,9 +102,9 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
 
         [AreaConfig(Title = "مشاهده لیست حساب", Icon = "fa-list-alt ")]
         [HttpGet]
-        public ActionResult GetBankAccounts([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetBankAccounts([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(BankAccountService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(BankAccountService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

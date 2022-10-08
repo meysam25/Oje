@@ -53,7 +53,7 @@ namespace Oje.Section.Blog.Services
             if (searchInput.page == null || searchInput.page <= 0)
                 searchInput.page = 1;
 
-            var qureResult = db.BlogTags.OrderByDescending(t => t.Id).AsQueryable();
+            var qureResult = db.BlogTags.OrderByDescending(t => t.Id).Where(t => t.SiteSettingId == siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

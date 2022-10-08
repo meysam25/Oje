@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Oje.Infrastructure.Models;
 
 namespace Oje.PaymentService.Models.View
 {
-    public class BankAccountSizpayCreateUpdateVM
+    public class BankAccountSizpayCreateUpdateVM: GlobalSiteSetting
     {
         public int? bcId { get; set; }
         public string fistKey { get; set; }

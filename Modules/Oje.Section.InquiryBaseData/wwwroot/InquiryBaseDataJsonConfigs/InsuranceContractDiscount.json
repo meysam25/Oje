@@ -106,6 +106,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "InsuranceContractDiscountcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('InsuranceContractDiscountcontractIdAdd')"
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cIds",
               "type": "tokenBox",
@@ -117,13 +129,15 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "InsuranceContractDiscountcontractIdAdd",
               "name": "contractId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/InsuranceContractDiscount/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractDiscountcSOWSiteSettingIdAdd" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -172,6 +186,18 @@
               "type": "hidden"
             },
             {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "id": "InsuranceContractDiscountcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('InsuranceContractDiscountcontractIdEdit')"
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "cIds",
               "type": "tokenBox",
@@ -183,13 +209,15 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "InsuranceContractDiscountcontractIdEdit",
               "name": "contractId",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
               "dataurl": "/InquiryBaseData/InsuranceContractDiscount/GetContractList",
               "label": "قرارداد",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractDiscountcSOWSiteSettingIdEdit" ]
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",

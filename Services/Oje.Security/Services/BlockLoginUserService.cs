@@ -27,13 +27,14 @@ namespace Oje.Security.Services
 
         public ApiResult Create(BlockLoginUserCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new BlockLoginUser()
             {
                 EndDate = Convert.ToDateTime(input.endDate.ToEnDate().Value.ToString("yyyy/MM/dd") + " " + input.endTime),
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 StartDate = Convert.ToDateTime(input.startDate.ToEnDate().Value.ToString("yyyy/MM/dd") + " " + input.startTime)
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -85,7 +86,9 @@ namespace Oje.Security.Services
                     id = t.Id,
                     startDate = t.StartDate,
                     endDate = t.EndDate,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .ToList()
                 .Select(t => new
@@ -95,7 +98,9 @@ namespace Oje.Security.Services
                     startDate = t.startDate.ToFaDate(),
                     endDate = t.endDate.ToFaDate(),
                     startTime = t.startDate.ToString("HH:mm:ss"),
-                    endTime = t.endDate.ToString("HH:mm:ss")
+                    endTime = t.endDate.ToString("HH:mm:ss"),
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -155,6 +160,7 @@ namespace Oje.Security.Services
 
         public ApiResult Update(BlockLoginUserCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.BlockLoginUsers
@@ -168,6 +174,7 @@ namespace Oje.Security.Services
             foundItem.EndDate = Convert.ToDateTime(input.endDate.ToEnDate().Value.ToString("yyyy/MM/dd") + " " + input.endTime);
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.StartDate = Convert.ToDateTime(input.startDate.ToEnDate().Value.ToString("yyyy/MM/dd") + " " + input.startTime);
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

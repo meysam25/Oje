@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Blog.Models.View
 {
-    public class BlogCreateUpdateVM
+    public class BlogCreateUpdateVM: GlobalSiteSetting
     {
         public long? id { get; set; }
         public int? catId { get; set; }

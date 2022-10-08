@@ -29,7 +29,8 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Create(BankAccountSizpayCreateUpdateVM input, int? siteSettingId)
         {
-            createValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createValidation(input, siteSettingId, canSetSiteSetting);
 
             if (db.BankAccountSizpaies.Any(t => t.BankAccountId == input.bcId && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
@@ -42,7 +43,7 @@ namespace Oje.PaymentService.Services
                 MerchantId = input.merchId.ToLongReturnZiro(),
                 SecondKey = input.secKey,
                 SignKey = input.sKey,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 TerminalId = input.terminalId.ToIntReturnZiro()
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -50,7 +51,7 @@ namespace Oje.PaymentService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createValidation(BankAccountSizpayCreateUpdateVM input, int? siteSettingId)
+        private void createValidation(BankAccountSizpayCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -68,7 +69,7 @@ namespace Oje.PaymentService.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_TerimanId);
             if (input.merchId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_MerchandId);
-            if (!BankAccountService.Exist(siteSettingId, input.bcId))
+            if (!BankAccountService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.bcId))
                 throw BException.GenerateNewException(BMessages.Please_Select_BankAccount);
         }
 
@@ -82,7 +83,7 @@ namespace Oje.PaymentService.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            db.Entry(foundItem).State = EntityState.Detached;
+            db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -101,7 +102,9 @@ namespace Oje.PaymentService.Services
                     secKey = "",
                     sKey = "",
                     terminalId = t.TerminalId,
-                    merchId = t.MerchantId
+                    merchId = t.MerchantId,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -159,6 +162,7 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Update(BankAccountSizpayCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             updateValidation(input, siteSettingId);
 
             var foundItem = db.BankAccountSizpaies
@@ -177,6 +181,7 @@ namespace Oje.PaymentService.Services
             if (!string.IsNullOrEmpty(input.sKey))
                 foundItem.SignKey = input.sKey;
             foundItem.TerminalId = input.terminalId.ToIntReturnZiro();
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

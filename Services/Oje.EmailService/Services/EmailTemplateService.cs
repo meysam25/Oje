@@ -28,6 +28,7 @@ namespace Oje.EmailService.Services
 
         public ApiResult Create(EmailTemplateCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new EmailTemplate()
@@ -35,7 +36,7 @@ namespace Oje.EmailService.Services
                 Type = input.type.Value,
                 Description = input.description,
                 Subject = input.subject,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 ProposalFilledFormUserType = input.pffUserType
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -89,7 +90,9 @@ namespace Oje.EmailService.Services
                     type = t.Type,
                     subject = t.Subject,
                     description = t.Description,
-                    pffUserType = t.ProposalFilledFormUserType
+                    pffUserType = t.ProposalFilledFormUserType,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .Take(1)
                 .ToList()
@@ -99,7 +102,9 @@ namespace Oje.EmailService.Services
                     type = (int)t.type,
                     t.subject,
                     t.description,
-                    pffUserType = t.pffUserType != null ? ((int)t.pffUserType).ToString() : ""
+                    pffUserType = t.pffUserType != null ? ((int)t.pffUserType).ToString() : "",
+                    t.cSOWSiteSettingId,
+                    t.cSOWSiteSettingId_Title
                 })
                 .FirstOrDefault();
         }
@@ -154,7 +159,9 @@ namespace Oje.EmailService.Services
 
         public ApiResult Update(EmailTemplateCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
+
             var foundItem = db.EmailTemplates
                 .Where(t => t.Id == input.id)
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
@@ -167,6 +174,7 @@ namespace Oje.EmailService.Services
             foundItem.Description = input.description;
             foundItem.Subject = input.subject;
             foundItem.ProposalFilledFormUserType = input.pffUserType;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

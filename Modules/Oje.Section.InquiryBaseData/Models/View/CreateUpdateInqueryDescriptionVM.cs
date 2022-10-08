@@ -1,15 +1,10 @@
 ﻿using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InquiryBaseData.Models.View
 {
-    public class CreateUpdateInqueryDescriptionVM
+    public class CreateUpdateInqueryDescriptionVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string title { get; set; }

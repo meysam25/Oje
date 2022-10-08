@@ -28,6 +28,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Create(AgentRefferCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new AgentReffer()
@@ -37,7 +38,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
                 CompanyId = input.cid.Value,
                 FullName = input.fullname,
                 Mobile = input.mobile,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Tell = input.tell
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -97,7 +98,9 @@ namespace Oje.Section.ProposalFormBaseData.Services
                     fullname = t.FullName,
                     mobile = t.Mobile,
                     address = t.Address,
-                    tell = t.Tell
+                    tell = t.Tell,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -155,6 +158,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
         public ApiResult Update(AgentRefferCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.AgentReffers
@@ -171,6 +175,7 @@ namespace Oje.Section.ProposalFormBaseData.Services
             foundItem.FullName = input.fullname;
             foundItem.Mobile = input.mobile;
             foundItem.Tell = input.tell;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 

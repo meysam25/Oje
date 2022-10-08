@@ -114,6 +114,18 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "BankAccountcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
               "name": "bankId",
               "type": "dropDown",
               "textfield": "title",
@@ -158,7 +170,9 @@
               "valuefield": "id",
               "dataurl": "/FinancialBaseData/BankAccount/GetUsers",
               "label": "کاربر",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "BankAccountcSOWSiteSettingIdAdd" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
@@ -203,6 +217,18 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "id": "BankAccountcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
               "name": "bankId",
               "type": "dropDown",
               "textfield": "title",
@@ -247,7 +273,9 @@
               "valuefield": "id",
               "dataurl": "/FinancialBaseData/BankAccount/GetUsers",
               "label": "کاربر",
-              "isRequired": true
+              "isRequired": true,
+              "exteraParameterIds": [ "BankAccountcSOWSiteSettingIdEdit" ],
+              "ignoreChangeOnBinding": true
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",

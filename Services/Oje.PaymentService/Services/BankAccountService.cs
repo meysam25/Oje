@@ -28,7 +28,8 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Create(BankAccountCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             db.Entry(new BankAccount()
             {
@@ -38,7 +39,7 @@ namespace Oje.PaymentService.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 IsForPayment = input.isForPayment.ToBooleanReturnFalse(),
                 ShabaNo = input.shabaNo,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 UserId = input.userId
             }).State = EntityState.Added;
@@ -47,7 +48,7 @@ namespace Oje.PaymentService.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(BankAccountCreateUpdateVM input, int? siteSettingId)
+        private void createUpdateValidation(BankAccountCreateUpdateVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
@@ -67,6 +68,10 @@ namespace Oje.PaymentService.Services
                 throw BException.GenerateNewException(BMessages.Invalid_CardNo);
             if (input.shabaNo.Length != 24)
                 throw BException.GenerateNewException(BMessages.Invalid_ShabaNo);
+            if(input.userId.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_One_User);
+            if (!db.Users.Any(t => t.Id == input.userId && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value)))
+                throw BException.GenerateNewException(BMessages.User_Not_Found);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)
@@ -101,7 +106,9 @@ namespace Oje.PaymentService.Services
                     userId = t.UserId,
                     userId_Title = t.UserId > 0 ? t.User.Username + "(" + t.User.Firstname + " " + t.User.Lastname + ")" : "",
                     isForPayment = t.IsForPayment,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 }).FirstOrDefault();
         }
 
@@ -164,7 +171,8 @@ namespace Oje.PaymentService.Services
 
         public ApiResult Update(BankAccountCreateUpdateVM input, int? siteSettingId)
         {
-            createUpdateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
             var foundItem = db.BankAccounts
                 .Where(t => t.Id == input.id)
@@ -182,6 +190,7 @@ namespace Oje.PaymentService.Services
             foundItem.ShabaNo = input.shabaNo;
             foundItem.Title = input.title;
             foundItem.UserId = input.userId;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
 
             db.SaveChanges();
 
@@ -202,8 +211,7 @@ namespace Oje.PaymentService.Services
 
             var qureResult = db.BankAccounts
                 .OrderByDescending(t => t.Id)
-                .Where(t => t.IsForPayment == true)
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => t.IsForPayment == true && t.SiteSettingId == siteSettingId)
                 ;
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => (t.Title + "(" + t.CardNo + "-" + t.HesabNo + ")").Contains(searchInput.search));

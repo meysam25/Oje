@@ -29,6 +29,7 @@ namespace Oje.Security.Services
 
         public ApiResult Create(BlockClientConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             db.Entry(new BlockClientConfig()
@@ -38,7 +39,7 @@ namespace Oje.Security.Services
                 MaxSoftware = input.maxSoftware.ToIntReturnZiro(),
                 MaxSuccessFirewall = input.maxSuccessFirewall.ToIntReturnZiro(),
                 MaxSuccessSoftware = input.maxSuccessSoftware.ToIntReturnZiro(),
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Type = input.type.Value
             }).State = EntityState.Added;
             db.SaveChanges();
@@ -100,7 +101,9 @@ namespace Oje.Security.Services
                     maxSuccessSoftware = t.MaxSuccessSoftware,
                     maxFirewall = t.MaxFirewall,
                     maxSuccessFirewall = t.MaxSuccessFirewall,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -151,6 +154,7 @@ namespace Oje.Security.Services
 
         public ApiResult Update(BlockClientConfigCreateUpdateVM input, int? siteSettingId)
         {
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId);
 
             var foundItem = db.BlockClientConfigs
@@ -167,7 +171,8 @@ namespace Oje.Security.Services
             foundItem.MaxSuccessFirewall = input.maxSuccessFirewall.ToIntReturnZiro();
             foundItem.MaxSuccessSoftware = input.maxSuccessSoftware.ToIntReturnZiro();
             foundItem.Type = input.type.Value;
-            
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
+
             db.SaveChanges();
 
             BlockClientConfigs = null;

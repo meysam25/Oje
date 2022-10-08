@@ -1,7 +1,8 @@
-﻿
+﻿using Oje.Infrastructure.Models;
+
 namespace Oje.Security.Models.View
 {
-    public class BlockLoginUserCreateUpdateVM
+    public class BlockLoginUserCreateUpdateVM: GlobalSiteSetting
     {
         public int? id { get; set; }
         public string startDate { get; set; }

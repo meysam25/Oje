@@ -36,14 +36,15 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Create(CreateUpdateInsuranceContractDiscountVM input)
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            CreateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, canSetSiteSetting);
 
             InsuranceContractDiscount newItem = new InsuranceContractDiscount() 
             {
                 InsuranceContractId = input.contractId.Value,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Percent = input.percent.Value,
-                SiteSettingId = siteSettingId.Value,
+                SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
             };
 
@@ -58,7 +59,7 @@ namespace Oje.Section.InquiryBaseData.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void CreateValidation(CreateUpdateInsuranceContractDiscountVM input, int? siteSettingId)
+        private void CreateValidation(CreateUpdateInsuranceContractDiscountVM input, int? siteSettingId, bool? canSetSiteSetting)
         {
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
@@ -72,7 +73,7 @@ namespace Oje.Section.InquiryBaseData.Services
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
             if (input.contractId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
-            if (!InsuranceContractService.Exist(input.contractId.ToIntReturnZiro()))
+            if (!InsuranceContractService.Exist(input.contractId.ToIntReturnZiro(), canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value))
                 throw BException.GenerateNewException(BMessages.Please_Select_Contract);
             if (input.percent.ToIntReturnZiro() <= 0 || input.percent >= 100)
                 throw BException.GenerateNewException(BMessages.Invalid_Percent);
@@ -114,7 +115,9 @@ namespace Oje.Section.InquiryBaseData.Services
                     isActive = t.IsActive,
                     id = t.Id,
                     title = t.Title,
-                    percent = t.Percent
+                    percent = t.Percent,
+                    cSOWSiteSettingId = t.SiteSettingId,
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title
                 })
                 .FirstOrDefault();
         }
@@ -175,7 +178,8 @@ namespace Oje.Section.InquiryBaseData.Services
         public ApiResult Update(CreateUpdateInsuranceContractDiscountVM input)
         {
             int? siteSettingId = SiteSettingService.GetSiteSetting()?.Id;
-            CreateValidation(input, siteSettingId);
+            bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
+            CreateValidation(input, siteSettingId, canSetSiteSetting);
 
             InsuranceContractDiscount foundItem = db.InsuranceContractDiscounts
                 .Include(t => t.InsuranceContractDiscountCompanies)
@@ -193,7 +197,7 @@ namespace Oje.Section.InquiryBaseData.Services
             foundItem.InsuranceContractId = input.contractId.Value;
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Percent = input.percent.Value;
-            foundItem.SiteSettingId = siteSettingId.Value;
+            foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             foundItem.Title = input.title;
 
             if (input.cIds != null)

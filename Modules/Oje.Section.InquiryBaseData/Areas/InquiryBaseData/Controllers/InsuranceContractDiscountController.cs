@@ -8,6 +8,7 @@ using Oje.Section.InquiryBaseData.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Oje.Infrastructure.Exceptions;
+using ISiteSettingService = Oje.AccountService.Interfaces.ISiteSettingService;
 
 namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 {
@@ -20,15 +21,18 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
         readonly IInsuranceContractDiscountService InsuranceContractDiscountService = null;
         readonly ICompanyService CompanyService = null;
         readonly IInsuranceContractService InsuranceContractService = null;
+        readonly ISiteSettingService SiteSettingService = null;
         public InsuranceContractDiscountController(
                 IInsuranceContractDiscountService InsuranceContractDiscountService,
                 ICompanyService CompanyService,
-                IInsuranceContractService InsuranceContractService
+                IInsuranceContractService InsuranceContractService,
+                ISiteSettingService SiteSettingService
             )
         {
             this.InsuranceContractDiscountService = InsuranceContractDiscountService;
             this.CompanyService = CompanyService;
             this.InsuranceContractService = InsuranceContractService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "تخفیفات تفاهم نامه", Icon = "fa-balance-scale", IsMainMenuItem = true)]
@@ -106,9 +110,9 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 
         [AreaConfig(Title = "مشاهده لیست قرارداد ", Icon = "fa-list-alt ")]
         [HttpPost]
-        public ActionResult GetContractList()
+        public ActionResult GetContractList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(InsuranceContractService.GetLightList());
+            return Json(InsuranceContractService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

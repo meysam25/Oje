@@ -105,23 +105,23 @@ namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
 
         [AreaConfig(Title = "مشاهده لیست گروه بندی", Icon = "fa-list-alt")]
         [HttpPost]
-        public ActionResult GetCatList()
+        public ActionResult GetCatList([FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(BlogCategoryService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
+            return Json(BlogCategoryService.GetLightList(HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست تگ", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetTagList([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetTagList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(BlogTagService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(BlogTagService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست بلاگ", Icon = "fa-list-alt")]
         [HttpGet]
-        public ActionResult GetBlogLightist([FromQuery] Select2SearchVM searchInput)
+        public ActionResult GetBlogLightist([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {
-            return Json(BlogService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(BlogService.GetSelect2List(searchInput, HttpContext?.GetLoginUser()?.canSeeOtherWebsites == true && cSOWSiteSettingId.ToIntReturnZiro() > 0 ? cSOWSiteSettingId : SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }
