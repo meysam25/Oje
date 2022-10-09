@@ -1,0 +1,301 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "notificationTriger": [ "ProposalFormReminderUser" ],
+          "id": "ProposalFormReminderUserGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('ProposalFormReminderUserAddGridModal', this)",
+              "type": "add",
+              "modalId": "ProposalFormReminderUserAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/ProposalFilledForm/ProposalFormReminderUser/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/ProposalFilledForm/ProposalFormReminderUser/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "ProposalFormReminderUserModal",
+                "url": "/ProposalFilledForm/ProposalFormReminderUser/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/ProposalFilledForm/ProposalFormReminderUser/GetById\\', \\'ProposalFormReminderUserModal\\' , this, null, true)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/ProposalFilledForm/ProposalFormReminderUser/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "ppfTitle",
+              "caption": "فرم پیشنهاد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "mobile",
+              "caption": "همراه",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "td",
+              "caption": "تاریخ یادآوری",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "ProposalFormReminderUserAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFormReminderUsercSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "id": "ProposalFormReminderUserppfCatId2",
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "appfCatId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFormReminderUser/GetProposalFormCategoryList",
+              "label": "گروه بندی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "fid",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFormReminderUser/GetProposalFormList",
+              "exteraParameterIds": [ "ProposalFormReminderUserppfCatId2", "ProposalFormReminderUsercSOWSiteSettingIdAdd" ],
+              "label": "فرم پیشنهاد",
+              "isRequired": true,
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "targetDate",
+              "class": "startAndEndDate",
+              "type": "persianDateTime",
+              "label": "تاریخ یادآوری",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "mobile",
+              "type": "text",
+              "label": "شماره همراه",
+              "isRequired": true,
+              "validations": [
+                {
+                  "reg": "^[0-9]*$",
+                  "msg": "لطفا فقط عدد وارد کنید"
+                },
+                {
+                  "reg": "^([0-9]){11}$",
+                  "msg": "شماره همراه باید ۱۱ عدد باشد"
+                },
+                {
+                  "reg": "^(09)",
+                  "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                }
+              ]
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "insuranceImage",
+              "type": "file",
+              "label": "تصویر بیمه نامه (اختیاری)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "compressImage": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "nationalCard",
+              "type": "file",
+              "label": "تصویر کارت ملی(اختیاری)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "compressImage": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "summery",
+              "type": "textarea",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ProposalFormReminderUserGrid', '/ProposalFilledForm/ProposalFormReminderUser/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "ProposalFormReminderUserModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "ProposalFormReminderUsercSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "id": "ProposalFormReminderUserppfCatId2x",
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "appfCatId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFormReminderUser/GetProposalFormCategoryList",
+              "label": "گروه بندی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "fid",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/ProposalFilledForm/ProposalFormReminderUser/GetProposalFormList",
+              "exteraParameterIds": [ "ProposalFormReminderUserppfCatId2x", "ProposalFormReminderUsercSOWSiteSettingIdEdit" ],
+              "label": "فرم پیشنهاد",
+              "isRequired": true,
+              "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "targetDate",
+              "class": "startAndEndDate",
+              "type": "persianDateTime",
+              "label": "تاریخ یادآوری",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "mobile",
+              "type": "text",
+              "label": "شماره همراه",
+              "isRequired": true,
+              "validations": [
+                {
+                  "reg": "^[0-9]*$",
+                  "msg": "لطفا فقط عدد وارد کنید"
+                },
+                {
+                  "reg": "^([0-9]){11}$",
+                  "msg": "شماره همراه باید ۱۱ عدد باشد"
+                },
+                {
+                  "reg": "^(09)",
+                  "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                }
+              ]
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "insuranceImage",
+              "type": "file",
+              "label": "تصویر بیمه نامه (اختیاری)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "compressImage": true
+            },
+            {
+              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "name": "nationalCard",
+              "type": "file",
+              "label": "تصویر کارت ملی(اختیاری)",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "compressImage": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "summery",
+              "type": "textarea",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'ProposalFormReminderUserGrid', '/ProposalFilledForm/ProposalFormReminderUser/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
