@@ -125,7 +125,7 @@ namespace Oje.Section.CarBodyBaseData.Services
             return new GridResultVM<CarSpecificationAmountMainGridResultVM>()
             {
                 total = qureResult.Count(),
-                data = qureResult.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
+                data = qureResult.OrderByDescending(t => t.CarSpecificationId).ThenBy(t => t.MinAmount).Skip(searchInput.skip).Take(searchInput.take)
                 .Select(t => new
                 {
                     carSpecId = t.CarSpecification.Title,

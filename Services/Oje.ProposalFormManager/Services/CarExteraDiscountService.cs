@@ -83,62 +83,60 @@ namespace Oje.ProposalFormService.Services
                 .AsNoTracking()
                 .ToList();
 
-            var allGroupCategoryItems = allExteraDiscounts.GroupBy(t => t.CarExteraDiscountCategory).ToList();
 
-            foreach (var cat in allGroupCategoryItems)
+            var curCategoryCtrl = allExteraDiscounts;
+            var allCtrls = new List<object>();
+            for (var i = 0; i < curCategoryCtrl.Count; i++)
             {
-                var curCategoryCtrl = cat.ToList();
-                var allCtrls = new List<object>();
-                for (var i = 0; i < curCategoryCtrl.Count; i++)
+                if (curCategoryCtrl[i].CarExteraDiscountValues.Count > 0)
                 {
-                    if (curCategoryCtrl[i].CarExteraDiscountValues.Count > 0)
+                    allCtrls.Add(new
                     {
-                        allCtrls.Add(new
-                        {
-                            parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-                            name = "exteraQuestions[" + i + "].value",
-                            type = "dropDown",
-                            textfield = "title",
-                            valuefield = "id",
-                            dataurl = "/ProposalFormInquiries/CarBodyInquiry/GetExteraFilterValuess?id=" + curCategoryCtrl[i].Id,
-                            label = curCategoryCtrl[i].Title
-                        });
-                        allCtrls.Add(new
-                        {
-                            name = "exteraQuestions[" + i + "].id",
-                            type = "hidden",
-                            dfaultValue = curCategoryCtrl[i].Id
-                        });
-                    }
-                    else
-                    {
-                        allCtrls.Add(new
-                        {
-                            parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-                            name = "exteraQuestions[" + i + "].value",
-                            type = "dropDown",
-                            textfield = "title",
-                            valuefield = "id",
-                            dataurl = "/Core/BaseData/Get/IsActive",
-                            label = curCategoryCtrl[i].Title
-                        });
-                        allCtrls.Add(new
-                        {
-                            name = "exteraQuestions[" + i + "].id",
-                            type = "hidden",
-                            dfaultValue = curCategoryCtrl[i].Id
-                        });
-                    }
-                }
-                if (allCtrls.Count > 0)
-                    allPanels.Add(new
-                    {
-                        id = "exteraCoverPanel" + cat.Key?.Id,
-                        title = (string.IsNullOrEmpty(cat.Key?.Title) ? "پوشش اضافی" : cat.Key.Title),
-                        @class = "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-                        ctrls = allCtrls
+                        parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+                        name = "exteraQuestions[" + i + "].value",
+                        type = "dropDown",
+                        textfield = "title",
+                        valuefield = "id",
+                        dataurl = "/ProposalFormInquiries/CarBodyInquiry/GetExteraFilterValuess?id=" + curCategoryCtrl[i].Id,
+                        label = curCategoryCtrl[i].Title,
+                        onChange = "refreshInquiryGrid('{{currentIdHolder}}');"
                     });
+                    allCtrls.Add(new
+                    {
+                        name = "exteraQuestions[" + i + "].id",
+                        type = "hidden",
+                        dfaultValue = curCategoryCtrl[i].Id
+                    });
+                }
+                else
+                {
+                    allCtrls.Add(new
+                    {
+                        parentCL = "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+                        name = "exteraQuestions[" + i + "].value",
+                        type = "dropDown",
+                        textfield = "title",
+                        valuefield = "id",
+                        dataurl = "/Core/BaseData/Get/IsActive",
+                        label = curCategoryCtrl[i].Title,
+                        onChange = "refreshInquiryGrid('{{currentIdHolder}}');"
+                    });
+                    allCtrls.Add(new
+                    {
+                        name = "exteraQuestions[" + i + "].id",
+                        type = "hidden",
+                        dfaultValue = curCategoryCtrl[i].Id
+                    });
+                }
             }
+            if (allCtrls.Count > 0)
+                allPanels.Add(new
+                {
+                    id = "exteraCoverPanel_11",
+                    title =  "پوشش اضافی" ,
+                    @class = "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                    ctrls = allCtrls
+                });
 
 
 

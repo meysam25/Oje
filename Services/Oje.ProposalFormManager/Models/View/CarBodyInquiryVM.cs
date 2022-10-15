@@ -51,6 +51,10 @@ namespace Oje.ProposalFormService.Models.View
         public int? noDamageDiscountBody { get; set; }
         [Display(Name = "سابقه عدم خسارت")]
         public string noDamageDiscountBody_Title { get; set; }
+        [Display(Name = "سابقه عدم خسارت اضافی")]
+        public int? noDamageDiscountBodyExtera { get; set; }
+        [Display(Name = "سابقه عدم خسارت اضافی")]
+        public string noDamageDiscountBodyExtera_Title { get; set; }
         [Display(Name = "انتخاب روش پرداخت")]
         public int? showStatus { get; set; }
         [Display(Name = "انتخاب روش پرداخت")]

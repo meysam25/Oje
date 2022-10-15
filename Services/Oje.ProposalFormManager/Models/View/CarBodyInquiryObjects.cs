@@ -1,9 +1,5 @@
 ﻿using Oje.ProposalFormService.Models.DB;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Models.View
 {
@@ -34,6 +30,7 @@ namespace Oje.ProposalFormService.Models.View
         public Tax Tax { get; set; }
         public Duty Duty { get; set; }
         public NoDamageDiscount NoDamageDiscount { get; set; }
+        public NoDamageDiscount NoDamageDiscountExtera { get; set; }
         public InsuranceContractDiscount InsuranceContractDiscount { get; set; }
         public InquiryDuration InquiryDuration { get; set; }
 

@@ -19,6 +19,7 @@ namespace Oje.Sms.Services.EContext
         public DbSet<SmsSendingQueueError> SmsSendingQueueErrors { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<SmsValidationHistory> SmsValidationHistories { get; set; }
+        public DbSet<BlockLoginUser> BlockLoginUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -9,6 +9,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "بعد محاسبه نرخ اعمال شود")]
         OnFirstResult = 2,
         [Display(Name = "فقط رویه پایه و کهنگی ساخت")]
-        OnBaseAndCreateYear = 3
+        OnBaseAndCreateYear = 3,
+        [Display(Name = "ارزش لوازم جانبی")]
+        OnUserInputAssessory = 4
     }
 }

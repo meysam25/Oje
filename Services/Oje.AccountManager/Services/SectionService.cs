@@ -49,15 +49,15 @@ namespace Oje.AccountService.Services
                     }).ToList()
                 }).ToList()
             }).ToList();
-            return result.Select(t => new
+            return result.OrderBy(t => t.title).Select(t => new
             {
                 t.id,
                 t.title,
-                childs = t.childs.Select(tt => new
+                childs = t.childs.OrderBy(tt => tt.title).Select(tt => new
                 {
                     tt.id,
                     tt.title,
-                    childs = tt.childs.Select(ttt => new
+                    childs = tt.childs.OrderBy(ttt => ttt.title).Select(ttt => new
                     {
                         ttt.id,
                         ttt.title,
@@ -66,6 +66,7 @@ namespace Oje.AccountService.Services
                     selected = tt.childs.Where(ttt => ttt.selected == true).Count() == tt.childs.Count
                 }).ToList()
             }).ToList()
+            .OrderBy(t => t.title)
             .Select(t => new
             {
                 t.id,

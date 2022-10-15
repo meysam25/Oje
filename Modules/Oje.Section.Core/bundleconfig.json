@@ -66,6 +66,16 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/js/fd.min.js",
+    "inputFiles": [
+      "wwwroot/js/formDesigner.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/js/blogs.min.js",
     "inputFiles": [
       "wwwroot/js/BlogList/blogList.js"
@@ -263,6 +273,16 @@
     "outputFileName": "wwwroot/Core/css/blog.min.css",
     "inputFiles": [
       "wwwroot/css/BlogList/blog.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/fd.min.css",
+    "inputFiles": [
+      "wwwroot/css/formDesigner.css"
     ],
     "minify": {
       "enabled": true,

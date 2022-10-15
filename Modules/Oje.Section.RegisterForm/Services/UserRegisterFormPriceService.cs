@@ -170,12 +170,19 @@ namespace Oje.Section.RegisterForm.Services
 
         public UserRegisterFormPrice GetPriceBy(int formId, int? siteSettingId, int id, string groupTitle, string groupTitle2)
         {
-            return db.UserRegisterFormPrices.Where(t => t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.Id == id && t.IsActive == true && t.GroupPriceTitle == groupTitle && t.GroupPriceTitle2 == groupTitle2).AsNoTracking().FirstOrDefault();
+            if (!string.IsNullOrEmpty(groupTitle) && !string.IsNullOrEmpty(groupTitle2))
+                return db.UserRegisterFormPrices.Where(t => t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.Id == id && t.IsActive == true && t.GroupPriceTitle == groupTitle && t.GroupPriceTitle2 == groupTitle2).AsNoTracking().FirstOrDefault();
+            else if (!string.IsNullOrEmpty(groupTitle))
+                return db.UserRegisterFormPrices.Where(t => t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.Id == id && t.IsActive == true && t.GroupPriceTitle == groupTitle).AsNoTracking().FirstOrDefault();
+            else if (!string.IsNullOrEmpty(groupTitle2))
+                return db.UserRegisterFormPrices.Where(t => t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.Id == id && t.IsActive == true && t.GroupPriceTitle2 == groupTitle2).AsNoTracking().FirstOrDefault();
+            else
+                return db.UserRegisterFormPrices.Where(t => t.UserRegisterFormId == formId && t.UserRegisterForm.SiteSettingId == siteSettingId && t.Id == id && t.IsActive == true).AsNoTracking().FirstOrDefault();
         }
 
         public UserRegisterFormPrice GetById(int id)
         {
-            return db.UserRegisterFormPrices.Where(t =>  t.Id == id && t.IsActive == true ).AsNoTracking().FirstOrDefault();
+            return db.UserRegisterFormPrices.Where(t => t.Id == id && t.IsActive == true).AsNoTracking().FirstOrDefault();
         }
     }
 }

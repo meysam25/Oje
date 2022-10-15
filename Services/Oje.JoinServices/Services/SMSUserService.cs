@@ -9,6 +9,7 @@ using Oje.Security.Interfaces;
 using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
+using IBlockLoginUserService = Oje.Sms.Interfaces.IBlockLoginUserService;
 
 namespace Oje.JoinServices.Services
 {

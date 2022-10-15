@@ -5,7 +5,6 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using Oje.Security.Interfaces;
 using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;

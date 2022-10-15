@@ -17,7 +17,7 @@ namespace Oje.Sms.Models.DB
         public int Id { get; set; }
         [MaxLength(50)]
         public string Username { get; set; }
-        [MaxLength(50)]
+        [MaxLength(4000)]
         public string Password { get; set; }
         public string Domain { get; set; }
         public SmsConfigType Type { get; set; }

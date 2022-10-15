@@ -352,111 +352,19 @@
                       "textfield": "title",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscount",
-                      "label": "درصد عدم خسارت مندرج در بیمه نامه بدنه",
+                      "label": "سابقه خسارت اصلی",
                       "name": "noDamageDiscountBody",
                       "isRequired": true
                     },
                     {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
-                      "class": "btn-primary btn-block ",
-                      "type": "button",
-                      "title": "ادامه",
-                      "onClick": "moveToNextStepForSW(this)"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 4,
-              "id": "thritpartyPrevCompanyStep",
-              "title": "شرکت بیمه سال قبل ثالث",
-              "hideMoveNextButton": true,
-              "panels": [
-                {
-                  "ctrls": [
-                    {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "havePrevInsuranceThirdParty",
+                      "id": "noDamageDiscountBodyExtera",
                       "type": "dropDown",
                       "textfield": "title",
                       "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetCompanyList",
-                      "label": "بیمه نامه سال قبل ثالث",
-                      "name": "havePrevInsuranceThirdParty",
-                      "showHideCondation": [
-                        {
-                          "value": "",
-                          "classHide": [ "startAndEndDateThirdParty" ],
-                          "isDefault": true
-                        },
-                        {
-                          "value": "0",
-                          "classHide": [ "startAndEndDateThirdParty" ]
-                        },
-                        {
-                          "value": "!0",
-                          "classShow": [ "startAndEndDateThirdParty" ]
-                        }
-                      ],
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "prevStartDateThirdParty",
-                      "class": "startAndEndDateThirdParty",
-                      "type": "persianDateTime",
-                      "label": "تاریخ شروع بیمه نامه قبل",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "prevEndDateThirdParty",
-                      "class": "startAndEndDateThirdParty",
-                      "type": "persianDateTime",
-                      "label": "تاریخ اتمام بیمه نامه قبلی",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
-                      "class": "btn-primary btn-block ",
-                      "type": "button",
-                      "title": "ادامه",
-                      "onClick": "moveToNextStepForSW(this)"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 5,
-              "id": "penaltyQuestions",
-              "title": "درصد عدم خسارت ثالث",
-              "hideMoveNextButton": true,
-              "showCondation": [
-                {
-                  "id": "havePrevInsuranceThirdParty",
-                  "operator": "!=",
-                  "value": "0"
-                },
-                {
-                  "id": "havePrevInsuranceThirdParty",
-                  "operator": "!=",
-                  "value": ""
-                }
-              ],
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "noDamageDiscountThirdParty",
-                      "type": "dropDown",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscountThirdParty",
-                      "label": "درصد عدم خسارت مندرج در بیمه نامه ثالث",
-                      "name": "noDamageDiscountThirdParty",
+                      "dataurl": "/ProposalFormInquiries/CarBodyInquiry/GetNoDamageDiscount",
+                      "label": "سابقه خسارت اضافی",
+                      "name": "noDamageDiscountBodyExtera",
                       "isRequired": true
                     },
                     {
@@ -702,7 +610,7 @@
                     "headerTemplate": "<div class=\"gridDetailesHeader\" ><i onclick=\"closeThisDetailes(this)\"></i><span>جزییات استعلام</span></div>",
                     "id": "detailesGrid",
                     "key": "id",
-                    "itemPerPage": 10,
+                    "itemPerPage": 1000,
                     "isClient": true,
                     "schema": {
                       "data": "data",

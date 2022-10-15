@@ -25,6 +25,8 @@ namespace Oje.Sms
             services.AddScoped<ISmsSenderService, SmsSenderService>();
             services.AddScoped<ISmsSendingQueueErrorService, SmsSendingQueueErrorService>();
             services.AddScoped<ISmsValidationHistoryService, SmsValidationHistoryService>();
+            services.AddScoped<IIdePardazanSmsSenderService, IdePardazanSmsSenderService>();
+            services.AddScoped<IBlockLoginUserService, BlockLoginUserService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)
@@ -43,6 +45,8 @@ namespace Oje.Sms
             services.AddSingleton<ISmsSenderService, SmsSenderService>();
             services.AddSingleton<ISmsSendingQueueErrorService, SmsSendingQueueErrorService>();
             services.AddSingleton<ISmsValidationHistoryService, SmsValidationHistoryService>();
+            services.AddSingleton<IIdePardazanSmsSenderService, IdePardazanSmsSenderService>();
+            services.AddSingleton<IBlockLoginUserService, BlockLoginUserService>();
         }
     }
 }

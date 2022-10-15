@@ -130,6 +130,9 @@ function getInputTemplate(ctrl) {
             case 'map':
                 result += getMapTemplate(ctrl);
                 break;
+            case 'ppfDesigner':
+                result += getDesignerTemplate(ctrl);
+                break;
             case 'empty':
             default:
                 break;
@@ -138,6 +141,28 @@ function getInputTemplate(ctrl) {
             result += '</div>';
     }
 
+    return result;
+}
+
+var isDisinerTryToLoaded = false;
+function getDesignerTemplate(ctrl) {
+    var result = '<div class="myFormDesigner" id="' + ctrl.id + '" ></div>';
+    if (window['initDisigner']) {
+        initDisigner(ctrl);
+    } else {
+        if (!window['initDisigner'] && !isDisinerTryToLoaded) {
+            isDisinerTryToLoaded = true;
+            loadJS("/Modules/Core/js/fd.min.js.gz");
+            loadCSS("/Modules/Core/css/fd.min.css.gz");
+            ctrl.initInterval = setInterval(function ()
+            {
+                if (window['initDisigner']) {
+                    clearInterval(this.curCtrl.initInterval);
+                    initDisigner(this.curCtrl);
+                }
+            }.bind({ curCtrl: ctrl }), 300);
+        }
+    }
     return result;
 }
 
@@ -1862,6 +1887,13 @@ function loadJS(src) {
     document.getElementsByTagName("head")[0].appendChild(script);
 }
 
+function loadCSS(src) {
+    var script = document.createElement("link");
+    script.setAttribute("rel", "stylesheet");
+    script.setAttribute("href", src);
+    document.getElementsByTagName("head")[0].appendChild(script);
+}
+
 function getTextAreaTemplate(ctrl) {
     var result = '';
     result += '<div class="myCtrl form-group ' + (ctrl.type == 'ck' ? 'makeLabelBGSilver' : '') + '">';
@@ -2052,6 +2084,20 @@ function updateHolderStatusValue(holderId, label, value, uId) {
 
 function getCtrlLabel(curThis) {
     return ($(curThis).closest('.myCtrl').find('label').text() + '').replace('*', '');
+}
+
+function refreshInquiryGrid(curId) {
+    if (curId) {
+        var curObj = $('#' + curId);
+        if (curObj.length > 0) {
+            var modalContainer = $(curObj).closest('.modal-body');
+            if (modalContainer.length > 0) {
+                var foundGrid = modalContainer.find('.myGridCTRL');
+                if (foundGrid.length > 0)
+                    foundGrid[0].refreshData();
+            }
+        }
+    }
 }
 
 function getDropdownCTRLTemplate(ctrl) {

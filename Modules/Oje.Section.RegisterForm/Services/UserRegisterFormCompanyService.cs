@@ -167,7 +167,7 @@ namespace Oje.Section.RegisterForm.Services
         {
             List<object> result = new List<object>() { new { id = "", title = "" } };
 
-            result.AddRange(db.UserRegisterFormCompanies.Where(t => t.IsActive == true && t.SiteSettingId == siteSettingId && t.UserRegisterFormId == formId).Select(t => new
+            result.AddRange(db.UserRegisterFormCompanies.Where(t => t.Company.IsActive == true && t.IsActive == true && t.SiteSettingId == siteSettingId && t.UserRegisterFormId == formId).Select(t => new
             {
                 id = t.CompanyId,
                 title = t.Company.Title

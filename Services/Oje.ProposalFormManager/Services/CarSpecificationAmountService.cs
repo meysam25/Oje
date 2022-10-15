@@ -2,7 +2,6 @@
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
-using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
@@ -11,8 +10,6 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -108,16 +105,18 @@ namespace Oje.ProposalFormService.Services
                 CarBodyInquiryObjects objPack = fillRequiredObjectsAndValidate(input, siteSettingId);
 
                 long GlobalInputInqueryId = GlobalInputInqueryService.Create(input, null, siteSettingId);
-                if (GlobalInputInqueryId > 0 && objPack.CarSpecificationAmounts != null && objPack.CarSpecificationAmounts.Count > 0 && objPack.VehicleUsage != null)
+                if (GlobalInputInqueryId > 0 && objPack.CarSpecificationAmounts != null && objPack.CarSpecificationAmounts.Count > 0)
                 {
                     CreateGlobalInqueryObjectForEachCompanyS1(objPack, siteSettingId, GlobalInputInqueryId, result, input);
 
                     foreach (var newQueryItem in result)
                     {
                         InquiryCalceCreateDatePercen(objPack, newQueryItem, input);
+                        InquiryCalceVehicleUsage(objPack, newQueryItem, input);
                         addDynamicControlCalce(objPack, newQueryItem, input);
                         addCacleRightOptionFilter(objPack, newQueryItem, input);
                         addCacleForNoDamageDiscount(objPack, newQueryItem);
+                        addCacleForNoDamageDiscountExtera(objPack, newQueryItem);
                         addCacleDiscountContract(objPack, newQueryItem);
                         addCacleGlobalDiscountAuto(objPack, newQueryItem);
                         addCacleGlobalDiscount(objPack, newQueryItem, siteSettingId, input.discountCode);
@@ -135,7 +134,7 @@ namespace Oje.ProposalFormService.Services
             return new { total = 0, data = new List<object>() };
         }
 
-        private void addCacleForNoDamageDiscount(CarBodyInquiryObjects objPack, GlobalInquery newQueryItem)
+        void addCacleForNoDamageDiscount(CarBodyInquiryObjects objPack, GlobalInquery newQueryItem)
         {
             if (objPack.NoDamageDiscount != null && objPack.NoDamageDiscount.Percent > 0)
             {
@@ -156,6 +155,35 @@ namespace Oje.ProposalFormService.Services
                             newItem.Expired = true;
                         }
                         newQueryItem.GlobalInquiryItems.Add(newItem);
+                    }
+                }
+                else
+                    newQueryItem.deleteMe = true;
+            }
+        }
+
+        void addCacleForNoDamageDiscountExtera(CarBodyInquiryObjects objPack, GlobalInquery newQueryItem)
+        {
+            if (objPack.NoDamageDiscountExtera != null && objPack.NoDamageDiscountExtera.Percent > 0)
+            {
+                if (objPack.NoDamageDiscountExtera.NoDamageDiscountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId))
+                {
+                    GlobalInquiryItem newItem = new GlobalInquiryItem();
+                    newItem.GlobalInquiryId = newQueryItem.Id;
+                    newItem.Title = objPack.NoDamageDiscountExtera.Title + "(عدم خسارت اضافی)";
+                    newItem.CalcKey = "nodDE";
+                    var sumItemPrice = newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true && t.CalcKey == "DRO" && t.Price > 0).Select(t => t.Price).Sum();
+                    if (objPack.NoDamageDiscountExtera.Percent > 0)
+                    {
+                        newItem.Price = RouteThisNumberIfConfigExist(Convert.ToInt64(Math.Ceiling((Convert.ToDecimal((sumItemPrice)) * objPack.NoDamageDiscountExtera.Percent) / objPack.v100)) * -1, objPack.RoundInquery);
+                        newQueryItem.maxDiscount += objPack.NoDamageDiscountExtera.Percent;
+                        if (objPack.InquiryMaxDiscounts.Any(t => t.Percent < newQueryItem.maxDiscount && t.InquiryMaxDiscountCompanies.Any(tt => tt.CompanyId == newQueryItem.CompanyId)))
+                        {
+                            newItem.Title = string.Format(BMessages.Expired_Discount.GetEnumDisplayName(), newItem.Title);
+                            newItem.Expired = true;
+                        }
+                        if (newItem.Price < 0)
+                            newQueryItem.GlobalInquiryItems.Add(newItem);
                     }
                 }
                 else
@@ -240,6 +268,23 @@ namespace Oje.ProposalFormService.Services
                             newQueryItem.GlobalInquiryItems.Add(newITem);
                     }
                 }
+            }
+        }
+
+        void InquiryCalceVehicleUsage(CarBodyInquiryObjects objPack, GlobalInquery newQueryItem, CarBodyInquiryVM input)
+        {
+            var foundS2 = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").FirstOrDefault();
+            if (foundS2 != null && objPack.VehicleUsage != null && objPack.VehicleUsage.BodyPercent != null && objPack.VehicleUsage.BodyPercent > 0)
+            {
+                GlobalInquiryItem newITem = new GlobalInquiryItem()
+                {
+                    CalcKey = "vUsag",
+                    GlobalInquiryId = newQueryItem.Id,
+                    Title = BMessages.CarUsage_BasePrice.GetEnumDisplayName(),
+                    Price = RouteThisNumberIfConfigExist(Math.Ceiling((objPack.VehicleUsage.BodyPercent.Value * Convert.ToDecimal(foundS2.Price)) / objPack.v100).ToLongReturnZiro(), objPack.RoundInquery)
+                };
+                if (newITem.Price > 0)
+                    newQueryItem.GlobalInquiryItems.Add(newITem);
             }
         }
 
@@ -370,6 +415,19 @@ namespace Oje.ProposalFormService.Services
                 input.noDamageDiscountBody_Title = null;
                 input.noDamageDiscountBody = null;
             }
+
+            if (input.noDamageDiscountBodyExtera.ToIntReturnZiro() > 0)
+            {
+                result.NoDamageDiscountExtera = NoDamageDiscountService.GetByFormId(result.currentProposalForm?.Id, input.noDamageDiscountBodyExtera);
+                if (result.NoDamageDiscountExtera == null)
+                    throw BException.GenerateNewException(BMessages.Please_Enter_NoDamage_Discount_Percent);
+                input.noDamageDiscountBodyExtera_Title = result.NoDamageDiscount.Title;
+            }
+            else
+            {
+                input.noDamageDiscountBodyExtera_Title = null;
+                input.noDamageDiscountBodyExtera = null;
+            }
         }
 
         private void fillAndValidateCarExteraDiscountRequired(CarBodyInquiryObjects result, CarBodyInquiryVM input)
@@ -403,8 +461,8 @@ namespace Oje.ProposalFormService.Services
             input.carTypeId_Title = result.CarType.Title;
 
             result.VehicleUsage = VehicleUsageService.GetById(input.carTypeId);
-            if (result.VehicleUsage == null)
-                throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
+            //if (result.VehicleUsage == null)
+            //    throw BException.GenerateNewException(BMessages.Invalid_VehicleUsage);
         }
 
         void fillAndValidateVehicleSystem(CarBodyInquiryVM input)
@@ -446,6 +504,8 @@ namespace Oje.ProposalFormService.Services
             input.noDamageDiscountBody = null;
             input.noDamageDiscountBody_Title = null;
             input.havePrevInsurance_Title = "ندارم";
+            input.noDamageDiscountBodyExtera = null;
+            input.noDamageDiscountBodyExtera_Title = null;
         }
 
         void initIfHavePrevInsurance(CarBodyInquiryObjects result, CarBodyInquiryVM input)
@@ -458,7 +518,7 @@ namespace Oje.ProposalFormService.Services
 
             if (input.noDamageDiscountBody.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_NoDamage_Discount_Percent);
-            if (input.noDamageDiscountBody.ToIntReturnZiro() <= 0)
+            if (input.noDamageDiscountBodyExtera.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_NoDamage_Discount_Percent);
         }
 
@@ -502,11 +562,12 @@ namespace Oje.ProposalFormService.Services
                             newItem.CalcKey = "DRO";
 
                             var s1Price = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").Select(t => t.Price).FirstOrDefault();
+                            var crdOlPrice = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "crdOl").Select(t => t.Price).FirstOrDefault();
                             var sumItemPrice = newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true).Select(t => t.Price).Sum();
 
                             newItem.Price = RouteThisNumberIfConfigExist(cacleInsuranceDynamicCTRL(
                                 s1Price, sumItemPrice, dItemValue.Type,
-                                input.createYear, dItemValue.CalculateType, allRangeAmount), objPack.RoundInquery);
+                                input.createYear, dItemValue.CalculateType, allRangeAmount, crdOlPrice, input.carValue.ToLongReturnZiro() + input.exteraValue.ToLongReturnZiro(), input.exteraValue.ToLongReturnZiro()), objPack.RoundInquery);
                             if (newItem.Price != 0)
                                 newQueryItem.GlobalInquiryItems.Add(newItem);
                         }
@@ -543,11 +604,12 @@ namespace Oje.ProposalFormService.Services
                                 newItem.CalcKey = "DR";
 
                                 var s1Price = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "s1").Select(t => t.Price).FirstOrDefault();
+                                var crdOlPrice = newQueryItem.GlobalInquiryItems.Where(t => t.CalcKey == "crdOl").Select(t => t.Price).FirstOrDefault();
                                 var sumItemPrice = newQueryItem.GlobalInquiryItems.Where(t => t.Expired != true).Select(t => t.Price).Sum();
 
                                 newItem.Price = RouteThisNumberIfConfigExist(cacleInsuranceDynamicCTRL(
                                     s1Price, sumItemPrice, currCarExteraDiscount.Type,
-                                    input.createYear, currCarExteraDiscount.CalculateType, dItemValue.CarExteraDiscountRangeAmounts), objPack.RoundInquery);
+                                    input.createYear, currCarExteraDiscount.CalculateType, dItemValue.CarExteraDiscountRangeAmounts, crdOlPrice, input.carValue.ToLongReturnZiro() + input.exteraValue.ToLongReturnZiro(), input.exteraValue.ToLongReturnZiro()), objPack.RoundInquery);
                                 if (newItem.Price != 0)
                                     newQueryItem.GlobalInquiryItems.Add(newItem);
                             }
@@ -563,7 +625,7 @@ namespace Oje.ProposalFormService.Services
         long cacleInsuranceDynamicCTRL(
             long userInputPrice, long basePrice, CarExteraDiscountType type, int? createYear, CarExteraDiscountCalculateType calculateType,
             List<CarExteraDiscountRangeAmount> carExteraDiscountRangeAmounts
-            )
+            , long crdOlPrice, long investment, long userInutAsscessory)
         {
             long result = 0;
             decimal v100 = 100;
@@ -578,21 +640,21 @@ namespace Oje.ProposalFormService.Services
                     {
                         if (rv.Amount != null && rv.Amount != 0)
                         {
-                            if (userInputPrice > rv.MaxValue)
+                            if (investment > rv.MaxValue)
                                 result += rv.Amount.Value;
-                            else if (userInputPrice >= rv.MinValue && userInputPrice <= rv.MaxValue)
+                            else if (investment >= rv.MinValue && investment <= rv.MaxValue)
                                 result += rv.Amount.Value;
                         }
                         else if (rv.Percent != 0 && rv.Percent != null)
                         {
-                            if (userInputPrice > rv.MaxValue)
+                            if (investment > rv.MaxValue)
                             {
                                 var def = Convert.ToDecimal(rv.MaxValue - rv.MinValue) * rv.Percent.Value;
                                 result += Convert.ToInt32(Math.Ceiling(def / v100));
                             }
-                            else if (userInputPrice >= rv.MinValue && userInputPrice <= rv.MaxValue)
+                            else if (investment >= rv.MinValue && investment <= rv.MaxValue)
                             {
-                                var def = Convert.ToDecimal(userInputPrice - rv.MinValue) * rv.Percent.Value;
+                                var def = Convert.ToDecimal(investment - rv.MinValue) * rv.Percent.Value;
                                 result += Convert.ToInt32(Math.Ceiling(def / v100));
                             }
                         }
@@ -616,6 +678,53 @@ namespace Oje.ProposalFormService.Services
                             else if (basePrice >= rv.MinValue && basePrice <= rv.MaxValue)
                             {
                                 var def = Convert.ToDecimal(basePrice - rv.MinValue) * rv.Percent.Value;
+                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                            }
+                        }
+                    }
+                    else if (calculateType == CarExteraDiscountCalculateType.OnBaseAndCreateYear)
+                    {
+                        var calcPrice = crdOlPrice + userInputPrice;
+                        if (rv.Amount != 0 && rv.Amount != null)
+                        {
+                            if (userInputPrice > rv.MaxValue)
+                                result += rv.Amount.Value;
+                            else if (userInputPrice >= rv.MinValue && userInputPrice <= rv.MaxValue)
+                                result += rv.Amount.Value;
+                        }
+                        else if (rv.Percent != 0 && rv.Percent != null)
+                        {
+                            if (userInputPrice > rv.MaxValue)
+                            {
+                                var def = Convert.ToDecimal(rv.MaxValue - rv.MinValue) * rv.Percent.Value;
+                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                            }
+                            else if (userInputPrice >= rv.MinValue && userInputPrice <= rv.MaxValue)
+                            {
+                                var def = Convert.ToDecimal(calcPrice - rv.MinValue) * rv.Percent.Value;
+                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                            }
+                        }
+                    }
+                    else if (calculateType == CarExteraDiscountCalculateType.OnUserInputAssessory)
+                    {
+                        if (rv.Amount != null && rv.Amount != 0)
+                        {
+                            if (userInutAsscessory > rv.MaxValue)
+                                result += rv.Amount.Value;
+                            else if (userInutAsscessory >= rv.MinValue && userInutAsscessory <= rv.MaxValue)
+                                result += rv.Amount.Value;
+                        }
+                        else if (rv.Percent != 0 && rv.Percent != null)
+                        {
+                            if (userInutAsscessory > rv.MaxValue)
+                            {
+                                var def = Convert.ToDecimal(rv.MaxValue - rv.MinValue) * rv.Percent.Value;
+                                result += Convert.ToInt32(Math.Ceiling(def / v100));
+                            }
+                            else if (userInutAsscessory >= rv.MinValue && userInutAsscessory <= rv.MaxValue)
+                            {
+                                var def = Convert.ToDecimal(userInutAsscessory - rv.MinValue) * rv.Percent.Value;
                                 result += Convert.ToInt32(Math.Ceiling(def / v100));
                             }
                         }
@@ -853,9 +962,7 @@ namespace Oje.ProposalFormService.Services
                     if (carValue > sValue.MaxAmount)
                     {
                         if (sValue.Amount > 0)
-                        {
                             result += sValue.Amount.Value;
-                        }
                         else if (sValue.Rate > 0)
                         {
                             var def = Convert.ToDecimal(sValue.MaxAmount - sValue.MinAmount) * sValue.Rate.Value;
@@ -865,9 +972,7 @@ namespace Oje.ProposalFormService.Services
                     else if (carValue <= sValue.MaxAmount && carValue >= sValue.MinAmount)
                     {
                         if (sValue.Amount > 0)
-                        {
                             result += sValue.Amount.Value;
-                        }
                         else if (sValue.Rate > 0)
                         {
                             var def = Convert.ToDecimal(carValue.Value - sValue.MinAmount) * sValue.Rate.Value;

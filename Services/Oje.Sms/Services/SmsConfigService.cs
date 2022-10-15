@@ -58,6 +58,8 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.type == Infrastructure.Enums.SmsConfigType.Magfa)
                 magfaInputValidation(input, siteSettingId);
+            else if (input.type == Infrastructure.Enums.SmsConfigType.IdePardazan)
+                idepardazanInputValidation(input, siteSettingId);
 
 
             if (db.SmsConfigs.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId) && t.Type == input.type))
@@ -78,12 +80,23 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.PhoneNumber_Can_Not_Be_More_Then_20_chars);
         }
 
+        private void idepardazanInputValidation(CreateUpdateSmsConfigVM input, int? siteSettingId)
+        {
+            if (string.IsNullOrEmpty(input.smsPassword) && input.id.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Enter_Password);
+            if (string.IsNullOrEmpty(input.ph))
+                throw BException.GenerateNewException(BMessages.Please_Enter_PhoneNumber);
+            if (input.ph.Length > 20)
+                throw BException.GenerateNewException(BMessages.PhoneNumber_Can_Not_Be_More_Then_20_chars);
+        }
+
         public ApiResult Delete(int? id, int? siteSettingId)
         {
             Models.DB.SmsConfig foundItem = db.SmsConfigs
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t => t.Id == id)
                 .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
