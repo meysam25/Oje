@@ -18,9 +18,16 @@ namespace Oje.Section.CarBodyBaseData.Areas.CarBodyBaseData.Controllers
     public class CarBodyCreateDatePercentController: Controller
     {
         readonly ICarBodyCreateDatePercentService CarBodyCreateDatePercentService = null;
-        public CarBodyCreateDatePercentController(ICarBodyCreateDatePercentService CarBodyCreateDatePercentService)
+        readonly IVehicleTypeService VehicleTypeService = null;
+
+        public CarBodyCreateDatePercentController
+            (
+                ICarBodyCreateDatePercentService CarBodyCreateDatePercentService,
+                IVehicleTypeService VehicleTypeService
+            )
         {
             this.CarBodyCreateDatePercentService = CarBodyCreateDatePercentService;
+            this.VehicleTypeService = VehicleTypeService;
         }
 
         [AreaConfig(Title = "درصد حق بیمه سال ساخت بدنه", Icon = "fa-comments-dollar", IsMainMenuItem = true)]
@@ -87,6 +94,13 @@ namespace Oje.Section.CarBodyBaseData.Areas.CarBodyBaseData.Controllers
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetVehicleTypeList()
+        {
+            return Json(VehicleTypeService.GetLightList());
         }
     }
 }

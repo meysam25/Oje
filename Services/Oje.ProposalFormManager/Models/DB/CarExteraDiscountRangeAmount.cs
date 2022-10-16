@@ -30,6 +30,7 @@ namespace Oje.ProposalFormService.Models.DB
         public decimal? Percent { get; set; }
         public long? Amount { get; set; }
         public bool IsActive { get; set; }
+        public decimal? CreateDateSelfPercent { get; set; }
 
         [InverseProperty("CarExteraDiscountRangeAmount")]
         public List<CarExteraDiscountRangeAmountCompany> CarExteraDiscountRangeAmountCompanies { get; set; }

@@ -16,6 +16,7 @@ namespace Oje.Section.CarBodyBaseData.Services.EContext
         public DbSet<Company> Companies { get; set; }
         public DbSet<CarSpecificationAmountCompany> CarSpecificationAmountCompanies { get; set; }
         public DbSet<CarBodyCreateDatePercent> CarBodyCreateDatePercents { get; set; }
+        public DbSet<VehicleType> VehicleTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

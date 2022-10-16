@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Oje.Section.CarBodyBaseData.Models.View
 {
@@ -23,5 +18,7 @@ namespace Oje.Section.CarBodyBaseData.Models.View
         public int percent { get; set; }
         [Display(Name = "وضعیت")]
         public string isActive { get; set; }
+        [Display(Name = "نوع خودرو")]
+        public string carUsage { get;  set; }
     }
 }

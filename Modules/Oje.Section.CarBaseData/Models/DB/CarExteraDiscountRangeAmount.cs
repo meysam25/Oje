@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.CarBaseData.Models.DB
 {
@@ -34,6 +30,7 @@ namespace Oje.Section.CarBaseData.Models.DB
         public decimal? Percent { get; set; }
         public long? Amount { get; set; }
         public bool IsActive { get; set; }
+        public decimal? CreateDateSelfPercent { get; set; }
 
         [InverseProperty("CarExteraDiscountRangeAmount")]
         public List<CarExteraDiscountRangeAmountCompany> CarExteraDiscountRangeAmountCompanies { get; set; }

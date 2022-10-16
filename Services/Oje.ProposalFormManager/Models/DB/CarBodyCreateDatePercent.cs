@@ -14,5 +14,6 @@ namespace Oje.ProposalFormService.Models.DB
         public int ToYear { get; set; }
         public int Percent { get; set; }
         public bool IsActive { get; set; }
+        public int? VehicleTypeId { get; set; }
     }
 }

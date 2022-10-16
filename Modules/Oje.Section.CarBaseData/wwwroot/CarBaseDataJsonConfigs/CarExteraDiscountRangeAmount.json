@@ -180,6 +180,12 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "cdSelfPercent",
+              "type": "text",
+              "label": "درصد سال ساخت"
             }
           ],
           "actions": [
@@ -280,6 +286,12 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+              "name": "cdSelfPercent",
+              "type": "text",
+              "label": "درصد سال ساخت"
             }
           ],
           "actions": [

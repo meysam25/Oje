@@ -2,11 +2,8 @@
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -22,6 +19,14 @@ namespace Oje.ProposalFormService.Services
         {
             return db.CarBodyCreateDatePercents
                 .Where(t => t.IsActive == true)
+                .AsNoTracking()
+                .ToList();
+        }
+
+        public List<CarBodyCreateDatePercent> GetByList(int? vehicleTypeId)
+        {
+            return db.CarBodyCreateDatePercents
+                .Where(t => t.IsActive == true && t.VehicleTypeId == vehicleTypeId)
                 .AsNoTracking()
                 .ToList();
         }

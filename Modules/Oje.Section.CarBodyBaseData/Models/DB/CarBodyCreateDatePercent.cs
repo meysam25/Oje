@@ -14,5 +14,8 @@ namespace Oje.Section.CarBodyBaseData.Models.DB
         public int ToYear { get; set; }
         public int Percent { get; set; }
         public bool IsActive { get; set; }
+        public int? VehicleTypeId { get; set; }
+        [ForeignKey("VehicleTypeId"), InverseProperty("CarBodyCreateDatePercents")]
+        public VehicleType VehicleType { get; set; }
     }
 }

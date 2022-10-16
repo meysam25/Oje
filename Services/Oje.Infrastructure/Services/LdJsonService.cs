@@ -3,6 +3,7 @@ using NPOI.SS.Formula.Functions;
 using Oje.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Oje.Infrastructure.Services
 {
@@ -125,8 +126,18 @@ namespace Oje.Infrastructure.Services
 
             if (input != null)
                 foreach (var arrItem in input)
+                {
+                    if (arrItem == null)
+                        continue;
                     foreach (var item in arrItem)
+                    {
+                        if (!arrItem.Keys.Any(t => t == item.Key))
+                            continue;
                         result.Add(item.Key, arrItem[item.Key]);
+                    }
+
+                }
+
 
             return result;
         }

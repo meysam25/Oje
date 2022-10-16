@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Oje.Section.CarBodyBaseData.Models.View
+﻿namespace Oje.Section.CarBodyBaseData.Models.View
 {
     public class CreateUpdateCarBodyCreateDatePercentVM
     {
         public int? id { get; set; }
+        public int? vid { get; set; }
         public string title { get; set; }
         public int? fromYear { get; set; }
         public int? toYear { get; set; }

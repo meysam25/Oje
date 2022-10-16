@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,5 +35,7 @@ namespace Oje.ProposalFormService.Models.DB
         public long? basePriceEC { get; set; }
         [NotMapped]
         public long? exPrice { get; internal set; }
+        [NotMapped]
+        public CarExteraDiscountCalculateType curCalculateType { get; internal set; }
     }
 }

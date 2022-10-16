@@ -32,6 +32,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
         readonly IVehicleSpecsService VehicleSpecsService = null;
         readonly IThirdPartyBodyNoDamageDiscountHistoryService ThirdPartyBodyNoDamageDiscountHistoryService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
+
         public CarBodyInquiryController(
                 ICompanyService CompanyService,
                 IInquiryDurationService InquiryDurationService,

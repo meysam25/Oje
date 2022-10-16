@@ -706,5 +706,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_Recive_Car_Date = 349,
         [Display(Name = "لطفا وضعیت تغییر پلاک را انتخاب کنید")]
         Please_Select_Change_Plaque = 350,
+        [Display(Name = "لطفا نوع خودرو را انتخاب کنید")]
+        Please_Select_VehicleType = 351,
     }
 }

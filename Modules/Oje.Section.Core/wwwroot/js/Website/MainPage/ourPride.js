@@ -86,6 +86,8 @@ $.fn.loadAndBindOurPride = function (url) {
                 template += getOurPrideItem(res.image3_address, res.title3);
                 template += getOurPrideItem(res.image4_address, res.title4);
                 $(this.curThis).find('.ourPrideSectionTitle span').html(res.title);
+            } else {
+                $(this.curThis).css('display', 'none');
             }
             $(this.curThis).find('.ourPrideSectionItems').html(template);
             $(this.curThis).find('img[data-src]').loadImageOnScroll();

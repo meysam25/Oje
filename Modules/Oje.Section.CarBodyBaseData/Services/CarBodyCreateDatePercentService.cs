@@ -29,7 +29,8 @@ namespace Oje.Section.CarBodyBaseData.Services
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 Percent = input.percent.Value,
                 Title = input.title,
-                ToYear = input.toYear.Value
+                ToYear = input.toYear.Value,
+                VehicleTypeId = input.vid.Value
             }).State = EntityState.Added;
             db.SaveChanges();
 
@@ -54,6 +55,8 @@ namespace Oje.Section.CarBodyBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_Percent);
             if (input.percent <= 0 || input.percent > 100)
                 throw BException.GenerateNewException(BMessages.Invalid_Percent);
+            if (input.vid.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Select_VehicleType);
 
         }
 
@@ -78,7 +81,8 @@ namespace Oje.Section.CarBodyBaseData.Services
                 isActive = t.IsActive,
                 percent = t.Percent,
                 title = t.Title,
-                toYear = t.ToYear
+                toYear = t.ToYear,
+                vid = t.VehicleTypeId
             }).FirstOrDefault();
         }
 
@@ -99,6 +103,8 @@ namespace Oje.Section.CarBodyBaseData.Services
                 qureResult = qureResult.Where(t => t.IsActive == searchInput.isActive);
             if (searchInput.percent != null && searchInput.percent > 0 && searchInput.percent <= 100)
                 qureResult = qureResult.Where(t => t.Percent == searchInput.percent);
+            if (searchInput.carUsage.ToIntReturnZiro() > 0)
+                qureResult = qureResult.Where(t => t.VehicleTypeId == searchInput.carUsage);
 
             int row = searchInput.skip;
 
@@ -113,7 +119,8 @@ namespace Oje.Section.CarBodyBaseData.Services
                     fromYear = t.FromYear,
                     toYear = t.ToYear,
                     percent = t.Percent,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    carUsage = t.VehicleType.Title
                 })
                 .ToList()
                 .Select(t => new CarBodyCreateDatePercentMainGridResultVM
@@ -124,7 +131,8 @@ namespace Oje.Section.CarBodyBaseData.Services
                     percent = t.percent,
                     title = t.title,
                     toYear = t.toYear,
-                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName()
+                    isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
+                    carUsage = t.carUsage
                 })
                 .ToList()
             };
@@ -143,6 +151,7 @@ namespace Oje.Section.CarBodyBaseData.Services
             foundItem.Percent = input.percent.Value;
             foundItem.Title = input.title;
             foundItem.ToYear = input.toYear.Value;
+            foundItem.VehicleTypeId = input.vid.Value;
 
             db.SaveChanges();
 

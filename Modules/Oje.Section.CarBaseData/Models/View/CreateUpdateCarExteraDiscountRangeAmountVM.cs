@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oje.Section.CarBaseData.Models.View
 {
@@ -19,5 +15,6 @@ namespace Oje.Section.CarBaseData.Models.View
         public decimal? percent { get; set; }
         public long? price { get; set; }
         public bool? isActive { get; set; }
+        public decimal? cdSelfPercent { get; set; }
     }
 }

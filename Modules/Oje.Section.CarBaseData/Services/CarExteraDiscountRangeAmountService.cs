@@ -33,7 +33,8 @@ namespace Oje.Section.CarBaseData.Services
                 MaxValue = input.maxValue.Value,
                 MinValue = input.minValue.Value,
                 Percent = input.percent,
-                Title = input.title
+                Title = input.title,
+                CreateDateSelfPercent = input.cdSelfPercent
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -115,7 +116,8 @@ namespace Oje.Section.CarBaseData.Services
                 minValue = t.MinValue,
                 percent = t.Percent,
                 price = t.Amount,
-                title = t.Title
+                title = t.Title,
+                cdSelfPercent = t.CreateDateSelfPercent
             }).FirstOrDefault();
         }
 
@@ -191,6 +193,7 @@ namespace Oje.Section.CarBaseData.Services
             foundItem.MinValue = input.minValue.Value;
             foundItem.Percent = input.percent;
             foundItem.Title = input.title;
+            foundItem.CreateDateSelfPercent = input.cdSelfPercent;
 
             db.SaveChanges();
 

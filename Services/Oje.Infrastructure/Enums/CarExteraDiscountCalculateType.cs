@@ -11,6 +11,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "فقط رویه پایه و کهنگی ساخت")]
         OnBaseAndCreateYear = 3,
         [Display(Name = "ارزش لوازم جانبی")]
-        OnUserInputAssessory = 4
+        OnUserInputAssessory = 4,
+        [Display(Name = "فقط رویه پایه و کهنگی ساخت و عدم خسارت")]
+        OnBaseAndCreateYearAndNoDamageDiscount = 5
     }
 }

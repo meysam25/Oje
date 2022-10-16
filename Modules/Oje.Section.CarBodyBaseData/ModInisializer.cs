@@ -1,5 +1,4 @@
-﻿using Oje.AccountService;
-using Oje.Infrastructure;
+﻿using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
 using Oje.Section.CarBodyBaseData.Interfaces;
 using Oje.Section.CarBodyBaseData.Services;
@@ -25,6 +24,7 @@ namespace Oje.Section.CarBodyBaseData
             services.AddScoped<ICarSpecificationAmountService, CarSpecificationAmountService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ICarBodyCreateDatePercentService, CarBodyCreateDatePercentService>();
+            services.AddScoped<IVehicleTypeService, VehicleTypeService>();
         }
     }
 }

@@ -44,6 +44,16 @@
               "textAlign": "center"
             },
             {
+              "field": "carUsage",
+              "caption": "نوع خودرو",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/CarBodyBaseData/CarBodyCreateDatePercent/GetVehicleTypeList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
               "field": "title",
               "caption": "عنوان",
               "search": {
@@ -93,6 +103,16 @@
             {
               "name": "id",
               "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBodyBaseData/CarBodyCreateDatePercent/GetVehicleTypeList",
+              "label": "نوع خودرو",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -153,6 +173,16 @@
             {
               "name": "id",
               "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "vid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/CarBodyBaseData/CarBodyCreateDatePercent/GetVehicleTypeList",
+              "label": "نوع خودرو",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
