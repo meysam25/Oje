@@ -1,0 +1,31 @@
+﻿{
+  "panels": [
+    {
+      "charts": [
+        {
+          "url": "/Account/UserChart/GetSource",
+          "dataSchmea": "series",
+          "config": {
+            "chart": {
+              "height": 600,
+              "inverted": true
+            },
+
+            "title": {
+              "text": "شمای کلی کاربران"
+            },
+            "tooltip": {
+              "outside": true
+            },
+            "exporting": {
+              "allowHTML": true,
+              "sourceWidth": 800,
+              "sourceHeight": 600
+            }
+
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -58,6 +58,7 @@ namespace Oje.Section.RegisterForm.Services
                         db.Entry(newUser).State = EntityState.Added;
                     }
 
+
                     newUser.SiteSettingId = siteSettingId;
                     newUser.Username = username;
                     newUser.BankShaba = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "shabaNo").Select(t => t.Value).FirstOrDefault();
@@ -72,7 +73,7 @@ namespace Oje.Section.RegisterForm.Services
                         newUser.Lastname = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "lastNameLegal").Select(t => t.Value).FirstOrDefault();
                     newUser.Password = RandomService.GeneratePassword(20);
                     newUser.CreateDate = DateTime.Now;
-                    newUser.ParentId = parentUserId;
+                    newUser.ParentId = userFilledRegisterForm.RefferUserId != null && userFilledRegisterForm.RefferUserId.Value > 0 ? userFilledRegisterForm.RefferUserId.Value : parentUserId;
                     newUser.RealOrLegaPerson = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "realOrLegaPerson").Select(t => t.Value).FirstOrDefault() == "حقوقی" ? PersonType.Legal : PersonType.Real;
                     newUser.LicenceExpireDate = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "licencExpireDate").Select(t => t.Value).FirstOrDefault().ToEnDate();
                     newUser.Nationalcode = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "nationalCode").Select(t => t.Value).FirstOrDefault();

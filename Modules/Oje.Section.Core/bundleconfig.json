@@ -139,7 +139,9 @@
   {
     "outputFileName": "wwwroot/Core/js/chart.min.js",
     "inputFiles": [
-      "wwwroot/js/chart/highcharts.js"
+      "wwwroot/js/chart/highcharts.js",
+      "wwwroot/js/chart/sankey.js",
+      "wwwroot/js/chart/organization.js"
     ],
     "minify": {
       "enabled": false,

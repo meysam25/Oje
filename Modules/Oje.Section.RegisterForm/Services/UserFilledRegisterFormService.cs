@@ -215,6 +215,8 @@ namespace Oje.Section.RegisterForm.Services
                 RefferCode = refferCode,
                 RefferUserId = UserService.GetUserIdBy(refferCode, siteSettingId)
             };
+            if (newItem.RefferUserId == 0)
+                newItem.RefferUserId = null;
 
             bool isUsedDiscount = false;
 

@@ -8,6 +8,8 @@ namespace Oje.AccountService.Models.View
         public int row { get; set; }
         [Display(Name = "شناسه")]
         public long id { get; set; }
+        [Display(Name = "کاربر والد")]
+        public string parent { get; set; }
         [Display(Name = "نام کاربری")]
         public string username { get; set; }
         [Display(Name = "نام")]

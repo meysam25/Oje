@@ -1,0 +1,110 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "SalesNetworkReportGrid",
+          "exteraSearchIds": [ "SalesNetworkReportSearchModal" ],
+          "exteraFilterModalId": "SalesNetworkReportSearchModal",
+          "exportToExcelUrl": "/SalesNetworkBaseData/SalesNetworkReport/Export",
+          "showColumnConfigButton": true,
+          "key": "id",
+          "url": "/SalesNetworkBaseData/SalesNetworkReport/GetList",
+          "itemPerPage": 100,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "firstName",
+              "caption": "نام"
+            },
+            {
+              "field": "lastName",
+              "caption": "نام خانوادگی"
+            },
+            {
+              "field": "level",
+              "caption": "سطح"
+            },
+            {
+              "field": "commission",
+              "caption": "پورسانت"
+            },
+            {
+              "field": "saleSum",
+              "caption": "کل فروش"
+            },
+            {
+              "field": "typeOfCalc",
+              "caption": "نوع شخص"
+            },
+            {
+              "field": "role",
+              "caption": "نقش"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "SalesNetworkReportSearchModal",
+          "title": "جستجو",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "SalesNetworkReportSaleNetworkId",
+              "name": "snId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SalesNetworkBaseData/SalesNetworkReport/GetSalesNetworkList",
+              "label": "شبکه فروش"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "userId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/SalesNetworkBaseData/SalesNetworkReport/GetUserList",
+              "label": "کاربران",
+              "exteraParameterIds": [ "SalesNetworkReportSaleNetworkId" ]
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fromDate",
+              "type": "persianDateTime",
+              "label": "از تاریخ"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "toDate",
+              "type": "persianDateTime",
+              "label": "تا تاریخ"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "جستجو",
+              "onClick": "refreshGrid('SalesNetworkReportGrid', this)",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

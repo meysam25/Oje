@@ -56,5 +56,6 @@ namespace Oje.AccountService.Interfaces
         object GetAgentInfo(long userId, int companyId);
         void CreateUserAccessRequest(long userId, string requestPath);
         void UpdateUserInfoIfEmpty(long? loginUserId, string firstname, string lastname, string nationalCode);
+        object GetUserChart(int? siteSettingId);
     }
 }

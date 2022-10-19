@@ -13,6 +13,8 @@ namespace Oje.AccountService.Models.View
         }
 
         public long? id { get; set; }
+        public long? parentId { get; set; }
+        public string parentId_Title { get; set; }
         public PersonType? realOrLegaPerson { get; set; }
         public string username { get; set; }
         public string firstname { get; set; }

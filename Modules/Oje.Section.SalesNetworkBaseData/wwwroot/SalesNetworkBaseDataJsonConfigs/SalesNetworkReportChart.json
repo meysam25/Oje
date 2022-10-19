@@ -1,0 +1,75 @@
+﻿{
+  "panels": [
+    {
+      "id": "SalesNetworkReportChartTFPanel",
+      "ctrls": [
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12",
+          "id": "SalesNetworkReportChartSaleNetworkId",
+          "name": "snId",
+          "type": "dropDown",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/SalesNetworkBaseData/SalesNetworkReportChart/GetSalesNetworkList",
+          "label": "شبکه فروش"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12",
+          "name": "userId",
+          "type": "dropDown2",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/SalesNetworkBaseData/SalesNetworkReportChart/GetUserList",
+          "label": "کاربران",
+          "exteraParameterIds": [ "SalesNetworkReportChartSaleNetworkId" ]
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12",
+          "name": "fromDate",
+          "type": "persianDateTime",
+          "label": "از تاریخ"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12",
+          "name": "toDate",
+          "type": "persianDateTime",
+          "label": "تا تاریخ"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12",
+          "class": "btn-primary btn-block ",
+          "type": "button",
+          "title": "گزارش",
+          "onClick": "$('#SalesNetworkReportChartTF')[0].refreshChart()"
+        }
+      ],
+      "charts": [
+        {
+          "id": "SalesNetworkReportChartTF",
+          "filterId": "SalesNetworkReportChartTFPanel",
+          "url": "/SalesNetworkBaseData/SalesNetworkReportChart/GetSource",
+          "dataSchmea": "series",
+          "config": {
+            "chart": {
+              "height": 600,
+              "inverted": true
+            },
+
+            "title": {
+              "text": "گزارش شبکه فروش"
+            },
+            "tooltip": {
+              "outside": true
+            },
+            "exporting": {
+              "allowHTML": true,
+              "sourceWidth": 800,
+              "sourceHeight": 600
+            }
+
+          }
+        }
+      ]
+    }
+  ]
+}

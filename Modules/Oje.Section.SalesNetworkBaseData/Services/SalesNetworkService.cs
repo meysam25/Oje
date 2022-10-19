@@ -12,6 +12,11 @@ using System.Linq;
 using Oje.Section.SalesNetworkBaseData.Services.EContext;
 using Oje.Section.SalesNetworkBaseData.Models.View;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Mvc;
+using Vereyon.Web;
 
 namespace Oje.Section.SalesNetworkBaseData.Services
 {
@@ -47,7 +52,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
 
             SalesNetwork newItem = new SalesNetwork()
             {
-                CalceType = input.calceType.Value,
                 CreateDate = DateTime.Now,
                 CreateUserId = loginUserId.Value,
                 Description = input.description,
@@ -94,8 +98,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                     throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.cIds == null || input.cIds.Count == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
-            if (input.calceType == null || string.IsNullOrEmpty(input.calceType.GetAttribute<DisplayAttribute>()?.Name))
-                throw BException.GenerateNewException(BMessages.Please_Select_Calculate_Type);
             if (input.type == null || string.IsNullOrEmpty(input.type.GetAttribute<DisplayAttribute>()?.Name))
                 throw BException.GenerateNewException(BMessages.Please_Select_Type);
             if (input.userId.ToLongReturnZiro() <= 0)
@@ -143,7 +145,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 {
                     userId = t.SalesNetworkMarketers.Where(tt => tt.ParentId == null).OrderBy(tt => t.Id).Select(t => t.UserId).FirstOrDefault(),
                     userId_Title = t.SalesNetworkMarketers.Where(tt => tt.ParentId == null).OrderBy(tt => t.Id).Select(t => t.User.Firstname + " " + t.User.Lastname).FirstOrDefault(),
-                    calceType = t.CalceType,
                     cIds = t.SalesNetworkCompanies.Select(tt => tt.CompanyId).ToList(),
                     description = t.Description,
                     id = t.Id,
@@ -177,8 +178,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 qureResullt = qureResullt.Where(t => t.SalesNetworkCompanies.Any(tt => tt.CompanyId == searchInput.cIds));
             if (searchInput.type != null)
                 qureResullt = qureResullt.Where(t => t.Type == searchInput.type);
-            if (searchInput.calceType != null)
-                qureResullt = qureResullt.Where(t => t.CalceType == searchInput.calceType);
             if (searchInput.isActive != null)
                 qureResullt = qureResullt.Where(t => t.IsActive == searchInput.isActive);
             if (!string.IsNullOrEmpty(searchInput.createUser))
@@ -199,7 +198,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 data = qureResullt.OrderByDescending(t => t.Id).Skip(searchInput.skip).Take(searchInput.take)
                 .Select(t => new
                 {
-                    calceType = t.CalceType,
                     cIds = t.SalesNetworkCompanies.Select(tt => tt.Company.Title).ToList(),
                     id = t.Id,
                     isActive = t.IsActive,
@@ -221,7 +219,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                     createUser = t.createUser,
                     createDate = t.createDate.ToFaDate(),
                     type = t.type.GetAttribute<DisplayAttribute>()?.Name,
-                    calceType = t.calceType.GetAttribute<DisplayAttribute>()?.Name,
                     isActive = t.isActive == true ? BMessages.Active.GetAttribute<DisplayAttribute>()?.Name : BMessages.InActive.GetAttribute<DisplayAttribute>()?.Name,
                     siteTitleMN2 = t.siteTitleMN2
                 })
@@ -268,7 +265,6 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             }
 
 
-            foundItem.CalceType = input.calceType.Value;
             foundItem.UpdateDate = DateTime.Now;
             foundItem.UpdateUserId = loginUserId.Value;
             foundItem.Description = input.description;
@@ -289,6 +285,150 @@ namespace Oje.Section.SalesNetworkBaseData.Services
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetLightListMultiLevel(int? siteSettingId)
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(db.SalesNetworks.Where(t => t.SiteSettingId == siteSettingId && t.Type == SalesNetworkType.Multilevel).Select(t => new { id = t.Id, title = t.Title }).ToList());
+
+            return result;
+        }
+
+        public GridResultVM<SalesNetworkReportMainGridResultVM> GetReportList(SalesNetworkReportMainGrid searchInput, int? siteSettingId)
+        {
+            searchInput = searchInput ?? new();
+
+            if (searchInput.snId.ToIntReturnZiro() <= 0 || string.IsNullOrEmpty(searchInput.fromDate) || searchInput.fromDate.ToEnDate() == null || string.IsNullOrEmpty(searchInput.toDate) || searchInput.toDate.ToEnDate() == null || searchInput.userId.ToLongReturnZiro() <= 0)
+                return new GridResultVM<SalesNetworkReportMainGridResultVM>() { total = 0, data = new List<SalesNetworkReportMainGridResultVM>() { } };
+
+            var result = db.UserCommissions
+                .FromSqlRaw("[dbo].[getMarketerComissions] @fromDate, @toDate, @userId, @networksaleId, @siteSetting",
+                    new SqlParameter("@fromDate", searchInput.fromDate.ToEnDate().Value), new SqlParameter("@toDate", searchInput.toDate.ToEnDate().Value), new SqlParameter("@userId", searchInput.userId),
+                    new SqlParameter("@networksaleId", searchInput.snId), new SqlParameter("@siteSetting", siteSettingId))
+                .ToList();
+
+            int row = searchInput.skip;
+
+            return new GridResultVM<SalesNetworkReportMainGridResultVM>()
+            {
+                total = result.Count,
+                data = result
+                .OrderByDescending(t => t.UserId)
+                .Skip(searchInput.skip)
+                .Take(searchInput.take)
+                .Select(t => new SalesNetworkReportMainGridResultVM
+                {
+                    row = ++row,
+                    id = t.UserId.ToString(),
+                    firstName = t.fistname,
+                    lastName = t.lastname,
+                    level = t.lv.ToString(),
+                    commission = t.commission != null ? t.commission.Value.ToString("###,###") : "0",
+                    commissionNumber = t.commission != null ? t.commission.Value : 0,
+                    typeOfCalc = t.realOrLegal.GetEnumDisplayName(),
+                    saleSum = t.saleSum != null ? t.saleSum.Value.ToString("###,###") : "0",
+                    saleSumNumber = t.saleSum != null ? t.saleSum.Value : 0,
+                    role = t.role
+                })
+                .ToList()
+            };
+        }
+
+        public object GetUserListBySaleNetworkId(int? siteSettingId, int? id, Select2SearchVM searchInput)
+        {
+            var foundUserId = db.SalesNetworks.Where(t => t.SiteSettingId == siteSettingId && t.Id == id).SelectMany(t => t.SalesNetworkMarketers).Select(t => t.UserId).FirstOrDefault();
+
+            if (foundUserId > 0)
+            {
+                var hasPagination = false;
+                int take = 50;
+                searchInput = searchInput ?? new();
+                if (searchInput.page == null || searchInput.page <= 0)
+                    searchInput.page = 1;
+                var result = db.UserLevels.FromSqlRaw("[dbo].[getUserLevelList] @userId, @skip, @take, @search",
+                new SqlParameter("@userId", foundUserId), new SqlParameter("@skip", (searchInput.page.Value - 1) * take), new SqlParameter("@take", take), new SqlParameter("@search", (string.IsNullOrEmpty(searchInput.search) ? "" : ("%" + searchInput.search + "%"))))
+                .ToList();
+
+                if (result.Count >= take)
+                    hasPagination = true;
+
+                return new { results = result, pagination = new { more = hasPagination } };
+            }
+
+            return new { results = new List<object>(), pagination = new { more = false } };
+        }
+
+        public object GetReportChart(int? siteSettingId, SalesNetworkReportMainGrid searchInput)
+        {
+            searchInput = searchInput ?? new();
+
+            if (searchInput.snId.ToIntReturnZiro() <= 0 || string.IsNullOrEmpty(searchInput.fromDate) || searchInput.fromDate.ToEnDate() == null || string.IsNullOrEmpty(searchInput.toDate) || searchInput.toDate.ToEnDate() == null || searchInput.userId.ToLongReturnZiro() <= 0)
+                return new { };
+
+            var result = db.UserCommissions
+                .FromSqlRaw("[dbo].[getMarketerComissions] @fromDate, @toDate, @userId, @networksaleId, @siteSetting",
+                    new SqlParameter("@fromDate", searchInput.fromDate.ToEnDate().Value), new SqlParameter("@toDate", searchInput.toDate.ToEnDate().Value), new SqlParameter("@userId", searchInput.userId),
+                    new SqlParameter("@networksaleId", searchInput.snId), new SqlParameter("@siteSetting", siteSettingId))
+                .ToList();
+
+
+            while (result.Any(t => t.parentid != null && !result.Any(tt => tt.UserId == t.parentid)))
+            {
+                var foundFirstUser = result.Where(t => t.parentid != null && !result.Any(tt => tt.UserId == t.parentid)).FirstOrDefault();
+                var foundUser = db.Users.Where(t => t.Id == foundFirstUser.parentid).Select(t => new { t.Firstname, t.Lastname, t.ParentId, role = t.UserRoles.Select(tt => tt.Role.Title).FirstOrDefault(), id = t.Id, t.Username }).FirstOrDefault();
+                result.Add(new Models.SP.UserCommission()
+                {
+                    commission = 0,
+                    fistname = (foundUser?.Firstname + foundUser?.Lastname + "").Trim() == "" ? foundUser?.Username :  foundUser?.Firstname,
+                    lastname = foundUser?.Lastname,
+                    lv = foundFirstUser.lv - 1,
+                    parentid = foundUser?.ParentId,
+                    role = foundUser?.role,
+                    saleSum = 0,
+                    UserId = foundUser != null ? foundUser.id : 0
+                });
+                var foundParentUser = result.Where(t => t.UserId == searchInput.userId).FirstOrDefault();
+                if (foundParentUser != null)
+                    foundParentUser.parentid = null;
+            }
+
+            var data = new List<object>();
+            var nodes = new List<object>();
+
+            foreach (var user in result)
+                if (user.parentid != null)
+                    data.Add(new List<string>() { user.parentid.Value.ToString(), user.UserId.ToString() });
+            nodes.AddRange(
+                result.Select(t => new { id = t.UserId.ToString(), title = t.role, name = t.fistname + " " + t.lastname + (t.commission != null && t.commission != 0 ? ("(" + t.commission.Value.ToString("###,###") + ")") : "") }).ToList()
+                );
+
+
+            return new List<object>()
+            {
+                new
+                {
+                    data = data,
+                    nodes = nodes,
+                    type = "organization",
+                    keys = new List<string>() { "from", "to" },
+                    levels = new List<object>()
+                    {
+                        new { level= 0, color = "silver", dataLabels = new { color = "black" } },
+                        new { level= 1, color = "#6610f2" },
+                        new { level= 2, color = "#980104" },
+                        new { level= 3, color = "#359154" },
+                        new { level= 4, color = "#ffa500" },
+                        new { level= 5, color = "#ffc107" }
+                    },
+                    colorByPoint = false,
+                    color = "#007ad0",
+                    dataLabels =  new { color = "white" },
+                    borderColor = "silver",
+                    nodeWidth = 65
+                }
+            };
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Oje.AccountService;
-using Oje.Infrastructure;
+﻿using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
 using Oje.Section.SalesNetworkBaseData.Interfaces;
 using Oje.Section.SalesNetworkBaseData.Services;
@@ -26,6 +25,7 @@ namespace Oje.Section.SalesNetworkBaseData
             services.AddScoped<ISalesNetworkService, SalesNetworkService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IProposalFormService, ProposalFormService>();
+            services.AddScoped<ISalesNetworkCommissionLevelService, SalesNetworkCommissionLevelService>();
         }
     }
 }

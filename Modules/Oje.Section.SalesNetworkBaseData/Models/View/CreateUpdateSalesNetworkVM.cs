@@ -13,7 +13,6 @@ namespace Oje.Section.SalesNetworkBaseData.Models.View
         public long? userId { get; set; }
         public string userId_Title { get; set; }
         public SalesNetworkType? type { get; set; }
-        public PersonType? calceType { get; set; }
         public string description { get; set; }
         public bool? isActive { get; set; }
 

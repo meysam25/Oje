@@ -101,6 +101,13 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
+        [AreaConfig(Title = "مشاهده لیست کاربران", Icon = "fa-list-alt")]
+        [HttpGet]
+        public ActionResult GetUserList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(UserService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
         [AreaConfig(Title = "مشاهده لیست نقش ها")]
         [HttpPost]
         public IActionResult GetRoleList()

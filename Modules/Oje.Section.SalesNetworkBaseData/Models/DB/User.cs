@@ -13,6 +13,7 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
             CreateUserSalesNetworks = new();
             UpdateUserSalesNetworks = new();
             SalesNetworkMarketers = new();
+            UserRoles = new();
         }
 
         [Key]
@@ -31,6 +32,7 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         public User Parent { get; set; }
         public int? SiteSettingId { get; set; }
 
+
         [InverseProperty("Parent")]
         public List<User> Childs { get; set; }
         [InverseProperty("CreateUser")]
@@ -39,5 +41,6 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         public List<SalesNetwork> UpdateUserSalesNetworks { get; set; }
         [InverseProperty("User")]
         public List<SalesNetworkMarketer> SalesNetworkMarketers { get; set; }
+        public List<UserRole> UserRoles { get; set; }
     }
 }

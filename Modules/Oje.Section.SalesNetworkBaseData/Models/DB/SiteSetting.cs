@@ -10,6 +10,7 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         public SiteSetting()
         {
             SalesNetworks = new();
+            SalesNetworkCommissionLevels = new();
         }
 
         [Key]
@@ -19,5 +20,7 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
 
         [InverseProperty("SiteSetting")]
         public List<SalesNetwork> SalesNetworks { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<SalesNetworkCommissionLevel> SalesNetworkCommissionLevels { get; set; }
     }
 }

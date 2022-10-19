@@ -15,6 +15,7 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
             SalesNetworkCompanies = new ();
             SalesNetworkProposalForms = new();
             SalesNetworkMarketers = new();
+            SalesNetworkCommissionLevels = new();
         }
 
         [Key]
@@ -23,7 +24,6 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         [MaxLength(100)]
         public string Title { get; set; }
         public SalesNetworkType Type { get; set; }
-        public PersonType CalceType { get; set; }
         public long CreateUserId { get; set; }
         [ForeignKey("CreateUserId")]
         [InverseProperty("CreateUserSalesNetworks")]
@@ -47,5 +47,7 @@ namespace Oje.Section.SalesNetworkBaseData.Models.DB
         public List<SalesNetworkProposalForm> SalesNetworkProposalForms { get; set; }
         [InverseProperty("SalesNetwork")]
         public List<SalesNetworkMarketer> SalesNetworkMarketers { get; set; }
+        [InverseProperty("SalesNetwork")]
+        public List<SalesNetworkCommissionLevel> SalesNetworkCommissionLevels { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<User> Users { get; set; }
         public DbSet<Section> Sections { get; set; }
         public DbSet<Controller> Controllers { get; set; }
-        public DbSet<Models.DB.Action> Actions { get; set; }
+        public DbSet<Action> Actions { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleAction> RoleActions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
@@ -50,6 +50,7 @@ namespace Oje.AccountService.Services.EContext
         public DbSet<Holyday> Holydays { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<OurObject> OurObjects { get; set; }
+        public DbSet<HUser> HUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

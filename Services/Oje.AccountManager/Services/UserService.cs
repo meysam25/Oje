@@ -18,6 +18,8 @@ using System.IO;
 using Newtonsoft.Json;
 using NetTopologySuite.Geometries;
 using Oje.AccountService.Filters;
+using NPOI.POIFS.Properties;
+using Oje.AccountService.Models.SP;
 
 namespace Oje.AccountService.Services
 {
@@ -332,6 +334,7 @@ namespace Oje.AccountService.Services
             newUser.RealOrLegaPerson = input.realOrLegaPerson;
             newUser.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
             newUser.CanSeeOtherSites = input.canSeeOtherSites;
+            newUser.ParentId = input.parentId;
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -427,7 +430,9 @@ namespace Oje.AccountService.Services
                     t.RealOrLegaPerson,
                     t.RefferCode,
                     t.LicenceExpireDate,
-                    t.CanSeeOtherSites
+                    t.CanSeeOtherSites,
+                    t.ParentId,
+                    parentFullname = t.ParentId > 0 ? t.Parent.Username + "(" + t.Parent.Firstname + " " + t.Parent.Lastname + ")" : ""
                 })
                 .Take(1)
                 .Select(t => new CreateUpdateUserVM
@@ -461,7 +466,9 @@ namespace Oje.AccountService.Services
                     realOrLegaPerson = t.RealOrLegaPerson,
                     refferCode = t.RefferCode,
                     licenceExpireDate = t.LicenceExpireDate.ToFaDate(),
-                    canSeeOtherSites = t.CanSeeOtherSites
+                    canSeeOtherSites = t.CanSeeOtherSites,
+                    parentId = t.ParentId,
+                    parentId_Title = t.parentFullname
                 })
                 .FirstOrDefault();
         }
@@ -507,6 +514,7 @@ namespace Oje.AccountService.Services
                     foundItem.RealOrLegaPerson = input.realOrLegaPerson;
                     foundItem.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
                     foundItem.CanSeeOtherSites = input.canSeeOtherSites;
+                    foundItem.ParentId = input.parentId;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -560,6 +568,8 @@ namespace Oje.AccountService.Services
                 qureResult = qureResult.Where(t => t.UserRoles.Any(tt => tt.RoleId == searchInput.roleIds));
             if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
                 qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
+            if (!string.IsNullOrEmpty(searchInput.parent))
+                qureResult = qureResult.Where(t => t.ParentId > 0 && (t.Parent.Username + "(" + t.Parent.Firstname + " " + t.Parent.Lastname + ")").Contains(searchInput.parent));
 
             int row = searchInput.skip;
 
@@ -575,7 +585,8 @@ namespace Oje.AccountService.Services
                     mobile = t.Mobile,
                     isActive = t.IsActive,
                     roleIds = t.UserRoles.Select(tt => tt.Role.Title).ToList(),
-                    siteTitleMN2 = t.SiteSetting.Title
+                    siteTitleMN2 = t.SiteSetting.Title,
+                    parent = t.ParentId > 0 ? t.Parent.Username + "(" + t.Parent.Firstname + " " + t.Parent.Lastname + ")" : ""
                 }).ToList()
                 .Select(t => new AdminUserGridResult
                 {
@@ -587,7 +598,8 @@ namespace Oje.AccountService.Services
                     mobile = t.mobile,
                     isActive = t.isActive == true ? IsActive.Active.GetAttribute<DisplayAttribute>()?.Name : IsActive.InActive.GetAttribute<DisplayAttribute>()?.Name,
                     roleIds = string.Join(',', t.roleIds),
-                    siteTitleMN2 = t.siteTitleMN2
+                    siteTitleMN2 = t.siteTitleMN2,
+                    parent = t.parent
                 })
                 .ToList()
             };
@@ -1858,6 +1870,79 @@ namespace Oje.AccountService.Services
 
                 db.SaveChanges();
             }
+        }
+
+        List<int> tempCacheLvL = new();
+        bool isValidForShow(HUser HUser, List<HUser> HUsers)
+        {
+            if (HUsers.Any(t => t.parentid == HUser.id))
+            {
+                if (!tempCacheLvL.Any(t => t == HUser.lv))
+                    tempCacheLvL.Add(HUser.lv);
+                return true;
+            }
+
+            if (!tempCacheLvL.Any(t => t == HUser.lv))
+            {
+                tempCacheLvL.Add(HUser.lv);
+                return true;
+            }
+
+            HUsers.Remove(HUser);
+            return false;
+        }
+
+        public object GetUserChart(int? siteSettingId)
+        {
+            var allUsers = db.HUsers
+                .FromSqlRaw("with uc (id,  fistname, lastname, parentid, lv) as (select id,  u.Firstname, lastname, parentid, lv = 0  from  [Users] [u] where u.ParentId is null\tunion all\tselect u2.id,  u2.Firstname, u2.lastname, u2.parentid, lv = uc.lv + 1 from  [Users] [u2] inner join uc on uc.id = u2.ParentId)select uc.*,r.Title[role] from uc inner join [UserRoles] [ur] on uc.id = ur.UserId inner join [Roles] [r] on r.Id = ur.RoleId order by uc.lv")
+                .ToList();
+
+            var temp2 = allUsers.ToList();
+
+            var smallUsers = allUsers
+                .Where(t => isValidForShow(t, temp2))
+                .GroupBy(t => t.lv)
+                .Select(t => new { t.Key, items = t.Take(5).ToList() })
+                .ToList()
+                .SelectMany(t => t.items)
+                .ToList();
+
+            var data = new List<object>();
+            var nodes = new List<object>();
+
+            foreach (var user in smallUsers)
+                if (user.parentid != null)
+                    data.Add(new List<string>() { user.parentid.Value.ToString(), user.id.ToString() });
+            nodes.AddRange(
+                smallUsers.Select(t => new { id = t.id.ToString(), title = t.role, name = t.fistname + " " + t.lastname }).ToList()
+                );
+
+
+            return new List<object>()
+            {
+                new
+                {
+                    data = data,
+                    nodes = nodes,
+                    type = "organization",
+                    keys = new List<string>() { "from", "to" },
+                    levels = new List<object>()
+                    {
+                        new { level= 0, color = "silver", dataLabels = new { color = "black" } },
+                        new { level= 1, color = "#6610f2" },
+                        new { level= 2, color = "#980104" },
+                        new { level= 3, color = "#359154" },
+                        new { level= 4, color = "#ffa500" },
+                        new { level= 5, color = "#ffc107" }
+                    },
+                    colorByPoint = false,
+                    color = "#007ad0",
+                    dataLabels =  new { color = "white" },
+                    borderColor = "silver",
+                    nodeWidth = 65
+                }
+            };
         }
     }
 }

@@ -250,6 +250,14 @@ function getPanelTemplate(panel, isInsideModal) {
         if (panel.title)
             result += '<div id="' + panel.id + 'Title" class="myPanelTitle" style="padding:10px;padding-right:0px;">' + panel.title + '</div>';
 
+        if (panel.ctrls) {
+            result += '<div style="padding-top:7px;" class="row">';
+            for (var i = 0; i < panel.ctrls.length; i++) {
+                result += getInputTemplate(panel.ctrls[i]);
+            }
+            result += '</div>';
+        }
+
         if (panel.type == 'TabCtrl')
             result += getTabCtrlTemplate(panel);
 
@@ -272,14 +280,6 @@ function getPanelTemplate(panel, isInsideModal) {
             for (var i = 0; i < panel.moduals.length; i++) {
                 result += getModualTemplate(panel.moduals[i]);
             }
-        }
-
-        if (panel.ctrls) {
-            result += '<div class="row">';
-            for (var i = 0; i < panel.ctrls.length; i++) {
-                result += getInputTemplate(panel.ctrls[i]);
-            }
-            result += '</div>';
         }
 
         if (panel.treeViews) {
@@ -422,7 +422,11 @@ function getChartTemplate(chart) {
             var curObj = $('#' + this.id)[0];
             curObj.refreshChart = function () {
                 $('#' + this.id).html('');
-                postForm(chart.url, new FormData(), function (res) {
+                var postData = new FormData();
+                if (chart.filterId) {
+                    postData = getFormData($('#' + chart.filterId));
+                }
+                postForm(chart.url, postData , function (res) {
                     this.config[this.dataSchmea] = res;
                     initChartUntilSerciptLoaded(this.id, this.config);
                 }.bind(this));

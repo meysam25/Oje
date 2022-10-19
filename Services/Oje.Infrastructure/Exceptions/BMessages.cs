@@ -708,5 +708,9 @@ namespace Oje.Infrastructure.Exceptions
         Please_Select_Change_Plaque = 350,
         [Display(Name = "لطفا نوع خودرو را انتخاب کنید")]
         Please_Select_VehicleType = 351,
+        [Display(Name = "لطفا شبکه فروش را انتخاب کنید")]
+        Please_Select_SaleNetwork = 352,
+        [Display(Name = "سطج مجاز نمی باشد")]
+        Invalid_Step = 353,
     }
 }

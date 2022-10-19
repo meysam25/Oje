@@ -21,6 +21,7 @@
     padding: 5px;
     border-right: 1px solid silver;
     border-top: 1px solid silver;
+    word-break: break-word;
 }
 
 .myGrid tr:last-child > td {

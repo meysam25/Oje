@@ -85,6 +85,7 @@ namespace Oje.ProposalFormService.Services.EContext
             modelBuilder.Entity<VehicleUsage>().Property(e => e.ThirdPartyPercent).HasPrecision(5, 3);
             modelBuilder.Entity<CarExteraDiscountRangeAmount>().Property(e => e.Percent).HasPrecision(5, 2);
             modelBuilder.Entity<CarSpecificationAmount>().Property(e => e.Rate).HasPrecision(7, 5);
+            modelBuilder.Entity<CarExteraDiscountRangeAmount>().Property(e => e.CreateDateSelfPercent).HasPrecision(5, 2);
 
             modelBuilder.Entity<InquiryCompanyLimitCompany>().HasKey(t => new { t.CompanyId, t.InquiryCompanyLimitId });
             modelBuilder.Entity<ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountCompany>().HasKey(t => new { t.CompanyId, t.ThirdPartyRequiredFinancialCommitmentVehicleTypeDiscountId });

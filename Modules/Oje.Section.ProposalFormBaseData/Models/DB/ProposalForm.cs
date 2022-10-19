@@ -64,5 +64,7 @@ namespace Oje.Section.ProposalFormBaseData.Models.DB
         public List<ProposalFormPostPrice> ProposalFormPostPrices { get; set; }
         [InverseProperty("ProposalForm")]
         public List<ProposalFormPrintDescrption> ProposalFormPrintDescrptions { get; set; }
+        [InverseProperty("ProposalForm")]
+        public List<ProposalFormCommission> ProposalFormCommissions { get; set; }
     }
 }
