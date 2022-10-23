@@ -282,7 +282,7 @@ select[size] {
 input[type=radio]:checked + label::after {
     left: auto;
     right: -14px;
-    top: 6px;
+    top: 8px;
 }
 
 input[type=radio] + label {

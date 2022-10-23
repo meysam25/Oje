@@ -50,9 +50,11 @@ function getInputTemplate(ctrl) {
             result += '<div class="' + ctrl.parentCL + '">';
         switch (ctrl.type) {
             case 'hidden':
-                result += '<input autocomplete="off" type="hidden" name="' + ctrl.name + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' />';
+                result += '<input id="' + ctrl.id + '" autocomplete="off" type="hidden" name="' + ctrl.name + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : '') + ' />';
+                addCtrlToObj(ctrl);
                 break;
             case 'text':
+            case 'number':
             case 'password':
             case 'persianDateTime':
             case 'color':
@@ -134,12 +136,22 @@ function getInputTemplate(ctrl) {
                 result += getDesignerTemplate(ctrl);
                 break;
             case 'empty':
+                result += getEmptyCtrlTemplate(ctrl);
             default:
                 break;
         }
         if (ctrl.type != 'hidden')
             result += '</div>';
     }
+
+    return result;
+}
+
+function getEmptyCtrlTemplate(ctrl) {
+    var result = '';
+
+    result += '<div class="myCtrl " ><div id="' + ctrl.id + '" ></div></div>';
+    addCtrlToObj(ctrl);
 
     return result;
 }
@@ -154,8 +166,7 @@ function getDesignerTemplate(ctrl) {
             isDisinerTryToLoaded = true;
             loadJS("/Modules/Core/js/fd.min.js.gz");
             loadCSS("/Modules/Core/css/fd.min.css.gz");
-            ctrl.initInterval = setInterval(function ()
-            {
+            ctrl.initInterval = setInterval(function () {
                 if (window['initDisigner']) {
                     clearInterval(this.curCtrl.initInterval);
                     initDisigner(this.curCtrl);
@@ -170,9 +181,10 @@ function getLableTemplate(ctrl) {
     var result = '';
     result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '">';
     if (ctrl.label) {
-        result += '<label style="position: relative;font-weight:bold;cursor:default;color:black;" >' + ctrl.label + '</label>';
+        result += '<label ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="position: relative;font-weight:bold;cursor:default;color:black;" >' + ctrl.label + '</label>';
     }
     result += '</div>';
+    addCtrlToObj(ctrl);
     return result;
 }
 
@@ -426,7 +438,7 @@ function getChartTemplate(chart) {
                 if (chart.filterId) {
                     postData = getFormData($('#' + chart.filterId));
                 }
-                postForm(chart.url, postData , function (res) {
+                postForm(chart.url, postData, function (res) {
                     this.config[this.dataSchmea] = res;
                     initChartUntilSerciptLoaded(this.id, this.config);
                 }.bind(this));
@@ -605,7 +617,8 @@ function getCTemplate(ctrl) {
     var result = '';
 
     if (ctrl) {
-        result += '<div data-url="' + ctrl.dataurl + '" id="' + ctrl.id + '" ></div>';
+        result += '<div class="myCtrl " data-url="' + ctrl.dataurl + '" id="' + ctrl.id + '" ></div>';
+        addCtrlToObj(ctrl);
         functionsList.push(function () {
             $('#' + this.ctrl.id)[0].ctrl = ctrl;
             updateCtemplateCtrlTemplate(this);
@@ -643,7 +656,7 @@ function getMapTemplate(ctrl) {
 
         result += '<div id="' + ctrl.id + '" style="width:' + ctrl.width + ';height:' + ctrl.height + ';margin-bottom:17px;" ></div>';
         result += '</div>';
-
+        addCtrlToObj(ctrl);
         addOpenLayerIfNotExist();
         functionsList.push(function () {
             initMap(this.ctrl);
@@ -868,10 +881,12 @@ function getMultiSelectImgTemplate(ctrl) {
     var result = '';
 
     if (ctrl) {
-        result += '<div data-name="' + ctrl.name + '" id="' + ctrl.id + '" class="multiSelectImage">';
+        result += '<div data-name="' + ctrl.name + '" id="' + ctrl.id + '" class="multiSelectImage myCtrl">';
         result += '<div class="multiSelectImageTitle">' + ctrl.label + '</div>';
         result += '<div class="multiSelectImageBody" ></div>';
         result += '</div>';
+
+        addCtrlToObj(ctrl);
 
         if (ctrl.dataurl) {
             functionsList.push(function () {
@@ -925,10 +940,12 @@ function getMultiSelectLineTemplate(ctrl) {
     var result = '';
 
     if (ctrl && ctrl.name && ctrl.dataurl) {
-        result += '<div data-name="' + ctrl.name + '" id="' + ctrl.id + '" class="multiSelectLine">';
+        result += '<div data-name="' + ctrl.name + '" id="' + ctrl.id + '" class="multiSelectLine myCtrl">';
         result += '<div class="multiSelectLineTitle">' + ctrl.label + '</div>';
         result += '<div class="multiSelectLineBody"></div>'
         result += '</div>';
+
+        addCtrlToObj(ctrl);
 
         functionsList.push(function () {
             postForm(this.ctrl.dataurl, new FormData(), function (res) {
@@ -974,9 +991,10 @@ function getCountDownButtonTemplate(ctrl) {
 function getButtonTemplateWidthLabel(ctrl) {
     var result = '';
 
-    result += '<div class="form-group ' + (ctrl.showHideClass ? ctrl.showHideClass : '') + '" >'
+    result += '<div class="myCtrl form-group ' + (ctrl.showHideClass ? ctrl.showHideClass : '') + '" >'
     result += getButtonTemplate(ctrl);
     result += '</div>';
+    addCtrlToObj(ctrl);
 
     return result;
 }
@@ -987,7 +1005,7 @@ function getPlaqueTemplate(ctrl) {
         //if (ctrl.label) {
         //    result += '<label style="display:block;"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
         //}
-        result += '<div class="plaqueCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '" >';
+        result += '<div class="myCtrl plaqueCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '" >';
         result += '<div class="plaqueRightPart" >';
         result += '<div class="plaqueRightPartRight">';
         result += '<input type="text" placeholder="55" maxlength="2" name="' + ctrl.name + '_1" />';
@@ -1004,6 +1022,7 @@ function getPlaqueTemplate(ctrl) {
         result += '<div>Iran</div>';
         result += '</div>';
         result += '</div>';
+        addCtrlToObj(ctrl);
     }
     return result;
 }
@@ -1238,6 +1257,7 @@ function getMultiRowInputTemplate(ctrl) {
             initMoultiRowInputButton(this.ctrl);
             initInternalFunctions(this.ctrl);
         }.bind({ ctrl: ctrl }));
+        addCtrlToObj(ctrl);
     }
 
     return result;
@@ -1299,10 +1319,10 @@ function getCheckboxButtonTemplate(ctrl) {
 
     if (ctrl) {
         result += '<div class="form-check form-switch myCtrl ">';
-        result += '<input ' + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + ' class="form-check-input ' + (ctrl.class ? ctrl.class : '') + '" name="' + ctrl.name + '" type="checkbox" value="' + (ctrl.defValue ? ctrl.defValue : 'true') + '" id="' + ctrl.id + '" />';
+        result += '<input ' + (ctrl.dfaultValue ? 'checked' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + ' class="form-check-input ' + (ctrl.class ? ctrl.class : '') + '" name="' + ctrl.name + '" type="checkbox" value="' + (ctrl.defValue ? ctrl.defValue : 'true') + '" id="' + ctrl.id + '" />';
         result += '<label style="padding-right:20px;" class="form-check-label" for="' + ctrl.id + '">' + ctrl.label + '</label>';
         result += '</div>';
-
+        addCtrlToObj(ctrl);
         if (ctrl.fileDownloadConfig) {
             functionsList.push(function () {
                 if (this.ctrl.fileDownloadConfig.url && this.ctrl.fileDownloadConfig.text && this.ctrl.id) {
@@ -1330,7 +1350,7 @@ function getRadioButtonTemplate(ctrl) {
     if (ctrl) {
         result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '"' + '>';
         if (ctrl.label)
-            result += '<label style="position: relative;display:block" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
+            result += '<label ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="position: relative;display:block" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
         if (ctrl.values && ctrl.values.length > 0) {
             var idList = [];
             for (var i = 0; i < ctrl.values.length; i++) {
@@ -1344,6 +1364,7 @@ function getRadioButtonTemplate(ctrl) {
             ctrl.idList = idList;
         }
         result += '</div>';
+        addCtrlToObj(ctrl);
         if (ctrl.showHideCondation) {
             functionsList.push(function () {
                 var idList = this.idList;
@@ -1390,7 +1411,7 @@ function getDynamicCtrlsTemplate(ctrl) {
     if (ctrl && ctrl.id && ctrl.dataurl) {
         result += '<div class="" id="' + ctrl.id + '" ></div>';
     }
-
+    addCtrlToObj(ctrl);
     functionsList.push(function () {
         if (this.ctrl.dataurl) {
             var allTargetCtrl = this.ctrl.otherCtrls
@@ -1483,7 +1504,7 @@ function getChkCtrlBoxTemplateCtrl(ctrl) {
     if (ctrl) {
         result += '<div id="' + ctrl.id + '" data-spec-name="' + ctrl.name + '" class="checkCtrl row"></div>';
     }
-
+    addCtrlToObj(ctrl);
     functionsList.push(function () {
         if ($('#' + this.ctrl.id).length > 0) {
             $('#' + this.ctrl.id)[0].addNewRow = function (dataItems) {
@@ -1605,6 +1626,7 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
                 }.bind({ ctrl: this.ctrl }));
             }
         }.bind({ ctrl: ctrl }));
+        addCtrlToObj(ctrl);
     }
 
     return result;
@@ -1632,6 +1654,18 @@ function hasNumberValidation(validations) {
     return false;
 }
 
+function addCtrlToObj(ctrl) {
+    functionsList.push(function () {
+        var sQuiry = $('#' + this.ctrl.id);
+        if (sQuiry.length > 0 && (sQuiry.hasClass('myCtrl') || sQuiry.closest('.myCtrl').length > 0)) {
+            if (sQuiry.hasClass('myCtrl'))
+                sQuiry[0].ctrl = this.ctrl;
+            else
+                sQuiry.closest('.myCtrl')[0].ctrl = this.ctrl;
+        }
+    }.bind({ ctrl: ctrl }));
+}
+
 function getTextBoxTemplate(ctrl) {
     if (!ctrl.id)
         ctrl.id = uuidv4RemoveDash();
@@ -1647,7 +1681,7 @@ function getTextBoxTemplate(ctrl) {
         if (!ctrl.nationalCodeValidation)
             ctrl.type = 'number';
 
-
+    addCtrlToObj(ctrl);
     functionsList.push(function () {
         if (this.toUpperCase) {
             $('#' + this.id).blur(function () {
@@ -1841,6 +1875,7 @@ function getCkEditorTemplate(ctrl) {
                 isLoadCkEditorTrying = true;
             }
         });
+        addCtrlToObj(ctrl);
     }
 
     return result;
@@ -1913,6 +1948,7 @@ function getTextAreaTemplate(ctrl) {
     functionsList.push(function () {
         inputNewLabelEventHandler(this.id);
     }.bind({ id: ctrl.id }));
+    addCtrlToObj(ctrl);
 
     return result;
 }
@@ -1973,16 +2009,17 @@ function getFileCTRLTemplate(ctrl) {
 
     result += '<div class="myCtrl form-group myFileUpload">';
 
-    result += '<div style="' + (ctrl.hideImagePreview == true ? 'display:none;' : '') + '" class="holderUploadImage">';
+    result += '<div ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="' + (ctrl.hideImagePreview == true ? 'display:none;' : '') + '" class="holderUploadImage">';
     result += '<img data-name="' + ctrl.name + '_address" id="img_' + ctrl.id + '" src="' + (ctrl.sampleUrl ? ctrl.sampleUrl : '/Modules/Images/unknown.svg') + '" />';
     result += '</div>';
 
     if (ctrl.label) {
         result += '<label class="btn btn-secondary btn-block" style="margin-bottom:0px;text-align:center;" for="file_' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input ' + (ctrl.compressImage ? 'data-compressImage="true"' : '') + ' id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
+    result += '<input ' + (ctrl.compressImage ? 'data-compressImage="true"' : '') + ' id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
+    addCtrlToObj(ctrl);
     functionsList.push(function () {
         $('#file_' + this.id).change(function () {
             var curValue = $(this).val();
@@ -2119,7 +2156,7 @@ function getDropdownCTRLTemplate(ctrl) {
     result += '<select ' + (ctrl.ignoreChangeOnBinding ? 'data-ignore-change-onBinding="true"' : '') + ' ' + (ctrl.reInitOnShowModal ? 'reInitOnShowModal="true" ' : '') + (ctrl.ignoreOnChange ? 'ignoreOnChange="ignoreOnChange" ' : '') + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
         for (var i = 0; i < ctrl.values.length; i++) {
-            result += '<option value="' + ctrl.values[i][ctrl.valuefield] + '" >' + ctrl.values[i][ctrl.textfield] + '</option>';
+            result += '<option ' + (ctrl.dfaultValue && ctrl.values[i][ctrl.valuefield] == ctrl.dfaultValue ? 'selected="selected"' : '') + ' value="' + ctrl.values[i][ctrl.valuefield] + '" >' + ctrl.values[i][ctrl.textfield] + '</option>';
         }
     }
     result += '</select>';
@@ -2129,6 +2166,7 @@ function getDropdownCTRLTemplate(ctrl) {
     }
     result += '</div>';
 
+    addCtrlToObj(ctrl);
     if (ctrl.holderStatusId) {
         functionsList.push(function () {
             var holderId = this.ctrl.holderStatusId;
@@ -2534,7 +2572,7 @@ function getModualTemplateActionButton(modual) {
 }
 
 function getButtonTemplate(action) {
-    return '<button onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + action.title + '</button>';
+    return '<button ' + (action.id ? 'id="' + action.id + '"' : '') + ' onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + action.title + '</button>';
 }
 
 function getStepWizardTemplate(wizard) {
@@ -3003,7 +3041,7 @@ function initGridIfNotAlreadyInited(curThis) {
     }
 }
 
-function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, setParentKeyImeditly, itsHtml) {
+function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, setParentKeyImeditly, itsHtml, useGridClientData) {
     if (url && modalId) {
         var gridSelector = $(curElement).closest('.myGridCTRL');
         showLoader(gridSelector);
@@ -3050,6 +3088,13 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, s
     } else if (modalId) {
         if ($('#' + modalId).length > 0) {
             $('#' + modalId)[0].pKey = key;
+            if (useGridClientData) {
+                var foundTr = $(curElement).closest('[data-row-json]');
+                if (foundTr.length > 0) {
+                    var jsObj = JSON.parse(foundTr.attr('data-row-json'));
+                    bindForm(jsObj, $('#' + modalId));
+                }
+            }
             $('#' + modalId).modal('show');
             if ($('#' + modalId).find('.myGridCTRL').length > 0) {
                 $('#' + modalId).find('.myGridCTRL').each(function () {

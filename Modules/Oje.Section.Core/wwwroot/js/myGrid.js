@@ -220,6 +220,8 @@ $.fn.initMyGrid = function (option) {
             for (var i = 0; i < option.columns.length; i++) {
                 if (!option.columns[i].hide) {
                     var curCellData = data[option.columns[i].field];
+                    if (!curCellData)
+                        curCellData = '';
                     if (option.columns[i].formatter && option.formatters[option.columns[i].formatter]) {
                         if (typeof (option.formatters[option.columns[i].formatter]) == 'string') {
                             var compileStr = 'var data =' + JSON.stringify(data) + ';' + (option.formatters[option.columns[i].formatter]);
@@ -819,6 +821,7 @@ $.fn.initMyGrid = function (option) {
 
             return { data: cloneData, total: cloneData.length };
         }
+        curElement.setFiltersAndSorts = setFiltersAndSorts;
         curElement.refreshData = function () {
             var option = $(this)[0].option;
             if (!option.isClient) {

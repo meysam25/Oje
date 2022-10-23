@@ -449,6 +449,11 @@ function getFormData(selector) {
         }
     });
 
+    $(selector).find('[data-options]').each(function ()
+    {
+        postData.append('values', $(this).attr('data-options'));
+    });
+
     $(selector).find('select').each(function () {
         var curName = $(this).attr('name');
         var s2Obj = $(this).data('select2');

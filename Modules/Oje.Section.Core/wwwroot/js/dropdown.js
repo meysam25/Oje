@@ -53,7 +53,7 @@ $.fn.initMyDropdown = function () {
             $(this).removeClass('myDroppdownShowItem');
             $(this)[0].actionTimeoutInterval = setTimeout(function () { $(this).removeClass('myDropdownMakeVisibleItems'); }.bind(this), 300);
             var curId = $(this).attr('id');
-            var html = '<div id="' + curId + '_HItems' + '" class="' + $('#' + curId + '_HItems').attr('class') +'">' + $('#' + curId + '_HItems').clone().html() + '</div>';
+            var html = '<div id="' + curId + '_HItems' + '" class="' + $('#' + curId + '_HItems').attr('class') + '">' + $('#' + curId + '_HItems').clone().html() + '</div>';
             $('#' + curId + '_HItems').remove();
             $(this).append(html);
             $(this)[0].updateItemFromSelect();
@@ -123,10 +123,13 @@ $.fn.initMyDropdown = function () {
         curElement.bindSelectItemEventMMD();
         $(curElement).closest('.myCtrl').find('label').click(function (e) {
             $(this).closest('.myDropdown')[0].openMDD();
-            e.preventDefault();
-            e.stopPropagation();
 
-            return false;
+            if (!window['isEditModeActive']) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                return false;
+            }
         });
 
         $(this).click(function (e) {
@@ -135,7 +138,8 @@ $.fn.initMyDropdown = function () {
             } else {
                 $(this)[0].openMDD();
             }
-            e.stopPropagation();
+            if (!window['isEditModeActive'])
+                e.stopPropagation();
         });
     });
 
