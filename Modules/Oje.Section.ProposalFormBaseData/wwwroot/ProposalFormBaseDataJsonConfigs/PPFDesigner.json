@@ -4,6 +4,7 @@
       "ctrls": [
         {
           "type": "ppfDesigner",
+          "baseUrl": "/ProposalFormBaseData/PPFDesigner",
           "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
           "baseConfig": {
             "panels": [
@@ -12,6 +13,17 @@
                 "title": "عنوان فرم پیشنهاد",
                 "stepWizards": [
                   {
+                    "lastStepButtonTitle": "ذخیره",
+                    "lastStepButtonSubbmitUrl": "/ProposalFilledForm/Proposal/Create",
+                    "moveBackButtonToTop": true,
+                    "actionOnLastStep": [
+                      {
+                        "actionName": "showPrintPreview",
+                        "objectId": "ppfPanel",
+                        "modalId": "printPreview",
+                        "url": "/ProposalFilledForm/Proposal/PrintPreview"
+                      }
+                    ],
                     "steps": [
                       {
                         "order": 1,
@@ -33,6 +45,7 @@
                                 "showHideCondation": [
                                   {
                                     "value": "",
+                                    "classShow": [ "realPerson" ],
                                     "classHide": [ "legalPerson" ],
                                     "isDefault": true
                                   },
@@ -195,10 +208,344 @@
                             ]
                           }
                         ]
+                      },
+                      {
+                        "order": 2,
+                        "id": "secoundStep",
+                        "title": "اطلاعات مالک خودرو طبق آخرین وضعیت و برگ سبز خودرو ",
+                        "hideMoveNextButton": true,
+                        "panels": [
+                          {
+                            "ctrls": [
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "id": "isUserOwner",
+                                "type": "dropDown",
+                                "textfield": "title",
+                                "valuefield": "id",
+                                "dataurl": "/Core/BaseData/Get/YesOrNo",
+                                "label": "آیا بیمه گذار مالک خودرو می باشد ؟",
+                                "name": "isUserOwner",
+                                "showHideCondation": [
+                                  {
+                                    "value": "",
+                                    "classHide": [ "ownerInputs" ],
+                                    "isDefault": true
+                                  },
+                                  {
+                                    "value": "true",
+                                    "classHide": [ "ownerInputs" ]
+                                  },
+                                  {
+                                    "value": "false",
+                                    "classShow": [ "ownerInputs" ]
+                                  }
+                                ],
+                                "isRequired": true,
+                                "callChangeEvents": [ "realOrLegaPersonOwner" ]
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "id": "realOrLegaPersonOwner",
+                                "type": "dropDown",
+                                "class": "ownerInputs",
+                                "textfield": "title",
+                                "valuefield": "id",
+                                "dataurl": "/Core/BaseData/Get/PersonType",
+                                "label": "انتخاب شخص (بیمه گذار)",
+                                "name": "realOrLegaPersonOwner",
+                                "showHideCondation": [
+                                  {
+                                    "value": "",
+                                    "classHide": [ "legalPersonOwner" ],
+                                    "isDefault": true
+                                  },
+                                  {
+                                    "value": "1",
+                                    "classShow": [ "realPersonOwner" ],
+                                    "classHide": [ "legalPersonOwner" ]
+                                  },
+                                  {
+                                    "value": "2",
+                                    "classShow": [ "legalPersonOwner" ],
+                                    "classHide": [ "realPersonOwner" ]
+                                  }
+                                ],
+                                "isRequired": true
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "mobileOwner",
+                                "class": "ownerInputs",
+                                "type": "text",
+                                "label": "شماره همراه",
+                                "isRequired": true,
+                                "validations": [
+                                  {
+                                    "reg": "^[0-9]*$",
+                                    "msg": "لطفا فقط عدد وارد کنید"
+                                  },
+                                  {
+                                    "reg": "^([0-9]){11}$",
+                                    "msg": "شماره همراه باید ۱۱ عدد باشد"
+                                  },
+                                  {
+                                    "reg": "^(09)",
+                                    "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                                  }
+                                ]
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "nationalCodeOwner",
+                                "class": "realPersonOwner ownerInputs",
+                                "type": "text",
+                                "label": "کد ملی بیمه گذار",
+                                "isRequired": true,
+                                "nationalCodeValidation": true
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "agentNationalCodeOwner",
+                                "class": "legalPersonOwner ownerInputs",
+                                "type": "text",
+                                "label": "شناسه ملی (بیمه گذار حقوقی)",
+                                "isRequired": true,
+                                "maxLengh": 11,
+                                "validations": [
+                                  {
+                                    "reg": "^[0-9]*$",
+                                    "msg": "لطفا فقط عدد وارد کنید"
+                                  },
+                                  {
+                                    "reg": "^([0-9]){11}$",
+                                    "msg": "شناسه ملی باید 11 عدد باشه"
+                                  }
+                                ]
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "class": "realPersonOwner ownerInputs",
+                                "name": "firstNameOwner",
+                                "type": "text",
+                                "label": "نام بیمه گذار",
+                                "isRequired": true
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "class": "legalPersonOwner ownerInputs",
+                                "name": "firstAgentNameOwner",
+                                "type": "text",
+                                "label": "نام نماینده (بیمه گذار حقوقی)",
+                                "isRequired": true
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "lastNameOwner",
+                                "class": "realPersonOwner ownerInputs",
+                                "type": "text",
+                                "label": "نام خانوادگی بیمه گذار",
+                                "isRequired": true
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "lastAgentNameOwner",
+                                "class": "legalPersonOwner ownerInputs",
+                                "type": "text",
+                                "label": "نام خانوادگی نماینده",
+                                "isRequired": true
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "companyNameOwner",
+                                "class": "legalPersonOwner ownerInputs",
+                                "type": "text",
+                                "label": "نام شرکت (بیمه گذار حقوقی)",
+                                "isRequired": true
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "emailOwner",
+                                "class": "ownerInputs",
+                                "type": "text",
+                                "label": "ایمیل",
+                                "validations": [
+                                  {
+                                    "reg": "^\\S+@\\S+\\.\\S+$",
+                                    "msg": "ایمیل وارد شده صحیح نمی باشد"
+                                  }
+                                ]
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "fatherNameOwner",
+                                "class": "ownerInputs",
+                                "type": "text",
+                                "label": "نام پدر"
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "numberDateAndTypeOfLicenceOwner",
+                                "class": "ownerInputs",
+                                "type": "text",
+                                "label": "شماره گواهینامه"
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "tellOwner",
+                                "class": "ownerInputs",
+                                "type": "text",
+                                "label": "تلفن ثابت",
+                                "validations": [
+                                  {
+                                    "reg": "^[0-9]*$",
+                                    "msg": "لطفا فقط عدد وارد کنید"
+                                  }
+                                ]
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "postalCodeOwner",
+                                "class": "ownerInputs",
+                                "type": "text",
+                                "label": "کد پستی",
+                                "validations": [
+                                  {
+                                    "reg": "^[0-9]*$",
+                                    "msg": "لطفا فقط عدد وارد کنید"
+                                  },
+                                  {
+                                    "reg": "^([0-9]){10}$",
+                                    "msg": "کد پستی باید ۱۰ عدد باشد"
+                                  }
+                                ]
+                              },
+                              {
+                                "parentCL": "col-md-9 col-sm-9 col-xs-12 col-lg-9",
+                                "name": "addressOwner",
+                                "class": "ownerInputs",
+                                "type": "text",
+                                "label": "آدرس",
+                                "isRequired": true
+                              },
+                              {
+                                "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                                "type": "empty"
+                              },
+                              {
+                                "parentCL": "col-md-3 col-sm-3 col-xs-12 col-lg-3 ",
+                                "showHideClass": "normalInquiry",
+                                "class": "btn-primary btn-block ",
+                                "type": "button",
+                                "title": "تایید اطلاعات مالک خودرو",
+                                "onClick": "moveToNextStepForSW(this)"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "order": 1.1,
+                        "id": "carSpecifications",
+                        "title": "مشخصات خودرو",
+                        "panels": [
+                          {
+                            "ctrls": [
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "color",
+                                "type": "dropDown",
+                                "textfield": "title",
+                                "valuefield": "id",
+                                "dataurl": "/ProposalFilledForm/Proposal/GetColorList",
+                                "label": "رنگ"
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3 ",
+                                "type": "carPlaque",
+                                "name": "carPlaque",
+                                "label": "پلاک خودرو"
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "carMotorNO",
+                                "type": "text",
+                                "isRequired": true,
+                                "label": "شماره موتور"
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "carShasiNO",
+                                "type": "text",
+                                "isRequired": true,
+                                "label": "شماره شاسی"
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "type": "dropDown",
+                                "textfield": "title",
+                                "valuefield": "id",
+                                "label": "یدک دارد؟",
+                                "isRequired": true,
+                                "name": "haveExteraParts",
+                                "values": [
+                                  {
+                                    "id": "",
+                                    "title": ""
+                                  },
+                                  {
+                                    "id": "بلی",
+                                    "title": "بلی"
+                                  },
+                                  {
+                                    "id": "خیر",
+                                    "title": "خیر"
+                                  }
+                                ]
+                              },
+                              {
+                                "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                                "name": "carVIN",
+                                "type": "text",
+                                "label": "VIN خودرو",
+                                "isRequired": true,
+                                "ltr": true,
+                                "mask": "*** *** *** *** *** **",
+                                "toUpperCase": true,
+                                "validations": [
+                                  {
+                                    "reg": "[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{2}",
+                                    "msg": "وی ای ان صحیح نمی باشد"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "moduals": [
+                  {
+                    "class": "modal-xl makeModalMinH100 myContainer",
+                    "id": "printPreview",
+                    "title": "پیش نمایش اطلاعات",
+                    "actions": [
+                      {
+                        "title": "بستن",
+                        "onClick": "closeThisModal(this)",
+                        "class": "btn-secondary"
+                      },
+                      {
+                        "title": " تایید و ادامه",
+                        "onClick": "postButtonAndMakeDisable(this, $('#ppfPanel'), '', '/ProposalFilledForm/Proposal/Create',null, null, function(res) { location.href = (res.data.url ? res.data.url : '/ProposalFilledForm/ProposalFilledFormNew/PdfDetailesForAdmin') + '?id=' + res.data.id;}, '')",
+                        "class": "btn-primary"
                       }
                     ]
                   }
                 ]
+
               }
             ]
           }

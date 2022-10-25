@@ -35,11 +35,17 @@ function generateDesigner(ctrl) {
 function getActiveCtrls() {
     var result = '';
 
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemDropdown" ><img src="/Modules/Images/dropdown.png" alt="دراپ دان" /><span title ="دراپ دان" >دراپ دان</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTextBox" ><img src="/Modules/Images/textbox.png" alt="تکس باکس" /><span title ="تکس باکس" >تکس باکس</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTextBoxArea" ><img src="/Modules/Images/textarea.png" alt="تکس اریا" /><span title ="تکس اریا" >تکس اریا</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemPersianDate" ><img src="/Modules/Images/datetime.png" alt="تقویم فارسی" /><span title ="تقویم فارسی" >تقویم فارسی</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemPassword" ><img src="/Modules/Images/password.png" alt="کلمه عبور" /><span title ="کلمه عبور" >کلمه عبور</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemColor" ><img src="/Modules/Images/color.png" alt="رنگ" /><span title ="رنگ" >رنگ</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemRadioBox" ><img src="/Modules/Images/radio.png" alt="ردیو باکس" /><span title ="ردیو باکس" >ردیو باکس</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemCheckBox" ><img src="/Modules/Images/checkbox.png" alt="چک باکس" /><span title ="چک باکس" >چک باکس</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemUploadFile" ><img src="/Modules/Images/fileupload.png" alt="فایل" /><span title ="فایل" >فایل</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemMultiRow" ><img src="/Modules/Images/groupCtrl.png" alt="چند سطر" /><span title ="چند سطر" >چند سطر</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemMap" ><img src="/Modules/Images/map.png" alt="نقشه" /><span title ="نقشه" >نقشه</span></div>';
 
     return result;
 }
@@ -53,6 +59,7 @@ function getTopMenuActions() {
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuUndo fa fa-undo" title="قبلی" ></div>';
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuRedo fa fa-redo" title="بعدی" ></div>';
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuInfo fa fa-info" title="خصوصیات" ></div>';
+    result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuDelete fa fa-trash" title="حذف" ></div>';
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuSelectElement fa fa-mouse-pointer" title="انتخاب" ></div>';
 
     return result;
@@ -64,6 +71,7 @@ function initDisignerEventAndFunction(ctrl, quirySelector) {
     initReNewFunction(curObj, quirySelector);
     initSelectElementFunction(curObj, quirySelector);
     initShowCtrlInfoMenu(curObj, quirySelector);
+    initDeleteButtonMenu(curObj, quirySelector);
     initGetSelectedCtrlJsonObj(curObj);
     initMouseEvents(ctrl, quirySelector);
 
@@ -73,13 +81,46 @@ function initDisignerEventAndFunction(ctrl, quirySelector) {
 
 function initGetSelectedCtrlJsonObj(curObj) {
     curObj.getSelectedCtrl = function () {
-        var foundQuiry = $(this).find('.makeSelectedDP')
-        if (foundQuiry.length > 0 && foundQuiry.find('.myCtrl').length > 0) {
+        var foundQuiry = $(this).find('.makeSelectedDP');
+        if (foundQuiry.length > 0 && foundQuiry.hasClass('myPanel'))
+            return foundQuiry[0].panel;
+        else if (foundQuiry.length > 0 && foundQuiry.hasClass('panelSWizard'))
+            return foundQuiry[0].wizard;
+        else if (foundQuiry.length > 0 && foundQuiry.find('.myCtrl').length > 0)
             return foundQuiry.find('.myCtrl')[0].ctrl;
-        }
 
         return null;
     }
+}
+
+function initDeleteButtonMenu(curObj, quirySelector) {
+    curObj.deleteSelectedItem = function () {
+        var foundItem = this.getSelectedCtrl();
+        if (!foundItem) {
+            $.toast({
+                heading: 'خطا',
+                text: 'لطفا ابتدا یک کنترول را انتخاب کنید',
+                textAlign: 'right',
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'error'
+            });
+            return;
+        }
+        if ($('.makeSelectedDP').find('>.myCtrl ').length > 0)
+            $('.makeSelectedDP').remove();
+        else
+            $.toast({
+                heading: 'خطا',
+                text: 'امکان حذف وجود ندارد',
+                textAlign: 'right',
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'error'
+            });
+    }
+
+    quirySelector.find('.formDesignerPlateTopMenuDelete').click(function () { $(this).closest('.myFormDesigner')[0].deleteSelectedItem(); })
 }
 
 function initShowCtrlInfoMenu(curObj, quirySelector) {
@@ -154,9 +195,55 @@ function initMouseEvents(ctrl, quirySelector) {
             curMouseMove.css('top', (e.clientY - 10) + 'px');
             markeCurrentActiveCtrl(e, this.quirySelector);
         } else if (this.quirySelector[0].isSelectedElement) {
-            markeCurrentActiveCtrl(e, this.quirySelector);
+            markeCurrentActiveCtrl(e, this.quirySelector, this.quirySelector[0].isSelectedElement);
+        } else if (whatToDoAfterSecoundSelect != null) {
+            markeCurrentActiveCtrl2(e, quirySelector);
         }
     }.bind({ quirySelector: quirySelector }));
+}
+
+
+
+function isSelectable(targetQuiry, isSelectedElement) {
+    if (targetQuiry.hasClass('col-xs-12') && targetQuiry.parent() && targetQuiry.parent().hasClass('row') && targetQuiry.closest('.myPanel').length > 0 && !targetQuiry.hasClass('myPanel'))
+        return targetQuiry;
+    else if (targetQuiry.closest('.myCtrl').length > 0)
+        return targetQuiry.closest('.myCtrl').parent();
+    else if (isSelectedElement && (targetQuiry.hasClass('panelSWizard') || targetQuiry.closest('.panelSWizard').length > 0))
+        return targetQuiry.hasClass('panelSWizard') ? targetQuiry : targetQuiry.closest('.panelSWizard');
+    else if (isSelectedElement && ((targetQuiry.hasClass('myPanel')) && targetQuiry.find('>.panelSWizard').length > 0) || ((targetQuiry.parent().hasClass('myPanel')) && targetQuiry.parent().find('>.panelSWizard').length > 0))
+        return targetQuiry.hasClass('myPanel') ? targetQuiry : targetQuiry.parent();
+
+    return null;
+}
+
+function removeAllMarked2(quirySelector) {
+    quirySelector.find('span[class*="makeSelectedFDP"]').remove();
+    quirySelector.find('.makeSelectedFDP').removeClass('makeSelectedFDP').unbind();
+}
+
+function markeCurrentActiveCtrl2(e, quirySelector) {
+    removeAllMarked2(quirySelector);
+
+    if (e && e.target && $(e.target).closest('.formDesignerPlate').length > 0) {
+        var targetQuiry = $(e.target);
+        var tempTargetQuiry = isSelectable(targetQuiry);
+        if (tempTargetQuiry) {
+            targetQuiry = tempTargetQuiry;
+            if (!targetQuiry.hasClass('makeSelectedFDP')) {
+                targetQuiry.addClass('makeSelectedFDP');
+                targetQuiry.append('<span class="makeSelectedFDPLeftBottom"></span>');
+                targetQuiry.append('<span class="makeSelectedFDPLeftTop"></span>');
+                targetQuiry.append('<span class="makeSelectedFDPRightBottom"></span>');
+                targetQuiry.append('<span class="makeSelectedFDPRightTop"></span>');
+                targetQuiry.click(function () {
+                    whatToDoAfterSecoundSelect(targetQuiry);
+                    whatToDoAfterSecoundSelect = null;
+                    removeAllMarked2(quirySelector);
+                });
+            }
+        }
+    }
 }
 
 function removeAllMarked(quirySelector) {
@@ -164,21 +251,12 @@ function removeAllMarked(quirySelector) {
     quirySelector.find('.makeSelectedDP').removeClass('makeSelectedDP').unbind();
 }
 
-function isSelectable(targetQuiry) {
-    if (targetQuiry.hasClass('col-xs-12') && targetQuiry.parent() && targetQuiry.parent().hasClass('row') && targetQuiry.closest('.myPanel').length > 0 && !targetQuiry.hasClass('myPanel'))
-        return targetQuiry;
-    else if (targetQuiry.closest('.myCtrl').length > 0)
-        return targetQuiry.closest('.myCtrl').parent();
-
-    return null;
-}
-
-function markeCurrentActiveCtrl(e, quirySelector) {
+function markeCurrentActiveCtrl(e, quirySelector, isSelectedElement) {
     removeAllMarked(quirySelector);
 
     if (e && e.target && $(e.target).closest('.formDesignerPlate').length > 0) {
         var targetQuiry = $(e.target);
-        var tempTargetQuiry = isSelectable(targetQuiry);
+        var tempTargetQuiry = isSelectable(targetQuiry, isSelectedElement);
         if (tempTargetQuiry) {
             targetQuiry = tempTargetQuiry;
             if (!targetQuiry.hasClass('makeSelectedDP')) {
@@ -221,7 +299,7 @@ function addNewCtrlToDesigner(curMouseMove, e, quirySelector) {
             if (ofsetX <= curWidth) {
                 isRight = true;
             }
-            var curCtrlHtml = getCurCtrlTemplate(curMouseMove);
+            var curCtrlHtml = getCurCtrlTemplate(curMouseMove, targetQuiry);
             if (curCtrlHtml) {
                 if (isRight == true)
                     targetQuiry.after(curCtrlHtml);
@@ -240,34 +318,98 @@ function generateRandomName() {
     return 'name_' + new Date().getTime();
 }
 
-function getCurCtrlTemplate(curMouseMove) {
+function getCurCtrlTemplate(curMouseMove, targetQuiry) {
     var result = '';
 
-    if (curMouseMove.hasClass('formDesignerCtrlItemTextBox')) {
+    var curCtrl = null;
+
+    if (curMouseMove.hasClass('formDesignerCtrlItemDropdown')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            name: generateRandomName(),
+            type: "dropDown",
+            label: "نوع سازه",
+            isRequired: true,
+            textfield: "title",
+            valuefield: "id",
+            values: [
+                {
+                    id: '',
+                    title: ''
+                },
+                {
+                    id: 'بتونی',
+                    title: 'بتونی'
+                }
+            ]
+        };
         result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
-        result += getTextBoxTemplate({
+        result += getDropdownCTRLTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemTextBox')) {
+        curCtrl = {
             id: uuidv4RemoveDash(),
             parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
             name: generateRandomName(),
             type: "text",
             label: "عنوان",
             isRequired: true
-        });
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getTextBoxTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemPersianDate')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            name: generateRandomName(),
+            type: "persianDateTime",
+            label: "تاریخ تولید",
+            isRequired: true
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getTextBoxTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemColor')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            name: generateRandomName(),
+            type: "color",
+            label: "رنگ بدنه خودرو",
+            isRequired: true,
+            dfaultValue: '#ffffff'
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getTextBoxTemplate(curCtrl);
         result += '</div>';
     } else if (curMouseMove.hasClass('formDesignerCtrlItemTextBoxArea')) {
-        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">'
-        result += getTextAreaTemplate({
+        curCtrl = {
             id: uuidv4RemoveDash(),
             parentCL: "col-md-12 col-sm-12 col-xs-12 col-lg-12",
             name: generateRandomName(),
             type: "textarea",
             label: "عنوان",
             isRequired: true
-        });
+        };
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">'
+        result += getTextAreaTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemPassword')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            name: generateRandomName(),
+            type: "password",
+            label: "کلمه عبور",
+            isRequired: true
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getTextBoxTemplate(curCtrl);
         result += '</div>';
     } else if (curMouseMove.hasClass('formDesignerCtrlItemUploadFile')) {
-        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
-        result += getFileCTRLTemplate({
+        curCtrl = {
             id: uuidv4RemoveDash(),
             parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
             name: generateRandomName(),
@@ -275,22 +417,24 @@ function getCurCtrlTemplate(curMouseMove) {
             label: "عنوان",
             isRequired: true,
             acceptEx: '.jpg,.png,.jpeg'
-        });
+        }
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getFileCTRLTemplate(curCtrl);
         result += '</div>';
     } else if (curMouseMove.hasClass('formDesignerCtrlItemCheckBox')) {
-        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
-        result += getCheckboxButtonTemplate({
+        curCtrl = {
             id: uuidv4RemoveDash(),
             parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
             name: generateRandomName(),
             type: "checkBox",
             label: "عنوان",
             isRequired: true
-        });
+        }
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getCheckboxButtonTemplate(curCtrl);
         result += '</div>';
     } else if (curMouseMove.hasClass('formDesignerCtrlItemRadioBox')) {
-        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
-        result += getRadioButtonTemplate({
+        curCtrl = {
             id: uuidv4RemoveDash(),
             parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
             name: generateRandomName(),
@@ -308,8 +452,119 @@ function getCurCtrlTemplate(curMouseMove) {
                     title: "بلی"
                 }
             ]
-        });
+        }
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getRadioButtonTemplate(curCtrl);
         result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemMap')) {
+        var newName = 'mapName' + uuidv4RemoveDash();
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+            names: {
+                lat: newName +"Lat",
+                lon: newName + "Lon",
+                zoom: newName + "Zoom"
+            },
+            width: "100%",
+            height: "312px",
+            type: "map",
+            label: "نقشه"
+        };
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">'
+        result += getMapTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemMultiRow')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+            type: "multiRowInput",
+            name: "coverPersons",
+            ctrls: [
+                {
+                    id: uuidv4RemoveDash(),
+                    parentCL: "col-md-3 col-sm-6 col-xs-12 col-lg-3",
+                    name: "firstName",
+                    type: "text",
+                    label: "نام",
+                    isRequired: true
+                },
+                {
+                    id: uuidv4RemoveDash(),
+                    parentCL: "col-md-3 col-sm-6 col-xs-12 col-lg-3",
+                    name: "lastName",
+                    type: "text",
+                    label: "نام خانوادگی",
+                    isRequired: true
+                },
+                {
+                    id: uuidv4RemoveDash(),
+                    parentCL: "col-md-3 col-sm-6 col-xs-12 col-lg-3",
+                    name: "nationalCode",
+                    type: "text",
+                    label: "کد ملی",
+                    isRequired: true,
+                    nationalCodeValidation: true
+                },
+                {
+                    id: uuidv4RemoveDash(),
+                    parentCL: "col-md-3 col-sm-6 col-xs-12 col-lg-3",
+                    type: "dropDown",
+                    textfield: "title",
+                    valuefield: "id",
+                    label: "نصبت با بیمه شده",
+                    name: "typeOfRelation",
+                    isRequired: true,
+                    values: [
+                        {
+                            id: "",
+                            title: ""
+                        },
+                        {
+                            id: "خودم",
+                            title: "خودم"
+                        },
+                        {
+                            id: "همسرم",
+                            title: "همسرم"
+                        },
+                        {
+                            id: "پدر",
+                            title: "پدر"
+                        },
+                        {
+                            id: "مادر",
+                            title: "مادر"
+                        },
+                        {
+                            id: "فرزند",
+                            title: "فرزند"
+                        },
+                        {
+                            id: "نوه",
+                            title: "نوه"
+                        }
+                    ]
+                }
+            ]
+        }
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">'
+        result += getMultiRowInputTemplate(curCtrl);
+        result += '</div>';
+    }
+    if (targetQuiry.closest('.MultiRowInputRow').length > 0) {
+        var parentCtrl = targetQuiry.closest('.myCtrl')[0];
+        console.log();
+        if (parentCtrl) {
+            parentCtrl = parentCtrl.ctrl;
+            if (parentCtrl) {
+                var allCtrls = parentCtrl.ctrls;
+                if (!allCtrls || allCtrls.length == 0)
+                    allCtrls = [];
+                allCtrls.push(curCtrl);
+                parentCtrl.ctrls = allCtrls;
+            }
+        }
     }
 
     return result;
@@ -323,51 +578,118 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
 
     template += '<div style="padding-top:15px;" class="row">';
 
+    template += getIdInput(foundConfig);
     template += getClassInput(foundConfig);
 
-    switch (foundConfig.type) {
-        case 'text':
-        case 'textarea':
-        case 'number':
-            template += getLabelInput(foundConfig);
-            template += getNameInput(foundConfig);
-            template += getSizeInput(foundConfig);
-            template += getChangeDirectionTemplate(foundConfig);
-            template += getValidationInput(foundConfig);
-            template += getMaskTemplate(foundConfig);
-            template += getDisabledInput(foundConfig);
-            break;
-        case 'dropDown':
-            template += getLabelInput(foundConfig);
-            template += getNameInput(foundConfig);
-            template += getSizeInput(foundConfig);
-            template += getSourceUrlTemplate(foundConfig);
-            template += getTextAndValueSchemaFields(foundConfig);
-            template += getRequiredValidation(foundConfig);
-            template += getValuesTemplate(foundConfig);
-            break;
-        case 'radio':
-            template += getLabelInput(foundConfig);
-            template += getNameInput(foundConfig);
-            template += getSizeInput(foundConfig);
-            template += getTextAndValueSchemaFields(foundConfig);
-            template += getValuesTemplate(foundConfig);
-            template += get
-            break;
-        default:
+    if (foundConfig.type) {
+        switch (foundConfig.type) {
+            case 'text':
+            case 'textarea':
+            case 'number':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getDefaultInput(foundConfig);
+                template += getChangeDirectionTemplate(foundConfig);
+                template += getValidationInput(foundConfig);
+                template += getMaskTemplate(foundConfig);
+                template += getDisabledInput(foundConfig);
+                template += getMultiOrSumPlayInputTemplate(foundConfig, 'multiPlay', 'ضرب خودکار');
+                template += getMultiOrSumPlayInputTemplate(foundConfig, 'sumCalculator', 'جمع خودکار');
+                break;
+            case 'persianDateTime':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getMinDayInput(foundConfig);
+                template += getMaxDayInput(foundConfig);
+                template += getDefaultInput(foundConfig);
+                template += getRequiredValidation(foundConfig);
+                break;
+            case 'color':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getDefaultInput(foundConfig);
+                template += getRequiredValidation(foundConfig);
+                break;
+            case 'password':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getRequiredValidation(foundConfig);
+                break;
+            case 'map':
+                template += getLabelInput(foundConfig);
+                template += getMapNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getWidthInput(foundConfig);
+                template += getHeightInput(foundConfig);
+                break;
+            case 'dropDown':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getShowCondationInputTemplate(foundConfig);
+                template += getSourceUrlTemplate(foundConfig);
+                template += getTextAndValueSchemaFields(foundConfig);
+                template += getRequiredValidation(foundConfig);
+                template += getValuesTemplate(foundConfig);
+                break;
+            case 'radio':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getShowCondationInputTemplate(foundConfig);
+                template += getTextAndValueSchemaFields(foundConfig);
+                template += getValuesTemplate(foundConfig);
+                break;
+            case 'checkBox':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getRequiredValidation(foundConfig);
+                break;
+            case 'multiRowInput':
+                template += getNameInput(foundConfig);
+                template += getAddButtonInput(foundConfig);
+                template += getDeleteInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                break;
+            case 'file':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getValidExtensionTemplate(foundConfig, quirySelector);
+                template += getPreviewImageTemplate(foundConfig);
+                template += getRequiredValidation(foundConfig);
+
+                break;
+            default:
+        }
+    } else if ($('#' + foundConfig.id).hasClass('panelSWizard')) {
+        template += getLastButtonSWTitleTemplate(foundConfig);
+        template += getMoveBackButtonToTop(foundConfig);
+        template += getStepInputTemplate(foundConfig);
+    } else if ($('#' + foundConfig.id).hasClass('myPanel')) {
+        template += getTitleInput(foundConfig);
+        template += getIsInquiryInput(foundConfig);
+        template += getIsAgentRequired(foundConfig);
+        template += getIsCompanyListRequired(foundConfig);
     }
 
     template += getSaveButtonTemplate();
 
     template += '</div>';
 
-    quirySelector.addClass('formDesignerCtrlPropertiesShow').html(template);
+    quirySelector.html(template);
+    quirySelector.closest('.myFormDesigner').addClass('formDesignerCtrlPropertiesShow')
 
-    quirySelector.find('.propertyCloseButton').click(function () { $(this).closest('.formDesignerCtrlPropertiesShow').removeClass('formDesignerCtrlPropertiesShow').html(''); });
+    quirySelector.find('.propertyCloseButton').click(function () { $(this).closest('.formDesignerCtrlPropertiesShow').removeClass('formDesignerCtrlPropertiesShow'); whatToDoAfterSecoundSelect = null; });
     executeArrFunctions();
 }
 
-function fillFoundObj(foundConfig, formDataObj) {
+function fillFoundObj(foundConfig, formDataObj, formSelector) {
     foundConfig.parentCL = formDataObj.size;
     foundConfig.textfield = formDataObj.textfield;
     foundConfig.valuefield = formDataObj.valuefield;
@@ -375,17 +697,56 @@ function fillFoundObj(foundConfig, formDataObj) {
     foundConfig.ltr = formDataObj.ltr;
     foundConfig.label = formDataObj.inputLabel;
     foundConfig.name = formDataObj.inputName;
+    foundConfig.lastStepButtonTitle = formDataObj.lastStepButtonTitle;
     foundConfig.isRequired = formDataObj.isRequired;
     foundConfig.dataurl = formDataObj.dataurl;
     foundConfig.disabled = formDataObj.disabled;
     foundConfig.maxLengh = formDataObj.maxLength;
     foundConfig.class = formDataObj.class;
+    foundConfig.moveBackButtonToTop = formDataObj.moveBackButtonToTop;
+    foundConfig.id = formDataObj.id;
+    foundConfig.hideImagePreview = formDataObj.hideImagePreview;
+    foundConfig.dfaultValue = formDataObj.dfaultValue;
+    foundConfig.title = formDataObj.title;
+    foundConfig.hasInquiry = formDataObj.hasInquiry;
+    foundConfig.isAgentRequired = formDataObj.isAgentRequired;
+    foundConfig.isCompanyListRequired = formDataObj.isCompanyListRequired;
+    foundConfig.multiPlay = formDataObj.multiPlay;
+    foundConfig.sumCalculator = formDataObj.sumCalculator;
+    foundConfig.deleteTitle = formDataObj.deleteTitle;
+    foundConfig.addTitle = formDataObj.addTitle;
+    foundConfig.minDateValidation = Number.parseInt(formDataObj.minDateValidation);
+    foundConfig.maxDateValidation = Number.parseInt(formDataObj.maxDateValidation);
+    foundConfig.width = formDataObj.width;
+    foundConfig.height = formDataObj.height
+
     addOrRemoveOnlyValidationOnlyNumber(foundConfig, formDataObj.justNumber);
     addOrRemoveOnlyValidationNumberCount(foundConfig, formDataObj.numberLength);
     addOrRemoveValidationStartWith(foundConfig, formDataObj.startWithN);
     addOrRemoveValidationEmail(foundConfig, formDataObj.email);
+
     if (foundConfig.type == 'number')
         foundConfig.type = 'text';
+
+    foundConfig.names = null;
+    if (formDataObj.mapName)
+        foundConfig.names = {
+            lat: formDataObj.mapName + 'Lat',
+            lon: formDataObj.mapName + 'Lon"',
+            zoom: formDataObj.mapName + 'Zoom'
+        };
+
+
+    foundConfig.acceptEx = null;
+    if (formDataObj.acceptEx) {
+        foundConfig.acceptEx = '';
+        if (formDataObj.acceptEx.constructor == Array)
+            for (var i = 0; i < formDataObj.acceptEx.length; i++) {
+                foundConfig.acceptEx = foundConfig.acceptEx + (i > 0 ? ',' : '') + formDataObj.acceptEx[i];
+            }
+        else
+            foundConfig.acceptEx = formDataObj.acceptEx;
+    }
 
     if (formDataObj.codeMeli)
         foundConfig.nationalCodeValidation = true;
@@ -398,7 +759,86 @@ function fillFoundObj(foundConfig, formDataObj) {
 
     }
 
-    console.log(foundConfig);
+    foundConfig.showHideCondation = null;
+
+    if (formSelector.find('.showCondationHolder').length > 0) {
+        var holderQuiry = formSelector.find('.showCondationHolder');
+        var resultShowCondation = [];
+        holderQuiry.find('.condationItem').each(function () {
+            var foundQuiry = $(this).find('.condationItemTitle');
+            var curValue = foundQuiry.attr('data-id');
+            var isDefault = foundQuiry.hasClass('.condationItemTitleDefault');
+            var allHideClass = [];
+            var allShowClass = [];
+            $(this).find('.condationSubItemHide').each(function () {
+                allHideClass.push($(this).attr('data-tclass'));
+            });
+            $(this).find('.condationSubItemShow').each(function () {
+                allShowClass.push($(this).attr('data-tclass'));
+            });
+            if (allHideClass.length > 0 || allShowClass.length > 0) {
+                resultShowCondation.push({
+                    value: curValue,
+                    classHide: allHideClass,
+                    classShow: allShowClass,
+                    isDefault: isDefault
+                });
+            }
+        });
+        if (resultShowCondation && resultShowCondation.length > 0)
+            foundConfig.showHideCondation = resultShowCondation;
+    }
+
+    var curElementQuiry = $('#' + formDataObj.id);
+    if (!formDataObj.type && curElementQuiry.length > 0 && curElementQuiry.hasClass('panelSWizard')) {
+        foundConfig.steps = [];
+        if (formDataObj.steps) {
+            for (var i = 0; i < formDataObj.steps.length; i++) {
+                var tempStep = formDataObj.steps[i];
+                tempStep.order = Number.parseFloat(tempStep.order);
+                var allCtrls = tempStep.ctrls;
+                if (!allCtrls)
+                    allCtrls = '[]';
+
+                tempStep.panels = [];
+                tempStep.panels.push({ ctrls: JSON.parse(allCtrls) });
+                delete tempStep.ctrls;
+            }
+            foundConfig.steps = formDataObj.steps;
+        }
+    } else if (!formDataObj.type && curElementQuiry.length > 0 && curElementQuiry.hasClass('myPanel')) {
+        var foundWizardQuiry = curElementQuiry.find('.panelSWizard');
+        foundConfig.stepWizards = [];
+        if (foundWizardQuiry.length > 0) {
+            var curWizard = foundWizardQuiry[0].wizard;
+            if (curWizard && curWizard.steps && curWizard.steps.length > 0) {
+                for (var m = 0; m < curWizard.steps.length; m++) {
+                    var curStep = curWizard.steps[m];
+                    var allCurStepCtrls = getCtrls($('#stepContent_' + curStep.id));
+                    if (!curStep.panels || curStep.panels.length == 0) {
+                        curStep.panels = [];
+                        curStep.panels.push({});
+                    }
+                    curStep.panels[0].ctrls = allCurStepCtrls;
+                }
+            }
+            if (curWizard)
+                foundConfig.stepWizards.push(curWizard);
+        }
+    }
+
+    for (var item in foundConfig) {
+        if (foundConfig[item] == undefined || foundConfig[item] == null || foundConfig[item] == '')
+            delete foundConfig[item];
+        if (foundConfig[item] == 'true')
+            foundConfig[item] = true;
+        if (foundConfig[item] == 'false')
+            foundConfig[item] = false;
+    }
+
+
+
+    console.log(foundConfig, formDataObj);
 }
 
 function saveSelectedController(curThis) {
@@ -408,14 +848,16 @@ function saveSelectedController(curThis) {
         if (foundConfig) {
             var formSelector = $(curThis).closest('.formDesignerCtrlProperties');
             var formData = getFormData(formSelector);
-            var formDataObj = {};
-            formData.forEach(function (value, key) {
-                formDataObj[key] = value;
-            });
-            fillFoundObj(foundConfig, formDataObj);
-
+            var formDataObj = convertFormDataToJson(formData);
+            fillFoundObj(foundConfig, formDataObj, formSelector);
             if (rootCtrl.find('.makeSelectedDP').length > 0) {
-                rootCtrl.find('.makeSelectedDP').replaceWith(getInputTemplate(foundConfig));
+                var curElementQuiry = $('#' + formDataObj.id);
+                if (!formDataObj.type && curElementQuiry.length > 0 && curElementQuiry.hasClass('myPanel'))
+                    rootCtrl.find('.makeSelectedDP').replaceWith(getPanelTemplate(foundConfig));
+                else if (!formDataObj.type && curElementQuiry.length > 0 && curElementQuiry.hasClass('panelSWizard'))
+                    rootCtrl.find('.makeSelectedDP').replaceWith(getStepWizardTemplate(foundConfig));
+                else
+                    rootCtrl.find('.makeSelectedDP').replaceWith(getInputTemplate(foundConfig));
                 executeArrFunctions();
                 $(curThis).closest('.formDesignerCtrlProperties').find('.propertyCloseButton').click();
             }
@@ -552,6 +994,228 @@ function getDisabledInput(foundConfig) {
     return result;
 }
 
+function getMultiOrSumPlayInputTemplate(foundConfig, name, title) {
+    var result = '';
+
+    var multiPlay = foundConfig[name];
+    if (!multiPlay)
+        multiPlay = [];
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 sumOrMultiplyHolder">';
+
+    result += '<div style="margin-bottom:10px;" class="sumOrMultiplyHeader" >' + title + '<i onclick="return addCtrlToSumOrMultiply(this, event, \'' + name + '\')" class="fa fa-plus addCtrlToShowCondationButtonShow" ></i></div>';
+
+    for (var i = 0; i < multiPlay.length; i++) {
+        result += '<div class="sumOrMultiplyItem sumOrMultiplyItemShow" >';
+        console.log($('#' + multiPlay[i]).closest('.myCtrl').length);
+        var curCtrlTitle = $('#' + multiPlay[i]).closest('.myCtrl').find('label').text();
+        result += '<span>' + (curCtrlTitle ? curCtrlTitle : 'خالی') + '<i class="fa fa-trash deleteSumOrMultiplyCB" onclick="removeThisMItem(this)" ></i><input type="hidden" name="' + name + '" value="' + multiPlay[i] + '" /></span>';
+        result += '</div>';
+    }
+
+    result += '</div>';
+
+
+    return result;
+}
+
+function removeThisMItem(curButton) {
+    if (curButton) {
+        $(curButton).closest('.sumOrMultiplyItem').remove();
+    }
+}
+
+function addCtrlToSumOrMultiply(curButton, e, name) {
+    e.stopPropagation();
+
+    if (curButton) {
+        var buttonQuiryButton = $(curButton);
+        if (buttonQuiryButton.hasClass('fa-plus')) {
+            buttonQuiryButton.removeClass('fa-plus').addClass('fa-ban');
+            $(curButton).closest('.formDesigner').addClass('makeShowAllHideCtrl');
+            whatToDoAfterSecoundSelect = function (targetObj) {
+                var foundItemObj = $(targetObj).find('.myCtrl')[0].ctrl;
+                var curId = '';
+
+                if ($(targetObj).find('input').length > 0)
+                    curId = $(targetObj).find('input').attr('id');
+                else if ($(targetObj).find('select').length > 0)
+                    curId = $(targetObj).find('select').attr('id');
+
+                if (!curId) {
+                    curId = uuidv4RemoveDash();
+                    if ($(targetObj).find('input').length > 0)
+                        $(targetObj).find('input').attr('id', curId);
+                    else if ($(targetObj).find('select').length > 0)
+                        $(targetObj).find('select').attr('id', curId);
+
+                    foundItemObj.id = curId;
+                }
+                var holderQuiry = $(this.curButton).closest('.sumOrMultiplyHolder');
+                var curCtrlTitle = $(targetObj).text();
+                if (!curCtrlTitle)
+                    curCtrlTitle = 'خالی';
+
+                var curTemplate = '';
+                curTemplate += '<div class="sumOrMultiplyItem sumOrMultiplyItemShow" >';
+                curTemplate += '<span>' + (curCtrlTitle ? curCtrlTitle : 'خالی') + '<i class="fa fa-trash deleteSumOrMultiplyCB" onclick="removeThisMItem(this)" ></i><input type="hidden" name="' + name + '" value="' + curId + '" /></span>';
+                curTemplate += '</div>';
+
+                holderQuiry.append(curTemplate);
+
+                $(this.curButton).removeClass('fa-ban').addClass('fa-plus');
+                $(this.curButton).closest('.formDesigner').removeClass('makeShowAllHideCtrl');
+            }.bind({ curButton: curButton });
+        } else {
+            buttonQuiryButton.removeClass('fa-ban').addClass('fa-plus');
+            $(curButton).closest('.formDesigner').removeClass('makeShowAllHideCtrl');
+            whatToDoAfterSecoundSelect = null;
+        }
+    }
+
+    return false;
+}
+
+function getShowCondationInputTemplate(foundConfig) {
+    var result = '';
+
+    var options = [];
+    var showHideCondation = foundConfig.showHideCondation;
+    if (!showHideCondation)
+        showHideCondation = [];
+    if (foundConfig.type == 'dropDown' && foundConfig.id)
+        $('#' + foundConfig.id).find('option').each(function () {
+            options.push({ id: $(this).attr('value'), title: $(this).text() });
+        });
+
+    if (options.length == 0 && foundConfig.values && foundConfig.values.length > 0)
+        options = foundConfig.values;
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 showCondationHolder">';
+
+    result += '<div class="showCondationHeader" >مخفی یا نمایش</div>';
+
+    if (options.length == 0)
+        result += '<div>فاقد مقدار</div>';
+    else {
+        for (var i = 0; i < options.length; i++) {
+            var foundCondation = showHideCondation.filter(function (item) { return item.value == options[i].id; });
+            if (foundCondation.length > 0)
+                foundCondation = foundCondation[0];
+            else
+                foundCondation = null;
+            result += '<div class="condationItem" >';
+            result += '<span onclick="setDefaultShowCondation(this)" class="condationItemTitle ' + (foundCondation && foundCondation.isDefault ? 'condationItemTitleDefault' : '') + '" data-id="' + options[i].id + '" >' + (options[i].title ? options[i].title : 'خالی') + '<i onclick="return addCtrlToShowCondation(this, event)" class="fa fa-plus addCtrlToShowCondationButtonHide" ></i><i onclick="return addCtrlToShowCondation(this, event)" class="fa fa-plus addCtrlToShowCondationButtonShow" ></i></span>';
+
+            if (foundCondation) {
+                if (foundCondation.classShow && foundCondation.classShow.length > 0) {
+                    for (var j = 0; j < foundCondation.classShow.length; j++) {
+                        $('.' + foundCondation.classShow[j]).each(function () {
+                            result += '<span title="' + foundCondation.classShow[j] + '" data-tClass="' + foundCondation.classShow[j] + '" class="condationSubItem condationSubItemShow">' + $(this).find('label').text() + '<i class="fa fa-trash deleteShowCondationCB" onclick="removeThisClass(this)" ></i></span>';
+                        });
+                    }
+                }
+                if (foundCondation.classHide && foundCondation.classHide.length > 0) {
+                    for (var j = 0; j < foundCondation.classHide.length; j++) {
+                        $('.' + foundCondation.classHide[j]).each(function () {
+                            result += '<span title="' + foundCondation.classHide[j] + '" data-tClass="' + foundCondation.classHide[j] + '" class="condationSubItem condationSubItemHide">' + $(this).find('label').text() + '<i class="fa fa-trash deleteShowCondationCB" onclick="removeThisClass(this)" ></i></span>';
+                        });
+                    }
+                }
+            }
+
+            result += '</div>';
+        }
+    }
+
+    result += '<div class="simpleBorder" ></div>';
+    result += '</div>';
+
+
+    return result;
+}
+
+var whatToDoAfterSecoundSelect = null;
+
+function addCtrlToShowCondation(curButton, e) {
+    e.stopPropagation();
+
+    if (curButton) {
+        var buttonQuiryButton = $(curButton);
+        var isShow = buttonQuiryButton.hasClass('addCtrlToShowCondationButtonShow');
+        if (buttonQuiryButton.hasClass('fa-plus')) {
+            buttonQuiryButton.removeClass('fa-plus').addClass('fa-ban');
+            $(curButton).closest('.formDesigner').addClass('makeShowAllHideCtrl');
+            whatToDoAfterSecoundSelect = function (targetObj) {
+                var foundItemObj = $(targetObj).find('.myCtrl')[0].ctrl;
+                var allClass = [];
+                if (foundItemObj.class)
+                    allClass = foundItemObj.class.split(' ');
+                allClass = allClass.filter(function (item) { return item && item.trim(); });
+                var foundClass = allClass.filter(function (item) { return item && item.substr(0, 14) == 'showHideClass_'; })
+                if (foundClass.length == 0) {
+                    var lookingForClass = 'showHideClass_' + uuidv4RemoveDash();
+                    foundItemObj.class = foundItemObj.class + ' ' + lookingForClass;
+                    $(targetObj).find('.myCtrl').addClass(lookingForClass);
+                    foundClass.push(lookingForClass);
+                }
+                var targetClass = foundClass[0];
+                var holderQuiry = $(this.curButton).closest('.condationItem');
+                var isShow = this.isShow;
+                $('.' + targetClass).each(function () {
+                    if (isShow)
+                        holderQuiry.append('<span title="' + targetClass + '" data-tClass="' + targetClass + '" class="condationSubItem condationSubItemShow">' + $(this).find('label').text() + '<i class="fa fa-trash deleteShowCondationCB" onclick="removeThisClass(this)" ></i></span>');
+                    else
+                        holderQuiry.append('<span title="' + targetClass + '" data-tClass="' + targetClass + '" class="condationSubItem condationSubItemHide">' + $(this).find('label').text() + '<i class="fa fa-trash deleteShowCondationCB" onclick="removeThisClass(this)" ></i></span>');
+                });
+                $(this.curButton).removeClass('fa-ban').addClass('fa-plus');
+                $(this.curButton).closest('.formDesigner').removeClass('makeShowAllHideCtrl');
+            }.bind({ curButton: curButton, isShow: isShow });
+        } else {
+            buttonQuiryButton.removeClass('fa-ban').addClass('fa-plus');
+            $(curButton).closest('.formDesigner').removeClass('makeShowAllHideCtrl');
+            whatToDoAfterSecoundSelect = null;
+        }
+    }
+
+    return false;
+}
+
+function setDefaultShowCondation(curButton) {
+    if (curButton && !$(curButton).hasClass('condationItemTitleDefault')) {
+
+        $(curButton).closest('.showCondationHolder').find('.condationItemTitleDefault').removeClass('condationItemTitleDefault');
+        $(curButton).addClass('condationItemTitleDefault');
+    }
+}
+
+function removeThisClass(curButton) {
+    if (curButton) {
+        var parentQuiry = $(curButton).closest('.condationSubItem');
+        var isShow = parentQuiry.hasClass('condationSubItemShow');
+        var targetClass = parentQuiry.attr('data-tClass');
+        if (targetClass) {
+            if (isShow)
+                parentQuiry.closest('.condationItem').find('.condationSubItemShow[data-tClass="' + targetClass + '"]').remove();
+            else
+                parentQuiry.closest('.condationItem').find('.condationSubItemHide[data-tClass="' + targetClass + '"]').remove();
+        }
+    }
+}
+
+function getLastButtonSWTitleTemplate(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getTextBoxTemplate({
+        name: "lastStepButtonTitle",
+        type: "text",
+        label: "عنوان دکمه ذخیره",
+        dfaultValue: foundConfig.lastStepButtonTitle
+    });
+    result += '</div>';
+
+    return result;
+}
+
 function getLabelInput(foundConfig) {
     var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
 
@@ -560,6 +1224,66 @@ function getLabelInput(foundConfig) {
         type: "text",
         label: "عنوان",
         dfaultValue: foundConfig.label
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
+function getMinDayInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "minDateValidation",
+        type: "number",
+        label: "حداق روز",
+        dfaultValue: foundConfig.minDateValidation
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
+function getMaxDayInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "maxDateValidation",
+        type: "text",
+        label: "حداکثر روز",
+        dfaultValue: foundConfig.maxDateValidation
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
+function getTitleInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "title",
+        type: "text",
+        label: "عنوان",
+        dfaultValue: foundConfig.title
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
+function getIdInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "id",
+        type: "text",
+        label: "شناسه",
+        dfaultValue: foundConfig.id
     });
 
     result += '</div>';
@@ -598,6 +1322,269 @@ function getChangeDirectionTemplate(foundConfig) {
     return result;
 }
 
+function getPreviewImageTemplate(foundConfig) {
+    var result = '';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getCheckboxButtonTemplate({
+        id: uuidv4RemoveDash(),
+        name: "hideImagePreview",
+        type: "checkBox",
+        label: "مخفی پیش نمایش ؟",
+        dfaultValue: foundConfig.hideImagePreview
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getCtrls(holder) {
+    var result = []
+    if (holder && holder.length > 0) {
+        holder.find('.myCtrl').each(function () {
+            if ($(this).closest('.MultiRowInputRow').length == 0) {
+                var curCtrl = $(this)[0].ctrl;
+                if (curCtrl) {
+                    result.push(curCtrl);
+                }
+            }
+        });
+    }
+    return result;
+}
+
+function getStepInputTemplate(foundConfig) {
+    var result = '';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += '<div style="border-bottom:1px solid silver;margin-bottom:20px;color:red;" >کلیه استب ها <i onclick="addNewStepFD(this)" class="fa fa-plus addNewStepButton" ></i></div>';
+    result += '</div>';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 ">';
+    result += '<div class="row holderAllStepsProperty">';
+    if (foundConfig && foundConfig.steps) {
+        var allSteps = foundConfig.steps.sort(function (a, b) { return a.order - b.order; });
+        for (var i = 0; i < allSteps.length; i++) {
+            var curStep = allSteps[i];
+
+            result += getStepInputTemplateItem(curStep, i);
+        }
+    }
+    result += '</div>';
+    result += '</div>';
+
+
+    return result;
+}
+
+function getStepInputTemplateItem(curStep, i, useInnerStepObj) {
+    var result = '';
+
+    result += '<div data-index="' + i + '" class="fdStepItem col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += '<div style="border-bottom:1px solid silver;margin-bottom:20px;" ><span  class="stepHeaderPInfo" >استپ شماره ' + (i + 1) + '</span><i onclick="removeThisStep(this)" class="fa fa-trash deleteStepButton"></i></div>';
+    result += getTextBoxTemplate({
+        name: "steps[" + i + "].id",
+        type: "text",
+        label: "شناسه",
+        dfaultValue: curStep.id
+    });
+    result += '</div>';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getTextBoxTemplate({
+        name: "steps[" + i + "].order",
+        type: "number",
+        label: "ترتیب",
+        dfaultValue: curStep.order
+    });
+    result += '</div>';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getTextBoxTemplate({
+        name: "steps[" + i + "].title",
+        type: "text",
+        label: "عنوان",
+        dfaultValue: curStep.title
+    });
+    result += '</div>';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getCheckboxButtonTemplate({
+        id: uuidv4RemoveDash(),
+        name: "steps[" + i + "].hideMoveNextButton",
+        type: "checkBox",
+        label: "مخفی کردن دکمه مرحله بعد",
+        dfaultValue: curStep.hideMoveNextButton
+    });
+    result += '<input type="hidden" name="steps[' + i + '].ctrls" value=\'' + (useInnerStepObj ? JSON.stringify(curStep.panels[0].ctrls) : JSON.stringify(getCtrls($('#stepContent_' + curStep.id)))) + '\' />';
+    result += '</div>';
+
+    result += '</div>';
+
+    return result;
+}
+
+function addNewStepFD(curButton) {
+    var modalId = 'addNewStepModalPPF';
+    var designerQuiry = $(curButton).closest('.myFormDesigner');
+    var baseUrl = designerQuiry.attr('data-baseUrl');
+    var dsignerId = designerQuiry.attr('id');
+
+    if (!baseUrl)
+        return;
+
+    if ($('#' + modalId).length == 0) {
+        $('body').append(getModualTemplate({
+            id: modalId,
+            title: 'افزودن استب جدید',
+            ctrls: [
+                {
+                    id: 'ppfDropdownId',
+                    parentCL: 'col-md-12 col-sm-12 col-xs-12 col-lg-12',
+                    type: 'dropDown2',
+                    textfield: 'title',
+                    valuefield: 'id',
+                    label: 'فرم پیشنهاد',
+                    name: 'fid',
+                    isRequired: true,
+                    dataurl: baseUrl + '/GetFormList',
+                    onChange: 'updateStepDD("ppfDropdownId", "' + baseUrl + '")'
+                },
+                {
+                    id: 'ppfDropdownStepId',
+                    parentCL: 'col-md-12 col-sm-12 col-xs-12 col-lg-12',
+                    type: 'dropDown',
+                    textfield: 'title',
+                    valuefield: 'id',
+                    label: 'استب',
+                    name: 'step',
+                    isRequired: true,
+                    values: []
+                }
+            ],
+            actions: [
+                {
+                    title: 'بستن',
+                    class: 'btn-secondary',
+                    onClick: 'closeThisModal(this)'
+                },
+                {
+                    title: 'افزودن',
+                    class: 'btn-primary',
+                    onClick: 'addNewStepF(this, \'' + dsignerId + '\')'
+                }
+            ]
+        }));
+
+        executeArrFunctions();
+    }
+
+    clearForm($('#' + modalId));
+    $('#' + modalId).modal('show');
+}
+
+function addNewStepF(curButton, dsignerId) {
+    if (dsignerId && curButton) {
+        var formData = getFormData($(curButton).closest('.modal-content'));
+        var formDataObj = convertFormDataToJson(formData);
+        if (formDataObj && formDataObj.fid && formDataObj.step) {
+            var curStep = JSON.parse(formDataObj.step);
+            var stepHolderQuiry = $('#' + dsignerId).find('.formDesignerCtrlProperties').find('.holderAllStepsProperty');
+            stepHolderQuiry.append(getStepInputTemplateItem(curStep, stepHolderQuiry.find('.fdStepItem').length, true));
+            executeArrFunctions();
+            closeThisModal(curButton);
+        } else {
+            $.toast({
+                heading: 'خطا',
+                text: 'لطفا استب را انتخاب کنید',
+                textAlign: 'right',
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'error'
+            });
+        }
+    }
+}
+
+function updateStepDD(ppfId, baseUrl) {
+    var formQuiry = $('#' + ppfId).closest('.modal-body');
+    var formData = getFormData(formQuiry);
+    var formDataJsonOBj = convertFormDataToJson(formData);
+
+    if (baseUrl && formDataJsonOBj && formDataJsonOBj.fid && formDataJsonOBj.fid != 'null') {
+        showLoader(formQuiry);
+        postForm(baseUrl + '/GetFormJsonConfig', formData, function (res) {
+            if (res && res.panels && res.panels.length == 1 && res.panels[0].stepWizards && res.panels[0].stepWizards.length > 0 && res.panels[0].stepWizards[0].steps) {
+                var allSteps = res.panels[0].stepWizards[0].steps;
+                var source = [];
+                source.push({ id: '', title: '' });
+                allSteps.forEach(function (item) {
+                    source.push({
+                        id: JSON.stringify(item),
+                        title: item.title
+                    });
+                });
+
+                $('#ppfDropdownStepId').closest('.myDropdown').replaceWith(getDropdownCTRLTemplate({
+                    id: 'ppfDropdownStepId',
+                    parentCL: 'col-md-12 col-sm-12 col-xs-12 col-lg-12',
+                    type: 'dropDown',
+                    textfield: 'title',
+                    valuefield: 'id',
+                    label: 'استب',
+                    name: 'step',
+                    isRequired: true,
+                    values: source
+                }));
+
+                executeArrFunctions();
+            }
+        }, null, function () { hideLoader(formQuiry) })
+    }
+}
+
+function updateStepsKeys() {
+    $('.formDesignerCtrlProperties').each(function () {
+        var index = 0;
+        $(this).find('.fdStepItem').each(function () {
+            $(this).find('[name]').each(function () {
+                var curName = $(this).attr('name');
+                if (curName.indexOf('[') != -1 && curName.indexOf(']') != -1) {
+                    var leftPart = curName.split('[')[0];
+                    var rightPart = curName.split(']')[1];
+                    $(this).attr('name', leftPart + '[' + index + ']' + rightPart);
+                }
+            });
+            index++;
+        });
+    });
+}
+
+function removeThisStep(curButton) {
+    if (curButton) {
+        $(curButton).closest('.fdStepItem').remove();
+        updateStepsKeys();
+    }
+}
+
+function getMoveBackButtonToTop(foundConfig) {
+    var result = '';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getCheckboxButtonTemplate({
+        id: uuidv4RemoveDash(),
+        name: "moveBackButtonToTop",
+        type: "checkBox",
+        label: "نمایش دکمه بازگشت در بالا ؟",
+        dfaultValue: foundConfig.moveBackButtonToTop
+    });
+    result += '</div>';
+
+    return result;
+}
+
 function getRequiredValidation(foundConfig) {
     var result = '';
 
@@ -608,6 +1595,54 @@ function getRequiredValidation(foundConfig) {
         type: "checkBox",
         label: "اجباری ؟",
         dfaultValue: foundConfig.isRequired
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getIsInquiryInput(foundConfig) {
+    var result = '';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getCheckboxButtonTemplate({
+        id: uuidv4RemoveDash(),
+        name: "hasInquiry",
+        type: "checkBox",
+        label: " نیاز به استعلام داره ؟",
+        dfaultValue: foundConfig.hasInquiry
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getIsAgentRequired(foundConfig) {
+    var result = '';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getCheckboxButtonTemplate({
+        id: uuidv4RemoveDash(),
+        name: "isAgentRequired",
+        type: "checkBox",
+        label: "انتخاب نماینده اجباریه ؟",
+        dfaultValue: foundConfig.isAgentRequired
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getIsCompanyListRequired(foundConfig) {
+    var result = '';
+
+    result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getCheckboxButtonTemplate({
+        id: uuidv4RemoveDash(),
+        name: "isCompanyListRequired",
+        type: "checkBox",
+        label: "انتخاب شرکت بیمه به صورت چنتایی هست ؟",
+        dfaultValue: foundConfig.isCompanyListRequired
     });
     result += '</div>';
 
@@ -694,6 +1729,20 @@ function hasEmailValidation(foundConfig) {
     return false;
 }
 
+function getDefaultInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "dfaultValue",
+        type: "text",
+        label: "مقدار پیش فرض",
+        dfaultValue: foundConfig.dfaultValue
+    });
+    result += '</div>';
+
+    return result;
+}
+
 function getNameInput(foundConfig) {
     var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
 
@@ -702,6 +1751,77 @@ function getNameInput(foundConfig) {
         type: "text",
         label: "نام",
         dfaultValue: foundConfig.name
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getMapNameInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "mapName",
+        type: "text",
+        label: "نام",
+        dfaultValue: (foundConfig.names && foundConfig.names.lat ? foundConfig.names.lat.substr(0, foundConfig.names.lat.length - 3) : '')
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getWidthInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "width",
+        type: "text",
+        label: "پهنا",
+        dfaultValue: foundConfig.width
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getHeightInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "height",
+        type: "text",
+        label: "ارتفاع",
+        dfaultValue: foundConfig.height
+    });
+    result += '</div>';
+
+    return result;
+}
+
+function getAddButtonInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "addTitle",
+        type: "text",
+        label: "عنوان دکمه افزودن",
+        dfaultValue: foundConfig.addTitle
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
+function getDeleteInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "deleteTitle",
+        type: "text",
+        label: "عنوان دکمه حذف",
+        dfaultValue: foundConfig.deleteTitle
     });
 
     result += '</div>';
@@ -890,7 +2010,6 @@ function updateOptions(gridId, buttonId, curButton) {
             var option = gridQuiry[0].option;
             if (option) {
                 var sortedData = gridQuiry[0].setFiltersAndSorts(option.ds, option, new FormData());
-                console.log(sortedData);
                 $('#' + buttonId).closest('[data-options]').attr('data-options', JSON.stringify(sortedData.data));
             }
             closeThisModal(curButton);
@@ -979,6 +2098,66 @@ function getMaskTemplate(foundConfig) {
     });
 
     result += '</div>';
+
+    return result;
+}
+
+function getValidExtensionTemplate(foundConfig, quirySelector) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+    result += getTokennCTRLTemplate(
+        {
+            name: "acceptEx",
+            type: "tokenBox",
+            label: "پسوند مورد قبول",
+            textfield: 'title',
+            valuefield: 'id',
+            values: [
+                {
+                    id: "",
+                    title: ""
+                },
+                {
+                    id: ".jpg",
+                    title: "jpg"
+                },
+                {
+                    id: ".png",
+                    title: "png"
+                },
+                {
+                    id: ".jpeg",
+                    title: "jpeg"
+                },
+                {
+                    title: "pdf",
+                    id: ".pdf"
+                },
+                {
+                    title: "doc",
+                    id: ".doc"
+                },
+                {
+                    title: "docx",
+                    id: ".docx"
+                },
+                {
+                    title: "xls",
+                    id: ".xls"
+                },
+                {
+                    title: "xlsx",
+                    id: ".xlsx"
+                }
+            ]
+        }
+    );
+    result += '</div>';
+
+
+    if (foundConfig.acceptEx)
+        functionsList.push(function () {
+            bindForm({ acceptEx: this.foundConfig.acceptEx.split(',') }, this.quirySelector);
+        }.bind({ quirySelector: quirySelector, foundConfig: foundConfig }));
 
     return result;
 }

@@ -466,6 +466,10 @@ input[type=checkbox] + label, input[type=checkbox] {
         -webkit-transition: 0.2s;
         transition: 0.2s;
         cursor: pointer;
+        max-width: 93%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
 .myCtrlMakeActive:not(.form-check) > label:not(.btn), .makeLabelBGSilver:not(.form-check) > label:not(.btn) {

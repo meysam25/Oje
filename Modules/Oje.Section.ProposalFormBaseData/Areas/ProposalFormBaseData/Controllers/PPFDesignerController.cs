@@ -2,6 +2,10 @@
 using Oje.AccountService.Filters;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
+using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Services;
+using Oje.Section.ProposalFormBaseData.Interfaces;
+using ISiteSettingService = Oje.AccountService.Interfaces.ISiteSettingService;
 
 namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controllers
 {
@@ -11,9 +15,16 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
     [CustomeAuthorizeFilter]
     public class PPFDesignerController: Controller
     {
-        public PPFDesignerController()
+        readonly IProposalFormService ProposalFormService = null;
+        readonly ISiteSettingService SiteSettingService = null;
+        public PPFDesignerController
+            (
+                IProposalFormService ProposalFormService,
+                ISiteSettingService SiteSettingService
+            )
         {
-
+            this.ProposalFormService = ProposalFormService;
+            this.SiteSettingService = SiteSettingService;
         }
 
         [AreaConfig(Title = "طراحی فرم پیشنهاد", Icon = "fa-palette", IsMainMenuItem = true)]
@@ -31,6 +42,21 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
         {
             Response.ContentType = "application/json; charset=utf-8";
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("ProposalFormBaseData", "PPFDesigner")));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
+        [HttpGet]
+        public ActionResult GetFormList([FromQuery] Select2SearchVM searchInput)
+        {
+            return Json(ProposalFormService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpPost]
+        [AreaConfig(Title = "مشاهده فرم پیشنهاد", Icon = "fa-list-alt")]
+        public IActionResult GetFormJsonConfig(string fid)
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(ProposalFormService.GetJSonConfigFile(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

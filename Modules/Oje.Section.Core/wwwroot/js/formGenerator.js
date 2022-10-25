@@ -158,7 +158,7 @@ function getEmptyCtrlTemplate(ctrl) {
 
 var isDisinerTryToLoaded = false;
 function getDesignerTemplate(ctrl) {
-    var result = '<div class="myFormDesigner" id="' + ctrl.id + '" ></div>';
+    var result = '<div class="myFormDesigner" data-baseUrl="' + ctrl.baseUrl + '" id="' + ctrl.id + '" ></div>';
     if (window['initDisigner']) {
         initDisigner(ctrl);
     } else {
@@ -332,6 +332,10 @@ function getPanelTemplate(panel, isInsideModal) {
             bindPanelByUrl($('#' + this.panelId));
         }.bind({ panelId: panel.id }));
         result += '</div>';
+
+        functionsList.push(function () {
+            $('#' + this.panel.id)[0].panel = this.panel;
+        }.bind({ panel: panel }));
 
         if (panel.autoScrollToHtml)
             functionsList.push(function () {
@@ -1249,7 +1253,7 @@ function getMultiRowInputTemplate(ctrl) {
             }
             result += '</div>';
         }
-        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" ><button style="margin:3px;" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">افزودن</button><button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">حذف اخرین سطر</button></div>';
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" ><button style="margin:3px;" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">' + (ctrl.addTitle ? ctrl.addTitle : 'افزودن') + '</button><button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">' + (ctrl.deleteTitle ? ctrl.deleteTitle : 'حذف اخرین سطر') +'</button></div>';
         result += '</div>';
         result += '</div>';
 
@@ -1318,8 +1322,8 @@ function getCheckboxButtonTemplate(ctrl) {
     var result = '';
 
     if (ctrl) {
-        result += '<div class="form-check form-switch myCtrl ">';
-        result += '<input ' + (ctrl.dfaultValue ? 'checked' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + ' class="form-check-input ' + (ctrl.class ? ctrl.class : '') + '" name="' + ctrl.name + '" type="checkbox" value="' + (ctrl.defValue ? ctrl.defValue : 'true') + '" id="' + ctrl.id + '" />';
+        result += '<div class="form-check form-switch myCtrl ' + (ctrl.class ? ctrl.class : '') + '">';
+        result += '<input ' + (ctrl.dfaultValue ? 'checked' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + ' class="form-check-input " name="' + ctrl.name + '" type="checkbox" value="' + (ctrl.defValue ? ctrl.defValue : 'true') + '" id="' + ctrl.id + '" />';
         result += '<label style="padding-right:20px;" class="form-check-label" for="' + ctrl.id + '">' + ctrl.label + '</label>';
         result += '</div>';
         addCtrlToObj(ctrl);
@@ -1755,21 +1759,10 @@ function getTextBoxTemplate(ctrl) {
                     jdtOption.endDate = curQuiery.attr('data-jdp-max-date');
 
                 if (curQuiery.val()) {
-                    //jdtOption.selectedBefore = true;
                     jdtOption.selectedDate = curQuiery.val();
                 }
 
                 curQuiery.persianDatepicker(jdtOption);
-
-                //if (curQuiery.val() && curQuiery.attr('pdp-id')) {
-                //    var ppId = curQuiery.attr('pdp-id');
-                //    if ($('#' + ppId).length > 0) {
-                //        $('#' + ppId).find('div[data-jdate="' + curQuiery.val() + '"]').click();
-                //        alert($('#' + ppId).find('div[data-jdate="' + curQuiery.val() + '"]').length);
-                //    }
-                //}
-
-
             }.bind({ id: this.id, ctrl: ctrl }), 100);
         }.bind({ id: ctrl.id }));
     }
@@ -1860,7 +1853,10 @@ function doCalceForMultiplay(multiPlayObj) {
         }
         if (isNaN(result))
             result = 0;
-        $('#' + multiPlayObj.id).val(postCommanInNumberPlugin(result));
+        if ($('#' + multiPlayObj.id).attr('type') == 'text')
+            $('#' + multiPlayObj.id).val(postCommanInNumberPlugin(result));
+        else
+            $('#' + multiPlayObj.id).val(result);
     }
 }
 var isLoadCkEditorTrying = false;
@@ -2009,7 +2005,7 @@ function getFileCTRLTemplate(ctrl) {
 
     result += '<div class="myCtrl form-group myFileUpload">';
 
-    result += '<div ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="' + (ctrl.hideImagePreview == true ? 'display:none;' : '') + '" class="holderUploadImage">';
+    result += '<div ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="' + (ctrl.hideImagePreview ? 'display:none;' : '') + '" class="holderUploadImage">';
     result += '<img data-name="' + ctrl.name + '_address" id="img_' + ctrl.id + '" src="' + (ctrl.sampleUrl ? ctrl.sampleUrl : '/Modules/Images/unknown.svg') + '" />';
     result += '</div>';
 
@@ -2156,7 +2152,7 @@ function getDropdownCTRLTemplate(ctrl) {
     result += '<select ' + (ctrl.ignoreChangeOnBinding ? 'data-ignore-change-onBinding="true"' : '') + ' ' + (ctrl.reInitOnShowModal ? 'reInitOnShowModal="true" ' : '') + (ctrl.ignoreOnChange ? 'ignoreOnChange="ignoreOnChange" ' : '') + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.bindFormUrl ? ('bindFormUrl=' + ctrl.bindFormUrl) : '') + ' style="width: 100%" ' + (ctrl.dataS2 ? 'data-s2="true"' : '') + '  id="' + ctrl.id + '"  data-valuefield="' + ctrl.valuefield + '" data-textfield="' + ctrl.textfield + '" data-url2="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" data-url="' + (ctrl.dataurl ? ctrl.dataurl : '') + '" ' + (!ctrl.moveNameToParent ? 'name="' + ctrl.name + '"' : '') + ' class="form-control" >';
     if (ctrl.values && ctrl.values.length > 0) {
         for (var i = 0; i < ctrl.values.length; i++) {
-            result += '<option ' + (ctrl.dfaultValue && ctrl.values[i][ctrl.valuefield] == ctrl.dfaultValue ? 'selected="selected"' : '') + ' value="' + ctrl.values[i][ctrl.valuefield] + '" >' + ctrl.values[i][ctrl.textfield] + '</option>';
+            result += '<option ' + (ctrl.dfaultValue && ctrl.values[i][ctrl.valuefield] == ctrl.dfaultValue ? 'selected="selected"' : '') + ' value=\'' + ctrl.values[i][ctrl.valuefield] + '\' >' + ctrl.values[i][ctrl.textfield] + '</option>';
         }
     }
     result += '</select>';
@@ -2522,6 +2518,13 @@ function showAndHideCtrl(curValue, showHideCondation, curCtrlId) {
         defValue = defValue[0];
     else
         defValue = null;
+    if (defValue == null) {
+        defValue = showHideCondation.filter(function (curItem) { return curItem.isDefault == true; });
+        if (defValue.length == 0)
+            defValue = null;
+        else
+            defValue = defValue[0];
+    }
     var selectedValue = showHideCondation.filter(function (curItem) { return curItem.value == curValue; });
     if (selectedValue.length > 0)
         selectedValue = selectedValue[0];
@@ -2632,7 +2635,7 @@ function getStepWizardTemplate(wizard) {
 
                 }
                 var isLastStep = (i + 1) >= wizard.steps.length;
-                if (wizard.steps[i].hideMoveNextButton != true)
+                if (!wizard.steps[i].hideMoveNextButton)
                     result += '<button class="btn btn-primary btn-sm stepButton ' + (isLastStep ? 'lastStepButton' : 'buttonConfirm') + ' ">' + (isLastStep ? wizard.lastStepButtonTitle : (wizard.fistStepButtonTitle && i == 0 ? wizard.fistStepButtonTitle : 'ادامه<i class="fa fa-chevron-left"></i>')) + '</button>';
                 result += '</div>';
             }
@@ -2647,9 +2650,50 @@ function getStepWizardTemplate(wizard) {
     functionsList.push(function () {
         initSWFunctions(this.wizard.id, this.wizard.actionOnLastStep);
         hideStepByRequest(wizard.steps);
+        $('#' + this.wizard.id)[0].wizard = this.wizard;
     }.bind({ wizard: wizard }));
 
     return result;
+}
+
+function convertFormDataToJson(formData) {
+    var formDataObj = {};
+    if (!formData || formData.constructor != (new FormData()).constructor)
+        return formDataObj;
+    formData.forEach(function (value, key) {
+        if (key.indexOf('[') != -1 && key.indexOf(']') != -1) {
+            var propNameLeft = key.split('[')[0];
+            var propNameRight = key.split('].')[1];
+            var curIndex = Number.parseInt(key.split('[')[1].split(']')[0]);
+            if (propNameLeft && propNameRight) {
+                if (!formDataObj[propNameLeft])
+                    formDataObj[propNameLeft] = [];
+
+                if (formDataObj[propNameLeft].length <= curIndex) {
+                    var newObj = {};
+                    newObj[propNameRight] = value;
+                    formDataObj[propNameLeft].push(newObj);
+                } else {
+                    var newObj = formDataObj[propNameLeft][curIndex];
+                    newObj[propNameRight] = value;
+                }
+            }
+        }
+        else {
+            if (!formDataObj[key])
+                formDataObj[key] = value;
+            else {
+                if (formDataObj[key].constructor != Array) {
+                    var prevValue = formDataObj[key];
+                    formDataObj[key] = [];
+                    formDataObj[key].push(prevValue);
+                }
+                formDataObj[key].push(value);
+            }
+        }
+    });
+
+    return formDataObj;
 }
 
 function convertToPerisanDate(curDate) {

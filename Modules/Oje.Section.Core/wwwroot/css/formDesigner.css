@@ -26,13 +26,21 @@
 .formDesignerCtrlHolders {
     border: 1px solid silver;
     padding-left: 10px;
+    width: 105px;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    overflow: hidden;
+    flex-shrink:0;
 }
 
 .formDesignerCtrlProperties {
     width: 0px;
     background-color: white;
     border: 1px solid silver;
-    border-right:1px solid transparent;
+    border-right: 1px solid transparent;
+    overflow: hidden;
     flex-shrink: 0;
     -moz-transition: 0.3s;
     -o-transition: 0.3s;
@@ -40,7 +48,13 @@
     transition: 0.3s;
 }
 
-.formDesignerCtrlPropertiesShow {
+.formDesignerCtrlPropertiesShow .formDesignerCtrlHolders {
+    width: 0px;
+    padding: 0px;
+    border-left: none;
+}
+
+.formDesignerCtrlPropertiesShow .formDesignerCtrlProperties {
     width: 400px;
     overflow-y: auto;
     padding-right: 15px;
@@ -48,12 +62,13 @@
     border-right: 1px solid silver;
 }
 
-.propertyTitle{
-    line-height:54px;
-    padding-right:10px;
-    border-bottom:1px solid silver;
-    font-weight:bold;
+.propertyTitle {
+    line-height: 54px;
+    padding-right: 10px;
+    border-bottom: 1px solid silver;
+    font-weight: bold;
 }
+
 .propertyCloseButton {
     float: left;
     cursor: pointer;
@@ -71,7 +86,7 @@
     border-right: none;
     position: relative;
     padding: 10px;
-    border-left:none;
+    border-left: none;
 }
 
 .formDesignerCtrlItem {
@@ -151,4 +166,137 @@
 
 .formDesignerPlateTopMenuSelectElementSelected {
     color: darkgreen;
+}
+
+.simpleBorder {
+    border-top: 1px solid silver;
+    margin-bottom: 20px;
+}
+
+.showCondationHeader, .sumOrMultiplyHeader {
+    border-bottom: 1px solid silver;
+}
+
+    .showCondationHeader > i, .sumOrMultiplyHeader > i {
+        font-size: 1.4em;
+        color: green;
+        cursor: pointer;
+    }
+
+.condationItem {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+    .condationItem > .condationItemTitle {
+        color: darkorange;
+        cursor: pointer;
+        display: block;
+    }
+
+    .condationItem > .condationItemTitleDefault {
+        color: silver;
+    }
+
+.condationSubItem, .sumOrMultiplyItem {
+    display: inline-block;
+    padding: 5px 10px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    margin: 2px;
+}
+
+.condationSubItemShow, .sumOrMultiplyItemShow {
+    border: 1px solid green;
+}
+
+.condationSubItemHide {
+    border: 1px solid red;
+}
+
+.deleteShowCondationCB, .deleteSumOrMultiplyCB {
+    display: inline-block;
+    margin-right: 15px;
+    color: red;
+    cursor: pointer;
+}
+
+.addCtrlToShowCondationButtonHide, .addCtrlToShowCondationButtonShow {
+    display: inline-block;
+    margin-right: 15px;
+    color: red;
+}
+
+.addCtrlToShowCondationButtonShow {
+    color: darkgreen;
+}
+
+.makeSelectedFDP {
+    position: relative;
+    cursor: pointer;
+}
+
+.makeSelectedFDPLeftBottom, .makeSelectedFDPLeftTop, .makeSelectedFDPRightBottom, .makeSelectedFDPRightTop {
+    position: absolute;
+    left: 7px;
+    bottom: 10px;
+    width: 7px;
+    height: 7px;
+    background-color: white;
+    border: 2px solid red;
+}
+
+.makeSelectedFDPLeftTop {
+    bottom: unset;
+    top: -5px;
+}
+
+.makeSelectedFDPRightBottom {
+    left: unset;
+    right: 7px;
+}
+
+.makeSelectedFDPRightTop {
+    left: unset;
+    bottom: unset;
+    right: 7px;
+    top: -5px;
+}
+
+.makeShowAllHideCtrl .myPanel .row .col-xs-12 {
+    display: block !important;
+}
+
+.stepHeaderPInfo {
+    border: 1px solid silver;
+    border-bottom: none;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: 10px;
+    -webkit-border-top-left-radius: 3px;
+    border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    border-top-right-radius: 3px;
+    color: darkorange;
+}
+
+.stepHeaderPInfoActive {
+    color: darkgreen;
+}
+
+.addNewStepButton {
+    color: green;
+    margin-right: 20px;
+    font-size: 1.4em;
+    cursor: pointer;
+}
+
+.deleteStepButton {
+    margin-right: 15px;
+    color: red;
+    cursor: pointer;
+}
+.sumOrMultiplyHolder{
+    padding-bottom:15px;
 }

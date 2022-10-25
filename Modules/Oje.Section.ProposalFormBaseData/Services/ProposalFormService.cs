@@ -245,5 +245,10 @@ namespace Oje.Section.ProposalFormBaseData.Services
 
             return new { results = result, pagination = new { more = hasPagination } };
         }
+
+        public string GetJSonConfigFile(int id, int? siteSettingId)
+        {
+            return db.ProposalForms.Where(t => t.Id == id && (t.SiteSettingId == null || t.SiteSettingId == siteSettingId)).Select(t => t.JsonConfig).FirstOrDefault();
+        }
     }
 }

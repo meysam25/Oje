@@ -825,13 +825,7 @@ function confirmDialog(title, message, posetiveEvent, negativeEvent) {
 }
 
 function convertFormDataToJsonOject(formData) {
-    var result = {};
-
-    for (var item of formData) {
-        result[item[0]] = item[1];
-    }
-
-    return result;
+    return convertFormDataToJson(formData);
 }
 
 function openNewLink(holderParametersId, link, checkUrl, makePost) {

@@ -6,6 +6,7 @@
     <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
     <ProjectReference Include="..\..\Services\Oje.FileService\Oje.FileService.csproj" />
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4basedatajsonconfigs_4city_1json__JsonSchema="template += getRequiredValidation(foundConfig);" /></VisualStudio></ProjectExtensions>
   
 
 

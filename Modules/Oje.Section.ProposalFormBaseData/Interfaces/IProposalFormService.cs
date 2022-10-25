@@ -12,5 +12,6 @@ namespace Oje.Section.ProposalFormBaseData.Interfaces
         GridResultVM<ProposalFormMainGridResultVM> GetList(ProposalFormMainGrid searchInput);
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId);
         bool Exist(int id, int? siteSettingId);
+        string GetJSonConfigFile(int id, int? siteSettingId);
     }
 }
