@@ -1,4 +1,9 @@
 ﻿var isEditModeActive = false;
+var isMoveModeActive = false;
+var curMouseMove = null;
+var curMoveCtrl = null;
+var curMoveCtrlDocument = null;
+
 function initDisigner(ctrl) {
     if (ctrl) {
         var quirySelector = $('#' + ctrl.id);
@@ -35,7 +40,10 @@ function generateDesigner(ctrl) {
 function getActiveCtrls() {
     var result = '';
 
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemButtonMoveNextStep" ><img src="/Modules/Images/button.png" alt="مرحله بعد" /><span title ="مرحله بعد" >مرحله بعد</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemLabel" ><img src="/Modules/Images/label.png" alt="متن" /><span title ="متن" >متن</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemDropdown" ><img src="/Modules/Images/dropdown.png" alt="دراپ دان" /><span title ="دراپ دان" >دراپ دان</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTokenBox" ><img src="/Modules/Images/multiselect.png" alt="چند انتخابی" /><span title ="چند انتخابی" >چند انتخابی</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTextBox" ><img src="/Modules/Images/textbox.png" alt="تکس باکس" /><span title ="تکس باکس" >تکس باکس</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTextBoxArea" ><img src="/Modules/Images/textarea.png" alt="تکس اریا" /><span title ="تکس اریا" >تکس اریا</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemPersianDate" ><img src="/Modules/Images/datetime.png" alt="تقویم فارسی" /><span title ="تقویم فارسی" >تقویم فارسی</span></div>';
@@ -44,8 +52,11 @@ function getActiveCtrls() {
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemRadioBox" ><img src="/Modules/Images/radio.png" alt="ردیو باکس" /><span title ="ردیو باکس" >ردیو باکس</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemCheckBox" ><img src="/Modules/Images/checkbox.png" alt="چک باکس" /><span title ="چک باکس" >چک باکس</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemUploadFile" ><img src="/Modules/Images/fileupload.png" alt="فایل" /><span title ="فایل" >فایل</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemCarPlaque" ><img src="/Modules/Images/carPlaque.png" alt="پلاک خودرو" /><span title ="پلاک خودرو" >پلاک خودرو</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemEmpty" ><img src="/Modules/Images/empty.png" alt="سطر خالی" /><span title ="سطر خالی" >سطر خالی</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemMultiRow" ><img src="/Modules/Images/groupCtrl.png" alt="چند سطر" /><span title ="چند سطر" >چند سطر</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemMap" ><img src="/Modules/Images/map.png" alt="نقشه" /><span title ="نقشه" >نقشه</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemHtml" ><img src="/Modules/Images/html.png" alt="html" /><span title ="html" >html</span></div>';
 
     return result;
 }
@@ -54,13 +65,14 @@ function getTopMenuActions() {
     var result = '';
 
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuNew fa fa-plus-circle" style="color:red;" title="جدید" ></div>';
-    result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuExport fa fa-download" title="خروجی" ></div>';
-    result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuImport fa fa-upload" title="ورودی" ></div>';
+    result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuImport fa fa-download" title="ورودی" ></div>';
+    result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuExport fa fa-upload" title="خروجی" ></div>';
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuUndo fa fa-undo" title="قبلی" ></div>';
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuRedo fa fa-redo" title="بعدی" ></div>';
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuInfo fa fa-info" title="خصوصیات" ></div>';
-    result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuDelete fa fa-trash" title="حذف" ></div>';
+    result += '<div style="color:red;" class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuDelete fa fa-trash" title="حذف" ></div>';
     result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuSelectElement fa fa-mouse-pointer" title="انتخاب" ></div>';
+    result += '<div class="formDesignerPlateTopMenuItem formDesignerPlateTopMenuMoveElement fa fa-expand-arrows" title="جا به جایی" ></div>';
 
     return result;
 }
@@ -72,7 +84,10 @@ function initDisignerEventAndFunction(ctrl, quirySelector) {
     initSelectElementFunction(curObj, quirySelector);
     initShowCtrlInfoMenu(curObj, quirySelector);
     initDeleteButtonMenu(curObj, quirySelector);
+    initMoveButtonMenu(curObj, quirySelector);
     initGetSelectedCtrlJsonObj(curObj);
+    initExportButtonMenu(curObj, quirySelector);
+    initImportButtonMenu(curObj, quirySelector);
     initMouseEvents(ctrl, quirySelector);
 
     curObj.reNew();
@@ -107,8 +122,13 @@ function initDeleteButtonMenu(curObj, quirySelector) {
             });
             return;
         }
-        if ($('.makeSelectedDP').find('>.myCtrl ').length > 0)
+        if ($('.makeSelectedDP').find('>.myCtrl').length > 0) {
+            if ($('.makeSelectedDP').closest('.MultiRowInputRow').length > 0) {
+                updateMultiRowInputs($('.makeSelectedDP').closest('.MultiRowInputRow'));
+            }
             $('.makeSelectedDP').remove();
+            $(this).removeClass('hideToolbar');
+        }
         else
             $.toast({
                 heading: 'خطا',
@@ -143,17 +163,48 @@ function initShowCtrlInfoMenu(curObj, quirySelector) {
     quirySelector.find('.formDesignerPlateTopMenuInfo').click(function () { $(this).closest('.myFormDesigner')[0].showSpecMenue(); })
 }
 
+function initMoveButtonMenu(curObj, quirySelector) {
+    curObj.togleMoveE = function () {
+        var sQuiry = $(this).find('.formDesignerPlateTopMenuMoveElement');
+        sQuiry.toggleClass('formDesignerPlateTopMenuMoveElementSelected');
+        isMoveModeActive = sQuiry.hasClass('formDesignerPlateTopMenuMoveElementSelected');
+        $(this)[0].isMoveModeActive = isMoveModeActive;
+        if (isMoveModeActive == true) {
+            $(this)[0].offSelecteE();
+            $(this).addClass('hideToolbar');
+        } else {
+            removeAllMarked(quirySelector);
+            $(this).removeClass('hideToolbar');
+        }
+    };
+    curObj.offMoveE = function () {
+        var sQuiry = $(this).find('.formDesignerPlateTopMenuMoveElement');
+        sQuiry.removeClass('formDesignerPlateTopMenuMoveElementSelected');
+        $(this)[0].isMoveModeActive = false;
+        isMoveModeActive = false;
+    };
+    quirySelector.find('.formDesignerPlateTopMenuMoveElement').click(function () { $(this).closest('.myFormDesigner')[0].togleMoveE(); })
+}
+
 function initSelectElementFunction(curObj, quirySelector) {
     curObj.togleSelectE = function () {
         var sQuiry = $(this).find('.formDesignerPlateTopMenuSelectElement');
         sQuiry.toggleClass('formDesignerPlateTopMenuSelectElementSelected');
         $(this)[0].isSelectedElement = sQuiry.hasClass('formDesignerPlateTopMenuSelectElementSelected');
         isEditModeActive = sQuiry.hasClass('formDesignerPlateTopMenuSelectElementSelected');
+        if (isEditModeActive == true) {
+            $(this)[0].offMoveE();
+            $(this).addClass('hideToolbar');
+        }
+        else {
+            removeAllMarked(quirySelector);
+            $(this).removeClass('hideToolbar');
+        }
     };
     curObj.offSelecteE = function () {
         var sQuiry = $(this).find('.formDesignerPlateTopMenuSelectElement');
         sQuiry.removeClass('formDesignerPlateTopMenuSelectElementSelected');
-        $(this)[0].isSelectedElement = sQuiry.hasClass('formDesignerPlateTopMenuSelectElementSelected');
+        $(this)[0].isSelectedElement = false;
         isEditModeActive = false;
     };
     quirySelector.find('.formDesignerPlateTopMenuSelectElement').click(function () { $(this).closest('.myFormDesigner')[0].togleSelectE(); })
@@ -170,7 +221,51 @@ function initReNewFunction(curObj, quirySelector) {
     quirySelector.find('.formDesignerPlateTopMenuNew').click(function () { $(this).closest('.myFormDesigner')[0].reNew(); })
 }
 
-var curMouseMove = null;
+function initImportButtonMenu(curObj, quirySelector) {
+    curObj.import = function () {
+        showImportModal(this);
+    };
+    quirySelector.find('.formDesignerPlateTopMenuImport').click(function () { $(this).closest('.myFormDesigner')[0].import(); })
+}
+
+function initExportButtonMenu(curObj, quirySelector) {
+    curObj.export = function () {
+        var jsonObj = getWoleJsonObj(this);
+        if (!jsonObj) {
+            $.toast({
+                heading: 'خطا',
+                text: 'خطا در ساخت خروجی',
+                textAlign: 'right',
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'error'
+            });
+            return;
+        }
+        copyTextToClipboard(JSON.stringify(jsonObj));
+        $.toast({
+            heading: 'موفقیت',
+            text: 'عملیات با موفقیت انجام گرفت',
+            textAlign: 'right',
+            position: 'bottom-right',
+            showHideTransition: 'slide',
+            icon: 'success'
+        });
+    };
+    quirySelector.find('.formDesignerPlateTopMenuExport').click(function () { $(this).closest('.myFormDesigner')[0].export(); })
+}
+
+function getWoleJsonObj(curObj) {
+    if (curObj) {
+        var rootPanel = $(curObj).find('.formDesignerPlate').find('.myPanel');
+        var foundPanel = rootPanel[0].panel;
+        if (rootPanel.length > 0 && foundPanel) {
+            fillFoundObj(foundPanel, foundPanel, $(curObj).find('.formDesignerPlate'));
+            return foundPanel;
+        }
+    }
+    return null;
+}
 
 function initMouseEvents(ctrl, quirySelector) {
     quirySelector.mousedown(function (e) {
@@ -178,6 +273,8 @@ function initMouseEvents(ctrl, quirySelector) {
             return;
         if (e && e.target && $(e.target).closest('.formDesignerCtrlItem').length > 0) {
             createMouseCtrlShadow($(e.target).closest('.formDesignerCtrlItem'), quirySelector, e);
+        } else if (isMoveModeActive && e && e.target && $(e.target).closest('.formDesignerPlate').length > 0) {
+            createMouseCtrlShadowForMoveCtrl($(e.target), quirySelector, e);
         }
     });
     quirySelector.mouseup(function (e) {
@@ -187,6 +284,8 @@ function initMouseEvents(ctrl, quirySelector) {
             addNewCtrlToDesigner(curMouseMove, e, this.quirySelector);
             curMouseMove.remove();
             curMouseMove = null;
+        } else if (curMoveCtrlDocument != null && curMoveCtrlDocument.length > 0) {
+            moveCtrlToDesigner(e, this.quirySelector);
         }
     }.bind({ quirySelector: quirySelector }));
     quirySelector.mousemove(function (e) {
@@ -194,25 +293,37 @@ function initMouseEvents(ctrl, quirySelector) {
             curMouseMove.css('left', (e.clientX + 10) + 'px');
             curMouseMove.css('top', (e.clientY - 10) + 'px');
             markeCurrentActiveCtrl(e, this.quirySelector);
+        } else if (curMoveCtrlDocument) {
+            curMoveCtrlDocument.css('left', (e.clientX + 20) + 'px');
+            curMoveCtrlDocument.css('top', (e.clientY - 10) + 'px');
+            markeCurrentActiveCtrl(e, this.quirySelector, false, isMoveModeActive);
         } else if (this.quirySelector[0].isSelectedElement) {
             markeCurrentActiveCtrl(e, this.quirySelector, this.quirySelector[0].isSelectedElement);
         } else if (whatToDoAfterSecoundSelect != null) {
             markeCurrentActiveCtrl2(e, quirySelector);
+        } else if (isMoveModeActive) {
+            markeCurrentActiveCtrl(e, this.quirySelector, false, isMoveModeActive);
         }
     }.bind({ quirySelector: quirySelector }));
 }
 
 
 
-function isSelectable(targetQuiry, isSelectedElement) {
-    if (targetQuiry.hasClass('col-xs-12') && targetQuiry.parent() && targetQuiry.parent().hasClass('row') && targetQuiry.closest('.myPanel').length > 0 && !targetQuiry.hasClass('myPanel'))
-        return targetQuiry;
-    else if (targetQuiry.closest('.myCtrl').length > 0)
-        return targetQuiry.closest('.myCtrl').parent();
-    else if (isSelectedElement && (targetQuiry.hasClass('panelSWizard') || targetQuiry.closest('.panelSWizard').length > 0))
-        return targetQuiry.hasClass('panelSWizard') ? targetQuiry : targetQuiry.closest('.panelSWizard');
-    else if (isSelectedElement && ((targetQuiry.hasClass('myPanel')) && targetQuiry.find('>.panelSWizard').length > 0) || ((targetQuiry.parent().hasClass('myPanel')) && targetQuiry.parent().find('>.panelSWizard').length > 0))
-        return targetQuiry.hasClass('myPanel') ? targetQuiry : targetQuiry.parent();
+function isSelectable(targetQuiry, isSelectedElement, isMoveModeActive) {
+    if (isMoveModeActive) {
+        if (targetQuiry.closest('.myCtrl').length > 0 && targetQuiry.closest('.myCtrl').parent().closest('.plaqueCtrl').length == 0)
+            return targetQuiry.closest('.myCtrl').parent();
+    }
+    else {
+        if (targetQuiry.hasClass('col-xs-12') && targetQuiry.parent() && targetQuiry.parent().hasClass('row') && targetQuiry.closest('.myPanel').length > 0 && !targetQuiry.hasClass('myPanel'))
+            return targetQuiry;
+        else if (targetQuiry.closest('.myCtrl').length > 0)
+            return targetQuiry.closest('.myCtrl').parent();
+        else if (isSelectedElement && (targetQuiry.hasClass('panelSWizard') || targetQuiry.closest('.panelSWizard').length > 0))
+            return targetQuiry.hasClass('panelSWizard') ? targetQuiry : targetQuiry.closest('.panelSWizard');
+        else if (isSelectedElement && ((targetQuiry.hasClass('myPanel')) && targetQuiry.find('>.panelSWizard').length > 0) || ((targetQuiry.parent().hasClass('myPanel')) && targetQuiry.parent().find('>.panelSWizard').length > 0))
+            return targetQuiry.hasClass('myPanel') ? targetQuiry : targetQuiry.parent();
+    }
 
     return null;
 }
@@ -251,12 +362,12 @@ function removeAllMarked(quirySelector) {
     quirySelector.find('.makeSelectedDP').removeClass('makeSelectedDP').unbind();
 }
 
-function markeCurrentActiveCtrl(e, quirySelector, isSelectedElement) {
+function markeCurrentActiveCtrl(e, quirySelector, isSelectedElement, isMoveModeActive) {
     removeAllMarked(quirySelector);
 
     if (e && e.target && $(e.target).closest('.formDesignerPlate').length > 0) {
         var targetQuiry = $(e.target);
-        var tempTargetQuiry = isSelectable(targetQuiry, isSelectedElement);
+        var tempTargetQuiry = isSelectable(targetQuiry, isSelectedElement, isMoveModeActive);
         if (tempTargetQuiry) {
             targetQuiry = tempTargetQuiry;
             if (!targetQuiry.hasClass('makeSelectedDP')) {
@@ -285,6 +396,67 @@ function createMouseCtrlShadow(curCtrlQuiry, quirySelector, e) {
     e.preventDefault();
 }
 
+function createMouseCtrlShadowForMoveCtrl(curCtrlQuiry, quirySelector, e) {
+    var ctrlQuiry = curCtrlQuiry.closest('.myCtrl');
+    if (ctrlQuiry.length > 0) {
+        var curWidth = ctrlQuiry.width();
+        curMoveCtrl = ctrlQuiry[0].ctrl;
+        if (curMoveCtrl) {
+            var holderCtrlQuiry = ctrlQuiry.closest('.col-xs-12');
+            var newId = uuidv4RemoveDash();
+            var template = '<div style="width:' + curWidth + 'px;" id="' + newId + '" class="formDesignerCtrlItemMovable lowOpacityForMovingObj">' + holderCtrlQuiry.html() + '</div>';
+
+            quirySelector.append(template);
+            curMoveCtrlDocument = $('#' + newId);
+            curMoveCtrlDocument.css('left', (e.clientX + 10) + 'px');
+            curMoveCtrlDocument.css('top', (e.clientY - 10) + 'px');
+        }
+
+        e.preventDefault();
+    }
+
+}
+
+function moveCtrlToDesigner(e, quirySelector) {
+    if (e && e.target && $(e.target).closest('.formDesignerPlate').length > 0) {
+        var targetQuiry = $(e.target);
+        var tempTargetQuiry = isSelectable(targetQuiry);
+        if (tempTargetQuiry && tempTargetQuiry.length > 0) {
+            if (tempTargetQuiry.find('.myCtrl')[0].ctrl == curMoveCtrl) {
+                curMoveCtrlDocument.remove();
+                curMoveCtrlDocument = null;
+                return;
+            }
+            targetQuiry = tempTargetQuiry;
+            var isRight = false;
+            var curWidth = targetQuiry.width() / 2;
+            var ofsetX = e.offsetX;
+            if (!$(e.target).hasClass('col-xs-12'))
+                ofsetX = ofsetX + e.target.offsetLeft;
+            if (ofsetX <= curWidth) {
+                isRight = true;
+            }
+            var curCtrlHtml = getInputTemplate(curMoveCtrl);
+            curMoveCtrlDocument.remove();
+            curMoveCtrlDocument = null;
+            if (curCtrlHtml) {
+                $('#' + curMoveCtrl.id).closest('.col-xs-12').remove();
+                if (isRight == true)
+                    targetQuiry.after(curCtrlHtml);
+                else
+                    targetQuiry.before(curCtrlHtml);
+
+                executeArrFunctions();
+                removeAllMarked(quirySelector);
+            }
+        }
+    }
+    if (curMoveCtrlDocument) {
+        curMoveCtrlDocument.remove();
+        curMoveCtrlDocument = null;
+    }
+}
+
 function addNewCtrlToDesigner(curMouseMove, e, quirySelector) {
     if (e && e.target && $(e.target).closest('.formDesignerPlate').length > 0) {
         var targetQuiry = $(e.target);
@@ -309,7 +481,6 @@ function addNewCtrlToDesigner(curMouseMove, e, quirySelector) {
                 executeArrFunctions();
                 removeAllMarked(quirySelector);
             }
-
         }
     }
 }
@@ -347,6 +518,76 @@ function getCurCtrlTemplate(curMouseMove, targetQuiry) {
         result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
         result += getDropdownCTRLTemplate(curCtrl);
         result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemLabel')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            type: "label",
+            label: "متن مورد نظر",
+            color: '#00ff00'
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getLableTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemButtonMoveNextStep')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            class: "btn-primary btn-block ",
+            type: "button",
+            label: "تایید اطلاعات",
+            onClick: "moveToNextStepForSW(this)"
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getButtonTemplateWidthLabel(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemEmpty')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            type: "empty"
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getEmptyCtrlTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemHtml')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            type: "template",
+            html: "<div><p>test <strong>test2</strong> <span style='color:red'>test3</span></p<</div>"
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemTokenBox')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            name: generateRandomName(),
+            type: "tokenBox",
+            label: "نوع سازه",
+            isRequired: true,
+            textfield: "title",
+            valuefield: "id",
+            values: [
+                {
+                    id: '',
+                    title: ''
+                },
+                {
+                    id: 'بتونی',
+                    title: 'بتونی'
+                },
+                {
+                    id: 'فلزی',
+                    title: 'فلزی'
+                }
+            ]
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getTokennCTRLTemplate(curCtrl);
+        result += '</div>';
     } else if (curMouseMove.hasClass('formDesignerCtrlItemTextBox')) {
         curCtrl = {
             id: uuidv4RemoveDash(),
@@ -358,6 +599,18 @@ function getCurCtrlTemplate(curMouseMove, targetQuiry) {
         };
         result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
         result += getTextBoxTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemCarPlaque')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            name: generateRandomName(),
+            type: "carPlaque",
+            label: "پلاک خودرو",
+            isRequired: true
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getPlaqueTemplate(curCtrl);
         result += '</div>';
     } else if (curMouseMove.hasClass('formDesignerCtrlItemPersianDate')) {
         curCtrl = {
@@ -462,7 +715,7 @@ function getCurCtrlTemplate(curMouseMove, targetQuiry) {
             id: uuidv4RemoveDash(),
             parentCL: "col-md-12 col-sm-12 col-xs-12 col-lg-12",
             names: {
-                lat: newName +"Lat",
+                lat: newName + "Lat",
                 lon: newName + "Lon",
                 zoom: newName + "Zoom"
             },
@@ -553,21 +806,23 @@ function getCurCtrlTemplate(curMouseMove, targetQuiry) {
         result += '</div>';
     }
     if (targetQuiry.closest('.MultiRowInputRow').length > 0) {
-        var parentCtrl = targetQuiry.closest('.myCtrl')[0];
-        console.log();
-        if (parentCtrl) {
-            parentCtrl = parentCtrl.ctrl;
-            if (parentCtrl) {
-                var allCtrls = parentCtrl.ctrls;
-                if (!allCtrls || allCtrls.length == 0)
-                    allCtrls = [];
-                allCtrls.push(curCtrl);
-                parentCtrl.ctrls = allCtrls;
-            }
-        }
+        updateMultiRowInputs(targetQuiry.closest('.MultiRowInputRow'));
     }
 
     return result;
+}
+
+function updateMultiRowInputs(targetQuiry) {
+    if (targetQuiry) {
+        setTimeout(function () {
+            var parentCtrl = this.targetQuiry.closest('.myCtrl')[0];
+            if (parentCtrl) {
+                parentCtrl = parentCtrl.ctrl;
+                if (parentCtrl)
+                    parentCtrl.ctrls = getCtrls(this.targetQuiry.closest('.myCtrl').find('.MultiRowInputRow').eq(0), true);
+            }
+        }.bind({ targetQuiry: targetQuiry }), 500);
+    }
 }
 
 function bindSpecPanelInputs(curDesigner, foundConfig) {
@@ -625,6 +880,7 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
                 template += getSizeInput(foundConfig);
                 template += getWidthInput(foundConfig);
                 template += getHeightInput(foundConfig);
+                template += getDefaultMapInput(foundConfig);
                 break;
             case 'dropDown':
                 template += getLabelInput(foundConfig);
@@ -663,7 +919,35 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
                 template += getValidExtensionTemplate(foundConfig, quirySelector);
                 template += getPreviewImageTemplate(foundConfig);
                 template += getRequiredValidation(foundConfig);
-
+                break;
+            case 'carPlaque':
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                break;
+            case 'label':
+                template += getLabelInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getColorInput(foundConfig);
+                break;
+            case 'empty':
+                template += getSizeInput(foundConfig);
+                break;
+            case 'template':
+                template += getSizeInput(foundConfig);
+                template += getHtmlInput(foundConfig);
+                break;
+            case 'button':
+                template += getLabelInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                break;
+            case 'tokenBox':
+                template += getLabelInput(foundConfig);
+                template += getNameInput(foundConfig);
+                template += getSizeInput(foundConfig);
+                template += getSourceUrlTemplate(foundConfig);
+                template += getTextAndValueSchemaFields(foundConfig);
+                template += getRequiredValidation(foundConfig);
+                template += getValuesTemplate(foundConfig);
                 break;
             default:
         }
@@ -685,7 +969,7 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
     quirySelector.html(template);
     quirySelector.closest('.myFormDesigner').addClass('formDesignerCtrlPropertiesShow')
 
-    quirySelector.find('.propertyCloseButton').click(function () { $(this).closest('.formDesignerCtrlPropertiesShow').removeClass('formDesignerCtrlPropertiesShow'); whatToDoAfterSecoundSelect = null; });
+    quirySelector.find('.propertyCloseButton').click(function () { removeAllMarked($(this).closest('.formDesignerCtrlPropertiesShow')); $(this).closest('.formDesignerCtrlPropertiesShow').removeClass('hideToolbar').removeClass('formDesignerCtrlPropertiesShow'); whatToDoAfterSecoundSelect = null; });
     executeArrFunctions();
 }
 
@@ -715,10 +999,14 @@ function fillFoundObj(foundConfig, formDataObj, formSelector) {
     foundConfig.sumCalculator = formDataObj.sumCalculator;
     foundConfig.deleteTitle = formDataObj.deleteTitle;
     foundConfig.addTitle = formDataObj.addTitle;
-    foundConfig.minDateValidation = Number.parseInt(formDataObj.minDateValidation);
-    foundConfig.maxDateValidation = Number.parseInt(formDataObj.maxDateValidation);
+    if (formDataObj.minDateValidation)
+        foundConfig.minDateValidation = Number.parseInt(formDataObj.minDateValidation);
+    if (formDataObj.maxDateValidation)
+        foundConfig.maxDateValidation = Number.parseInt(formDataObj.maxDateValidation);
     foundConfig.width = formDataObj.width;
-    foundConfig.height = formDataObj.height
+    foundConfig.height = formDataObj.height;
+    foundConfig.color = formDataObj.color;
+    foundConfig.html = formDataObj.html;
 
     addOrRemoveOnlyValidationOnlyNumber(foundConfig, formDataObj.justNumber);
     addOrRemoveOnlyValidationNumberCount(foundConfig, formDataObj.numberLength);
@@ -727,6 +1015,9 @@ function fillFoundObj(foundConfig, formDataObj, formSelector) {
 
     if (foundConfig.type == 'number')
         foundConfig.type = 'text';
+
+    if (formDataObj.mapLat && formDataObj.mapLon && formDataObj.mapZoom)
+        foundConfig.values = { lat: formDataObj.mapLat, lon: formDataObj.mapLon, zoom: formDataObj.mapZoom };
 
     foundConfig.names = null;
     if (formDataObj.mapName)
@@ -828,7 +1119,7 @@ function fillFoundObj(foundConfig, formDataObj, formSelector) {
     }
 
     for (var item in foundConfig) {
-        if (foundConfig[item] == undefined || foundConfig[item] == null || foundConfig[item] == '')
+        if (foundConfig[item] == undefined || foundConfig[item] == null || foundConfig[item] == '' || foundConfig[item] == NaN)
             delete foundConfig[item];
         if (foundConfig[item] == 'true')
             foundConfig[item] = true;
@@ -1007,7 +1298,6 @@ function getMultiOrSumPlayInputTemplate(foundConfig, name, title) {
 
     for (var i = 0; i < multiPlay.length; i++) {
         result += '<div class="sumOrMultiplyItem sumOrMultiplyItemShow" >';
-        console.log($('#' + multiPlay[i]).closest('.myCtrl').length);
         var curCtrlTitle = $('#' + multiPlay[i]).closest('.myCtrl').find('label').text();
         result += '<span>' + (curCtrlTitle ? curCtrlTitle : 'خالی') + '<i class="fa fa-trash deleteSumOrMultiplyCB" onclick="removeThisMItem(this)" ></i><input type="hidden" name="' + name + '" value="' + multiPlay[i] + '" /></span>';
         result += '</div>';
@@ -1216,6 +1506,21 @@ function getLastButtonSWTitleTemplate(foundConfig) {
     return result;
 }
 
+function getColorInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getTextBoxTemplate({
+        name: "color",
+        type: "color",
+        label: "رنگ",
+        dfaultValue: foundConfig.color
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
 function getLabelInput(foundConfig) {
     var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
 
@@ -1338,11 +1643,11 @@ function getPreviewImageTemplate(foundConfig) {
     return result;
 }
 
-function getCtrls(holder) {
+function getCtrls(holder, ignoreMultiRow) {
     var result = []
     if (holder && holder.length > 0) {
         holder.find('.myCtrl').each(function () {
-            if ($(this).closest('.MultiRowInputRow').length == 0) {
+            if ((ignoreMultiRow || $(this).closest('.MultiRowInputRow').length == 0) && $(this).closest('.plaqueRightPartLeft').length == 0) {
                 var curCtrl = $(this)[0].ctrl;
                 if (curCtrl) {
                     result.push(curCtrl);
@@ -1785,6 +2090,27 @@ function getWidthInput(foundConfig) {
     return result;
 }
 
+function getDefaultMapInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getMapTemplate({
+        parentCL: "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+        names: {
+            lat: "mapLat",
+            lon: "mapLon",
+            zoom: "mapZoom"
+        },
+        values: foundConfig.values,
+        width: "100%",
+        height: "312px",
+        type: "map",
+        label: "مختصات پیش فرض"
+    });
+    result += '</div>';
+
+    return result;
+}
+
 function getHeightInput(foundConfig) {
     var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
 
@@ -2087,6 +2413,22 @@ function getSourceUrlTemplate(foundConfig) {
     return result;
 }
 
+function getHtmlInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getCkEditorTemplate({
+        id: uuidv4RemoveDash(),
+        name: "html",
+        type: "ck",
+        label: "محتوی",
+        dfaultValue: foundConfig.html
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
 function getMaskTemplate(foundConfig) {
     var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
 
@@ -2162,6 +2504,71 @@ function getValidExtensionTemplate(foundConfig, quirySelector) {
     return result;
 }
 
+function showImportModal(curButton) {
+    var modalId = 'addNewModalPPF';
+    var designerQuiry = $(curButton).closest('.myFormDesigner');
+    var baseUrl = designerQuiry.attr('data-baseUrl');
+    var dsignerId = designerQuiry.attr('id');
+
+    if (!baseUrl)
+        return;
+
+    if ($('#' + modalId).length == 0) {
+        $('body').append(getModualTemplate({
+            id: modalId,
+            title: 'بارگزاری فرم پیشنهاد',
+            ctrls: [
+                {
+                    id: 'addNewModalPPFppfDropdownId',
+                    parentCL: 'col-md-12 col-sm-12 col-xs-12 col-lg-12',
+                    type: 'dropDown2',
+                    textfield: 'title',
+                    valuefield: 'id',
+                    label: 'فرم پیشنهاد',
+                    name: 'fid',
+                    isRequired: true,
+                    dataurl: baseUrl + '/GetFormList'
+                }
+            ],
+            actions: [
+                {
+                    title: 'بستن',
+                    class: 'btn-secondary',
+                    onClick: 'closeThisModal(this)'
+                },
+                {
+                    title: 'بارگزاری',
+                    class: 'btn-primary',
+                    onClick: 'loadPPF( \'' + dsignerId + '\', \'addNewModalPPFppfDropdownId\', \'' + baseUrl + '\', this)'
+                }
+            ]
+        }));
+
+        executeArrFunctions();
+    }
+
+    clearForm($('#' + modalId));
+    $('#' + modalId).modal('show');
+}
+
+function loadPPF(designerId, ppfId, baseUrl, curButton) {
+    var formQuiry = $('#' + ppfId).closest('.modal-body');
+    var formData = getFormData(formQuiry);
+    var formDataJsonOBj = convertFormDataToJson(formData);
+
+    if (baseUrl && formDataJsonOBj && formDataJsonOBj.fid && formDataJsonOBj.fid != 'null') {
+        showLoader(formQuiry);
+        postForm(baseUrl + '/GetFormJsonConfig', formData, function (res) {
+            if (res) {
+                var curCtrl = $('#' + designerId)[0].ctrl;
+                $('#' + curCtrl.id + '_renderPlace').html('');
+                generateForm(res, curCtrl.id + '_renderPlace');
+                closeThisModal(curButton)
+            }
+        }, null, function () { hideLoader(formQuiry) })
+    }
+}
+
 function getSizeInput(foundConfig) {
     var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
 
@@ -2204,7 +2611,6 @@ function getSizeInput(foundConfig) {
 
     return result;
 }
-
 function hasJustNumberValidation(foundConfig) {
     var result = false;
 

@@ -960,3 +960,6 @@ input[type=number] {
 figure.table > table {
     width:100%;
 }
+.fdgHtmlTemplate img {
+    width:100%;
+}

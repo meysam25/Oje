@@ -47,8 +47,10 @@ function initTokenBox(curObj) {
     });
 
     $(curObj).find('select').focusin(function () {
-        $(this)[0].size = 10;
-        $(this).addClass('makeBigger')
+        if (!window['isEditModeActive']) {
+            $(this)[0].size = 10;
+            $(this).addClass('makeBigger')
+        }
     });
 
     $(curObj).find('select').focusout(function () {

@@ -14,6 +14,11 @@
     height: 50px;
     border: 1px solid silver;
     border-bottom: none;
+    -moz-transition: 0.3s;
+    -o-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    overflow: hidden;
 }
 
 .formDesignerPlateHolders {
@@ -32,7 +37,7 @@
     -webkit-transition: 0.3s;
     transition: 0.3s;
     overflow: hidden;
-    flex-shrink:0;
+    flex-shrink: 0;
 }
 
 .formDesignerCtrlProperties {
@@ -48,7 +53,7 @@
     transition: 0.3s;
 }
 
-.formDesignerCtrlPropertiesShow .formDesignerCtrlHolders {
+.formDesignerCtrlPropertiesShow .formDesignerCtrlHolders, .hideToolbar .formDesignerCtrlHolders {
     width: 0px;
     padding: 0px;
     border-left: none;
@@ -60,6 +65,11 @@
     padding-right: 15px;
     padding-left: 15px;
     border-right: 1px solid silver;
+}
+
+.formDesignerCtrlPropertiesShow .formDesignerPlateTopMenu {
+    height: 0px;
+    border: 1px solid transparent;
 }
 
 .propertyTitle {
@@ -164,8 +174,9 @@
     top: -5px;
 }
 
-.formDesignerPlateTopMenuSelectElementSelected {
+.formDesignerPlateTopMenuSelectElementSelected, .formDesignerPlateTopMenuMoveElementSelected {
     color: darkgreen;
+    opacity: 1;
 }
 
 .simpleBorder {
@@ -297,6 +308,11 @@
     color: red;
     cursor: pointer;
 }
-.sumOrMultiplyHolder{
-    padding-bottom:15px;
+
+.sumOrMultiplyHolder {
+    padding-bottom: 15px;
+}
+
+.lowOpacityForMovingObj {
+    opacity:0.5;
 }

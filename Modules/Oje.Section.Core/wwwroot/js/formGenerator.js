@@ -126,6 +126,9 @@ function getInputTemplate(ctrl) {
             case 'cTemplate':
                 result += getCTemplate(ctrl);
                 break;
+            case 'template':
+                result += getTemplate(ctrl);
+                break;
             case 'label':
                 result += getLableTemplate(ctrl);
                 break;
@@ -150,7 +153,7 @@ function getInputTemplate(ctrl) {
 function getEmptyCtrlTemplate(ctrl) {
     var result = '';
 
-    result += '<div class="myCtrl " ><div id="' + ctrl.id + '" ></div></div>';
+    result += '<div class="myCtrl " ><div style="width:100%;text-align:center;" id="' + ctrl.id + '" >' + (window['isEditModeActive'] != undefined ? 'سطر خالی' : '')+'</div></div>';
     addCtrlToObj(ctrl);
 
     return result;
@@ -180,9 +183,8 @@ function getDesignerTemplate(ctrl) {
 function getLableTemplate(ctrl) {
     var result = '';
     result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '">';
-    if (ctrl.label) {
-        result += '<label ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="position: relative;font-weight:bold;cursor:default;color:black;" >' + ctrl.label + '</label>';
-    }
+    if (ctrl.label)
+        result += '<label ' + (ctrl.ltr ? 'dir:ltr' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="position: relative;font-weight:bold;cursor:default;color:' + (ctrl.color ? ctrl.color : 'black') + ';" >' + ctrl.label + '</label>';
     result += '</div>';
     addCtrlToObj(ctrl);
     return result;
@@ -563,6 +565,18 @@ function getModualTemplateCTRL(modual) {
     return result;
 }
 
+function copyTextToClipboard(str) {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+}
+
 function updateTemplateText(ctrl) {
     var selectQuiry = $('#' + ctrl.id);
     if (selectQuiry.length > 0 && ctrl.fieldMaps && ctrl.fieldMaps.length > 0) {
@@ -617,6 +631,17 @@ function updateCtemplateCtrlTemplate(curThis) {
     }
 }
 
+function getTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl) {
+        result += '<div class="myCtrl fdgHtmlTemplate" id="' + ctrl.id + '" >' + ctrl.html + '</div>';
+        addCtrlToObj(ctrl);
+    }
+
+    return result;
+}
+
 function getCTemplate(ctrl) {
     var result = '';
 
@@ -652,11 +677,11 @@ function getMapTemplate(ctrl) {
         if (ctrl.label)
             result += '<label>' + ctrl.label + '</label>';
         if (ctrl.names && ctrl.names.lat)
-            result += '<input id="' + ctrl.id + '_lat" name="' + ctrl.names.lat + '" type="hidden" />';
+            result += '<input id="' + ctrl.id + '_lat" name="' + ctrl.names.lat + '" type="hidden" value="' + (ctrl.values && ctrl.values.lat ? ctrl.values.lat : '') + '" />';
         if (ctrl.names && ctrl.names.lon)
-            result += '<input id="' + ctrl.id + '_lon" name="' + ctrl.names.lon + '" type="hidden" />';
+            result += '<input id="' + ctrl.id + '_lon" name="' + ctrl.names.lon + '" type="hidden" value="' + (ctrl.values && ctrl.values.lon ? ctrl.values.lon : '') + '" />';
         if (ctrl.names && ctrl.names.zoom)
-            result += '<input id="' + ctrl.id + '_zoom" name="' + ctrl.names.zoom + '" type="hidden" />';
+            result += '<input id="' + ctrl.id + '_zoom" name="' + ctrl.names.zoom + '" type="hidden" value="' + (ctrl.values && ctrl.values.zoom ? ctrl.values.zoom : '') + '" />';
 
         result += '<div id="' + ctrl.id + '" style="width:' + ctrl.width + ';height:' + ctrl.height + ';margin-bottom:17px;" ></div>';
         result += '</div>';
@@ -1009,7 +1034,7 @@ function getPlaqueTemplate(ctrl) {
         //if (ctrl.label) {
         //    result += '<label style="display:block;"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
         //}
-        result += '<div class="myCtrl plaqueCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '" >';
+        result += '<div id="' + (ctrl.id ? ctrl.id : '') + '" class="myCtrl plaqueCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '" >';
         result += '<div class="plaqueRightPart" >';
         result += '<div class="plaqueRightPartRight">';
         result += '<input type="text" placeholder="55" maxlength="2" name="' + ctrl.name + '_1" />';
@@ -1253,7 +1278,7 @@ function getMultiRowInputTemplate(ctrl) {
             }
             result += '</div>';
         }
-        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" ><button style="margin:3px;" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">' + (ctrl.addTitle ? ctrl.addTitle : 'افزودن') + '</button><button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">' + (ctrl.deleteTitle ? ctrl.deleteTitle : 'حذف اخرین سطر') +'</button></div>';
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" ><button style="margin:3px;" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">' + (ctrl.addTitle ? ctrl.addTitle : 'افزودن') + '</button><button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">' + (ctrl.deleteTitle ? ctrl.deleteTitle : 'حذف اخرین سطر') + '</button></div>';
         result += '</div>';
         result += '</div>';
 
@@ -1869,12 +1894,35 @@ function getCkEditorTemplate(ctrl) {
             if (isLoadCkEditorTrying == false) {
                 loadJS('/Modules/Core/js/ce.js.gz');
                 isLoadCkEditorTrying = true;
+            } else {
+                initAllCkEditors();
             }
+
         });
         addCtrlToObj(ctrl);
     }
 
     return result;
+}
+
+function initAllCkEditors() {
+    $('.ckEditor').each(function () {
+        if ($(this).closest('.myCtrl').find('.ck-editor').length > 0)
+            return;
+        ClassicEditor
+            .create($(this)[0], {
+                language: 'fa',
+                ckfinder: {
+                    uploadUrl: '/Core/BaseData/UploadFile/'
+                }
+            })
+            .then(editor => {
+                $(this)[0].ckEditor = editor;
+            })
+            .catch(err => {
+                console.error(err.stack);
+            });
+    });
 }
 
 function inputNewLabelEventHandler(curId) {
@@ -1938,7 +1986,7 @@ function getTextAreaTemplate(ctrl) {
     var id = (ctrl.id ? ctrl.id : uuidv4RemoveDash());
     if (!ctrl.id)
         ctrl.id = id;
-    result += '<textarea ' + (ctrl.ltr ? 'dir="ltr"' : '') + ' id="' + ctrl.id + '" autocomplete="off" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control ' + (ctrl.type == 'ck' ? 'ckEditor' : '') + '" ></textarea>';
+    result += '<textarea ' + (ctrl.ltr ? 'dir="ltr"' : '') + ' id="' + ctrl.id + '" autocomplete="off" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control ' + (ctrl.type == 'ck' ? 'ckEditor' : '') + '" >' + (ctrl.dfaultValue ? ctrl.dfaultValue : '') + '</textarea>';
     result += '</div>';
 
     functionsList.push(function () {
@@ -2085,6 +2133,11 @@ function getTokennCTRLTemplate(ctrl) {
     ctrl.moveNameToParent = true;
 
     var result = getDropdownCTRLTemplate(ctrl);
+
+    if (ctrl.type == 'dropDown')
+        ctrl.type = 'tokenBox';
+    if (ctrl.type == 'dropDown2')
+        ctrl.type = 'tokenBox2';
 
     functionsList.push(function () { initTokenBox($('#' + this.id).closest('.tokenBox')); }.bind({ id: ctrl.id }));
 
@@ -2575,7 +2628,7 @@ function getModualTemplateActionButton(modual) {
 }
 
 function getButtonTemplate(action) {
-    return '<button ' + (action.id ? 'id="' + action.id + '"' : '') + ' onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + action.title + '</button>';
+    return '<button ' + (action.id ? 'id="' + action.id + '"' : '') + ' onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + (action.title ? action.title : action.label) + '</button>';
 }
 
 function getStepWizardTemplate(wizard) {
