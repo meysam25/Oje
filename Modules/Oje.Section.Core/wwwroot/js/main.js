@@ -451,8 +451,7 @@ function getFormData(selector) {
         }
     });
 
-    $(selector).find('[data-options]').each(function ()
-    {
+    $(selector).find('[data-options]').each(function () {
         postData.append('values', $(this).attr('data-options'));
     });
 
@@ -662,6 +661,9 @@ function postForm(url, postData, success, error, completeEvent, ignoreAutoToast,
                         postPage(res.data.url, postFormData);
                     }
 
+                }
+                if (res && res.isSuccess == false && error) {
+                    error();
                 }
             }.bind({ url: url }),
             error: function (xhr) {
@@ -896,7 +898,7 @@ $.fn.modal = function (action) {
         $('body').find('.modal-backdrop:last-child').remove();
     }
     function openModal(curThis) {
-        
+
         modalZIndex++;
         if ($(window).width() > 650)
             $(curThis).css('cssText', 'display:block;z-index:' + modalZIndex + '!important');

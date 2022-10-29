@@ -963,3 +963,12 @@ figure.table > table {
 .fdgHtmlTemplate img {
     width:100%;
 }
+.inputHelpButton {
+    position: absolute;
+    left: 4px;
+    top: 10px;
+    cursor:help;
+}
+.modal-body img {
+    width:100%;
+}

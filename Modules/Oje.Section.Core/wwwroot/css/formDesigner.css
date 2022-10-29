@@ -65,6 +65,7 @@
     padding-right: 15px;
     padding-left: 15px;
     border-right: 1px solid silver;
+    overflow:visible;
 }
 
 .formDesignerCtrlPropertiesShow .formDesignerPlateTopMenu {

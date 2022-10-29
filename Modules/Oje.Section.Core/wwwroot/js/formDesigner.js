@@ -43,6 +43,7 @@ function getActiveCtrls() {
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemButtonMoveNextStep" ><img src="/Modules/Images/button.png" alt="مرحله بعد" /><span title ="مرحله بعد" >مرحله بعد</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemLabel" ><img src="/Modules/Images/label.png" alt="متن" /><span title ="متن" >متن</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemDropdown" ><img src="/Modules/Images/dropdown.png" alt="دراپ دان" /><span title ="دراپ دان" >دراپ دان</span></div>';
+    result += '<div class="formDesignerCtrlItem formDesignerCtrlItemDropdownCompany" ><img src="/Modules/Images/dropdown.png" alt="شرکت بیمه" /><span title ="شرکت بیمه" >شرکت بیمه</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTokenBox" ><img src="/Modules/Images/multiselect.png" alt="چند انتخابی" /><span title ="چند انتخابی" >چند انتخابی</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTextBox" ><img src="/Modules/Images/textbox.png" alt="تکس باکس" /><span title ="تکس باکس" >تکس باکس</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemTextBoxArea" ><img src="/Modules/Images/textarea.png" alt="تکس اریا" /><span title ="تکس اریا" >تکس اریا</span></div>';
@@ -57,6 +58,7 @@ function getActiveCtrls() {
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemMultiRow" ><img src="/Modules/Images/groupCtrl.png" alt="چند سطر" /><span title ="چند سطر" >چند سطر</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemMap" ><img src="/Modules/Images/map.png" alt="نقشه" /><span title ="نقشه" >نقشه</span></div>';
     result += '<div class="formDesignerCtrlItem formDesignerCtrlItemHtml" ><img src="/Modules/Images/html.png" alt="html" /><span title ="html" >html</span></div>';
+    //result += '<div class="formDesignerCtrlItem formDesignerCtrlItemHtmlLaw" ><img src="/Modules/Images/html.png" alt="قوانین حاکم" /><span title ="قوانین حاکم" >قوانین حاکم</span></div>';
 
     return result;
 }
@@ -88,9 +90,11 @@ function initDisignerEventAndFunction(ctrl, quirySelector) {
     initGetSelectedCtrlJsonObj(curObj);
     initExportButtonMenu(curObj, quirySelector);
     initImportButtonMenu(curObj, quirySelector);
+    initUndoRedoButtonMenu(curObj, quirySelector);
     initMouseEvents(ctrl, quirySelector);
 
     curObj.reNew();
+    
 
 }
 
@@ -128,6 +132,7 @@ function initDeleteButtonMenu(curObj, quirySelector) {
             }
             $('.makeSelectedDP').remove();
             $(this).removeClass('hideToolbar');
+            this.addToUR();
         }
         else
             $.toast({
@@ -215,10 +220,12 @@ function initReNewFunction(curObj, quirySelector) {
         var curCtrl = this.ctrl;
         if (curCtrl && curCtrl.baseConfig) {
             $('#' + curCtrl.id + '_renderPlace').html('');
-            generateForm(JSON.parse(JSON.stringify(curCtrl.baseConfig)), curCtrl.id + '_renderPlace')
+            generateForm(JSON.parse(JSON.stringify(curCtrl.baseConfig)), curCtrl.id + '_renderPlace');
         }
+        this.newUndoRedo(); this.addToUR();
     };
-    quirySelector.find('.formDesignerPlateTopMenuNew').click(function () { $(this).closest('.myFormDesigner')[0].reNew(); })
+
+    quirySelector.find('.formDesignerPlateTopMenuNew').click(function () { $(this).closest('.myFormDesigner')[0].reNew();  })
 }
 
 function initImportButtonMenu(curObj, quirySelector) {
@@ -226,6 +233,62 @@ function initImportButtonMenu(curObj, quirySelector) {
         showImportModal(this);
     };
     quirySelector.find('.formDesignerPlateTopMenuImport').click(function () { $(this).closest('.myFormDesigner')[0].import(); })
+}
+
+function initUndoRedoButtonMenu(curObj, quirySelector) {
+    curObj.undo = function () {
+        var arrUndoJson = this.arrUndoJson;
+        var arrUndoJsonIndex = this.arrUndoJsonIndex;
+
+        if (!arrUndoJsonIndex)
+            arrUndoJsonIndex = 0;
+
+        arrUndoJsonIndex--;
+        if (arrUndoJson && arrUndoJson.length > 0 && arrUndoJsonIndex > 0) {
+            this.arrUndoJsonIndex = arrUndoJsonIndex;
+            $('#' + $(this).attr('id') + '_renderPlace').html('');
+            generateForm(JSON.parse(JSON.stringify(arrUndoJson[arrUndoJsonIndex - 1])), $(this).attr('id') + '_renderPlace');
+        }
+
+    };
+    curObj.redo = function () {
+        var arrUndoJson = this.arrUndoJson;
+        var arrUndoJsonIndex = this.arrUndoJsonIndex;
+
+        if (!arrUndoJsonIndex)
+            arrUndoJsonIndex = 0;
+
+        arrUndoJsonIndex++;
+        if (arrUndoJson && arrUndoJson.length > 0 && arrUndoJsonIndex > 0 && arrUndoJsonIndex <= arrUndoJson.length) {
+            this.arrUndoJsonIndex = arrUndoJsonIndex;
+            $('#' + $(this).attr('id') + '_renderPlace').html('');
+            generateForm(JSON.parse(JSON.stringify(arrUndoJson[arrUndoJsonIndex - 1])), $(this).attr('id') + '_renderPlace');
+        }
+    };
+    curObj.addToUR = function () {
+        var jsObj = getWoleJsonObj(this);
+        var arrUndoJson = this.arrUndoJson;
+        var arrUndoJsonIndex = this.arrUndoJsonIndex;
+        if (!arrUndoJsonIndex)
+            arrUndoJsonIndex = 0;
+        if (!arrUndoJson)
+            arrUndoJson = [];
+
+        if (arrUndoJsonIndex != arrUndoJson.length) {
+            arrUndoJson.splice(arrUndoJsonIndex, arrUndoJson.length);
+        }
+        arrUndoJson.push({ panels: [JSON.parse(JSON.stringify(jsObj))] });
+        arrUndoJsonIndex = arrUndoJson.length;
+
+        this.arrUndoJson = arrUndoJson;
+        this.arrUndoJsonIndex = arrUndoJsonIndex;
+    };
+    curObj.newUndoRedo = function () {
+        this.arrUndoJson = [];
+        this.arrUndoJsonIndex = 0;
+    }
+    quirySelector.find('.formDesignerPlateTopMenuRedo').click(function () { $(this).closest('.myFormDesigner')[0].redo(); })
+    quirySelector.find('.formDesignerPlateTopMenuUndo').click(function () { $(this).closest('.myFormDesigner')[0].undo(); })
 }
 
 function initExportButtonMenu(curObj, quirySelector) {
@@ -242,7 +305,7 @@ function initExportButtonMenu(curObj, quirySelector) {
             });
             return;
         }
-        copyTextToClipboard(JSON.stringify(jsonObj));
+        copyTextToClipboard(JSON.stringify({ panels: [jsonObj]}));
         $.toast({
             heading: 'موفقیت',
             text: 'عملیات با موفقیت انجام گرفت',
@@ -445,9 +508,9 @@ function moveCtrlToDesigner(e, quirySelector) {
                     targetQuiry.after(curCtrlHtml);
                 else
                     targetQuiry.before(curCtrlHtml);
-
                 executeArrFunctions();
                 removeAllMarked(quirySelector);
+                quirySelector[0].addToUR();
             }
         }
     }
@@ -480,6 +543,8 @@ function addNewCtrlToDesigner(curMouseMove, e, quirySelector) {
 
                 executeArrFunctions();
                 removeAllMarked(quirySelector);
+                setTimeout(function () { this.quirySelector[0].addToUR(); }.bind({ quirySelector: quirySelector }), 300);
+
             }
         }
     }
@@ -514,6 +579,21 @@ function getCurCtrlTemplate(curMouseMove, targetQuiry) {
                     title: 'بتونی'
                 }
             ]
+        };
+        result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
+        result += getDropdownCTRLTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemDropdownCompany')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+            name: 'cIds',
+            type: "dropDown",
+            label: "شرکت",
+            isRequired: true,
+            textfield: "title",
+            valuefield: "id",
+            dataurl: '/Core/BaseData/GetCompanyList'
         };
         result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
         result += getDropdownCTRLTemplate(curCtrl);
@@ -559,6 +639,51 @@ function getCurCtrlTemplate(curMouseMove, targetQuiry) {
         };
         result += '<div class="col-md-4 col-sm-6 col-xs-12 col-lg-3">'
         result += getTemplate(curCtrl);
+        result += '</div>';
+    } else if (curMouseMove.hasClass('formDesignerCtrlItemHtmlLaw')) {
+        curCtrl = {
+            id: uuidv4RemoveDash(),
+            parentCL: "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+            type: "cTemplate",
+            fieldMaps: [
+                {
+                    targetTemplate: "firstName",
+                    sourceCtrl: [
+                        "firstName",
+                        "firstAgentName"
+                    ]
+                },
+                {
+                    targetTemplate: "lastName",
+                    sourceCtrl: [
+                        "lastName",
+                        "lastAgentName"
+                    ]
+                },
+                {
+                    targetTemplate: "nationalCode",
+                    sourceCtrl: [
+                        "nationalCode",
+                        "agentNationalCode"
+                    ]
+                },
+                {
+                    targetTemplate: "inputAddress",
+                    sourceCtrl: [
+                        "reciveAddress"
+                    ]
+                },
+                {
+                    targetTemplate: "agent",
+                    sourceCtrl: [
+                        "agentId"
+                    ]
+                }
+            ],
+            dataurl: "/ProposalFilledForm/Proposal/GetTermsHtml"
+        };
+        result += '<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">'
+        result += getCTemplate(curCtrl);
         result += '</div>';
     } else if (curMouseMove.hasClass('formDesignerCtrlItemTokenBox')) {
         curCtrl = {
@@ -821,7 +946,7 @@ function updateMultiRowInputs(targetQuiry) {
                 if (parentCtrl)
                     parentCtrl.ctrls = getCtrls(this.targetQuiry.closest('.myCtrl').find('.MultiRowInputRow').eq(0), true);
             }
-        }.bind({ targetQuiry: targetQuiry }), 500);
+        }.bind({ targetQuiry: targetQuiry }), 200);
     }
 }
 
@@ -851,6 +976,7 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
                 template += getDisabledInput(foundConfig);
                 template += getMultiOrSumPlayInputTemplate(foundConfig, 'multiPlay', 'ضرب خودکار');
                 template += getMultiOrSumPlayInputTemplate(foundConfig, 'sumCalculator', 'جمع خودکار');
+                template += getHelpHtmlInput(foundConfig);
                 break;
             case 'persianDateTime':
                 template += getLabelInput(foundConfig);
@@ -860,6 +986,7 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
                 template += getMaxDayInput(foundConfig);
                 template += getDefaultInput(foundConfig);
                 template += getRequiredValidation(foundConfig);
+                template += getHelpHtmlInput(foundConfig);
                 break;
             case 'color':
                 template += getLabelInput(foundConfig);
@@ -873,6 +1000,7 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
                 template += getNameInput(foundConfig);
                 template += getSizeInput(foundConfig);
                 template += getRequiredValidation(foundConfig);
+                template += getHelpHtmlInput(foundConfig);
                 break;
             case 'map':
                 template += getLabelInput(foundConfig);
@@ -936,6 +1064,10 @@ function bindSpecPanelInputs(curDesigner, foundConfig) {
                 template += getSizeInput(foundConfig);
                 template += getHtmlInput(foundConfig);
                 break;
+            case 'cTemplate':
+                template += getSizeInput(foundConfig);
+                template += getSourceUrlTemplate(foundConfig);
+                break;
             case 'button':
                 template += getLabelInput(foundConfig);
                 template += getSizeInput(foundConfig);
@@ -992,6 +1124,7 @@ function fillFoundObj(foundConfig, formDataObj, formSelector) {
     foundConfig.hideImagePreview = formDataObj.hideImagePreview;
     foundConfig.dfaultValue = formDataObj.dfaultValue;
     foundConfig.title = formDataObj.title;
+    foundConfig.help = formDataObj.help
     foundConfig.hasInquiry = formDataObj.hasInquiry;
     foundConfig.isAgentRequired = formDataObj.isAgentRequired;
     foundConfig.isCompanyListRequired = formDataObj.isCompanyListRequired;
@@ -1126,10 +1259,7 @@ function fillFoundObj(foundConfig, formDataObj, formSelector) {
         if (foundConfig[item] == 'false')
             foundConfig[item] = false;
     }
-
-
-
-    console.log(foundConfig, formDataObj);
+    //console.log(foundConfig, formDataObj);
 }
 
 function saveSelectedController(curThis) {
@@ -1151,6 +1281,7 @@ function saveSelectedController(curThis) {
                     rootCtrl.find('.makeSelectedDP').replaceWith(getInputTemplate(foundConfig));
                 executeArrFunctions();
                 $(curThis).closest('.formDesignerCtrlProperties').find('.propertyCloseButton').click();
+                rootCtrl[0].addToUR();
             }
         }
     }
@@ -2429,6 +2560,22 @@ function getHtmlInput(foundConfig) {
     return result;
 }
 
+function getHelpHtmlInput(foundConfig) {
+    var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
+
+    result += getCkEditorTemplate({
+        id: uuidv4RemoveDash(),
+        name: "help",
+        type: "ck",
+        label: "راهنما",
+        dfaultValue: foundConfig.help
+    });
+
+    result += '</div>';
+
+    return result;
+}
+
 function getMaskTemplate(foundConfig) {
     var result = '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">';
 
@@ -2560,10 +2707,12 @@ function loadPPF(designerId, ppfId, baseUrl, curButton) {
         showLoader(formQuiry);
         postForm(baseUrl + '/GetFormJsonConfig', formData, function (res) {
             if (res) {
+                var curObj = $('#' + designerId)[0];
                 var curCtrl = $('#' + designerId)[0].ctrl;
                 $('#' + curCtrl.id + '_renderPlace').html('');
                 generateForm(res, curCtrl.id + '_renderPlace');
-                closeThisModal(curButton)
+                closeThisModal(curButton);
+                curObj.newUndoRedo(); curObj.addToUR();
             }
         }, null, function () { hideLoader(formQuiry) })
     }

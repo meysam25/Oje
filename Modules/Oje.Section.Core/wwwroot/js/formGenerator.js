@@ -153,7 +153,7 @@ function getInputTemplate(ctrl) {
 function getEmptyCtrlTemplate(ctrl) {
     var result = '';
 
-    result += '<div class="myCtrl " ><div style="width:100%;text-align:center;" id="' + ctrl.id + '" >' + (window['isEditModeActive'] != undefined ? 'سطر خالی' : '')+'</div></div>';
+    result += '<div class="myCtrl " ><div style="width:100%;text-align:center;" id="' + ctrl.id + '" >' + (window['isEditModeActive'] != undefined ? 'سطر خالی' : '') + '</div></div>';
     addCtrlToObj(ctrl);
 
     return result;
@@ -627,7 +627,7 @@ function updateCtemplateCtrlTemplate(curThis) {
         postForm(curUrl, postFormData, function (res) {
             $('#' + this.id)[0].templateStr = res;
             $('#' + this.id).html(res);
-        }.bind({ id: curThis.ctrl.id }));
+        }.bind({ id: curThis.ctrl.id }), function () { $('#' + this.id).html('<div style="line-height:40px;" >اطلاعاتی یافت نشد</div>'); }.bind({ id: curThis.ctrl.id }));
     }
 }
 
@@ -1703,7 +1703,9 @@ function getTextBoxTemplate(ctrl) {
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    result += '<input  style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" class="form-control" />';
+    if (ctrl.help)
+        result += '<i onclick="return showHelpModal(this)" class="fa fa-question HelpButton inputHelpButton" data-help=\'' + ctrl.help + '\' ></i>';
     result += '</div>';
 
     if (ctrl.nationalCodeValidation || hasNumberValidation(ctrl.validations))
@@ -1726,6 +1728,7 @@ function getTextBoxTemplate(ctrl) {
             $('#' + this.id).attr('type', (this.type == 'persianDateTime' ? 'text' : this.type));
         }.bind(this), 1);
         inputNewLabelEventHandler(this.id);
+
     }.bind({ id: ctrl.id, type: ctrl.type, toUpperCase: ctrl.toUpperCase }));
 
     if (ctrl.mask) {
@@ -1844,6 +1847,28 @@ function changeInputValueSetter(objectId) {
     });
 }
 
+function showHelpModal(curButton) {
+    var curHtml = $(curButton).attr('data-help');
+    var curLaabel = $(curButton).closest('.myCtrl').find('label').text();
+    if (curHtml) {
+        var modalId = 'help' + uuidv4RemoveDash();
+        $('body').append(getModualTemplate({
+            id: modalId,
+            class: 'modal-md',
+            title: 'راهنما :' + curLaabel,
+            modelBody: curHtml,
+            actions: [
+                {
+                    title: 'بستن',
+                    class: 'btn-secondary',
+                    onClick: 'closeThisModal(this)'
+                }
+            ]
+        }));
+        $('#' + modalId).modal('show');
+    }
+}
+
 function doCalceForSum(sumCalculator) {
     if (sumCalculator && sumCalculator.sumCalculator) {
         var result = 0;
@@ -1892,9 +1917,9 @@ function getCkEditorTemplate(ctrl) {
     if (result) {
         functionsList.push(function () {
             if (isLoadCkEditorTrying == false) {
-                loadJS('/Modules/Core/js/ce.js.gz');
+                loadJS('/Modules/Core/js/ce.js.gz?v=1');
                 isLoadCkEditorTrying = true;
-            } else {
+            } else if (window['initAllCkEditors']) {
                 initAllCkEditors();
             }
 
@@ -1903,26 +1928,6 @@ function getCkEditorTemplate(ctrl) {
     }
 
     return result;
-}
-
-function initAllCkEditors() {
-    $('.ckEditor').each(function () {
-        if ($(this).closest('.myCtrl').find('.ck-editor').length > 0)
-            return;
-        ClassicEditor
-            .create($(this)[0], {
-                language: 'fa',
-                ckfinder: {
-                    uploadUrl: '/Core/BaseData/UploadFile/'
-                }
-            })
-            .then(editor => {
-                $(this)[0].ckEditor = editor;
-            })
-            .catch(err => {
-                console.error(err.stack);
-            });
-    });
 }
 
 function inputNewLabelEventHandler(curId) {
