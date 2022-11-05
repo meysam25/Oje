@@ -2,6 +2,7 @@
 using Oje.BackupService.Interfaces;
 using Oje.BackupService.Models.DB;
 using Oje.EmailService.Services.EContext;
+using Oje.Infrastructure.Enums;
 
 namespace Oje.BackupService.Services
 {
@@ -13,7 +14,7 @@ namespace Oje.BackupService.Services
             this.db = db;
         }
 
-        public void Create(string fileId, long fileSize)
+        public void Create(string fileId, long fileSize, GoogleBackupArchiveType type)
         {
             if(!string.IsNullOrEmpty(fileId))
             {
@@ -21,7 +22,8 @@ namespace Oje.BackupService.Services
                 {
                     CreateDate = DateTime.Now,
                     FileId = fileId,
-                    FileSize = fileSize
+                    FileSize = fileSize,
+                    Type = type
                 }).State = EntityState.Added;
                 db.SaveChanges();
             }
@@ -40,9 +42,9 @@ namespace Oje.BackupService.Services
             }
         }
 
-        public List<string> GetIdList(DateTime targetDate)
+        public List<GoogleBackupArchive> GetIdList(DateTime targetDate)
         {
-            return db.GoogleBackupArchives.Where(t => t.CreateDate < targetDate).Select(t => t.FileId).ToList();
+            return db.GoogleBackupArchives.Where(t => t.CreateDate < targetDate).ToList();
         }
     }
 }

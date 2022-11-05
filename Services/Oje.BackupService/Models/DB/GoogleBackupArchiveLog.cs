@@ -9,7 +9,7 @@ namespace Oje.BackupService.Models.DB
     {
         [Key]
         public long Id { get; set; }
-        [Required, MaxLength(200)]
+        [Required]
         public string Message { get; set; }
         public DateTime CreateDate { get; set; }
         public GoogleBackupArchiveLogType Type { get; set; }

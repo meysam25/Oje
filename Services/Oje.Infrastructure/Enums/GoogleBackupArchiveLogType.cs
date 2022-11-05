@@ -12,6 +12,8 @@ namespace Oje.Infrastructure.Enums
         SqlGenerateBackup = 3,
         [Display(Name = "حذف فایل های اکسپایر شده")]
         RemoveExpiredFile = 4,
+        [Display(Name = "اپلود مگا")]
+        UploadSectionMega = 5,
         [Display(Name = "بخش نا مشخص")]
         UnknownSection = 99
     }

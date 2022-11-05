@@ -26,9 +26,18 @@ namespace Oje.Worker.Backup
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            try
+            {
+                await GoogleBackupService.CheckTimeAndCreateBackup(true);
+
+            }
+            catch (Exception ex)
+            {
+                GoogleBackupArchiveLogService.Create(ex.Message, GoogleBackupArchiveLogType.UnknownSection);
+            }
             while (!stoppingToken.IsCancellationRequested)
             {
-                timePass += 1000;
+                timePass += 10000;
                 try
                 {
                     if (timePass % 3510000 == 0)
@@ -39,7 +48,7 @@ namespace Oje.Worker.Backup
                     GoogleBackupArchiveLogService.Create(ex.Message, GoogleBackupArchiveLogType.UnknownSection);
                 }
 
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(10000, stoppingToken);
             }
         }
     }

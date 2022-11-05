@@ -2,6 +2,6 @@
 {
     public interface IGoogleBackupService
     {
-        Task CheckTimeAndCreateBackup();
+        Task CheckTimeAndCreateBackup(bool canCreateBackup = false);
     }
 }

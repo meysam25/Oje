@@ -19,6 +19,7 @@ namespace Oje.BackupService
             services.AddSingleton<IGoogleBackupArchiveService, GoogleBackupArchiveService>();
             services.AddSingleton<IGoogleBackupArchiveLogService, GoogleBackupArchiveLogService>();
             services.AddSingleton<IFileHelperService, FileHelperService>();
+            services.AddSingleton<IMegaService, MegaService>();
         }
     }
 }
