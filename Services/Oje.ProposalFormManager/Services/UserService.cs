@@ -50,7 +50,7 @@ namespace Oje.ProposalFormService.Services
                 PostalCode = form.GetStringIfExist("postalCode"),
                 ParentId = loginUserId,
                 Tell = form.GetStringIfExist("tell"),
-                Password = RandomService.GeneratePassword(9).Encrypt()
+                Password = RandomService.GeneratePassword(12).GetSha1()
             };
 
 

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Oje.Infrastructure.Models.Pdf.ProposalFilledForm
 {
-    public class ProposalFilledFormPdfGroupVM
+    public class FilledFormPdfGroupVM
     {
         public string title { get; set; }
-        public List<ProposalFilledFormPdfGroupItem> ProposalFilledFormPdfGroupItems { get; set; }
+        public List<FilledFormPdfGroupItem> ProposalFilledFormPdfGroupItems { get; set; }
     }
 }

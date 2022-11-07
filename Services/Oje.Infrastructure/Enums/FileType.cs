@@ -93,6 +93,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تصویر پرداخت کارت به کارت", Prompt = "UserRigisterPaymentFile", Description = "1000*1000")]
         UserRigisterPaymentFile = 44,
         [Display(Name = "مدارک تغییر وضعیت فرم پیشنهاد", Prompt = "ProposalFilledFormLogFile")]
-        ProposalFilledFormLogFile = 45
+        ProposalFilledFormLogFile = 45,
+        [Display(Name = "فایل پیش فرض مدارک مورد نیاز فرم عمومی", Prompt = "GeneralForm", Description = "300*100")]
+        GeneralForm = 46,
+        [Display(Name = "مدارک فرم عمومی", Prompt = "GeneralFilledForm", Description = "~1000*1000", AutoGenerateFilter = true)]
+        GeneralFilledForm = 47
     }
 }

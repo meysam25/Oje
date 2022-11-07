@@ -12,7 +12,7 @@ namespace Oje.Infrastructure.Models.Pdf.ProposalFilledForm
         public string traceCode { get; set; }
         public long? price { get; set; }
         public long agentUserId { get; set; }
-        public List<ProposalFilledFormPdfGroupVM> ProposalFilledFormPdfGroupVMs { get; set; }
+        public List<FilledFormPdfGroupVM> ProposalFilledFormPdfGroupVMs { get; set; }
         public string companyTitle { get; set; }
         public string companyImage { get; set; }
         public long loginUserWalletBalance { get; set; }

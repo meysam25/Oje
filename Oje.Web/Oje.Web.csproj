@@ -483,6 +483,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Oje.Section.Blog\Oje.Section.Blog.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.FinancialBaseData\Oje.Section.FinancialBaseData.csproj" />
+    <ProjectReference Include="..\Modules\Oje.Section.GeneralForm\Oje.Section.GlobalForms.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.MessengerBaseData\Oje.Section.MessengerBaseData.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.Payment\Oje.Section.Payment.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.ProposalFilledFormChartReports\Oje.Section.ProposalFilledFormChartReports.csproj" />

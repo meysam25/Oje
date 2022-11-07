@@ -115,63 +115,61 @@ namespace Oje.ProposalFormService.Services
             createCtrlValidation(form, ppfObj, allRequiredFileUpload, siteSettingId, companyId, allCtrls);
 
             //using (var tr = db.Database.BeginTransaction())
+            try
             {
-                try
-                {
-                    ProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, inquiryId, proposalFormId);
-                    newFormId = newForm.Id;
-                    ProposalFilledFormJsonService.Create(newForm.Id, foundProposalForm.JsonConfig);
+                ProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, inquiryId, proposalFormId);
+                newFormId = newForm.Id;
+                ProposalFilledFormJsonService.Create(newForm.Id, foundProposalForm.JsonConfig);
 
-                    if (ppfObj.panels?.FirstOrDefault()?.hasInquiry == true && companyId > 0)
-                        ProposalFilledFormCompanyService.Create(inquiryId, siteSettingId, newForm.Id, newForm.Price, companyId, true, loginUserId);
-                    else if (ppfObj.panels?.FirstOrDefault()?.isCompanyListRequired == true)
-                        ProposalFilledFormCompanyService.Create(form.GetStringIfExist("cIds"), newForm.Id, loginUserId);
+                if (ppfObj.panels?.FirstOrDefault()?.hasInquiry == true && companyId > 0)
+                    ProposalFilledFormCompanyService.Create(inquiryId, siteSettingId, newForm.Id, newForm.Price, companyId, true, loginUserId);
+                else if (ppfObj.panels?.FirstOrDefault()?.isCompanyListRequired == true)
+                    ProposalFilledFormCompanyService.Create(form.GetStringIfExist("cIds"), newForm.Id, loginUserId);
 
-                    long ownerUserId = InternalUserService.CreateUserForProposalFormIfNeeded(form, siteSettingId, loginUserId);
-                    ProposalFilledFormUseService.Create(loginUserId, ProposalFilledFormUserType.CreateUser, loginUserId, newForm.Id, siteSettingId);
-                    if (ppfObj.panels?.FirstOrDefault().isAgentRequired == true)
-                        ProposalFilledFormUseService.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id, siteSettingId);
-                    ProposalFilledFormUseService.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id, siteSettingId);
+                long ownerUserId = InternalUserService.CreateUserForProposalFormIfNeeded(form, siteSettingId, loginUserId);
+                ProposalFilledFormUseService.Create(loginUserId, ProposalFilledFormUserType.CreateUser, loginUserId, newForm.Id, siteSettingId);
+                if (ppfObj.panels?.FirstOrDefault().isAgentRequired == true)
+                    ProposalFilledFormUseService.Create(form.GetStringIfExist("agentId").ToLongReturnZiro(), ProposalFilledFormUserType.Agent, loginUserId, newForm.Id, siteSettingId);
+                ProposalFilledFormUseService.Create(ownerUserId, ProposalFilledFormUserType.OwnerUser, loginUserId, newForm.Id, siteSettingId);
 
-                    if (PaymentMethodService.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryService.HasAnyCashDiscount(inquiryId))
-                        ProposalFilledFormDocumentService.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
+                if (PaymentMethodService.Exist(siteSettingId, proposalFormId, companyId) && !GlobalInqueryService.HasAnyCashDiscount(inquiryId))
+                    ProposalFilledFormDocumentService.CreateChequeArr(newForm.Id, newForm.Price, siteSettingId, PaymentMethodService.GetItemDetailes(payCondationId, siteSettingId, newForm.Price, proposalFormId)?.checkArr, form);
 
-                    ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form, allCtrls);
+                ProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form, allCtrls);
 
-                    createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
+                createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
 
-                    if (loginUserId == ownerUserId)
-                        UserService.UpdateUserInfoIfEmpty(loginUserId,
-                            form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("firstName") : form.GetStringIfExist("firstAgentName"),
-                            form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("lastName") : form.GetStringIfExist("lastAgentName"),
-                            form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("nationalCode") : null
-                            );
-
-                    UserNotifierService.Notify
-                        (
-                            loginUserId,
-                            UserNotificationType.NewProposalFilledForm,
-                            ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()),
-                            newForm.Id,
-                            foundProposalForm.Title,
-                            siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id,
-                            UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro(), companyId)
+                if (loginUserId == ownerUserId)
+                    UserService.UpdateUserInfoIfEmpty(loginUserId,
+                        form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("firstName") : form.GetStringIfExist("firstAgentName"),
+                        form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("lastName") : form.GetStringIfExist("lastAgentName"),
+                        form.GetStringIfExist("realOrLegaPerson") == "1" ? form.GetStringIfExist("nationalCode") : null
                         );
 
-                    //tr.Commit();
+                UserNotifierService.Notify
+                    (
+                        loginUserId,
+                        UserNotificationType.NewProposalFilledForm,
+                        ProposalFilledFormUseService.GetProposalFilledFormUserIds(newForm.Id.ToLongReturnZiro()),
+                        newForm.Id,
+                        foundProposalForm.Title,
+                        siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(ProposalFilledFormStatus.New) + "/PdfDetailesForAdmin?id=" + newForm.Id,
+                        UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro(), companyId)
+                    );
 
-                    if (loginUser != null && loginUser.roles != null && loginUser.roles.Any(t => t == "user"))
-                        targetUrl = "/Proposal/Detaile";
-                    else
-                        targetUrl = "";
-                }
-                catch (Exception)
-                {
-                    //tr.Rollback();
-                    //if (newFormId > 0)
-                    //    removePPfs(newFormId);
-                    throw;
-                }
+                //tr.Commit();
+
+                if (loginUser != null && loginUser.roles != null && loginUser.roles.Any(t => t == "user"))
+                    targetUrl = "/Proposal/Detaile";
+                else
+                    targetUrl = "";
+            }
+            catch (Exception)
+            {
+                //tr.Rollback();
+                //if (newFormId > 0)
+                //    removePPfs(newFormId);
+                throw;
             }
 
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(), data = new { url = targetUrl, id = newFormId } };
@@ -251,6 +249,12 @@ namespace Oje.ProposalFormService.Services
             {
                 if (ctrl.isCtrlVisible(form, allCtrls) == true)
                 {
+                    if ((ctrl.type == ctrlType.text || ctrl.type == ctrlType.textarea) && !string.IsNullOrEmpty(ctrl.name))
+                    {
+                        var curValue = form.GetStringIfExist(ctrl.name);
+                        if (!string.IsNullOrEmpty(curValue) && curValue.Length > 4000)
+                            throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
+                    }
                     ctrl.requiredValidationForCtrl(ctrl, form);
                     ctrl.reqularExperssionValidationCtrl(ctrl, form);
                     ctrl.validateBaseDataEnums(ctrl, form);

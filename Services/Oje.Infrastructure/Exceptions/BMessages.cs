@@ -712,5 +712,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Select_SaleNetwork = 352,
         [Display(Name = "سطج مجاز نمی باشد")]
         Invalid_Step = 353,
+        [Display(Name = "لطفا متن شرایط را وارد کنید")]
+        Please_Enter_Terms = 354,
     }
 }

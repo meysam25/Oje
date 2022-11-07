@@ -7,7 +7,6 @@ using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,14 +40,16 @@ namespace Oje.ProposalFormService.Services
                 {
                     if (ctrl.isCtrlVisible(form, allCtrls))
                     {
-                        if (
+                        if 
+                        (
                             ctrl.type == ctrlType.text ||
                             ctrl.type == ctrlType.dropDown2 ||
                             ctrl.type == ctrlType.dropDown ||
                             ctrl.type == ctrlType.checkBox ||
                             ctrl.type == ctrlType.radio ||
-                            ctrl.type == ctrlType.persianDateTime || 
-                            ctrl.type == ctrlType.carPlaque
+                            ctrl.type == ctrlType.persianDateTime ||
+                            ctrl.type == ctrlType.carPlaque || 
+                            ctrl.type == ctrlType.number
                         )
                         {
                             string currValue = "";
@@ -68,7 +69,7 @@ namespace Oje.ProposalFormService.Services
                             if (!string.IsNullOrEmpty(currValue))
                             {
                                 if (currValue.Length > 4000)
-                                    throw BException.GenerateNewException(String.Format(BMessages.X_Length_Can_Not_Be_More_Then_4000.GetEnumDisplayName(), ctrl.label));
+                                    currValue = currValue.Substring(0, 3999);
                                 int keyId = ProposalFilledFormKeyService.CreateIfNeeded(ctrl.name);
                                 if (keyId > 0)
                                 {
@@ -97,12 +98,12 @@ namespace Oje.ProposalFormService.Services
                     }
                 }
 
-                if(ppfObj.exteraCtrls != null)
+                if (ppfObj.exteraCtrls != null)
                 {
-                    foreach(var item in ppfObj.exteraCtrls)
+                    foreach (var item in ppfObj.exteraCtrls)
                     {
                         var currValue = form.GetStringIfExist(item.id);
-                        if(!string.IsNullOrEmpty(currValue))
+                        if (!string.IsNullOrEmpty(currValue))
                         {
                             int keyId = ProposalFilledFormKeyService.CreateIfNeeded(item.id);
                             addNewRow(proposalFilledFormId, keyId, currValue);

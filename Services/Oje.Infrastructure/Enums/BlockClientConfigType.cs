@@ -87,6 +87,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "اضافه کردن دستی در فایروال (استفاده نشود)")]
         ManualAdded = 43,
         [Display(Name = "استعلام بر اساس پلاک و کد ملی ثالث")]
-        CarThirdPlaqueInquiry = 44
+        CarThirdPlaqueInquiry = 44,
+        [Display(Name = "ثبت فرم عمومی")]
+        CreateGeneralForms = 45
     }
 }

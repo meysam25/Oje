@@ -13,7 +13,7 @@ namespace Oje.ProposalFormService.Interfaces
         long GetSumPriceLong(long id, int proposalFormId, int? siteSettingId);
         bool IsValid(long id, int? siteSettingId, int proposalFormId);
         bool HasAnyCashDiscount(long inQuiryId);
-        void AppendInquiryData(long id, List<ProposalFilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs);
+        void AppendInquiryData(long id, List<FilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs);
         GlobalInqueryResultVM GetInquiryDataList(long id, int proposalFormId);
     }
 }

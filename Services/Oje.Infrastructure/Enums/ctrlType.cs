@@ -37,7 +37,11 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "متن")]
         label = 16,
         [Display(Name = "پلاک")]
-        carPlaque = 17
+        carPlaque = 17,
+        [Display(Name = "تکس اریا")]
+        textarea = 18,
+        [Display(Name = "عدد")]
+        number = 19
 
     }
 }

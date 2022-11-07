@@ -1,0 +1,227 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "GeneralFormRequiredDocumentGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('GeneralFormRequiredDocumentAddGridModal', this)", "type": "add", "modalId": "GeneralFormRequiredDocumentAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/GlobalFormAdmin/GeneralFormRequiredDocument/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/GlobalFormAdmin/GeneralFormRequiredDocument/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "GeneralFormRequiredDocumentEditModal",
+                "url": "/GlobalFormAdmin/GeneralFormRequiredDocument/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/GlobalFormAdmin/GeneralFormRequiredDocument/GetById\\', \\'GeneralFormRequiredDocumentEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/GlobalFormAdmin/GeneralFormRequiredDocument/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "fId",
+              "caption": "فرم",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "name",
+              "caption": "نام",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "GeneralFormRequiredDocumentAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/GlobalFormAdmin/GeneralFormRequiredDocument/GetFormList",
+              "label": "فرم",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "name",
+              "type": "text",
+              "label": "نام",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isRequired",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "اجباری؟"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "نمونه",
+              "acceptEx": ".jpg,.png,.jpeg",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'GeneralFormRequiredDocumentGrid', '/GlobalFormAdmin/GeneralFormRequiredDocument/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "GeneralFormRequiredDocumentEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/GlobalFormAdmin/GeneralFormRequiredDocument/GetFormList",
+              "label": "فرم",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "name",
+              "type": "text",
+              "label": "نام",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isRequired",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "اجباری؟"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "mainFile",
+              "type": "file",
+              "label": "نمونه",
+              "acceptEx": ".jpg,.png,.jpeg"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'GeneralFormRequiredDocumentGrid', '/GlobalFormAdmin/GeneralFormRequiredDocument/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

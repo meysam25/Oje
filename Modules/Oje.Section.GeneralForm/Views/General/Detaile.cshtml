@@ -1,0 +1,182 @@
+﻿@{
+    Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    if(ViewBag.makeLayoutNull == true)
+    {
+        Layout = null;
+    }
+    if(ViewBag.newLayoutName != null)
+    {
+        Layout = ViewBag.newLayoutName;
+    }
+    ViewBag.Title = Model.ppfTitle;
+}
+@model Oje.Section.GlobalForms.Models.View.GeneralFilledFormPdfDetailesVM
+@using Oje.Infrastructure.Services
+
+<style>
+    .pdfBody {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        direction: rtl;
+        padding: 10px;
+        text-align: right;
+        background-color:white;
+    }
+    .fontSize {
+        font-size:0.99em;
+    }
+
+    .printBox {
+        border: 1px solid silver;
+        margin-bottom:10px;
+        border-radius:4px;
+    }
+
+    .boxTitle {
+        border-bottom: 1px solid silver;
+        font-weight: bold;
+        padding: 10px;
+    }
+    .printItem{
+        font-size:9pt;
+    }
+    .boxContent{
+        padding:15px;
+    }
+    @{
+        if(ViewBag.isPrint == true)
+        {
+            ViewContext.Writer.Write("  body{background-color:white;}" + Environment.NewLine );
+            ViewContext.Writer.Write("  main { margin-right:0px !important; }" + Environment.NewLine);
+            ViewContext.Writer.Write("  aside{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}"  + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  footer{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  main{background:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{-webkit-box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{box-shadow:none!important;}" + Environment.NewLine);
+        }
+    }
+   .pdfHeader{
+       display:flex;
+       align-items: stretch;
+   }
+   .headerItem{
+       padding:10px;
+       flex-grow:1
+   }
+   .headerItem:last-child{
+       text-align:left;
+   }
+   .ppfTitle{
+       text-align:center;
+       font-weight:bold;
+       flex-grow:5;
+   }
+   .pdfFooterSection{
+       padding:15px;
+   }
+</style>
+<script>
+    if(window["$"]) {
+        $('.mainLoaderForAdminArea').css('display', 'none');
+    }
+</script>
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
+    }
+
+    
+}
+<div class="pdfBody">
+    <div class="pdfHeader">
+        <div class="headerItem" >شماره:@(Model.id)</div><div class="headerItem ppfTitle">@(Model.ppfTitle)</div><div class="headerItem" >تاریخ:@(Model.ppfCreateDate)</div>
+    </div>
+    @{
+        if(Model.generalFilledFormPdfGroupVMs != null && Model.generalFilledFormPdfGroupVMs.Count > 0)
+        {
+            foreach(var group in Model.generalFilledFormPdfGroupVMs)
+            {
+                   <div class="printBox">
+                    <div class="boxTitle">@(group.title)</div>
+                    <div class="boxContent ">
+                        <div class="row">
+                            @{
+                                if(group.ProposalFilledFormPdfGroupItems != null && group.ProposalFilledFormPdfGroupItems.Count > 0)
+                                {
+                                    foreach(var gorupItem in group.ProposalFilledFormPdfGroupItems )
+                                    {
+                                         <div class="printItem @(gorupItem.cssClass)">
+                                            <label class="fontSize" >@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong class="fontSize">@(gorupItem.value)</strong> </label>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+ @*   <div class="row">
+        @{
+            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
+            {
+                <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                    <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2())" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>
+                </div>
+                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                    <a style="border-color:silver;background-color:silver;cursor:default;" class="btn btn-primary btn-success btn-block" >پرداخت مستقیم به حساب شرکت @(Model.companyTitle) </a>
+                </div>
+                if(Model.loginUserWalletBalance >= Model.price.ToLongReturnZiro())
+                {
+                    <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                        <a id="walletPaymentButton" style="color:white;cursor:pointer;" class="btn btn-primary btn-success btn-block" >پرداخت از کیف پول (موجودی : @Model.loginUserWalletBalance.ToString("###,###") ریال )</a>
+                    </div>
+                    <script>
+                    $('#walletPaymentButton').click(function() {
+                        var curButtonHolder = $(this).closest('div');
+                        confirmDialog('پرداخت از کیف پول', 'آیا اطمینان دارید ؟', function () {
+                            var postData = new FormData();
+                            postData.append('id', @(Model.proposalFilledFormId));
+                            postData.append('type', 1);
+                            showLoader(curButtonHolder)
+                            postForm('/Payment/WalletTransaction/Pay', postData, function (res) { if(res && res.isSuccess ) location.reload();  }, null, function () { hideLoader(curButtonHolder) });
+                        });
+                    });
+                </script>
+                }
+            }
+        }
+    </div>*@
+</div>
+
+@*<script>
+    $('#paymentButton').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var curUrlWithQuiry = $(this).attr('href');
+        if(curUrlWithQuiry && curUrlWithQuiry.indexOf('?') > 0) {
+            var curUrl = curUrlWithQuiry.split('?')[0];
+            var status = curUrlWithQuiry.split('?')[1].split('status=')[1];
+            var fId = uuidv4RemoveDash();
+            $('body').append('<form action="'+ curUrl +'" method="post" id="'+ fId +'" ><input type="hidden" value="'+status+'" name="status" /></form>');
+            $('#' + fId).submit();
+        }
+
+        return false;
+    });
+</script>*@
+
+@{
+    if(Layout == "_WebLayout")
+    {
+        ViewContext.Writer.Write("</section></div>");
+    }
+}
+

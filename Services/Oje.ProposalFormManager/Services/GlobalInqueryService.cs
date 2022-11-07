@@ -23,7 +23,7 @@ namespace Oje.ProposalFormService.Services
             this.PaymentMethodService = PaymentMethodService;
         }
 
-        public void AppendInquiryData(long id, List<ProposalFilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs)
+        public void AppendInquiryData(long id, List<FilledFormPdfGroupVM> proposalFilledFormPdfGroupVMs)
         {
             if (id > 0)
             {
@@ -48,20 +48,20 @@ namespace Oje.ProposalFormService.Services
                 {
                     if (proposalFilledFormPdfGroupVMs == null)
                         proposalFilledFormPdfGroupVMs = new();
-                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات استعلام", ProposalFilledFormPdfGroupItems = new() };
+                    FilledFormPdfGroupVM newGroupItem = new FilledFormPdfGroupVM() { title = "جزئیات استعلام", ProposalFilledFormPdfGroupItems = new() };
                     foreach (var item in foundItem.inquiryItems)
-                        newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value.ToString("###,###") + " ریال", cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+                        newGroupItem.ProposalFilledFormPdfGroupItems.Add(new FilledFormPdfGroupItem { title = item.title, value = item.value.ToString("###,###") + " ریال", cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
                     proposalFilledFormPdfGroupVMs.Add(newGroupItem);
                 }
                 if (foundItem != null && foundItem.inputItems.Count > 0)
                 {
                     if (proposalFilledFormPdfGroupVMs == null)
                         proposalFilledFormPdfGroupVMs = new();
-                    ProposalFilledFormPdfGroupVM newGroupItem = new ProposalFilledFormPdfGroupVM() { title = "جزئیات محاسبه استعلام حق بیمه", ProposalFilledFormPdfGroupItems = new() };
+                    FilledFormPdfGroupVM newGroupItem = new FilledFormPdfGroupVM() { title = "جزئیات محاسبه استعلام حق بیمه", ProposalFilledFormPdfGroupItems = new() };
                     foreach (var item in foundItem.inputItems)
                     {
                         if (!foundItem.inputItems.Any(t => !string.IsNullOrEmpty(t.key) && t.key != item.key && t.key.StartsWith(item.key)) && item.value.IndexOf("tem.Collections.Generic.Lis") == -1)
-                            newGroupItem.ProposalFilledFormPdfGroupItems.Add(new ProposalFilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
+                            newGroupItem.ProposalFilledFormPdfGroupItems.Add(new FilledFormPdfGroupItem { title = item.title, value = item.value, cssClass = "col-md-3 col-sm-3 col-xs-12 col-lg-3" });
 
                     }
                     proposalFilledFormPdfGroupVMs.Add(newGroupItem);

@@ -76,7 +76,6 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "ذخیره فرم پیشنهاد جدید", Icon = "fa-pen")]
         [HttpPost]
-        //[CustomeAuthorizeFilter]
         public IActionResult Create()
         {
             var loginUser = HttpContext.GetLoginUser();
@@ -90,7 +89,6 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "پیش نمایش فرم پیشنهاد", Icon = "fa-eye")]
         [HttpPost]
-        //[CustomeAuthorizeFilter]
         public IActionResult PrintPreview()
         {
             var loginUserId = HttpContext.GetLoginUser()?.UserId;
