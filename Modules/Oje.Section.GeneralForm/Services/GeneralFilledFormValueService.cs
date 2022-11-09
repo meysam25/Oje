@@ -62,7 +62,7 @@ namespace Oje.Section.GlobalForms.Services
                             {
                                 if (currValue.Length > 4000)
                                     currValue = currValue.Substring(0, 3999);
-                                int keyId = GeneralFilledFormKeyService.CreateIfNeeded(ctrl.name);
+                                int keyId = GeneralFilledFormKeyService.CreateIfNeeded(ctrl.name, ctrl.label);
                                 if (keyId > 0)
                                     addNewRow(generalFilledFormId, keyId, currValue);
                             }
@@ -78,7 +78,7 @@ namespace Oje.Section.GlobalForms.Services
                         var currValue = form.GetStringIfExist(item.id);
                         if (!string.IsNullOrEmpty(currValue))
                         {
-                            int keyId = GeneralFilledFormKeyService.CreateIfNeeded(item.id);
+                            int keyId = GeneralFilledFormKeyService.CreateIfNeeded(item.id, item.title);
                             addNewRow(generalFilledFormId, keyId, currValue);
                         }
                     }

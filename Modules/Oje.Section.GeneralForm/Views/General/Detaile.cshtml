@@ -85,7 +85,7 @@
 </script>
 
 @{
-    if(Layout == "_WebLayout")
+    if(Layout == "_WebLayout" || Layout == "~/Views/Shared/_WebLayout.cshtml")
     {
         ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
     }
@@ -174,7 +174,7 @@
 </script>*@
 
 @{
-    if(Layout == "_WebLayout")
+    if(Layout == "_WebLayout" || Layout == "~/Views/Shared/_WebLayout.cshtml")
     {
         ViewContext.Writer.Write("</section></div>");
     }

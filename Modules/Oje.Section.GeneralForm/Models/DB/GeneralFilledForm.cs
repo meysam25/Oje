@@ -12,6 +12,7 @@ namespace Oje.Section.GlobalForms.Models.DB
         {
             GeneralFormJsons = new();
             GeneralFilledFormValues = new();
+            GeneralFilledFormStatuses = new();
         }
 
         [Key]
@@ -37,5 +38,7 @@ namespace Oje.Section.GlobalForms.Models.DB
         public List<GeneralFormJson> GeneralFormJsons { get; set; }
         [InverseProperty("GeneralFilledForm")]
         public List<GeneralFilledFormValue> GeneralFilledFormValues { get; set; }
+        [InverseProperty("GeneralFilledForm")]
+        public List<GeneralFilledFormStatus> GeneralFilledFormStatuses { get; set; }
     }
 }

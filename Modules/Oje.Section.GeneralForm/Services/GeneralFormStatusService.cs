@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NPOI.HSSF.Record;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -6,6 +7,7 @@ using Oje.Section.GlobalForms.Interfaces;
 using Oje.Section.GlobalForms.Models.DB;
 using Oje.Section.GlobalForms.Models.View;
 using Oje.Section.GlobalForms.Services.EContext;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Oje.Section.GlobalForms.Services
@@ -13,12 +15,16 @@ namespace Oje.Section.GlobalForms.Services
     public class GeneralFormStatusService : IGeneralFormStatusService
     {
         readonly GeneralFormDBContext db = null;
+        readonly IGeneralFormStatusRoleService GeneralFormStatusRoleService = null;
+
         public GeneralFormStatusService
             (
-                GeneralFormDBContext db
+                GeneralFormDBContext db,
+                IGeneralFormStatusRoleService GeneralFormStatusRoleService
             )
         {
             this.db = db;
+            this.GeneralFormStatusRoleService = GeneralFormStatusRoleService;
         }
 
         public ApiResult Create(GeneralFormStatusCreateUpdateVM input)
@@ -88,7 +94,7 @@ namespace Oje.Section.GlobalForms.Services
             {
                 total = quiryResult.Count(),
                 data = quiryResult
-                .OrderByDescending(t => t.GeneralFormId).OrderBy(t => t.Order).OrderByDescending(t => t.Id)
+                .OrderByDescending(t => t.GeneralFormId).OrderBy(t => t.Order)
                 .Skip(searchInput.skip)
                 .Take(searchInput.take)
                 .Select(t => new
@@ -129,6 +135,104 @@ namespace Oje.Section.GlobalForms.Services
         public long GetFirstId(long generalFormId)
         {
             return db.GeneralFormStatuses.Where(t => t.GeneralFormId == generalFormId).OrderBy(t => t.Order).Select(t => t.Id).FirstOrDefault();
+        }
+
+        public object GetSelect2List(Select2SearchVM searchInput, long? generalFormId)
+        {
+            List<object> result = new List<object>();
+
+            var hasPagination = false;
+            int take = 50;
+
+            if (searchInput == null)
+                searchInput = new Select2SearchVM();
+            if (searchInput.page == null || searchInput.page <= 0)
+                searchInput.page = 1;
+
+            var qureResult = db.GeneralFormStatuses.OrderBy(t => t.Order).Where(t => t.GeneralFormId == generalFormId);
+            if (!string.IsNullOrEmpty(searchInput.search))
+                qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
+            qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);
+            if (qureResult.Count() >= 50)
+                hasPagination = true;
+
+            result.AddRange(qureResult.Select(t => new { id = t.Id, text = t.Title }).ToList());
+
+            return new { results = result, pagination = new { more = hasPagination } };
+        }
+
+        public List<IdTitle> GetLightList(List<string> roleNames)
+        {
+            List<IdTitle> result = new();
+
+            if (roleNames != null && roleNames.Count > 0)
+            {
+                var allUserFormStatus = GeneralFormStatusRoleService.GetByRoles(roleNames);
+
+                if (allUserFormStatus.Count > 0)
+                {
+                    var allNullStatus = allUserFormStatus.Where(t => t.GeneralFormStatusId == null).ToList();
+                    if (allNullStatus != null && allNullStatus.Count > 0)
+                    {
+                        var allFormIds = allNullStatus.Select(t => t.GeneralFormId).ToList();
+                        result.AddRange(
+
+                                db.GeneralFormStatuses
+                                .Where(t => allFormIds.Contains(t.GeneralFormId))
+                                .Select(t => new IdTitle
+                                {
+                                    id = t.GeneralFormId + "_" + t.Id,
+                                    title = t.GeneralForm.Title + " " + t.Title
+                                })
+                                .ToList()
+
+                            );
+                    }
+                    var allWithStatus = allUserFormStatus.Where(t => t.GeneralFormStatusId != null).ToList();
+                    if (allWithStatus != null && allWithStatus.Count > 0)
+                    {
+                        var allFormIds = allWithStatus.Where(t => !allNullStatus.Select(tt => tt.GeneralFormId).Contains(t.GeneralFormId)).Select(t => t.GeneralFormId).ToList();
+                        var allStatusIds = allWithStatus.Where(t => !allNullStatus.Select(tt => tt.GeneralFormId).Contains(t.GeneralFormId)).Select(t => t.GeneralFormStatusId).ToList();
+                        result.AddRange(
+
+                                db.GeneralFormStatuses
+                                .Where(t => allFormIds.Contains(t.GeneralFormId) && allStatusIds.Contains(t.Id))
+                                .Select(t => new IdTitle
+                                {
+                                    id = t.GeneralFormId + "_" + t.Id,
+                                    title = t.GeneralForm.Title + " " + t.Title
+                                })
+                                .ToList()
+
+                            );
+                    }
+                }
+
+            }
+
+            return result;
+        }
+
+        public List<IdTitle> GetNextStatuses(long id)
+        {
+            List<IdTitle> result = new();
+
+            var foundCurStatus = db.GeneralFormStatuses.Where(t => t.Id == id).FirstOrDefault();
+            if (foundCurStatus != null)
+            {
+                var groupItem = db.GeneralFormStatuses
+                    .Where(t => t.GeneralFormId == foundCurStatus.GeneralFormId && t.Order > foundCurStatus.Order)
+                    .GroupBy(t => t.Order)
+                    .OrderBy(t => t.Key)
+                    .Select(t => new { allItems = t.ToList() })
+                    .FirstOrDefault();
+
+                if (groupItem != null && groupItem.allItems != null && groupItem.allItems.Count > 0)
+                    result.AddRange(groupItem.allItems.Select(t => new IdTitle { id = t.Id.ToString(), title = t.Title }).ToList());
+
+            }
+
+            return result;
         }
     }
 }

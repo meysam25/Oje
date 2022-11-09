@@ -7,6 +7,9 @@ $.fn.initMyGrid = function (option) {
         option.detailes.id = option.detailes.id + "1";
     }
 
+    if (option.hide)
+        $(this).hide();
+
     if (option.columns) {
         for (var i = 0; i < option.columns.length; i++) {
             if (option.columns[i].showCondation) {
@@ -20,6 +23,19 @@ $.fn.initMyGrid = function (option) {
     }
 
     var templateFunctions = {
+        getAllColumns: function (option, data) {
+            var result = [];
+
+            if (option.columns)
+                for (var i = 0; i < option.columns.length; i++)
+                    result.push(option.columns[i]);
+
+            if (data && data.columns)
+                for (var i = 0; i < data.columns.length; i++)
+                    result.push({ field: data.columns[i].id, caption: data.columns[i].title, search: { searchType: 'text' } });
+
+            return result;
+        },
         getGridHeaderCellTemplateStyle: function (col) {
             var result = '';
 
@@ -32,8 +48,8 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getNoDataTemplate: function (option) {
-            return '<tr  ><td colspan="' + this.getGridColumnCount(option) + '" style="text-align:center;padding:20px;" >اطلاعاتی جهت نمایش یافت نشد</td></tr>';
+        getNoDataTemplate: function (option, data) {
+            return '<tr  ><td colspan="' + this.getGridColumnCount(option, data) + '" style="text-align:center;padding:20px;" >اطلاعاتی جهت نمایش یافت نشد</td></tr>';
         },
         hasAction: function (option) {
             var result = false;
@@ -44,27 +60,27 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridHeaderCellTemplate: function (option) {
+        getGridHeaderCellTemplate: function (option, data) {
             var result = '';
-
-            if (option && option.columns && option.columns.constructor == Array) {
+            var allColumns = templateFunctions.getAllColumns(option, data);
+            if (option && allColumns && allColumns.constructor == Array) {
                 if (option.selectable == true) {
                     result += '<td style="text-align:center;width:30px;" ><input class="headCB" type="checkbox" /></td>';
                 }
                 if (option.detailes) {
                     result += '<td style="text-align:center;width:30px;" ></td>';
                 }
-                for (var i = 0; i < option.columns.length; i++) {
-                    if (!option.columns[i].hide) {
+                for (var i = 0; i < allColumns.length; i++) {
+                    if (!allColumns[i].hide) {
                         var sortCL = '';
-                        if (option.columns[i].sort)
+                        if (allColumns[i].sort)
                             sortCL = 'hasSort';
-                        if (option.sortFieldStatus == true && option.columns[i].field == option.sortField)
+                        if (option.sortFieldStatus == true && allColumns[i].field == option.sortField)
                             sortCL += ' fa fa-sort-alpha-down';
-                        else if (option.sortFieldStatus == false && option.columns[i].field == option.sortField)
+                        else if (option.sortFieldStatus == false && allColumns[i].field == option.sortField)
                             sortCL += ' fa fa-sort-alpha-up';
-                        result += '<td class="' + sortCL + '" ' + (option.columns[i].sort ? 'data-field-name="' + option.columns[i].field + '"' : '') +
-                            ' style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span style="display:inline-block;padding-right:5px;" >' + option.columns[i].caption + '</span></td>';
+                        result += '<td class="' + sortCL + '" ' + (allColumns[i].sort ? 'data-field-name="' + allColumns[i].field + '"' : '') +
+                            ' style="' + this.getGridHeaderCellTemplateStyle(allColumns[i]) + '" ><span style="display:inline-block;padding-right:5px;" >' + allColumns[i].caption + '</span></td>';
                     }
 
                 }
@@ -96,11 +112,12 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridHeaderSearchTemplate: function (option, addActions, isUpdate) {
+        getGridHeaderSearchTemplate: function (option, addActions, isUpdate, data) {
             var result = '';
             var doseHaveSearchFilter = false;
-            for (var i = 0; i < option.columns.length; i++) {
-                if (option.columns[i].search) {
+            var allColumns = templateFunctions.getAllColumns(option, data);
+            for (var i = 0; i < allColumns.length; i++) {
+                if (allColumns[i].search) {
                     doseHaveSearchFilter = true;
                     break;
                 }
@@ -118,11 +135,11 @@ $.fn.initMyGrid = function (option) {
                 if (option.detailes) {
                     result += '<td style="text-align:center;width:30px;" ></td>';
                 }
-                for (var i = 0; i < option.columns.length; i++) {
-                    if (!option.columns[i].hide) {
-                        if (option.columns[i].search) {
+                for (var i = 0; i < allColumns.length; i++) {
+                    if (!allColumns[i].hide) {
+                        if (allColumns[i].search) {
                             result += '<td>';
-                            result += this.getSearchCTRL(option.columns[i]);
+                            result += this.getSearchCTRL(allColumns[i]);
                             result += '</td>';
                         } else {
                             result += '<td></td>';
@@ -142,23 +159,24 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridHeaderTemplate: function (option) {
-            var searchTemplate = this.getGridHeaderSearchTemplate(option);
+        getGridHeaderTemplate: function (option, data) {
+            var searchTemplate = this.getGridHeaderSearchTemplate(option, null, null, data);
             return `
                         <thead class="myTableHeader">
                             <tr >
-                                `+ this.getGridHeaderCellTemplate(option) + `
+                                `+ this.getGridHeaderCellTemplate(option, data) + `
                             </tr>
                             `+ searchTemplate + `
                         </thead>
                     `
         },
-        getGridColumnCount: function (option) {
+        getGridColumnCount: function (option, data) {
             var result = 0;
+            var allColumns = templateFunctions.getAllColumns(option, data);
 
-            if (option && option.columns) {
-                for (var i = 0; i < option.columns.length; i++) {
-                    if (!option.columns[i].hide)
+            if (option && allColumns) {
+                for (var i = 0; i < allColumns.length; i++) {
+                    if (!allColumns[i].hide)
                         result++;
                 }
             }
@@ -171,11 +189,11 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridBodyTemplateLoading: function (option) {
+        getGridBodyTemplateLoading: function (option, data) {
             return `
                 <tbody class="myTableBody">
                     <tr>
-                        <td style="text-align:center;" colspan="`+ this.getGridColumnCount(option) + `" >Loading ...</td>
+                        <td style="text-align:center;" colspan="`+ this.getGridColumnCount(option, data) + `" >Loading ...</td>
                     </tr>
                 </tbody>
             `
@@ -209,7 +227,7 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridRowDataTemplate: function (data, option) {
+        getGridRowDataTemplate: function (data, option, datas) {
             var result = '<tr data-row-json=\'' + JSON.stringify(data) + '\' class="rowBindItem">';
             if (option.selectable == true) {
                 result += '<td style="text-align:center;width:30px;" ><input name="gridSelectedItems" value="' + (option.key ? data[option.key] : '') + '" type="checkbox" /></td>';
@@ -217,20 +235,21 @@ $.fn.initMyGrid = function (option) {
             if (option.detailes) {
                 result += '<td style="text-align:center;width:30px;" ><span class="fa fa-plus-square gridExpandButton"></span></td>';
             }
-            for (var i = 0; i < option.columns.length; i++) {
-                if (!option.columns[i].hide) {
-                    var curCellData = data[option.columns[i].field];
+            var allColumns = templateFunctions.getAllColumns(option, datas);
+            for (var i = 0; i < allColumns.length; i++) {
+                if (!allColumns[i].hide) {
+                    var curCellData = data[allColumns[i].field];
                     if (!curCellData)
                         curCellData = '';
-                    if (option.columns[i].formatter && option.formatters[option.columns[i].formatter]) {
-                        if (typeof (option.formatters[option.columns[i].formatter]) == 'string') {
-                            var compileStr = 'var data =' + JSON.stringify(data) + ';' + (option.formatters[option.columns[i].formatter]);
+                    if (allColumns[i].formatter && option.formatters[allColumns[i].formatter]) {
+                        if (typeof (option.formatters[allColumns[i].formatter]) == 'string') {
+                            var compileStr = 'var data =' + JSON.stringify(data) + ';' + (option.formatters[allColumns[i].formatter]);
                             curCellData = eval(compileStr);
                         }
                         else
-                            curCellData = option.formatters[option.columns[i].formatter](null, data);
+                            curCellData = option.formatters[allColumns[i].formatter](null, data);
                     }
-                    result += '<td class="' + (option.columns[i].class ? option.columns[i].class : '') + '" style="' + this.getGridHeaderCellTemplateStyle(option.columns[i]) + '" ><span  class="gridResTitle">' + option.columns[i].caption + ': </span>' + curCellData + '</td>';
+                    result += '<td class="' + (allColumns[i].class ? allColumns[i].class : '') + '" style="' + this.getGridHeaderCellTemplateStyle(allColumns[i]) + '" ><span  class="gridResTitle">' + allColumns[i].caption + ': </span>' + curCellData + '</td>';
                 }
             }
             if (this.hasAction(option)) {
@@ -241,7 +260,7 @@ $.fn.initMyGrid = function (option) {
             result += '</tr>'
             return result;
         },
-        getColumnConfigButtonTemplate: function (option) {
+        getColumnConfigButtonTemplate: function (option, data) {
             var newLabelId = 'cb_' + Math.random();
             newLabelId = newLabelId.replace('.', '');
             var result = '<div class="holderColumnConfig">';
@@ -251,10 +270,11 @@ $.fn.initMyGrid = function (option) {
             result += '<span class="columnMenu">';
             result += '<span class="holderSearchTextBox"><input id="' + newLabelId + '" type="text" placeholder="search" class="form-control columnSearchBox" ><label for="' + newLabelId + '" class="fa fa-search"></label></span>';
             result += '<span class="holdercolumnItem">';
-            for (var i = 0; i < option.columns.length; i++) {
+            var allColumns = templateFunctions.getAllColumns(option, data);
+            for (var i = 0; i < allColumns.length; i++) {
                 var newId = 'cb_' + Math.random();
                 newId = newId.replace('.', '');
-                result += '<span class="columnMenuItem"><input data-index="' + i + '" id="' + newId + '" type="checkbox" checked="checked" /><label data-lc="' + option.columns[i].lc + '" for="' + newId + '">' + option.columns[i].caption + '</label></span>';
+                result += '<span class="columnMenuItem"><input data-index="' + i + '" id="' + newId + '" type="checkbox" checked="checked" /><label data-lc="' + allColumns[i].lc + '" for="' + newId + '">' + allColumns[i].caption + '</label></span>';
             }
             result += '</span>';
             result += '</span>';
@@ -273,11 +293,11 @@ $.fn.initMyGrid = function (option) {
             result += '</div>';
             return result;
         },
-        hasAnyFilter: function (option) {
+        hasAnyFilter: function (option, data) {
             var result = false;
-
-            for (var i = 0; i < option.columns.length; i++) {
-                if (option.columns[i].search) {
+            var allColumns = templateFunctions.getAllColumns(option, data);
+            for (var i = 0; i < allColumns.length; i++) {
+                if (allColumns[i].search) {
                     result = true;
                     break;
                 }
@@ -285,7 +305,7 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridTemplate: function (option) {
+        getGridTemplate: function (option, data) {
             var doseHaveAnyHeaderAction = false;
 
             var columnConfigButton = '<div class="topGridAction">';
@@ -298,7 +318,7 @@ $.fn.initMyGrid = function (option) {
                 columnConfigButton += '</div>';
             }
             if (option.showColumnConfigButton) {
-                columnConfigButton += this.getColumnConfigButtonTemplate(option);
+                columnConfigButton += this.getColumnConfigButtonTemplate(option, data);
                 doseHaveAnyHeaderAction = true;
             }
             if (option.exteraFilterModalId) {
@@ -309,7 +329,7 @@ $.fn.initMyGrid = function (option) {
                 columnConfigButton += this.getColumnExcelButtonTemplate(option);
                 doseHaveAnyHeaderAction = true;
             }
-            if (this.hasAnyFilter(option)) {
+            if (this.hasAnyFilter(option, data)) {
                 columnConfigButton += '<span class="myGridSearchButton"><i class="fa fa-search" ></i></span>';
                 doseHaveAnyHeaderAction = true;
             }
@@ -320,13 +340,13 @@ $.fn.initMyGrid = function (option) {
             return `
                         `+ (option.headerTemplate ? option.headerTemplate : '') + columnConfigButton + `
                         <table class="myGrid" >
-                            ` + this.getGridHeaderTemplate(option) + `
-                            ` + this.getGridBodyTemplateLoading(option) + `
+                            ` + this.getGridHeaderTemplate(option, data) + `
+                            ` + this.getGridBodyTemplateLoading(option, data) + `
                         </table>
                     `;
         },
-        getFooterTemplate: function (totalNumber, option, currentPage, itemPerPage) {
-            var result = '<tr><td colspan="' + this.getGridColumnCount(option) + '"><div class="row">';
+        getFooterTemplate: function (totalNumber, option, currentPage, itemPerPage, data) {
+            var result = '<tr><td colspan="' + this.getGridColumnCount(option, data) + '"><div class="row">';
 
             var pages = Number.parseInt(Math.ceil(totalNumber / itemPerPage));
             if (!pages)
@@ -401,7 +421,7 @@ $.fn.initMyGrid = function (option) {
         curElement.itemPerPage = option.itemPerPage
         curElement.templateFunctions = templateFunctions;
         curElement.option = option;
-        $(this).html(templateFunctions.getGridTemplate(option));
+        $(this).html(templateFunctions.getGridTemplate(option, curElement.lastData));
 
         $(this).find('.columnConfigButton').click(function (e) {
             e.stopPropagation();
@@ -513,7 +533,7 @@ $.fn.initMyGrid = function (option) {
             var theader = $(this).find('.myTableHeader');
             var option = $(this)[0].option;
             if (theader.length > 0) {
-                var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true);
+                var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true, null, curElement.lastData);
                 theader.append(rowTemplate);
                 $(this)[0].isAddNewShow = true;
                 $(theader).find('.saveButton').click(function () {
@@ -541,7 +561,7 @@ $.fn.initMyGrid = function (option) {
 
         curElement.showEditStyle = function (curObj) {
             var crTR = $(curObj).closest('tr');
-            var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true, true);
+            var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true, true, curElement.lastData);
             crTR.html($(rowTemplate).html());
             $(crTR).closest('.myGridCTRL')[0].initCTRL(crTR);
             var jsData = JSON.parse($(crTR).attr('data-row-json'));
@@ -550,7 +570,7 @@ $.fn.initMyGrid = function (option) {
                 var trObj = $(this).closest('tr');
                 var option = $(trObj).closest('.myGridCTRL')[0].option;
                 var jsData = JSON.parse(trObj.attr('data-row-json'));
-                var editRowTemplate = templateFunctions.getGridRowDataTemplate(jsData, option);
+                var editRowTemplate = templateFunctions.getGridRowDataTemplate(jsData, option, curElement.lastData);
                 trObj.html($(editRowTemplate).html());
                 $(trObj).closest('.myGridCTRL')[0].bindActions(trObj);
             });
@@ -603,14 +623,14 @@ $.fn.initMyGrid = function (option) {
         }
 
         curElement.expandDetailes = function (currButton) {
-            
+
             if ($(currButton).hasClass('fa-plus-square')) {
                 this.closeAllExpandButton(currButton);
                 $(currButton).removeClass('fa-plus-square');
                 $(currButton).addClass('fa-minus-square');
                 var curTr = $(currButton).closest('tr');
                 var optionX = $(this)[0].option
-                curTr.after('<tr class="holderDetailesGrid"><td colspan="' + templateFunctions.getGridColumnCount(optionX) + '" ><div id="' + optionX.detailes.id + '" class="myGridCTRL gridDetailes"></div></td></tr>');
+                curTr.after('<tr class="holderDetailesGrid"><td colspan="' + templateFunctions.getGridColumnCount(optionX, curElement.lastData) + '" ><div id="' + optionX.detailes.id + '" class="myGridCTRL gridDetailes"></div></td></tr>');
                 var currRowData = JSON.parse(curTr.attr('data-row-json'));
                 optionX.detailes.ds = currRowData[optionX.detailesClientSchema];
                 optionX.detailes.exteraParameters = { pKey: currRowData[optionX.key] };
@@ -623,10 +643,8 @@ $.fn.initMyGrid = function (option) {
             }
         }
 
-        curElement.closeAllExpandButton = function (currButton)
-        {
-            $(currButton).closest('.myTableBody').find('> tr > td > .fa-minus-square').each(function ()
-            {
+        curElement.closeAllExpandButton = function (currButton) {
+            $(currButton).closest('.myTableBody').find('> tr > td > .fa-minus-square').each(function () {
                 if ($(this)[0] != $(currButton)[0]) {
                     $(this).click();
                 }
@@ -643,7 +661,7 @@ $.fn.initMyGrid = function (option) {
             var holderItems = $(this).find('.myTableBody');
             var resultRows = '';
             var cElement = $(this)[0];
-            var headerTemplate = templateFunctions.getGridHeaderTemplate(option);
+            var headerTemplate = templateFunctions.getGridHeaderTemplate(option, res);
             tHead.html($(headerTemplate).html());
             cElement.initCTRL(tHead);
             cElement.initTopCB();
@@ -653,7 +671,7 @@ $.fn.initMyGrid = function (option) {
             if (option.isClient) {
                 if (data && data.length > 0 && data.constructor == Array) {
                     for (var i = this.skip; i < data.length && i < (this.skip + this.take); i++) {
-                        resultRows += templateFunctions.getGridRowDataTemplate(data[i], option);
+                        resultRows += templateFunctions.getGridRowDataTemplate(data[i], option, res);
                     }
                     holderItems.html(resultRows);
                     $(this)[0].bindActions();
@@ -661,7 +679,7 @@ $.fn.initMyGrid = function (option) {
             } else {
                 if (data && data.length > 0 && data.constructor == Array) {
                     for (var i = 0; i < data.length; i++) {
-                        resultRows += templateFunctions.getGridRowDataTemplate(data[i], option);
+                        resultRows += templateFunctions.getGridRowDataTemplate(data[i], option, res);
                     }
                     holderItems.html(resultRows);
                     $(this)[0].bindActions();
@@ -669,10 +687,10 @@ $.fn.initMyGrid = function (option) {
             }
 
             if (data && data.length == 0 && data.constructor == Array) {
-                holderItems.html(templateFunctions.getNoDataTemplate(option));
+                holderItems.html(templateFunctions.getNoDataTemplate(option, res));
             }
 
-            $(this).find('tbody').append(templateFunctions.getFooterTemplate(totalItems, option, cElement.currentPage, cElement.itemPerPage));
+            $(this).find('tbody').append(templateFunctions.getFooterTemplate(totalItems, option, cElement.currentPage, cElement.itemPerPage, res));
 
             $(this).find('.myItemPerPage span').click(function () {
                 var gridCTRL = $(this).closest('.myGridCTRL');
@@ -858,8 +876,10 @@ $.fn.initMyGrid = function (option) {
                     showLoader($(this));
                     postForm(url, postData,
                         function (res) {
-                            if (res.isSuccess != false)
+                            if (res.isSuccess != false) {
                                 $(this)[0].bindData(res);
+                                $(this)[0].lastData = res;
+                            }
                         }.bind(this), function () {
                         }.bind(this), function () {
                             hideLoader($(this));

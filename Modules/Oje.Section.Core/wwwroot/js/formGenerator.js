@@ -114,6 +114,9 @@ function getInputTemplate(ctrl) {
             case 'button':
                 result += getButtonTemplateWidthLabel(ctrl);
                 break;
+            case 'searchButtons':
+                result += getSearchButtonsTemplate(ctrl);
+                break;
             case 'countDownButton':
                 result += getCountDownButtonTemplate(ctrl);
                 break;
@@ -490,7 +493,7 @@ function getModualTemplate(modual) {
     var modalId = (!modual.id) ? uuidv4RemoveDash() : modual.id
     var result =
         '<div class="modal fade" id="' + modalId + '"  role="dialog"  aria-hidden="true">' +
-        '<div class="modal-dialog modal-dialog-centered  ' + modual.class + '" role="document">' +
+        '<div class="modal-dialog modal-dialog-centered  ' + (modual.class ? modual.class : '') + '" role="document">' +
         '<div class="modal-content">' +
         '<div class="modal-header">' +
         '<h5 class="modal-title">' + modual.title + '</h5>' +
@@ -1012,6 +1015,30 @@ function getCountDownButtonTemplate(ctrl) {
     if (ctrl && ctrl.startNumber && ctrl.countDownText && ctrl.finishedCountDownText) {
         result += '<label data-onClick="' + ctrl.onClick + '"  id="' + ctrl.id + '" data-finishedCountDownText="' + ctrl.finishedCountDownText + '" data-countDownText="' + ctrl.countDownText + '" data-maxNumber="' + ctrl.startNumber + '" class="countDownCtrl" disabled ></label>';
         functionsList.push(function () { $('#' + this.id).initCountDown(); }.bind({ id: ctrl.id }));
+    }
+
+    return result;
+}
+
+function getSearchButtonsTemplate(ctrl) {
+    var result = '';
+
+    if (ctrl && ctrl.dataurl && ctrl.valuefield && ctrl.textfield && ctrl.name) {
+        result += '<div class="myCtrl" ><div class="row" id="' + ctrl.id + '" ></div></div>';
+        addCtrlToObj(ctrl);
+        functionsList.push(function () {
+            postForm(this.ctrl.dataurl, new FormData(), function (res) {
+                if (res && res.length > 0) {
+                    var templateButton = '';
+                    for (var i = 0; i < res.length; i++) {
+                        templateButton += '<div class="' + this.ctrl.itemClass + '" >';
+                        templateButton += '<button style="margin-bottom:10px;" data-button-name="' + this.ctrl.name + '" data-button-value="' + res[i][this.ctrl.valuefield] + '" onclick="' + this.ctrl.onClick + '" type="button" class="btn btn-primary btn-block" >' + res[i][this.ctrl.textfield] + '</button>';
+                        templateButton += '</div>';
+                    }
+                    $('#' + this.ctrl.id).html(templateButton);
+                }
+            }.bind({ ctrl: this.ctrl }));
+        }.bind({ ctrl: ctrl }));
     }
 
     return result;
@@ -3252,7 +3279,7 @@ function postButtonAndMakeDisable(curElement, holderInputs, gridId, url, ignoreC
     postModalData(holderInputs, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId, function () { $(curElement).removeAttr('disabled') })
 }
 
-function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId, onFinished) {
+function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, onSuccessFunction, showLoaderId, onFinished, exteraModalId) {
     var qSelector = $(curElement).closest('.modal').find('.modal-content');
     if (qSelector.length == 0)
         qSelector = $(curElement);
@@ -3268,6 +3295,8 @@ function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, on
         showLoader($('#' + showLoaderId))
     postForm(url, postFormData, function (res) {
         if (res && res.isSuccess == true) {
+            if (exteraModalId && $('#' + exteraModalId).length > 0)
+                $('#' + exteraModalId).modal('hide');
             updateDashboardGridCountIfExist();
             if (onSuccessFunction)
                 onSuccessFunction(res);
@@ -3296,6 +3325,16 @@ function refreshGrid(gridId, currButtonInsideModal) {
     closeThisModal(currButtonInsideModal);
     if ($('#' + gridId).length > 0 && $('#' + gridId)[0].refreshData)
         $('#' + gridId)[0].refreshData();
+}
+
+function refreshGridAndShow(gridId, curButton) {
+    var sQuiry = $('#' + gridId);
+    $(curButton).closest('.myCtrl').find('input[type=hidden]').remove();
+    $(curButton).append('<input type="hidden" name="' + $(curButton).attr('data-button-name') + '" value="' + $(curButton).attr('data-button-value') +'" />')
+    if (sQuiry.length > 0 && sQuiry[0].refreshData) {
+        sQuiry[0].refreshData();
+        sQuiry.show();
+    }
 }
 
 function postPanel(curElement, url, exteraParameters, clearPanelAfter) {

@@ -1,0 +1,148 @@
+﻿{
+  "panels": [
+    {
+      "ctrls": [
+        {
+          "id": "searchButtonFilterHolder",
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "itemClass": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+          "name": "fsId",
+          "type": "searchButtons",
+          "textfield": "title",
+          "valuefield": "id",
+          "dataurl": "/GlobalFormAdmin/GeneralFilledForm/GetFormStatusList",
+          "onClick": "refreshGridAndShow('GeneralFilledFormGrid', this)"
+        }
+      ],
+      "grids": [
+        {
+          "id": "GeneralFilledFormGrid",
+          "hide": true,
+          "exteraSearchIds": [ "searchButtonFilterHolder" ],
+          "exportToExcelUrl": "/GlobalFormAdmin/GeneralFilledForm/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/GlobalFormAdmin/GeneralFilledForm/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-file-powerpoint",
+                "prop": "id",
+                "modalId": "GeneralFilledFormDetailesGridModal",
+                "url": "/GlobalFormAdmin/GeneralFilledForm/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/GlobalFormAdmin/GeneralFilledForm/GetById\\', \\'GeneralFilledFormDetailesGridModal\\' , this, null, null, null, true)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-history",
+                "prop": "id",
+                "modalId": "GeneralFilledFormPPFStatusHistory",
+                "template": "function bindRow (curRow) { return '<span title=\"تاریخچه وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'GeneralFilledFormPPFStatusHistory\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-history\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/GlobalFormAdmin/GeneralFilledForm/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "userfullname",
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "GeneralFilledFormDetailesGridModal",
+          "title": "جزئیات",
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        },
+        {
+          "id": "GeneralFilledFormPPFStatusHistory",
+          "title": "تاریخچه وضعیت",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "GeneralFilledFormPPFStatusHistoryGrid",
+                  "showColumnConfigButton": true,
+                  "key": "id",
+                  "url": "/GlobalFormAdmin/GeneralFilledForm/GetStatusLogList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "status",
+                      "caption": "وضعیت",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "userFullname",
+                      "caption": "کاربر",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ ایجاد",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "desc",
+                      "caption": "توضیحات"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

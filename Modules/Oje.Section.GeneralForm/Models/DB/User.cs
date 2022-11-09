@@ -11,6 +11,7 @@ namespace Oje.Section.GlobalForms.Models.DB
         public User()
         {
             GeneralFilledForms = new();
+            GeneralFilledFormStatuses = new();
         }
 
         [Key]
@@ -43,5 +44,7 @@ namespace Oje.Section.GlobalForms.Models.DB
 
         [InverseProperty("CreateUser")]
         public List<GeneralFilledForm> GeneralFilledForms { get; set; }
+        [InverseProperty("User")]
+        public List<GeneralFilledFormStatus> GeneralFilledFormStatuses { get; set; }
     }
 }

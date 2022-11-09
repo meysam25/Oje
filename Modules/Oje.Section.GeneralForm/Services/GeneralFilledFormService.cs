@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Oje.FileService.Interfaces;
-using Oje.FileService.Services;
-using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -30,6 +29,8 @@ namespace Oje.Section.GlobalForms.Services
         readonly IInternalUserService InternalUserService = null;
         readonly IGeneralFilledFormValueService GeneralFilledFormValueService = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly IGeneralFormStatusGridColumnService GeneralFormStatusGridColumnService = null;
+        readonly IGeneralFilledFormStatusService GeneralFilledFormStatusService = null;
         static string accpetableExtension = ".jpg,.png,.pdf,.doc,.docx,.xls";
 
         public GeneralFilledFormService
@@ -41,7 +42,9 @@ namespace Oje.Section.GlobalForms.Services
                 IGeneralFormJsonService GeneralFormJsonService,
                 IInternalUserService InternalUserService,
                 IGeneralFilledFormValueService GeneralFilledFormValueService,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                IGeneralFormStatusGridColumnService GeneralFormStatusGridColumnService,
+                IGeneralFilledFormStatusService GeneralFilledFormStatusService
             )
         {
             this.db = db;
@@ -52,6 +55,8 @@ namespace Oje.Section.GlobalForms.Services
             this.InternalUserService = InternalUserService;
             this.GeneralFilledFormValueService = GeneralFilledFormValueService;
             this.UploadedFileService = UploadedFileService;
+            this.GeneralFormStatusGridColumnService = GeneralFormStatusGridColumnService;
+            this.GeneralFilledFormStatusService = GeneralFilledFormStatusService;
         }
 
         public object Create(int? siteSettingId, IFormCollection form, LoginUserVM loginUser)
@@ -168,10 +173,15 @@ namespace Oje.Section.GlobalForms.Services
             }
         }
 
-        public GeneralFilledFormPdfDetailesVM PdfDetailes(long id, int? siteSettingId, long? loginUserId)
+        public GeneralFilledFormPdfDetailesVM PdfDetailes(long id, int? siteSettingId, long? loginUserId, LoginUserVM adminLoginUser)
         {
+            bool isAdmin = adminLoginUser != null && adminLoginUser.UserId > 0;
             var result = new GeneralFilledFormPdfDetailesVM();
-            var foundItem = db.GeneralFilledForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId && t.CreateUserId == loginUserId)
+            var quiryResult = db.GeneralFilledForms.Where(t => t.Id == id && t.SiteSettingId == siteSettingId);
+            if (!isAdmin)
+                quiryResult = quiryResult.Where(t => t.CreateUserId == loginUserId);
+
+            var foundItem = quiryResult
                .Select(t => new
                {
                    t.Id,
@@ -180,6 +190,7 @@ namespace Oje.Section.GlobalForms.Services
                    t.CreateDate,
                    t.SiteSettingId,
                    t.PaymentTraceCode,
+                   t.GeneralFormStatusId,
                    ppfTitle = t.GeneralForm.Title,
                    createUserFullname = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
                    values = t.GeneralFilledFormValues.Select(tt => new
@@ -191,6 +202,15 @@ namespace Oje.Section.GlobalForms.Services
                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+            if (isAdmin == true)
+            {
+                var allValidForms = GeneralFormStatusService.GetLightList(adminLoginUser?.roles);
+                if (!allValidForms.Any(t => t.id == foundItem.GeneralFormId + "_" + foundItem.GeneralFormStatusId))
+                    throw BException.GenerateNewException(BMessages.Not_Found);
+                var allNextStatus = GeneralFormStatusService.GetNextStatuses(foundItem.GeneralFormStatusId);
+                result.nextStatuses = allNextStatus;
+            }
+
             var foundJson = GeneralFormJsonService.GetCacheBy(foundItem.Id);
             if (foundJson == null)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Json_Config);
@@ -216,7 +236,7 @@ namespace Oje.Section.GlobalForms.Services
                 }
                 listGroup.Add(new FilledFormPdfGroupVM() { title = "وضعیت پرداخت", ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupPaymentItems });
             }
-           
+
             foreach (var step in fFoundSw.steps)
             {
                 var allCtrls = step.GetAllListOf<ctrl>();
@@ -277,7 +297,7 @@ namespace Oje.Section.GlobalForms.Services
         private List<step> ignoreSteps(List<step> allSteps)
         {
             if (allSteps != null)
-                return allSteps.Where(t =>  t.id != "requiredDocumnet" && t.id != "selectAgent" && t.id != "companyStep").ToList();
+                return allSteps.Where(t => t.id != "requiredDocumnet" && t.id != "selectAgent" && t.id != "companyStep").ToList();
 
             return allSteps;
         }
@@ -358,6 +378,153 @@ namespace Oje.Section.GlobalForms.Services
             result.ppfCreateDate = DateTime.Now.ToFaDate();
 
             return result;
+        }
+
+        public object Delete(long? id, int? siteSettingId, LoginUserVM loginUserVM)
+        {
+            var foundItem = db.GeneralFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete == false && t.Id == id).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+            var allValidForms = GeneralFormStatusService.GetLightList(loginUserVM?.roles);
+            if (!allValidForms.Any(t => t.id == foundItem.GeneralFormId + "_" + foundItem.GeneralFormStatusId))
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            foundItem.IsDelete = true;
+            db.SaveChanges();
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetList(GeneralFilledFormMainGrid searchInput, IFormCollection form, int? siteSettingId, LoginUserVM loginUserVM)
+        {
+            long formId = -1;
+            long statusId = -1;
+
+            searchInput = searchInput ?? new();
+
+            if (!string.IsNullOrEmpty(searchInput.fsId) && searchInput.fsId.IndexOf("_") > 0)
+            {
+                formId = searchInput.fsId.Split('_')[0].ToLongReturnZiro();
+                statusId = searchInput.fsId.Split('_')[1].ToLongReturnZiro();
+                if (!db.GeneralFormStatuses.Any(t => t.GeneralFormId == formId && t.Id == statusId))
+                {
+                    formId = -1;
+                    statusId = -1;
+                }
+            }
+            var allValidForms = GeneralFormStatusService.GetLightList(loginUserVM?.roles);
+            if (!allValidForms.Any(t => t.id == formId + "_" + statusId))
+            {
+                formId = -1;
+                statusId = -1;
+            }
+            var allValidFormIds = allValidForms.Select(t => t.id.ToLongReturnZiro()).Where(t => t > 0).ToList();
+            var quiryResult = db.GeneralFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete == false && t.GeneralFormStatusId == statusId && t.GeneralFormId == formId);
+            var allExteralColumn = GeneralFormStatusGridColumnService.GetListBy(formId, statusId);
+            var allKeyIds = allExteralColumn.Select(t => t.GeneralFilledFormKeyId).ToList();
+
+            foreach (var keyItem in allExteralColumn)
+            {
+                var curKey = keyItem.GeneralFilledFormKey?.Key;
+                if (!string.IsNullOrEmpty(curKey))
+                {
+                    var curFilter = form.GetStringIfExist(curKey);
+                    if (!string.IsNullOrEmpty(curFilter))
+                        quiryResult = quiryResult.Where(t => t.GeneralFilledFormValues.Any(tt => tt.Value.Contains(curFilter)));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ToEnDate() != null)
+            {
+                var targetDate = searchInput.createDate.ToEnDate().Value;
+                quiryResult = quiryResult.Where(t => t.CreateDate.Year == targetDate.Year && t.CreateDate.Month == targetDate.Month && t.CreateDate.Day == targetDate.Day);
+            }
+            if (!string.IsNullOrEmpty(searchInput.userfullname))
+                quiryResult = quiryResult.Where(t => (t.CreateUser.Firstname + " " + t.CreateUser.Lastname).Contains(searchInput.userfullname));
+
+            int row = searchInput.skip;
+
+            var result = new List<Dictionary<string, string>>();
+
+            var tempResult = quiryResult
+                .OrderByDescending(t => t.Id)
+                .Skip(searchInput.skip)
+                .Take(searchInput.take)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    createDate = t.CreateDate,
+                    userfullname = t.CreateUser.Firstname + " " + t.CreateUser.Lastname,
+                    values = t.GeneralFilledFormValues.Where(tt => allKeyIds.Contains(tt.GeneralFilledFormKeyId)).Select(tt => new { tt.GeneralFilledFormKey.Key, tt.Value }).ToList()
+                })
+                .ToList()
+                .Select(t => new
+                {
+                    row = ++row,
+                    t.id,
+                    createDate = t.createDate.ToFaDate(),
+                    t.userfullname,
+                    t.values
+                })
+                .ToList()
+                ;
+
+            foreach (var item in tempResult)
+            {
+                var resultItem = new Dictionary<string, string>();
+
+                resultItem.Add("row", item.row + "");
+                resultItem.Add("id", item.id + "");
+                resultItem.Add("createDate", item.createDate);
+                resultItem.Add("userfullname", item.userfullname);
+
+                if (item.values != null)
+                    foreach (var value in item.values)
+                        resultItem.Add(value.Key, value.Value);
+
+                result.Add(resultItem);
+            }
+
+            return new
+            {
+                total = quiryResult.Count(),
+                data = result,
+                columns = allExteralColumn.Select(t => new
+                {
+                    id = t.GeneralFilledFormKey?.Key,
+                    title = t.GeneralFilledFormKey?.Title
+                }).ToList()
+            };
+        }
+
+        public object UpdateStatus(GeneralFilledFormUpdateStatusVM input, int? siteSettingId, long? userId, List<string> roles)
+        {
+            if (input == null)
+                throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
+            if (userId.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
+            if (!string.IsNullOrEmpty(input.desc) && input.desc.Length > 4000)
+                throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
+            if (input.id.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            var foundItem = db.GeneralFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.Id == input.ffid && t.IsDelete == false && t.GeneralForm.GeneralFormStatuses.Any(tt => tt.Id == input.id)).FirstOrDefault();
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            var allValidForms = GeneralFormStatusService.GetLightList(roles);
+            if (!allValidForms.Any(t => t.id == foundItem.GeneralFormId + "_" + foundItem.GeneralFormStatusId))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            if (foundItem.GeneralFormStatusId == input.id)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            foundItem.GeneralFormStatusId = input.id.Value;
+            db.SaveChanges();
+
+            GeneralFilledFormStatusService.Create(input.ffid.Value, input.id.Value, input.desc, userId.Value);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
     }
 }

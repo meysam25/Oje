@@ -21,6 +21,10 @@ namespace Oje.Section.GlobalForms.Services.EContext
         public DbSet<User> Users { get; set; }
         public DbSet<GeneralFilledFormKey> GeneralFilledFormKeys { get; set; }
         public DbSet<GeneralFilledFormValue> GeneralFilledFormValues { get; set; }
+        public DbSet<GeneralFormStatusGridColumn> GeneralFormStatusGridColumns { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<GeneralFormStatusRole> GeneralFormStatusRoles { get; set; }
+        public DbSet<GeneralFilledFormStatus> GeneralFilledFormStatuses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

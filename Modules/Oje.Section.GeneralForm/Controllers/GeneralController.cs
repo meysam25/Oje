@@ -106,8 +106,8 @@ namespace Oje.Section.GlobalForms.Controllers
         public IActionResult Detaile([FromQuery] long id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
-            ViewBag.newLayoutName = "_WebLayout.cshtml";
-            return View(GeneralFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId));
+            ViewBag.newLayoutName = "~/Views/Shared/_WebLayout.cshtml";
+            return View(GeneralFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId, null));
         }
     }
 }

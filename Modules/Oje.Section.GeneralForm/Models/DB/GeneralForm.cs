@@ -13,6 +13,8 @@ namespace Oje.Section.GlobalForms.Models.DB
             GeneralFormStatuses = new();
             GeneralFormRequiredDocuments = new();
             GeneralFilledForms = new();
+            GeneralFormStatusGridColumns = new();
+            GeneralFormStatusRoles = new();
         }
 
         [Key]
@@ -42,5 +44,9 @@ namespace Oje.Section.GlobalForms.Models.DB
         public List<GeneralFormRequiredDocument> GeneralFormRequiredDocuments { get; set; }
         [InverseProperty("GeneralForm")]
         public List<GeneralFilledForm> GeneralFilledForms { get; set; }
+        [InverseProperty("GeneralForm")]
+        public List<GeneralFormStatusGridColumn> GeneralFormStatusGridColumns { get; set; }
+        [InverseProperty("GeneralForm")]
+        public List<GeneralFormStatusRole> GeneralFormStatusRoles { get; set; }
     }
 }

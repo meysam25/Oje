@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
+﻿using Oje.Infrastructure.Models;
+using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using System.Collections.Generic;
 
 namespace Oje.Section.GlobalForms.Models.View
@@ -13,5 +14,6 @@ namespace Oje.Section.GlobalForms.Models.View
         public string ppfCreateDate { get; set; }
 
         public List<FilledFormPdfGroupVM> generalFilledFormPdfGroupVMs { get; set; }
+        public List<IdTitle> nextStatuses { get;  set; }
     }
 }

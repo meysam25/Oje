@@ -29,6 +29,10 @@ namespace Oje.Section.GlobalForms
             services.AddScoped<IInternalUserService, InternalUserService>();
             services.AddScoped<IGeneralFilledFormValueService, GeneralFilledFormValueService>();
             services.AddScoped<IGeneralFilledFormKeyService, GeneralFilledFormKeyService>();
+            services.AddScoped<IGeneralFormStatusGridColumnService, GeneralFormStatusGridColumnService>();
+            services.AddScoped<IGeneralFormStatusRoleService, GeneralFormStatusRoleService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IGeneralFilledFormStatusService, GeneralFilledFormStatusService>();
         }
     }
 }
