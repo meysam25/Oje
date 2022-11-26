@@ -30,6 +30,16 @@
               "search": {
                 "searchType": "persianDateTime"
               }
+            },
+            {
+              "field": "location",
+              "caption": "محل ذخیره شده",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/GoogleBackupArchiveType",
+                "textField": "title",
+                "valueField": "id"
+              }
             }
           ]
         }

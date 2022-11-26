@@ -30,6 +30,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly Interfaces.IProposalFormService ProposalFormService = null;
         readonly IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+        static string accpetFileExtension = ".pdf,.doc,.docx,.xlsx";
 
         public InsuranceContractService
             (
@@ -90,7 +91,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     db.Entry(new InsuranceContractInsuranceContractType() { InsuranceContractId = newItem.Id, InsuranceContractTypeId = id }).State = EntityState.Added;
 
             if (input.contractDocument != null && input.contractDocument.Length > 0)
-                newItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, newItem.Id, ".pdf,.doc,.docx,.xlsx", false);
+                newItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, newItem.Id, accpetFileExtension, false);
 
             db.SaveChanges();
 
@@ -137,6 +138,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.ToDate_Should_Be_Greader_Then_FromYear);
             if (db.InsuranceContracts.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Code == input.code))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
+            if (input.contractDocument != null && input.contractDocument.Length > 0 && !input.contractDocument.IsValidExtension(accpetFileExtension))
+                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
         }
 
         public ApiResult Delete(int? id)
@@ -323,7 +326,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
             if (input.contractDocument != null && input.contractDocument.Length > 0)
-                foundItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, foundItem.Id, ".pdf,.doc,.docx", false);
+                foundItem.ContractDocumentUrl = uploadedFileService.UploadNewFile(FileType.CompanyLogo, input.contractDocument, loginUserId, null, foundItem.Id, accpetFileExtension, false);
 
             foundItem.Code = input.code.Value;
             foundItem.Description = input.description;

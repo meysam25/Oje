@@ -534,7 +534,7 @@ namespace Oje.Section.Blog.Services
             return
                 db.Blogs
                 .Where(t => t.SiteSettingId == siteSettingId && t.Id != id)
-                .OrderByDescending(t => t.BlogLastLikeAndViews.Count(tt => tt.Type == BlogLastLikeAndViewType.View))
+                .OrderByDescending(t => t.BlogLastLikeAndViews.Count(tt => tt.Type == type))
                 .Take(count)
                 .Select(t => new
                 {

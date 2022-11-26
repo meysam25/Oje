@@ -23,6 +23,8 @@ namespace Oje.Security.Services
 
             var quiryResult = db.GoogleBackupArchives.AsQueryable();
 
+            if (searchInput.location != null)
+                quiryResult = quiryResult.Where(t => t.Type == searchInput.location);
             if(!string.IsNullOrEmpty(searchInput.createDate) && searchInput.createDate.ToEnDate() != null)
             {
                 var targetDate = searchInput.createDate.ToEnDate().Value;
@@ -42,7 +44,8 @@ namespace Oje.Security.Services
                 {
                     t.Id,
                     t.FileSize,
-                    t.CreateDate
+                    t.CreateDate,
+                    t.Type
                 })
                 .ToList()
                 .Select(t => new GoogleBackupArchiveMainGridResultVM 
@@ -50,7 +53,8 @@ namespace Oje.Security.Services
                     row = ++row,
                     id = t.Id,
                     createDate = t.CreateDate.ToFaDate() + " " + t.CreateDate.ToString("HH:mm"),
-                    size = (t.FileSize / 1024 / 1024) + " mb"
+                    size = (t.FileSize / 1024 / 1024) + " mb",
+                    location = t.Type != null ? t.Type.Value.GetEnumDisplayName() : "گوگل"
                 })
                 .ToList()
             };

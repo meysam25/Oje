@@ -193,7 +193,7 @@ namespace Oje.Section.GlobalForms.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetSelect2List(Select2SearchVM searchInput)
+        public object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId = null)
         {
             List<object> result = new List<object>();
 
@@ -206,6 +206,8 @@ namespace Oje.Section.GlobalForms.Services
                 searchInput.page = 1;
 
             var qureResult = db.GeneralForms.OrderByDescending(t => t.Id).AsQueryable();
+            if (siteSettingId != null)
+                qureResult = qureResult.Where(t => t.SiteSettingId == null || t.SiteSettingId == siteSettingId);
             if (!string.IsNullOrEmpty(searchInput.search))
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.search));
             qureResult = qureResult.Skip((searchInput.page.Value - 1) * take).Take(take);

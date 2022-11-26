@@ -1653,7 +1653,7 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
     var result = '';
 
     if (ctrl.parentCL && ctrl.url && ctrl.schema) {
-        result += '<div class="row" id="' + ctrl.id + '" ></div>';
+        result += '<div class="row myCtrl" ><div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" id="' + ctrl.id + '"></div></div>';
         functionsList.push(function () {
             if (this.ctrl.url) {
                 var formData = new FormData();
@@ -1661,7 +1661,7 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
                 postForm(this.ctrl.url, formData, function (res) {
                     if (res && res.length > 0) {
                         if (this.ctrl.schema) {
-                            var template = '';
+                            var template = '<div class="row">';
                             for (var i = 0; i < res.length; i++) {
                                 template += '<div class="' + this.ctrl.css + '">';
                                 template += getFileCTRLTemplate({
@@ -1675,6 +1675,7 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
                                 });
                                 template += '</div>';
                             }
+                            template += '</div>';
                             $('#' + this.ctrl.id).html(template);
                         }
                         executeArrFunctions();

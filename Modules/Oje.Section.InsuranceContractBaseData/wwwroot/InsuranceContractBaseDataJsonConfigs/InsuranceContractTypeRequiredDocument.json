@@ -63,7 +63,7 @@
               "caption": "نوع قرارداد",
               "search": {
                 "searchType": "dropdown",
-                "url": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractList",
+                "url": "/InsuranceContractBaseData/InsuranceContractTypeRequiredDocument/GetContractTypeList",
                 "textField": "title",
                 "valueField": "id"
               }

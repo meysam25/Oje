@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Security.Models.DB
@@ -12,5 +13,6 @@ namespace Oje.Security.Models.DB
         [Required, MaxLength(200)]
         public string FileId { get; set; }
         public long FileSize { get; set; }
+        public GoogleBackupArchiveType? Type { get; set; }
     }
 }

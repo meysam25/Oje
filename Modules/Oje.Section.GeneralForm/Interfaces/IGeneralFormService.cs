@@ -10,7 +10,7 @@ namespace Oje.Section.GlobalForms.Interfaces
         ApiResult Delete(long? id);
         object GetById(long? id);
         GridResultVM<GeneralFormMainGridResultVM> GetList(GeneralFormMainGrid searchInput);
-        object GetSelect2List(Select2SearchVM searchInput);
+        object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId = null);
         ApiResult Update(GeneralFormCreateUpdateVM input);
 
         string GetJSonConfigFile(int id, int? siteSettingId);

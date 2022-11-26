@@ -12,5 +12,7 @@ namespace Oje.Security.Models.View
         public string createDate { get; set; }
         [Display(Name = "حجم")]
         public string size { get; set; }
+        [Display(Name = "محل ذخیره شده")]
+        public string location { get; set; }
     }
 }

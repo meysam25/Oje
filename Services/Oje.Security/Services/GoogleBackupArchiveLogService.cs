@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Models;
+﻿using NetTopologySuite.Geometries;
+using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Security.Interfaces;
 using Oje.Security.Models.View;
