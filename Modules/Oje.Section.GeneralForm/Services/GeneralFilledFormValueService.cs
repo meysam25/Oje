@@ -47,7 +47,7 @@ namespace Oje.Section.GlobalForms.Services
                             string currValue = "";
                             if (ctrl.disabled == true && ctrl.multiPlay != null && ctrl.multiPlay.Count > 0)
                                 currValue = ctrl.defV;
-                            else if (ctrl.type == ctrlType.text || ctrl.type == ctrlType.persianDateTime || ctrl.type == ctrlType.checkBox || ctrl.type == ctrlType.radio)
+                            else if (ctrl.type == ctrlType.text || ctrl.type == ctrlType.persianDateTime || ctrl.type == ctrlType.checkBox || ctrl.type == ctrlType.radio || ctrl.type == ctrlType.number)
                             {
                                 if (!string.IsNullOrEmpty(ctrl.defV))
                                     currValue = ctrl.defV;

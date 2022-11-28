@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Filters;
 using Oje.Infrastructure;
+using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -93,6 +94,13 @@ namespace Oje.Section.GlobalForms.Areas.GlobalFormAdmin.Controllers
         public ActionResult GetFormStatusList()
         {
             return Json(GeneralFormStatusService.GetLightList(HttpContext.GetLoginUser()?.roles));
+        }
+
+        [AreaConfig(Title = "مشاهده اسناد فرم پیشنهاد صادر شده نماینده", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(GeneralFilledFormService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()));
         }
     }
 }

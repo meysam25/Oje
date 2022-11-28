@@ -375,6 +375,12 @@
               "label": "وضعیت"
             },
             {
+              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
+              "name": "password",
+              "type": "password",
+              "label": "کلمه عبور"
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "type": "empty"
             },

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Oje.FileService.Interfaces;
@@ -68,7 +67,7 @@ namespace Oje.Section.GlobalForms.Services
             InternalUserService.UpdateUserInfoIfNeeded(form, loginUser.UserId, siteSettingId);
             GeneralFilledFormValueService.CreateByJsonConfig(validObj.ppfObj, newForm.Id, form, validObj.allCtrls);
             foreach (var file in form.Files)
-                UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, file, loginUser?.UserId, siteSettingId, newForm.Id, accpetableExtension, true);
+                UploadedFileService.UploadNewFile(FileType.GeneralFilledForm, file, loginUser?.UserId, siteSettingId, newForm.Id, accpetableExtension, true);
 
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(), data = new { url = "/General/Detaile", id = newForm.Id } };
         }
@@ -525,6 +524,26 @@ namespace Oje.Section.GlobalForms.Services
             GeneralFilledFormStatusService.Create(input.ffid.Value, input.id.Value, input.desc, userId.Value);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, LoginUserVM loginUserVM)
+        {
+            if (input == null)
+                input = new GlobalGridParentLong();
+
+            var foundItemId = db.GeneralFilledForms.Where(t => t.SiteSettingId == siteSettingId && t.IsDelete == false)
+                .Where(t => t.Id == input.pKey)
+                .Select(t => t.Id)
+                .FirstOrDefault();
+
+            if (foundItemId <= 0)
+                foundItemId = -1;
+
+            return new
+            {
+                total = UploadedFileService.GetCountBy(foundItemId, FileType.GeneralFilledForm, siteSettingId),
+                data = UploadedFileService.GetListBy(foundItemId, FileType.GeneralFilledForm, input.skip, input.take, siteSettingId)
+            };
         }
     }
 }

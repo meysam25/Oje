@@ -102,26 +102,20 @@ namespace Oje.Infrastructure.Services
 
                                 if (sheet.GetRow(row) != null)
                                 {
-                                    if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(int?))
-                                    {
+                                    if (prop.PropertyType == typeof(int) )
                                         prop.SetValue(newRowItem, sheet.GetRow(row).GetCell(j).GetValueExcel().ToIntReturnZiro());
-                                    }
-                                    else if (prop.PropertyType == typeof(long) || prop.PropertyType == typeof(long?))
-                                    {
+                                    else if (prop.PropertyType == typeof(int?))
+                                        prop.SetValue(newRowItem, sheet.GetRow(row).GetCell(j).GetValueExcel().ToIntReturnNull());
+                                    else if (prop.PropertyType == typeof(long) )
                                         prop.SetValue(newRowItem, sheet.GetRow(row).GetCell(j).GetValueExcel().ToLongReturnZiro());
-                                    }
+                                    else if (prop.PropertyType == typeof(long?))
+                                        prop.SetValue(newRowItem, sheet.GetRow(row).GetCell(j).GetValueExcel().ToLongReturnNull());
                                     else if (prop.PropertyType == typeof(string))
-                                    {
                                         prop.SetValue(newRowItem, sheet.GetRow(row).GetCell(j).GetValueExcel());
-                                    }
                                     else if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
-                                    {
                                         prop.SetValue(newRowItem, sheet.GetRow(row).GetCell(j).GetValueExcel().ToBooleanReturnFalse());
-                                    }
                                     else if (prop.PropertyType == typeof(decimal) || prop.PropertyType == typeof(decimal?))
-                                    {
                                         prop.SetValue(newRowItem, sheet.GetRow(row).GetCell(j).GetValueExcel().ToDecimalZiro());
-                                    }
                                     else if (prop.PropertyType == typeof(List<int>))
                                     {
                                         var ids = sheet.GetRow(row).GetCell(j).GetValueExcel();
@@ -149,7 +143,6 @@ namespace Oje.Infrastructure.Services
                                         var enumTemp = Enum.ToObject(tempType, sheet.GetRow(row).GetCell(j).GetValueExcel().ToIntReturnZiro());
                                         if (enumTemp != null)
                                             prop.SetValue(newRowItem, enumTemp);
-
                                     }
                                 }
                             }

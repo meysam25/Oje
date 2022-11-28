@@ -59,6 +59,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         private void CreateValidation(CreateUpdateInsuranceContractTypeVM input, long? loginUserId, int? siteSettingId, bool? canSetSiteSetting)
         {
+            var sId = (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value);
             if (loginUserId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
             if (siteSettingId.ToIntReturnZiro() <= 0)
@@ -67,11 +68,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
-            if (db.InsuranceContractTypes.Any(t => t.Title == input.title && t.Id != input.id))
+            if (db.InsuranceContractTypes.Any(t => t.Title == input.title && t.Id != input.id && t.SiteSettingId == sId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Title);
             if (input.title.Length > 50)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_50_chars);
-            if (db.InsuranceContractTypes.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Title == input.title))
+            if (db.InsuranceContractTypes.Any(t => t.Id != input.id && t.SiteSettingId == sId && t.Title == input.title))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
             if (!string.IsNullOrEmpty(input.desc) && input.desc.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Validation_Error);

@@ -635,6 +635,20 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static int? ToIntReturnNull(this object input)
+        {
+            try
+            {
+                if (input == null)
+                    return null;
+                return Convert.ToInt32(input);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static double? ToDoubleReturnNull(this object input)
         {
             try
@@ -894,12 +908,26 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static long? ToLongReturnNull(this object input)
+        {
+            try
+            {
+                if (input == null)
+                    return null;
+                return Convert.ToInt64(input);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static string GetValueExcel(this ICell input)
         {
             string result = "";
             try
             {
-                if (input == null)
+                if (input == null || input.CellType == CellType.Blank)
                     return result;
                 result = input.NumericCellValue + "";
             }

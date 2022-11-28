@@ -336,13 +336,16 @@ namespace Oje.FileService.Services
                .Select(t => new
                {
                    id = t.Id,
-                   src = t.FileName
+                   src = t.FileName,
+                   title = t.Title
                })
                .ToList()
                .Select(t => new
                {
                    t.id,
-                   src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg"
+                   src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg",
+                   title = string.IsNullOrEmpty(t.title) ? "" : t.title
+
                })
                .ToList()
                ;

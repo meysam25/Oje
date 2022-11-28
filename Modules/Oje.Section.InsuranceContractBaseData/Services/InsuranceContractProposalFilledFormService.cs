@@ -421,8 +421,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             return new
             {
-                total = UploadedFileService.GetCountBy(input.pKey != null ? input.pKey.Value : -1, FileType.InsuranceContractProposalFilledForm),
-                data = UploadedFileService.GetListBy(input.pKey != null ? input.pKey.Value : -1, FileType.InsuranceContractProposalFilledForm, input.skip, input.take)
+                total = UploadedFileService.GetCountBy(input.pKey != null ? input.pKey.Value : -1, FileType.InsuranceContractProposalFilledForm, siteSettingId),
+                data = UploadedFileService.GetListBy(input.pKey != null ? input.pKey.Value : -1, FileType.InsuranceContractProposalFilledForm, input.skip, input.take, siteSettingId)
             };
         }
 

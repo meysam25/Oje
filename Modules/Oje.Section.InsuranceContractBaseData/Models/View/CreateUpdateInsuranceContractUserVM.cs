@@ -27,6 +27,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
         public string mobile { get; set; }
         public string bankShaba { get; set; }
         public bool? isActive { get; set; }
+        public string password { get; set; }
 
         public InsuranceContractUserFamilyRelation? familyRelation { get; set; }
         public string email { get; set; }

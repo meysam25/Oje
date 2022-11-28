@@ -19,5 +19,7 @@ namespace Oje.Section.GlobalForms.Interfaces
         object Delete(long? id, int? siteSettingId, LoginUserVM loginUserVM);
         object GetList(GeneralFilledFormMainGrid searchInput, IFormCollection form, int? siteSettingId, LoginUserVM loginUserVM);
         object UpdateStatus(GeneralFilledFormUpdateStatusVM input, int? siteSettingId, long? userId, List<string> roles);
+        object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, LoginUserVM loginUserVM);
+
     }
 }

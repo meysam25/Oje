@@ -80,6 +80,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             }
             long foundUserId = 0;
             var newPassword = RandomService.GeneratePassword(10);
+            if (!string.IsNullOrEmpty(input.password))
+                newPassword = input.password;
 
             try
             {
@@ -106,7 +108,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                         tell = input.tell,
                         shenasnameNo = input.shenasnameNo,
                         hireDate = input.hireDate,
-                        bankId = input.bankId,
+                        bankId = (input.bankId == 0 ? null : input.bankId),
                     }, loginUserId?.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value).data.ToLongReturnZiro();
             }
             catch (Exception)
@@ -134,8 +136,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 BirthDate = input.birthDate.ToEnDate(),
                 FatherName = input.fatherName,
                 MarrageStatus = input.marrageStatus,
-                InsuranceContractUserBaseInsuranceId = input.baseInsuranceId,
-                InsuranceContractUserSubCategoryId = input.subCatId,
+                InsuranceContractUserBaseInsuranceId = input.baseInsuranceId == 0 ? null : input.baseInsuranceId,
+                InsuranceContractUserSubCategoryId = input.subCatId == 0 ? null : input.subCatId,
                 NationalCode = input.nationalCode,
                 ShenasnameNo = input.shenasnameNo,
                 InsuranceMiniBookNumber = input.insuranceMiniBookNumber,
@@ -220,6 +222,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.subCatId.ToIntReturnZiro() > 0 && !InsuranceContractUserSubCategoryService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.subCatId))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!string.IsNullOrEmpty(input.password) && input.password.IsWeekPassword())
+                throw BException.GenerateNewException(BMessages.The_Password_Is_Week);
         }
 
         private bool existByNationalCode(long? id, int? siteSettingId, long? loginUserId, string nationalCode, int? insuranceContractId)

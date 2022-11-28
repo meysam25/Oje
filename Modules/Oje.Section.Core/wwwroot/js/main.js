@@ -895,7 +895,9 @@ $.fn.modal = function (action) {
             }
         }, 100);
         $(curThis).removeClass('show');
-        $('body').find('.modal-backdrop:last-child').remove();
+        var foundShadowCount = $('body').find('.modal-backdrop').length;
+        if (foundShadowCount > 0)
+            $('body').find('.modal-backdrop:eq(' + (foundShadowCount - 1) + ')').remove();
     }
     function openModal(curThis) {
 
