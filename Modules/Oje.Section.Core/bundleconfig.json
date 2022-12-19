@@ -29,6 +29,16 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/js/tender.min.js",
+    "inputFiles": [
+      "wwwroot/js/tender/indexPage.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/js/websiteCor.min.js",
     "inputFiles": [
       "wwwroot/js/NewPersianDatePicker/prism.min.js",
@@ -313,6 +323,17 @@
       "wwwroot/css/Website/MainPage/reminder.css",
       "wwwroot/css/Website/MainPage/setadbimePlus.css",
       "wwwroot/css/Website/MainPage/yourQuestion.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/tender.min.css",
+    "inputFiles": [
+      "wwwroot/css/tender/indexPage.css"
+
     ],
     "minify": {
       "enabled": true,

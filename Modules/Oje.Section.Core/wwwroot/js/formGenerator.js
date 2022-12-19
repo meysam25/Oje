@@ -1330,6 +1330,15 @@ function initInternalFunctions(ctrl) {
     }
 }
 
+function addNewRowForMultiCtrl(curButton) {
+    if (curButton) {
+        var foundParentButton = $(curButton).closest('.MultiRowInputRow');
+        if (foundParentButton.length > 0) {
+            foundParentButton.parent().find('.addNewRowForMultiRowCtrl').click();
+        }
+    }
+}
+
 function initMoultiRowInputButton(ctrl) {
     var addNewButtonQuery = $('#' + ctrl.id).find('button.addNewRowForMultiRowCtrl');
     if (addNewButtonQuery.length > 0) {

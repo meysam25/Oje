@@ -969,6 +969,6 @@ figure.table > table {
     top: 10px;
     cursor:help;
 }
-.modal-body img {
-    width:100%;
+.modal-body img:not(.multiSelectImageBodyItemImg) {
+    width: 100%;
 }

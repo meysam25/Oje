@@ -161,9 +161,9 @@ namespace Oje.Section.RegisterForm.Controllers
 
         [HttpPost]
         [Route("[Controller]/[Action]")]
-        public IActionResult GetCompanyList([FromForm] int? fid)
+        public IActionResult GetCompanyList([FromForm] int? fid, [FromQuery] bool? all)
         {
-            return Json(UserRegisterFormCompanyService.GetLightList(fid, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(UserRegisterFormCompanyService.GetLightList(fid, SiteSettingService.GetSiteSetting()?.Id, all));
         }
 
         [HttpPost]

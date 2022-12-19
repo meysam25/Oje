@@ -1,0 +1,329 @@
+﻿@using Oje.Infrastructure
+@using Oje.Infrastructure.Services
+@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
+@inject Oje.AccountService.Interfaces.IPropertyService PropertyService
+@{
+    var curSetting = SiteSettingService.GetSiteSetting();
+    if (curSetting == null)
+    {
+        throw new Exception("Not Found");
+    }
+}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charSet="utf-8" />
+    <meta http-equiv="Content-Type" content="Type=text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="robots" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:locale" content="fa_IR" />
+    <meta property="og:site_name" content="@(curSetting.Title)" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>@ViewBag.Title</title>
+    @{
+        if (!string.IsNullOrEmpty(ViewData["ldJson"] + ""))
+        {
+            ViewContext.Writer.Write("<script type=\"application/ld+json\">" + ViewData["ldJson"] + "</script>");
+        }
+        if (!string.IsNullOrEmpty(ViewData["breadcrumbldObj"] + ""))
+        {
+            ViewContext.Writer.Write("<script type=\"application/ld+json\">" + ViewData["breadcrumbldObj"] + "</script>");
+        }
+    }
+    <meta name="twitter:title" content="@ViewData["Title"]" />
+    <meta property="og:title" content="@ViewData["Title"]" />
+    @{
+        var exteraMetaTag = PropertyService.GetBy<Oje.Infrastructure.Models.GlobalMetaTagCreateUpdateVM>(Oje.Infrastructure.Enums.PropertyType.GlobalMetaTag, SiteSettingService.GetSiteSetting()?.Id);
+        if (exteraMetaTag != null)
+        {
+            ViewContext.Writer.Write(exteraMetaTag.tag1);
+        }
+    }
+
+    @{
+        if (!string.IsNullOrEmpty(ViewData["imageUrl"] + ""))
+        {
+            <meta property="og:image" content="@(ViewData["imageUrl"])" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["type"] + ""))
+        {
+            <meta property="og:type" content="@ViewData["type"]" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["createDate"] + ""))
+        {
+            <meta property="article:published_time" content="@ViewData["createDate"] " />
+        }
+        if (!string.IsNullOrEmpty(ViewData["canonical"] + ""))
+        {
+            <link rel="canonical" href="@ViewData["canonical"]" />
+            <meta property="og:url" content="@ViewData["canonical"]" />
+        }
+        else
+        {
+            <link rel="canonical" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+            <meta property="og:url" content="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["shortLink"] + ""))
+        {
+            <link rel="shortlink" href="@ViewData["shortLink"]" />
+        }
+        else
+        {
+            <link rel="shortlink" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+        }
+        if (!string.IsNullOrEmpty(ViewData["metaDescription"] + ""))
+        {
+            <meta name="description" content="@ViewData["metaDescription"]" />
+            <meta property="og:description" content="@ViewData["metaDescription"]" />
+            <meta name="twitter:description" content="@ViewData["metaDescription"]" />
+        }
+
+    }
+
+    <script src="/Modules/Core/js/jquery.min.js.gz"></script>
+    <script src="/Modules/Core/js/sr.js.gz"></script>
+    <script src="/Modules/Core/js/websiteCor.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
+    <script src="/Modules/Core/js/mainPage.min.js.gz?v=@(GlobalConfig.GetAppVersion())"></script>
+
+    <link rel="stylesheet" href="/Modules/Core/css/master.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+    <link rel="stylesheet" href="/Modules/Core/css/websiteCore.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+    @RenderSection("Styles", required: false)
+    <link rel="preload" as="font" href="/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" as="font" href="/Modules/webfonts/fa-light-300.woff2" type="font/woff2" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" sizes="32x32">
+    <script>
+        var isLH = @(Context.Request.IsLighthouse().ToString().ToLower())
+    </script>
+    <link rel="manifest" href="/manifest.json" />
+    <!-- ios support -->
+    <link rel="apple-touch-icon" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" />
+    <link rel="apple-touch-icon" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image192)" />
+    <link rel="apple-touch-icon" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image512)" />
+    <meta name="apple-mobile-web-app-status-bar" content="#db4938" />
+    <meta name="theme-color" content="#db4938" />
+    <script>
+        var whatToDoAfterUserLogin = [];
+    </script>
+</head>
+<body dir="rtl" class="makeRTL">
+    <div class="wrapper">
+        <header id="headerTagHolder">
+            <section class="topHeader">
+                <div class="myContainer">
+                    <a id="mainSiteLogoIcon" title="@curSetting.Title" href="/"><img class="mainHeaderLogo" title="@curSetting.Title" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image192)" width="85" height="77" /></a>
+                    <div id="placeholderTopLeftIcon"></div>
+                    <h1 class="mainHeaderCompanyName"><a style="font-size:1em;" title="@curSetting.Title" href="/">@curSetting.Title</a></h1>
+                </div>
+            </section>
+            <script>
+                bindTopLeftIcons();
+            </script>
+            <section id="headerTagHolderS1" class="topHeaderMobile">
+                <div class="myContainer">
+                    @{
+                        if (!string.IsNullOrEmpty(curSetting.ImageText))
+                        {
+                            <a title="@(curSetting.Title)" class="leftFooterLink" href="/">
+                                <img alt="@(curSetting.Title)" width="100" height="37" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
+                            </a>
+                        }
+                    }
+                </div>
+            </section>
+            <div id="headerTagHolderS1Desctination"></div>
+            <nav id="headerMenu" class="headerMenu">
+                <div class="myContainer">
+                    <div class="topMenuNewResponsiveButton">
+                        <span class="topMenuNewResponsiveButtonLine"></span>
+                        <span class="topMenuNewResponsiveButtonLine"></span>
+                        <span class="topMenuNewResponsiveButtonLine"></span>
+                    </div>
+                    <div class="holderRigAndLogUser">
+                        @{
+                            if (ViewBag.HideLoginButton != true)
+                            {
+                                <a title="ورود | ثبت نام" href="#" class="secountBtn"><i class="fa fa-sign-in rigAndLogIcon"></i><span class="loginButtonText">ورود | ثبت نام</span></a>
+                                <script>
+                                    $('.holderRigAndLogUser .secountBtn').initLoginButton('/Home/GetLoginModalConfig', 'loginForgetPasswordModal');
+                                </script>
+                            }
+                        }
+                    </div>
+                    <div class="responsiveClearBoth"></div>
+                    <div id="topMenuHolderItems">
+                    </div>
+                    <script>
+                        $('#topMenuHolderItems').loadTopMenu('/TopMenu/GetTopMenu');
+                    </script>
+                </div>
+            </nav>
+            <div id="headerMenuDesctination"></div>
+        </header>
+        <div id="headerTagHolderDesctination"></div>
+        <script>
+            if ($(document).width() <= 650) {
+                $('#headerTagHolderS1').initFloatingTop('headerTagHolderS1Desctination');
+            }
+            $('#headerMenu').initFloatingTop('headerMenuDesctination', 'makeHeaderFloot2', 'floatTopMenue');
+        </script>
+        <main>
+            @RenderBody()
+        </main>
+        <footer>
+            <section class="footerSection">
+                <div class="myContainer">
+                    <div id="footerWeAreMoreThenGoodSection" class="footerWeAreMoreThenGoodSection">
+                        <div class="footerWeAreMoreThenGoodSectionReson">
+                            <div>
+                                <img alt="" width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
+                            </div>
+                            <div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">کارگزاری بیمه برخط</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">معتبرترین عرضه کننده محصولات بیمه ای در کشور با مجوز بیمه مرکزی</div>
+                            </div>
+                        </div>
+                        <div class="footerWeAreMoreThenGoodSectionReson">
+                            <div>
+                                <img alt="" width="80" height="80" data-src="/Modules/Assets/MainPage/laptop.svg.gz" />
+                            </div>
+                            <div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">خرید آسان بیمه</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">ارائه تمامی خدمات بیمه (ثالث , بدنه , درمان تکمیلی , مسئولیت و....)</div>
+                            </div>
+                        </div>
+                        <div class="footerWeAreMoreThenGoodSectionReson">
+                            <div>
+                                <img alt="" width="80" height="80" data-src="/Modules/Assets/MainPage/Messages.svg.gz" />
+                            </div>
+                            <div>
+                                <div class="footerWeAreMoreThenGoodSectionResonTitle">پستیبانی در زمان خسارت</div>
+                                <div class="footerWeAreMoreThenGoodSectionResonDescription">پشتیبانی و همراهی 24 ساعته در تمامی مراحل بیمه نامه و دریافت خسارت</div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        $('#footerWeAreMoreThenGoodSection').bindFooterDescription('/Home/GetFooterDescrption');
+                    </script>
+                    <div id="floatingFooterDestination"></div>
+                    <div id="floatingFooter" class="makeMyContainer100">
+                        <div class="myContainer">
+                            <div class="floatingFooterSection">
+                                <div>
+                                    <a href="/Ticket/TicketUser/Index" title="ارسال تیکت" class="mainBtn newTicketMainPageButton">ارسال تیکت</a>
+                                    <span onclick="initOnlineChat()" title="مشاوره رایگان" class="secountBtn">مشاوره رایگان</span>
+                                </div>
+                                <div class="floatingFooterSectionCenter">
+                                    <div>مرکز تماس و پشتیبانی </div>
+                                    <div>24 ساعت , 7 روز هفته</div>
+                                </div>
+                                <div class="floatingFooterSectionPhoneNumber">
+                                    <div style="direction:ltr" id="footerTell1">
+                                    </div>
+                                    <div id="footerEmail">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="footerSection">
+                <div class="myContainer">
+                    <div class="footerAboutUsSections">
+                        <div class="footerAboutUsSectionRight">
+                            <nav id="footerNavMenu" class="footerNavMenue">
+                            </nav>
+                            <div class="footerProductMenu">
+                                <div id="holderfooterProductMenuItems" class="holderfooterProductMenuItems">
+                                </div>
+                                <span class="showMoreButton">بیشتر</span>
+                            </div>
+                        </div>
+                        <div class="footerAboutUsSectionLeft">
+                            @{
+                                if (!string.IsNullOrEmpty(curSetting.ImageText))
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo" href="/">
+                                        <img alt="@(curSetting.Title)" width="200" height="75" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo" href="/">@(Context.Request.Host)</a>
+                                }
+                            }
+                            <span class="footerAboutUsTellNumber  ">تلفن پشتیبانی :<span id="footerTell2"></span></span>
+                            <span class="footerAboutUsTellNumber ">دفتر مرکزی :<span id="footerAddress"></span></span>
+                            <div id="footerSharingIconSection" class="footerLeftTrophyIcons">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="footerSection">
+                <div class="myContainer">
+                    <div class="footerSharingAndCopyRightSection">
+                        <div class="footerCopyRightSection">
+                            کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به @(curSetting.Title) می‌باشد.
+                        </div>
+                        <div class="footerCenterSection">
+                            @{
+                                if (!string.IsNullOrEmpty(curSetting.ImageText))
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo2" href="/">
+                                        <img alt="@(curSetting.Title)" width="100" height="37" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@(curSetting.Title)" class="footerTextSiteLogo2" href="/">@(Context.Request.Host)</a>
+                                }
+                            }
+                        </div>
+                        <div class="footerSharingIconSection">
+                            <a id="aTelegeram" title="تلگرام" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>
+                            <a id="aWhatapp" title="واتساپ" href="#"><img width="28" height="28" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
+                            <a id="aInestageram" title="اینستاگرام" href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagramsilver.svg" data-alt-src="/Modules/Assets/MainPage/instagram.svg" /></a>
+                            <a id="aLinkin" title="لینکدین" href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedinsilver.svg" data-alt-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
+                        </div>
+                        <script>
+                            bindFooterIcons();
+                        </script>
+                    </div>
+                </div>
+            </section>
+        </footer>
+    </div>
+    <script src="/registerServices.min.js?v=@(GlobalConfig.GetAppVersion())"></script>
+    <script>
+        bindFooterExteraLinks();
+        bindFooterExteraLinkGroups();
+        bindFooterSambole();
+        bindFooterPhoneAndAddress();
+        $('img[data-src]').loadImageOnScroll();
+        if (isLH == false) {
+            if ($(document).width() > 450)
+                $('#floatingFooter').initFloatingFooter('floatingFooterDestination');
+            $('.animationOnScroll').initScrollAnimation();
+        }
+        else {
+            $('.animationOnScrollOpacity').removeClass('animationOnScrollOpacity');
+            $('.animationOnScrollMarginTop').removeClass('animationOnScrollMarginTop');
+            $('.animationOnScrollOpacityFlip').removeClass('animationOnScrollOpacityFlip');
+        }
+
+        $('.showMoreButton').initShowMoreButtons('holderfooterProductMenuItems');
+        localStorage.clear();
+        @{
+            if (Context.Request.IsHttps)
+            {
+                ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+            }
+        }
+    </script>
+    @RenderSection("FooterR", required: false)
+</body>
+</html>

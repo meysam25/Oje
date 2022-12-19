@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
-using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Services;
 using Oje.Section.GlobalForms.Interfaces;
 using Oje.Security.Interfaces;
-using System.Drawing;
 
 namespace Oje.Section.GlobalForms.Controllers
 {

@@ -11,7 +11,7 @@ namespace Oje.Section.RegisterForm.Interfaces
         object GetById(int? id, int? siteSettingId);
         ApiResult Update(UserRegisterFormCompanyCreateUpdateVM input, int? siteSettingId);
         GridResultVM<UserRegisterFormCompanyMainGridResultVM> GetList(UserRegisterFormCompanyMainGrid searchInput, int? siteSettingId);
-        object GetLightList(int? formId, int? siteSettingId);
+        object GetLightList(int? formId, int? siteSettingId, bool? all);
         Company GetCompanyBy(int companyId, int? siteSettingId);
     }
 }

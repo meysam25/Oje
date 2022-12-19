@@ -36,7 +36,7 @@
     <meta name="twitter:title" content="@ViewData["Title"]" />
     <meta property="og:title" content="@ViewData["Title"]" />
     @{
-        var exteraMetaTag = PropertyService.GetBy<Oje.Section.WebMain.Models.View.GlobalMetaTagCreateUpdateVM>(Oje.Infrastructure.Enums.PropertyType.GlobalMetaTag, SiteSettingService.GetSiteSetting()?.Id);
+        var exteraMetaTag = PropertyService.GetBy<Oje.Infrastructure.Models.GlobalMetaTagCreateUpdateVM>(Oje.Infrastructure.Enums.PropertyType.GlobalMetaTag, SiteSettingService.GetSiteSetting()?.Id);
         if (exteraMetaTag != null)
         {
             ViewContext.Writer.Write(exteraMetaTag.tag1);
@@ -178,7 +178,7 @@
                     <div id="footerWeAreMoreThenGoodSection" class="footerWeAreMoreThenGoodSection">
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img alt="رتبه یک سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
+                                <img alt="" width="80" height="80" data-src="/Modules/Assets/MainPage/number-1.svg" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">کارگزاری بیمه برخط</div>
@@ -187,7 +187,7 @@
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img alt="همسفر هر سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/laptop.svg.gz" />
+                                <img alt="" width="80" height="80" data-src="/Modules/Assets/MainPage/laptop.svg.gz" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">خرید آسان بیمه</div>
@@ -196,7 +196,7 @@
                         </div>
                         <div class="footerWeAreMoreThenGoodSectionReson">
                             <div>
-                                <img alt="همسفر همه لحظات سفر" width="80" height="80" data-src="/Modules/Assets/MainPage/Messages.svg.gz" />
+                                <img alt="" width="80" height="80" data-src="/Modules/Assets/MainPage/Messages.svg.gz" />
                             </div>
                             <div>
                                 <div class="footerWeAreMoreThenGoodSectionResonTitle">پستیبانی در زمان خسارت</div>
@@ -220,7 +220,7 @@
                                     <div>24 ساعت , 7 روز هفته</div>
                                 </div>
                                 <div class="floatingFooterSectionPhoneNumber">
-                                    <div id="footerTell1">
+                                    <div style="direction:ltr" id="footerTell1">
                                     </div>
                                     <div id="footerEmail">
                                     </div>

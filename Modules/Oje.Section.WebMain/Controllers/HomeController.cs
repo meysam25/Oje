@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.View;
 using Oje.FileService.Interfaces;
@@ -369,6 +370,18 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             //return Json(await UserInquiry.GetUserInfo(SiteSettingService.GetSiteSetting()?.Id, "3501511663", "09904561385", "1986-12-08"));
             //return Json(await UserInquiry.GetDriverLicence(SiteSettingService.GetSiteSetting()?.Id, "3501511663", "09904561385"));
             return Json(await CarInquiry.CarDiscount(SiteSettingService.GetSiteSetting()?.Id, 44 + "", 11 + "", 5 + "", 416 + "", "0938674919"));
+        }
+
+        [Route("[Controller]/[Action]")]
+        public ActionResult GetBaseInfo()
+        {
+            var foundSetting = SiteSettingService.GetSiteSetting();
+            return Json((foundSetting != null ? new 
+            {
+                title = foundSetting.Title,
+                logo = GlobalConfig.FileAccessHandlerUrl + foundSetting.Image96,
+                tLogo = GlobalConfig.FileAccessHandlerUrl + foundSetting.ImageText
+            } : new { }));
         }
     }
 }

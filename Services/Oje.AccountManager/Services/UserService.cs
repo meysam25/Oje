@@ -1109,7 +1109,7 @@ namespace Oje.AccountService.Services
                 lastname = t.Lastname.Trim(),
                 username = t.Username.Trim(),
                 pic = !string.IsNullOrEmpty(t.UserPic) ? GlobalConfig.FileAccessHandlerUrl + t.UserPic : "",
-                isUser = t.UserRoles.Any(tt => tt.Role.Name == "user"),
+                isUser = t.UserRoles.Any(tt => tt.Role.Name.ToLower().EndsWith("user")),
                 isSuccess = true,
                 hasAutoRefresh = t.UserRoles.Any(tt => tt.Role.RefreshGrid == true)
             }).FirstOrDefault();

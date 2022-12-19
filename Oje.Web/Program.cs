@@ -14,7 +14,14 @@ namespace Oje.Web
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
-            CreateHostBuilder(args, config).Build().Run();
+            try
+            {
+                CreateHostBuilder(args, config).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.WriteAllText("C:\\Publish\\NewCore\\wwwroot\\errText.text", ex.Message);
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args, IConfigurationRoot config) =>
@@ -42,7 +49,7 @@ namespace Oje.Web
                                     {
                                         foreach (var url in allUrls)
                                         {
-                                            var foundCert = CertificateLoader.LoadFromStoreCert(url, "My", StoreLocation.LocalMachine, false);
+                                            var foundCert = CertificateLoader.LoadFromStoreCert(url, "My", StoreLocation.LocalMachine, true);
                                             certs.Add(url, foundCert);
                                         }
                                     }

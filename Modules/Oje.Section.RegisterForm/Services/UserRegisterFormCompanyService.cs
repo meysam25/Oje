@@ -54,7 +54,7 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
-            if (input.cid.ToIntReturnZiro() <= 0)
+            if (input.cid == null || input.cid.ToIntReturnZiro() < 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_Company);
             if (input.fid.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
@@ -163,11 +163,16 @@ namespace Oje.Section.RegisterForm.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetLightList(int? formId, int? siteSettingId)
+        public object GetLightList(int? formId, int? siteSettingId, bool? all)
         {
             List<object> result = new List<object>() { new { id = "", title = "" } };
 
-            result.AddRange(db.UserRegisterFormCompanies.Where(t => t.Company.IsActive == true && t.IsActive == true && t.SiteSettingId == siteSettingId && t.UserRegisterFormId == formId).Select(t => new
+            var quiryResult = db.UserRegisterFormCompanies.Where(t => t.Company.IsActive == true && t.IsActive == true && t.SiteSettingId == siteSettingId && t.UserRegisterFormId == formId);
+
+            if (all == null || all.Value == false)
+                quiryResult = quiryResult.Where(t => t.Id > 0);
+
+            result.AddRange(quiryResult.Select(t => new
             {
                 id = t.CompanyId,
                 title = t.Company.Title

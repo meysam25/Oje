@@ -75,7 +75,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
-            ViewBag.newLayoutName = "_WebLayout";
+            //ViewBag.newLayoutName = "_WebLayout";
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, null));
         }
 

@@ -27,7 +27,6 @@
         {
           "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
           "name": "targetDate",
-          "class": "startAndEndDate",
           "type": "persianDateTime",
           "label": "تاریخ یادآوری",
           "isRequired": true,

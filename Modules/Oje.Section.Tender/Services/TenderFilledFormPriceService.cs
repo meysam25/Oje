@@ -120,7 +120,7 @@ namespace Oje.Section.Tender.Services
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
 
             var quiryResult = db.TenderFilledFormPrices
-                .Where(t => t.TenderFilledForm.SiteSettingId == siteSettingId)
+                .Where(t => t.TenderFilledForm.SiteSettingId == siteSettingId && t.TenderFilledFormId == searchInput.pKey)
                 .getWhereUserIdMultiLevelForUserOwnerShip<TenderFilledFormPrice, User>(loginUserId, canSeeAllItems)
                 ;
 
@@ -187,7 +187,7 @@ namespace Oje.Section.Tender.Services
 
 
             var quiryResult = db.TenderFilledFormPrices
-                .Where(t => t.TenderFilledForm.SiteSettingId == siteSettingId && t.TenderFilledForm.UserId == loginUserId && t.IsPublished == true)
+                .Where(t => t.TenderFilledForm.SiteSettingId == siteSettingId && t.TenderFilledForm.UserId == loginUserId && t.IsPublished == true && t.TenderFilledFormId == searchInput.pKey)
                 ;
 
             if (!string.IsNullOrEmpty(searchInput.insurance))

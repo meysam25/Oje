@@ -21,6 +21,9 @@ $.fn.initMainPageAboutUs = function (url) {
                 selectQuery.find('.aboutUsSectionDescription').html(res.desc);
                 if (res.readMoreUrl)
                     selectQuery.find('.readMoreAboutUs').attr('href', res.readMoreUrl);
+                else
+                    selectQuery.find('.readMoreAboutUs').css('display', 'none');
+
                 selectQuery.css('display', 'block');
                 selectQuery.find('img[data-src]').loadImageOnScroll();
             } else {

@@ -26,7 +26,7 @@
     <meta name="twitter:title" content="@ViewData["Title"]" />
     <meta property="og:title" content="@ViewData["Title"]" />
     @{
-        var exteraMetaTag = PropertyService.GetBy<Oje.Section.WebMain.Models.View.GlobalMetaTagCreateUpdateVM>(Oje.Infrastructure.Enums.PropertyType.GlobalMetaTag, SiteSettingService.GetSiteSetting()?.Id);
+        var exteraMetaTag = PropertyService.GetBy<Oje.Infrastructure.Models.GlobalMetaTagCreateUpdateVM>(Oje.Infrastructure.Enums.PropertyType.GlobalMetaTag, SiteSettingService.GetSiteSetting()?.Id);
         if (exteraMetaTag != null)
         {
             ViewContext.Writer.Write(exteraMetaTag.tag1);
