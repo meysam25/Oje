@@ -9,6 +9,9 @@
         Layout = ViewBag.newLayoutName;
     }
     ViewBag.Title = Model.ppfTitle;
+    if (ViewBag.IsMobile == true) {
+        Layout = null;
+    }
 }
 @model Oje.Infrastructure.Models.Pdf.ProposalFilledForm.ProposalFilledFormPdfVM
 @using Oje.Infrastructure.Services
@@ -21,7 +24,7 @@
         direction: rtl;
         padding: 10px;
         text-align: right;
-        background-color:white;
+        background-color:transparent;
     }
     .fontSize {
         font-size:0.99em;
@@ -97,7 +100,7 @@
         if(!string.IsNullOrEmpty(Model.companyTitle))
         {
              <div style="text-align:center;">
-                <img src="@Model.companyImage" style="width:70px;" />
+                <img src="@ViewBag.BaseUrl@Model.companyImage" style="width:70px;border-radius:50%" />
             </div>
         }
     }
@@ -149,7 +152,7 @@
     </div>
     <div class="row">
         @{
-            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode))
+            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode) && ViewBag.IsMobile != true)
             {
                 <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
                     <a id="paymentButton" href="/Payment/Payment/GetWayList?status=@(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2())" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>

@@ -14,6 +14,7 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -32,7 +33,6 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormDocumentService ProposalFilledFormDocumentService = null;
         readonly IProposalFilledFormValueService ProposalFilledFormValueService = null;
         readonly AccountService.Interfaces.IUserService UserService = null;
-        readonly AccountService.Interfaces.IRoleService RoleService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly IUserNotifierService UserNotifierService = null;
@@ -55,7 +55,6 @@ namespace Oje.ProposalFormService.Services
                 IUploadedFileService UploadedFileService,
                 IUserNotifierService UserNotifierService,
                 IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService,
-                AccountService.Interfaces.IRoleService RoleService,
                 IColorService ColorService
             )
         {
@@ -75,7 +74,6 @@ namespace Oje.ProposalFormService.Services
             this.UploadedFileService = UploadedFileService;
             this.ProposalFilledFormAdminBaseQueryService = ProposalFilledFormAdminBaseQueryService;
             this.UserNotifierService = UserNotifierService;
-            this.RoleService = RoleService;
             this.ColorService = ColorService;
         }
 
@@ -157,9 +155,9 @@ namespace Oje.ProposalFormService.Services
                         UserService.GetAgentInfo(form.GetStringIfExist("agentId").ToLongReturnZiro(), companyId)
                     );
 
-                //tr.Commit();
+                //tr.Commit();tenderUser
 
-                if (loginUser != null && loginUser.roles != null && loginUser.roles.Any(t => t == "user"))
+                if (loginUser != null && loginUser.roles != null && (loginUser.roles.Any(t => t == "user") || loginUser.roles.Any(t => t == "tenderUser")))
                     targetUrl = "/Proposal/Detaile";
                 else
                     targetUrl = "";
@@ -382,8 +380,15 @@ namespace Oje.ProposalFormService.Services
                 {
                     var allRequiredFiles = allRequiredFileUpload.Where(t => t.IsRequired == true).ToList();
                     foreach (var file in allRequiredFiles)
-                        if (form.Files[file.Title.Replace(" ", "")] == null || form.Files[file.Title.Replace(" ", "")].Length == 0)
+                    {
+                        string eString = Convert.ToBase64String(Encoding.Unicode.GetBytes(file.Title));
+                        if (
+                                (form.Files[file.Title.Replace(" ", "")] == null || form.Files[file.Title.Replace(" ", "")].Length == 0) &&
+                                (form.Files[eString] == null || form.Files[eString].Length == 0)
+                            )
                             throw BException.GenerateNewException(String.Format(BMessages.Please_Select_X.GetEnumDisplayName(), file.Title));
+                    }
+                        
                 }
             }
         }

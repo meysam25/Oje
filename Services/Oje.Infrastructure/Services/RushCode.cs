@@ -327,6 +327,18 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static bool IsMobile(this HttpRequest input)
+        {
+            try
+            {
+                return input.Headers["Platform"].ToString().ToLower() == "mobile";
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static string GetBroswerName(this HttpContext input)
         {
             try

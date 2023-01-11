@@ -277,9 +277,10 @@ namespace Oje.ProposalFormService.Services
             {
                 if (input.showStatus == 2)
                     result = result.Where(t => t.hcd == true).ToList();
-                else if (input.showStatus == 3)
-                    result = result.Where(t => t.hcd == true).ToList();
             }
+
+            if (input.showStatus == 3)
+                result = result.Where(t => t.hod == true).ToList();
 
             return new { total = result.Count, data = result };
         }

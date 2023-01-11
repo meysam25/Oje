@@ -106,13 +106,40 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             if (foundPPF == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            var ss = SiteSettingService.GetSiteSetting();
+
             ViewBag.ContractFile = foundPPF.ContractFile;
             ViewBag.RulesFile = foundPPF.RulesFile;
             ViewBag.HtmlTemplate = foundPPF.TermTemplate;
-            ViewBag.companyTitle = SiteSettingService.GetSiteSetting()?.Title;
+            ViewBag.companyTitle = ss?.Title;
             ViewBag.pTitle = foundPPF.Title;
+            ViewBag.domain = "http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl;
 
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult GetPPFCondationFile([FromForm] int? fid)
+        {
+            var foundPPF = ProposalFormService.GetById(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
+            if (foundPPF == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            var ss = SiteSettingService.GetSiteSetting();
+
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl + Infrastructure.GlobalConfig.FileAccessHandlerUrl + foundPPF.RulesFile);
+        }
+
+        [HttpPost]
+        public IActionResult GetPPFContractFile([FromForm] int? fid)
+        {
+            var foundPPF = ProposalFormService.GetById(fid.ToIntReturnZiro(), SiteSettingService.GetSiteSetting()?.Id);
+            if (foundPPF == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            var ss = SiteSettingService.GetSiteSetting();
+
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl + Infrastructure.GlobalConfig.FileAccessHandlerUrl + foundPPF.ContractFile);
         }
 
         [AreaConfig(Title = "لیست مدارم مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]

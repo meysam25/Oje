@@ -39,7 +39,7 @@ namespace Oje.ProposalFormService.Services
             List<object> result = new List<object>();// { new { id = "", title = BMessages.Please_Select_One_Item.GetAttribute<DisplayAttribute>()?.Name } };
             result.Add(new { id = "0", title = BMessages.I_Dont_Have_One.GetAttribute<DisplayAttribute>()?.Name });
 
-            result.AddRange(db.Companies.Where(t => t.IsActive == true).Select(t => new { id = t.Id, title = t.Title }).ToList());
+            result.AddRange(db.Companies.Where(t => t.IsActive == true && t.Id > 0).Select(t => new { id = t.Id, title = t.Title }).ToList());
 
             return result;
         }
@@ -53,7 +53,7 @@ namespace Oje.ProposalFormService.Services
             if (allThirdPartyCompany.Any())
                 result.AddRange(allThirdPartyCompany);
             else
-                result.AddRange(db.Companies.Where(t => t.IsActive == true).Select(t => new { id = t.Id, title = t.Title, src = GlobalConfig.FileAccessHandlerUrl + t.Pic32 }).ToList());
+                result.AddRange(db.Companies.Where(t => t.IsActive == true && t.Id > 0).Select(t => new { id = t.Id, title = t.Title, src = GlobalConfig.FileAccessHandlerUrl + t.Pic32 }).ToList());
 
             return result;
         }

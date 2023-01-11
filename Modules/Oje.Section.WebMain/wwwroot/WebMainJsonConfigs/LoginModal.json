@@ -14,6 +14,7 @@
               "id": "swPanelId",
               "stepWizards": [
                 {
+                  "stepIdForMobile": true,
                   "hideBorder": true,
                   "headerTextalign": "right",
                   "steps": [

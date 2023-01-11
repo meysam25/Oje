@@ -1103,16 +1103,19 @@ namespace Oje.AccountService.Services
 
         public object GetUserInfoByUserId(long? userId)
         {
-            return db.Users.Where(t => t.Id == userId).Select(t => new
-            {
-                firstname = t.Firstname.Trim(),
-                lastname = t.Lastname.Trim(),
-                username = t.Username.Trim(),
-                pic = !string.IsNullOrEmpty(t.UserPic) ? GlobalConfig.FileAccessHandlerUrl + t.UserPic : "",
-                isUser = t.UserRoles.Any(tt => tt.Role.Name.ToLower().EndsWith("user")),
-                isSuccess = true,
-                hasAutoRefresh = t.UserRoles.Any(tt => tt.Role.RefreshGrid == true)
-            }).FirstOrDefault();
+            if (userId.ToLongReturnZiro() > 0)
+                return db.Users.Where(t => t.Id == userId).Select(t => new
+                {
+                    firstname = t.Firstname.Trim(),
+                    lastname = t.Lastname.Trim(),
+                    username = t.Username.Trim(),
+                    pic = !string.IsNullOrEmpty(t.UserPic) ? GlobalConfig.FileAccessHandlerUrl + t.UserPic : "",
+                    isUser = t.UserRoles.Any(tt => tt.Role.Name.ToLower().EndsWith("user")),
+                    isSuccess = true,
+                    hasAutoRefresh = t.UserRoles.Any(tt => tt.Role.RefreshGrid == true)
+                }).FirstOrDefault();
+            else
+                return new { };
         }
 
         public long GetUserIdByNationalEmailMobleEcode(string nationalCode, string mobile, string eCode, long? loginUserId, int? siteSettingId)

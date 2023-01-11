@@ -3,6 +3,7 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.Section.WebMain.Models.View;
+using System;
 
 namespace Oje.Section.WebMain.Controllers
 {
@@ -49,6 +50,8 @@ namespace Oje.Section.WebMain.Controllers
         {
             ViewBag.isPrint = isPrint;
             ViewBag.newLayoutName = "_WebLayout";
+            ViewBag.IsMobile = Request.IsMobile();
+            ViewBag.BaseUrl = "http" + (Request.IsHttps ? "s" : "") + "://" + Request.Host;
             return View("PdfDetailes", ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, ProposalFilledFormStatus.New));
         }
     }

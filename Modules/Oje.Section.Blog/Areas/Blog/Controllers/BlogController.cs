@@ -113,6 +113,9 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
                           )
                      );
 
+            if (Request.IsMobile())
+                return Json(new { title= title });
+
             return View();
         }
 
@@ -148,6 +151,14 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
                        new KeyValue() { key = "مقالات", value = Request.Scheme + "://" + Request.Host + "/Blogs" }, 
                        new KeyValue() { key = foundBlog.title, value = "" } })
                    );
+
+            if (Request.IsMobile())
+                return Json(new 
+                {
+                    model = foundBlog,
+                    mViews = ViewBag.mViews,
+                    mLikeBlogs = ViewBag.mLikeBlogs
+                });
 
             return View(foundBlog);
         }

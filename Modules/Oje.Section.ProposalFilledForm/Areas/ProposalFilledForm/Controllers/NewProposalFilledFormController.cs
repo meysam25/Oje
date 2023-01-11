@@ -22,6 +22,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 
         [AreaConfig(Title = "تنظیمات افزودن فرم پیشنهاد جدید", Icon = "fa-cog")]
         [HttpPost]
+        [HttpGet]
         public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";

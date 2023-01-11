@@ -118,7 +118,11 @@ namespace Oje.ProposalFormService.Services
 
         public List<PaymentMethod> GetList(int? siteSettingId, int? proposalFormId)
         {
-            return db.PaymentMethods.Where(t => t.SiteSettingId == siteSettingId && t.ProposalFormId == proposalFormId && t.IsActive == true).AsNoTracking().ToList();
+            return db.PaymentMethods
+                .Where(t => t.SiteSettingId == siteSettingId && t.ProposalFormId == proposalFormId && t.IsActive == true)
+                .Include(t => t.PaymentMethodCompanies)
+                .AsNoTracking()
+                .ToList();
         }
 
         public bool IsValid(int id, int? siteSettingId, int proposalFormId, int companyId)

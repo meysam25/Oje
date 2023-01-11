@@ -55,6 +55,13 @@ namespace Oje.Section.WebMain.Controllers
                       );
             ViewBag.subTitle = foundDescription?.subTitle;
 
+            if (Request.IsMobile())
+                return Json(new 
+                {
+                    title = foundDescription?.title,
+                    subTitle = foundDescription?.subTitle
+                });
+
             return View();
         }
 

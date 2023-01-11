@@ -118,12 +118,14 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             ViewBag.loginUrl = Url.Action("Login");
             UserLoginLogoutLogService.Create(curUser?.UserId ?? 0, UserLoginLogoutLogType.Logout, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
 
+            if (Request.Headers.ContainsKey("X-Requested-With"))
+                return Json(new { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName() });
+
             return View();
         }
 
         [AreaConfig(Title = "مشاهده مشخصات کاربر لاگین شده")]
         [HttpPost]
-        [CustomeAuthorizeFilter]
         public IActionResult GetLoginUserInfo()
         {
             return Json(UserService.GetUserInfoByUserId(HttpContext.GetLoginUser()?.UserId));

@@ -135,7 +135,7 @@
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "id": "brandId",
                       "type": "dropDown2",
-                      "textfield": "title",
+                      "textfield": "text",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarBrandList",
                       "label": "برند خودرو",
@@ -148,7 +148,7 @@
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "id": "specId",
                       "type": "dropDown2",
-                      "textfield": "title",
+                      "textfield": "text",
                       "valuefield": "id",
                       "dataurl": "/ProposalFormInquiries/CarThirdPartyInquiry/GetCarSpecList",
                       "label": "مدل",
@@ -578,6 +578,7 @@
               ],
               "ePanels": [
                 {
+                  "ignoreOnMobile": true,
                   "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
                   "title": "مدت زمانه بیمه نامه",
                   "ctrls": [
@@ -594,6 +595,7 @@
                   ]
                 },
                 {
+                  "ignoreOnMobile": true,
                   "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
                   "title": "تعهد مالی انتخابی",
                   "ctrls": [
@@ -610,6 +612,7 @@
                   ]
                 },
                 {
+                  "ignoreOnMobile": true,
                   "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
                   "title": "تخفیفات",
                   "ctrls": [
@@ -640,6 +643,7 @@
                   ]
                 },
                 {
+                  "ignoreOnMobile": true,
                   "class": "col-md-12 col-sm-12 col-xl-12 col-lg-12 col-xs-12",
                   "title": "مقایسه شرکت ها",
                   "ctrls": [

@@ -6,13 +6,14 @@ using Oje.ProposalFormService.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Oje.ProposalFormService.Services
 {
     public class ProposalFormRequiredDocumentService : IProposalFormRequiredDocumentService
     {
         readonly ProposalFormDBContext db = null;
-        static Dictionary<string, List<ProposalFormRequiredDocument>> rdCache = new ();
+        static Dictionary<string, List<ProposalFormRequiredDocument>> rdCache = new();
         static DateTime? cacheDate = null;
         static object lockObj = new object();
 
@@ -39,6 +40,7 @@ namespace Oje.ProposalFormService.Services
                 .Select(t => new
                 {
                     t.title,
+                    name = Convert.ToBase64String(Encoding.Unicode.GetBytes(t.title)),
                     t.isRequired,
                     sample = !string.IsNullOrEmpty(t.sample) ? (GlobalConfig.FileAccessHandlerUrl + t.sample) : ""
                 })
@@ -60,7 +62,7 @@ namespace Oje.ProposalFormService.Services
             if (rdCache.Keys.Any(t => t == curKey) && rdCache[curKey] != null)
                 return rdCache[curKey];
 
-            lock(lockObj)
+            lock (lockObj)
             {
                 if (rdCache.Keys.Any(t => t == curKey) && rdCache[curKey] != null)
                     return rdCache[curKey];
@@ -70,7 +72,7 @@ namespace Oje.ProposalFormService.Services
                 .ToList();
                 cacheDate = DateTime.Now;
             }
-            
+
 
             return rdCache[curKey];
         }

@@ -373,9 +373,14 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                     new SqlParameter("@networksaleId", searchInput.snId), new SqlParameter("@siteSetting", siteSettingId))
                 .ToList();
 
+            var foundParentUser = result.Where(t => t.UserId == searchInput.userId).FirstOrDefault();
+            if (foundParentUser != null)
+                foundParentUser.parentid = null;
 
+            int repeatCount = 0;
             while (result.Any(t => t.parentid != null && !result.Any(tt => tt.UserId == t.parentid)))
             {
+                repeatCount++;
                 var foundFirstUser = result.Where(t => t.parentid != null && !result.Any(tt => tt.UserId == t.parentid)).FirstOrDefault();
                 var foundUser = db.Users.Where(t => t.Id == foundFirstUser.parentid).Select(t => new { t.Firstname, t.Lastname, t.ParentId, role = t.UserRoles.Select(tt => tt.Role.Title).FirstOrDefault(), id = t.Id, t.Username }).FirstOrDefault();
                 result.Add(new Models.SP.UserCommission()
@@ -389,9 +394,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                     saleSum = 0,
                     UserId = foundUser != null ? foundUser.id : 0
                 });
-                var foundParentUser = result.Where(t => t.UserId == searchInput.userId).FirstOrDefault();
-                if (foundParentUser != null)
-                    foundParentUser.parentid = null;
+                if (repeatCount > 10000)
+                    break;
             }
 
             var data = new List<object>();
@@ -404,6 +408,8 @@ namespace Oje.Section.SalesNetworkBaseData.Services
                 result.Select(t => new { id = t.UserId.ToString(), title = t.role, name = t.fistname + " " + t.lastname + (t.commission != null && t.commission != 0 ? ("(" + t.commission.Value.ToString("###,###") + ")") : "") }).ToList()
                 );
 
+            if (data.Count == 0 && result.Count == 1)
+                data.Add(new List<string>() { result.Select(t => t.UserId).FirstOrDefault() + "", null });
 
             return new List<object>()
             {
