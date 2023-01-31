@@ -15,6 +15,11 @@ namespace Oje.Security.Services
             this.db = db;
         }
 
+        public List<long> GetList()
+        {
+            return db.Actions.OrderByDescending(t => t.Id).Select(t => t.Id).ToList();
+        }
+
         public object GetSelect2List(Select2SearchVM searchInput)
         {
             List<object> result = new List<object>();

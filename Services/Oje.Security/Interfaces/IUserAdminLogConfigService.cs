@@ -11,5 +11,6 @@ namespace Oje.Security.Interfaces
         ApiResult Update(UserAdminLogConfigCreateUpdateVM input, int? siteSettingId);
         GridResultVM<UserAdminLogConfigMainGridResultVM> GetList(UserAdminLogConfigMainGrid searchInput, int? siteSettingId);
         bool IsNeededCache(long actionId, int siteSettingId);
+        ApiResult CreateAll(int? siteSettingId);
     }
 }

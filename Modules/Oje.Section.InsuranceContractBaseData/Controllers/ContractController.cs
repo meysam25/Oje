@@ -48,6 +48,12 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
                   Request.Scheme + "://" + Request.Host + "/Modules/Assets/MainPage/logo.png",
                   null
                   );
+
+            ViewBag.jsonConfigUrl = "/Contract/GetStep1Config";
+
+            if (Request.IsMobile())
+                return Json(new { configUrl = ViewBag.jsonConfigUrl });
+
             return View();
         }
 
@@ -85,6 +91,18 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
             ViewBag.ContractFile = foundUserInfo.contractDocumentUrl;
 
             return View(foundUserInfo);
+        }
+
+        [HttpPost]
+        public IActionResult GetPPFContractFile([FromForm] contractUserInput input)
+        {
+            var ss = SiteSettingService.GetSiteSetting();
+
+            var foundPPF = InsuranceContractService.GetTermsInfo(input, ss?.Id);
+            if (foundPPF == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl +  foundPPF.contractDocumentUrl);
         }
 
         [HttpPost]

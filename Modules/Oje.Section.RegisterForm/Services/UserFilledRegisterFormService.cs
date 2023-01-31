@@ -17,6 +17,7 @@ using Oje.Section.RegisterForm.Services.EContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Oje.Section.RegisterForm.Services
 {
@@ -426,7 +427,7 @@ namespace Oje.Section.RegisterForm.Services
                 {
                     var allRequiredFiles = allRequiredFileUpload.Where(t => t.IsRequired == true).ToList();
                     foreach (var file in allRequiredFiles)
-                        if (form.Files[file.Title.Replace(" ", "")] == null || form.Files[file.Title.Replace(" ", "")].Length == 0)
+                        if (form.Files[Convert.ToBase64String(Encoding.UTF8.GetBytes(file.Title))] == null || form.Files[Convert.ToBase64String(Encoding.UTF8.GetBytes(file.Title))].Length == 0)
                             throw BException.GenerateNewException(string.Format(BMessages.Please_Select_X.GetEnumDisplayName(), file.Title));
                 }
             }

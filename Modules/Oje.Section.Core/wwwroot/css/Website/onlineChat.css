@@ -370,8 +370,9 @@
             background-color: #0f73ed;
             color: white;
             display: inline-block;
-            -ms-word-break: break-all;
-            word-break: break-all;
+            -ms-word-break: break-word;
+            word-break: break-word;
+            text-align: justify
         }
 
     .onlineChatMessageItem .userTime {

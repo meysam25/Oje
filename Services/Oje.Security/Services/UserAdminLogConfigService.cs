@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -16,15 +15,18 @@ namespace Oje.Security.Services
         readonly SecurityDBContext db = null;
         static List<UserAdminLogConfig> userAdminLogConfigs = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+        readonly IActionService ActionService = null;
 
         public UserAdminLogConfigService
             (
                 SecurityDBContext db,
-                IHttpContextAccessor HttpContextAccessor
+                IHttpContextAccessor HttpContextAccessor,
+                IActionService ActionService
             )
         {
             this.db = db;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.ActionService = ActionService;
         }
 
         public ApiResult Create(UserAdminLogConfigCreateUpdateVM input, int? siteSettingId)
@@ -162,6 +164,22 @@ namespace Oje.Security.Services
                 userAdminLogConfigs = db.UserAdminLogConfigs.AsNoTracking().ToList();
 
             return userAdminLogConfigs.Any(t => t.ActionId == actionId && t.IsActive == true && t.SiteSettingId == siteSettingId);
+        }
+
+        public ApiResult CreateAll(int? siteSettingId)
+        {
+            var allAction = ActionService.GetList();
+
+            foreach(var action in allAction)
+            {
+                try { Create(new UserAdminLogConfigCreateUpdateVM() 
+                {
+                    aId = action,
+                    isActive = true
+                }, siteSettingId); } catch { };
+            }
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
     }
 }

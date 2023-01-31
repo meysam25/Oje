@@ -2,7 +2,6 @@
 
 function initOnlineChat(id, isAdmin) {
     var template = `
-
 <span class="onlineChat" >
     <span class="onlineChatShadowBox" ></span>
     <span class="onlineChatHeader">
@@ -52,8 +51,6 @@ function initOnlineChat(id, isAdmin) {
 
 `;
 
-    /*<span class="onlineChatMenueItem uploadNewFile" ><span class="fa fa-upload"></span>بارگزاری فایل</span>*/
-
     if ($('.onlineChat').length > 0) {
         $('.onlineChat')[0].close();
     }
@@ -77,7 +74,6 @@ function initOnlineChantJS(isAdmin, id) {
         initOnlineChantInitCancellButton(onlineChatObj);
         initOnlineChantUserTyping(onlineChatObj);
         initOnlineChantSendMessage(onlineChatObj, isAdmin);
-        //initOnlineChantUserLogin(onlineChatObj);
         initOnlineChantSocket(onlineChatObj, isAdmin);
         initOnlineChantInitAskForLoginMethods(onlineChatObj);
         initOnlineChantInitWhatToDoAfterUserLogin(onlineChatObj);
@@ -178,7 +174,7 @@ function initOnlineChantGetOrCreateNewId(onlineChatObj) {
 
 function initOnlineChantSocket(onlineChatObj, isAdmin) {
     if (window['signalR']) {
-        var connection = new signalR.HubConnectionBuilder().withUrl("/support").build();
+        var connection = new signalR.HubConnectionBuilder().configureLogging(signalR.LogLevel.Information).withUrl("/support").build();
         connection.on("groupMessages", function (groupMessageItems) {
             this.onlineChatObj.addGroupMessages(groupMessageItems);
         }.bind({ onlineChatObj: onlineChatObj }));
@@ -211,7 +207,6 @@ function initOnlineChantSocket(onlineChatObj, isAdmin) {
             this.onlineChatObj.uploadVoiceForAdminUrlFirst(userId);
         }.bind({ onlineChatObj: onlineChatObj }));
         connection.on("messageHistory", function (messages) {
-            console.log(messages);
             if (messages && messages.length > 0) {
                 for (var i = 0; i < messages.length; i++) {
                     this.onlineChatObj.addNewMessage(messages[i]);

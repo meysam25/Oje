@@ -24,7 +24,7 @@ namespace Oje.Section.WebMain.Models.View
         public string url { get; set; }
         public DateTime createDate { get; set; }
 
-        public List<IPageWebItemVM> Items { get; set; }
+        public List<object> Items { get; set; }
         public List<PageWebSliderVM> PageWebSliderVMs { get; set; }
     }
 }

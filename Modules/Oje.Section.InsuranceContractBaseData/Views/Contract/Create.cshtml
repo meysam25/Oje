@@ -30,9 +30,9 @@
         {
             var gQuiry = $('#' + targetId).closest('.MultiRowInputRow');
             var sQuiry = gQuiry.find('.debitFileUploader');
-            if(sQuiry.length > 0) {
-                for(var i = 0; i < res.items.length; i++) {
-                    res.items[i].name =sName + '.' + res.items[i].title;
+            if (sQuiry.length > 0) {
+                for (var i = 0; i < res.items.length; i++) {
+                    res.items[i].name = sName + '.' + res.items[i].name;
                 }
                 sQuiry[0].addNewRow(res.items);
                 gQuiry.find('.holderDescription').html(res.desc);

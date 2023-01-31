@@ -21,7 +21,7 @@
                 <div class="articleContent">
                     <div class="articleContentTitle">
                         <h1>@Model.title</h1>
-                        <span class="articleContentLikeButton fa fa-heart @(Model.didILikeIt == true     ? "articleContentLikeButtonActive" : "")"></span>
+                        <span class="articleContentLikeButton fa fa-heart @(Model.didILikeIt == true ? "articleContentLikeButtonActive" : "")"></span>
                     </div>
                     <div class="articleContentInfo">
                         <a href="/Blogs/Category/@((Model.catTitle + "").Trim().Replace(" ","-").Replace("--","-"))/@(Model.catId)" class="articleContentInfoCat">@Model.catTitle</a>
@@ -176,9 +176,3 @@
 @section FooterR {
 <script asp-append-version="true" src="/Modules/Core/js/blog.min.js.gz"></script>
 }
-
-<script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-
-    });
-</script>

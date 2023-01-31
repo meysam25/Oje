@@ -194,6 +194,7 @@ namespace Oje.Section.WebMain.Services
         {
             return db.PageLeftRightDesigns
                 .Where(t => t.SiteSettingId == siteSettingId && t.PageId == pageId && t.IsActive == true)
+                .OrderBy(t => t.Order)
                 .Select(t => new PageLeftRightDesignWebVM
                 {
                     description = t.Description,

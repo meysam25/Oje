@@ -7,7 +7,13 @@
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('UserAdminLogConfigAddGridModal', this)", "type": "add", "modalId": "UserAdminLogConfigAddGridModal"
+              "onClick": "showModal('UserAdminLogConfigAddGridModal', this)",
+              "type": "add",
+              "modalId": "UserAdminLogConfigAddGridModal"
+            },
+            {
+              "title": "افزودن و کلیه لاگ ها",
+              "onClick": "postModalData($('body'), 'UserAdminLogConfigMainGrid', '/Security/UserAdminLogConfig/AddAllActions');"
             }
           ],
           "exportToExcelUrl": "/Security/UserAdminLogConfig/Export",

@@ -12,6 +12,7 @@ using Oje.Section.InsuranceContractBaseData.Models.View;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
@@ -233,6 +234,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     title = t.title,
                     isRequired = t.isRequired,
+                    name = Convert.ToBase64String( UTF8Encoding.UTF8.GetBytes(t.title)) ,
                     sample = !string.IsNullOrEmpty(t.sample) ? (GlobalConfig.FileAccessHandlerUrl + t.sample) : ""
                 })
                 .ToList()

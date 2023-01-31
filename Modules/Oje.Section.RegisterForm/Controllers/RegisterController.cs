@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
+using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -117,21 +118,24 @@ namespace Oje.Section.RegisterForm.Controllers
         [Route("[Controller]/[Action]")]
         public IActionResult GetSecoundFileUrl([FromForm] int? fid)
         {
-            return Content(UserRegisterFormService.GetSecoundFileUrl(fid, SiteSettingService.GetSiteSetting()?.Id));
+            var ss = SiteSettingService.GetSiteSetting();
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl + UserRegisterFormService.GetSecoundFileUrl(fid, ss?.Id));
         }
 
         [HttpPost]
         [Route("[Controller]/[Action]")]
         public IActionResult GetAnotherFileUrl([FromForm] int? fid)
         {
-            return Content(UserRegisterFormService.GetAnotherFileUrl(fid, SiteSettingService.GetSiteSetting()?.Id));
+            var ss = SiteSettingService.GetSiteSetting();
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl + UserRegisterFormService.GetAnotherFileUrl(fid, ss?.Id));
         }
 
         [HttpPost]
         [Route("[Controller]/[Action]")]
         public IActionResult GetAnotherFile2Url([FromForm] int? fid)
         {
-            return Content(UserRegisterFormService.GetAnotherFile2Url(fid, SiteSettingService.GetSiteSetting()?.Id));
+            var ss = SiteSettingService.GetSiteSetting();
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl + UserRegisterFormService.GetAnotherFile2Url(fid, ss?.Id));
         }
 
         [HttpGet]
@@ -180,6 +184,18 @@ namespace Oje.Section.RegisterForm.Controllers
             ViewBag.refferCode = AgentRefferService.GetRefferCode(SiteSettingService.GetSiteSetting()?.Id, company);
 
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult GetPPFContractFile(int? fid)
+        {
+            var ss = SiteSettingService.GetSiteSetting();
+            var foundPPF = UserRegisterFormService.GetTermInfo(fid.ToIntReturnZiro(), ss?.Id);
+            if (foundPPF == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+            
+
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl + GlobalConfig.FileAccessHandlerUrl + foundPPF.RuleFile);
         }
 
         [HttpPost]

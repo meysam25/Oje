@@ -51,6 +51,9 @@ namespace Oje.Section.WebMain.Controllers
                  LdJsonService.GetNews2(foundPage.title, curDomain + foundPage.mainImage, curDomain + foundPage.mainImageSmall, curDomain + foundPage.url, foundPage.summery, foundPage.createDate)
                  );
 
+            if (Request.IsMobile())
+                return Json(foundPage);
+
             return View(foundPage);
         }
     }

@@ -1393,6 +1393,9 @@ function getCheckboxButtonTemplate(ctrl) {
                 if (this.ctrl.fileDownloadConfig.url && this.ctrl.fileDownloadConfig.text && this.ctrl.id) {
                     var formData = new FormData();
                     appendAllQueryStringToForm(formData);
+                    if (window['exteraModelParams'])
+                        for (var prop in exteraModelParams)
+                            formData.append(prop, exteraModelParams[prop]);
                     postForm(this.ctrl.fileDownloadConfig.url, formData, function (res) {
                         if (res) {
                             var foundLabel = $('#' + this.ctrl.id).closest('.myCtrl').find('label');

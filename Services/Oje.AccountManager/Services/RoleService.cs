@@ -123,12 +123,20 @@ namespace Oje.AccountService.Services
 
         public ApiResult Delete(int? id)
         {
-            var foundItem = db.Roles.Where(t => t.Id == id).FirstOrDefault();
+            var foundItem = db.Roles
+                .Where(t => t.Id == id)
+                .Include(t => t.RoleProposalForms)
+                .FirstOrDefault();
+
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
             var countUser = db.UserRoles.Where(t => t.RoleId == id).Count();
             if (countUser > 0)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted, ApiResultErrorCode.ValidationError);
+
+            if (foundItem.RoleProposalForms != null && foundItem.RoleProposalForms.Count > 0)
+                foreach (var form in foundItem.RoleProposalForms)
+                    db.Entry(form).State = EntityState.Deleted;
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -257,7 +265,6 @@ namespace Oje.AccountService.Services
                 foreach (var formId in input.formIds)
                     if (!proposalFormService.Exist(siteSettingId, formId))
                         throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
-
         }
 
         public ApiResult DeleteUser(int? id, LoginUserVM loginUserVM, int? siteSettingId)
@@ -266,7 +273,10 @@ namespace Oje.AccountService.Services
 
             var roleValue = GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
 
-            var foundItem = db.Roles.Where(t => t.Id == id && (t.SiteSettingId == siteSettingId || t.SiteSettingId == null) && t.Value <= roleValue).FirstOrDefault();
+            var foundItem = db.Roles
+                .Where(t => t.Id == id && (t.SiteSettingId == siteSettingId || t.SiteSettingId == null) && t.Value <= roleValue)
+                .Include(t => t.RoleProposalForms)
+                .FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
@@ -276,6 +286,10 @@ namespace Oje.AccountService.Services
             var countUser = db.UserRoles.Where(t => t.RoleId == id).Count();
             if (countUser > 0)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted, ApiResultErrorCode.ValidationError);
+
+            if (foundItem.RoleProposalForms != null && foundItem.RoleProposalForms.Count > 0)
+                foreach (var form in foundItem.RoleProposalForms)
+                    db.Entry(form).State = EntityState.Deleted;
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();

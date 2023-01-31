@@ -76,7 +76,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     for (var j = 0; j < rds.items.Count; j++)
                     {
                         var item = rds.items[j];
-                        var file = form.Files[fileName + "[" + i + "]." + item.title.Replace(" ", "")];
+                        var file = form.Files[fileName + "[" + i + "]." + item.name];
                         if (item.isRequired == true && (file == null || file.Length == 0))
                             throw BException.GenerateNewException(String.Format(BMessages.Please_Select_File_Format.GetEnumDisplayName(), item.title));
                         if (file != null && file.Length > 0)

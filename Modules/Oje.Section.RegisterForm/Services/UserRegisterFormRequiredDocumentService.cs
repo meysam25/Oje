@@ -10,7 +10,9 @@ using Oje.Section.RegisterForm.Interfaces;
 using Oje.Section.RegisterForm.Models.DB;
 using Oje.Section.RegisterForm.Models.View;
 using Oje.Section.RegisterForm.Services.EContext;
+using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 
 namespace Oje.Section.RegisterForm.Services
@@ -203,7 +205,8 @@ namespace Oje.Section.RegisterForm.Services
                 {
                     t.title,
                     t.isRequired,
-                    sample = !string.IsNullOrEmpty(t.sample) ? (GlobalConfig.FileAccessHandlerUrl + t.sample) : ""
+                    sample = !string.IsNullOrEmpty(t.sample) ? (GlobalConfig.FileAccessHandlerUrl + t.sample) : "",
+                    name = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(t.title))
                 })
                 .ToList();
         }

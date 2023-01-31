@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure.Services;
-using Oje.PaymentService.Interfaces;
 using Oje.PaymentService.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.Payment.Areas.Payment.Controllers
 {

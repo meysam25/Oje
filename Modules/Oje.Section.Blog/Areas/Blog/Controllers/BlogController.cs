@@ -114,7 +114,7 @@ namespace Oje.Section.Blog.Areas.Blog.Controllers
                      );
 
             if (Request.IsMobile())
-                return Json(new { title= title });
+                return Json(new { title = title });
 
             return View();
         }

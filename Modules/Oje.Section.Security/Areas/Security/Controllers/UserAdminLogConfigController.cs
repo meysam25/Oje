@@ -58,6 +58,13 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(UserAdminLogConfigService.Create(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
+        [AreaConfig(Title = "افزودن کلی تنظیمات لاگ بخش ادمین جدید", Icon = "fa-plus")]
+        [HttpPost]
+        public IActionResult AddAllActions()
+        {
+            return Json(UserAdminLogConfigService.CreateAll(SiteSettingService.GetSiteSetting()?.Id));
+        }
+
         [AreaConfig(Title = "حذف تنظیمات لاگ بخش ادمین", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)

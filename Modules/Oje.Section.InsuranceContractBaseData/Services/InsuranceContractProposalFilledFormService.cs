@@ -27,7 +27,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractProposalFilledFormUserService InsuranceContractProposalFilledFormUserService = null;
         readonly IInsuranceContractProposalFilledFormValueService InsuranceContractProposalFilledFormValueService = null;
         readonly IUploadedFileService UploadedFileService = null;
-        readonly IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService = null;
         readonly IUserNotifierService UserNotifierService = null;
         readonly IUserService UserService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
@@ -43,7 +42,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IInsuranceContractProposalFilledFormUserService InsuranceContractProposalFilledFormUserService,
                 IInsuranceContractProposalFilledFormValueService InsuranceContractProposalFilledFormValueService,
                 IUploadedFileService UploadedFileService,
-                IInsuranceContractProposalFilledFormStatusLogService InsuranceContractProposalFilledFormStatusLogService,
                 IUserNotifierService UserNotifierService,
                 IUserService UserService,
                 IHttpContextAccessor HttpContextAccessor
@@ -55,7 +53,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.InsuranceContractProposalFilledFormUserService = InsuranceContractProposalFilledFormUserService;
             this.InsuranceContractProposalFilledFormValueService = InsuranceContractProposalFilledFormValueService;
             this.UploadedFileService = UploadedFileService;
-            this.InsuranceContractProposalFilledFormStatusLogService = InsuranceContractProposalFilledFormStatusLogService;
             this.UserNotifierService = UserNotifierService;
             this.UserService = UserService;
             this.HttpContextAccessor = HttpContextAccessor;
