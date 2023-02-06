@@ -61,7 +61,7 @@ namespace Oje.Section.Blog.Services
             long? blogId = null;
             try
             {
-                var arrIdItems = id.Split(',');
+                var arrIdItems = id.Split('_');
                 ip1 = arrIdItems[0].ToByteReturnZiro();
                 ip2 = arrIdItems[1].ToByteReturnZiro();
                 ip3 = arrIdItems[2].ToByteReturnZiro();
@@ -94,7 +94,7 @@ namespace Oje.Section.Blog.Services
             long? blogId = null;
             try
             {
-                var arrIdItems = id.Split(',');
+                var arrIdItems = id.Split('_');
                 ip1 = arrIdItems[0].ToByteReturnZiro();
                 ip2 = arrIdItems[1].ToByteReturnZiro();
                 ip3 = arrIdItems[2].ToByteReturnZiro();
@@ -127,7 +127,7 @@ namespace Oje.Section.Blog.Services
             long? blogId = null;
             try
             {
-                var arrIdItems = id.Split(',');
+                var arrIdItems = id.Split('_');
                 ip1 = arrIdItems[0].ToByteReturnZiro();
                 ip2 = arrIdItems[1].ToByteReturnZiro();
                 ip3 = arrIdItems[2].ToByteReturnZiro();
@@ -206,7 +206,7 @@ namespace Oje.Section.Blog.Services
                 .Select(t => new BlogReviewMainGridResultVM
                 {
                     row = ++row,
-                    id = t.Ip1 + "," + t.Ip2 + "," + t.Ip3 + "," + t.Ip4 + "," + t.CreateDate.Ticks + "," + t.BlogId,
+                    id = t.Ip1 + "_" + t.Ip2 + "_" + t.Ip3 + "_" + t.Ip4 + "_" + t.CreateDate.Ticks + "_" + t.BlogId,
                     blogTitle = t.blogTitle,
                     iA = t.IsConfirm == true ? true : false,
                     isActive = t.IsConfirm == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),

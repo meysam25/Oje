@@ -477,15 +477,13 @@
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "password",
               "type": "password",
-              "label": "کلمه عبور",
-              "isRequired": true
+              "label": "کلمه عبور"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "confirmPassword",
               "type": "password",
-              "label": "تکرار کلمه عبور",
-              "isRequired": true
+              "label": "تکرار کلمه عبور"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",

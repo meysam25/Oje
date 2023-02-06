@@ -69,6 +69,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         public IActionResult Detaile([FromQuery] long? id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
+            //Request.IsMobile();
             return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, true, new List<InsuranceContractProposalFilledFormType>() { status }));
         }
 

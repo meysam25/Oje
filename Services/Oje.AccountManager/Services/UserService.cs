@@ -1566,8 +1566,8 @@ namespace Oje.AccountService.Services
                     t.Tell,
                     t.PostalCode,
                     t.Address,
-                    mapLat = t.MapLocation != null ? (decimal?)t.MapLocation.X : null,
-                    mapLon = t.MapLocation != null ? (decimal?)t.MapLocation.Y : null,
+                    mapLat = t.MapLocation != null ? (double?)t.MapLocation.X : null,
+                    mapLon = t.MapLocation != null ? (double?)t.MapLocation.Y : null,
                     mapZoom = t.MapZoom,
                     t.BirthDate
                 })

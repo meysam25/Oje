@@ -1,15 +1,9 @@
 ﻿using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
-using Oje.AccountService.Models;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Oje.AccountService.Models.View;
 
 namespace Oje.Section.Account.Areas.UserAccount.Controllers
@@ -39,13 +33,13 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
         public IActionResult Index()
         {
             ViewBag.Title = "ویرایش دسترسی نقش";
-            ViewBag.ConfigRoute = Url.Action("GetAccessJsonConfig", "RoleManagerAccess", new { area = "UserAccount" });
+            ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "RoleManagerAccess", new { area = "UserAccount" });
             return View("Index");
         }
 
         [AreaConfig(Title = "دریافت تنظیمات صفحه")]
         [HttpPost]
-        public IActionResult GetAccessJsonConfig()
+        public IActionResult GetJsonConfig()
         {
             Response.ContentType = "application/json; charset=utf-8";
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("UserAccount", "RoleManagerAccess")));

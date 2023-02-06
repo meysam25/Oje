@@ -17,7 +17,6 @@
         direction: rtl;
         padding: 10px;
         text-align: right;
-        background-color:white;
     }
 
     .printBox {
@@ -78,6 +77,9 @@
 </script>
 
 @{
+    if(Context.Request.IsMobile()) {
+        Layout = null;
+    }
     if(Layout == "_WebLayout")
     {
         ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
