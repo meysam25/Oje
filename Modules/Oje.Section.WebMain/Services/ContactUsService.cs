@@ -51,9 +51,9 @@ namespace Oje.Section.WebMain.Services
 
         public object GetBy(string id, int? siteSettingId)
         {
-            if (!string.IsNullOrEmpty(id) && id.IndexOf(",") > 0)
+            if (!string.IsNullOrEmpty(id) && id.IndexOf("_") > 0)
             {
-                var allParts = id.Split(',');
+                var allParts = id.Split('_');
                 if (allParts.Length == 5)
                 {
                     byte ip1 = allParts[0].ToByteReturnZiro(), ip2 = allParts[1].ToByteReturnZiro(), ip3 = allParts[2].ToByteReturnZiro(), ip4 = allParts[3].ToByteReturnZiro();
@@ -110,7 +110,7 @@ namespace Oje.Section.WebMain.Services
                 .ToList()
                 .Select(t => new UserContactUsMainGridResultVM
                 {
-                    id = t.Ip1 + "," + t.Ip2 + "," + t.Ip3 + "," + t.Ip4 + "," + t.CreateDate.Ticks,
+                    id = t.Ip1 + "_" + t.Ip2 + "_" + t.Ip3 + "_" + t.Ip4 + "_" + t.CreateDate.Ticks,
                     createDate = t.CreateDate.ToFaDate() + " " + t.CreateDate.ToString("hh:MM:ss"),
                     email = t.email,
                     fullname = t.fullname,

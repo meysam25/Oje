@@ -74,7 +74,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             ViewBag.isPrint = isPrint;
             ViewBag.newLayoutName = "_WebLayout";
 
-            return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, false, validStatus));
+            return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser(isPrint)?.UserId, SiteSettingService.GetSiteSetting()?.Id, false, validStatus));
         }
 
         [AreaConfig(Title = "دانلود پی دی اف فرم پیشنهاد", Icon = "fa-download")]

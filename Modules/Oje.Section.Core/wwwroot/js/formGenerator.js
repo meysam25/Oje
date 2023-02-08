@@ -1305,7 +1305,8 @@ function getMultiRowInputTemplate(ctrl) {
             }
             result += '</div>';
         }
-        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" ><button style="margin:3px;" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">' + (ctrl.addTitle ? ctrl.addTitle : 'افزودن') + '</button><button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">' + (ctrl.deleteTitle ? ctrl.deleteTitle : 'حذف اخرین سطر') + '</button></div>';
+
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" >' + ('<button style="margin:3px;' + (ctrl.hideAddButton ? 'display:none;' : '')+'" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">' + (ctrl.addTitle ? ctrl.addTitle : 'افزودن') + '</button>') +'<button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">' + (ctrl.deleteTitle ? ctrl.deleteTitle : 'حذف اخرین سطر') + '</button></div>';
         result += '</div>';
         result += '</div>';
 

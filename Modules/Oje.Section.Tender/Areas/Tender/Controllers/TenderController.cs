@@ -119,11 +119,24 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
             if (foundPPF == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            ViewBag.RulesFile = foundPPF.generallow_address;
+            
             ViewBag.HtmlTemplate = foundPPF.desctpion;
             ViewBag.companyTitle = SiteSettingService.GetSiteSetting()?.Title;
 
             return View();
+        }
+
+        [HttpPost]
+        [AreaConfig(Title = "مشاهده لینک مدارک", Icon = "fa-eye")]
+        public IActionResult GetPPFCondationFile()
+        {
+            var foundPPF = TenderConfigService.GetBy(SiteSettingService.GetSiteSetting()?.Id);
+            if (foundPPF == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            var ss = SiteSettingService.GetSiteSetting();
+
+            return Content("http" + (ss.IsHttps ? "s" : "") + "://" + ss?.WebsiteUrl + foundPPF.generallow_address);
         }
 
         [AreaConfig(Title = "لیست گروه بندی بیمه", Icon = "fa-list-alt")]

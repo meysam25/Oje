@@ -17,7 +17,6 @@
         direction: rtl;
         padding: 10px;
         text-align: right;
-        background-color:white;
     }
      .fontSize {
         font-size:0.99em;
@@ -53,33 +52,37 @@
             ViewContext.Writer.Write("  section{box-shadow:none!important;}" + Environment.NewLine);
         }
     }
-   .pdfHeader{
-       display:flex;
-       align-items: stretch;
-   }
-   .headerItem{
-       padding:10px;
-       flex-grow:1
-   }
-   .headerItem:last-child{
-       text-align:left;
-   }
-   .ppfTitle{
-       text-align:center;
-       font-weight:bold;
-       flex-grow:5;
-   }
-   .pdfFooterSection{
-       padding:15px;
-   }
+    .pdfHeader{
+    display:flex;
+    align-items: stretch;
+    }
+    .headerItem{
+    padding:10px;
+    flex-grow:1
+    }
+    .headerItem:last-child{
+    text-align:left;
+    }
+    .ppfTitle{
+    text-align:center;
+    font-weight:bold;
+    flex-grow:5;
+    }
+    .pdfFooterSection{
+    padding:15px;
+    }
 </style>
 <script>
     if(window["$"]) {
-        $('.mainLoaderForAdminArea').css('display', 'none');
+    $('.mainLoaderForAdminArea').css('display', 'none');
     }
 </script>
 
 @{
+    bool isMobile = Context.Request.IsMobile();
+    if (isMobile) {
+        Layout = null;
+    }
     if(Layout == "_WebLayout")
     {
         ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
@@ -90,7 +93,7 @@
         if(!string.IsNullOrEmpty(Model.companyTitle))
         {
                  <div style="text-align:center;">
-                    <img src="@Model.companyImage" style="width:70px;" />
+                    <img src="@("http" + (Context.Request.IsHttps ? "s" : "") + "://" + Context.Request.Host)@Model.companyImage" style="width:70px;" />
                 </div>
         }
     }
@@ -150,8 +153,9 @@
 
         bool isNeedSpecialistStep = false;
 
-        if((ViewBag.isPrint == null || ViewBag.isPrint == false) && ViewBag.cName != null)
-        {
+        if (!isMobile) {
+            if((ViewBag.isPrint == null || ViewBag.isPrint == false) && ViewBag.cName != null)
+            {
             if((ViewBag.cName + "").StartsWith("ProposalFilledFormConfirm"))
             {
                 canSeeW8ForConfirm = false;
@@ -404,40 +408,46 @@
                         });
                     </script>
                 </div>
+            }
         }
     }
     
-    <div style="justify-content:center;" class="row">
-        @{
-            if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode) && Model.price == -56123512)
-            {
-                    <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                        <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>
-                    </div>
-                     <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                        <a style="border-color:silver;background-color:silver;cursor:default;" class="btn btn-primary btn-success btn-block" >پرداخت مستقیم به حساب شرکت @(Model.companyTitle) </a>
-                    </div>
-                if(Model.loginUserWalletBalance >= Model.price.ToLongReturnZiro())
-                {
-                        <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
-                            <a id="walletPaymentButton" style="color:white;cursor:pointer;" class="btn btn-primary btn-success btn-block" >پرداخت از کیف پول (موجودی : @Model.loginUserWalletBalance.ToString("###,###") ریال )</a>
-                        </div>
-                        <script>
-                        $('#walletPaymentButton').click(function() {
-                            var curButtonHolder = $(this).closest('div');
-                            confirmDialog('پرداخت از کیف پول', 'آیا اطمینان دارید ؟', function () {
-                                var postData = new FormData();
-                                postData.append('id', @(Model.proposalFilledFormId));
-                                postData.append('type', 1);
-                                showLoader(curButtonHolder)
-                                postForm('/Payment/WalletTransaction/Pay', postData, function (res) { if(res && res.isSuccess ) location.reload();  }, null, function () { hideLoader(curButtonHolder) });
-                            });
-                        });
-                    </script>
+    @{
+        if (!isMobile) {
+            <div style="justify-content:center;" class="row">
+                @{
+                    if(Model.price.ToLongReturnZiro() > 0 && ViewBag.isPrint == false && string.IsNullOrEmpty(Model.traceCode) && Model.price == -56123512)
+                    {
+                            <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                                <a href="/Payment/Payment/GetWayList?status=@(System.Net.WebUtility.UrlEncode(("1,"+ Model.proposalFilledFormId +","+ Model.price.Value +"," + Context.Request.Path + Context.Request.QueryString + "," + Model.agentUserId).Encrypt2()))" class="btn btn-primary btn-success btn-block" >پرداخت به حساب نماینده واحد صدور بیمه نامه</a>
+                            </div>
+                             <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                                <a style="border-color:silver;background-color:silver;cursor:default;" class="btn btn-primary btn-success btn-block" >پرداخت مستقیم به حساب شرکت @(Model.companyTitle) </a>
+                            </div>
+                        if(Model.loginUserWalletBalance >= Model.price.ToLongReturnZiro())
+                        {
+                                <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="text-align:center;padding-top:10px;">
+                                    <a id="walletPaymentButton" style="color:white;cursor:pointer;" class="btn btn-primary btn-success btn-block" >پرداخت از کیف پول (موجودی : @Model.loginUserWalletBalance.ToString("###,###") ریال )</a>
+                                </div>
+                                <script>
+                                $('#walletPaymentButton').click(function() {
+                                    var curButtonHolder = $(this).closest('div');
+                                    confirmDialog('پرداخت از کیف پول', 'آیا اطمینان دارید ؟', function () {
+                                        var postData = new FormData();
+                                        postData.append('id', @(Model.proposalFilledFormId));
+                                        postData.append('type', 1);
+                                        showLoader(curButtonHolder)
+                                        postForm('/Payment/WalletTransaction/Pay', postData, function (res) { if(res && res.isSuccess ) location.reload();  }, null, function () { hideLoader(curButtonHolder) });
+                                    });
+                                });
+                            </script>
+                        }
+                    }
                 }
-            }
+            </div>
         }
-    </div>
+    }
+    
 </div>
 
 @{

@@ -70,7 +70,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         {
             ViewBag.isPrint = isPrint;
             //Request.IsMobile();
-            return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, true, new List<InsuranceContractProposalFilledFormType>() { status }));
+            return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser(isPrint)?.UserId, SiteSettingService.GetSiteSetting()?.Id, true, new List<InsuranceContractProposalFilledFormType>() { status }));
         }
 
         [AreaConfig(Title = "مشاهده وضعیت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
