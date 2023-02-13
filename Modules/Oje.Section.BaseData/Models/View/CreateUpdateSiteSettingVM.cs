@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Oje.Infrastructure.Enums;
 
 namespace Oje.Section.BaseData.Models.View
 {
@@ -12,8 +13,10 @@ namespace Oje.Section.BaseData.Models.View
         public bool? isHttps { get; set; }
         public bool? isActive { get; set; }
         public IFormFile minPic { get; set; }
+        public IFormFile minPicInvert { get; set; }
         public IFormFile textPic { get; set; }
         public string seo { get; set; }
+        public WebsiteType? websiteType { get; set; }
         public int? pKey { get; set; }
     }
 }

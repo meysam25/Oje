@@ -5,6 +5,8 @@ using Oje.Infrastructure;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Services.EContext;
 using Oje.FileService;
+using Microsoft.AspNetCore.Routing;
+using Oje.AccountService.Filters;
 
 namespace Oje.AccountService
 {
@@ -49,6 +51,8 @@ namespace Oje.AccountService
             services.AddScoped<IHolydayService, HolydayService>();
             services.AddScoped<IBlogService, BlogService>();
             services.AddScoped<IOurObjectService, OurObjectService>();
+
+            services.AddScoped<WebsiteTypeTransformer>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)

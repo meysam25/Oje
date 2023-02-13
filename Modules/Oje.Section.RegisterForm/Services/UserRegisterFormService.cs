@@ -48,7 +48,8 @@ namespace Oje.Section.RegisterForm.Services
                 SeoDescription = input.description,
                 SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
-                TermDescription = input.termT
+                TermDescription = input.termT,
+                Icon = input.icon
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -143,7 +144,8 @@ namespace Oje.Section.RegisterForm.Services
                     termT = t.TermDescription,
                     roleIds = t.UserRegisterFormRoles.Select(tt => tt.RoleId).ToList(),
                     cSOWSiteSettingId = t.SiteSettingId,
-                    cSOWSiteSettingId_Title = t.SiteSetting.Title
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title,
+                    icon = t.Icon
                 }).FirstOrDefault();
         }
 
@@ -219,6 +221,7 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.Title = input.title;
             foundItem.TermDescription = input.termT;
             foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
+            foundItem.Icon = input.icon;
 
             if (foundItem.UserRegisterFormRoles != null)
                 foreach (var role in foundItem.UserRegisterFormRoles)
@@ -322,6 +325,18 @@ namespace Oje.Section.RegisterForm.Services
             if (!string.IsNullOrEmpty(tempStrResult))
                 tempStrResult = GlobalConfig.FileAccessHandlerUrl + tempStrResult;
             return tempStrResult;
+        }
+
+        public List<KeyValue> GetAllConfig(int? siteSettingId)
+        {
+            return db.UserRegisterForms
+                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true)
+                .Select(t => new KeyValue
+                {
+                    key = t.Id + "",
+                    value = t.Title,
+                    extera = t.Icon
+                }).AsNoTracking().ToList();
         }
     }
 }

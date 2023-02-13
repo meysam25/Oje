@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -46,6 +47,9 @@ namespace Oje.AccountService.Models.DB
         public int? ParentId { get; set; }
         [ForeignKey("ParentId "), InverseProperty("Childs")]
         public SiteSetting Parent { get; set; }
+        public WebsiteType? WebsiteType { get; set; }
+        [MaxLength(200)]
+        public string Image512Invert { get; set; }
 
         [InverseProperty("Parent")]
         public List<SiteSetting> Childs { get; set; }

@@ -5,5 +5,6 @@ namespace Oje.Infrastructure.Models
     {
         public string key { get; set; }
         public string value { get; set; }
+        public string extera { get; set; }
     }
 }

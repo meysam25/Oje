@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.Formula.Functions;
 using Oje.AccountService.Interfaces;
 using Oje.AccountService.Models.View;
 using Oje.FileService.Interfaces;
@@ -71,7 +70,6 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.CarInquiry = CarInquiry;
         }
 
-        [Route("/")]
         [Route("[Controller]/[Action]")]
         [HttpGet]
         public IActionResult Index()

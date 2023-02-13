@@ -16,6 +16,7 @@ namespace Oje.Section.Tender.Services
     {
         readonly TenderDBContext db = null;
         readonly IUploadedFileService UploadedFileService = null;
+        static TenderConfigCreateUpdateVM TitleAndSubTitleCache = null;
         public TenderConfigService
             (
                 TenderDBContext db,
@@ -39,10 +40,17 @@ namespace Oje.Section.Tender.Services
 
             foundItem.GeneralRoles = input.desctpion;
             foundItem.PrivateDocumentUrl = " ";
-            db.SaveChanges();
-            foundItem.PrivateDocumentUrl = UploadedFileService.UploadNewFile(FileType.TenderGeneralLow, input.generallow, null, siteSettingId, foundItem.Id, ".jpg,.jpeg,.bmp,.pdf,.doc,.docx", false);
+            foundItem.Title = input.title;
+            foundItem.SubTitle = input.subTitle;
 
             db.SaveChanges();
+
+            if (input.generallow != null && input.generallow.Length > 0)
+                foundItem.PrivateDocumentUrl = UploadedFileService.UploadNewFile(FileType.TenderGeneralLow, input.generallow, null, siteSettingId, foundItem.Id, ".jpg,.jpeg,.bmp,.pdf,.doc,.docx", false);
+
+            db.SaveChanges();
+
+            TitleAndSubTitleCache = null;
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -55,11 +63,13 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (string.IsNullOrEmpty(input.desctpion))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Description);
+            if (string.IsNullOrEmpty(input.title))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Title);
             if (input.desctpion.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
-            if (input.generallow == null || input.generallow.Length == 0)
+            if (input.id.ToIntReturnZiro() <= 0 && (input.generallow == null || input.generallow.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_General_Low_File);
-            if (input.generallow.IsValidExtension(".jpg,.jpeg,.bmp,.pdf,.doc,.docx") == false)
+            if (input.generallow != null && input.generallow.Length > 0 && input.generallow.IsValidExtension(".jpg,.jpeg,.bmp,.pdf,.doc,.docx") == false)
                 throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
         }
 
@@ -71,16 +81,31 @@ namespace Oje.Section.Tender.Services
                 .Where(t => t.SiteSettingId == siteSettingId)
                 .Select(t => new
                 {
+                    t.Id,
                     t.GeneralRoles,
-                    t.PrivateDocumentUrl
+                    t.PrivateDocumentUrl,
+                    t.Title,
+                    t.SubTitle
                 })
                 .ToList()
                 .Select(t => new TenderConfigCreateUpdateVM
                 {
+                    id = t.Id,
                     desctpion = t.GeneralRoles,
                     generallow_address = !string.IsNullOrEmpty((t.PrivateDocumentUrl + "").Trim()) ? GlobalConfig.FileAccessHandlerUrl + t.PrivateDocumentUrl : "",
+                    title = t.Title,
+                    subTitle = t.SubTitle
                 })
                 .FirstOrDefault();
+        }
+
+        public TenderConfigCreateUpdateVM GetTitleAndSubTitleCache(int siteSettingId)
+        {
+            if (TitleAndSubTitleCache == null)
+                TitleAndSubTitleCache = db.TenderConfigs.Where(t => t.SiteSettingId == siteSettingId).Select(t => new TenderConfigCreateUpdateVM { title = t.Title, subTitle = t.SubTitle }).FirstOrDefault();
+
+
+            return TitleAndSubTitleCache;
         }
     }
 }

@@ -5,6 +5,24 @@
       "title": "تنظیمات مناقصه",
       "ctrls": [
         {
+          "name": "id",
+          "type": "hidden"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "title",
+          "type": "text",
+          "label": "عنوان",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "subTitle",
+          "type": "text",
+          "label": "زیر عنوان",
+          "isRequired": true
+        },
+        {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
           "name": "generallow",
           "type": "file",

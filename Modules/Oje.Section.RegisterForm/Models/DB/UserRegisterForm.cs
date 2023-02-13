@@ -43,6 +43,8 @@ namespace Oje.Section.RegisterForm.Models.DB
         public string AnotherFile { get; set; }
         [MaxLength(200)]
         public string AnotherFile2 { get; set; }
+        [MaxLength(50)]
+        public string Icon { get; set; }
         public int SiteSettingId { get; set; }
         [ForeignKey("SiteSettingId"), InverseProperty("UserRegisterForms")]
         public SiteSetting SiteSetting { get; set; }

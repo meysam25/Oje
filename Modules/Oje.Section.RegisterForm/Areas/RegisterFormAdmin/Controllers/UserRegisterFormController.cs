@@ -42,6 +42,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         {
             ViewBag.Title = "فرم ثبت نام کاربر";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserRegisterForm", new { area = "RegisterFormAdmin" });
+
             return View();
         }
 

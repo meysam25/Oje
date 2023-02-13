@@ -32,9 +32,10 @@ namespace Oje.AccountService.Filters
             var curIp = context.HttpContext.GetIpAddress();
             if (curIp != null)
             {
-                IUserAdminLogService UserAdminLogService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogService)) as IUserAdminLogService;
-                IUserAdminLogConfigService UserAdminLogConfigService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogConfigService)) as IUserAdminLogConfigService;
-                IUserService UserService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
+                var svc = context.HttpContext.RequestServices;
+                IUserAdminLogService UserAdminLogService = svc.GetService(typeof(IUserAdminLogService)) as IUserAdminLogService;
+                IUserAdminLogConfigService UserAdminLogConfigService = svc.GetService(typeof(IUserAdminLogConfigService)) as IUserAdminLogConfigService;
+                IUserService UserService = svc.GetService(typeof(IUserService)) as IUserService;
                 LoginUserVM loginUser = context.HttpContext.GetLoginUser();
                 string requestPath = getCurrPath(context.HttpContext);
                 if (loginUser != null)
@@ -63,9 +64,10 @@ namespace Oje.AccountService.Filters
             var curIp = context.HttpContext.GetIpAddress();
             if (curIp != null)
             {
-                IUserAdminLogService UserAdminLogService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogService)) as IUserAdminLogService;
-                IUserAdminLogConfigService UserAdminLogConfigService = context.HttpContext.RequestServices.GetService(typeof(IUserAdminLogConfigService)) as IUserAdminLogConfigService;
-                IUserService UserService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
+                var svc = context.HttpContext.RequestServices;
+                IUserAdminLogService UserAdminLogService = svc.GetService(typeof(IUserAdminLogService)) as IUserAdminLogService;
+                IUserAdminLogConfigService UserAdminLogConfigService = svc.GetService(typeof(IUserAdminLogConfigService)) as IUserAdminLogConfigService;
+                IUserService UserService = svc.GetService(typeof(IUserService)) as IUserService;
                 LoginUserVM loginUser = context.HttpContext.GetLoginUser();
                 string requestPath = getCurrPath(context.HttpContext);
                 if (loginUser != null)
@@ -91,9 +93,10 @@ namespace Oje.AccountService.Filters
             LoginUserVM loginUser = null;
             string requestPath = getCurrPath(context.HttpContext);
 
-            IUserService UserService = context.HttpContext.RequestServices.GetService(typeof(IUserService)) as IUserService;
-            ISiteSettingService SiteSettingService = context.HttpContext.RequestServices.GetService(typeof(ISiteSettingService)) as ISiteSettingService;
-            IUserLoginConfigService UserLoginConfigService = context.HttpContext.RequestServices.GetService(typeof(IUserLoginConfigService)) as IUserLoginConfigService;
+            var svc = context.HttpContext.RequestServices;
+            IUserService UserService = svc.GetService(typeof(IUserService)) as IUserService;
+            ISiteSettingService SiteSettingService = svc.GetService(typeof(ISiteSettingService)) as ISiteSettingService;
+            IUserLoginConfigService UserLoginConfigService = svc.GetService(typeof(IUserLoginConfigService)) as IUserLoginConfigService;
             var foundSetting = SiteSettingService.GetSiteSetting();
             if (foundSetting != null && context.HttpContext.Request.Cookies.ContainsKey("login"))
             {

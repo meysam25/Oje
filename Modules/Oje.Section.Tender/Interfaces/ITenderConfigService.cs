@@ -7,5 +7,6 @@ namespace Oje.Section.Tender.Interfaces
     {
         ApiResult CreateUpdate(TenderConfigCreateUpdateVM input, int? siteSettingId);
         TenderConfigCreateUpdateVM GetBy(int? siteSettingId);
+        TenderConfigCreateUpdateVM GetTitleAndSubTitleCache(int siteSettingId);
     }
 }

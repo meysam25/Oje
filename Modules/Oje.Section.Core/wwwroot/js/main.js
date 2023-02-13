@@ -621,7 +621,7 @@ function postForm(url, postData, success, error, completeEvent, ignoreAutoToast,
                 if (success) {
                     success(res);
                     if (res) {
-                        if (res.isSuccess == true || res.isSuccess == false) {
+                        if ((res.isSuccess == true || res.isSuccess == false) && res.message) {
                             if (!ignoreAutoToast)
                                 $.toast({
                                     heading: res.isSuccess == false ? 'خطا' : 'موفقیت',

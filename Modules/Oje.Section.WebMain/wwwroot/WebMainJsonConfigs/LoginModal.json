@@ -132,14 +132,14 @@
                               "isRequired": true
                             },
                             {
-                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
                               "type": "button",
                               "onClick": "moveToStepById('stepContent_rigLogStep', 'username', 'username', this)",
                               "title": "ورود با رمز یک بار مصرف",
                               "class": "btn-primary-label btn-sm"
                             },
                             {
-                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
                               "type": "button",
                               "onClick": "moveToStepById('stepContent_recoveryPassword', 'username', 'username', this)",
                               "title": "بازیابی کلمه عبور",

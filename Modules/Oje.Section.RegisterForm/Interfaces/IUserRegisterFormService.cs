@@ -1,6 +1,7 @@
 ﻿using Oje.Infrastructure.Models;
 using Oje.Section.RegisterForm.Models.DB;
 using Oje.Section.RegisterForm.Models.View;
+using System.Collections.Generic;
 
 namespace Oje.Section.RegisterForm.Interfaces
 {
@@ -20,5 +21,6 @@ namespace Oje.Section.RegisterForm.Interfaces
         string GetAnotherFileUrl(int? id, int? siteSettingId);
         object GetLightList2(int? siteSettingId);
         string GetAnotherFile2Url(int? id, int? siteSettingId);
+        List<KeyValue> GetAllConfig(int? siteSettingId);
     }
 }

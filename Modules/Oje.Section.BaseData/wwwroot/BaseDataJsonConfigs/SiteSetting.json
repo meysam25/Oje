@@ -135,7 +135,6 @@
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
             },
-
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12",
               "name": "isHttps",
@@ -145,7 +144,15 @@
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "امن"
             },
-
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12",
+              "name": "websiteType",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/WebsiteType",
+              "label": "نوع وبسایت"
+            },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "seo",
@@ -153,18 +160,25 @@
               "label": "توضیحات سه او صفحه اصلی"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12",
               "name": "minPic",
               "type": "file",
               "label": "تصویر اصلی (512 * 512)",
-              "acceptEx": ".jpg,.png,.jpeg"
+              "acceptEx": ".jpg,.png,.jpeg,.png"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12",
+              "name": "minPicInvert",
+              "type": "file",
+              "label": "تصویر اصلی سفید (512 * 512)",
+              "acceptEx": ".jpg,.png,.jpeg,.png"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12",
               "name": "textPic",
               "type": "file",
               "label": "لوگوی متنی(300 * 113)",
-              "acceptEx": ".jpg,.png,.jpeg"
+              "acceptEx": ".jpg,.png,.jpeg,.png"
             }
           ],
           "actions": [
@@ -238,7 +252,15 @@
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "امن"
             },
-
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12",
+              "name": "websiteType",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/WebsiteType",
+              "label": "نوع وبسایت"
+            },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "seo",
@@ -246,18 +268,25 @@
               "label": "توضیحات سه او صفحه اصلی"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12",
               "name": "minPic",
               "type": "file",
               "label": "تصویر اصلی (512 * 512)",
-              "acceptEx": ".jpg,.png,.jpeg"
+              "acceptEx": ".jpg,.png,.jpeg,.png"
             },
             {
-              "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12",
+              "name": "minPicInvert",
+              "type": "file",
+              "label": "تصویر اصلی سفید (512 * 512)",
+              "acceptEx": ".jpg,.png,.jpeg,.png"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-12",
               "name": "textPic",
               "type": "file",
               "label": "لوگوی متنی(300 * 113)",
-              "acceptEx": ".jpg,.png,.jpeg"
+              "acceptEx": ".jpg,.png,.jpeg,.png"
             }
           ],
           "actions": [

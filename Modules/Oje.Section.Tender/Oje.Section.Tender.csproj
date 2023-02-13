@@ -4,4 +4,5 @@
     <ProjectReference Include="..\..\Services\Oje.JoinServices\Oje.JoinServices.csproj" />
     <ProjectReference Include="..\..\Services\Oje.Security\Oje.Security.csproj" />
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4tenderjsonconfigs_4loginpanel_1json__JsonSchema="https://datahubproject.io/schemas/datahub_ingestion_schema.json" /></VisualStudio></ProjectExtensions>
 </Project>

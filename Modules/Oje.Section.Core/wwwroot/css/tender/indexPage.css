@@ -1,27 +1,364 @@
+@font-face {
+    font-family: Vazir;
+    src: url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.eot');
+    src: url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.eot?#iefix') format('embedded-opentype'), url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2') format('woff2'), url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff') format('woff'), url('/Modules/Webfonts/Vazir/Vazir-Regular-FD.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    font-family: 'Vazir';
+    text-align: right;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
 html {
+    direction: rtl;
     height: 100%;
-    padding:0
 }
+
 body {
-    height: 100%;
-    margin:0;
-}
-.wrapper {
+    margin: 0;
+    display: flex;
+    background-color: #f5f7fa;
     min-height: 100%;
-    background: url('/Modules/Images/bg-intro.jpg');
-    background-size: 100% auto;
-    display:flex;
 }
-.container {
-    margin-left: 20%;
-    margin-right: 20%;
-    display:flex;
+
+.wrapper {
+    -ms-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    display: flex;
 }
-.rightColumn {
-    width: 274px;
-    background-color: #0d2241;
-    -webkit-justify-content: space-evenly;
-    justify-content: space-evenly;
+
+.mainBox {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    padding: 3%;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+
+.mainBoxBody {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 0px 0px 19px 4px rgba(0,0,0,0.13);
+    -webkit-box-shadow: 0px 0px 19px 4px rgba(0,0,0,0.13);
+    -moz-box-shadow: 0px 0px 19px 4px rgba(0,0,0,0.13);
+    display: flex;
+}
+
+    .mainBoxBody .leftSection {
+        margin-left: 50px;
+        width: 21%;
+        background-color: #0d296e;
+        height: 100%;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .mainBoxBody .rightSection {
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        display: flex;
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .mainBoxBody .leftSection .leftSectionTop {
+        background-color: #0d296e;
+        position: absolute;
+        top: -18px;
+        left: 0px;
+        height: 18px;
+        width: 100%;
+    }
+
+    .mainBoxBody .leftSection .leftSectionBottom {
+        background-color: #0d296e;
+        position: absolute;
+        bottom: -18px;
+        left: 0px;
+        height: 18px;
+        width: 100%;
+    }
+
+.leftSectionTop .leftSectionTopRightArrow {
+    position: absolute;
+    right: -10px;
+    top: 0px;
+    border: 0px solid transparent;
+    border-bottom-color: #081942;
+    border-width: 0px 10px 18px 0px;
+}
+
+.leftSectionBottom .leftSectionBottomRightArrow {
+    position: absolute;
+    right: -10px;
+    bottom: 0px;
+    border: 0px solid transparent;
+    border-top-color: #081942;
+    border-width: 18px 10px 0px 0px;
+}
+
+.mainBoxBody .leftSection .leftSectionBottom {
+}
+
+.leftSectionLogo {
+    width: 35%;
+}
+
+.holderLogoLeft {
+    text-align: center;
+}
+
+    .holderLogoLeft .title {
+        color: #fff;
+        border-bottom: 3px solid #fff;
+        padding-bottom: 15px;
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1.8em;
+        text-align: center;
+    }
+
+.copyRight {
+    text-align: center;
+    font-size: 10pt;
+    margin-top: 20px;
+}
+
+.rightSectionTitleHodler .title {
+    text-align: center;
+    margin: 0px;
+    margin-top: 10px;
+    color: #0d296e;
+    padding: 5px;
+}
+
+.rightSectionTitleHodler .subTitle {
+    text-align: center;
+    margin: 0px;
+    padding: 5px;
+    margin-top: 10px;
+    color: #0d296e;
+    font-size:1.3em;
+}
+
+.holderDocumentLinks {
+    padding: 15px;
+}
+
+.documentLink {
+    padding: 15px 10px 15px 10px;
+    background-color: #3d548b;
+    color: #fff;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    display: block;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 5px 0px rgba(9,28,76,0.75);
+    -webkit-box-shadow: 0px 4px 5px 0px rgba(9,28,76,0.75);
+    -moz-box-shadow: 0px 4px 5px 0px rgba(9,28,76,0.75);
+    text-align: right;
+}
+    .documentLink:hover {
+        color: #fff;
+        -webkit-text-decoration: none;
+        text-decoration: none;
+    }
+
+    .mainContent {
+        display: flex;
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        padding-bottom: 20px;
+    }
+
+.rightNavigation {
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 175px;
+    position: relative;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+    .rightNavigationMakeSmall {
+        width: 105px;
+    }
+
+    .mainContentBody {
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        -webkit-align-items: center;
+        align-items: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        display: flex;
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+    }
+
+.currentSection {
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+}
+
+.currentSectionShape {
+    width: 36px;
+    height: 64px;
+    position: absolute;
+    right: -5px;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.currentSectionShapeArrowLeft {
+    width: 46px;
+    height: 46px;
+    transform: rotate(225deg);
+    border-top-right-radius: 30%;
+    background-color: #0d296e;
+    margin-right: -23px;
+    margin-top: 9px;
+}
+
+.currentSectionTitle {
+    font-size: 15pt;
+    font-weight: bold;
+    padding-right: 30px;
+    padding-top: 21px;
+    text-align: right;
+}
+
+.currentSectionShapeShadow {
+    width: 5px;
+    height: 64px;
+    background-color: #091a43;
+    position: absolute;
+    right: -5px;
+    z-index: 1;
+}
+
+.currentSectionShapeTop {
+    top: 3px;
+}
+
+.iconButtonNew {
+    display: flex;
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    margin: 10px;
+}
+
+.iconButtonNewBody {
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.48);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.48);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.48);
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid silver;
+    display: flex;
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.buttonArrow {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    margin: 7px;
+    background-color: #1b3f99;
+    width: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid silver;
+}
+
+.iconButtonNewBodyIconSection {
+    width: 60px;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+    .iconButtonNewBodyIconSection:before {
+        content: ' ';
+        position: absolute;
+        left: -20px;
+        top: -1px;
+        width: 51px;
+        height: 104%;
+        background-color: #1b3f99;
+        z-index: 1;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+    }
+
+    .iconButtonNewBodyIconSection:after {
+        content: ' ';
+        position: absolute;
+        left: -10px;
+        top: -1px;
+        width: 50px;
+        height: 105%;
+        background-color: #fff;
+        z-index: 1;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+    }
+
+.iconButtonNewBodyTitleSection {
+    background-color: #0d296e;
+    color: #fff;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    padding: 15px;
+    padding-right: 25px;
+}
+
+.newButtonIcon {
+    font-size: 20px;
+    position: relative;
+    z-index: 2;
+    margin-top: -1px;
+}
+
+.navigationButtonHolder {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    -webkit-justify-content: center;
+    justify-content: center;
     display: flex;
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
@@ -29,23 +366,86 @@ body {
     -webkit-align-items: center;
     align-items: center;
 }
-.rightColumnItem {
 
+.navigationButtonRoute {
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    display: flex;
 }
-.logo1 img {
-    width: 100px;
-    height: 100px;
-}
-.logo2 img {
-    
-}
-.bottomSection{
 
+.navigationButton {
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 15px 20px;
+    background-color: #eef0ff;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: -50px;
 }
-.content {
-    -webkit-flex-grow: 1;
-    flex-grow: 1;
-}
-.footer {
 
+    .navigationButton > div {
+        white-space: nowrap;
+        color: #1b3f99;
+        font-size:0.8em;
+    }
+
+.navigationButtonActive {
+    background-color: #1b3f99;
+}
+
+    .navigationButtonActive > div {
+        color: #fff;
+    }
+
+.backButtonToMainPage {
+    margin-top: 10px;
+    cursor: pointer;
+    margin-bottom: 50px;
+}
+
+.customePanel {
+    width: 400px;
+}
+.makeSmallerFont {
+    font-size: 0.8em;
+}
+.mainRegisterButton {
+    color: #0d296e;
+    margin-right: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.customePPFPanel {
+    padding-left: 15px;
+    min-height: 100%;
+}
+
+@media (max-width: 1200px) {
+    .mainBoxBody .leftSection {
+        width: 26%;
+        margin-left: 30px;
+    }
+}
+
+@media (max-width: 990px) {
+    .mainBoxBody .leftSection {
+        display: none;
+    }
+}
+@media (max-width: 650px) {
+    .rightNavigation {
+        display: none;
+    }
+    .customePPFPanel {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+    .customePanel {
+        width: auto;
+    }
 }

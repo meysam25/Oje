@@ -11,9 +11,10 @@
 .panelSWizardHolderHeader {
     overflow: hidden;
     height:35px;
+    display:flex;
 }
 .panelSWizardHolderHeaderItem {
-    display:inline-block;
+    display: inline-block;
     text-align: center;
     opacity: 0;
     width: 0px;
@@ -21,17 +22,22 @@
     -o-transition: 0.4s;
     -webkit-transition: 0.4s;
     transition: 0.4s;
-    white-space:nowrap;
-    font-weight:bold;
-    position:relative;
-    overflow:hidden;
-    vertical-align:top;
-    
+    white-space: nowrap;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    vertical-align: top;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 .panelSWizardHolderHeaderItemActive {
     opacity: 1;
-    width: calc(100% - 25px);
-    padding-right:20px;
+    /*width: calc(100% - 25px);*/
+    padding-right: 25px;
+    padding-left: 25px;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
 }
 .panelSWizardHolderContent{
     position:relative;
@@ -88,4 +94,7 @@
 .panelSWizardHolderContentHolderStepButton .buttonConfirm i {
     margin-right: 5px;
     vertical-align: -2px;
+}
+.panelSWizardHolderHeader > .panelSWizardHolderHeaderItem:first-child {
+    padding-right: 10px;
 }

@@ -16,6 +16,7 @@ namespace Oje.Section.RegisterForm.Models.View
         public MyHtmlString termT { get; set; }
         public long? userId { get; set; }
         public string userId_Title { get; set; }
+        public string icon { get; set; }
         public string description { get; set; }
         public IFormFile rules { get; set; }
         public IFormFile secoundFile { get; set; }

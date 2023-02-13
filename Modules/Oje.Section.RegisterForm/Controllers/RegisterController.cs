@@ -245,5 +245,12 @@ namespace Oje.Section.RegisterForm.Controllers
         {
             return Json(BankService.GetLightList());
         }
+
+        [HttpPost]
+        [Route("[Controller]/[Action]")]
+        public ActionResult GetAllConfig()
+        {
+            return Json(UserRegisterFormService.GetAllConfig(SiteSettingService.GetSiteSetting()?.Id));
+        }
     }
 }

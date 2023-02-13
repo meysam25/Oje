@@ -32,6 +32,7 @@ namespace Oje.Section.Tender
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ITenderFilledFormPriceService, TenderFilledFormPriceService>();
             services.AddScoped<ITenderFilledFormIssueService, TenderFilledFormIssueService>();
+            services.AddScoped<ITenderFileService, TenderFileService>();
             
         }
     }

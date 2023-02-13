@@ -344,7 +344,8 @@ function getPanelTemplate(panel, isInsideModal) {
 
         if (panel.autoScrollToHtml)
             functionsList.push(function () {
-                $('html').animate({ scrollTop: $(this.targetElement).offset().top }, 1000);
+                if ($(this.targetElement) && $(this.targetElement).length > 0)
+                    $('html').animate({ scrollTop: $(this.targetElement).offset().top }, 1000);
             }.bind({ targetElement: panel.autoScrollToHtml }));
     }
     return result;

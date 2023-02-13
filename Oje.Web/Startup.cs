@@ -19,6 +19,7 @@ using Oje.Section.Core.Services;
 using Oje.Security.Filters;
 using Microsoft.AspNetCore.Http.Features;
 using Oje.Security.Middlewares;
+using Oje.AccountService.Filters;
 
 namespace Oje.Web
 {
@@ -101,9 +102,10 @@ namespace Oje.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDynamicControllerRoute<WebsiteTypeTransformer>(pattern: "/");
             });
             var moduleInitializers = app.ApplicationServices.GetServices<IModInisializer>();
             foreach (var moduleInitializer in moduleInitializers)

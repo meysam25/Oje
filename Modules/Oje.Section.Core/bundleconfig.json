@@ -31,7 +31,22 @@
   {
     "outputFileName": "wwwroot/Core/js/tender.min.js",
     "inputFiles": [
+      "wwwroot/js/NewPersianDatePicker/prism.min.js",
+      "wwwroot/js/NewPersianDatePicker/persianDatepicker.min.js",
+      "wwwroot/js/myGrid.js",
+      "wwwroot/js/expandablePanel.js",
+      "wwwroot/js/multiSelectLine.js",
+      "wwwroot/js/jquery.toast.js",
+      "wwwroot/js/select2.min.js",
+      "wwwroot/js/seperatorPlugin.js",
+      "wwwroot/js/main.js",
+      "wwwroot/js/validation.js",
+      "wwwroot/js/dropdown.js",
+      "wwwroot/js/countDown.js",
+      "wwwroot/js/formGenerator.js",
+      "wwwroot/js/jquery.maskedinput.min.js",
       "wwwroot/js/tender/indexPage.js"
+
     ],
     "minify": {
       "enabled": true,
@@ -332,6 +347,22 @@
   {
     "outputFileName": "wwwroot/Core/css/tender.min.css",
     "inputFiles": [
+      "wwwroot/css/bootstrap.min.css",
+      "wwwroot/css/font-light.css",
+      "wwwroot/css/font.min.css",
+      "wwwroot/css/jquery.toast.css",
+      "wwwroot/css/select2.min.css",
+      "wwwroot/css/myGrid.css",
+      "wwwroot/css/myGridRes.css",
+      "wwwroot/css/multiSelectLine.css",
+      "wwwroot/css/expandablePanel.css",
+      "wwwroot/css/main.css",
+      "wwwroot/css/makeRTL.css",
+      "wwwroot/css/NewPersianDatePicker/prism.css",
+      "wwwroot/css/NewPersianDatePicker/persianDatepicker-default.css",
+      "wwwroot/css/stepWizard.css",
+      "wwwroot/css/validation.css",
+      "wwwroot/css/dropdown.css",
       "wwwroot/css/tender/indexPage.css"
 
     ],

@@ -134,6 +134,12 @@
               "exteraParameterIds": [ "cSOWSiteSettingIdAdd" ]
             },
             {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "icon",
+              "type": "text",
+              "label": "ایکن"
+            },
+            {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
               "name": "rules",
               "type": "file",
@@ -262,6 +268,12 @@
               "label": "کاربر",
               "exteraParameterIds": [ "cSOWSiteSettingIdEdit" ],
               "ignoreChangeOnBinding": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "icon",
+              "type": "text",
+              "label": "ایکن"
             },
             {
               "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",

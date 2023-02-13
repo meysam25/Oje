@@ -1,5 +1,16 @@
-﻿@{
+﻿@model Oje.Section.RegisterForm.Models.View.userFilledRegisterFormDetailesVM
+@using Oje.Infrastructure.Services
+@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
+@{
     Layout = "_WebLayout";
+    var curSetting = SiteSettingService.GetSiteSetting();
+    if (curSetting == null)
+    {
+        throw new Exception("Not Found");
+    }
+    if (curSetting.WebsiteType == Oje.Infrastructure.Enums.WebsiteType.Tender) {
+        Layout = "_TenderLayout";
+    }
     ViewBag.Title = Model.ppfTitle;
     if(ViewBag.targetLayout != null)
     {
@@ -11,8 +22,7 @@
         Layout = null;
     }
 }
-@model Oje.Section.RegisterForm.Models.View.userFilledRegisterFormDetailesVM
-@using Oje.Infrastructure.Services
+
 
 <style>
     .pdfBody {
@@ -112,24 +122,24 @@
         {
             foreach(var group in Model.groups)
             {
-                    <div class="printBox">
-                    <div class="boxTitle">@(group.title)</div>
-                    <div class="boxContent ">
-                        <div class="row">
-                            @{
-                                if(group.items != null && group.items.Count > 0)
+                <div class="printBox">
+                <div class="boxTitle">@(group.title)</div>
+                <div class="boxContent ">
+                    <div class="row">
+                        @{
+                            if(group.items != null && group.items.Count > 0)
+                            {
+                                foreach(var gorupItem in group.items )
                                 {
-                                    foreach(var gorupItem in group.items )
-                                    {
-                                                <div class="printItem @(gorupItem.cssClass)">
-                                                    <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
-                                                </div>
-                                    }
+                                    <div class="printItem @(gorupItem.cssClass)">
+                                        <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                    </div>
                                 }
-                                }
-                            </div>
+                            }
+                            }
                         </div>
                     </div>
+                </div>
             }
         }
     }
