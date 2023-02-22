@@ -1,6 +1,13 @@
 ﻿@using Oje.Infrastructure
+
 @{
+    string paddingExter = "";
     Layout = "_WebLayout";
+    if (ViewBag.layer != null)
+    {
+        Layout = ViewBag.layer;
+        paddingExter = "padding:10px;";
+    }
 }
 
 @section Styles {
@@ -10,10 +17,8 @@
 
 <div class="myContainer">
     <section class="globalSection">
-        <div id="ppfHolder">
-        </div>
+        <div style="@(paddingExter)"  id="ppfHolder"></div>
     </section>
-
 </div>
 <div id="yourQuestion" class="myContainer"></div>
 

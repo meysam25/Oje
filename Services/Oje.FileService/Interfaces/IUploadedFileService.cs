@@ -13,6 +13,7 @@ namespace Oje.FileService.Interfaces
         int GetCountBy(long objectId, FileType fileType, int? siteSettingId);
         object GetListBy(long objectId, FileType fileType, int skip, int take);
         object GetListBy(long objectId, FileType fileType, int skip, int take, int? siteSettingId);
+        List<string> GetFileUrlList(long objectId, FileType fileType, int skip, int take, int? siteSettingId);
         void Delete(long? uploadFileId, int? siteSettingId, long? objectId, FileType fileType);
         bool IsValidImageSize(IFormFile mainImage, bool isWidthCheck, decimal relatedRateStart, decimal relatedRateEnd);
         object Delete(long? id, int? siteSettingId);

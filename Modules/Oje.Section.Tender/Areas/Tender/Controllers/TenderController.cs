@@ -48,9 +48,14 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            var curSetting = SiteSettingService.GetSiteSetting();
             ViewBag.Title = "ثبت مناقصه";
-            ViewBag.layer = "_WebLayout";
+            if (curSetting?.WebsiteType == WebsiteType.Tender)
+                ViewBag.layer = "_TenderLayout";
+            else
+                ViewBag.layer = "_WebLayout";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Tender");
+
             return View();
         }
 
@@ -86,8 +91,9 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
         public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
-            ViewBag.newLayoutName = "_WebLayout";
-            return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            var curSetting = SiteSettingService.GetSiteSetting();
+            ViewBag.newLayoutName = curSetting?.WebsiteType == WebsiteType.Tender ? "_TenderLayout" : "_WebLayout";
+            return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, TenderSelectStatus.NewTenderUser));
         }
 
         [HttpGet]
@@ -119,11 +125,21 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
             if (foundPPF == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            
             ViewBag.HtmlTemplate = foundPPF.desctpion;
             ViewBag.companyTitle = SiteSettingService.GetSiteSetting()?.Title;
 
             return View();
+        }
+
+        [AreaConfig(Title = "متن تاییدیه", Icon = "fa-pen")]
+        [HttpPost]
+        public IActionResult GetConfirmTemplate()
+        {
+            var foundPPF = TenderConfigService.GetBy(SiteSettingService.GetSiteSetting()?.Id);
+            if (foundPPF == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            return Content(foundPPF.confirmDesc);
         }
 
         [HttpPost]

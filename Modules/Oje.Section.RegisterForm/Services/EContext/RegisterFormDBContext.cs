@@ -34,6 +34,7 @@ namespace Oje.Section.RegisterForm.Services.EContext
         public DbSet<UserRegisterFormCompany> UserRegisterFormCompanies { get; set; }
         public DbSet<UserRegisterFormPrintDescrption> UserRegisterFormPrintDescrptions { get; set; }
         public DbSet<UserRegisterFormRole> UserRegisterFormRoles { get; set; }
+        public DbSet<UserRegisterFormCategory> UserRegisterFormCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

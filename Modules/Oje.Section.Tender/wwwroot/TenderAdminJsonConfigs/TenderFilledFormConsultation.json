@@ -1,0 +1,182 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "notificationTriger": [ "UpdateTenderDates", "UpdateTenderAccess", "PublishTender", "TenderSelectPrice", "AddTenderPrice", "UpdateTenderPrice", "PublishTenderPrice", "DeleteTenderPrice", "IssueTender", "UpdateIssueTender" ],
+          "id": "TenderFilledFormConsultationGrid",
+          "exportToExcelUrl": "/TenderAdmin/TenderFilledFormConsultation/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-file-powerpoint",
+                "prop": "id",
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/TenderAdmin/TenderFilledFormConsultation/PdfDetailes?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "prop": "id",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/TenderAdmin/TenderFilledFormConsultation/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-archive",
+                "prop": "id",
+                "modalId": "TenderFilledFormConsultationDocumentsModal",
+                "template": "function bindRow (curRow) { return '<span title=\"دانلود مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'TenderFilledFormConsultationDocumentsModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-archive\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/TenderAdmin/TenderFilledFormConsultation/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+
+            {
+              "field": "userfullname",
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "insurances",
+              "caption": "بیمه",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "provinceTitle",
+              "caption": "استان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "cityTitle",
+              "caption": "شهر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "endDate",
+              "caption": "تاریخ اتمام",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "status",
+              "caption": "وضعیت"
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "TenderFilledFormConsultationDocumentsModal",
+          "title": "مدارک",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "TenderFilledFormConsultationDocumentsModalGrid",
+                  "showColumnConfigButton": true,
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-file-powerpoint",
+                        "prop": "id",
+                        "template": "function bindRow (curRow) { return '<a title=\"دانلود مدرک\" href=\"/TenderAdmin/TenderFilledFormConsultation/DownloadDocument?cId='+ curRow.cId +'&id='+ curRow.fid +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-download\" ></i></a>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-pen",
+                        "prop": "id",
+                        "modalId": "TenderFilledFormConsultationCompletePPFModal",
+                        "template": "function bindRow (curRow) { return '<span title=\"تکمیل اطلاعات\" onclick=\"loadJsonConfig(\\'/TenderAdmin/TenderFilledFormConsultation/GetPPFJsonConfig?id='+ curRow.id +'\\', \\'TenderFilledFormConsultationCompletePPFModalPpfHolder\\', function() { showEditModal(\\''+ curRow.id +'\\', \\'/TenderAdmin/TenderFilledFormConsultation/GetConsultValues\\', \\'TenderFilledFormConsultationCompletePPFModal\\' , this); })\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                      },
+                      {
+                        "type": "edit",
+                        "icon": "fa-usd",
+                        "prop": "id",
+                        "ignoreParentButton": true,
+                        "template": "function bindRow (curRow) { return '<span data-url=\"/TenderAdmin/TenderFilledFormConsultation/ConfirmPF\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.icA== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/TenderAdmin/TenderFilledFormConsultation/GetPFormList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "insurance",
+                      "caption": "بیمه"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "TenderFilledFormConsultationCompletePPFModal",
+          "title": "تکمیل",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "ctrls": [
+                {
+                  "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                  "type": "template",
+                  "html": "<div id='TenderFilledFormConsultationCompletePPFModalPpfHolder' ></div>"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

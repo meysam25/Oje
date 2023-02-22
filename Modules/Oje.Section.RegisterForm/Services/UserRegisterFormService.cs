@@ -49,7 +49,8 @@ namespace Oje.Section.RegisterForm.Services
                 SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 TermDescription = input.termT,
-                Icon = input.icon
+                Icon = input.icon,
+                UserRegisterFormCategoryId = input.catId  
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -145,7 +146,8 @@ namespace Oje.Section.RegisterForm.Services
                     roleIds = t.UserRegisterFormRoles.Select(tt => tt.RoleId).ToList(),
                     cSOWSiteSettingId = t.SiteSettingId,
                     cSOWSiteSettingId_Title = t.SiteSetting.Title,
-                    icon = t.Icon
+                    icon = t.Icon,
+                    catId = t.UserRegisterFormCategoryId
                 }).FirstOrDefault();
         }
 
@@ -222,6 +224,7 @@ namespace Oje.Section.RegisterForm.Services
             foundItem.TermDescription = input.termT;
             foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             foundItem.Icon = input.icon;
+            foundItem.UserRegisterFormCategoryId = input.catId;
 
             if (foundItem.UserRegisterFormRoles != null)
                 foreach (var role in foundItem.UserRegisterFormRoles)
@@ -327,16 +330,24 @@ namespace Oje.Section.RegisterForm.Services
             return tempStrResult;
         }
 
-        public List<KeyValue> GetAllConfig(int? siteSettingId)
+        public List<object> GetAllConfig(int? siteSettingId)
         {
-            return db.UserRegisterForms
-                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true)
-                .Select(t => new KeyValue
+            List<object> result = new List<object>();
+            var tempResult = db.UserRegisterForms
+                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.UserRegisterFormCategoryId > 0)
+                .Select(t => new
                 {
                     key = t.Id + "",
                     value = t.Title,
-                    extera = t.Icon
-                }).AsNoTracking().ToList();
+                    extera = t.Icon,
+                    cat = t.UserRegisterFormCategoryId > 0 ? t.UserRegisterFormCategory.Title : "",
+                    catExtera = t.UserRegisterFormCategoryId > 0 ? t.UserRegisterFormCategory.Icon : ""
+                })
+                .ToList();
+
+            result.AddRange(tempResult.GroupBy(t => t.cat).Select(t => new { key = "", value = t.Key, extera = t.FirstOrDefault().catExtera, childs = t.ToList().Select(tt => new { tt.key, tt.value, tt.extera }).ToList() }).ToList());
+
+            return result;
         }
     }
 }

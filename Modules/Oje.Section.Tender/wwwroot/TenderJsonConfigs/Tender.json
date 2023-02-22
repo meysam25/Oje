@@ -27,118 +27,44 @@
               "hideMoveNextButton": true,
               "panels": [
                 {
+                  "loadUrl": "/Register/GetRegisterInf",
                   "ctrls": [
                     {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "id": "realOrLegaPerson",
-                      "type": "dropDown",
-                      "textfield": "title",
-                      "valuefield": "id",
-                      "dataurl": "/Core/BaseData/Get/PersonType",
-                      "label": "انتخاب شخص",
-                      "name": "realOrLegaPerson",
-                      "showHideCondation": [
-                        {
-                          "value": "",
-                          "classHide": [ "legalPerson" ],
-                          "isDefault": true
-                        },
-                        {
-                          "value": "1",
-                          "classShow": [ "realPerson" ],
-                          "classHide": [ "legalPerson" ]
-                        },
-                        {
-                          "value": "2",
-                          "classShow": [ "legalPerson" ],
-                          "classHide": [ "realPerson" ]
-                        }
-                      ],
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "mobile",
-                      "type": "text",
-                      "label": "شماره همراه(نام کاربری)",
-                      "isRequired": true,
-                      "validations": [
-                        {
-                          "reg": "^[0-9]*$",
-                          "msg": "لطفا فقط عدد وارد کنید"
-                        },
-                        {
-                          "reg": "^([0-9]){11}$",
-                          "msg": "شماره همراه باید ۱۱ عدد باشد"
-                        },
-                        {
-                          "reg": "^(09)",
-                          "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
-                        }
-                      ]
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "nationalCode",
-                      "class": "realPerson",
-                      "type": "text",
-                      "label": "کد ملی",
-                      "isRequired": true,
-                      "nationalCodeValidation": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "agentNationalCode",
-                      "class": "legalPerson",
-                      "type": "text",
-                      "label": "شناسه ملی",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "class": "realPerson",
-                      "name": "firstName",
-                      "type": "text",
-                      "label": "نام",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "class": "legalPerson",
-                      "name": "firstAgentName",
-                      "type": "text",
-                      "label": "نام نماینده",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "lastName",
-                      "class": "realPerson",
-                      "type": "text",
-                      "label": "نام خانوادگی",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "lastAgentName",
-                      "class": "legalPerson",
-                      "type": "text",
-                      "label": "نام خانوادگی نماینده",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
                       "name": "companyName",
-                      "class": "legalPerson",
                       "type": "text",
                       "label": "نام شرکت",
+                      "isRequired": true,
+                      "maxLengh": 50
+                    },
+                    {
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "companyRegNumber",
+                      "type": "text",
+                      "label": "شماره ثبت",
+                      "isRequired": true,
+                      "maxLengh": 50
+                    },
+                    {
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "companyRegDate",
+                      "type": "persianDateTime",
+                      "label": "تاریخ ثبت",
                       "isRequired": true
                     },
                     {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "tell",
+                      "type": "text",
+                      "label": "تلفن ثابت با کد شهرستان",
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
                       "name": "email",
                       "type": "text",
                       "label": "ایمیل",
+                      "maxLengh": 100,
                       "validations": [
                         {
                           "reg": "^\\S+@\\S+\\.\\S+$",
@@ -147,46 +73,170 @@
                       ]
                     },
                     {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "tell",
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "firstNameLegal",
                       "type": "text",
-                      "label": "تلفن ثابت",
-                      "validations": [
-                        {
-                          "reg": "^[0-9]*$",
-                          "msg": "لطفا فقط عدد وارد کنید"
-                        }
-                      ]
+                      "class": "legalPerson",
+                      "label": "نام مدیر عامل",
+                      "isRequired": true,
+                      "maxLengh": 50
                     },
                     {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "postalCode",
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "lastNameLegal",
+                      "class": "legalPerson",
                       "type": "text",
-                      "label": "کد پستی",
+                      "label": "نام خانوادگی مدیرعامل",
+                      "isRequired": true,
+                      "maxLengh": 50
+                    },
+                    {
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "nationalCode",
+                      "type": "text",
+                      "label": "کد ملی",
+                      "isRequired": true,
+                      "nationalCodeValidation": true
+                    },
+                    {
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "mobile",
+                      "type": "text",
+                      "label": "شماره همراه بنام مدیر عامل (نام کاربری)",
+                      "isRequired": true,
                       "validations": [
                         {
                           "reg": "^[0-9]*$",
-                          "msg": "لطفا فقط عدد وارد کنید"
+                          "msg": "لطفا فقط عدد لاتین وارد کنید"
                         },
                         {
-                          "reg": "^([0-9]){10}$",
-                          "msg": "کد پستی باید ۱۰ عدد باشد"
+                          "reg": "^([0-9]){11}$",
+                          "msg": "شماره همراه باید ۱۱ عدد لاتین باشد"
+                        },
+                        {
+                          "reg": "^(09)",
+                          "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
                         }
                       ]
                     },
                     {
-                      "parentCL": "col-md-9 col-sm-9 col-xs-12 col-lg-9",
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "id": "provinceId",
+                      "name": "provinceId",
+                      "type": "dropDown",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/Core/BaseData/GetProvinceList",
+                      "label": "استان",
+                      "isRequired": true,
+                      "onChange": "updateMapFromDropdown(\"provinceId\", \"userSelectMapPoint\")"
+                    },
+                    {
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "cityId",
+                      "type": "dropDown2",
+                      "textfield": "title",
+                      "valuefield": "id",
+                      "dataurl": "/Core/BaseData/GetCityList2",
+                      "label": "شهر",
+                      "isRequired": true,
+                      "exteraParameterIds": [ "provinceId" ]
+                    },
+                    {
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-8",
                       "name": "address",
                       "type": "text",
-                      "label": "آدرس",
+                      "label": "آدرس دقیق دفتر شرکت",
+                      "maxLengh": 1000,
                       "isRequired": true
                     },
                     {
-                      "parentCL": "col-md-3 col-sm-3 col-xs-12 col-lg-3 ",
+                      "parentCL": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "name": "postalCode",
+                      "type": "text",
+                      "label": "کد پستی دفتر شرکت",
+                      "validations": [
+                        {
+                          "reg": "^[0-9]*$",
+                          "msg": "لطفا فقط عدد لاتین وارد کنید"
+                        },
+                        {
+                          "reg": "^([0-9]){10}$",
+                          "msg": "کد پستی باید ۱۰ عدد لاتین باشد"
+                        }
+                      ],
+                      "isRequired": true
+                    },
+                    {
+                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                      "css": "col-md-6 col-sm-6 col-xs-12 col-lg-4",
+                      "type": "dynamicFileUpload",
+                      "url": "/Register/GetRequiredDocuments",
+                      "hideImagePreview": true,
+                      "acceptEx": ".jpg,.png,.pdf,.doc,.docx,.xls",
+                      "schema": {
+                        "title": "title",
+                        "name": "name",
+                        "isRequired": "isRequired",
+                        "sampleUrl": "sample"
+                      }
+                    },
+                    {
+                      "parentCL": "col-md-8 col-sm-6 col-xs-12 col-lg-8",
+                      "type": "empty"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-4 ",
                       "showHideClass": "normalInquiry",
                       "class": "btn-primary btn-block ",
                       "type": "button",
-                      "title": "تایید اطلاعات بیمه گذار",
+                      "title": "تایید اطلاعات و مرحله بعد",
+                      "onClick": "moveToNextStepForSW(this)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 1.5,
+              "id": "confirmStep",
+              "title": "تایید",
+              "hideMoveNextButton": true,
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+                      "type": "cTemplate",
+                      "fieldMaps": [
+                        {
+                          "targetTemplate": "title",
+                          "sourceCtrl": [
+                            "title"
+                          ]
+                        }
+                      ],
+                      "dataurl": "/Tender/GetConfirmTemplate"
+                    },
+                    {
+                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                      "name": "acceptTextConfrim",
+                      "type": "checkBox",
+                      "defValue": "شرایط را مطالعه نموده و قبول دارم",
+                      "label": "شرایط را مطالعه نموده و قبول دارم",
+                      "isRequired": true,
+                      "hideOnPrint": true
+                    },
+                    {
+                      "parentCL": "col-md-8 col-sm-6 col-xs-12 col-lg-8",
+                      "type": "empty"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-4 ",
+                      "showHideClass": "normalInquiry",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "تایید اطلاعات و مرحله بعد",
                       "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
@@ -197,6 +247,7 @@
               "order": 2,
               "id": "insuranceInfoStep",
               "title": "اطلاعات بیمه",
+              "hideMoveNextButton": true,
               "panels": [
                 {
                   "ctrls": [
@@ -235,6 +286,18 @@
                           "type": "empty"
                         }
                       ]
+                    },
+                    {
+                      "parentCL": "col-md-8 col-sm-6 col-xs-12 col-lg-8",
+                      "type": "empty"
+                    },
+                    {
+                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-4 ",
+                      "showHideClass": "normalInquiry",
+                      "class": "btn-primary btn-block ",
+                      "type": "button",
+                      "title": "تایید اطلاعات و مرحله بعد",
+                      "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
                 }

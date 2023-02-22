@@ -36,7 +36,6 @@ namespace Oje.Section.BaseData.Services
         {
             createUpdateValidation(input, userId);
 
-
             using (var tr = db.Database.BeginTransaction())
             {
                 try
@@ -53,7 +52,8 @@ namespace Oje.Section.BaseData.Services
                         IsActive = input.isActive.ToBooleanReturnFalse(),
                         SeoMainPage = input.seo,
                         ParentId = input.pKey,
-                        WebsiteType = input.websiteType == null ? WebsiteType.Normal : input.websiteType.Value
+                        WebsiteType = input.websiteType == null ? WebsiteType.Normal : input.websiteType.Value,
+                        CopyRightTitle = input.copyRightTitle
                     };
 
                     db.Entry(newItem).State = EntityState.Added;
@@ -147,7 +147,8 @@ namespace Oje.Section.BaseData.Services
                 minPic_address = !string.IsNullOrEmpty(t.Image512) ? GlobalConfig.FileAccessHandlerUrl + t.Image512 : "",
                 textPic_address = !string.IsNullOrEmpty(t.ImageText) ? GlobalConfig.FileAccessHandlerUrl + t.ImageText : "",
                 minPicInvert_address = !string.IsNullOrEmpty(t.Image512Invert) ? GlobalConfig.FileAccessHandlerUrl + t.Image512Invert : "",
-                websiteType = t.WebsiteType == null ? WebsiteType.Normal : t.WebsiteType.Value
+                websiteType = t.WebsiteType == null ? WebsiteType.Normal : t.WebsiteType.Value,
+                copyRightTitle = t.CopyRightTitle
             }).FirstOrDefault();
         }
 
@@ -226,6 +227,7 @@ namespace Oje.Section.BaseData.Services
                     editItem.IsActive = input.isActive.ToBooleanReturnFalse();
                     editItem.SeoMainPage = input.seo;
                     editItem.WebsiteType = input.websiteType == null ? WebsiteType.Normal : input.websiteType.Value;
+                    editItem.CopyRightTitle = input.copyRightTitle;
 
                     db.SaveChanges();
 

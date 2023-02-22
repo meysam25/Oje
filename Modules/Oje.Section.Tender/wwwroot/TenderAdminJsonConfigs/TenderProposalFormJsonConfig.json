@@ -123,6 +123,12 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cJsonStr",
+              "type": "textarea",
+              "label": "تنظیمات مشاوره"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "pdfDesc",
               "type": "ck",
               "label": "توضیحات"
@@ -189,6 +195,12 @@
               "type": "textarea",
               "label": "تنظیمات فرم",
               "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cJsonStr",
+              "type": "textarea",
+              "label": "تنظیمات مشاوره"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

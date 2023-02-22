@@ -8,6 +8,7 @@
     {
         throw new Exception("Not Found");
     }
+    var curDomain = "http" + (curSetting.IsHttps ? "s" : "") + "://" + curSetting.WebsiteUrl;
     if (curSetting.WebsiteType == Oje.Infrastructure.Enums.WebsiteType.Tender) {
         Layout = "_TenderLayout";
     }
@@ -103,7 +104,7 @@
         if(!string.IsNullOrEmpty(Model.companyTitle))
         {
                  <div style="text-align:center;">
-                    <img src="@Model.companyImage" style="width:150px;" />
+                    <img src="@curDomain@Model.companyImage" style="width:150px;" />
                 </div>
         }
     }
@@ -127,20 +128,33 @@
                 <div class="boxContent ">
                     <div class="row">
                         @{
-                            if(group.items != null && group.items.Count > 0)
+                            if (group.items != null && group.items.Count > 0)
                             {
-                                foreach(var gorupItem in group.items )
+                                foreach (var gorupItem in group.items )
                                 {
                                     <div class="printItem @(gorupItem.cssClass)">
                                         <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
                                     </div>
                                 }
                             }
-                            }
+                        }
                         </div>
                     </div>
                 </div>
             }
+        }
+        if (Model.uploadFiles != null && Model.uploadFiles.Count > 0) {
+            <div class="row" >
+                @{
+                    foreach (var item in Model.uploadFiles) 
+                    {
+                        <div class="col-md-3 col-lg-3 col-sm-3 col-xs-12">
+                            <img style="width:100%;margin:5px;" src="@curDomain@item" />
+                        </div>
+                    }
+                }
+            </div>
+           
         }
     }
     <div>

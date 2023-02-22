@@ -69,6 +69,18 @@
    .pdfFooterSection{
        padding:15px;
    }
+   .editByAdmin {
+       color:green;
+   }
+   .editByAdmin * {
+       color: green;
+   }
+   .editByUser {
+       color:darkred;
+   }
+   .editByUser * {
+       color: darkred;
+   }
 </style>
 <script>
     if(window["$"]) {
@@ -94,59 +106,59 @@
         {
             foreach(var group in Model.TenderFilledFormPdfVMGroupVMs)
             {
-                   <div class="printBox">
-                    <div class="boxTitle">
-                    @(group.title)  
-                        @{
+                                   <div class="printBox @(group.@class)">
+                                    <div class="boxTitle">
+                                    @(group.title)  
+                                        @{
                             if(group.id > 0 && group.configId > 0)
                             {
-                                <a href="/Tender/DownloadDocument?id=@group.id&cId=@group.configId" style="float:left;color:#007bff;" >دانلود مدارک</a> 
+                                //<a href="/Tender/DownloadDocument?id=@group.id&cId=@group.configId" style="float:left;color:#007bff;" >دانلود مدارک</a> 
                             }
-                        }
-                    </div>
-                    <div class="boxContent ">
-                        <div class="row">
-                            @{
+                                        }
+                                    </div>
+                                    <div class="boxContent ">
+                                        <div class="row">
+                                            @{
                                 if(group.ProposalFilledFormPdfGroupItems != null && group.ProposalFilledFormPdfGroupItems.Count > 0)
                                 {
                                     foreach(var gorupItem in group.ProposalFilledFormPdfGroupItems )
                                     {
-                                         <div class="printItem @(gorupItem.cssClass)">
-                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
-                                        </div>
+                                                                         <div class="printItem @(gorupItem.cssClass)">
+                                                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                                                        </div>
                                     }
                                 } else if (group.TenderFilledFormPdfVMGroupVMs != null && group.TenderFilledFormPdfVMGroupVMs.Count > 0)
                                 {
-                                    <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12" >
-                                       @{
+                                                                    <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12" >
+                                                                       @{
                                             foreach(var subGroup in group.TenderFilledFormPdfVMGroupVMs)
                                             {
-                                                   <div class="printBox">
-                                                    <div class="boxTitle">@(subGroup.title)  </div>
-                                                    <div class="boxContent ">
-                                                        <div class="row">
-                                                            @{
+                                                                                                   <div class="printBox">
+                                                                                                    <div class="boxTitle">@(subGroup.title)  </div>
+                                                                                                    <div class="boxContent ">
+                                                                                                        <div class="row">
+                                                                                                            @{
                                                                 if(subGroup.ProposalFilledFormPdfGroupItems != null && subGroup.ProposalFilledFormPdfGroupItems.Count > 0)
                                                                 {
                                                                     foreach(var gorupItem in subGroup.ProposalFilledFormPdfGroupItems )
                                                                     {
-                                                                         <div class="printItem @(gorupItem.cssClass)">
-                                                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
-                                                                        </div>
+                                                                                                                                         <div class="printItem @(gorupItem.cssClass)">
+                                                                                                                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                                                                                                                        </div>
                                                                     }
                                                                 }
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
                                             }
-                                       }
-                                    </div>
+                                                                       }
+                                                                    </div>
                                 }
-                            }
-                        </div>
-                    </div>
-                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
             }
         }
     }

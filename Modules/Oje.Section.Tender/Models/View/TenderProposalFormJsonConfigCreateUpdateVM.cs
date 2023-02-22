@@ -11,6 +11,8 @@ namespace Oje.Section.Tender.Models.View
         [IgnoreStringEncode]
         public MyHtmlString jsonStr { get; set; }
         [IgnoreStringEncode]
+        public MyHtmlString cJsonStr { get; set; }
+        [IgnoreStringEncode]
         public MyHtmlString pdfDesc { get; set; }
         public bool? isActive { get; set; }
     }

@@ -1,23 +1,53 @@
-﻿@{
+﻿@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
+@{
     Layout = "_TenderLayout";
+    var curSetting = SiteSettingService.GetSiteSetting();
 }
 
-<div class="rightNavigation">
-    <div class="currentSection">
-        <div class="currentSectionShape currentSectionShapeTop">
-            <div class="currentSectionShapeArrowLeft"></div>
+
+<div class="splitMainbody">
+    <div class="rightNavigation">
+        <div class="holderRightButton" >
+            <a  href="/" class="showLoginModal moveToHome"><i class="fa fa-home"></i><span >صفحه اصلی</span></a>
+            <span class="showLoginModal startButton"><i class="fa fa-sign-in-alt flippingElement"></i><span>ثبت نام | ورود</span></span>
+            <span data-url="@(ViewBag.tenderConfig != null ? ViewBag.tenderConfig.aboutUsLink : "")" class="showLoginModal aboutUsButton"><i class="fa fa-question flippingElement"></i><span>درباره ما</span></span>
+            <span class="showLoginModal licenceButton"><i class="fa fa-file-certificate"></i><span>مجوز ها</span></span>
+            <span class="showLoginModal contactUsButton"><i class="fa fa-map-signs"></i><span>تماس با ما</span></span>
+            <span class="showLoginModal reminderButton"><i class="fa fa-bells"></i><span>یادآوری</span></span>
         </div>
-        <div class="currentSectionShapeShadow currentSectionShapeTop"></div>
-        <h1 class="currentSectionTitle">ورود به سامانه</h1>
+        <div class="navigationButtonHolder">
+            <div class="navigationButtonRoute"></div>
+        </div>
     </div>
-    <div class="navigationButtonHolder">
-        <div class="navigationButtonRoute"></div>
+    <div class="mainContentBody">
+        <div class="rightSectionTitleHodler">
+            <h2 class="title">@(ViewBag.tenderConfig != null ? ViewBag.tenderConfig.title : "")</h2>
+            <h3 class="subTitle">@(ViewBag.tenderConfig != null ? ViewBag.tenderConfig.subTitle : "")</h3>
+        </div>
+        <div class="mainContentBodyInner">
+            <div class="mainContentBodyScroll">
+                <div class="fgSection">
+                </div>
+                <script>
+                    loadOurPrice();
+                </script>
+            </div>
+        </div>
     </div>
 </div>
-<div class="mainContentBody"></div>
+@*<div class="mySliderHolder">
+    <div id="ourCustomer" style="display:none" class="col-md-6 col-sm-12 col-xs-12 col-lg-6"><span class="sliderTitle" >مشتریان ما</span><div class="mySlider"></div></div>
+    <div id="ourCompany" style="display:none" class="col-md-6 col-sm-12 col-xs-12 col-lg-6"><span class="sliderTitle"> شرکت های بیمه طرف قرارداد</span><div class="mySlider"></div></div>
+</div>*@
 <script>
-    $('.mainContentBody').loadLoginPanel('/TenderWeb/GetLoginConfig', addRegisterButton);
+    initStartButton();
+    initContactUsButton();
+    initLicenceButton();
+    initAboutUsButton();
     loadAllRegistersConfig();
     detectIfUserIsLogin();
     initWhatToDoLogin();
+    initReminderButton();
+    //loadOurCustomer();
+    //loadOurcompany();
 </script>

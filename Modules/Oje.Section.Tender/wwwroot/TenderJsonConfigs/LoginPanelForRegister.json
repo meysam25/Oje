@@ -11,7 +11,7 @@
             {
               "order": 1,
               "id": "rigLogStep",
-              "title": "ورود | ثبت نام",
+              "title": "ثبت نام",
               "submitUrl": "/Account/Dashboard/LoginWithSMS",
               "panels": [
                 {
@@ -130,6 +130,7 @@
                     },
                     {
                       "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
+                      "showHideClass": "leftTextAlign",
                       "type": "button",
                       "onClick": "moveToStepById('stepContent_recoveryPassword', 'username', 'username', this)",
                       "title": "بازیابی کلمه عبور",

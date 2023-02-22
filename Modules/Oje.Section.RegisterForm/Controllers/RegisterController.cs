@@ -187,6 +187,7 @@ namespace Oje.Section.RegisterForm.Controllers
         }
 
         [HttpPost]
+        [Route("[Controller]/[Action]")]
         public IActionResult GetPPFContractFile(int? fid)
         {
             var ss = SiteSettingService.GetSiteSetting();
@@ -251,6 +252,13 @@ namespace Oje.Section.RegisterForm.Controllers
         public ActionResult GetAllConfig()
         {
             return Json(UserRegisterFormService.GetAllConfig(SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpPost]
+        [Route("[Controller]/[Action]")]
+        public ActionResult GetRegisterInf()
+        {
+            return Json(UserFilledRegisterFormService.GetLoginUserLastSuccessInfo(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Oje.Section.Tender.Models.DB
             TenderFilledFormValidCompanies = new();
             TenderFilledFormPrices = new();
             TenderFilledFormIssues = new();
+            TenderFilledFormJsons = new();
         }
 
         [Key]

@@ -20,5 +20,9 @@ namespace Oje.Section.Tender.Models.DB
         public int? TenderProposalFormJsonConfigId { get; set; }
         [ForeignKey("TenderProposalFormJsonConfigId"), InverseProperty("TenderFilledFormsValues")]
         public TenderProposalFormJsonConfig TenderProposalFormJsonConfig { get; set; }
+        public long? UserId { get; set; }
+        [ForeignKey("UserId"), InverseProperty("TenderFilledFormsValues")]
+        public User User { get; set; }
+        public bool? IsConsultation { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "ثبت فرم")]
+    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Icon = "fa-file-powerpoint", Title = "ثبت فرم")]
     public class ProposalController : Controller
     {
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;
@@ -59,10 +59,13 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpGet]
         public IActionResult Form([FromQuery] ProposalFormVM input)
         {
+            
             ViewBag.Title = "ثبت فرم";
             ViewBag.exteraParameters = input;
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Proposal", new { area = "ProposalFilledForm" });
             ViewBag.fid = input?.fid;
+           
+
             return View("Index");
         }
 

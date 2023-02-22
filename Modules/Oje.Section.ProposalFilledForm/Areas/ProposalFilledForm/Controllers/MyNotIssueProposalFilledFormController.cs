@@ -17,7 +17,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "بیمه نامه های من (صادر نشده)")]
+    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Icon = "fa-file-powerpoint", Title = "بیمه نامه های من (صادر نشده)")]
     [CustomeAuthorizeFilter]
     public class MyNotIssueProposalFilledFormController: Controller
     {

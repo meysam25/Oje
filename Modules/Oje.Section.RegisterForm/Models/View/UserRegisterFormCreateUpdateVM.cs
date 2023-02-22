@@ -23,6 +23,7 @@ namespace Oje.Section.RegisterForm.Models.View
         public IFormFile anotherFile { get; set; }
         public IFormFile anotherFile2 { get; set; }
         public bool? isActive { get; set; }
+        public int? catId { get; set; }
         public List<int> roleIds { get; set; }
     }
 }

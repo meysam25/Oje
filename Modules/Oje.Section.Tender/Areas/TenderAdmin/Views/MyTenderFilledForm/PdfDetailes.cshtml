@@ -46,8 +46,9 @@
             ViewContext.Writer.Write("  header{display:none!important;}" + Environment.NewLine);
             ViewContext.Writer.Write("  footer{display:none!important;}" + Environment.NewLine);
             ViewContext.Writer.Write("  main{background:none!important;}" + Environment.NewLine);
-            ViewContext.Writer.Write("  section{-webkit-box-shadow:none!important;}" + Environment.NewLine);
-            ViewContext.Writer.Write("  section{box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section, .mainBoxBody{-webkit-box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section, .mainBoxBody{box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.WriteLine(".copyRight { display:none; }");
         }
     }
    .pdfHeader{
@@ -100,7 +101,7 @@
                         @{
                             if(group.id > 0 && group.configId > 0)
                             {
-                                <a href="/Tender/DownloadDocument?id=@group.id&cId=@group.configId" style="float:left;color:#007bff;" >دانلود مدارک</a> 
+                                //<a href="/Tender/DownloadDocument?id=@group.id&cId=@group.configId" style="float:left;color:#007bff;" >دانلود مدارک</a> 
                             }
                         }
                     </div>

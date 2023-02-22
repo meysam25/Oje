@@ -10,6 +10,7 @@ namespace Oje.Section.Tender.Models.View
             TenderFilledFormPdfVMGroupVMs = new();
         }
 
+        public string @class { get; set; }
         public long id { get; set; }
         public long configId { get; set; }
         public string title { get;  set; }

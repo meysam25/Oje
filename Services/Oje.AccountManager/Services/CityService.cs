@@ -4,11 +4,8 @@ using Oje.AccountService.Services.EContext;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Services
 {
@@ -32,6 +29,11 @@ namespace Oje.AccountService.Services
             db.SaveChanges();
 
             return newItem.Id;
+        }
+
+        public bool Exist(int provinceId, int id)
+        {
+            return db.Cities.Any(t => t.ProvinceId == provinceId && t.Id == id && t.IsActive == true);
         }
 
         public int? GetIdBy(string title)

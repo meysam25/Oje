@@ -9,12 +9,13 @@ using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.View;
 using System;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Enums;
 
 namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 {
     [Area("TenderAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مناقصات", Icon = "fa-funnel-dollar", Title = "مناقصات")]
+    [AreaConfig(ModualTitle = "مناقصات", Icon = "fa-funnel-dollar", Title = "مناقصات در حال برگزاری")]
     [CustomeAuthorizeFilter]
     public class TenderFilledFormController : Controller
     {
@@ -24,6 +25,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         readonly Interfaces.ICompanyService CompanyService = null;
         readonly ITenderFilledFormPriceService TenderFilledFormPriceService = null;
         readonly ITenderFilledFormIssueService TenderFilledFormIssueService = null;
+        readonly TenderSelectStatus tenderSelectStatus = TenderSelectStatus.CurrentTender;
 
         public TenderFilledFormController
            (
@@ -43,16 +45,16 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             this.TenderFilledFormIssueService = TenderFilledFormIssueService;
         }
 
-        [AreaConfig(Title = "مناقصات", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
+        [AreaConfig(Title = "مناقصات در حال برگزاری", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "مناقصات";
+            ViewBag.Title = "مناقصات در حال برگزاری";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "TenderFilledForm", new { area = "TenderAdmin" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست مناقصات", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه لیست مناقصات در حال برگزاری", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -60,7 +62,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("TenderAdmin", "TenderFilledForm")));
         }
 
-        [AreaConfig(Title = "دانلود پی دی اف فرم مناقصه", Icon = "fa-download")]
+        [AreaConfig(Title = "دانلود پی دی اف فرم مناقصات در حال برگزاری", Icon = "fa-download")]
         [HttpGet]
         public IActionResult DownloadPdf([FromQuery] GlobalLongId input)
         {
@@ -76,7 +78,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         {
             ViewBag.isPrint = isPrint;
             //ViewBag.newLayoutName = "_WebLayout";
-            return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, null));
+            return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
         [HttpGet]
@@ -95,29 +97,29 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult ViewDocument([FromQuery] long? tid, [FromQuery] int? cId)
         {
             ViewBag.isPrint = true;
-            ViewBag.documentHtml = TenderFilledFormService.GetDocument(tid, cId, SiteSettingService.GetSiteSetting()?.Id, null);
+            ViewBag.documentHtml = TenderFilledFormService.GetDocument(tid, cId, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus);
             return View();
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدارک مناقصات", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست مدارک مناقصات در حال برگزاری", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPFormList([FromForm] GlobalGridParentLong searchInput)
         {
-            return Json(TenderFilledFormPFService.GetListForWeb(searchInput, searchInput?.pKey, null, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(TenderFilledFormPFService.GetListForWeb(searchInput, searchInput?.pKey, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, tenderSelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مناقصات", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست مناقصات در حال برگزاری", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] TenderFilledFormMainGrid searchInput)
         {
-            return Json(TenderFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
         [AreaConfig(Title = "خروجی اکسل", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult Export([FromForm] TenderFilledFormMainGrid searchInput)
         {
-            var result = TenderFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
+            var result = TenderFilledFormService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus);
             if (result == null || result.data == null || result.data.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
@@ -127,53 +129,53 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "افزودن قیمت جدید برای مناقصه", Icon = "fa-plus")]
+        [AreaConfig(Title = "افزودن قیمت جدید برای مناقصات در حال برگزاری", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult CreateNewPrice([FromForm] TenderFilledFormPriceCreateUpdateVM input)
         {
-            return Json(TenderFilledFormPriceService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormPriceService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده یک قیمت", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک مناقصات در حال برگزاری", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetByPriceId([FromForm] GlobalLongId input)
         {
-            return Json(TenderFilledFormPriceService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormPriceService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
         [AreaConfig(Title = "به روز رسانی مبلغ", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdatePrice([FromForm] TenderFilledFormPriceCreateUpdateVM input)
         {
-            return Json(TenderFilledFormPriceService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormPriceService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
         [AreaConfig(Title = "انتشار مبلغ", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult PublishedPrice([FromForm] GlobalLongId input)
         {
-            return Json(TenderFilledFormPriceService.Publish(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormPriceService.Publish(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
         [AreaConfig(Title = "حذف قیمت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult DeletePrice([FromForm] GlobalLongId input)
         {
-            return Json(TenderFilledFormPriceService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormPriceService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست قیمت های مناقصه", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست قیمت های مناقصات در حال برگزاری", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPriceList([FromForm] TenderFilledFormPriceMainGrid searchInput)
         {
-            return Json(TenderFilledFormPriceService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormPriceService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
-        [AreaConfig(Title = "خروجی اکسل مبلغ مناقصه", Icon = "fa-file-excel")]
+        [AreaConfig(Title = "خروجی اکسل مبلغ مناقصات در حال برگزاری", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult ExportPrice([FromForm] TenderFilledFormPriceMainGrid searchInput)
         {
-            var result = TenderFilledFormPriceService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId);
+            var result = TenderFilledFormPriceService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus);
             if (result == null || result.data == null || result.data.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             var byteResult = ExportToExcel.Export(result.data);
@@ -183,32 +185,32 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "افزودن صدور جدید برای مناقصه", Icon = "fa-plus")]
+        [AreaConfig(Title = "افزودن صدور جدید برای مناقصات در حال برگزاری", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult IssuePPF([FromForm] TenderFilledFormIssueCreateUpdateVM input)
         {
-            return Json(TenderFilledFormIssueService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormIssueService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
-        [AreaConfig(Title = "به روز رسانی صدور مناقصه", Icon = "fa-pencil")]
+        [AreaConfig(Title = "به روز رسانی صدور مناقصات در حال برگزاری", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdateIssuePPF([FromForm] TenderFilledFormIssueCreateUpdateVM input)
         {
-            return Json(TenderFilledFormIssueService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormIssueService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده یک مناقصه صادر شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک مناقصات در حال برگزاری صادر شده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetIssueById([FromForm] GlobalLongId input)
         {
-            return Json(TenderFilledFormIssueService.GetBy(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormIssueService.GetBy(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
         [AreaConfig(Title = "مشاهده لیست بیمه نامه های صادره", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetIssueList([FromForm] GlobalGridParentLong searchInput)
         {
-            return Json(TenderFilledFormIssueService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(TenderFilledFormIssueService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
 
 
@@ -223,7 +225,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         [HttpPost]
         public IActionResult GetInsuranceList([FromForm] GlobalGridParentLong input)
         {
-            return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id));
+            return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id, tenderSelectStatus));
         }
     }
 }

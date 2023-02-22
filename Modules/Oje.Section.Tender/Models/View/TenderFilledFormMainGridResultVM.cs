@@ -15,8 +15,14 @@ namespace Oje.Section.Tender.Models.View
         [Display(Name = "بیمه")]
         [IgnoreStringEncode]
         public MyHtmlString insurances { get; set; }
+        [Display(Name = "استان")]
+        public string provinceTitle { get; set; }
+        [Display(Name = "شهر")]
+        public string cityTitle { get; set; }
         [Display(Name = "تاریخ")]
         public string createDate { get; set; }
+        [Display(Name = "تاریخ پایان")]
+        public string endDate { get; set; }
         [Display(Name = "وضعیت انتشار")]
         public bool isPub { get; set; }
         [Display(Name = "وضعیت")]

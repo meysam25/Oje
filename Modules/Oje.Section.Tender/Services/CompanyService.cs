@@ -40,6 +40,7 @@ namespace Oje.Section.Tender.Services
             result.AddRange
                 (
                     db.Companies
+                    .Where(t => t.Id > 0)
                     .Select(t => new
                     {
                         id = t.Id,

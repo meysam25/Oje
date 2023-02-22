@@ -42,6 +42,8 @@ namespace Oje.Section.Tender.Services
             foundItem.PrivateDocumentUrl = " ";
             foundItem.Title = input.title;
             foundItem.SubTitle = input.subTitle;
+            foundItem.AboutUsLink = input.aboutUsLink;
+            foundItem.ConfirmRoles = input.confirmDesc;
 
             db.SaveChanges();
 
@@ -85,7 +87,9 @@ namespace Oje.Section.Tender.Services
                     t.GeneralRoles,
                     t.PrivateDocumentUrl,
                     t.Title,
-                    t.SubTitle
+                    t.SubTitle,
+                    t.AboutUsLink,
+                    t.ConfirmRoles
                 })
                 .ToList()
                 .Select(t => new TenderConfigCreateUpdateVM
@@ -94,7 +98,9 @@ namespace Oje.Section.Tender.Services
                     desctpion = t.GeneralRoles,
                     generallow_address = !string.IsNullOrEmpty((t.PrivateDocumentUrl + "").Trim()) ? GlobalConfig.FileAccessHandlerUrl + t.PrivateDocumentUrl : "",
                     title = t.Title,
-                    subTitle = t.SubTitle
+                    subTitle = t.SubTitle,
+                    aboutUsLink = t.AboutUsLink,
+                    confirmDesc = t.ConfirmRoles
                 })
                 .FirstOrDefault();
         }
@@ -102,7 +108,12 @@ namespace Oje.Section.Tender.Services
         public TenderConfigCreateUpdateVM GetTitleAndSubTitleCache(int siteSettingId)
         {
             if (TitleAndSubTitleCache == null)
-                TitleAndSubTitleCache = db.TenderConfigs.Where(t => t.SiteSettingId == siteSettingId).Select(t => new TenderConfigCreateUpdateVM { title = t.Title, subTitle = t.SubTitle }).FirstOrDefault();
+                TitleAndSubTitleCache = db.TenderConfigs.Where(t => t.SiteSettingId == siteSettingId).Select(t => new TenderConfigCreateUpdateVM 
+                { 
+                    title = t.Title, 
+                    subTitle = t.SubTitle,
+                    aboutUsLink = t.AboutUsLink
+                }).FirstOrDefault();
 
 
             return TitleAndSubTitleCache;

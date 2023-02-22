@@ -45,6 +45,8 @@
       "wwwroot/js/countDown.js",
       "wwwroot/js/formGenerator.js",
       "wwwroot/js/jquery.maskedinput.min.js",
+      "wwwroot/js/Website/mySlider.js",
+      "wwwroot/js/Website/lazyLoadOnScroll.js",
       "wwwroot/js/tender/indexPage.js"
 
     ],
@@ -363,6 +365,8 @@
       "wwwroot/css/stepWizard.css",
       "wwwroot/css/validation.css",
       "wwwroot/css/dropdown.css",
+      "wwwroot/css/Website/mySlider.css",
+      "wwwroot/css/Website/Page/page.css",
       "wwwroot/css/tender/indexPage.css"
 
     ],

@@ -25,6 +25,7 @@ namespace Oje.Section.Tender.Models.DB
         public ProposalForm ProposalForm { get; set; }
         [Required]
         public string JsonConfig { get; set; }
+        public string ConsultationJsonConfig { get; set; }
         [Required]
         public string Description { get; set; }
         public bool IsActive { get; set; }

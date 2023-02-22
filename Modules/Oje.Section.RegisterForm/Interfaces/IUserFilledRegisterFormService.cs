@@ -13,5 +13,6 @@ namespace Oje.Section.RegisterForm.Interfaces
         object Delete(long? id, int? siteSettingId, bool? isPayed = null, bool? isDone = null);
         object CreateNewUser(long? id, int? siteSettingId, long? parentId, List<int> roleIds, long? loginUserId, bool? isPayed = null, bool? isDone = null);
         object GetUploadImages(GlobalGridParentLong input, int? siteSettingId, bool? isPayed = null, bool? isDone = null);
+        object GetLoginUserLastSuccessInfo(int? siteSettingId, long? loginUserId);
     }
 }

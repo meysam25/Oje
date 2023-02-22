@@ -24,9 +24,15 @@
         },
         {
           "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "aboutUsLink",
+          "type": "text",
+          "label": "لینک درباره ما"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
           "name": "generallow",
           "type": "file",
-          "label": "فوانین خصوصی",
+          "label": "قوانین خصوصی",
           "acceptEx": ".jpg,.png,.jpeg,.doc,.docx,.pdf",
           "hideImagePreview": true,
           "isRequired": true
@@ -37,6 +43,12 @@
           "type": "ck",
           "label": "توضیحات ({{date}} {{time}} {{company}})",
           "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "confirmDesc",
+          "type": "ck",
+          "label": "توضیحات 2 ({{date}} {{time}} {{company}})"
         },
         {
           "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",

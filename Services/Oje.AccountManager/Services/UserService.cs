@@ -786,10 +786,10 @@ namespace Oje.AccountService.Services
             if (!string.IsNullOrEmpty(input.address) && input.address.Length > 1000)
                 throw BException.GenerateNewException(BMessages.Address_Length_Is_Not_Valid, ApiResultErrorCode.ValidationError);
 
-            if (!string.IsNullOrEmpty(input.mobile) && db.Users.Any(t => t.Id != input.id && t.Mobile == input.mobile && t.SiteSettingId == siteSettingId))
-                throw BException.GenerateNewException(BMessages.Dublicate_Mobile, ApiResultErrorCode.ValidationError);
-            if (!string.IsNullOrEmpty(input.email) && db.Users.Any(t => t.Id != input.id && t.Email == input.email && t.SiteSettingId == siteSettingId))
-                throw BException.GenerateNewException(BMessages.Dublicate_Email, ApiResultErrorCode.ValidationError);
+            //if (!string.IsNullOrEmpty(input.mobile) && db.Users.Any(t => t.Id != input.id && t.Mobile == input.mobile && t.SiteSettingId == siteSettingId))
+            //    throw BException.GenerateNewException(BMessages.Dublicate_Mobile, ApiResultErrorCode.ValidationError);
+            //if (!string.IsNullOrEmpty(input.email) && db.Users.Any(t => t.Id != input.id && t.Email == input.email && t.SiteSettingId == siteSettingId))
+            //    throw BException.GenerateNewException(BMessages.Dublicate_Email, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.insuranceECode) && db.Users.Any(t => t.Id != input.id && t.InsuranceECode == input.insuranceECode && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Electronic_Code, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.nationalCode) && db.Users.Any(t => t.Nationalcode == input.nationalCode && t.Id != input.id && t.SiteSettingId == siteSettingId))

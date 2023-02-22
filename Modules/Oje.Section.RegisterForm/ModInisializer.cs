@@ -38,6 +38,7 @@ namespace Oje.Section.RegisterForm
             services.AddScoped<IUserRegisterFormDiscountCodeService, UserRegisterFormDiscountCodeService>();
             services.AddScoped<IUserRegisterFormCompanyService, UserRegisterFormCompanyService>();
             services.AddScoped<IUserRegisterFormPrintDescrptionService, UserRegisterFormPrintDescrptionService>();
+            services.AddScoped<IUserRegisterFormCategoryService, UserRegisterFormCategoryService>();
         }
     }
 }

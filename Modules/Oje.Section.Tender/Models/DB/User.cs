@@ -15,6 +15,7 @@ namespace Oje.Section.Tender.Models.DB
             Childs = new();
             UserCompanies = new();
             TenderFilledFormIssues = new();
+            TenderFilledFormsValues = new();
         }
 
         [Key]
@@ -30,6 +31,7 @@ namespace Oje.Section.Tender.Models.DB
         public User Parent { get; set; }
         public int? ProvinceId { get; set; }
         public int? CityId { get; set; }
+        public long? AgentCode { get; set; }
         public int SiteSettingId { get; set; }
 
         [InverseProperty("User")]
@@ -42,5 +44,7 @@ namespace Oje.Section.Tender.Models.DB
         public List<UserCompany> UserCompanies { get; set; }
         [InverseProperty("User")]
         public List<TenderFilledFormIssue> TenderFilledFormIssues { get; set; }
+        [InverseProperty("User")]
+        public List<TenderFilledFormsValue> TenderFilledFormsValues { get; set; }
     }
 }

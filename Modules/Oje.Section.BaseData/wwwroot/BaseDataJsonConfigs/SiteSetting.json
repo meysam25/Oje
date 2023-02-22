@@ -154,6 +154,13 @@
               "label": "نوع وبسایت"
             },
             {
+              "parentCL": "col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12",
+              "name": "copyRightTitle",
+              "type": "text",
+              "label": "عنوان کپی رایت",
+              "isRequired": true
+            },
+            {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "seo",
               "type": "textarea",
@@ -260,6 +267,13 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/WebsiteType",
               "label": "نوع وبسایت"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12",
+              "name": "copyRightTitle",
+              "type": "text",
+              "label": "عنوان کپی رایت",
+              "isRequired": true
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",

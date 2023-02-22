@@ -315,7 +315,7 @@ function bindFooterPhoneAndAddress() {
         $('#footerTell1').html(res && res.tell ? res.tell : '');
         $('#footerTell2').html(res && res.mob ? res.mob : '');
         $('#footerEmail').html(res && res.email ? res.email : '');
-        $('#supportPhone').html(res && res.email ? res.tell : '');
+        $('#supportPhone').html(res && res.tell ? res.tell : '');
     }, null, null, null, 'GET');
 }
 

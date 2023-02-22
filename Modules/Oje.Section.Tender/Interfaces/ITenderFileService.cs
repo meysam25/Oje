@@ -9,7 +9,7 @@ namespace Oje.Section.Tender.Interfaces
         ApiResult Delete(int? id, int? siteSettingId);
         object GetById(int? id, int? siteSettingId);
         GridResultVM<TenderFileMainGridResultVM> GetList(TenderFileMainGrid searchInput, int? siteSettingId);
-        object GetListForWeb(int? siteSettingId);
+        object GetListForWeb(int? siteSettingId, int? formId);
         ApiResult Update(TenderFileCreateUpdateVM input, int? siteSettingId);
     }
 }

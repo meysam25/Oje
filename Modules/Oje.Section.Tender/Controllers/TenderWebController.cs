@@ -6,6 +6,7 @@ using Oje.Infrastructure;
 using System.Collections.Generic;
 using Oje.AccountService.Interfaces;
 using Oje.Section.Tender.Interfaces;
+using Oje.Section.Tender.Models.View;
 
 namespace Oje.Section.Tender.Controllers
 {
@@ -15,17 +16,20 @@ namespace Oje.Section.Tender.Controllers
         readonly ISiteSettingService SiteSettingService = null;
         readonly ITenderConfigService TenderConfigService = null;
         readonly ITenderFileService TenderFileService = null;
+        readonly IPropertyService PropertyService = null;
 
         public TenderWebController
             (
                 ISiteSettingService SiteSettingService,
                 ITenderConfigService TenderConfigService,
-                ITenderFileService TenderFileService
+                ITenderFileService TenderFileService,
+                IPropertyService PropertyService
             )
         {
             this.SiteSettingService = SiteSettingService;
             this.TenderConfigService = TenderConfigService;
             this.TenderFileService = TenderFileService;
+            this.PropertyService = PropertyService;
         }
 
         [HttpGet]
@@ -69,10 +73,16 @@ namespace Oje.Section.Tender.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult GetTenderFiles()
+        [HttpGet]
+        public IActionResult GetOurPrideMainPage()
         {
-            return Json(TenderFileService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id));
+            return Json(PropertyService.GetBy<OurPrideVM>(PropertyType.OurPrideMainPageForTender, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [HttpPost]
+        public IActionResult GetTenderFiles([FromForm] int? formId)
+        {
+            return Json(TenderFileService.GetListForWeb(SiteSettingService.GetSiteSetting()?.Id, formId));
         }
 
         [HttpPost]

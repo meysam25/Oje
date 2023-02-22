@@ -1,0 +1,215 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "notificationTriger": [ "UpdateTenderDates", "UpdateTenderAccess", "PublishTender", "TenderSelectPrice", "AddTenderPrice", "UpdateTenderPrice", "PublishTenderPrice", "DeleteTenderPrice", "IssueTender", "UpdateIssueTender" ],
+          "id": "MyTenderFilledFormCurrentGrid",
+          "topActions": [
+            {
+              "title": "ثبت مناقصه جدید",
+              "onClick": "location.href='/Tender/Index'",
+              "type": "add",
+              "modalId": "MyNotIssueProposalFilledFormNewPPF"
+            }
+          ],
+          "exportToExcelUrl": "/TenderAdmin/MyTenderFilledFormCurrent/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-calendar-alt",
+                "prop": "id",
+                "modalId": "MyTenderFilledFormCurrentEditDateModal",
+                "url": "/TenderAdmin/MyTenderFilledFormCurrent/GetDatesById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/TenderAdmin/MyTenderFilledFormCurrent/GetDatesById\\', \\'MyTenderFilledFormCurrentEditDateModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-calendar-alt\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-calendar-alt",
+                "prop": "id",
+                "modalId": "MyTenderFilledFormCurrentEditAgentAccessModal",
+                "url": "/TenderAdmin/MyTenderFilledFormCurrent/GetAccessById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/TenderAdmin/MyTenderFilledFormCurrent/GetAccessById\\', \\'MyTenderFilledFormCurrentEditAgentAccessModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-building\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-powerpoint",
+                "prop": "id",
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/TenderAdmin/MyTenderFilledFormCurrent/PdfDetailes?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "prop": "id",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/TenderAdmin/MyTenderFilledFormCurrent/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-archive",
+                "prop": "id",
+                "modalId": "MyTenderFilledFormCurrentDocumentsModal",
+                "template": "function bindRow (curRow) { return '<span title=\"دانلود مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyTenderFilledFormCurrentDocumentsModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-archive\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-usd",
+                "prop": "id",
+                "ignoreParentButton": true,
+                "template": "function bindRow (curRow) { return '<span data-url=\"/TenderAdmin/MyTenderFilledFormCurrent/Publish\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.isPub== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/TenderAdmin/MyTenderFilledFormCurrent/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "insurances",
+              "caption": "بیمه"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد"
+            },
+            {
+              "field": "status",
+              "caption": "وضعیت"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "MyTenderFilledFormCurrentEditDateModal",
+          "title": "تنظیم تاریخ",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "openDate",
+              "type": "persianDateTime",
+              "label": "تاریخ انتشار",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "avalibleDate",
+              "type": "persianDateTime",
+              "label": "تاریخ بسته شدن مناقصه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "pExpirDate",
+              "type": "persianDateTime",
+              "label": "تاریخ اعتبار تائین قیمت",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'MyTenderFilledFormCurrentGrid', '/TenderAdmin/MyTenderFilledFormCurrent/UpdateDates')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "MyTenderFilledFormCurrentEditAgentAccessModal",
+          "title": "مشخصات",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cIds",
+              "type": "tokenBox",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/TenderAdmin/MyTenderFilledFormCurrent/GetCompanyList",
+              "label": "شرکت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'MyTenderFilledFormCurrentGrid', '/TenderAdmin/MyTenderFilledFormCurrent/UpdateAccess')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "id": "MyTenderFilledFormCurrentDocumentsModal",
+          "title": "مدارک",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyTenderFilledFormCurrentDocumentsModalGrid",
+                  "showColumnConfigButton": true,
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-file-powerpoint",
+                        "prop": "id",
+                        "template": "function bindRow (curRow) { return '<a title=\"دانلود مدرک\" href=\"/TenderAdmin/MyTenderFilledFormCurrent/DownloadDocument?cId='+ curRow.cId +'&id='+ curRow.fid +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-download\" ></i></a>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/TenderAdmin/MyTenderFilledFormCurrent/GetPFormList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "insurance",
+                      "caption": "بیمه"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        
+      ]
+    }
+  ]
+}

@@ -140,7 +140,7 @@ namespace Oje.Section.RegisterForm.Services
                             );
                     UserFilledRegisterFormJsonService.Create(foundJsonFormStr, newItem.Id);
                     UserFilledRegisterFormValueService.CreateByJsonConfig(ppfObj, newItem.Id, form);
-                    createUploadedFiles(siteSettingId, form, newItem.Id);
+                    createUploadedFiles(siteSettingId, form, newItem.Id, userId);
 
 
 
@@ -191,11 +191,11 @@ namespace Oje.Section.RegisterForm.Services
             return result;
         }
 
-        private void createUploadedFiles(int? siteSettingId, IFormCollection form, long userFilledRegisterFormId)
+        private void createUploadedFiles(int? siteSettingId, IFormCollection form, long userFilledRegisterFormId, long? userId)
         {
             foreach (var file in form.Files)
             {
-                UploadedFileService.UploadNewFile(FileType.RegisterUploadedDocuments, file, null, siteSettingId, userFilledRegisterFormId, ".jpg,.png,.pdf,.doc,.docx,.xls", true);
+                UploadedFileService.UploadNewFile(FileType.RegisterUploadedDocuments, file, userId, siteSettingId, userFilledRegisterFormId, ".jpg,.png,.pdf,.doc,.docx,.xls", true);
             }
         }
 
@@ -427,7 +427,10 @@ namespace Oje.Section.RegisterForm.Services
                 {
                     var allRequiredFiles = allRequiredFileUpload.Where(t => t.IsRequired == true).ToList();
                     foreach (var file in allRequiredFiles)
-                        if (form.Files[Convert.ToBase64String(Encoding.UTF8.GetBytes(file.Title))] == null || form.Files[Convert.ToBase64String(Encoding.UTF8.GetBytes(file.Title))].Length == 0)
+                        if (
+                                (form.Files[Convert.ToBase64String(Encoding.UTF8.GetBytes(file.Title))] == null || form.Files[Convert.ToBase64String(Encoding.UTF8.GetBytes(file.Title))].Length == 0) &&
+                                (form.Files[file.Title.Replace(" ", "")] == null || form.Files[file.Title.Replace(" ", "")].Length == 0)
+                            )
                             throw BException.GenerateNewException(string.Format(BMessages.Please_Select_X.GetEnumDisplayName(), file.Title));
                 }
             }
@@ -563,6 +566,8 @@ namespace Oje.Section.RegisterForm.Services
             result.paymentUserId = foundItem.PaymentUserId;
             result.headerTemplate = UserRegisterFormPrintDescrptionService.GetBy(siteSettingId, foundItem.UserRegisterFormId, ProposalFormPrintDescrptionType.Header);
             result.footerTemplate = UserRegisterFormPrintDescrptionService.GetBy(siteSettingId, foundItem.UserRegisterFormId, ProposalFormPrintDescrptionType.Footer);
+            result.uploadFiles = UploadedFileService.GetFileUrlList(foundItem.Id, FileType.RegisterUploadedDocuments, 0, 100, siteSettingId);
+
 
             result.isPayed = (foundPaymentList != null && foundPaymentList.Count > 0) || UserFilledRegisterFormCardPaymentService.Any(siteSettingId, foundItem.Id);
 
@@ -768,6 +773,71 @@ namespace Oje.Section.RegisterForm.Services
                 total = UploadedFileService.GetCountBy(foundItemId, FileType.RegisterUploadedDocuments),
                 data = UploadedFileService.GetListBy(foundItemId, FileType.RegisterUploadedDocuments, input.skip, input.take)
             };
+        }
+
+        public object GetLoginUserLastSuccessInfo(int? siteSettingId, long? loginUserId)
+        {
+            var foundItem = db.UserFilledRegisterForms
+                .OrderByDescending(t => t.Id)
+               .Where(t => t.UserId == loginUserId && t.IsDone == true && t.SiteSettingId == siteSettingId)
+               .Take(1)
+               .Select(t => new
+               {
+                   t.Id,
+                   values = t.UserFilledRegisterFormValues.Select(tt => new
+                   {
+                       tt.Value,
+                       Key = tt.UserFilledRegisterFormKey.Key
+                   }).ToList()
+               })
+               .FirstOrDefault();
+            if (foundItem != null)
+            {
+                var foundJson = UserFilledRegisterFormJsonService.GetBy(foundItem.Id);
+                if (foundJson != null)
+                {
+                    var jsonObj = JsonConvert.DeserializeObject<PageForm>(foundJson);
+                    if (jsonObj != null)
+                    {
+                        var foundSw = jsonObj.GetAllListOf<stepWizard>();
+                        if (foundSw != null && foundSw.Count == 1 && foundSw[0].steps != null && foundSw[0].steps.Any(t => t.id == "firstStep"))
+                        {
+                            var step = foundSw[0].steps.Where(t => t.id == "firstStep").FirstOrDefault();
+
+                            var allCtrls = step.GetAllListOf<ctrl>();
+                            Dictionary<string, object> result = new Dictionary<string, object>();
+                            if (allCtrls != null && allCtrls.Count > 0)
+                            {
+                                foreach (var ctrl in allCtrls)
+                                {
+                                    string value = foundItem.values.Where(t => t.Key == ctrl.name).Select(t => t.Value).FirstOrDefault();
+
+                                    if (!string.IsNullOrEmpty(value))
+                                    {
+                                        if (ctrl.name == "cityId")
+                                        {
+                                            var foundCityId = db.Cities.Where(t => t.Title == value).Select(t => t.Id).FirstOrDefault();
+                                            if (foundCityId > 0)
+                                            {
+                                                result.Add(ctrl.name, foundCityId);
+                                                result.Add(ctrl.name + "_Title", value);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            result.Add(ctrl.name, value);
+
+                                        }
+                                    }
+                                }
+                                return result;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new { };
         }
     }
 }

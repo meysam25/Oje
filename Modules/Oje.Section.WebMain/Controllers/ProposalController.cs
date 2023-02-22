@@ -3,7 +3,6 @@ using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.Section.WebMain.Models.View;
-using System;
 
 namespace Oje.Section.WebMain.Controllers
 {
@@ -33,6 +32,10 @@ namespace Oje.Section.WebMain.Controllers
             ViewBag.exteraParameters = input;
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Proposal", input);
             ViewBag.fid = input?.fid;
+            var curSetting = SiteSettingService.GetSiteSetting();
+            if (curSetting?.WebsiteType == WebsiteType.Tender)
+                ViewBag.layer = "~/Views/Shared/_TenderLayout.cshtml";
+
             return View("Index");
         }
 

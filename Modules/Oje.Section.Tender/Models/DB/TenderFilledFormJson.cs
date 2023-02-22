@@ -16,5 +16,6 @@ namespace Oje.Section.Tender.Models.DB
         public TenderProposalFormJsonConfig TenderProposalFormJsonConfig { get; set; }
         [Required]
         public string JsonConfig { get; set; }
+        public bool? IsConsultation { get; set; }
     }
 }

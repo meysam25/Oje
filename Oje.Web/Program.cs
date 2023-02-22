@@ -20,7 +20,7 @@ namespace Oje.Web
             }
             catch (Exception ex)
             {
-                System.IO.File.WriteAllText("d:\\errText.txt", ex.Message);
+                System.IO.File.WriteAllText("C:\\Publish\\NewCore\\errText.txt", ex.Message);
             }
         }
 

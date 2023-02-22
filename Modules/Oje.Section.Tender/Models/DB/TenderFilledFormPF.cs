@@ -11,5 +11,7 @@ namespace Oje.Section.Tender.Models.DB
         public int TenderProposalFormJsonConfigId { get; set; }
         [ForeignKey("TenderProposalFormJsonConfigId"), InverseProperty("TenderFilledFormPFs")]
         public TenderProposalFormJsonConfig TenderProposalFormJsonConfig { get; set; }
+        public bool? IsConfirmByAdmin { get; set; }
+        public bool? IsConfirmByUser { get; set; }
     }
 }

@@ -599,9 +599,11 @@ function fillUrlIfNeeded(rType, postData, url) {
     return url;
 }
 
-function postForm(url, postData, success, error, completeEvent, ignoreAutoToast, rType) {
+function postForm(url, postData, success, error, completeEvent, ignoreAutoToast, rType, exHeader) {
     if (!rType)
         rType = 'POST';
+    if (!exHeader)
+        exHeader = {};
     url = fillUrlIfNeeded(rType, postData, url)
     var foundDataFromCache = getDataFromLocalStorageCache(url);
     if (foundDataFromCache) {
@@ -611,6 +613,7 @@ function postForm(url, postData, success, error, completeEvent, ignoreAutoToast,
             completeEvent();
     } else {
         $.ajax({
+            headers: exHeader,
             url: url,
             data: postData,
             processData: false,
@@ -917,7 +920,7 @@ $.fn.modal = function (action) {
             $('body').addClass('modal-open').append('<div style="z-index:' + (modalZIndex - 1) + ' !important;" class="modal-backdrop fade show"></div>');
         else
             $('body').addClass('modal-open').append('<div class="modal-backdrop fade show"></div>');
-        setTimeout(function () { $(curThis).find('input:visible:eq(0)').focus(); $(curThis).find('input:visible:eq(0)').click(); }, 200);
+        //setTimeout(function () { $(curThis).find('input:visible:eq(0)').focus(); $(curThis).find('input:visible:eq(0)').click(); }, 200);
     }
     function bindCloseButton(curThis) {
         $(curThis).find('[data-dismiss]').unbind().click(function () {

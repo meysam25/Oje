@@ -1,0 +1,252 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "notificationTriger": [ "UpdateTenderDates", "UpdateTenderAccess", "PublishTender", "TenderSelectPrice", "AddTenderPrice", "UpdateTenderPrice", "PublishTenderPrice", "DeleteTenderPrice", "IssueTender", "UpdateIssueTender" ],
+          "id": "MyTenderFilledFormBeenPricedGrid",
+          "topActions": [
+            {
+              "title": "ثبت مناقصه جدید",
+              "onClick": "location.href='/Tender/Index'",
+              "type": "add",
+              "modalId": "MyNotIssueProposalFilledFormNewPPF"
+            }
+          ],
+          "exportToExcelUrl": "/TenderAdmin/MyTenderFilledFormBeenPriced/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-file-powerpoint",
+                "prop": "id",
+                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/TenderAdmin/MyTenderFilledFormBeenPriced/PdfDetailes?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "prop": "id",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/TenderAdmin/MyTenderFilledFormBeenPriced/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-archive",
+                "prop": "id",
+                "modalId": "MyTenderFilledFormBeenPricedDocumentsModal",
+                "template": "function bindRow (curRow) { return '<span title=\"دانلود مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyTenderFilledFormBeenPricedDocumentsModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-archive\" ></i></span>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-dollar-sign",
+                "prop": "id",
+                "modalId": "MyTenderFilledFormBeenPricedPriceModal",
+                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyTenderFilledFormBeenPricedPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/TenderAdmin/MyTenderFilledFormBeenPriced/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "insurances",
+              "caption": "بیمه"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد"
+            },
+            {
+              "field": "status",
+              "caption": "وضعیت"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "id": "MyTenderFilledFormBeenPricedDocumentsModal",
+          "title": "مدارک",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyTenderFilledFormBeenPricedDocumentsModalGrid",
+                  "showColumnConfigButton": true,
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-file-powerpoint",
+                        "prop": "id",
+                        "template": "function bindRow (curRow) { return '<a title=\"دانلود مدرک\" href=\"/TenderAdmin/MyTenderFilledFormBeenPriced/DownloadDocument?cId='+ curRow.cId +'&id='+ curRow.fid +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-download\" ></i></a>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/TenderAdmin/MyTenderFilledFormBeenPriced/GetPFormList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "insurance",
+                      "caption": "بیمه"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyTenderFilledFormBeenPricedPriceModal",
+          "title": "قیمت",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyTenderFilledFormBeenPricedPriceModalGrid",
+                  "showColumnConfigButton": true,
+                  "exportToExcelUrl": "/TenderAdmin/MyTenderFilledFormBeenPriced/ExportPrice",
+                  "topActions": [
+                    {
+                      "title": "انتخاب",
+                      "onClick": "showModal('MyTenderFilledFormBeenPricedPriceSelectUserModal', this)",
+                      "type": "add",
+                      "modalId": "MyTenderFilledFormBeenPricedPriceSelectUserModal"
+                    }
+                  ],
+                  "actions": {
+                    "cActions": [
+                      {
+                        "type": "edit",
+                        "icon": "fa-file-powerpoint",
+                        "prop": "id",
+                        "template": "function bindRow (curRow) { return '<a title=\"دانلود مدرک\" href=\"'+ curRow.downloadFileUrl +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-download\" ></i></a>' };bindRow(data)"
+                      }
+                    ]
+                  },
+                  "key": "id",
+                  "url": "/TenderAdmin/MyTenderFilledFormBeenPriced/GetPriceList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+                    {
+                      "field": "row",
+                      "caption": "ردیف",
+                      "width": "50px",
+                      "textAlign": "center"
+                    },
+                    {
+                      "field": "company",
+                      "caption": "شرکت",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "insurance",
+                      "caption": "بیمه",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "createDate",
+                      "caption": "تاریخ",
+                      "search": {
+                        "searchType": "persianDateTime"
+                      }
+                    },
+                    {
+                      "field": "user",
+                      "caption": "کاربر",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "price",
+                      "caption": "مبلغ",
+                      "search": {
+                        "searchType": "text"
+                      }
+                    },
+                    {
+                      "field": "desc",
+                      "caption": "توضیحات"
+                    },
+                    {
+                      "field": "isActive",
+                      "caption": "وضعیت",
+                      "search": {
+                        "searchType": "dropdown",
+                        "url": "/Core/BaseData/Get/IsActive",
+                        "textField": "title",
+                        "valueField": "id"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "MyTenderFilledFormBeenPricedPriceSelectUserModal",
+          "title": "انتخاب",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "uid",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/TenderAdmin/MyTenderFilledFormBeenPriced/GetUsers",
+              "label": "کاربران",
+              "isRequired": true,
+              "reInitOnShowModal": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "انتخاب",
+              "onClick": "postModalData(this, 'MyTenderFilledFormBeenPricedPriceModalGrid', '/TenderAdmin/MyTenderFilledFormBeenPriced/SelectUser')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

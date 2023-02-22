@@ -4,6 +4,7 @@ namespace Oje.Section.Tender.Models.View
 {
     public class TenderFilledFormPriceMainGrid: GlobalGridParentLong
     {
+        public long? code { get; set; }
         public string insurance { get; set; }
         public int? company { get; set; }
         public string user { get; set; }

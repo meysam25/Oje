@@ -1,9 +1,4 @@
 ﻿using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Interfaces
 {
@@ -13,5 +8,6 @@ namespace Oje.AccountService.Interfaces
         int? GetIdBy(string title);
         int? Create(int? provinceId, string title, bool isActive);
         object GetSelect2List(int? provinceId, Select2SearchVM searchInput);
+        bool Exist(int provinceId, int id);
     }
 }

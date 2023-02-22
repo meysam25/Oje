@@ -243,7 +243,7 @@ namespace Oje.AccountService.Services
                         type = t.type.ToString(),
                         t.parentCL,
                         label = t.label.Replace("تنظیمات ", "").Replace("صفحه ", ""),
-                        url = t.type == Infrastructure.Enums.DashboardSectionType.Content || t.type == Infrastructure.Enums.DashboardSectionType.TabContent || t.type == Infrastructure.Enums.DashboardSectionType.Tab || t.type == Infrastructure.Enums.DashboardSectionType.TabContentDynamicContent ? t.url : putIndexAtEntOfUrl(t.url),
+                        url = t.type == Infrastructure.Enums.DashboardSectionType.Content || t.type == Infrastructure.Enums.DashboardSectionType.TabContent || t.type == Infrastructure.Enums.DashboardSectionType.Tab || t.type == Infrastructure.Enums.DashboardSectionType.TabContentDynamicContent || t.type == Infrastructure.Enums.DashboardSectionType.TabContentHorizontal ? t.url : putIndexAtEntOfUrl(t.url),
                         icon = t.icon,
                         t.color,
                         t.nTypes

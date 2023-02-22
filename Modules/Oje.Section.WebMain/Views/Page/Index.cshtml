@@ -1,6 +1,9 @@
 ﻿@using Oje.Section.WebMain.Interfaces
 @{
     Layout = "_WebLayout";
+    if (ViewBag.ignoreL == true) {
+        Layout = null;
+    }
 }
 
 @model Oje.Section.WebMain.Models.View.PageWebVM
@@ -71,12 +74,17 @@
             }
         }
        
-        <div class="myContainer removeBoxShadow">
-            <ul style="border-bottom:none;" class="breadcrumb">
-                <li><a href="/">@(SiteSettingService.GetSiteSetting().Title)</a></li>
-                <li>@Model.title</li>
-            </ul>
-        </div>
+        @{
+            if (ViewBag.ignoreL != true) {
+                <div class="myContainer removeBoxShadow">
+                    <ul style="border-bottom:none;" class="breadcrumb">
+                        <li><a href="/">@(SiteSettingService.GetSiteSetting().Title)</a></li>
+                        <li>@Model.title</li>
+                    </ul>
+                </div>
+            }
+        }
+       
     </div>
     @{
         var sorrtedItem = Model.Items;

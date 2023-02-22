@@ -6,7 +6,6 @@ using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Models.View;
-using Oje.Section.Tender.Services;
 using System;
 using Oje.AccountService.Interfaces;
 using Oje.Section.Tender.Interfaces;
@@ -21,13 +20,16 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
     {
         readonly ISiteSettingService SiteSettingService = null;
         readonly ITenderFileService TenderFileService = null;
+        readonly IUserRegisterFormService UserRegisterFormService = null;
         public TenderFileController(
             ISiteSettingService SiteSettingService,
-            ITenderFileService TenderFileService
+            ITenderFileService TenderFileService,
+            IUserRegisterFormService UserRegisterFormService
             )
         {
             this.SiteSettingService = SiteSettingService;
             this.TenderFileService = TenderFileService;
+            this.UserRegisterFormService = UserRegisterFormService;
         }
 
         [AreaConfig(Title = "دستورالعمل", Icon = "fa-file-invoice", IsMainMenuItem = true)]
@@ -94,6 +96,14 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
+        }
+
+
+        [AreaConfig(Title = "مشاهده لیست فرم های ثبت نام", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetFormList()
+        {
+            return Json(UserRegisterFormService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

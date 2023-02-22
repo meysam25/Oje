@@ -22,18 +22,21 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         readonly ISiteSettingService SiteSettingService = null;
         readonly Interfaces.IUserService UserService = null;
         readonly Interfaces.IRoleService RoleService = null;
+        readonly IUserRegisterFormCategoryService UserRegisterFormCategoryService = null;
         public UserRegisterFormController
             (
                 IUserRegisterFormService UserRegisterFormService,
                 ISiteSettingService SiteSettingService,
                 Interfaces.IUserService UserService,
-                Interfaces.IRoleService RoleService
+                Interfaces.IRoleService RoleService,
+                IUserRegisterFormCategoryService UserRegisterFormCategoryService
             )
         {
             this.UserRegisterFormService = UserRegisterFormService;
             this.SiteSettingService = SiteSettingService;
             this.UserService = UserService;
             this.RoleService = RoleService;
+            this.UserRegisterFormCategoryService = UserRegisterFormCategoryService;
         }
 
         [AreaConfig(Title = "فرم ثبت نام کاربر", Icon = "fa-user", IsMainMenuItem = true)]
@@ -115,6 +118,13 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
         public ActionResult GetRoleList()
         {
             return Json(RoleService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
+        }
+
+        [AreaConfig(Title = "مشاهده لیست گروه بندی", Icon = "fa-list-alt")]
+        [HttpPost]
+        public ActionResult GetCategories()
+        {
+            return Json(UserRegisterFormCategoryService.GetLightList(SiteSettingService.GetSiteSetting()?.Id));
         }
     }
 }

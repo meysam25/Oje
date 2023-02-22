@@ -184,9 +184,9 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);
             if (!userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "nationalCode").Select(t => t.Value).FirstOrDefault().IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.Invalid_NationaCode);
-            if (string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "email").Select(t => t.Value).FirstOrDefault()))
-                throw BException.GenerateNewException(BMessages.Please_Enter_Email);
-            if (!userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "email").Select(t => t.Value).FirstOrDefault().IsValidEmail())
+            //if (string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "email").Select(t => t.Value).FirstOrDefault()))
+            //    throw BException.GenerateNewException(BMessages.Please_Enter_Email);
+            if (!string.IsNullOrEmpty(userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "email").Select(t => t.Value).FirstOrDefault()) && !userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "email").Select(t => t.Value).FirstOrDefault().IsValidEmail())
                 throw BException.GenerateNewException(BMessages.Invalid_Email);
 
             string postalCode = userFilledRegisterForm.UserFilledRegisterFormValues.Where(t => t.UserFilledRegisterFormKey != null && t.UserFilledRegisterFormKey.Key == "postalCode").Select(t => t.Value).FirstOrDefault();

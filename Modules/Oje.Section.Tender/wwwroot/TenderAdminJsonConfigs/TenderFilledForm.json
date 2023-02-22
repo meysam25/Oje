@@ -202,8 +202,8 @@
                       }
                     },
                     {
-                      "field": "insurance",
-                      "caption": "بیمه",
+                      "field": "user",
+                      "caption": "کاربر",
                       "search": {
                         "searchType": "text"
                       }
@@ -216,8 +216,8 @@
                       }
                     },
                     {
-                      "field": "user",
-                      "caption": "کاربر",
+                      "field": "insurance",
+                      "caption": "بیمه",
                       "search": {
                         "searchType": "text"
                       }

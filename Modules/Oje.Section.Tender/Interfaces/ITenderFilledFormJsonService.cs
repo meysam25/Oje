@@ -5,7 +5,7 @@ namespace Oje.Section.Tender.Interfaces
 {
     public interface ITenderFilledFormJsonService
     {
-        void Create(long tenderFilledFormId, string tempJsonFile, int? tenderProposalFormJsonConfigId);
+        long Create(long tenderFilledFormId, string tempJsonFile, int? tenderProposalFormJsonConfigId, bool? isConsultation = null);
         List<TenderFilledFormJson> GetBy(long tenderFilledFormId);
     }
 }

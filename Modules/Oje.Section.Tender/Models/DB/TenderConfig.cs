@@ -10,12 +10,16 @@ namespace Oje.Section.Tender.Models.DB
         public int Id { get; set; }
         [Required, MaxLength(4000)]
         public string GeneralRoles { get; set; }
+        [MaxLength(4000)]
+        public string ConfirmRoles { get; set; }
         [Required, MaxLength(100)]
         public string PrivateDocumentUrl { get; set; }
         [MaxLength(200)]
         public string Title { get; set; }
         [MaxLength(200)]
         public string SubTitle { get; set; }
+        [MaxLength(200)]
+        public string AboutUsLink { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

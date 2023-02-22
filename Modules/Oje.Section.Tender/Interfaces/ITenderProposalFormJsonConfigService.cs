@@ -16,5 +16,6 @@ namespace Oje.Section.Tender.Interfaces
         object GetSelect2List(Select2SearchVM searchInput, int? siteSettingId, int? insuranceCatId);
         List<TenderProposalFormJsonConfig> Validate(int? siteSettingId, List<int> tenderProposalFormJsonConfigIds);
         string GetDocuemntHtml(int? id, int? siteSettingId);
+        string GetConsultJsonConfig(string id, int? siteSettingId);
     }
 }

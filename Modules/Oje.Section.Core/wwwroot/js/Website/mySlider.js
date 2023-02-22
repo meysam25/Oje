@@ -2,7 +2,7 @@
 $.fn.initSlider = function (options) {
 
     function getLeftRightButtonTemplate() {
-        return '<div class="mySliderItemArrowLeft"></div><div class="mySliderItemArrowRight"></div>';
+        return '<div style="display:none" class="mySliderItemArrowLeft"></div><div style="display:none" class="mySliderItemArrowRight"></div>';
     }
 
     function getImageWidth(options, curWindowWidth) {
@@ -43,6 +43,8 @@ $.fn.initSlider = function (options) {
             return;
         if (curElement.isProcessing)
             return;
+        if (!$(curElement).is(':visible'))
+            return;
         var holderQuery = $(this).find('.mySliderItemsInner');
         var eachItemWidth = getImageWidth(curElement.options, $(this).width());
         var curWidth = eachItemWidth * curElement.options.data.length;
@@ -69,6 +71,8 @@ $.fn.initSlider = function (options) {
         if (!curElement || !curElement.options || !curElement.options.data || curElement.options.data.length == 0)
             return;
         if (curElement.isProcessing)
+            return;
+        if (!$(curElement).is(':visible'))
             return;
         var holderQuery = $(this).find('.mySliderItemsInner');
         var eachItemWidth = getImageWidth(curElement.options, $(this).width());

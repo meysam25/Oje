@@ -50,6 +50,8 @@ namespace Oje.AccountService.Models.DB
         public WebsiteType? WebsiteType { get; set; }
         [MaxLength(200)]
         public string Image512Invert { get; set; }
+        [MaxLength(100)]
+        public string CopyRightTitle { get; set; }
 
         [InverseProperty("Parent")]
         public List<SiteSetting> Childs { get; set; }

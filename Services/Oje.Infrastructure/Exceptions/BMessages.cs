@@ -714,5 +714,9 @@ namespace Oje.Infrastructure.Exceptions
         Invalid_Step = 353,
         [Display(Name = "لطفا متن شرایط را وارد کنید")]
         Please_Enter_Terms = 354,
+        [Display(Name = "لطفا شهر و استان را انتخاب کنید")]
+        Please_Select_Province_And_City = 355,
+        [Display(Name = "ابتدا باید توسط ادمین فعال شود")]
+        Need_To_Be_Active_By_Admin_First = 356,
     }
 }

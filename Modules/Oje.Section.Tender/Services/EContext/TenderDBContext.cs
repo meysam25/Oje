@@ -24,6 +24,7 @@ namespace Oje.Section.Tender.Services.EContext
         public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<TenderFilledFormIssue> TenderFilledFormIssues { get; set; }
         public DbSet<TenderFile> TenderFiles { get; set; }
+        public DbSet<UserRegisterForm> UserRegisterForms { get; set; }
 
         public TenderDBContext(DbContextOptions<TenderDBContext> options) : base(options)
         {

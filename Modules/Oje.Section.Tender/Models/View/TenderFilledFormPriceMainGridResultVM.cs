@@ -32,5 +32,7 @@ namespace Oje.Section.Tender.Models.View
         public string downloadFileUrl { get; set; }
         [Display(Name = "انتشار")]
         public bool isPub { get; set; }
+        [Display(Name = "کد نمایندگی")]
+        public string code { get; set; }
     }
 }

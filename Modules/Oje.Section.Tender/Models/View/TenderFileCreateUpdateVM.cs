@@ -7,6 +7,7 @@ namespace Oje.Section.Tender.Models.View
         public int? id { get; set; }
         public string title { get; set; }
         public bool? isActive { get; set; }
+        public int? formId { get; set; }
         public IFormFile mainFile { get; set; }
     }
 }

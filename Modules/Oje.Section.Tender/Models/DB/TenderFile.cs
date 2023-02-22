@@ -13,6 +13,9 @@ namespace Oje.Section.Tender.Models.DB
         [Required, MaxLength(100)]
         public string FileUrl { get; set; }
         public bool IsActive { get; set; }
+        public int? UserRegisterFormId { get; set; }
+        [ForeignKey("UserRegisterFormId"), InverseProperty("TenderFiles")]
+        public UserRegisterForm UserRegisterForm { get; set; }
         public int SiteSettingId { get; set; }
     }
 }

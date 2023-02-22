@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
+using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
 using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
 using Oje.Section.Tender.Services.EContext;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Oje.Section.Tender.Services
 {
@@ -21,7 +25,8 @@ namespace Oje.Section.Tender.Services
             this.TenderFilledFormKeyService = TenderFilledFormKeyService;
         }
 
-        public void CreateByForm(long tenderFilledForm, IFormCollection form, PageForm ppfObj, int? tenderProposalFormJsonConfigId)
+
+        public void CreateByForm(long tenderFilledForm, IFormCollection form, PageForm ppfObj, int? tenderProposalFormJsonConfigId, long? loginUserId = null, bool? isConsultation = null)
         {
             if (ppfObj != null && form != null && tenderFilledForm > 0)
             {
@@ -57,7 +62,7 @@ namespace Oje.Section.Tender.Services
                                     throw BException.GenerateNewException(String.Format(BMessages.X_Length_Can_Not_Be_More_Then_4000.GetEnumDisplayName(), ctrl.label));
                                 long keyId = TenderFilledFormKeyService.CreateIfNeeded(ctrl.name);
                                 if (keyId > 0)
-                                    create(tenderFilledForm, keyId, currValue, tenderProposalFormJsonConfigId);
+                                    createUpdateIfNeeded(tenderFilledForm, keyId, currValue, tenderProposalFormJsonConfigId, loginUserId, isConsultation);
                             }
 
                         }
@@ -67,15 +72,70 @@ namespace Oje.Section.Tender.Services
             }
         }
 
-        private void create(long tenderFilledForm, long keyId, string currValue, int? tenderProposalFormJsonConfigId)
+        public void DeleteConsultValues(long filledFormId, int jsonFormId)
         {
-            db.Entry(new TenderFilledFormsValue()
+            var allValues = db.TenderFilledFormsValues.Where(t => t.IsConsultation == true && t.TenderFilledFormId == filledFormId && t.TenderProposalFormJsonConfigId == jsonFormId).ToList();
+            if (allValues != null)
+                foreach (var value in allValues)
+                    db.Entry(value).State = EntityState.Deleted;
+            db.SaveChanges();
+        }
+
+        public object GetValues(long filledFormId, bool isConsultationv, int jsonFormId)
+        {
+            var result = new Dictionary<string, string>();
+
+            var tempValue = db.TenderFilledFormsValues.Where(t => t.TenderFilledFormId == filledFormId && t.IsConsultation == isConsultationv && t.TenderProposalFormJsonConfigId == jsonFormId).Select(t => new { key = t.TenderFilledFormKey.Key, value = t.Value }).ToList();
+            if (tempValue != null)
+                foreach (var value in tempValue)
+                    result.Add(value.key, value.value);
+
+            return result;
+        }
+
+        private void createUpdateIfNeeded(
+                long tenderFilledForm, long keyId, string currValue, 
+                int? tenderProposalFormJsonConfigId, long? loginUserId, bool? isConsultation
+            )
+        {
+            if (isConsultation != true)
             {
-                TenderFilledFormId = tenderFilledForm,
-                TenderFilledFormKeyId = keyId,
-                Value = currValue,
-                TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId
-            }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                db.Entry(new TenderFilledFormsValue()
+                {
+                    TenderFilledFormId = tenderFilledForm,
+                    TenderFilledFormKeyId = keyId,
+                    Value = currValue,
+                    TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId,
+
+                }).State = EntityState.Added;
+            } 
+            else
+            {
+                var foundValue = db.TenderFilledFormsValues
+                    .Where(t => t.TenderFilledFormKeyId == keyId && t.IsConsultation == isConsultation && 
+                                t.TenderProposalFormJsonConfigId == tenderProposalFormJsonConfigId && t.TenderFilledFormId == tenderFilledForm
+                            )
+                    .FirstOrDefault();
+                if (foundValue == null)
+                {
+                    db.Entry(new TenderFilledFormsValue()
+                    {
+                        TenderFilledFormId = tenderFilledForm,
+                        TenderFilledFormKeyId = keyId,
+                        Value = currValue,
+                        TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId,
+                        UserId = loginUserId,
+                        IsConsultation = isConsultation
+
+                    }).State = EntityState.Added;
+                } 
+                else
+                {
+                    foundValue.UserId = loginUserId;
+                    foundValue.Value = currValue;
+                }
+            }
+            
         }
     }
 }

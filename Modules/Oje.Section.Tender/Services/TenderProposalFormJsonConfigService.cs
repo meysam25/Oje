@@ -40,6 +40,7 @@ namespace Oje.Section.Tender.Services
             {
                 Description = input.pdfDesc,
                 JsonConfig = input.jsonStr,
+                ConsultationJsonConfig = input.cJsonStr,
                 IsActive = input.isActive.ToBooleanReturnFalse(),
                 ProposalFormId = input.ppfId.Value,
                 SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value
@@ -98,7 +99,8 @@ namespace Oje.Section.Tender.Services
                     pdfDesc = t.Description,
                     isActive = t.IsActive,
                     cSOWSiteSettingId = t.SiteSettingId,
-                    cSOWSiteSettingId_Title = t.SiteSetting.Title
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title,
+                    cJsonStr = t.ConsultationJsonConfig
                 })
                 .ToList()
                 .Select(t => new TenderProposalFormJsonConfigCreateUpdateVM
@@ -110,7 +112,8 @@ namespace Oje.Section.Tender.Services
                     ppfId = t.ppfId,
                     ppfId_Title = t.ppfId_Title,
                     cSOWSiteSettingId = t.cSOWSiteSettingId,
-                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title,
+                    cJsonStr = t.cJsonStr
                 })
                 .FirstOrDefault();
         }
@@ -175,6 +178,7 @@ namespace Oje.Section.Tender.Services
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.ProposalFormId = input.ppfId.Value;
             foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
+            foundItem.ConsultationJsonConfig = input.cJsonStr;
 
             db.SaveChanges();
 
@@ -231,6 +235,21 @@ namespace Oje.Section.Tender.Services
         public string GetDocuemntHtml(int? id, int? siteSettingId)
         {
             return db.TenderProposalFormJsonConfigs.OrderByDescending(t => t.Id).Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => t.Description).FirstOrDefault();
+        }
+
+        public string GetConsultJsonConfig(string id, int? siteSettingId)
+        {
+            if (!string.IsNullOrEmpty(id) && id.IndexOf("_") > -1)
+            {
+                int cId = id.Split('_')[1].ToIntReturnZiro();
+                if(cId > 0)
+                {
+                    string resultConfig = db.TenderProposalFormJsonConfigs.Where(t => t.Id == cId && t.SiteSettingId == siteSettingId).Select(t => t.ConsultationJsonConfig).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(resultConfig))
+                        return resultConfig;
+                }
+            }
+            return "{}";
         }
     }
 }

@@ -14,6 +14,7 @@ using Oje.Infrastructure.Enums;
 using System.Collections.Generic;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
+using Microsoft.AspNetCore.Http;
 
 namespace Oje.Section.Tender.Services
 {
@@ -24,6 +25,7 @@ namespace Oje.Section.Tender.Services
         readonly ITenderFilledFormService TenderFilledFormService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly IHttpContextAccessor HttpContextAccessor = null;
 
         public TenderFilledFormPriceService
             (
@@ -31,7 +33,8 @@ namespace Oje.Section.Tender.Services
                 IUserService UserService,
                 ITenderFilledFormService TenderFilledFormService,
                 IUploadedFileService UploadedFileService,
-                IUserNotifierService UserNotifierService
+                IUserNotifierService UserNotifierService,
+                IHttpContextAccessor HttpContextAccessor
             )
         {
             this.db = db;
@@ -39,11 +42,12 @@ namespace Oje.Section.Tender.Services
             this.TenderFilledFormService = TenderFilledFormService;
             this.UploadedFileService = UploadedFileService;
             this.UserNotifierService = UserNotifierService;
+            this.HttpContextAccessor = HttpContextAccessor;
         }
 
-        public ApiResult Create(TenderFilledFormPriceCreateUpdateVM input, int? siteSettingId, long? loginUserId)
+        public ApiResult Create(TenderFilledFormPriceCreateUpdateVM input, int? siteSettingId, long? loginUserId, TenderSelectStatus tenderSelectStatus)
         {
-            createUpdateValidation(input, siteSettingId, loginUserId);
+            createUpdateValidation(input, siteSettingId, loginUserId, tenderSelectStatus);
 
             var newItem = new TenderFilledFormPrice()
             {
@@ -72,8 +76,9 @@ namespace Oje.Section.Tender.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        private void createUpdateValidation(TenderFilledFormPriceCreateUpdateVM input, int? siteSettingId, long? loginUserId)
+        private void createUpdateValidation(TenderFilledFormPriceCreateUpdateVM input, int? siteSettingId, long? loginUserId, TenderSelectStatus tenderSelectStatus)
         {
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
             if (siteSettingId.ToIntReturnZiro() <= 0)
@@ -100,9 +105,6 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (input.minPic != null && input.minPic.Length > 0 && !input.minPic.IsValidExtension(".jpg,.png,.jpeg,.doc,.docx,.pdf"))
                 throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
-            (int? cityId, int? provinceId) = UserService.GetCityAndProvince(loginUserId);
-            if (!TenderFilledFormService.ValidateProvinceAndCity(siteSettingId, input.pKey, provinceId, cityId))
-                throw BException.GenerateNewException(BMessages.Validation_Error);
             if (!TenderFilledFormService.ValidateOpenCloseDate(siteSettingId, input.pKey))
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (db.TenderFilledFormPrices.Any(t => t.CompanyId == input.cid && t.TenderProposalFormJsonConfigId == input.pfId && t.UserId == loginUserId && t.TenderFilledFormId == input.pKey && t.Id != input.id))
@@ -111,21 +113,37 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.Description_Length_Can_Not_Be_More_Then_4000);
             if (db.TenderFilledFormIssues.Any(t => t.TenderFilledFormId == input.pKey))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (
+                    !db.TenderFilledForms
+                    .selectQuiryFilter(tenderSelectStatus, province, cityid, companyIds, loginUserId)
+                    .Where(t => t.Id == input.pKey)
+                    .Any()
+                )
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
         }
 
-        public GridResultVM<TenderFilledFormPriceMainGridResultVM> GetList(TenderFilledFormPriceMainGrid searchInput, int? siteSettingId, long? loginUserId)
+        public GridResultVM<TenderFilledFormPriceMainGridResultVM> GetList(TenderFilledFormPriceMainGrid searchInput, int? siteSettingId, long? loginUserId, TenderSelectStatus? selectStatus = null)
         {
             searchInput = searchInput ?? new TenderFilledFormPriceMainGrid();
 
             var canSeeAllItems = UserService.CanSeeAllItems(loginUserId.ToLongReturnZiro());
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
 
-            var quiryResult = db.TenderFilledFormPrices
-                .Where(t => t.TenderFilledForm.SiteSettingId == siteSettingId && t.TenderFilledFormId == searchInput.pKey)
-                .getWhereUserIdMultiLevelForUserOwnerShip<TenderFilledFormPrice, User>(loginUserId, canSeeAllItems)
+            var quiryResult = db.TenderFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
+                .SelectMany(t => t.TenderFilledFormPrices)
+                .Where(t => t.TenderFilledFormId == searchInput.pKey)
                 ;
 
+            if (selectStatus == null)
+                quiryResult = quiryResult.getWhereUserIdMultiLevelForUserOwnerShip<TenderFilledFormPrice, User>(loginUserId, canSeeAllItems);
+
+            if (searchInput.code != null)
+                quiryResult = quiryResult.Where(t => t.User.AgentCode == searchInput.code);
             if (!string.IsNullOrEmpty(searchInput.insurance))
-                quiryResult = quiryResult.Where(t => t.TenderFilledForm.TenderFilledFormPFs.Any(tt => tt.TenderProposalFormJsonConfig.ProposalForm.Title.Contains(searchInput.insurance)));
+                quiryResult = quiryResult.Where(t => t.TenderProposalFormJsonConfig.ProposalForm.Title.Contains(searchInput.insurance));
             if (searchInput.company.ToIntReturnZiro() > 0)
                 quiryResult = quiryResult.Where(t => t.CompanyId == searchInput.company);
             if (!string.IsNullOrEmpty(searchInput.user))
@@ -152,7 +170,7 @@ namespace Oje.Section.Tender.Services
                 .Select(t => new
                 {
                     id = t.Id,
-                    insurance = t.TenderFilledForm.TenderFilledFormPFs.Select(tt => tt.TenderProposalFormJsonConfig.ProposalForm.Title).ToList(),
+                    insurance = t.TenderProposalFormJsonConfig.ProposalForm.Title,
                     createDate = t.CreateDate,
                     company = t.Company.Title,
                     user = t.User.Firstname + " " + t.User.Lastname,
@@ -160,7 +178,8 @@ namespace Oje.Section.Tender.Services
                     price = t.Price,
                     fid = t.TenderFilledFormId,
                     t.FilledFileUrl,
-                    isPub = t.IsPublished
+                    isPub = t.IsPublished,
+                    code = t.User.AgentCode
                 })
                 .ToList()
                 .Select(t => new TenderFilledFormPriceMainGridResultVM
@@ -176,18 +195,22 @@ namespace Oje.Section.Tender.Services
                     fid = t.fid,
                     downloadFileUrl = GlobalConfig.FileAccessHandlerUrl + t.FilledFileUrl,
                     isPub = t.isPub == true ? true : false,
+                    code = t.code + ""
                 })
                 .ToList()
             };
         }
 
-        public GridResultVM<TenderFilledFormPriceMainGridResultVM> GetListForWeb(TenderFilledFormPriceMainGrid searchInput, int? siteSettingId, long? loginUserId)
+        public GridResultVM<TenderFilledFormPriceMainGridResultVM> GetListForWeb(TenderFilledFormPriceMainGrid searchInput, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus)
         {
             searchInput = searchInput ?? new TenderFilledFormPriceMainGrid();
 
 
-            var quiryResult = db.TenderFilledFormPrices
-                .Where(t => t.TenderFilledForm.SiteSettingId == siteSettingId && t.TenderFilledForm.UserId == loginUserId && t.IsPublished == true && t.TenderFilledFormId == searchInput.pKey)
+            var quiryResult = db.TenderFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, null, null, null, loginUserId)
+                .SelectMany(t => t.TenderFilledFormPrices)
+                .Where(t =>  t.IsPublished == true && t.TenderFilledFormId == searchInput.pKey)
                 ;
 
             if (!string.IsNullOrEmpty(searchInput.insurance))
@@ -247,10 +270,15 @@ namespace Oje.Section.Tender.Services
             };
         }
 
-        public object GetById(long? id, int? siteSettingId, long? userId)
+        public object GetById(long? id, int? siteSettingId, long? userId, TenderSelectStatus? selectStatus = null)
         {
-            return db.TenderFilledFormPrices
-                .Where(t => t.Id == id && t.TenderFilledForm.SiteSettingId == siteSettingId && t.UserId == userId)
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(userId);
+
+            return db.TenderFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, province, cityid, companyIds, userId)
+                .SelectMany(t => t.TenderFilledFormPrices)
+                .Where(t => t.Id == id && t.UserId == userId)
                 .Select(t => new
                 {
                     id = t.Id,
@@ -262,9 +290,9 @@ namespace Oje.Section.Tender.Services
                 .FirstOrDefault();
         }
 
-        public object Update(TenderFilledFormPriceCreateUpdateVM input, int? siteSettingId, long? loginUserId)
+        public object Update(TenderFilledFormPriceCreateUpdateVM input, int? siteSettingId, long? loginUserId, TenderSelectStatus tenderSelectStatus)
         {
-            createUpdateValidation(input, siteSettingId, loginUserId);
+            createUpdateValidation(input, siteSettingId, loginUserId, tenderSelectStatus);
 
             var foundItem = db.TenderFilledFormPrices.Where(t => t.Id == input.id && t.TenderFilledFormId == input.pKey && t.TenderFilledForm.SiteSettingId == siteSettingId && t.UserId == loginUserId).FirstOrDefault();
             if (foundItem == null)
@@ -288,8 +316,16 @@ namespace Oje.Section.Tender.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object Delete(long? id, int? siteSettingId, long? loginUserId)
+        public object Delete(long? id, int? siteSettingId, long? loginUserId, TenderSelectStatus tenderSelectStatus)
         {
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
+            if (
+                !db.TenderFilledForms
+                 .selectQuiryFilter(tenderSelectStatus, province, cityid, companyIds, loginUserId)
+                .Any()
+                )
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
             var foundItem = db.TenderFilledFormPrices.Where(t => t.Id == id && t.TenderFilledForm.SiteSettingId == siteSettingId && t.UserId == loginUserId).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -306,12 +342,17 @@ namespace Oje.Section.Tender.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetUsersForWeb(long? tenderFilledFormId, int? siteSettingId, long? loginUserId)
+        public object GetUsersForWeb(long? tenderFilledFormId, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus)
         {
             List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
 
-            result.AddRange(db.TenderFilledFormPrices
-                .Where(t => t.TenderFilledForm.SiteSettingId == siteSettingId && t.TenderFilledFormId == tenderFilledFormId)
+            result.AddRange(
+                db
+                .TenderFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, null, null, null, loginUserId)
+                .SelectMany(t => t.TenderFilledFormPrices)
+                .Where(t => t.TenderFilledFormId == tenderFilledFormId && t.IsPublished == true)
                 .GroupBy(t => new { t.Company.Title, t.CompanyId, t.UserId, t.User.Firstname, t.User.Lastname })
                 .Select(t => new
                 {
@@ -332,7 +373,7 @@ namespace Oje.Section.Tender.Services
             return result;
         }
 
-        public object SelectPrice(MyTenderFilledFormPriceSelectUserUpdateVM input, int? siteSettingId, long? loginUserId)
+        public object SelectPrice(MyTenderFilledFormPriceSelectUserUpdateVM input, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus)
         {
             selectPriceValidation(input, siteSettingId, loginUserId);
 
@@ -343,8 +384,12 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             var allSelectedPrice =
-                db.TenderFilledFormPrices
-                .Where(t => t.TenderFilledFormId == input.pKey && t.TenderFilledForm.SiteSettingId == siteSettingId && t.TenderFilledForm.UserId == loginUserId && t.IsPublished == true)
+                db
+                .TenderFilledForms
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, null, null, null, loginUserId)
+                .SelectMany(t => t.TenderFilledFormPrices)
+                .Where(t => t.TenderFilledFormId == input.pKey && t.IsPublished == true)
                 .ToList();
 
             if (allSelectedPrice == null || allSelectedPrice.Count == 0)
@@ -387,8 +432,16 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
         }
 
-        public object Publish(long? id, int? siteSettingId, long? loginUserId)
+        public object Publish(long? id, int? siteSettingId, long? loginUserId, TenderSelectStatus tenderSelectStatus)
         {
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
+            if (
+                !db.TenderFilledForms
+                 .selectQuiryFilter(tenderSelectStatus, province, cityid, companyIds, loginUserId)
+                .Any()
+                )
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
             var foundPrice = db.TenderFilledFormPrices.Where(t => t.Id == id && t.TenderFilledForm.SiteSettingId == siteSettingId && t.UserId == loginUserId).FirstOrDefault();
             if (foundPrice == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);

@@ -4,6 +4,7 @@ namespace Oje.Section.RegisterForm.Models.View
 {
     public class userFilledRegisterFormDetailesVM
     {
+
         public string id { get; set; }
         public string ppfTitle { get; set; }
         public string ppfCreateDate { get; set; }
@@ -18,6 +19,8 @@ namespace Oje.Section.RegisterForm.Models.View
         public string headerTemplate { get; set; }
         public string footerTemplate { get; set; }
         public bool isPayed { get; set; }
+        public List<string> uploadFiles { get; set; }
+
 
         public List<userFilledRegisterFormDetailesGroupVM> groups { get; set; }
     }

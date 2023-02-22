@@ -14,5 +14,7 @@ namespace Oje.Infrastructure.Enums
         Tab = 4,
         [Display(Name = "کلید تب متن دینامیک")]
         TabContentDynamicContent = 5,
+        [Display(Name = "کلید تب افوقی")]
+        TabContentHorizontal = 6,
     }
 }

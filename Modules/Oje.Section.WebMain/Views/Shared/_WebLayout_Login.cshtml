@@ -36,39 +36,39 @@
     @{
         if (!string.IsNullOrEmpty(ViewData["imageUrl"] + ""))
         {
-            <meta property="og:image" content="@(ViewData["imageUrl"])" />
+                    <meta property="og:image" content="@(ViewData["imageUrl"])" />
         }
         if (!string.IsNullOrEmpty(ViewData["type"] + ""))
         {
-            <meta property="og:type" content="@ViewData["type"]" />
+                    <meta property="og:type" content="@ViewData["type"]" />
         }
         if (!string.IsNullOrEmpty(ViewData["createDate"] + ""))
         {
-            <meta property="article:published_time" content="@ViewData["createDate"] " />
+                    <meta property="article:published_time" content="@ViewData["createDate"] " />
         }
         if (!string.IsNullOrEmpty(ViewData["canonical"] + ""))
         {
-            <link rel="canonical" href="@ViewData["canonical"]" />
-            <meta property="og:url" content="@ViewData["canonical"]" />
+                    <link rel="canonical" href="@ViewData["canonical"]" />
+                    <meta property="og:url" content="@ViewData["canonical"]" />
         }
         else
         {
-            <link rel="canonical" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
-            <meta property="og:url" content="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+                    <link rel="canonical" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+                    <meta property="og:url" content="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
         }
         if (!string.IsNullOrEmpty(ViewData["shortLink"] + ""))
         {
-            <link rel="shortlink" href="@ViewData["shortLink"]" />
+                    <link rel="shortlink" href="@ViewData["shortLink"]" />
         }
         else
         {
-            <link rel="shortlink" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
+                    <link rel="shortlink" href="@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)" />
         }
         if (!string.IsNullOrEmpty(ViewData["metaDescription"] + ""))
         {
-            <meta name="description" content="@ViewData["metaDescription"]" />
-            <meta property="og:description" content="@ViewData["metaDescription"]" />
-            <meta name="twitter:description" content="@ViewData["metaDescription"]" />
+                    <meta name="description" content="@ViewData["metaDescription"]" />
+                    <meta property="og:description" content="@ViewData["metaDescription"]" />
+                    <meta name="twitter:description" content="@ViewData["metaDescription"]" />
         }
 
     }
@@ -118,9 +118,9 @@
                     @{
                         if (!string.IsNullOrEmpty(curSetting.ImageText))
                         {
-                            <a title="@(curSetting.Title)" class="leftFooterLink" href="/">
-                                <img alt="@(curSetting.Title)" width="100" height="37" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
-                            </a>
+                                    <a title="@(curSetting.Title)" class="leftFooterLink" href="/">
+                                        <img alt="@(curSetting.Title)" width="100" height="37" data-src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.ImageText)" />
+                                    </a>
                         }
                     }
                 </div>
@@ -162,7 +162,7 @@
                         </div>
                         <div style="display:block;" class="footerCenterSection">
                              مرکز تماس:
-                            <a id="supportPhone" ></a>
+                            <a style="display:inline-block;direction:ltr;" id="supportPhone" ></a>
                         </div>
                         <div class="footerSharingIconSection">
                             <a id="aTelegeram" title="تلگرام" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>

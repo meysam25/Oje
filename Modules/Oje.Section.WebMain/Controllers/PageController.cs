@@ -31,14 +31,14 @@ namespace Oje.Section.WebMain.Controllers
 
         [Route("Page/{pid}/{pTitle}")]
         [HttpGet]
-        public IActionResult Index(long? pid, string pTitle)
+        public IActionResult Index(long? pid, string pTitle, [FromQuery] bool? ignoreL)
         {
             var foundPage = PageService.GetBy(pid, pTitle, SiteSettingService.GetSiteSetting()?.Id);
             if (foundPage == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            ViewBag.ignoreL = ignoreL;
             var curDomain = Request.Scheme + "://" + Request.Host;
-
             GlobalServices.FillSeoInfo(
                 ViewData,
                  foundPage.title,

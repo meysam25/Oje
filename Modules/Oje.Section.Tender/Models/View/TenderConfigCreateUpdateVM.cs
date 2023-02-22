@@ -9,9 +9,12 @@ namespace Oje.Section.Tender.Models.View
         public int id { get; set; }
         [IgnoreStringEncode]
         public MyHtmlString desctpion { get; set; }
+        [IgnoreStringEncode]
+        public MyHtmlString confirmDesc { get; set; }
         public IFormFile generallow { get; set; }
         public string generallow_address { get; set; }
         public string title { get; set; }
         public string subTitle { get; set; }
+        public string aboutUsLink { get; set; }
     }
 }

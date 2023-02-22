@@ -15,7 +15,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "پیشنهاد در انتظار تایید")]
+    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Icon = "fa-file-powerpoint", Title = "پیشنهاد در انتظار تایید")]
     [CustomeAuthorizeFilter]
     public class ProposalFilledFormW8ForConfirmAgentController : Controller
     {

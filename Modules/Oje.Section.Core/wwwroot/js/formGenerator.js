@@ -26,8 +26,7 @@ function generateForm(res, targetId, canBeAppened) {
             executeArrFunctions();
         }
 
-    }
-    else {
+    } else {
         if (canBeAppened)
             $('.MainHolder').append(result);
         else
@@ -103,6 +102,7 @@ function getInputTemplate(ctrl) {
                 break;
             case 'TabContent':
             case 'TabContentDynamicContent':
+            case 'TabContentHorizontal':
                 result += getTabContentTemplate(ctrl);
                 break;
             case 'Shortcut':
@@ -1243,12 +1243,12 @@ function getTabContentTemplate(ctrl) {
     if (ctrl.url && ctrl.label) {
         if (!ctrl.color)
             ctrl.color = 'orange';
-        result += '<div id="' + ctrl.id + '_holder" class="tabButtonBoxHolder">';
+        result += '<div id="' + ctrl.id + '_holder" class="tabButtonBoxHolder ' + (ctrl.type == 'TabContentHorizontal' ? 'MakeHorizoneTC' : '') +'">';
         result += '<span  style="' + (ctrl.color ? 'background-color:' + ctrl.color + ';' : '') + '" class="tabButtonIcon fa ' + ctrl.icon + '" ><span style="' + (ctrl.color ? 'border-color:' + ctrl.color + ';' : '') + '" ></span></span>';
         result += '<a ' + getTabButtonNotifyUpdateAttribute(ctrl.nTypes) + ' id="' + ctrl.id + '" style="margin-bottom:15px;position:relative;' + (ctrl.color ? 'border-top:4px solid ' + ctrl.color + ';' : '') + '" class="tabButtonBox" href="' + ctrl.url + '" ><span class="buttonTitle">' + ctrl.label + '</span></a>';
         result += '</div>';
         functionsList.push(function () {
-            if (ctrl.type == 'TabContent')
+            if (ctrl.type == 'TabContent' || ctrl.type == 'TabContentHorizontal')
                 addCountNotificationToButtonIfHasGrid(this.ctrl.id);
             else if (ctrl.type == 'TabContentDynamicContent')
                 loadTabContentDynamicContentText(this.ctrl.id);
@@ -1396,8 +1396,17 @@ function getCheckboxButtonTemplate(ctrl) {
                     var formData = new FormData();
                     appendAllQueryStringToForm(formData);
                     if (window['exteraModelParams'])
-                        for (var prop in exteraModelParams)
-                            formData.append(prop, exteraModelParams[prop]);
+                        for (var prop in exteraModelParams) {
+                            var isExist = false;
+                            for (const key of formData.keys()) {
+                                if (prop == key) {
+                                    isExist = true;
+                                    break;
+                                }
+                            }
+                            if (!isExist)
+                                formData.append(prop, exteraModelParams[prop]);
+                        }
                     postForm(this.ctrl.fileDownloadConfig.url, formData, function (res) {
                         if (res) {
                             var foundLabel = $('#' + this.ctrl.id).closest('.myCtrl').find('label');
@@ -1672,6 +1681,18 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
             if (this.ctrl.url) {
                 var formData = new FormData();
                 appendAllQueryStringToForm(formData);
+                if (window['exteraModelParams'])
+                    for (var prop in exteraModelParams) {
+                        var isExist = false;
+                        for (const key of formData.keys()) {
+                            if (prop == key) {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                        if (!isExist)
+                            formData.append(prop, exteraModelParams[prop]);
+                    }
                 postForm(this.ctrl.url, formData, function (res) {
                     if (res && res.length > 0) {
                         if (this.ctrl.schema) {
@@ -1680,6 +1701,7 @@ function getDynamicFileUploadCtrlTemplate(ctrl) {
                                 template += '<div class="' + this.ctrl.css + '">';
                                 template += getFileCTRLTemplate({
                                     compressImage: true,
+                                    hideImagePreview: this.ctrl.hideImagePreview,
                                     label: res[i][this.ctrl.schema.title],
                                     type: 'file',
                                     name: res[i][this.ctrl.schema.name].replace(/ /g, ''),
@@ -3099,6 +3121,22 @@ function doPageActions(actionOnLastStep) {
                     $('#' + actionOnLastStep.modalId).modal('show');
                 }
             }, null, function () { hideLoader($('#' + actionOnLastStep.objectId)) });
+        } else if (actionOnLastStep.actionName == 'postDataCCMRG' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0 && actionOnLastStep.url) {
+            var formQuery = $('#' + actionOnLastStep.objectId);
+            var postData = getFormData(formQuery);
+            if (window['exteraModelParams']) {
+                for (var prop in exteraModelParams)
+                    postData.append(prop, exteraModelParams[prop]);
+            }
+            showLoader(formQuery);
+            postForm(actionOnLastStep.url, postData, function (res) {
+                if (res.isSuccess == true) {
+                    if (this.actionOnLastStep.gridId) {
+                        $('#' + this.actionOnLastStep.gridId)[0].refreshData();
+                    }
+                    $('#' + this.actionOnLastStep.objectId).closest('.modal').modal('hide');
+                }
+            }.bind({ actionOnLastStep: actionOnLastStep }), null, function () { hideLoader(formQuery); });
         }
     }
 }
@@ -3432,7 +3470,7 @@ function bindPanelByUrl(querySelector) {
             var formData = new FormData();
             showLoader(querySelector);
             postForm(dataURl, formData, function (res) {
-                bindForm(res, querySelector);
+                bindForm(res, querySelector, true);
             }.bind({ querySelector }), null, function () { hideLoader(querySelector); });
         }
     }
@@ -3566,6 +3604,13 @@ function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
     if (window['exteraModelParams'])
         for (var prop in exteraModelParams)
             postData.append(prop, exteraModelParams[prop]);
+    var holderQuiry = null;
+    if (typeof targetId === 'string' || targetId instanceof String) {
+        holderQuiry = $('#' + targetId);
+    } else {
+        holderQuiry = $(targetId);
+    }
+    showLoader(holderQuiry);
     postForm(jsonUrl, postData, function (res) {
         generateForm(res, this.targetId);
         if (!this.targetId) {
@@ -3578,5 +3623,5 @@ function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
         if (this.whatToDoAfterFinished) {
             this.whatToDoAfterFinished();
         }
-    }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }), null, null, null, rType);
+    }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }), null, function () { hideLoader(this); }.bind(holderQuiry) , null, rType);
 }

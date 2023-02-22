@@ -11,13 +11,12 @@ using Oje.ProposalFormService.Models.View;
 using Oje.Security.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های پیشنهاد", Icon = "fa-file-powerpoint", Title = "بیمه نامه های من (صادر شده)")]
+    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Icon = "fa-file-powerpoint", Title = "بیمه نامه های من (صادر شده)")]
     [CustomeAuthorizeFilter]
     public class MyIssueProposalFilledFormController: Controller
     {

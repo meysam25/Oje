@@ -17,6 +17,7 @@ namespace Oje.Section.BaseData.Models.View
         public IFormFile textPic { get; set; }
         public string seo { get; set; }
         public WebsiteType? websiteType { get; set; }
+        public string copyRightTitle { get; set; }
         public int? pKey { get; set; }
     }
 }

@@ -140,6 +140,7 @@
                             },
                             {
                               "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
+                              "showHideClass": "leftTextAlign",
                               "type": "button",
                               "onClick": "moveToStepById('stepContent_recoveryPassword', 'username', 'username', this)",
                               "title": "بازیابی کلمه عبور",

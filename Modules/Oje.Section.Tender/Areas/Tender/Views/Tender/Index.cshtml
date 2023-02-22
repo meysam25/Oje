@@ -1,7 +1,9 @@
 ﻿
 @{
+    string marginHolder = "";
     if(ViewBag.layer != null)
     {
+        marginHolder = "margin:10px;";
         Layout = ViewBag.layer;
     }
     else
@@ -17,7 +19,7 @@
     }
 }
 
-<div class="MainHolder"></div>
+<div style="@marginHolder" class="MainHolder"></div>
 <script>
     @{
         if(ViewBag.exteraParameters != null)

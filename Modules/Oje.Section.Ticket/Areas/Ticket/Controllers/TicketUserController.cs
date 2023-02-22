@@ -82,7 +82,7 @@ namespace Oje.Section.Ticket.Areas.Ticket.Controllers
             return Json(TicketUserAnswerService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "افزودن تیکت های من جدید", Icon = "fa-plus")]
+        [AreaConfig(Title = "پاسخ دادن تیکت های من جدید", Icon = "fa-plus")]
         [HttpPost]
         public IActionResult CreateAnswer([FromForm] TicketUserAnswerCreateUpdateVM input)
         {

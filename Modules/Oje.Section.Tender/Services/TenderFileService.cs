@@ -17,13 +17,16 @@ namespace Oje.Section.Tender.Services
         const string validFileExtensions = ".pdf,.png,.jpg,.jpeg";
         readonly IUploadedFileService UploadedFileService = null;
         readonly TenderDBContext db = null;
+        readonly IUserRegisterFormService UserRegisterFormService = null;
         public TenderFileService
             (
                 IUploadedFileService UploadedFileService,
+                IUserRegisterFormService UserRegisterFormService,
                 TenderDBContext db
             )
         {
             this.UploadedFileService = UploadedFileService;
+            this.UserRegisterFormService = UserRegisterFormService;
             this.db = db;
         }
 
@@ -36,7 +39,8 @@ namespace Oje.Section.Tender.Services
                 Title = input.title,
                 FileUrl = " ",
                 IsActive = input.isActive.ToBooleanReturnFalse(),
-                SiteSettingId = siteSettingId.Value
+                SiteSettingId = siteSettingId.Value,
+                UserRegisterFormId = input.formId
             };
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
@@ -62,6 +66,9 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
             if (input.title.Length > 100)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
+            if (input.formId.ToIntReturnZiro() > 0 && !UserRegisterFormService.Exist(input.formId.Value, siteSettingId))
+                throw BException.GenerateNewException(BMessages.ProposalForm_Not_Founded);
+
 
         }
 
@@ -86,7 +93,8 @@ namespace Oje.Section.Tender.Services
                     id = t.Id,
                     title = t.Title,
                     mainFile_address = GlobalConfig.FileAccessHandlerUrl + t.FileUrl,
-                    isActive = t.IsActive
+                    isActive = t.IsActive,
+                    formId = t.UserRegisterFormId
                 }).FirstOrDefault();
         }
 
@@ -103,21 +111,22 @@ namespace Oje.Section.Tender.Services
 
             int row = searchInput.skip;
 
-            return new GridResultVM<TenderFileMainGridResultVM>() {
+            return new GridResultVM<TenderFileMainGridResultVM>()
+            {
                 total = quiryResult.Count(),
                 data = quiryResult
                 .OrderByDescending(t => t.Id)
                 .Skip(searchInput.skip)
                 .Take(searchInput.take)
-                .Select(t => new 
-                { 
+                .Select(t => new
+                {
                     id = t.Id,
                     title = t.Title,
                     isActive = t.IsActive,
                 })
                 .ToList()
-                .Select(t => new TenderFileMainGridResultVM 
-                { 
+                .Select(t => new TenderFileMainGridResultVM
+                {
                     id = t.id,
                     row = ++row,
                     title = t.title,
@@ -137,6 +146,7 @@ namespace Oje.Section.Tender.Services
 
             foundItem.IsActive = input.isActive.ToBooleanReturnFalse();
             foundItem.Title = input.title;
+            foundItem.UserRegisterFormId = input.formId;
 
             if (input.mainFile != null && input.mainFile.Length > 0)
                 foundItem.FileUrl = UploadedFileService.UploadNewFile(Infrastructure.Enums.FileType.OnlineFile, input.mainFile, null, siteSettingId, foundItem.Id, validFileExtensions, false, null, input.title);
@@ -146,11 +156,11 @@ namespace Oje.Section.Tender.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public object GetListForWeb(int? siteSettingId)
+        public object GetListForWeb(int? siteSettingId, int? formId)
         {
             return db.TenderFiles
-                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true)
-                .Select(t => new 
+                .Where(t => t.SiteSettingId == siteSettingId && t.IsActive == true && t.UserRegisterFormId == formId)
+                .Select(t => new
                 {
                     id = t.Id,
                     title = t.Title,

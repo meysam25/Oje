@@ -100,8 +100,8 @@
                         @{
                             if (group.id > 0 && group.configId > 0)
                             {
-                                <a href="/Tender/DownloadDocument?id=@group.id&cId=@group.configId" style="float:left;color:#007bff;" >دانلود مدارک</a> 
-                                <div style="clear:both" ></div>
+                                //<a href="/Tender/DownloadDocument?id=@group.id&cId=@group.configId" style="float:left;color:#007bff;" >دانلود مدارک</a> 
+                                //<div style="clear:both" ></div>
                             }
                         }
                     </div>
@@ -113,7 +113,7 @@
                                     foreach(var gorupItem in group.ProposalFilledFormPdfGroupItems )
                                     {
                                          <div class="printItem @(gorupItem.cssClass)">
-                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                            <label style="@(gorupItem.isBold == true ? "font-weight:bold;" : "")" >@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong></label>
                                         </div>
                                     }
                                 } else if (group.TenderFilledFormPdfVMGroupVMs != null && group.TenderFilledFormPdfVMGroupVMs.Count > 0)
@@ -154,6 +154,10 @@
     <div class="pdfFooterSection">
         <div>محل امضا @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
     </div>
+</div>
+
+<div style="text-align:center;">
+    <a class="btn btn-primary" href="/Account/Dashboard/Index" >بازگشت به داشبورد</a>
 </div>
 
 @{
