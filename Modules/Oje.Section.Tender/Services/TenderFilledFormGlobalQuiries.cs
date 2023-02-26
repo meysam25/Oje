@@ -19,7 +19,7 @@ namespace Oje.Section.Tender.Services
             {
                 //supper admin
                 if (selectStatus == TenderSelectStatus.Current)
-                    return input.Where(t => !t.TenderFilledFormIssues.Any() && t.AvalibleDate >= DateTime.Now);
+                    return input.Where(t => !t.TenderFilledFormIssues.Any() && t.AvalibleDate >= DateTime.Now && !t.TenderFilledFormPrices.Any());
                 else if (selectStatus == TenderSelectStatus.Expired)
                     return input.Where(t => !t.TenderFilledFormIssues.Any() && t.AvalibleDate < DateTime.Now);
                 else if (selectStatus == TenderSelectStatus.BeenPriced)
@@ -35,7 +35,7 @@ namespace Oje.Section.Tender.Services
                         return input.Where(t =>
                                                 (t.CityId == null || cityid == null || t.CityId == cityid) &&
                                                 (t.ProvinceId == null || province == null || t.ProvinceId == province) &&
-                                                (!t.TenderFilledFormValidCompanies.Any() || t.TenderFilledFormValidCompanies.Any(tt => companyIds.Contains(tt.CompanyId)))
+                                                (!t.TenderFilledFormValidCompanies.Any() || companyIds == null || companyIds.Count == 0 || t.TenderFilledFormValidCompanies.Any(tt => companyIds.Contains(tt.CompanyId)))
                                         )
                                     .Where(t =>
                                         (t.OpenDate != null && t.OpenDate <= DateTime.Now && t.AvalibleDate != null && t.AvalibleDate >= DateTime.Now)
@@ -74,7 +74,7 @@ namespace Oje.Section.Tender.Services
                         if (selectStatus == TenderSelectStatus.NewTenderUser)
                             return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPFs.Count() != t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true && tt.IsConfirmByUser == true));
                         else if (selectStatus == TenderSelectStatus.CurrentTenderUser)
-                            return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPFs.Count() == t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true && tt.IsConfirmByUser == true) && !t.TenderFilledFormPrices.Any(t => t.IsPublished == true));
+                            return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPFs.Count() == t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true && tt.IsConfirmByUser == true) && !t.TenderFilledFormPrices.Any(t => t.IsPublished == true) && !t.TenderFilledFormPrices.Any());
                         else if (selectStatus == TenderSelectStatus.BeenPriceTenderUser)
                             return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPrices.Any() && t.TenderFilledFormIssues.Count() != t.TenderFilledFormPFs.Count() && t.IsPublished == true);
                         else if (selectStatus == TenderSelectStatus.IssueTenderUser)

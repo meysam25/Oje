@@ -37,6 +37,7 @@ namespace Oje.ProposalFormService.Services
         readonly IProposalFilledFormAdminBaseQueryService ProposalFilledFormAdminBaseQueryService = null;
         readonly IUserNotifierService UserNotifierService = null;
         readonly IColorService ColorService = null;
+        readonly static string validExtension = ".jpg,.png,.pdf,.doc,.docx,.xls";
 
         public ProposalFilledFormService(
                 ProposalFormDBContext db,
@@ -212,7 +213,16 @@ namespace Oje.ProposalFormService.Services
         {
             foreach (var file in form.Files)
             {
-                UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, file, loginUserId, siteSettingId, proposalFilledFormId, ".jpg,.png,.pdf,.doc,.docx,.xls", true);
+                UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, file, loginUserId, siteSettingId, proposalFilledFormId, validExtension, true);
+            }
+        }
+
+        private void validateUploadFiles(IFormCollection form)
+        {
+            foreach (var file in form.Files)
+            {
+                if (!file.IsValidExtension(validExtension))
+                    throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
             }
         }
 
@@ -269,6 +279,7 @@ namespace Oje.ProposalFormService.Services
             ppfObj.exteraCtrls = exteraTextBox;
 
             validateColor(form, allCtrls);
+            validateUploadFiles(form);
         }
 
         private void validateColor(IFormCollection form, List<ctrl> allCtrls)

@@ -193,7 +193,7 @@ $.fn.initMyGrid = function (option) {
             return `
                 <tbody class="myTableBody">
                     <tr>
-                        <td style="text-align:center;" colspan="`+ this.getGridColumnCount(option, data) + `" >Loading ...</td>
+                        <td style="text-align:center;" colspan="`+ this.getGridColumnCount(option, data) + `" >در حال بارگزاری ...</td>
                     </tr>
                 </tbody>
             `
