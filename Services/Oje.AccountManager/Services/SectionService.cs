@@ -40,7 +40,7 @@ namespace Oje.AccountService.Services
                 childs = t.Controllers.Select(tt => new
                 {
                     id = tt.Id,
-                    title = tt.Title,
+                    title = tt.Title + "("+ tt.Name +")",
                     childs = tt.Actions.Select(ttt => new
                     {
                         id = ttt.Id,

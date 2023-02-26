@@ -186,7 +186,7 @@ namespace Oje.Section.Tender.Services
                  .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
                 .Where(t => t.Id == id);
 
-            
+
             var foundItem =
                 quiryResult
                 .Select(t => new
@@ -259,8 +259,9 @@ namespace Oje.Section.Tender.Services
                                     title = "";
                                 if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
                                     ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = ctrl.parentCL, title = title, value = value });
-                            } else if (ctrl.type == ctrlType.label)
-                                ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = ctrl.parentCL, title = "", value = ctrl.label});
+                            }
+                            else if (ctrl.type == ctrlType.label)
+                                ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = ctrl.parentCL, title = "", value = ctrl.label });
                         }
                         if (ProposalFilledFormPdfGroupItems.Count > 0)
                         {
@@ -341,14 +342,14 @@ namespace Oje.Section.Tender.Services
                     insurances = t.TenderFilledFormPFs.Select(tt => tt.TenderProposalFormJsonConfig.ProposalForm.Title).ToList(),
                     createDate = t.CreateDate,
                     t.IsPublished,
-                    hasIssueItem = t.TenderFilledFormIssues.Any(tt => tt.UserId == loginUserId),
                     t.OpenDate,
-                    t.ProvinceId,
-                    t.CityId,
-                    cCount = t.TenderFilledFormValidCompanies.Count(),
                     pCount = t.TenderFilledFormPrices.Count(),
                     psCount = t.TenderFilledFormPrices.Count(t => t.IsConfirm == true),
-                    issPublished = t.IsPublished
+                    issPublished = t.IsPublished,
+                    confirmByAdminCount = t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true),
+                    confirmByUserCount = t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByUser == true),
+                    userPublishedPrice = t.TenderFilledFormPrices.Where(tt => tt.IsPublished == true).Select(tt => tt.UserId).ToList(),
+                    countIssued = t.TenderFilledFormIssues.Count()
                 })
                 .ToList()
                 .Select(t => new MyTenderFilledFormMainGridResultVM
@@ -358,7 +359,7 @@ namespace Oje.Section.Tender.Services
                     insurances = getInsuranceByNumber(t.insurances),
                     createDate = t.createDate.ToFaDate() + " " + t.createDate.ToString("hh:mm"),
                     isPub = t.IsPublished == true ? true : false,
-                    status = getStatus(t.hasIssueItem, t.OpenDate, t.ProvinceId, t.CityId, t.cCount, t.pCount, t.psCount, t.issPublished)
+                    status = getStatus(t.countIssued, t.OpenDate, t.pCount, t.psCount, t.issPublished, t.confirmByAdminCount, t.confirmByUserCount, t.insurances, t.userPublishedPrice),
                 })
                 .ToList()
             };
@@ -424,18 +425,18 @@ namespace Oje.Section.Tender.Services
                     createDate = t.CreateDate,
                     t.IsPublished,
                     userfullname = t.User.Firstname + " " + t.User.Lastname,
-                    hasIssueItem = t.TenderFilledFormIssues.Any(tt => tt.UserId == loginUserId),
                     t.OpenDate,
-                    t.ProvinceId,
-                    t.CityId,
-                    cCount = t.TenderFilledFormValidCompanies.Count(),
                     pCount = t.TenderFilledFormPrices.Count(),
                     psCount = t.TenderFilledFormPrices.Count(t => t.IsConfirm == true),
                     issPublished = t.IsPublished,
                     siteTitleMN2 = t.SiteSetting.Title,
                     provinceTitle = t.ProvinceId > 0 ? t.Province.Title : "",
                     cityTitle = t.CityId > 0 ? t.City.Title : "",
-                    endDate = t.AvalibleDate
+                    endDate = t.AvalibleDate,
+                    confirmByAdminCount = t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true),
+                    confirmByUserCount = t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByUser == true),
+                    userPublishedPrice = t.TenderFilledFormPrices.Where(tt => tt.IsPublished == true).Select(tt => tt.UserId).ToList(),
+                    countIssued = t.TenderFilledFormIssues.Count()
                 })
                 .ToList()
                 .Select(t => new TenderFilledFormMainGridResultVM
@@ -446,7 +447,7 @@ namespace Oje.Section.Tender.Services
                     createDate = t.createDate.ToFaDate() + " " + t.createDate.ToString("hh:mm"),
                     isPub = t.IsPublished == true ? true : false,
                     userfullname = t.userfullname,
-                    status = getStatus(t.hasIssueItem, t.OpenDate, t.ProvinceId, t.CityId, t.cCount, t.pCount, t.psCount, t.issPublished),
+                    status = getStatus(t.countIssued, t.OpenDate, t.pCount, t.psCount, t.issPublished, t.confirmByAdminCount, t.confirmByUserCount, t.insurances, t.userPublishedPrice),
                     siteTitleMN2 = t.siteTitleMN2,
                     provinceTitle = t.provinceTitle,
                     cityTitle = t.cityTitle,
@@ -456,22 +457,32 @@ namespace Oje.Section.Tender.Services
             };
         }
 
-        private string getStatus(bool hasIssueItem, DateTime? openDate, int? provinceId, int? cityId, int cCount, int pCount, int psCount, bool? issPublished)
+        private string getStatus(int countIssued, DateTime? openDate, int pCount, int psCount, bool? issPublished, int confirmByAdminCount, int confirmByUserCount, List<string> insurances, List<long> userPublishedPrice)
         {
-            string result = TenderStatus.Create.GetEnumDisplayName();
+            string result = TenderStatus.W8FormPPDocuments.GetEnumDisplayName();
 
-            if (hasIssueItem == true)
+            int  maxBeenPriced = 0;
+            if (userPublishedPrice != null && userPublishedPrice.Count > 0)
+            {
+                maxBeenPriced = userPublishedPrice.GroupBy(t => t).Max(t => t.Count());
+            }
+
+            if (insurances != null && countIssued == insurances.Count)
                 result = TenderStatus.Issue.GetEnumDisplayName();
             else if (psCount > 0)
-                result = TenderStatus.SelectPrice.GetEnumDisplayName();
+                result = TenderStatus.WinnerBeenSelected.GetEnumDisplayName();
+            else if (insurances != null &&  maxBeenPriced > 0 && maxBeenPriced == insurances.Count)
+                result = TenderStatus.W8ForSelectWinner.GetEnumDisplayName();
             else if (pCount > 0)
-                result = TenderStatus.FillPrice.GetEnumDisplayName();
+                result = TenderStatus.BeenPriced.GetEnumDisplayName();
             else if (issPublished == true)
-                result = TenderStatus.Published.GetEnumDisplayName();
-            else if (provinceId > 0 || cityId > 0 || cCount > 0)
-                result = TenderStatus.FillCondation.GetEnumDisplayName();
+                result = TenderStatus.PublishedTender.GetEnumDisplayName();
             else if (openDate != null)
-                result = TenderStatus.FillDates.GetEnumDisplayName();
+                result = TenderStatus.ConfirmTenderDate.GetEnumDisplayName();
+            else if (insurances != null && confirmByUserCount == insurances.Count())
+                result = TenderStatus.W8ForStartTeending.GetEnumDisplayName();
+            else if (insurances != null && confirmByAdminCount  == insurances.Count())
+                result = TenderStatus.W8ForConfirmDocuments.GetEnumDisplayName();
 
             return result;
         }

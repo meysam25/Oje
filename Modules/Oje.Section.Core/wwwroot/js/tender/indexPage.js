@@ -95,14 +95,16 @@ function initContactUsButton() {
         postForm('/ContactUs', new FormData(), function (res) {
             var selectQuiry = $('.mainContentBodyScroll');
             if (selectQuiry.length > 0) {
-                selectQuiry.html('<div class="makeCenterContentForCC"></div>');
-                if (res.title) {
-                    $('.rightSectionTitleHodler .title').html(res.title);
-                }
-                if (res.subTitle) {
-                    $('.rightSectionTitleHodler .subTitle').html(res.subTitle);
-                }
-                loadJsonConfig('/ContactUs/GetJsonConfig', $('.makeCenterContentForCC'));
+                selectQuiry.html('<div class="makeCenterContentForCC aboutUsSectionFixMapProblem"></div>');
+                loadJsonConfig('/ContactUs/GetJsonConfig', $('.makeCenterContentForCC'), function ()
+                {
+                    if (res.subTitle) {
+                        selectQuiry.find('.makeCenterContentForCC').prepend('<h4 class="aboutUsSubTitle" >' + res.subTitle + '</h3>');
+                    }
+                    if (res.title) {
+                        selectQuiry.find('.makeCenterContentForCC').prepend('<h3 class="aboutUsTitle" >' + res.title + '</h3>');
+                    }
+                });
             }
         }, null, function () { hideLoader($('.mainContent')); }, null, 'GET', { Platform: 'mobile' });
     });
@@ -132,93 +134,95 @@ function initAboutUsButton() {
 function initLicenceButton() {
     $('.licenceButton').click(function ()
     {
-        var selectQuiry = $('.mainContentBodyScroll');
-        if (selectQuiry.length > 0) {
-            selectQuiry.html('<div class="holderLicences" ></div>');
-            selectQuiry = selectQuiry.find('.holderLicences');
-            $('.mySlider').parent().hide();
-            showLoader($('.mainContent'));
-            postForm('/Home/GetFooterSambole', new FormData(), function (res) {
-                selectQuiry.append(res && res.enamad ? ('<div class="holderLicenceDiv" >' + res.enamad + '</div>') : '');
-                selectQuiry.append(res && res.samandehi ? ('<div class="holderLicenceDiv" >' + res.samandehi + '</div>') : '');
-                selectQuiry.find('img[data-src]').loadImageOnScroll();
-                postForm('/Home/GetTopLeftIconList', new FormData(), function (res) {
-                    hideLoader($('.mainContent'));
-                    if (res) {
-                        var html = '';
-                        if (res.mainFile1_address && res.title1) {
-                            html += addTopLeftIcons(res.title1, res.mainFile1_address, res.description1, true);
-                        }
-                        if (res.mainFile2_address && res.title2) {
-                            html += addTopLeftIcons(res.title2, res.mainFile2_address, res.description2);
-                        }
-                        if (res.mainFile3_address && res.title3) {
-                            html += addTopLeftIcons(res.title3, res.mainFile3_address, res.description3);
-                        }
-                        selectQuiry.append(html);
-                        $('.mainHeaderIranLogo,.mainHeaderElectronDevelopLogo').each(function () {
-                            var title = $(this).attr('title');
-                            var desc = $(this).attr('data-des');
-                            if (desc) {
-                                var modalObj = {
-                                    id: uuidv4RemoveDash(),
-                                    title: title,
-                                    modelBody: desc,
-                                    class: "makeImage100",
-                                    actions: [
-                                        {
-                                            "title": "متوجه شدم",
-                                            "onClick": "closeThisModal(this)",
-                                            "class": "btn-secondary"
-                                        }
-                                    ]
-                                };
-                                $(this).attr('data-modal-id', modalObj.id);
-                                $('.mainContent').append(getModualTemplate(modalObj))
-                            }
-                        });
-                        $('.mainHeaderIranLogo[data-des],.mainHeaderElectronDevelopLogo[data-des]').click(function () {
-                            var modalId = $(this).attr('data-modal-id');
-                            $('#' + modalId).modal('show');
-                        });
-
-                    }
-                }, null, null, null, 'GET');
-                selectQuiry.find('a[href]').click(function (e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    openModal($(this).attr('href'), $(this).text());
-
-                    return false;
-                });
-                selectQuiry.find('img[onclick]').each(function ()
-                {
-                    $(this).attr('data-onclick', $(this).attr('onclick'));
-                    $(this).removeAttr('onclick');
-                });
-                selectQuiry.find('img[data-onclick]').click(function (e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    var onClick = $(this).attr('data-onclick');
-                    if (onClick && onClick.indexOf('window.open(') > -1) {
-                        var url = onClick.split('window.open(')[1];
-                        if (url.indexOf('"') > -1)
-                            url = url.split('"')[1];
-                        else if (url.indexOf("'") > -1)
-                            url = url.split("'")[1];
-                        openModal(url, $(this).attr('alt'));
-                    }
-                    return false;
-                });
-            }, null, null, null, 'GET');
-            
-        }
+        loadLicenceF($('.mainContentBodyScroll'));
     });
 }
 
+function loadLicenceF(sQuiry) {
+    var selectQuiry = sQuiry;
+    if (selectQuiry.length > 0) {
+        selectQuiry.html('<div class="holderLicences" ></div>');
+        selectQuiry = selectQuiry.find('.holderLicences');
+        showLoader($('.mainContent'));
+        postForm('/Home/GetFooterSambole', new FormData(), function (res) {
+            selectQuiry.append(res && res.enamad ? ('<div class="holderLicenceDiv" >' + res.enamad + '</div>') : '');
+            selectQuiry.append(res && res.samandehi ? ('<div class="holderLicenceDiv" >' + res.samandehi + '</div>') : '');
+            selectQuiry.find('img[data-src]').loadImageOnScroll();
+            postForm('/Home/GetTopLeftIconList', new FormData(), function (res) {
+                hideLoader($('.mainContent'));
+                if (res) {
+                    var html = '';
+                    if (res.mainFile1_address && res.title1) {
+                        html += addTopLeftIcons(res.title1, res.mainFile1_address, res.description1, true);
+                    }
+                    if (res.mainFile2_address && res.title2) {
+                        html += addTopLeftIcons(res.title2, res.mainFile2_address, res.description2);
+                    }
+                    if (res.mainFile3_address && res.title3) {
+                        html += addTopLeftIcons(res.title3, res.mainFile3_address, res.description3);
+                    }
+                    selectQuiry.prepend(html);
+                    selectQuiry.find('.mainHeaderIranLogo,.mainHeaderElectronDevelopLogo').each(function () {
+                        var title = $(this).attr('title');
+                        var desc = $(this).attr('data-des');
+                        if (desc) {
+                            var modalObj = {
+                                id: uuidv4RemoveDash(),
+                                title: title,
+                                modelBody: desc,
+                                class: "makeImage100",
+                                actions: [
+                                    {
+                                        "title": "متوجه شدم",
+                                        "onClick": "closeThisModal(this)",
+                                        "class": "btn-secondary"
+                                    }
+                                ]
+                            };
+                            $(this).attr('data-modal-id', modalObj.id);
+                            $('.mainContent').append(getModualTemplate(modalObj))
+                        }
+                    });
+                    selectQuiry.find('.mainHeaderIranLogo[data-des],.mainHeaderElectronDevelopLogo[data-des]').click(function () {
+                        var modalId = $(this).attr('data-modal-id');
+                        $('#' + modalId).modal('show');
+                    });
+
+                }
+            }, null, null, null, 'GET');
+            selectQuiry.find('a[href]').click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                openModal($(this).attr('href'), $(this).text());
+
+                return false;
+            });
+            selectQuiry.find('img[onclick]').each(function () {
+                $(this).attr('data-onclick', $(this).attr('onclick'));
+                $(this).removeAttr('onclick');
+            });
+            selectQuiry.find('img[data-onclick]').click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var onClick = $(this).attr('data-onclick');
+                if (onClick && onClick.indexOf('window.open(') > -1) {
+                    var url = onClick.split('window.open(')[1];
+                    if (url.indexOf('"') > -1)
+                        url = url.split('"')[1];
+                    else if (url.indexOf("'") > -1)
+                        url = url.split("'")[1];
+                    openModal(url, $(this).attr('alt'));
+                }
+                return false;
+            });
+        }, null, null, null, 'GET');
+
+    }
+}
+
 function addTopLeftIcons(title, imgSrc, des, isVisibleAllways) {
-    return '<div class="holderLicenceDiv"><img ' + (des ? 'style="cursor:pointer"' : '') + '  class="' + (isVisibleAllways ? 'mainHeaderIranLogo' : 'mainHeaderElectronDevelopLogo') + '" title="' + title + '" src="' + imgSrc + '"  ' + (des ? 'data-des=\'' + des + '\'' : '') + ' /><div>';
+    return '<div class="holderLicenceDiv"><img ' + (des ? 'style="cursor:pointer"' : '') + '  class="' + (isVisibleAllways ? 'mainHeaderIranLogo' : 'mainHeaderElectronDevelopLogo') + '" title="' + title + '" src="' + imgSrc + '"  ' + (des ? 'data-des=\'' + des + '\'' : '') + ' /></div>';
 }
 
 function initStartButton() {
@@ -290,13 +294,15 @@ $.fn.initAutoNumber = function (calceTime) {
                     $(this.curThis).html(curValue);
                 }.bind({ curThis: this }), (valueIncremant == 0 ? 250 : 5));
             };
-            var handler = onVisibilityChange(foundObj, function () {
+            var startFunction = function () {
                 if (!this.curThis.isAutoStarted) {
                     this.curThis.startAutoNumber();
                     this.curThis.isAutoStarted = true;
                 }
-            }.bind({ curThis: foundObj }));
-            handler();
+            }.bind({ curThis: foundObj });
+            onVisibilityChange(foundObj, startFunction);
+            startFunction();
+            //handler();
             //$(window).on('DOMContentLoaded load resize scroll', handler);
         }
     });
@@ -311,10 +317,6 @@ function loadOurPrice() {
         <div class="ourPrideSectionTitle"><span></span></div>
         <div class="ourPrideDescription"></div>
         <div class="ourPrideSectionItems"></div>
-        <div class="aboutUsSectionExteraButtons">
-            <a href="#" class="secountBtn readMoreAboutUs">مشاهده اطلاعات بیشتر</a>
-            <span class="mainBtn contactUsButton">تماس با ما</span>
-        </div>
     </section>
 </div>
 `);
@@ -327,7 +329,7 @@ $.fn.loadAndBindOurPride = function (url) {
     function getOurPrideItem(imgSrc, title) {
         var result = '';
 
-        if (title) {
+        if (title && title.trim()) {
             result += '<div class="ourPrideSectionItem">';
             if (imgSrc)
                 result += '<img width="80" alt="' + title.replace('{', '').replace('}', '') + '" height="80" data-src="' + imgSrc + '" />';
@@ -343,7 +345,7 @@ $.fn.loadAndBindOurPride = function (url) {
     function getOurPrideItemTemplate(title) {
         var result = '';
 
-        if (title) {
+        if (title && title.trim()) {
             if (title.indexOf('{') == -1 || title.indexOf('}') == -1) {
                 result = '<span class="ourPrideSectionItemLightText">' + title + '</span>';
             } else {

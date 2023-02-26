@@ -10,6 +10,7 @@ using Oje.Section.Tender.Interfaces;
 using Oje.Security.Interfaces;
 using System;
 using Oje.Infrastructure.Exceptions;
+using ICompanyService = Oje.Section.Tender.Interfaces.ICompanyService;
 
 namespace Oje.Section.Tender.Areas.Tender.Controllers
 {
@@ -25,6 +26,7 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
         readonly ITenderProposalFormJsonConfigService TenderProposalFormJsonConfigService = null;
         readonly IBlockAutoIpService BlockAutoIpService = null;
         readonly ITenderFilledFormService TenderFilledFormService = null;
+        readonly ICompanyService CompanyService = null;
 
         public TenderController
             (
@@ -33,7 +35,8 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
                 IProposalFormCategoryService ProposalFormCategoryService,
                 ITenderProposalFormJsonConfigService TenderProposalFormJsonConfigService,
                 IBlockAutoIpService BlockAutoIpService,
-                ITenderFilledFormService TenderFilledFormService
+                ITenderFilledFormService TenderFilledFormService,
+                ICompanyService CompanyService
             )
         {
             this.TenderConfigService = TenderConfigService;
@@ -42,6 +45,7 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
             this.TenderProposalFormJsonConfigService = TenderProposalFormJsonConfigService;
             this.BlockAutoIpService = BlockAutoIpService;
             this.TenderFilledFormService = TenderFilledFormService;
+            this.CompanyService = CompanyService;
         }
 
         [AreaConfig(Title = "ثبت مناقصه", Icon = "fa-file-plus")]
@@ -167,6 +171,13 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? insuranceCatId)
         {
             return Json(TenderProposalFormJsonConfigService.GetSelect2List(searchInput, SiteSettingService.GetSiteSetting()?.Id, insuranceCatId));
+        }
+
+        [AreaConfig(Title = "لیست شرکت های بیمه", Icon = "fa-list-alt")]
+        [HttpPost]
+        public IActionResult GetCompanyList()
+        {
+            return Json(CompanyService.GetLightListString());
         }
     }
 }

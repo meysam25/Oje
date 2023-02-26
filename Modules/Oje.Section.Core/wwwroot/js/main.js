@@ -535,7 +535,7 @@ var allCacheURLs = [
 
 function isValidURL(url) {
     var foundURl = allCacheURLs.filter(function (item) { return url.toLowerCase().indexOf(item.toLowerCase()) > -1; })
-    return foundURl && foundURl.length > 0
+    return foundURl && foundURl.length > 0 && url.toLowerCase().indexOf('/Account/Dashboard/GetJsonConfig'.toLowerCase()) == -1;
 }
 
 function cacheLocalstorage(url, data) {
@@ -604,6 +604,7 @@ function postForm(url, postData, success, error, completeEvent, ignoreAutoToast,
         rType = 'POST';
     if (!exHeader)
         exHeader = {};
+    
     url = fillUrlIfNeeded(rType, postData, url)
     var foundDataFromCache = getDataFromLocalStorageCache(url);
     if (foundDataFromCache) {

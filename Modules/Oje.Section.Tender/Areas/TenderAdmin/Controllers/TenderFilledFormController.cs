@@ -24,7 +24,6 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         readonly ITenderFilledFormPFService TenderFilledFormPFService = null;
         readonly Interfaces.ICompanyService CompanyService = null;
         readonly ITenderFilledFormPriceService TenderFilledFormPriceService = null;
-        readonly ITenderFilledFormIssueService TenderFilledFormIssueService = null;
         readonly TenderSelectStatus tenderSelectStatus = TenderSelectStatus.CurrentTender;
 
         public TenderFilledFormController
@@ -33,8 +32,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
                ISiteSettingService SiteSettingService,
                ITenderFilledFormPFService TenderFilledFormPFService,
                Interfaces.ICompanyService CompanyService,
-               ITenderFilledFormPriceService TenderFilledFormPriceService,
-               ITenderFilledFormIssueService TenderFilledFormIssueService
+               ITenderFilledFormPriceService TenderFilledFormPriceService
            )
         {
             this.TenderFilledFormService = TenderFilledFormService;
@@ -42,7 +40,6 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             this.TenderFilledFormPFService = TenderFilledFormPFService;
             this.CompanyService = CompanyService;
             this.TenderFilledFormPriceService = TenderFilledFormPriceService;
-            this.TenderFilledFormIssueService = TenderFilledFormIssueService;
         }
 
         [AreaConfig(Title = "مناقصات در حال برگزاری", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
@@ -78,7 +75,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         {
             ViewBag.isPrint = isPrint;
             //ViewBag.newLayoutName = "_WebLayout";
-            return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
+            return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId, tenderSelectStatus));
         }
 
         [HttpGet]
@@ -184,35 +181,6 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 
             return Json(Convert.ToBase64String(byteResult));
         }
-
-        [AreaConfig(Title = "افزودن صدور جدید برای مناقصات در حال برگزاری", Icon = "fa-plus")]
-        [HttpPost]
-        public IActionResult IssuePPF([FromForm] TenderFilledFormIssueCreateUpdateVM input)
-        {
-            return Json(TenderFilledFormIssueService.Create(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
-        }
-
-        [AreaConfig(Title = "به روز رسانی صدور مناقصات در حال برگزاری", Icon = "fa-pencil")]
-        [HttpPost]
-        public IActionResult UpdateIssuePPF([FromForm] TenderFilledFormIssueCreateUpdateVM input)
-        {
-            return Json(TenderFilledFormIssueService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
-        }
-
-        [AreaConfig(Title = "مشاهده یک مناقصات در حال برگزاری صادر شده", Icon = "fa-eye")]
-        [HttpPost]
-        public IActionResult GetIssueById([FromForm] GlobalLongId input)
-        {
-            return Json(TenderFilledFormIssueService.GetBy(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
-        }
-
-        [AreaConfig(Title = "مشاهده لیست بیمه نامه های صادره", Icon = "fa-list-alt")]
-        [HttpPost]
-        public ActionResult GetIssueList([FromForm] GlobalGridParentLong searchInput)
-        {
-            return Json(TenderFilledFormIssueService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
-        }
-
 
         [AreaConfig(Title = "مشاهده لیست شرکت", Icon = "fa-list-alt")]
         [HttpPost]

@@ -74,7 +74,7 @@ namespace Oje.Section.Tender.Services
                         if (selectStatus == TenderSelectStatus.NewTenderUser)
                             return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPFs.Count() != t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true && tt.IsConfirmByUser == true));
                         else if (selectStatus == TenderSelectStatus.CurrentTenderUser)
-                            return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPFs.Count() == t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true && tt.IsConfirmByUser == true) && !t.TenderFilledFormPrices.Any(t => t.IsConfirm == true));
+                            return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPFs.Count() == t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true && tt.IsConfirmByUser == true) && !t.TenderFilledFormPrices.Any(t => t.IsPublished == true));
                         else if (selectStatus == TenderSelectStatus.BeenPriceTenderUser)
                             return input.Where(t => t.UserId == loginUserId && t.TenderFilledFormPrices.Any() && t.TenderFilledFormIssues.Count() != t.TenderFilledFormPFs.Count() && t.IsPublished == true);
                         else if (selectStatus == TenderSelectStatus.IssueTenderUser)

@@ -97,7 +97,7 @@
                         "icon": "fa-usd",
                         "prop": "id",
                         "ignoreParentButton": true,
-                        "template": "function bindRow (curRow) { return '<span data-url=\"/TenderAdmin/MyTenderFilledForm/ConfirmPF\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.icU== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
+                        "template": "function bindRow (curRow) { return '<span data-refreshAllGrid=\"true\" data-url=\"/TenderAdmin/MyTenderFilledForm/ConfirmPF\" class=\"myGridAction myGridActionDelete\" data-id=\"'+ curRow.id +'\" title=\"انتخاب\"  style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa '+ (curRow.icU== true ? 'fa-check-square' : 'fa-square' ) +'\" ></i></span>' };bindRow(data)"
                       }
                     ]
                   },

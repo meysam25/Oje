@@ -49,7 +49,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.layer = "_WebLayout";
+            //ViewBag.layer = "_WebLayout";
             ViewBag.Title = "مناقصات صادر شده";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyTenderFilledFormIssue", new { area = "TenderAdmin" });
             return View();

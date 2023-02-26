@@ -599,6 +599,7 @@ $.fn.initMyGrid = function (option) {
                     $(this).click(function () {
                         var url = $(this).attr('data-url');
                         var id = $(this).attr('data-id');
+                        var hasUpdateAllGrid = $(this).attr('data-refreshAllGrid');
                         var pKey = $(this).closest('.modal').length > 0 ? $(this).closest('.modal')[0].pKey : '';
                         if (url && id) {
                             confirmDialog(($(this).attr('title') ? $(this).attr('title') : 'حذف'), 'آیا اطمینان دارید ؟', function () {
@@ -607,7 +608,13 @@ $.fn.initMyGrid = function (option) {
                                 if (this.pKey)
                                     postData.append('pKey', this.pKey);
                                 showLoader($(this.curThis).closest('.myGridCTRL'))
-                                postForm(this.url, postData, function () { $(this).closest('.myGridCTRL')[0].refreshData(); updateDashboardGridCountIfExist(); }.bind(this.curThis), null, function () { hideLoader($(this).closest('.myGridCTRL')) }.bind(this.curThis));
+                                postForm(this.url, postData, function () { $(this).closest('.myGridCTRL')[0].refreshData(); updateDashboardGridCountIfExist(); }.bind(this.curThis), null, function ()
+                                {
+                                    hideLoader($(this).closest('.myGridCTRL'));
+                                    if (hasUpdateAllGrid) {
+                                        refreshAllGrid();
+                                    }
+                                }.bind(this.curThis));
                             }.bind({ url, id, curThis: this, pKey: pKey }));
                         }
                     });

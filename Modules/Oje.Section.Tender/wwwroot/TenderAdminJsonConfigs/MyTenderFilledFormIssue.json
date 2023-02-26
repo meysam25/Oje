@@ -5,14 +5,6 @@
         {
           "notificationTriger": [ "UpdateTenderDates", "UpdateTenderAccess", "PublishTender", "TenderSelectPrice", "AddTenderPrice", "UpdateTenderPrice", "PublishTenderPrice", "DeleteTenderPrice", "IssueTender", "UpdateIssueTender" ],
           "id": "MyTenderFilledFormIssueGrid",
-          "topActions": [
-            {
-              "title": "ثبت مناقصه جدید",
-              "onClick": "location.href='/Tender/Index'",
-              "type": "add",
-              "modalId": "MyNotIssueProposalFilledFormNewPPF"
-            }
-          ],
           "exportToExcelUrl": "/TenderAdmin/MyTenderFilledFormIssue/Export",
           "showColumnConfigButton": true,
           "actions": {

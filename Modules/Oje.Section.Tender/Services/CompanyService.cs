@@ -50,5 +50,23 @@ namespace Oje.Section.Tender.Services
 
             return result;
         }
+
+        public object GetLightListString()
+        {
+            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange
+               (
+                   db.Companies
+                   .Where(t => t.Id > 0)
+                   .Select(t => new
+                   {
+                       id = t.Title,
+                       title = t.Title
+                   }).ToList()
+               );
+
+            return result;
+        }
     }
 }

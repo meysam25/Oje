@@ -156,6 +156,12 @@
         bindFooterPhoneAndAddress();
         bindFooterIcons();
         $('img[data-src]').loadImageOnScroll();
+        @{
+            if (Context.Request.IsHttps)
+            {
+                ViewContext.Writer.Write("caches.delete('mainServiceName');" + Environment.NewLine);
+            }
+        }
     </script>
 </body>
 </html>

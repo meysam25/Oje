@@ -1,7 +1,7 @@
 ﻿
 var functionsList = [];
 
-function generateForm(res, targetId, canBeAppened) {
+function generateForm(res, targetId, canBeAppened, url) {
     var result = '';
     if (res && res.panels && res.panels.length > 0) {
         result += '<div class="row">';
@@ -16,6 +16,7 @@ function generateForm(res, targetId, canBeAppened) {
                 $('#' + targetId).append(result);
             else
                 $('#' + targetId).html(result);
+            $('#' + targetId).attr('data-json-config-url', url);
             executeArrFunctions();
         }
         else {
@@ -23,6 +24,7 @@ function generateForm(res, targetId, canBeAppened) {
                 $(targetId).append(result);
             else
                 $(targetId).html(result);
+            $(targetId).attr('data-json-config-url', url);
             executeArrFunctions();
         }
 
@@ -31,6 +33,7 @@ function generateForm(res, targetId, canBeAppened) {
             $('.MainHolder').append(result);
         else
             $('.MainHolder').html(result);
+        $('.MainHolder').attr('data-json-config-url', url);
         executeArrFunctions();
     }
 }
@@ -2048,7 +2051,7 @@ function loadCSS(src) {
 
 function getTextAreaTemplate(ctrl) {
     var result = '';
-    result += '<div class="myCtrl form-group ' + (ctrl.type == 'ck' ? 'makeLabelBGSilver' : '') + '">';
+    result += '<div class="myCtrl form-group ' + ctrl.class + ' ' + (ctrl.type == 'ck' ? 'makeLabelBGSilver' : '') + '">';
     if (ctrl.label) {
         result += '<label for="' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
@@ -3123,13 +3126,22 @@ function doPageActions(actionOnLastStep) {
             }, null, function () { hideLoader($('#' + actionOnLastStep.objectId)) });
         } else if (actionOnLastStep.actionName == 'postDataCCMRG' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0 && actionOnLastStep.url) {
             var formQuery = $('#' + actionOnLastStep.objectId);
+            var jsonCofnigUrlQuiry = formQuery.closest('[data-json-config-url]');
+            var closestUrl = jsonCofnigUrlQuiry.length > 0 ? jsonCofnigUrlQuiry.attr('data-json-config-url') : location.href;
+            var targetUrl = actionOnLastStep.url;
+            if (targetUrl.indexOf('****') > -1) {
+                var allCurUrl = closestUrl.split('/');
+                if (allCurUrl.length > 2)
+                    targetUrl = targetUrl.replace('****', allCurUrl[allCurUrl.length - 2]);
+            }
+            
             var postData = getFormData(formQuery);
             if (window['exteraModelParams']) {
                 for (var prop in exteraModelParams)
                     postData.append(prop, exteraModelParams[prop]);
             }
             showLoader(formQuery);
-            postForm(actionOnLastStep.url, postData, function (res) {
+            postForm(targetUrl, postData, function (res) {
                 if (res.isSuccess == true) {
                     if (this.actionOnLastStep.gridId) {
                         $('#' + this.actionOnLastStep.gridId)[0].refreshData();
@@ -3361,7 +3373,9 @@ function postModalData(curElement, gridId, url, ignoreCloseModal, successUrl, on
                 clearForm(qSelector);
                 setFocusToFirstVisbleText(qSelector);
             }
-            if (this.gridId && $('#' + this.gridId).length > 0 && $('#' + this.gridId)[0].refreshData) {
+            if (this.gridId == 'allGrid') {
+                refreshAllGrid();
+            } else if (this.gridId && $('#' + this.gridId).length > 0 && $('#' + this.gridId)[0].refreshData) {
                 $('#' + this.gridId)[0].refreshData();
             }
         }
@@ -3612,7 +3626,7 @@ function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
     }
     showLoader(holderQuiry);
     postForm(jsonUrl, postData, function (res) {
-        generateForm(res, this.targetId);
+        generateForm(res, this.targetId, null, jsonUrl);
         if (!this.targetId) {
             $('.mainLoaderForAdminArea').addClass('mainLoaderForAdminAreaClose');
             setTimeout(function () {
@@ -3624,4 +3638,14 @@ function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
             this.whatToDoAfterFinished();
         }
     }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }), null, function () { hideLoader(this); }.bind(holderQuiry) , null, rType);
+}
+
+function refreshAllGrid() {
+    $('.myGridCTRL').each(function ()
+    {
+        var curElement = $(this)[0];
+        if (curElement && curElement.refreshData) {
+            curElement.refreshData();
+        }
+    });
 }
