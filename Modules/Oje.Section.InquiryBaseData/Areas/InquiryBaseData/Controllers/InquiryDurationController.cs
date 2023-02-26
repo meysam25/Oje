@@ -13,7 +13,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 {
     [Area("InquiryBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "تنظیمات استعلام", Icon = "fa-info", Title = "مدت زمان بیمه نامه")]
+    [AreaConfig(ModualTitle = "تنظیمات استعلام",  Order = 10,Icon = "fa-info", Title = "مدت زمان بیمه نامه")]
     [CustomeAuthorizeFilter]
     public class InquiryDurationController: Controller
     {

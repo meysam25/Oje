@@ -56,11 +56,17 @@ namespace Oje.Security.Services
         {
             if (!UserLoginConfigs.Keys.Any(t => t == siteSettingId))
             {
-                var foundUserLoginConfig = db.UserLoginConfigs.Where(t => t.SiteSettingId == siteSettingId).AsNoTracking().FirstOrDefault();
-                if (foundUserLoginConfig == null)
-                    foundUserLoginConfig = new UserLoginConfig() { DeactiveMinute = 10, SiteSettingId = siteSettingId.ToIntReturnZiro(), FailCount = 5, InActiveLogoffMinute = 60 };
+                lock (UserLoginConfigs)
+                {
+                    if (UserLoginConfigs.Keys.Any(t => t == siteSettingId))
+                        return UserLoginConfigs[siteSettingId.ToIntReturnZiro()];
+                    var foundUserLoginConfig = db.UserLoginConfigs.Where(t => t.SiteSettingId == siteSettingId).AsNoTracking().FirstOrDefault();
+                    if (foundUserLoginConfig == null)
+                        foundUserLoginConfig = new UserLoginConfig() { DeactiveMinute = 10, SiteSettingId = siteSettingId.ToIntReturnZiro(), FailCount = 5, InActiveLogoffMinute = 60 };
 
-                UserLoginConfigs[siteSettingId.ToIntReturnZiro()] = foundUserLoginConfig;
+                    UserLoginConfigs[siteSettingId.ToIntReturnZiro()] = foundUserLoginConfig;
+                }
+
             }
 
             return UserLoginConfigs[siteSettingId.ToIntReturnZiro()];

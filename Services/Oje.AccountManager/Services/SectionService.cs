@@ -454,6 +454,7 @@ namespace Oje.AccountService.Services
 
             addEditItem.Icon = controllerConfigAttribute.Icon;
             addEditItem.Title = controllerConfigAttribute.ModualTitle;
+            addEditItem.Order = controllerConfigAttribute.Order;
 
             db.SaveChanges();
 
@@ -474,6 +475,7 @@ namespace Oje.AccountService.Services
             newParentModalSection.Title = controllerConfigAttribute.Title;
             newParentModalSection.Icon = controllerConfigAttribute.Icon;
             newParentModalSection.HasFormGenerator = controllerConfigAttribute.HasFormGenerator;
+            newParentModalSection.Order = controllerConfigAttribute.Order;
             if (string.IsNullOrEmpty(newParentModalSection.Icon))
                 newParentModalSection.Icon = "";
 
@@ -520,6 +522,7 @@ namespace Oje.AccountService.Services
                     catIsActive = t.SectionCategorySections.Select(tt => tt.SectionCategory.IsActive).FirstOrDefault(),
                     Icon = t.Icon,
                     Title = t.Title,
+                    Order = t.Order,
                     Controllers = t.Controllers.Select(tt => new
                     {
                         catOrder = tt.ControllerCategoryControllers.Select(ttt => ttt.ControllerCategory.Order).FirstOrDefault(),
@@ -528,6 +531,7 @@ namespace Oje.AccountService.Services
                         catIsActive = tt.ControllerCategoryControllers.Select(ttt => ttt.ControllerCategory.IsActive).FirstOrDefault(),
                         Icon = tt.Icon,
                         Title = tt.Title,
+                        Order = tt.Order,
                         Actions = tt.Actions.Where(ttt => ttt.IsMainMenuItem == true && ttt.RoleActions.Any(tttt => listRoleIds.Contains(tttt.RoleId))).Select(ttt => new
                         {
                             Icon = ttt.Icon,
@@ -539,7 +543,7 @@ namespace Oje.AccountService.Services
                     }).Where(t => t.Actions.Any()).ToList()
                 }).ToList().Where(t => t.Controllers.Any(tt => tt.Actions.Any())).ToList();
 
-            var groupBySectionCat = groupResult.OrderBy(t => t.catOrder == 0 ? 999 : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
+            var groupBySectionCat = groupResult.OrderBy(t => t.catOrder == 0 ? t.Order : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
 
             foreach (var group in groupBySectionCat)
             {
@@ -561,7 +565,7 @@ namespace Oje.AccountService.Services
                             title = modal.Title
                         };
 
-                        var controllerGroupItems = modal.Controllers.OrderBy(t => t.catOrder == 0 ? 999 : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
+                        var controllerGroupItems = modal.Controllers.OrderBy(t => t.catOrder == 0 ? t.Order : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
                         List<SiteMenueVM> controllerChildList = new List<SiteMenueVM>();
                         foreach (var controllerGroup in controllerGroupItems)
                         {
@@ -617,7 +621,7 @@ namespace Oje.AccountService.Services
 
                         List<SiteMenueVM> controllerList = new List<SiteMenueVM>();
 
-                        var groupControllers = item.Controllers.OrderBy(t => t.catOrder == 0 ? 999 : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
+                        var groupControllers = item.Controllers.OrderBy(t => t.catOrder == 0 ? t.Order : t.catOrder).GroupBy(t => new { catTitle = t.catIsActive == false ? null : t.catTitle, catIcon = t.catIsActive == false ? null : t.catIcon }).ToList();
                         foreach (var gITem in groupControllers)
                         {
                             if (!string.IsNullOrEmpty(gITem.Key.catTitle) && !string.IsNullOrEmpty(gITem.Key.catIcon))

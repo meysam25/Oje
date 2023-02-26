@@ -15,7 +15,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Icon = "fa-file-powerpoint", Title = " پیشنهاد جدید")]
+    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Order = 12,  Icon = "fa-file-powerpoint", Title = " پیشنهاد جدید")]
     [CustomeAuthorizeFilter]
     public class ProposalFilledFormNewAgentController : Controller
     {

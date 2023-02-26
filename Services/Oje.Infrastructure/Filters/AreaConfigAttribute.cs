@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Infrastructure.Filters
 {
@@ -13,6 +9,7 @@ namespace Oje.Infrastructure.Filters
         public string Icon { get; set; }
         public bool IsMainMenuItem { get; set; }
         public bool HasFormGenerator { get; set; }
+        public int Order { get; set; }
 
         public AreaConfigAttribute()
         {
@@ -21,6 +18,7 @@ namespace Oje.Infrastructure.Filters
             ModualTitle = "";
             IsMainMenuItem = false;
             HasFormGenerator = false;
+            Order = 1;
         }
     }
 }

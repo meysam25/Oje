@@ -13,7 +13,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
 {
     [Area("ProposalFormBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "تنظیمات فرم پیشنهاد", Icon = "fa-file-image", Title = "فایل های شرایط پرداخت")]
+    [AreaConfig(ModualTitle = "تنظیمات فرم پیشنهاد", Order = 11, Icon = "fa-file-image", Title = "فایل های شرایط پرداخت")]
     [CustomeAuthorizeFilter]
     public class PaymentMethodFileController: Controller
     {

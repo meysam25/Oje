@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
@@ -33,6 +29,7 @@ namespace Oje.AccountService.Models.DB
         [InverseProperty("Controllers")]
         public Section Section { get; set; }
         public bool HasFormGenerator { get; set; }
+        public int? Order { get; set; }
 
         [InverseProperty("Controller")]
         public List<Action> Actions { get; set; }

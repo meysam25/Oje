@@ -13,7 +13,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
 {
     [Area("ProposalFormBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "تنظیمات فرم پیشنهاد", Icon = "fa-file-powerpoint", Title = "فرم های پیشنهاد")]
+    [AreaConfig(ModualTitle = "تنظیمات فرم پیشنهاد", Order = 11, Icon = "fa-file-powerpoint", Title = "فرم های پیشنهاد")]
     [CustomeAuthorizeFilter]
     public class ProposalFormController: Controller
     {

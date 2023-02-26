@@ -14,7 +14,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
 {
     [Area("InquiryBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "تنظیمات استعلام", Icon = "fa-info", Title = "تخفیفات تفاهم نامه")]
+    [AreaConfig(ModualTitle = "تنظیمات استعلام",  Order = 10,Icon = "fa-info", Title = "تخفیفات تفاهم نامه")]
     [CustomeAuthorizeFilter]
     public class InsuranceContractDiscountController: Controller
     {
