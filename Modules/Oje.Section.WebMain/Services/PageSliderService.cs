@@ -73,7 +73,7 @@ namespace Oje.Section.WebMain.Services
             if (input.id.ToLongReturnZiro() <= 0 && (input.mainImage == null || input.mainImage.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (input.mainImage != null && input.mainImage.Length > 0 && !input.mainImage.IsValidExtension(validFileExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
             if (!db.Pages.Any(t => t.Id == input.pid && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId)))
                 throw BException.GenerateNewException(BMessages.Please_Select_Page);
         }

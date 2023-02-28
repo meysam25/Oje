@@ -172,5 +172,26 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         {
             return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id, SelectStatus));
         }
+
+        [AreaConfig(Title = "مشاهده مدارک مناقصه", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetFileList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(TenderFilledFormService.GetUploadFiles(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
+        }
+
+        [AreaConfig(Title = "حذف مدارک مناقصه", Icon = "fa-trash-o")]
+        [HttpPost]
+        public ActionResult DeleteFile([FromForm] GlobalLongId input, [FromForm] long? pKey)
+        {
+            return Json(TenderFilledFormService.DeleteUploadFile(input?.id, pKey, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
+        }
+
+        [AreaConfig(Title = "افزودن مدارک مناقصه", Icon = "fa-plus")]
+        [HttpPost]
+        public ActionResult UploadNewFile([FromForm] long? pKey, [FromForm] IFormFile mainFile, [FromForm] string title)
+        {
+            return Json(TenderFilledFormService.UploadNewFile(pKey, mainFile, title, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
+        }
     }
 }

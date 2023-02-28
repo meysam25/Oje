@@ -73,7 +73,7 @@ namespace Oje.Section.GlobalForms.Services
             if (input.fId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
             if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(acceptExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
         }
 
         public ApiResult Delete(long? id)

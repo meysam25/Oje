@@ -222,7 +222,7 @@ namespace Oje.ProposalFormService.Services
             foreach (var file in form.Files)
             {
                 if (!file.IsValidExtension(validExtension))
-                    throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                    throw BException.GenerateNewException(BMessages.Invalid_File);
             }
         }
 

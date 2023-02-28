@@ -750,7 +750,7 @@ namespace Oje.ProposalFormService.Services
                     if (file.mainFile == null || file.mainFile.Length == 0)
                         throw BException.GenerateNewException(BMessages.Please_Select_File);
                     if (!file.mainFile.IsValidExtension(".jpg,.jpeg,.png,.mp4,.pdf"))
-                        throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                        throw BException.GenerateNewException(BMessages.Invalid_File);
                 }
             }
 
@@ -861,7 +861,7 @@ namespace Oje.ProposalFormService.Services
             if (input.mainFile == null || input.mainFile.Length == 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(".jpg,.jpeg,.png,.doc,.docx,.pdf"))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
         }
 
         public object GetListForUser(MyProposalFilledFormMainGrid searchInput, int? siteSettingId, long? userId, List<ProposalFilledFormStatus> validStatus)

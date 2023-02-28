@@ -59,7 +59,7 @@ namespace Oje.Infrastructure.Exceptions
         [Display(Name = "حداکثر تعداد کارکتر برای آدرس ۱۰۰۰ کارکتر می باشد")]
         Address_Length_Is_Not_Valid = 26,
         [Display(Name = "فرمت فایل انتخاب شده مجاز نمی باشد")]
-        File_Is_Not_Valid = 27,
+        Invalid_File = 27,
         [Display(Name = "لطفا نام را وارد کنید")]
         Please_Enter_Name = 28,
         [Display(Name = "لطفا عنوان را وارد کنید")]

@@ -72,7 +72,7 @@ namespace Oje.Section.Tender.Services
             if (input.id.ToIntReturnZiro() <= 0 && (input.generallow == null || input.generallow.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_General_Low_File);
             if (input.generallow != null && input.generallow.Length > 0 && input.generallow.IsValidExtension(".jpg,.jpeg,.bmp,.pdf,.doc,.docx") == false)
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
         }
 
         public TenderConfigCreateUpdateVM GetBy(int? siteSettingId)

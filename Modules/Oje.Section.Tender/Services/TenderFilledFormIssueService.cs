@@ -103,7 +103,7 @@ namespace Oje.Section.Tender.Services
             if (input.id.ToLongReturnZiro() <= 0 && (input.minPic == null || input.minPic.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (input.id.ToLongReturnZiro() <= 0 && !input.minPic.IsValidExtension(".jpg,.png,.jpeg,.doc,.docx,.pdf"))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
             if (db.TenderFilledFormIssues.Any(t => t.TenderFilledFormId == input.pKey && t.TenderProposalFormJsonConfigId == input.pfId && t.Number == input.insuranceNumber && t.Id != input.id))
                 throw BException.GenerateNewException(BMessages.Dublicate_Number);
 

@@ -139,7 +139,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (db.InsuranceContracts.Any(t => t.Id != input.id && t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value) && t.Code == input.code))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
             if (input.contractDocument != null && input.contractDocument.Length > 0 && !input.contractDocument.IsValidExtension(accpetFileExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
         }
 
         public ApiResult Delete(int? id)

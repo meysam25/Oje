@@ -72,7 +72,7 @@ namespace Oje.AccountService.Services
             if (input.message.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Message_Is_To_Long);
             if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(".jpg,.jpeg,.png,.pdf,.doc,.docx"))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
 
         }
 

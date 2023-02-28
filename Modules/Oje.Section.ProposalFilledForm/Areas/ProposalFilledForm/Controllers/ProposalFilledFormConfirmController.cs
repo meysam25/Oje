@@ -31,18 +31,19 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         readonly IBankService BankService = null;
         readonly IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService = null;
 
-        public ProposalFilledFormConfirmController(
-            IProposalFilledFormAdminService ProposalFilledFormAdminService,
-            AccountService.Interfaces.ISiteSettingService SiteSettingService,
-            ICompanyService CompanyService,
-            IProposalFormCategoryService ProposalFormCategoryService,
-            IProposalFormService ProposalFormService,
-            IRoleService RoleService,
-            IUserService UserService,
-            IProposalFilledFormCompanyService ProposalFilledFormCompanyService,
-            IProposalFilledFormDocumentService ProposalFilledFormDocumentService,
-            IBankService BankService,
-            IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService
+        public ProposalFilledFormConfirmController
+            (
+                IProposalFilledFormAdminService ProposalFilledFormAdminService,
+                AccountService.Interfaces.ISiteSettingService SiteSettingService,
+                ICompanyService CompanyService,
+                IProposalFormCategoryService ProposalFormCategoryService,
+                IProposalFormService ProposalFormService,
+                IRoleService RoleService,
+                IUserService UserService,
+                IProposalFilledFormCompanyService ProposalFilledFormCompanyService,
+                IProposalFilledFormDocumentService ProposalFilledFormDocumentService,
+                IBankService BankService,
+                IProposalFilledFormStatusLogService ProposalFilledFormStatusLogService
             )
         {
             this.ProposalFilledFormAdminService = ProposalFilledFormAdminService;

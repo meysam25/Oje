@@ -104,7 +104,7 @@ namespace Oje.Section.Tender.Services
             if (input.id.ToLongReturnZiro() <= 0 && (input.minPic == null || input.minPic.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_File);
             if (input.minPic != null && input.minPic.Length > 0 && !input.minPic.IsValidExtension(".jpg,.png,.jpeg,.doc,.docx,.pdf"))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
             if (!TenderFilledFormService.ValidateOpenCloseDate(siteSettingId, input.pKey))
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (db.TenderFilledFormPrices.Any(t => t.CompanyId == input.cid && t.TenderProposalFormJsonConfigId == input.pfId && t.UserId == loginUserId && t.TenderFilledFormId == input.pKey && t.Id != input.id))

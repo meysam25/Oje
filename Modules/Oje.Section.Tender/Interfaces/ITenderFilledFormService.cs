@@ -34,5 +34,8 @@ namespace Oje.Section.Tender.Interfaces
         object GetConsultationValue(int? siteSettingId, IFormCollection form, long? loginUserId, string pKey, TenderSelectStatus selectStatus);
         ApiResult ConfirmPfs(int? siteSettingId, long? loginUserId, string id, TenderSelectStatus selectStatus);
         ApiResult ConfirmPfsForUser(int? siteSettingId, long? loginUserId, string id, TenderSelectStatus selectStatus);
+        object GetUploadFiles(GlobalGridParentLong input, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus);
+        object DeleteUploadFile(long? fileId, long? id, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus);
+        object UploadNewFile(long? id, IFormFile mainFile, string title, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus);
     }
 }

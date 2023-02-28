@@ -112,7 +112,7 @@ namespace Oje.AccountService.Services
             if (userMessageId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Enter_Message);
             if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(".jpg,.jpeg,.png,.pdf,.doc,.docx"))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
             if (input.userId.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Please_Select_One_User);
         }

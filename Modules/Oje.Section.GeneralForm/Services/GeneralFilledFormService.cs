@@ -123,7 +123,7 @@ namespace Oje.Section.GlobalForms.Services
                 throw BException.GenerateNewException(BMessages.Json_Convert_Error);
             foreach (var file in form.Files)
                 if (!file.IsValidExtension(accpetableExtension))
-                    throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                    throw BException.GenerateNewException(BMessages.Invalid_File);
             allCtrls = ppfObj.GetAllListOf<ctrl>();
             if (allCtrls == null || allCtrls.Count == 0)
                 throw BException.GenerateNewException(BMessages.Validation_Error);

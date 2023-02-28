@@ -91,7 +91,7 @@ namespace Oje.Section.RegisterForm.Services
             if (input.pDate.ToEnDate() == null)
                 throw BException.GenerateNewException(BMessages.Invalid_Date);
             if (input.mainImage != null && input.mainImage.Length > 0 && !input.mainImage.IsValidExtension(validExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
         }
 
         public object GetList(UserRegisterFormPaymentMainGrid searchInput, int? siteSettingId, bool? isPayed, bool? isDone)

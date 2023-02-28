@@ -195,5 +195,12 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         {
             return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id, tenderSelectStatus));
         }
+
+        [AreaConfig(Title = "مشاهده مدارک مناقصه", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetFileList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(TenderFilledFormService.GetUploadFiles(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
+        }
     }
 }

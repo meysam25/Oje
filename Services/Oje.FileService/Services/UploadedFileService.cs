@@ -207,13 +207,13 @@ namespace Oje.FileService.Services
 
         static bool isImage(string extension)
         {
-            return extension.IndexOf(".png") > -1 || extension.IndexOf(".jpg") > -1 || extension.IndexOf(".jpeg") > -1;
+            return !string.IsNullOrEmpty(extension) && (extension.ToLower().IndexOf(".png") > -1 || extension.ToLower().IndexOf(".jpg") > -1 || extension.ToLower().IndexOf(".jpeg") > -1);
         }
 
         void UploadNewFileValidation(IFormFile userPic, string extensions)
         {
             if (userPic.IsValidExtension(extensions) == false)
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid, ApiResultErrorCode.NotFound);
+                throw BException.GenerateNewException(BMessages.Invalid_File, ApiResultErrorCode.NotFound);
         }
 
         public UploadedFile GetFile(string fn, long? userId)
@@ -272,11 +272,33 @@ namespace Oje.FileService.Services
                 .Select(t => new
                 {
                     t.id,
-                    src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg",
+                    src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : getFileSrcBy(t.src),
+                    dSrc = !string.IsNullOrEmpty(t.src) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : getFileSrcBy(t.src),
                     title = string.IsNullOrEmpty(t.title) ? "" : t.title
                 })
                 .ToList()
                 ;
+        }
+
+        string getFileSrcBy(string src)
+        {
+            if (string.IsNullOrEmpty(src))
+                return "/Modules/Images/unknown.svg";
+            var fn = Path.GetFileName(src);
+            var fe = new FileInfo(fn);
+            if (!string.IsNullOrEmpty(fe.Extension))
+            {
+                if (fe.Extension.ToLower().IndexOf("doc") > -1 || fe.Extension.ToLower().IndexOf("docx") > -1)
+                    return "/Modules/Images/doc.svg";
+                else if (fe.Extension.ToLower().IndexOf("pdf") > -1)
+                    return "/Modules/Images/pdf.svg";
+                else if (fe.Extension.ToLower().IndexOf("zip") > -1 || fe.Extension.ToLower().IndexOf("rar") > -1)
+                    return "/Modules/Images/zip.svg";
+            }
+
+
+
+            return "/Modules/Images/unknown.svg";
         }
 
         public void Delete(long? uploadFileId, int? siteSettingId, long? objectId, FileType fileType)
@@ -427,7 +449,7 @@ namespace Oje.FileService.Services
 
         public List<string> GetFileUrlList(long objectId, FileType fileType, int skip, int take, int? siteSettingId)
         {
-            return 
+            return
             db.UploadedFiles.OrderByDescending(t => t.Id)
                .Where(t => t.ObjectId == objectId && t.FileType == fileType && t.SiteSettingId == siteSettingId)
                .Skip(skip).Take(take)

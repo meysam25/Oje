@@ -2671,16 +2671,20 @@ function showAndHideCtrl(curValue, showHideCondation, curCtrlId) {
 }
 
 function showAndHideByClass(classObj, curCtrlId) {
+    var curCtrl = $('#' + curCtrlId);
+    var curHolder = curCtrl.closest('.myPanel');
+    if (curCtrl.closest('.panelSWizardHolderContent').length > 0)
+        curHolder = curCtrl.closest('.panelSWizardHolderContent');
     var isCtrlVisible = $('#' + curCtrlId).is(':visible');
     var isParentVisible = $('#' + curCtrlId).closest('.myDropdown').length > 0 && $('#' + curCtrlId).closest('.myDropdown').is(':visible');
     if (classObj.classShow && classObj.classShow.length > 0 && (isCtrlVisible || isParentVisible)) {
         for (var i = 0; i < classObj.classShow.length; i++) {
-            $('.' + classObj.classShow[i]).parent().css('display', 'block');
+            curHolder.find('.' + classObj.classShow[i]).parent().css('display', 'block');
         }
     }
     if (classObj.classHide && classObj.classHide.length > 0 && (isCtrlVisible || isParentVisible)) {
         for (var i = 0; i < classObj.classHide.length; i++) {
-            $('.' + classObj.classHide[i]).parent().css('display', 'none');
+            curHolder.find('.' + classObj.classHide[i]).parent().css('display', 'none');
         }
     }
 }

@@ -84,9 +84,9 @@ namespace Oje.Section.GlobalForms.Services
             if (input.termT.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.rules != null && input.rules.Length > 0 && !input.rules.IsValidExtension(acceptFileExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
             if (input.conteractFile != null && input.conteractFile.Length > 0 && !input.conteractFile.IsValidExtension(acceptFileExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
         }
 
         public ApiResult Delete(long? id)

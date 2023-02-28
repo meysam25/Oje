@@ -71,7 +71,7 @@ namespace Oje.Section.WebMain.Services
             if (input.id.ToIntReturnZiro() <= 0 && (input.mainImage == null || input.mainImage.Length == 0))
                 throw BException.GenerateNewException(BMessages.Please_Select_Main_Image);
             if (input.id.ToIntReturnZiro() <= 0 && !input.mainImage.IsValidExtension(mainFileExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
         }
 
         public ApiResult Delete(int? id, int? siteSettingId)

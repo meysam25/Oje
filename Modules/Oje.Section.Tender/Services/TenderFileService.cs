@@ -63,7 +63,7 @@ namespace Oje.Section.Tender.Services
             if (string.IsNullOrEmpty(input.title))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Title);
             if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(validFileExtensions))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
             if (input.title.Length > 100)
                 throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
             if (input.formId.ToIntReturnZiro() > 0 && !UserRegisterFormService.Exist(input.formId.Value, siteSettingId))

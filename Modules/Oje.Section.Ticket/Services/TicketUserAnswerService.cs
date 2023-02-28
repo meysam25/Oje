@@ -86,7 +86,7 @@ namespace Oje.Section.Ticket.Services
             if (input.answer.Length > 4000)
                 throw BException.GenerateNewException(BMessages.Answer_Length_Can_Not_Be_More_Then_4000);
             if (input.mainFile != null && input.mainFile.Length > 0 && !input.mainFile.IsValidExtension(validFileExtension))
-                throw BException.GenerateNewException(BMessages.File_Is_Not_Valid);
+                throw BException.GenerateNewException(BMessages.Invalid_File);
             if (input.pKey.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
         }

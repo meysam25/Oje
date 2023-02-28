@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Oje.AccountService.Interfaces;
+using Oje.FileService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
@@ -31,6 +32,7 @@ namespace Oje.Section.Tender.Services
         readonly IUserNotifierService UserNotifierService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
         readonly ICityService CityService = null;
+        readonly IUploadedFileService UploadedFileService = null;
 
         public TenderFilledFormService
             (
@@ -42,7 +44,8 @@ namespace Oje.Section.Tender.Services
                 IUserService UserService,
                 IUserNotifierService UserNotifierService,
                 IHttpContextAccessor HttpContextAccessor,
-                ICityService CityService
+                ICityService CityService,
+                IUploadedFileService UploadedFileService
             )
         {
             this.db = db;
@@ -54,6 +57,7 @@ namespace Oje.Section.Tender.Services
             this.UserNotifierService = UserNotifierService;
             this.HttpContextAccessor = HttpContextAccessor;
             this.CityService = CityService;
+            this.UploadedFileService = UploadedFileService;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId)
@@ -978,6 +982,83 @@ namespace Oje.Section.Tender.Services
             }
 
             throw BException.GenerateNewException(BMessages.Not_Found);
+        }
+
+        public object GetUploadFiles(GlobalGridParentLong input, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus)
+        {
+            input = input ?? new GlobalGridParentLong();
+            var logUserOBj = HttpContextAccessor?.HttpContext?.GetLoginUser();
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
+
+            var foundItemId =
+                db.TenderFilledForms
+                .getSiteSettingQuiry(logUserOBj?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
+                .Where(t => t.Id == input.pKey)
+                .Select(t => t.Id)
+                .FirstOrDefault();
+
+            if (foundItemId <= 0)
+                foundItemId = -1;
+
+            return new
+            {
+                total = UploadedFileService.GetCountBy(foundItemId, FileType.TenderConsultationFiles),
+                data = UploadedFileService.GetListBy(foundItemId, FileType.TenderConsultationFiles, input.skip, input.take)
+            };
+        }
+
+        public object DeleteUploadFile(long? fileId, long? id, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus)
+        {
+            var logUserOBj = HttpContextAccessor?.HttpContext?.GetLoginUser();
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
+
+            var foundItemId =
+                db.TenderFilledForms
+                .getSiteSettingQuiry(logUserOBj?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
+                .Where(t => t.Id == id)
+                .Select(t => t.Id)
+                .FirstOrDefault();
+            if (foundItemId <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            UploadedFileService.Delete(fileId, siteSettingId, foundItemId, FileType.TenderConsultationFiles);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object UploadNewFile(long? id, IFormFile mainFile, string title, int? siteSettingId, long? loginUserId, TenderSelectStatus selectStatus)
+        {
+            const string validFileExtension = ".jpg,.png,.jpeg,.pdf,.doc,.docx,.zip";
+            if (mainFile == null)
+                throw BException.GenerateNewException(BMessages.Please_Select_File);
+            if (!mainFile.IsValidExtension(validFileExtension))
+                throw BException.GenerateNewException(BMessages.Invalid_File);
+            if (string.IsNullOrEmpty(title))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Title);
+            if (!string.IsNullOrEmpty(title) && title.Length > 100)
+                throw BException.GenerateNewException(BMessages.Title_Can_Not_Be_More_Then_100_chars);
+            if (loginUserId.ToLongReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Need_To_Be_Active_By_Admin_First);
+            var logUserOBj = HttpContextAccessor?.HttpContext?.GetLoginUser();
+            (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
+
+            
+            var foundItemId =
+                db.TenderFilledForms
+                .getSiteSettingQuiry(logUserOBj?.canSeeOtherWebsites, siteSettingId)
+                .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
+                .Where(t => t.Id == id)
+                .Select(t => t.Id)
+                .FirstOrDefault();
+            if (foundItemId <= 0)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            UploadedFileService.UploadNewFile(FileType.TenderConsultationFiles, mainFile, loginUserId, siteSettingId, foundItemId, validFileExtension, true, null, title);
+
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
     }
 }
