@@ -15,7 +15,7 @@ namespace Oje.Section.ProposalFilledFormChartReports.Areas.ProposalFilledFormCha
 {
     [Area("ProposalFilledFormChartReports")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "گزارش چارت فرم پیشنهاد", Icon = "fa-chart-pie", Title = "وضعیت فرم پیشنهاد")]
+    [AreaConfig(ModualTitle = "نمودار آمار و عملکرد", Order = 8, Icon = "fa-chart-pie", Title = "وضعیت فرم پیشنهاد")]
     [CustomeAuthorizeFilter]
     public class ProposalFilledFormStatusChartController: Controller
     {

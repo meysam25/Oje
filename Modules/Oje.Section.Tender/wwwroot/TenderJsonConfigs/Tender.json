@@ -200,7 +200,7 @@
             {
               "order": 1.5,
               "id": "confirmStep",
-              "title": "تایید",
+              "title": " ",
               "hideMoveNextButton": true,
               "panels": [
                 {
@@ -210,9 +210,36 @@
                       "type": "cTemplate",
                       "fieldMaps": [
                         {
-                          "targetTemplate": "title",
+                          "targetTemplate": "firstName",
                           "sourceCtrl": [
-                            "title"
+                            "firstName",
+                            "firstNameLegal"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "lastName",
+                          "sourceCtrl": [
+                            "lastName",
+                            "lastNameLegal"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "nationalCode",
+                          "sourceCtrl": [
+                            "nationalCode",
+                            "agentNationalCode"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "companyName",
+                          "sourceCtrl": [
+                            "companyName"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "companyRegNumber",
+                          "sourceCtrl": [
+                            "companyRegNumber"
                           ]
                         }
                       ],
@@ -246,15 +273,21 @@
             {
               "order": 2,
               "id": "insuranceInfoStep",
-              "title": "اطلاعات بیمه",
+              "title": "اطلاعات بیمه نامه درخواستی",
               "hideMoveNextButton": true,
               "panels": [
                 {
                   "ctrls": [
                     {
                       "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                      "type": "label",
+                      "label": "بیمه نامه ها"
+                    },
+                    {
+                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
                       "class": "damageBox hasPrevInsurance",
                       "type": "multiRowInput",
+                      "addTitle": "افزودن بیمه نامه جدید",
                       "hideAddButton": true,
                       "name": "tenderInsurance",
                       "ctrls": [
@@ -286,18 +319,6 @@
                           "type": "empty"
                         }
                       ]
-                    },
-                    {
-                      "parentCL": "col-md-8 col-sm-6 col-xs-12 col-lg-8",
-                      "type": "empty"
-                    },
-                    {
-                      "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-4 ",
-                      "showHideClass": "normalInquiry",
-                      "class": "btn-primary btn-block ",
-                      "type": "button",
-                      "title": "تایید اطلاعات و مرحله بعد",
-                      "onClick": "moveToNextStepForSW(this)"
                     }
                   ]
                 }
@@ -316,9 +337,36 @@
                       "type": "cTemplate",
                       "fieldMaps": [
                         {
-                          "targetTemplate": "title",
+                          "targetTemplate": "firstName",
                           "sourceCtrl": [
-                            "title"
+                            "firstName",
+                            "firstNameLegal"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "lastName",
+                          "sourceCtrl": [
+                            "lastName",
+                            "lastNameLegal"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "nationalCode",
+                          "sourceCtrl": [
+                            "nationalCode",
+                            "agentNationalCode"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "companyName",
+                          "sourceCtrl": [
+                            "companyName"
+                          ]
+                        },
+                        {
+                          "targetTemplate": "companyRegNumber",
+                          "sourceCtrl": [
+                            "companyRegNumber"
                           ]
                         }
                       ],

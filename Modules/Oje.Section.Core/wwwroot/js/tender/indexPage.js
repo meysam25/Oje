@@ -96,8 +96,7 @@ function initContactUsButton() {
             var selectQuiry = $('.mainContentBodyScroll');
             if (selectQuiry.length > 0) {
                 selectQuiry.html('<div class="makeCenterContentForCC aboutUsSectionFixMapProblem"></div>');
-                loadJsonConfig('/ContactUs/GetJsonConfig', $('.makeCenterContentForCC'), function ()
-                {
+                loadJsonConfig('/ContactUs/GetJsonConfig', $('.makeCenterContentForCC'), function () {
                     if (res.subTitle) {
                         selectQuiry.find('.makeCenterContentForCC').prepend('<h4 class="aboutUsSubTitle" >' + res.subTitle + '</h3>');
                     }
@@ -111,14 +110,12 @@ function initContactUsButton() {
 }
 
 function initAboutUsButton() {
-    $('.aboutUsButton').click(function ()
-    {
+    $('.aboutUsButton').click(function () {
         var url = $(this).attr('data-url');
         if (url) {
             $('.mySlider').parent().hide();
             showLoader($('.mainContent'));
-            postForm(url + '?ignoreL=true', new FormData(), function (res)
-            {
+            postForm(url + '?ignoreL=true', new FormData(), function (res) {
                 var selectQuiry = $('.mainContentBodyScroll');
                 if (selectQuiry.length > 0) {
                     selectQuiry.html(res);
@@ -132,8 +129,7 @@ function initAboutUsButton() {
 }
 
 function initLicenceButton() {
-    $('.licenceButton').click(function ()
-    {
+    $('.licenceButton').click(function () {
         loadLicenceF($('.mainContentBodyScroll'));
     });
 }
@@ -251,14 +247,11 @@ function getReminderTemplate() {
 }
 
 function initReminderButton() {
-    $('.reminderButton').click(function ()
-    {
+    $('.reminderButton').click(function () {
         showLoader($('.mainContentBody'))
-        $('.mainContentBodyScroll').html('<div class="makeCenterContentForCC">' + getReminderTemplate() +'</div>');
-        loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'), function ()
-        {
-            $('#reminderSection').loadAndBindRemindUsSection('/Reminder/GetMainPageDescription', function ()
-            {
+        $('.mainContentBodyScroll').html('<div class="makeCenterContentForCC">' + getReminderTemplate() + '</div>');
+        loadJsonConfig('/Home/GetReminderConfig', $('#reminderSection .reminderSectionInput'), function () {
+            $('#reminderSection').loadAndBindRemindUsSection('/Reminder/GetMainPageDescription', function () {
                 hideLoader($('.mainContentBody'))
             });
         }, 'GET');
@@ -279,10 +272,25 @@ $.fn.initAutoNumber = function (calceTime) {
         var foundQuery = $(this).find('[data-target-value]');
         if (foundQuery.length > 0) {
             var foundObj = $(this).find('[data-target-value]')[0];
-            foundObj.startAutoNumber = function () {
+            foundObj.startAutoNumber = function ()
+            {
                 var curValue = 0;
                 var maxValue = Number.parseInt($(this).attr('data-target-value'));
-                var valueIncremant = Math.floor(maxValue / calceTime);
+                var timerInterval = 1;
+                var valueIncremant = 1;
+
+                if (maxValue < calceTime) {
+                    timerInterval = Math.floor(calceTime / maxValue);
+                    valueIncremant = 1;
+                }
+                else {
+                    timerInterval = 11;
+                    valueIncremant = Math.floor(maxValue / calceTime) * 11;
+                }
+
+                if (maxValue > 19000)
+                    console.log(valueIncremant);
+
                 this.tInterval = setInterval(function () {
                     if (valueIncremant <= 0)
                         valueIncremant = 1;
@@ -292,7 +300,7 @@ $.fn.initAutoNumber = function (calceTime) {
                         clearInterval(this.curThis.tInterval);
                     }
                     $(this.curThis).html(curValue);
-                }.bind({ curThis: this }), (valueIncremant == 0 ? 250 : 5));
+                }.bind({ curThis: this }), timerInterval);
             };
             var startFunction = function () {
                 if (!this.curThis.isAutoStarted) {
@@ -406,7 +414,7 @@ $.fn.loadAndBindOurPride = function (url) {
             }
             $(this.curThis).find('.ourPrideSectionItems').html(template);
             $(this.curThis).find('img[data-src]').loadImageOnScroll();
-            $(this.curThis).find('.ourPrideSectionItem').initAutoNumber(300);
+            $(this.curThis).find('.ourPrideSectionItem').initAutoNumber(2000);
         }.bind({ curThis: this }), null, null, null, 'GET');
     });
 }
@@ -434,8 +442,7 @@ $.fn.loadAndBindRemindUsSection = function (url, whatToDoOfterFinished) {
 function showRegisterForm(id) {
     exteraModelParams = { fid: id };
     $('.fgSection').html('<div id="holderppf" class="customePPFPanel" ></div>');
-    loadJsonConfig('/Register/GetJsonConfig?fid=' + id, $('#holderppf'), function ()
-    {
+    loadJsonConfig('/Register/GetJsonConfig?fid=' + id, $('#holderppf'), function () {
         hideShowNavTitle(false);
         showRightNavRegButtons(id);
         //addMoveToMainStepButton($('.customePPFPanel'));
@@ -488,8 +495,7 @@ $.fn.initMainPageAboutUs = function (url) {
                 selectQuery.find('.aboutUsSectionDescription').html(res.desc);
                 if (res.readMoreUrl) {
                     selectQuery.find('.readMoreAboutUs').attr('href', res.readMoreUrl);
-                    selectQuery.find('.readMoreAboutUs').click(function (e)
-                    {
+                    selectQuery.find('.readMoreAboutUs').click(function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         var url = $(this).attr('href');

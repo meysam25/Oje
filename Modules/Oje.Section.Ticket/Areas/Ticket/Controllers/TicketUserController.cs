@@ -14,7 +14,7 @@ namespace Oje.Section.Ticket.Areas.Ticket.Controllers
 {
     [Area("Ticket")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "تیکت", Icon = "fa-ticket", Title = "تیکت های من")]
+    [AreaConfig(ModualTitle = "پشتیبانی تیکت و پیام ها", Order = 9, Icon = "fa-ticket", Title = "تیکت های من")]
     [CustomeAuthorizeFilter]
     public class TicketUserController : Controller
     {

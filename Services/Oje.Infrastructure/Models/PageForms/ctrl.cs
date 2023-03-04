@@ -75,7 +75,7 @@ namespace Oje.Infrastructure.Models.PageForms
 
             if (ctrl.maxLengh != null && ctrl.maxLengh > 0)
                 if (form.Keys.Contains(ctrl.name) && !string.IsNullOrEmpty(form.GetStringIfExist(ctrl.name)) && form.GetStringIfExist(ctrl.name).Length > ctrl.maxLengh)
-                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                    throw BException.GenerateNewException(BMessages.Validation_Error.GetEnumDisplayName() + " (" + ctrl.label + ")");
 
 
         }
@@ -86,7 +86,7 @@ namespace Oje.Infrastructure.Models.PageForms
             {
                 string currValue = form.GetStringIfExist(ctrl.name);
                 if (!string.IsNullOrEmpty(currValue) && !string.IsNullOrEmpty(ctrl.defValue) && currValue != ctrl.defValue)
-                    throw BException.GenerateNewException(BMessages.Validation_Error);
+                    throw BException.GenerateNewException(BMessages.Validation_Error.GetEnumDisplayName() + " (" + ctrl.name + ")");
                 else if (!string.IsNullOrEmpty(currValue) && currValue == ctrl.defValue)
                     ctrl.defV = ctrl.defValue;
             }
@@ -98,7 +98,7 @@ namespace Oje.Infrastructure.Models.PageForms
                     if (ctrl.values != null)
                     {
                         if (!ctrl.values.Any(tt => tt.id == currValue))
-                            throw BException.GenerateNewException(BMessages.Validation_Error);
+                            throw BException.GenerateNewException(BMessages.Validation_Error.GetEnumDisplayName() + " (" + ctrl.name + ")");
                         else
                             ctrl.defV = currValue;
                     }
@@ -145,7 +145,7 @@ namespace Oje.Infrastructure.Models.PageForms
                     {
                         var foundDs = ctrl.values.Where(t => t.id == inputValue).FirstOrDefault();
                         if (foundDs == null)
-                            throw BException.GenerateNewException(BMessages.Validation_Error);
+                            throw BException.GenerateNewException(BMessages.Validation_Error.GetEnumDisplayName() + " (" + ctrl.name + ")");
                         ctrl.defV = foundDs.title;
                     }
                 }
@@ -258,7 +258,7 @@ namespace Oje.Infrastructure.Models.PageForms
                 {
                     var tempPoint = new Point(lat.Value, lon.Value);
                     if (!tempPoint.IsValid)
-                        throw BException.GenerateNewException(BMessages.Validation_Error);
+                        throw BException.GenerateNewException(BMessages.Validation_Error.GetEnumDisplayName());
                     return new List<IdTitle>() { new IdTitle() { id = ctrl.names.lat, title = "نقشه لت" }, new IdTitle() { id = ctrl.names.lon, title = "نقشه لان" }, new IdTitle() { id = ctrl.names.zoom, title = "نقشه زوم" } };
                 }
             }

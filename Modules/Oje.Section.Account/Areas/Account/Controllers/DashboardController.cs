@@ -15,7 +15,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
 {
     [Area("Account")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " هویتی (ادمین)", Icon = "fa-users", Title = "داشبورد")]
+    [AreaConfig(ModualTitle = "هویتی", Icon = "fa-users", Title = "داشبورد")]
     public class DashboardController : Controller
     {
         readonly IUserService UserService = null;

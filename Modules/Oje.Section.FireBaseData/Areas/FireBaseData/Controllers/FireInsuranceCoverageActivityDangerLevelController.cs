@@ -13,7 +13,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
 {
     [Area("FireBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " پایه استعلام آتش سوزی (ادمین)", Icon = "fa-fire", Title = "نرخ پوشش های فعالیت")]
+    [AreaConfig(ModualTitle = " پایه استعلام آتش سوزی", Icon = "fa-fire", Title = "نرخ پوشش های فعالیت")]
     [CustomeAuthorizeFilter]
     public class FireInsuranceCoverageActivityDangerLevelController: Controller
     {

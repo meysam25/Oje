@@ -1,0 +1,63 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "notificationTriger": [ "NewOnlineMessageForAdmin" ],
+          "id": "OnlineSupportMenuGrid",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/WebMainSuperAdmin/OnlineSupport/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "WebMainSuperAdminTopMenuEditModal",
+                "url": "/WebMainSuperAdmin/TopMenu/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"initOnlineChat(\\''+ curRow.id +'\\', true)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/WebMainSuperAdmin/OnlineSupport/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد"
+            },
+            {
+              "field": "ipAddress",
+              "caption": "ای پی"
+            },
+            {
+              "field": "mCount",
+              "caption": "تعداد پیام"
+            },
+            {
+              "field": "lastMessageDate",
+              "caption": "زمان اخرین پیام"
+            },
+            {
+              "field": "isYouAnswered",
+              "caption": "آیا شما پاسخ داده اید؟"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

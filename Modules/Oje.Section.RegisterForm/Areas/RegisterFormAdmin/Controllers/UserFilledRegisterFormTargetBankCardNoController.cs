@@ -10,7 +10,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
 {
     [Area("RegisterFormAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "ثبت نام کاربر", Icon = "fa-users", Title = "شماره کارت پرداخت کارت به کارت")]
+    [AreaConfig(ModualTitle = "مدیریت کاربران", Order = 2, Icon = "fa-users", Title = "شماره کارت پرداخت کارت به کارت")]
     [CustomeAuthorizeFilter]
     public class UserFilledRegisterFormTargetBankCardNoController: Controller
     {

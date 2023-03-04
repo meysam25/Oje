@@ -12,7 +12,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
 {
     [Area("UserAccount")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "به روز رسانی اطلاعات کاربر")]
+    [AreaConfig(ModualTitle = "حساب کاربری", Order = 1, Icon = "fa-users", Title = "به روز رسانی اطلاعات کاربر")]
     [CustomeAuthorizeFilter]
     public class UserProfileController: Controller
     {

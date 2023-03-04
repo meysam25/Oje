@@ -13,7 +13,7 @@ namespace Oje.Section.CarBodyBaseData.Areas.CarBodyBaseData.Controllers
 {
     [Area("CarBodyBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " پایه استعلام بدنه خودرو (ادمین)", Icon = "fa-car-crash", Title = "درصد حق بیمه سال ساخت بدنه")]
+    [AreaConfig(ModualTitle = " پایه استعلام بدنه خودرو", Icon = "fa-car-crash", Title = "درصد حق بیمه سال ساخت بدنه")]
     [CustomeAuthorizeFilter]
     public class CarBodyCreateDatePercentController: Controller
     {

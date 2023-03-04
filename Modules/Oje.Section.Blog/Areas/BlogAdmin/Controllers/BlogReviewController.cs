@@ -11,7 +11,7 @@ namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
 {
     [Area("BlogAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "بلاگ", Icon = "fa-blog", Title = "نظرات بلاگ")]
+    [AreaConfig(ModualTitle = "بلاگ و خبرنامه", Order = 10, Icon = "fa-blog", Title = "نظرات بلاگ")]
     [CustomeAuthorizeFilter]
     public class BlogReviewController: Controller
     {

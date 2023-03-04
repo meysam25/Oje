@@ -13,7 +13,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
 {
     [Area("CarBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " پایه خودرو (ادمین)", Icon = "fa-car", Title = "گروه بندی خصوصیات خودرو")]
+    [AreaConfig(ModualTitle = "پایه خودرو", Icon = "fa-car", Title = "گروه بندی خصوصیات خودرو")]
     [CustomeAuthorizeFilter]
     public class VehicleSpecCategoryController: Controller
     {

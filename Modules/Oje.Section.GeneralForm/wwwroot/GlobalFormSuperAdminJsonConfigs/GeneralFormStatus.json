@@ -1,0 +1,159 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "GeneralFormStatusGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('GeneralFormStatusAddGridModal', this)", "type": "add", "modalId": "GeneralFormStatusAddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/GlobalFormSuperAdmin/GeneralFormStatus/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/GlobalFormSuperAdmin/GeneralFormStatus/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "GeneralFormStatusEditModal",
+                "url": "/GlobalFormSuperAdmin/GeneralFormStatus/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/GlobalFormSuperAdmin/GeneralFormStatus/GetById\\', \\'GeneralFormStatusEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/GlobalFormSuperAdmin/GeneralFormStatus/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "fid",
+              "caption": "فرم",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "GeneralFormStatusAddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/GlobalFormSuperAdmin/GeneralFormStatus/GetFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'GeneralFormStatusGrid', '/GlobalFormSuperAdmin/GeneralFormStatus/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "GeneralFormStatusEditModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fId",
+              "type": "dropDown2",
+              "textfield": "text",
+              "valuefield": "id",
+              "dataurl": "/GlobalFormSuperAdmin/GeneralFormStatus/GetFormList",
+              "label": "فرم پیشنهاد",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "order",
+              "type": "text",
+              "label": "ترتیب",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'GeneralFormStatusGrid', '/GlobalFormSuperAdmin/GeneralFormStatus/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

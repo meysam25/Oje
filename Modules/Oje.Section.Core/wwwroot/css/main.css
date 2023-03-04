@@ -1046,3 +1046,32 @@ figure.table > table {
 .MakeHorizoneTC .tabButtonIcon > span {
     display: none;
 }
+.hideMultiRowItem {
+    height: 50px;
+    overflow: hidden;
+    position:relative;
+}
+.multiRowItemCover {
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    border: 1px solid silver;
+    line-height: 50px;
+    text-align: right;
+    padding-right: 20px;
+    border-top: none;
+}
+.MultiRowInputRow:first-child .multiRowItemCover {
+    border-top: 1px solid silver;
+}
+    .editMRButton {
+        float: left;
+        margin: 10px;
+    }
+.addNewRowForMRI {
+    padding: 10px;
+}

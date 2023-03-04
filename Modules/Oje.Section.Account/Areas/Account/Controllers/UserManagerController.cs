@@ -13,7 +13,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
 {
     [Area("Account")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " هویتی (ادمین)", Icon = "fa-users", Title = "کاربران")]
+    [AreaConfig(ModualTitle = "هویتی", Icon = "fa-users", Title = "کاربران")]
     [CustomeAuthorizeFilter]
     public class UserManagerController : Controller
     {

@@ -1,0 +1,170 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "InsuranceContractUserBaseInsuranceGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('InsuranceContractUserBaseInsuranceaddGridModal', this)",
+              "type": "add",
+              "modalId": "InsuranceContractUserBaseInsuranceaddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractUserBaseInsurance/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractUserBaseInsurance/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "InsuranceContractUserBaseInsuranceModal",
+                "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractUserBaseInsurance/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseDataSuperAdmin/InsuranceContractUserBaseInsurance/GetById\\', \\'InsuranceContractUserBaseInsuranceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractUserBaseInsurance/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "code",
+              "caption": "کد",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "InsuranceContractUserBaseInsuranceaddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractUserBaseInsuranceGrid', '/InsuranceContractBaseDataSuperAdmin/InsuranceContractUserBaseInsurance/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "InsuranceContractUserBaseInsuranceModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "code",
+              "type": "text",
+              "label": "کد",
+              "isRequired": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractUserBaseInsuranceGrid', '/InsuranceContractBaseDataSuperAdmin/InsuranceContractUserBaseInsurance/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

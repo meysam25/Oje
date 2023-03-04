@@ -15,7 +15,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
 {
     [Area("RegisterFormAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "ثبت نام کاربر", Icon = "fa-users", Title = "کاربران پرداخت نکرده انجام شده")]
+    [AreaConfig(ModualTitle = "مدیریت کاربران", Order = 2, Icon = "fa-users", Title = "کاربران پرداخت نکرده انجام شده")]
     [CustomeAuthorizeFilter]
     public class UserFilledRegisterFormNotDoneController : Controller
     {

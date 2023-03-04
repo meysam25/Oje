@@ -17,7 +17,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت دارای نقص مدرک")]
+    [AreaConfig(ModualTitle = "سامانه درمان وب", Order = 5, Icon = "fa-file-invoice", Title = "خسارت دارای نقص مدرک")]
     [CustomeAuthorizeFilter]
     public class MyDefectiveDocumentFilledContractController: Controller
     {

@@ -8,7 +8,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
 {
     [Area("Account")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " هویتی (ادمین)", Icon = "fa-users", Title = "شمای کلی کاربران")]
+    [AreaConfig(ModualTitle = "هویتی", Icon = "fa-users", Title = "شمای کلی کاربران")]
     [CustomeAuthorizeFilter]
     public class UserChartController: Controller
     {

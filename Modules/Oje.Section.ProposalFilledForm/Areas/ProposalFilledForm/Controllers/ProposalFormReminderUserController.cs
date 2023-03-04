@@ -14,7 +14,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Order = 12,  Icon = "fa-file-powerpoint", Title = "یادآوری کاربر")]
+    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Order = 7,  Icon = "fa-file-powerpoint", Title = "یادآوری کاربر")]
     [CustomeAuthorizeFilter]
     public class ProposalFormReminderUserController: Controller
     {

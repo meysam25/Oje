@@ -12,7 +12,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
 {
     [Area("BaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " پایه (ادمین)", Icon = "fa-archive", Title = "تنظیمات")]
+    [AreaConfig(ModualTitle = "پایه", Icon = "fa-archive", Title = "تنظیمات")]
     [CustomeAuthorizeFilter]
     public class SiteSettingController : Controller
     {

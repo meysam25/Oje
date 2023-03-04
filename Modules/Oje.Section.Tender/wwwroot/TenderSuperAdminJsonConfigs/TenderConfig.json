@@ -1,0 +1,63 @@
+﻿{
+  "panels": [
+    {
+      "loadUrl": "/TenderSuperAdmin/TenderConfig/Get",
+      "title": "تنظیمات مناقصه",
+      "ctrls": [
+        {
+          "name": "id",
+          "type": "hidden"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "title",
+          "type": "text",
+          "label": "عنوان",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "subTitle",
+          "type": "text",
+          "label": "زیر عنوان",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "aboutUsLink",
+          "type": "text",
+          "label": "لینک درباره ما"
+        },
+        {
+          "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12",
+          "name": "generallow",
+          "type": "file",
+          "label": "قوانین خصوصی",
+          "acceptEx": ".jpg,.png,.jpeg,.doc,.docx,.pdf",
+          "hideImagePreview": true,
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "desctpion",
+          "type": "ck",
+          "label": "توضیحات ({{date}} {{time}} {{company}})",
+          "isRequired": true
+        },
+        {
+          "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+          "name": "confirmDesc",
+          "type": "ck",
+          "label": "توضیحات 2 ({{date}} {{time}} {{company}})"
+        },
+        {
+          "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+          "type": "button",
+          "onClick": "postPanel(this, '/TenderSuperAdmin/TenderConfig/CreateUpdate')",
+          "title": "ذخیره",
+          "class": "btn-primary"
+        }
+      ]
+    }
+  ]
+}

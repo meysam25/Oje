@@ -1,0 +1,278 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "InsuranceContractValidUserForFullDebitGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('InsuranceContractValidUserForFullDebitaddGridModal', this)",
+              "type": "add",
+              "modalId": "InsuranceContractValidUserForFullDebitaddGridModal"
+            },
+            {
+              "title": "دانلود فایل نمونه",
+              "onClick": "window.open('/Modules/InsuranceContractBaseDataExcelExample/InsuranceContractValidUserForDebit.xlsx');"
+            },
+            {
+              "title": "افزودن (فایل اکسل)",
+              "onClick": "uploadFile('excelFile','.xlsx', '/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/CreateFromXcel', this)"
+            }
+          ],
+          "exportToExcelUrl": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "InsuranceContractValidUserForFullDebiteditGridModal",
+                "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/GetById\\', \\'InsuranceContractValidUserForFullDebiteditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "contract",
+              "caption": "تفاهم نامه",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/GetContractList",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "createUser",
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "mobile",
+              "caption": "شماره همراه",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "nationalCode",
+              "caption": "کد ملی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "countUse",
+              "caption": "تعداد مورد استفاده",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "",
+          "id": "InsuranceContractValidUserForFullDebitaddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdAdd",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('insuranceContractIdAdd')"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "insuranceContractIdAdd",
+              "name": "insuranceContractId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/GetContractList",
+              "label": "قرارداد",
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdAdd" ]
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "mobile",
+              "type": "text",
+              "label": "شماره همراه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "nationalCode",
+              "type": "text",
+              "label": "کد ملی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "countUse",
+              "type": "text",
+              "label": "تعداد مورد استفاده",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractValidUserForFullDebitGrid', '/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "",
+          "id": "InsuranceContractValidUserForFullDebiteditGridModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdEdit",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW",
+              "onChange": "refreshDropdown('insuranceContractIdEdit')"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "id": "insuranceContractIdEdit",
+              "name": "insuranceContractId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/GetContractList",
+              "label": "قرارداد",
+              "isRequired": true,
+              "exteraParameterIds": [ "InsuranceContractValidUserForFullDebitcSOWSiteSettingIdEdit" ]
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "mobile",
+              "type": "text",
+              "label": "شماره همراه",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "nationalCode",
+              "type": "text",
+              "label": "کد ملی",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "countUse",
+              "type": "text",
+              "label": "تعداد مورد استفاده",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractValidUserForFullDebitGrid', '/InsuranceContractBaseDataSuperAdmin/InsuranceContractValidUserForFullDebit/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

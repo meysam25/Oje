@@ -10,7 +10,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
 {
     [Area("UserAccount")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "حساب کاربری", Icon = "fa-users", Title = "دسترسی نقش ها")]
+    [AreaConfig(ModualTitle = "حساب کاربری", Order = 1, Icon = "fa-users", Title = "دسترسی نقش ها")]
     [CustomeAuthorizeFilter]
     public class RoleManagerAccessController : Controller
     {

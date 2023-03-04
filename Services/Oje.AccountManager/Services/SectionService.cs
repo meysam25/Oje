@@ -448,6 +448,7 @@ namespace Oje.AccountService.Services
             {
                 addEditItem = new Section();
                 addEditItem.Name = areaAttribute.RouteValue;
+                addEditItem.Order = controllerConfigAttribute.Order;
 
                 db.Entry(addEditItem).State = EntityState.Added;
             }
@@ -470,12 +471,13 @@ namespace Oje.AccountService.Services
                 newParentModalSection = new Models.DB.Controller();
                 newParentModalSection.Name = targetName;
                 newParentModalSection.SectionId = Modul.Id;
+                newParentModalSection.Order = controllerConfigAttribute.COrder;
                 db.Entry(newParentModalSection).State = EntityState.Added;
             }
             newParentModalSection.Title = controllerConfigAttribute.Title;
             newParentModalSection.Icon = controllerConfigAttribute.Icon;
             newParentModalSection.HasFormGenerator = controllerConfigAttribute.HasFormGenerator;
-            newParentModalSection.Order = controllerConfigAttribute.Order;
+            newParentModalSection.Order = controllerConfigAttribute.COrder;
             if (string.IsNullOrEmpty(newParentModalSection.Icon))
                 newParentModalSection.Icon = "";
 

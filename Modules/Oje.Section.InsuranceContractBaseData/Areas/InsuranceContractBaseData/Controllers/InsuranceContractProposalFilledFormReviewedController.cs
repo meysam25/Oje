@@ -16,7 +16,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
 {
     [Area("InsuranceContractBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت قرارداد ها و مجوز ها", Icon = "fa-file-invoice", Title = "خسارت های رفع نقص شده برای بازبینی")]
+    [AreaConfig(ModualTitle = "سامانه درمان وب", Order = 5, Icon = "fa-file-invoice", Title = "خسارت های رفع نقص شده برای بازبینی")]
     [CustomeAuthorizeFilter]
     public class InsuranceContractProposalFilledFormReviewedController : Controller
     {

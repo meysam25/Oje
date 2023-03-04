@@ -5,17 +5,12 @@ using Oje.Infrastructure;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces.Reports;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.ProposalFilledFormChartReports.Areas.ProposalFilledFormChartReports.Controllers
 {
     [Area("ProposalFilledFormChartReports")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "گزارش چارت فرم پیشنهاد", Icon = "fa-chart-pie", Title = "تفکیک بر اساس نماینده")]
+    [AreaConfig(ModualTitle = "نمودار آمار و عملکرد", Order = 8, Icon = "fa-chart-pie", Title = "تفکیک بر اساس نماینده")]
     [CustomeAuthorizeFilter]
     public class ProposalFilledFormAgentController: Controller
     {

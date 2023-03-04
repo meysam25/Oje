@@ -13,7 +13,7 @@ namespace Oje.Section.CarThirdBaseData.Areas.CarThirdBaseData.Controllers
 {
     [Area("CarThirdBaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " پایه استعلام ثالث خودرو (ادمین)", Icon = "fa-car-side", Title = "تعهد مالی راننده سال جاری")]
+    [AreaConfig(ModualTitle = " پایه استعلام ثالث خودرو", Icon = "fa-car-side", Title = "تعهد مالی راننده سال جاری")]
     [CustomeAuthorizeFilter]
     public class ThirdPartyDriverFinancialCommitmentController: Controller
     {

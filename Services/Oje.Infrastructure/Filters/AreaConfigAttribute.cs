@@ -10,6 +10,7 @@ namespace Oje.Infrastructure.Filters
         public bool IsMainMenuItem { get; set; }
         public bool HasFormGenerator { get; set; }
         public int Order { get; set; }
+        public int COrder { get; set; }
 
         public AreaConfigAttribute()
         {
@@ -18,7 +19,8 @@ namespace Oje.Infrastructure.Filters
             ModualTitle = "";
             IsMainMenuItem = false;
             HasFormGenerator = false;
-            Order = 1;
+            Order = 9999;
+            COrder = 9999;
         }
     }
 }

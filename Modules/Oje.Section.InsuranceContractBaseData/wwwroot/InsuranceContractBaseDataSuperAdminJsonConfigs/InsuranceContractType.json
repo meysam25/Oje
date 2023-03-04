@@ -1,0 +1,202 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "InsuranceContractTypeGrid",
+          "topActions": [
+            {
+              "title": "افزودن",
+              "onClick": "showModal('InsuranceContractTypeaddGridModal', this)",
+              "type": "add",
+              "modalId": "InsuranceContractTypeaddGridModal"
+            }
+          ],
+          "exportToExcelUrl": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractType/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "delete": {
+              "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractType/Delete"
+            },
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "InsuranceContractTypeModal",
+                "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractType/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseDataSuperAdmin/InsuranceContractType/GetById\\', \\'InsuranceContractTypeModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractType/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "createUser",
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "title",
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "InsuranceContractTypeaddGridModal",
+          "title": "افزودن",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "ck",
+              "type": "textarea",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractTypeGrid', '/InsuranceContractBaseDataSuperAdmin/InsuranceContractType/Create')",
+              "class": "btn-primary"
+            }
+          ]
+        },
+        {
+          "class": "modal-xl",
+          "id": "InsuranceContractTypeModal",
+          "title": "ویرایش",
+          "ctrls": [
+            {
+              "name": "id",
+              "type": "hidden"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "cSOWSiteSettingId",
+              "type": "dropDown2",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetSettingList",
+              "label": "وب سایت",
+              "showCondation": "cSOW"
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "title",
+              "type": "text",
+              "label": "عنوان",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-4 col-lg-4 col-md-3 col-sm-6 col-xs-12",
+              "name": "isActive",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "وضعیت"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "desc",
+              "type": "ck",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            },
+            {
+              "title": "ذخیره",
+              "onClick": "postModalData(this, 'InsuranceContractTypeGrid', '/InsuranceContractBaseDataSuperAdmin/InsuranceContractType/Update')",
+              "class": "btn-primary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

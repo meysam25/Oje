@@ -1,0 +1,92 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "userContactUsGrid",
+          "exportToExcelUrl": "/WebMainSuperAdmin/UserContactUs/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "userContactUsViewDescriptionModel",
+                "url": "/WebMainSuperAdmin/UserContactUs/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/WebMainSuperAdmin/UserContactUs/GetById\\', \\'userContactUsViewDescriptionModel\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/WebMainSuperAdmin/UserContactUs/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "fullname",
+              "caption": "نام",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "tell",
+              "caption": "شماره تماس",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "email",
+              "caption": "ایمیل",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "siteTitleMN2",
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              },
+              "showCondation": "cSOW"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "userContactUsViewDescriptionModel",
+          "title": "توضیحات",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "توضیحات",
+              "disabled": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

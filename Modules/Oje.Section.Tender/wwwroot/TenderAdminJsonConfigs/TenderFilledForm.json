@@ -392,14 +392,6 @@
                   "formatters": {
                     "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"margin-bottom:5px;\" >'+ dataRow.title +'</div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.dSrc +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/TenderAdmin/TenderFilledForm/DeleteFile\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
                   },
-                  "topActions": [
-                    {
-                      "title": "افزودن",
-                      "onClick": "showModal('TenderFilledFormaddNewPPFImageFile', this)",
-                      "type": "add",
-                      "modalId": "addNewPPFImageModalId"
-                    }
-                  ],
                   "key": "id",
                   "url": "/TenderAdmin/TenderFilledForm/GetFileList",
                   "itemPerPage": 10,

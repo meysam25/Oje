@@ -9,6 +9,7 @@ using Oje.FileService.Interfaces;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.StaticFiles;
+using System.Linq;
 
 namespace Oje.Section.Core.Areas.Controllers
 {
@@ -130,6 +131,15 @@ namespace Oje.Section.Core.Areas.Controllers
         [HttpGet]
         public IActionResult GetCityList2([FromQuery] int? provinceId, [FromQuery] Select2SearchVM searchInput)
         {
+            if (provinceId.ToIntReturnZiro() <= 0)
+            {
+                if (Request.Query.Keys.Any(t => !string.IsNullOrEmpty(t) && t.ToLower().EndsWith("provinceid")))
+                {
+                    var provinceKey = Request.Query.Keys.Where(t => !string.IsNullOrEmpty(t) && t.ToLower().EndsWith("provinceid")).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(provinceKey))
+                        provinceId = Request.Query[provinceKey][0].ToIntReturnZiro();
+                }
+            }
             return Json(CityService.GetSelect2List(provinceId, searchInput));
         }
 

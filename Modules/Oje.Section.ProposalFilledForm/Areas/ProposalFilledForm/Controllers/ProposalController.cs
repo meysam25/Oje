@@ -13,7 +13,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
 {
     [Area("ProposalFilledForm")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Order = 12,  Icon = "fa-file-powerpoint", Title = "ثبت فرم")]
+    [AreaConfig(ModualTitle = "مدیریت بیمه نامه ها", Order = 7,  Icon = "fa-file-powerpoint", Title = "ثبت فرم")]
     public class ProposalController : Controller
     {
         readonly AccountService.Interfaces.ISiteSettingService SiteSettingService = null;

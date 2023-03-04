@@ -13,7 +13,7 @@ namespace Oje.Section.ProposalFormInquiries.Areas.ProposalFormInquiries.Controll
 {
     [Area("ProposalFormInquiries")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "استعلام", Icon = "fa-file-invoice", Title = "استعلام آتش سوزی")]
+    [AreaConfig(ModualTitle = "سامانه استعلام نرخ", Order = 6, Icon = "fa-file-invoice", Title = "استعلام آتش سوزی")]
     
     public class FireInsuranceController: Controller
     {

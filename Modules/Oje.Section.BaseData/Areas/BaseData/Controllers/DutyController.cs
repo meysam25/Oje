@@ -13,7 +13,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
 {
     [Area("BaseData")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = " پایه (ادمین)", Icon = "fa-archive", Title = "عوارض")]
+    [AreaConfig(ModualTitle = "پایه", Icon = "fa-archive", Title = "عوارض")]
     [CustomeAuthorizeFilter]
     public class DutyController : Controller
     {

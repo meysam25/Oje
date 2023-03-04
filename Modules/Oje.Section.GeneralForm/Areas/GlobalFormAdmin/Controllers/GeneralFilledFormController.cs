@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Oje.AccountService.Filters;
 using Oje.Infrastructure;
-using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
@@ -12,7 +11,7 @@ namespace Oje.Section.GlobalForms.Areas.GlobalFormAdmin.Controllers
 {
     [Area("GlobalFormAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "فرم های عمومی", Icon = "fa-file-powerpoint", Title = "فرم های عمومی ثبت شده")]
+    [AreaConfig(ModualTitle = "فرم های عمومی", Order = 11, Icon = "fa-file-powerpoint", Title = "فرم های عمومی ثبت شده")]
     [CustomeAuthorizeFilter]
     public class GeneralFilledFormController : Controller
     {

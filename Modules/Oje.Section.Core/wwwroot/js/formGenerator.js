@@ -1310,7 +1310,9 @@ function getMultiRowInputTemplate(ctrl) {
             result += '</div>';
         }
 
-        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" >' + ('<button style="margin:3px;' + (ctrl.hideAddButton ? 'display:none;' : '')+'" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">' + (ctrl.addTitle ? ctrl.addTitle : 'افزودن') + '</button>') +'<button style="margin:3px;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">' + (ctrl.deleteTitle ? ctrl.deleteTitle : 'حذف اخرین سطر') + '</button></div>';
+        result += '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" style="text-align:center;" >' + ('<button style="margin:3px;' + (ctrl.hideAddButton ? 'display:none;' : '') + '" class="btn btn-primary btn-sm addNewRowForMultiRowCtrl">' + (ctrl.addTitle ? ctrl.addTitle : 'افزودن') + '</button>') +
+            '<button style="margin:3px;display:none;" class="btn btn-danger btn-sm deleteNewRowForMultiRowCtrl">' + (ctrl.deleteTitle ? ctrl.deleteTitle : 'حذف اخرین سطر') + '</button>' +
+            '</div>';
         result += '</div>';
         result += '</div>';
 
@@ -1337,11 +1339,60 @@ function initInternalFunctions(ctrl) {
 
 function addNewRowForMultiCtrl(curButton) {
     if (curButton) {
+        var sQuiry = $(curButton).closest('.panelSWizardHolderContentItem');
+        var isStepWizard = sQuiry.length > 0 && sQuiry.parent().closest('.panelSWizardHolderContentItem').length > 0;
+        if (isStepWizard) {
+            closeCurSWRow(curButton);
+        }
         var foundParentButton = $(curButton).closest('.MultiRowInputRow');
         if (foundParentButton.length > 0) {
-            foundParentButton.parent().find('.addNewRowForMultiRowCtrl').click();
+            var addButtonTitle = foundParentButton.parent().find('.addNewRowForMultiRowCtrl').text();
+            if (!(foundParentButton.next().length > 0 && foundParentButton.next().hasClass('MultiRowInputRow'))) {
+                if (!foundParentButton.next().hasClass('addNewRowForMRI')) {
+                    foundParentButton.after('<div class="row addNewRowForMRI" ><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="addNewRowForMRCTrl2(this)" class="btn btn-primary btn-block" >' + addButtonTitle +'</button></div><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="moveToNextStepForSW(this)" class="btn btn-primary btn-block" >عدم افزودن و مرحله بعد</button></div></div>');
+                }
+            //    foundParentButton.parent().find('.addNewRowForMultiRowCtrl').click();
+            }
         }
     }
+}
+
+function addNewRowForMRCTrl2(curButton) {
+    if ($(curButton).closest('.addNewRowForMRI').length > 0) {
+        $(curButton).closest('.addNewRowForMRI').parent().find('.addNewRowForMultiRowCtrl').click();
+        $(curButton).closest('.addNewRowForMRI').remove();
+    }
+}
+
+function closeCurSWRow(curButton) {
+    var title = $(curButton).closest('.panelSWizard').closest('.myPanel').find('.myPanelTitle:eq(0)').text();
+    var curRowQuiry = $(curButton).closest('.MultiRowInputRow');
+    if (curRowQuiry.length > 0) {
+        var curIndex = getElementIndex(curRowQuiry[0], 'MultiRowInputRow');
+        curRowQuiry.addClass('hideMultiRowItem');
+        curRowQuiry.append('<div class="multiRowItemCover" ><button onclick="editThisRow(this)" class="editMRButton btn btn-warning btn-sm" >ویرایش</button><span>' + curIndex + ' - ' + title + '</span></div>');
+    }
+}
+
+function getElementIndex(curElement, curClass) {
+    var result = -1;
+
+    if (curElement) {
+        var parentEleemnt = $(curElement).parent();
+        parentEleemnt.find('.' + curClass).each(function (index)
+        {
+            if ($(this)[0] == curElement) {
+                result = index + 1;
+            }
+        })
+    }
+
+    return result;
+}
+
+function editThisRow(curThis) {
+    $(curThis).closest('.hideMultiRowItem').removeClass('hideMultiRowItem');
+    $(curThis).closest('.multiRowItemCover').remove();
 }
 
 function initMoultiRowInputButton(ctrl) {

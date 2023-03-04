@@ -17,7 +17,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 {
     [Area("TenderAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مناقصات", Icon = "fa-funnel-dollar", Title = "مشاوره مناقصه")]
+    [AreaConfig(ModualTitle = "سامانه مناقصات", Order = 4, Icon = "fa-funnel-dollar", Title = "مشاوره مناقصه")]
     [CustomeAuthorizeFilter]
     public class TenderFilledFormConsultationController : Controller
     {
