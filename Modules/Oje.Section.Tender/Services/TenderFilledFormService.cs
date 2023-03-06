@@ -9,6 +9,7 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
+using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
@@ -176,6 +177,7 @@ namespace Oje.Section.Tender.Services
                     ctrl.validateAndUpdateMultiRowInputCtrl(ctrl, form, ppfObj);
                     ctrl.validateMinAndMaxDayForDateInput(ctrl, form);
                     ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form);
+
                 }
             }
         }
@@ -257,17 +259,34 @@ namespace Oje.Section.Tender.Services
                                     ownerStatus = 2;
                             }
 
-                            if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)))
+                            if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || ctrl.type == ctrlType.multiRowInput)
                             {
                                 if (ctrl.type == ctrlType.checkBox)
                                     title = "";
-                                if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
-                                    ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = ctrl.parentCL, title = title, value = value });
+                                if (ctrl.type == ctrlType.multiRowInput && ctrl.ctrls != null && ctrl.ctrls.Count > 0)
+                                {
+                                    for (var i = 0; i < 100; i++)
+                                        foreach (var subCtrl in ctrl.ctrls)
+                                        {
+                                            string currKey = ctrl.name + "[" + i + "]." + subCtrl.name;
+                                            string subTitle = !string.IsNullOrEmpty(subCtrl.label) ? subCtrl.label : subCtrl.ph;
+                                            string subValue = foundItem.values.Where(t => t.Key == currKey).Select(t => t.Value).FirstOrDefault();
+                                            if (!string.IsNullOrEmpty(subTitle) && !string.IsNullOrEmpty(subValue))
+                                            {
+                                                ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = subCtrl.parentCL, title = subTitle, value = subValue });
+                                                if (subCtrl == ctrl.ctrls.LastOrDefault())
+                                                    ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12 seperatorLine" });
+                                            }
+                                        }
+                                }
+                                else if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
+                                    if (ctrl.name != "acceptTextConfrim" && ctrl.name != "acceptTextCondation")
+                                        ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = ctrl.parentCL, title = title, value = value, ctrlType = ctrl.type });
                             }
                             else if (ctrl.type == ctrlType.label)
-                                ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = ctrl.parentCL, title = "", value = ctrl.label });
+                                ProposalFilledFormPdfGroupItems.Add(new TenderFilledFormPdfVMGroupItem() { cssClass = ctrl.parentCL, title = "", value = ctrl.label, ctrlType = ctrl.type });
                         }
-                        if (ProposalFilledFormPdfGroupItems.Count > 0)
+                        if (ProposalFilledFormPdfGroupItems.Count(t => t.ctrlType != ctrlType.label) > 0)
                         {
                             if (tempGroup != null)
                                 tempGroup.TenderFilledFormPdfVMGroupVMs.Add(new TenderFilledFormPdfVMGroupVM() { title = step.title, ProposalFilledFormPdfGroupItems = ProposalFilledFormPdfGroupItems });
@@ -465,7 +484,7 @@ namespace Oje.Section.Tender.Services
         {
             string result = TenderStatus.W8FormPPDocuments.GetEnumDisplayName();
 
-            int  maxBeenPriced = 0;
+            int maxBeenPriced = 0;
             if (userPublishedPrice != null && userPublishedPrice.Count > 0)
             {
                 maxBeenPriced = userPublishedPrice.GroupBy(t => t).Max(t => t.Count());
@@ -475,7 +494,7 @@ namespace Oje.Section.Tender.Services
                 result = TenderStatus.Issue.GetEnumDisplayName();
             else if (psCount > 0)
                 result = TenderStatus.WinnerBeenSelected.GetEnumDisplayName();
-            else if (insurances != null &&  maxBeenPriced > 0 && maxBeenPriced == insurances.Count)
+            else if (insurances != null && maxBeenPriced > 0 && maxBeenPriced == insurances.Count)
                 result = TenderStatus.W8ForSelectWinner.GetEnumDisplayName();
             else if (pCount > 0)
                 result = TenderStatus.BeenPriced.GetEnumDisplayName();
@@ -485,7 +504,7 @@ namespace Oje.Section.Tender.Services
                 result = TenderStatus.ConfirmTenderDate.GetEnumDisplayName();
             else if (insurances != null && confirmByUserCount == insurances.Count())
                 result = TenderStatus.W8ForStartTeending.GetEnumDisplayName();
-            else if (insurances != null && confirmByAdminCount  == insurances.Count())
+            else if (insurances != null && confirmByAdminCount == insurances.Count())
                 result = TenderStatus.W8ForConfirmDocuments.GetEnumDisplayName();
 
             return result;
@@ -1044,7 +1063,7 @@ namespace Oje.Section.Tender.Services
             var logUserOBj = HttpContextAccessor?.HttpContext?.GetLoginUser();
             (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
 
-            
+
             var foundItemId =
                 db.TenderFilledForms
                 .getSiteSettingQuiry(logUserOBj?.canSeeOtherWebsites, siteSettingId)

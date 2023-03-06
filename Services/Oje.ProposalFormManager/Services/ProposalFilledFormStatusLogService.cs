@@ -55,13 +55,12 @@ namespace Oje.ProposalFormService.Services
                 db.Entry(newLog).State = EntityState.Added;
                 db.SaveChanges();
 
-                if(fileList != null && fileList.Count > 0)
-                {
+                newLog.FilledSignature();
+                db.SaveChanges();
+
+                if (fileList != null && fileList.Count > 0)
                     foreach(var file in fileList)
-                    {
                         ProposalFilledFormStatusLogFileService.Create(newLog.Id, file, siteSettingId, userId);
-                    }
-                }
             }
         }
 

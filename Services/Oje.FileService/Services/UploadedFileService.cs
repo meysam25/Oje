@@ -14,7 +14,6 @@ using Imazen.WebP;
 using Microsoft.AspNetCore.StaticFiles;
 using Oje.FileService.Models.View;
 using Oje.Infrastructure.Models;
-using Microsoft.AspNetCore.Rewrite;
 
 namespace Oje.FileService.Services
 {
@@ -51,6 +50,9 @@ namespace Oje.FileService.Services
                 UserId = userId
             };
             db.Entry(newFile).State = EntityState.Added;
+            db.SaveChanges();
+
+            newFile.FilledSignature();
             db.SaveChanges();
 
             var fi = new FileInfo(userPic.FileName);

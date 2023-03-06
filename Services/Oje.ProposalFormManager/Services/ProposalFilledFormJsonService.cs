@@ -34,14 +34,19 @@ namespace Oje.ProposalFormService.Services
                 db.Entry(newCacheJson).State = EntityState.Added;
                 db.SaveChanges();
 
+                newCacheJson.FilledSignature();
                 foundId = newCacheJson.Id;
+                db.SaveChanges();
             }
-                
-            db.Entry(new ProposalFilledFormJson()
+
+            var newJsonItem = new ProposalFilledFormJson()
             {
                 ProposalFilledFormId = proposalFilledFormId,
                 ProposalFilledFormCacheJsonId = foundId
-            }).State = EntityState.Added;
+            };
+            newJsonItem.FilledSignature();
+
+            db.Entry(newJsonItem).State = EntityState.Added;
             db.SaveChanges();
         }
 

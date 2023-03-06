@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\Oje.AccountManager\Oje.AccountService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.FileService\Oje.FileService.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.ValidatedSignature\Oje.ValidatedSignature.csproj" />
+  </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+ 
+</Project>

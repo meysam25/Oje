@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFilledFormUsers")]
-    public class ProposalFilledFormUser
+    public class ProposalFilledFormUser: SignatureEntity
     {
         [Key, Column(Order = 1)]
         public long ProposalFilledFormId { get; set; }

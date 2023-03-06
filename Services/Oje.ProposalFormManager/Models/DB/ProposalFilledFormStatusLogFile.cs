@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Services;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFilledFormStatusLogFiles")]
-    public class ProposalFilledFormStatusLogFile
+    public class ProposalFilledFormStatusLogFile: SignatureEntity
     {
         [Key]
         public long Id { get; set; }

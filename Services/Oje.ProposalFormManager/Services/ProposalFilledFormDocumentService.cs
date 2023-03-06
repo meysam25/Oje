@@ -70,10 +70,10 @@ namespace Oje.ProposalFormService.Services
 
 
             if (input.mainFile != null && input.mainFile.Length > 0)
-            {
                 newDocument.MainFileSrc = UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, input.mainFile, userId, siteSettingId, foundId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true, foundId + "_" + newDocument.Id);
-                db.SaveChanges();
-            }
+
+            newDocument.FilledSignature();
+            db.SaveChanges();
 
             UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormNewFinancialDocuemnt, ProposalFilledFormUseService.GetProposalFilledFormUserIds(input.pKey.ToLongReturnZiro()), input.pKey, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + input.pKey);
 
@@ -99,6 +99,7 @@ namespace Oje.ProposalFormService.Services
             foundItem.Price = input.price.ToLongReturnZiro();
             foundItem.TargetDate = input.arriveDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.Type = input.type.Value;
+            foundItem.FilledSignature();
 
             if (input.mainFile != null && input.mainFile.Length > 0)
                 foundItem.MainFileSrc = UploadedFileService.UploadNewFile(FileType.ProposalFilledForm, input.mainFile, userId, siteSettingId, foundId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true, foundId + "_" + foundItem.Id);
@@ -151,7 +152,7 @@ namespace Oje.ProposalFormService.Services
                     if (bankId.ToIntReturnZiro() <= 0)
                         throw BException.GenerateNewException(String.Format(BMessages.Please_Select_Bank_RowX.GetEnumDisplayName(), i));
 
-                    db.Entry(new ProposalFilledFormDocument()
+                    var newItem = new ProposalFilledFormDocument()
                     {
                         BankId = bankId,
                         Code = currCheckNumber,
@@ -161,7 +162,9 @@ namespace Oje.ProposalFormService.Services
                         SiteSettingId = siteSettingId.Value,
                         TargetDate = checkArr[i].checkDateEn,
                         Type = ProposalFilledFormDocumentType.Cheque
-                    }).State = EntityState.Added;
+                    };
+                    newItem.FilledSignature();
+                    db.Entry(newItem).State = EntityState.Added;
                 }
                 if (checkArr.Count > 0)
                     db.SaveChanges();

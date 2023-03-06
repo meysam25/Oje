@@ -38,6 +38,8 @@ namespace Oje.ProposalFormService.Services
             var newItem = new ProposalFilledFormKey() { Key = name };
             db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
             db.SaveChanges();
+            newItem.FilledSignature();
+            db.SaveChanges();
 
             cacheKeyIds[name] = newItem.Id;
             return newItem.Id;

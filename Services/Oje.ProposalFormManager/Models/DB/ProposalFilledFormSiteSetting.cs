@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Oje.Infrastructure.Services;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFilledFormSiteSettings")]
-    public class ProposalFilledFormSiteSetting
+    public class ProposalFilledFormSiteSetting: SignatureEntity
     {
         public long ProposalFilledFormId { get; set; }
         [ForeignKey("ProposalFilledFormId"), InverseProperty("ProposalFilledFormSiteSettings")]

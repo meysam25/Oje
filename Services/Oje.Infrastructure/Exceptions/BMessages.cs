@@ -718,5 +718,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Select_Province_And_City = 355,
         [Display(Name = "ابتدا باید توسط ادمین فعال شود")]
         Need_To_Be_Active_By_Admin_First = 356,
+        [Display(Name = "کلیه فیلد ها معتبر می باشند")]
+        Its_All_Valid = 357,
     }
 }

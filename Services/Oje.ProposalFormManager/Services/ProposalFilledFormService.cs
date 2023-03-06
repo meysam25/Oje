@@ -238,9 +238,10 @@ namespace Oje.ProposalFormService.Services
                 SiteSettingId = siteSettingId.Value
             };
 
-            //newItem.Signature = SignatureManager.Create(newItem);
-
             db.Entry(newItem).State = EntityState.Added;
+            db.SaveChanges();
+
+            newItem.FilledSignature();
             db.SaveChanges();
 
             return newItem;

@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFilledForms")]
-    public class ProposalFilledForm
+    public class ProposalFilledForm: SignatureEntity
     {
         public ProposalFilledForm()
         {
@@ -40,7 +41,6 @@ namespace Oje.ProposalFormService.Models.DB
         public DateTime? InsuranceStartDate { get; set; }
         public DateTime? InsuranceEndDate { get; set; }
         public bool IsDelete { get; set; }
-        public string Signature { get; set; }
         [MaxLength(200)]
         public string IssueFile { get; set; }
         public int SiteSettingId { get; set; }

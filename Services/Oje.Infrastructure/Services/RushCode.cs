@@ -154,6 +154,23 @@ namespace Oje.Infrastructure.Services
             return (new C_EDSecure()).Decrypt(Convert.FromBase64String(input));
         }
 
+
+        private static byte[] SignatureKey = {
+            125, 83, 27, 7, 195, 35, 2, 1, 70, 68, 5, 193, 72, 11, 61, 110, 2, 53, 239, 4, 8, 211, 60, 30, 120, 201, 5, 69, 9, 169, 5, 201
+        };
+        private static byte[] SignatureVector = {
+           142, 122, 164, 10, 1, 2, 191, 36, 82, 7, 171, 9, 14, 63, 25, 16
+        };
+        public static string EncryptSignature(this string input)
+        {
+            return Convert.ToBase64String((new C_EDSecure(SignatureKey, SignatureVector)).Encrypt(input));
+        }
+
+        public static string DecryptSignature(this string input)
+        {
+            return (new C_EDSecure(SignatureKey, SignatureVector)).Decrypt(Convert.FromBase64String(input));
+        }
+
         public static bool IsValidEmail(this string email)
         {
             try

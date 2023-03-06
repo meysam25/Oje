@@ -3,11 +3,12 @@ using Oje.Infrastructure.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 
 namespace Oje.FileService.Models.DB
 {
     [Table("UploadedFiles")]
-    public class UploadedFile : EntityWithCreateByUser<User, long>, IEntityWithSiteSettingIdNullable
+    public class UploadedFile : SignatureEntity, EntityWithCreateByUser<User, long>, IEntityWithSiteSettingIdNullable
     {
         [Key]
         public long Id { get; set; }

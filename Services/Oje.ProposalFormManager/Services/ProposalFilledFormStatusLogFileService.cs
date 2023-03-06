@@ -27,13 +27,17 @@ namespace Oje.ProposalFormService.Services
         {
             if (proposalFilledFormStatusLogId > 0 && file != null && file.mainFile != null && file.mainFile.Length > 0 && !string.IsNullOrEmpty(file.fileType) && siteSettingId.ToIntReturnZiro() > 0)
             {
-                db.Entry(new ProposalFilledFormStatusLogFile()
+                var newItem = new ProposalFilledFormStatusLogFile()
                 {
                     ProposalFilledFormStatusLogId = proposalFilledFormStatusLogId,
                     Title = file.fileType,
                     SiteSettingId = siteSettingId.Value,
                     FileUrl = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormLogFile, file.mainFile, userId, siteSettingId, proposalFilledFormStatusLogId, ".jpg,.jpeg,.png,.mp4,.pdf", true, null, file.fileType)
-                }).State = EntityState.Added;
+                };
+                db.Entry(newItem).State = EntityState.Added;
+                db.SaveChanges();
+
+                newItem.FilledSignature();
                 db.SaveChanges();
             }
         }

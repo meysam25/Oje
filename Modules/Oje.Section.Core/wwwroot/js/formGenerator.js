@@ -1346,7 +1346,7 @@ function addNewRowForMultiCtrl(curButton) {
         }
         var foundParentButton = $(curButton).closest('.MultiRowInputRow');
         if (foundParentButton.length > 0) {
-            var addButtonTitle = foundParentButton.parent().find('.addNewRowForMultiRowCtrl').text();
+            var addButtonTitle = foundParentButton.parent().find('> div > .addNewRowForMultiRowCtrl').text();
             if (!(foundParentButton.next().length > 0 && foundParentButton.next().hasClass('MultiRowInputRow'))) {
                 if (!foundParentButton.next().hasClass('addNewRowForMRI')) {
                     foundParentButton.after('<div class="row addNewRowForMRI" ><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="addNewRowForMRCTrl2(this)" class="btn btn-primary btn-block" >' + addButtonTitle +'</button></div><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="moveToNextStepForSW(this)" class="btn btn-primary btn-block" >عدم افزودن و مرحله بعد</button></div></div>');
@@ -1359,7 +1359,7 @@ function addNewRowForMultiCtrl(curButton) {
 
 function addNewRowForMRCTrl2(curButton) {
     if ($(curButton).closest('.addNewRowForMRI').length > 0) {
-        $(curButton).closest('.addNewRowForMRI').parent().find('.addNewRowForMultiRowCtrl').click();
+        $(curButton).closest('.addNewRowForMRI').next().find('.addNewRowForMultiRowCtrl').click();
         $(curButton).closest('.addNewRowForMRI').remove();
     }
 }
@@ -1412,7 +1412,7 @@ function initMoultiRowInputButton(ctrl) {
                     ctrlObj.ctrls[i].name = prevName;
                 }
                 newRowHtml += '</div>';
-                $(this).closest('.myCtrl').find('.MultiRowInputRow:last').after(newRowHtml);
+                $(this).closest('.myCtrl').find('> div > .MultiRowInputRow:last').after(newRowHtml);
             }
             executeArrFunctions();
         });

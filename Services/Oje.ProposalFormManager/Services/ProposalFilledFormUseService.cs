@@ -29,13 +29,15 @@ namespace Oje.ProposalFormService.Services
             //if (userId.ToLongReturnZiro() > 0 && proposalFilledFormId > 0 &&
             //    !db.ProposalFilledFormUsers.Any(t => t.UserId == userId && t.ProposalFilledFormId == proposalFilledFormId && t.Type == type))
             //{
-            db.Entry(new ProposalFilledFormUser()
+            var newItem = new ProposalFilledFormUser()
             {
                 FromUserId = fromUserId,
                 ProposalFilledFormId = proposalFilledFormId,
                 Type = type,
                 UserId = userId.ToLongReturnZiro()
-            }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            };
+            newItem.FilledSignature();
+            db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
             db.SaveChanges();
 
             ProposalFilledFormSiteSettingService.Create(proposalFilledFormId, siteSettingId);

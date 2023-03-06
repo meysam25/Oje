@@ -105,6 +105,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.BackupService", "Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.GlobalForms", "Modules\Oje.Section.GeneralForm\Oje.Section.GlobalForms.csproj", "{15511D71-9845-4A0C-AC35-B27FA172B028}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.Section.ValidatedSignature", "Modules\Oje.Section.ValidatedSignature\Oje.Section.ValidatedSignature.csproj", "{04E3C84E-9EB9-4856-9C57-E1AEDF7867C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oje.ValidatedSignature", "Services\Oje.ValidatedSignature\Oje.ValidatedSignature.csproj", "{18835DAE-BB09-459A-9B3B-7700A9729A73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -303,6 +307,14 @@ Global
 		{15511D71-9845-4A0C-AC35-B27FA172B028}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15511D71-9845-4A0C-AC35-B27FA172B028}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15511D71-9845-4A0C-AC35-B27FA172B028}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04E3C84E-9EB9-4856-9C57-E1AEDF7867C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04E3C84E-9EB9-4856-9C57-E1AEDF7867C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04E3C84E-9EB9-4856-9C57-E1AEDF7867C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04E3C84E-9EB9-4856-9C57-E1AEDF7867C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18835DAE-BB09-459A-9B3B-7700A9729A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18835DAE-BB09-459A-9B3B-7700A9729A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18835DAE-BB09-459A-9B3B-7700A9729A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18835DAE-BB09-459A-9B3B-7700A9729A73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -355,6 +367,8 @@ Global
 		{1B5395EA-105B-44D7-B0F3-0062EC25FA7E} = {C1723884-F4B8-44A9-AA12-8022348CCDCE}
 		{8C8F6FEC-07F7-41D8-9E7E-29D94A9C511B} = {AB361DD6-2F25-4661-A83D-01151611F20A}
 		{15511D71-9845-4A0C-AC35-B27FA172B028} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
+		{04E3C84E-9EB9-4856-9C57-E1AEDF7867C1} = {2712D46F-E925-4AEC-9729-868D0B20B51E}
+		{18835DAE-BB09-459A-9B3B-7700A9729A73} = {AB361DD6-2F25-4661-A83D-01151611F20A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5BEE9DD2-169F-4F13-842E-FBA0D3C46071}

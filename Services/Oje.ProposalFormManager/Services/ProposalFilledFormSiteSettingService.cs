@@ -23,11 +23,13 @@ namespace Oje.ProposalFormService.Services
             {
                 if(!db.ProposalFilledFormSiteSettings.Any(t => t.SiteSettingId == siteSettingId && t.ProposalFilledFormId == proposalFilledFormId))
                 {
-                    db.Entry(new ProposalFilledFormSiteSetting() 
+                    var newItem = new ProposalFilledFormSiteSetting()
                     {
                         ProposalFilledFormId = proposalFilledFormId,
                         SiteSettingId = siteSettingId.Value
-                    }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                    };
+                    newItem.FilledSignature();
+                    db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                     db.SaveChanges();
                 }
             }

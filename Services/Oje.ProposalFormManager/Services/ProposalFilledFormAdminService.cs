@@ -765,6 +765,7 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             foundItem.Status = input.status.Value;
+            foundItem.FilledSignature();
             db.SaveChanges();
 
             ProposalFilledFormStatusLogService.Create(input.id, input.status, DateTime.Now, userId, input.description, input.fullname, input.fileList, siteSettingId);

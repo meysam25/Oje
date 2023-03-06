@@ -41,7 +41,9 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تکس اریا")]
         textarea = 18,
         [Display(Name = "عدد")]
-        number = 19
+        number = 19,
+        [Display(Name = "تمپلیت")]
+        template = 20
 
     }
 }

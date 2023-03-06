@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("ProposalFilledFormKeys")]
-    public class ProposalFilledFormKey
+    public class ProposalFilledFormKey: SignatureEntity
     {
         public ProposalFilledFormKey()
         {

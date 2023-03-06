@@ -24,12 +24,14 @@ namespace Oje.ProposalFormService.Services
 
         void addNewRow(long proposalFilledFormId, int keyId, string currValue)
         {
-            db.Entry(new ProposalFilledFormValue()
+            var newItem = new ProposalFilledFormValue()
             {
                 ProposalFilledFormId = proposalFilledFormId,
                 ProposalFilledFormKeyId = keyId,
                 Value = currValue
-            }).State = EntityState.Added;
+            };
+            newItem.FilledSignature();
+            db.Entry(newItem).State = EntityState.Added;
         }
 
         public void CreateByJsonConfig(PageForm ppfObj, long proposalFilledFormId, IFormCollection form, List<ctrl> allCtrls, bool? isEdit = false)
@@ -83,6 +85,7 @@ namespace Oje.ProposalFormService.Services
                                         if (foundValue != null)
                                         {
                                             foundValue.Value = currValue;
+                                            foundValue.FilledSignature();
                                             db.SaveChanges();
                                         }
                                         else

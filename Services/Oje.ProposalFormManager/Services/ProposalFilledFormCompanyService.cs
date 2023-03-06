@@ -50,7 +50,7 @@ namespace Oje.ProposalFormService.Services
         {
             if (inquiryId > 0 && companyId > 0)
             {
-                db.Entry(new ProposalFilledFormCompany()
+                var newCompany = new ProposalFilledFormCompany()
                 {
                     CompanyId = companyId,
                     ProposalFilledFormId = proposalFilledFormId,
@@ -58,7 +58,10 @@ namespace Oje.ProposalFormService.Services
                     IsSelected = isSelected,
                     CreateDate = DateTime.Now,
                     CreateUserId = loginUserId
-                }).State = EntityState.Added;
+                };
+                newCompany.FilledSignature();
+
+                db.Entry(newCompany).State = EntityState.Added;
                 db.SaveChanges();
 
             }
@@ -75,14 +78,19 @@ namespace Oje.ProposalFormService.Services
             if (db.Companies.Count(t => t.IsActive == true && allComIdsInt.Contains(t.Id)) != allComIdsInt.Count)
                 throw BException.GenerateNewException(BMessages.Selected_Company_Is_Not_Valid);
             foreach (var cid in allComIdsInt)
-                db.Entry(new ProposalFilledFormCompany()
+            {
+                var newCompany = new ProposalFilledFormCompany()
                 {
                     CompanyId = cid,
                     ProposalFilledFormId = proposalFilledFormId,
                     Price = 0,
                     CreateDate = DateTime.Now,
                     CreateUserId = loginUserId
-                }).State = EntityState.Added;
+                };
+                newCompany.FilledSignature();
+                db.Entry(newCompany).State = EntityState.Added;
+            }
+                
             db.SaveChanges();
         }
 
@@ -109,6 +117,7 @@ namespace Oje.ProposalFormService.Services
             if (input.mainFile != null && input.mainFile.Length > 0)
                 newItem.MainFileUrl = UploadedFileService.UploadNewFile(FileType.CompanyPrice, input.mainFile, userId, siteSettingId, input.pKey, ".png,.jpg,.jpeg,.doc,docx,.pdf", true, input.companyId + "_" + input.pKey);
 
+            newItem.FilledSignature();
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
@@ -314,6 +323,7 @@ namespace Oje.ProposalFormService.Services
             if (input.mainFile != null && input.mainFile.Length > 0)
                 editItem.MainFileUrl = UploadedFileService.UploadNewFile(FileType.CompanyPrice, input.mainFile, userId, siteSettingId, ppfId, ".png,.jpg,.jpeg,.doc,docx,.pdf", true, cId + "_" + ppfId);
 
+            editItem.FilledSignature();
             db.SaveChanges();
 
             UserNotifierService.Notify(userId, UserNotificationType.ProposalFilledFormCompanyChanged, ProposalFilledFormUseService.GetProposalFilledFormUserIds(ppfId), ppfId, "", siteSettingId, "/ProposalFilledForm" + ProposalFilledFormAdminBaseQueryService.getControllerNameByStatus(status) + "/PdfDetailesForAdmin?id=" + ppfId);
@@ -339,7 +349,10 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             foreach (var item in foundItem.ProposalFilledFormCompanies)
+            {
                 item.IsSelected = false;
+                item.FilledSignature();
+            }
 
             var foundCompanny = foundItem.ProposalFilledFormCompanies.Where(t => t.CompanyId == cId).FirstOrDefault();
             if (foundCompanny == null)
@@ -348,6 +361,8 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
             foundCompanny.IsSelected = true;
             foundItem.Price = foundCompanny.Price;
+            foundCompanny.FilledSignature();
+            foundItem.FilledSignature();
 
             db.SaveChanges();
 
