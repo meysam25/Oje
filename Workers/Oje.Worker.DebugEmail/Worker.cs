@@ -26,6 +26,8 @@ namespace Oje.Worker.DebugEmail
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            SqlDependency.Start(GetDbConnection());
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (isRegister == false)
@@ -41,6 +43,8 @@ namespace Oje.Worker.DebugEmail
 
                 await Task.Delay(1000, stoppingToken);
             }
+
+            SqlDependency.Stop(GetDbConnection());
         }
 
         public void registerSelect()
@@ -50,7 +54,6 @@ namespace Oje.Worker.DebugEmail
             {
                 conn.Open();
 
-                SqlDependency.Start(GetDbConnection());
 
                 string commandText = "SELECT [Id] FROM dbo.EmailSendingQueues where LastTryDate is null";
 

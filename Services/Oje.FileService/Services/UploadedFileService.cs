@@ -52,8 +52,7 @@ namespace Oje.FileService.Services
             db.Entry(newFile).State = EntityState.Added;
             db.SaveChanges();
 
-            newFile.FilledSignature();
-            db.SaveChanges();
+            
 
             var fi = new FileInfo(userPic.FileName);
 
@@ -113,6 +112,7 @@ namespace Oje.FileService.Services
             newFile.FileSize = new FileInfo(newFile.FileNameOnServer).Length;
             new FileExtensionContentTypeProvider().TryGetContentType(new FileInfo(newFile.FileName).Name, out FileContentType);
             newFile.FileContentType = FileContentType;
+            newFile.FilledSignature();
             db.SaveChanges();
 
             return "?fn=" + fn;

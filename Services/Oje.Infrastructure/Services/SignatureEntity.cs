@@ -95,6 +95,8 @@ namespace Oje.Infrastructure.Services
 
                 }
             }
+            else 
+                result.Add(new KeyValue() { key = "entity", value = "no signature" });
 
             return result;
         }

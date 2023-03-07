@@ -18,6 +18,7 @@ using Oje.Infrastructure.Models.PageForms;
 using System.Web;
 using UAParser;
 using System.Security.Cryptography;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Infrastructure.Services
 {
@@ -224,6 +225,11 @@ namespace Oje.Infrastructure.Services
             return input.GetAttribute<DisplayAttribute>()?.Name + "";
         }
 
+        public static string GetTableAttributeName(this object input)
+        {
+            return input.GetAttribute2<TableAttribute>()?.Name + "";
+        }
+
         public static byte ToByteReturnZiro(this object input)
         {
             try
@@ -260,6 +266,17 @@ namespace Oje.Infrastructure.Services
                             .GetMember(enumValue.ToString())
                             .FirstOrDefault()
                             ?.GetCustomAttribute<TAttribute>();
+        }
+
+        public static TAttribute GetAttribute2<TAttribute>(this object input)
+           where TAttribute : Attribute
+        {
+            if (input == null)
+                return null;
+
+            return input.GetType()
+                            ?.GetCustomAttribute<TAttribute>();
+                            
         }
 
         public static void CopyTo(Stream src, Stream dest)

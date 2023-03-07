@@ -158,10 +158,15 @@ namespace Oje.ProposalFormService.Services
             var allCompay = db.ProposalFilledFormCompanies.Where(t => t.ProposalFilledFormId == input.id).ToList();
             List<int> canNotBeRemoved = new List<int>();
             foreach (var company in allCompay)
+            {
+                if (!company.IsSignature())
+                    throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                 if (company.IsSelected != true)
                     db.Entry(company).State = EntityState.Deleted;
                 else
                     canNotBeRemoved.Add(company.CompanyId);
+            }
+                
 
             input.cIds = input.cIds.Where(t => !canNotBeRemoved.Contains(t)).ToList();
             if (input.cIds.Count > 0)
@@ -188,6 +193,9 @@ namespace Oje.ProposalFormService.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (foundItem.IsSelected == true)
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
+            if (!foundItem.IsSignature())
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
 
             db.Entry(foundItem).State = EntityState.Deleted;
@@ -316,6 +324,9 @@ namespace Oje.ProposalFormService.Services
             if (editItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            if (!editItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             editItem.Price = input.price.ToLongReturnZiro();
             editItem.UpdateUserId = userId;
             editItem.UpdateDate = DateTime.Now;
@@ -350,6 +361,8 @@ namespace Oje.ProposalFormService.Services
 
             foreach (var item in foundItem.ProposalFilledFormCompanies)
             {
+                if (!item.IsSignature())
+                    throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                 item.IsSelected = false;
                 item.FilledSignature();
             }
@@ -359,6 +372,10 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (foundCompanny.Price.ToLongReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
+            if (!foundCompanny.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
             foundCompanny.IsSelected = true;
             foundItem.Price = foundCompanny.Price;
             foundCompanny.FilledSignature();

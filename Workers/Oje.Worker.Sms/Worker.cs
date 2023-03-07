@@ -25,6 +25,8 @@ namespace Oje.Worker.Sms
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            SqlDependency.Start(GetDbConnection());
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (isRegister == false)
@@ -40,6 +42,8 @@ namespace Oje.Worker.Sms
 
                 await Task.Delay(1000, stoppingToken);
             }
+
+            SqlDependency.Stop(GetDbConnection());
         }
 
         public void registerSelect()
@@ -49,7 +53,6 @@ namespace Oje.Worker.Sms
             {
                 conn.Open();
 
-                SqlDependency.Start(GetDbConnection());
 
                 string commandText = "SELECT [Id],[MobileNumber] ,[Subject] ,[Body] FROM dbo.SmsSendingQueues where LastTryDate is null";
 

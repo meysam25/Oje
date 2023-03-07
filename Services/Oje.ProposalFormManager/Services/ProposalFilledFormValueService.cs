@@ -84,6 +84,8 @@ namespace Oje.ProposalFormService.Services
                                         var foundValue = db.ProposalFilledFormValues.Where(t => t.ProposalFilledFormKeyId == keyId && t.ProposalFilledFormId == proposalFilledFormId).FirstOrDefault();
                                         if (foundValue != null)
                                         {
+                                            if (!foundValue.IsSignature())
+                                                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                                             foundValue.Value = currValue;
                                             foundValue.FilledSignature();
                                             db.SaveChanges();

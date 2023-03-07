@@ -91,6 +91,8 @@ namespace Oje.ProposalFormService.Services
             var foundItem = db.ProposalFilledFormDocuments.Where(t => t.Id == input.id && t.ProposalFilledFormId == foundId).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             foundItem.BankId = input.bankId;
             foundItem.CashDate = input.cashDate.ConvertPersianNumberToEnglishNumber().ToEnDate();
@@ -180,6 +182,9 @@ namespace Oje.ProposalFormService.Services
             var foundItem = db.ProposalFilledFormDocuments.Where(t => t.Id == id && t.ProposalFilledFormId == proposalFilledFormId).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();

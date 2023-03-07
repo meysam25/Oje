@@ -11,7 +11,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         GlobalConfig.Configuration = hostContext.Configuration;
-        services.AddScoped<IHttpContextAccessor, FakeIHttpContextAccessor>();
+        services.AddSingleton<IHttpContextAccessor, FakeIHttpContextAccessor>();
         BackupServiceConfig.Config(services);
         services.AddHostedService<Worker>();
     })

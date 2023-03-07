@@ -37,7 +37,7 @@ namespace Oje.ValidatedSignature.Services
 
             if (!foundItem.IsSignature())
             {
-                result += "change has been fround in ProposalFilledForm" + Environment.NewLine;
+                result += "change has been found in ProposalFilledForm" + Environment.NewLine;
                 result += foundItem.GetSignatureChanges();
             }
             if (foundItem.ProposalFilledFormValues != null)
@@ -46,13 +46,13 @@ namespace Oje.ValidatedSignature.Services
                 {
                     if (!value.IsSignature())
                     {
-                        result += "change has been fround in ProposalFilledFormValues" + Environment.NewLine;
+                        result += "change has been found in ProposalFilledFormValues" + Environment.NewLine;
                         result += value.GetSignatureChanges();
-                        if (value.ProposalFilledFormKey != null && !value.ProposalFilledFormKey.IsSignature())
-                        {
-                            result += "change has been fround in ProposalFilledFormKey" + Environment.NewLine;
-                            result += value.ProposalFilledFormKey.GetSignatureChanges();
-                        }
+                    }
+                    if (value.ProposalFilledFormKey != null && !value.ProposalFilledFormKey.IsSignature())
+                    {
+                        result += "change has been found in ProposalFilledFormKey" + Environment.NewLine;
+                        result += value.ProposalFilledFormKey.GetSignatureChanges();
                     }
                 }
             }
@@ -62,7 +62,7 @@ namespace Oje.ValidatedSignature.Services
                 {
                     if (!user.IsSignature())
                     {
-                        result += "change has been fround in ProposalFilledFormUsers" + Environment.NewLine;
+                        result += "change has been found in ProposalFilledFormUsers" + Environment.NewLine;
                         result += user.GetSignatureChanges();
                     }
                 }
@@ -74,7 +74,7 @@ namespace Oje.ValidatedSignature.Services
                 {
                     if (!item.IsSignature())
                     {
-                        result += "change has been fround in ProposalFilledFormCompanies" + Environment.NewLine;
+                        result += "change has been found in ProposalFilledFormCompanies" + Environment.NewLine;
                         result += item.GetSignatureChanges();
                     }
                 }
@@ -86,13 +86,13 @@ namespace Oje.ValidatedSignature.Services
                 {
                     if (!item.IsSignature())
                     {
-                        result += "change has been fround in ProposalFilledFormJsons" + Environment.NewLine;
+                        result += "change has been found in ProposalFilledFormJsons" + Environment.NewLine;
                         result += item.GetSignatureChanges();
-                        if (item.ProposalFilledFormCacheJson != null && !item.ProposalFilledFormCacheJson.IsSignature())
-                        {
-                            result += "change has been fround in ProposalFilledFormCacheJson" + Environment.NewLine;
-                            result += item.ProposalFilledFormCacheJson.GetSignatureChanges();
-                        }
+                    }
+                    if (item.ProposalFilledFormCacheJson != null && !item.ProposalFilledFormCacheJson.IsSignature())
+                    {
+                        result += "change has been found in ProposalFilledFormCacheJson" + Environment.NewLine;
+                        result += item.ProposalFilledFormCacheJson.GetSignatureChanges();
                     }
                 }
             }
@@ -103,7 +103,7 @@ namespace Oje.ValidatedSignature.Services
                 {
                     if (!item.IsSignature())
                     {
-                        result += "change has been fround in ProposalFilledFormDocuments" + Environment.NewLine;
+                        result += "change has been found in ProposalFilledFormDocuments" + Environment.NewLine;
                         result += item.GetSignatureChanges();
                     }
                 }
@@ -115,17 +115,17 @@ namespace Oje.ValidatedSignature.Services
                 {
                     if (!item.IsSignature())
                     {
-                        result += "change has been fround in ProposalFilledFormStatusLogs" + Environment.NewLine;
+                        result += "change has been found in ProposalFilledFormStatusLogs" + Environment.NewLine;
                         result += item.GetSignatureChanges();
-                        if (item.ProposalFilledFormStatusLogFiles != null)
+                    }
+                    if (item.ProposalFilledFormStatusLogFiles != null)
+                    {
+                        foreach (var subItem in item.ProposalFilledFormStatusLogFiles)
                         {
-                            foreach(var subItem in item.ProposalFilledFormStatusLogFiles)
+                            if (!subItem.IsSignature())
                             {
-                                if (!subItem.IsSignature())
-                                {
-                                    result += "change has been fround in ProposalFilledFormStatusLogFiles" + Environment.NewLine;
-                                    result += subItem.GetSignatureChanges();
-                                }
+                                result += "change has been found in ProposalFilledFormStatusLogFiles" + Environment.NewLine;
+                                result += subItem.GetSignatureChanges();
                             }
                         }
                     }
@@ -138,7 +138,7 @@ namespace Oje.ValidatedSignature.Services
                 {
                     if (!item.IsSignature())
                     {
-                        result += "change has been fround in ProposalFilledFormSiteSettings" + Environment.NewLine;
+                        result += "change has been found in ProposalFilledFormSiteSettings" + Environment.NewLine;
                         result += item.GetSignatureChanges();
                     }
                 }
@@ -192,12 +192,12 @@ namespace Oje.ValidatedSignature.Services
                 }
                 else if (searchInput.sortField == "companyTitle" && searchInput.sortFieldIsAsc == false)
                 {
-                    quiryResult = quiryResult.OrderByDescending(t => t.ProposalFilledFormCompanies.Select(tt => tt.CompanyId));
+                    quiryResult = quiryResult.OrderByDescending(t => t.ProposalFilledFormCompanies.Select(tt => tt.CompanyId).FirstOrDefault());
                     hasSort = true;
                 }
                 else if (searchInput.sortField == "companyTitle" && searchInput.sortFieldIsAsc == true)
                 {
-                    quiryResult = quiryResult.OrderBy(t => t.ProposalFilledFormCompanies.Select(tt => tt.CompanyId));
+                    quiryResult = quiryResult.OrderBy(t => t.ProposalFilledFormCompanies.Select(tt => tt.CompanyId).FirstOrDefault());
                     hasSort = true;
                 }
                 else if (searchInput.sortField == "formTitle" && searchInput.sortFieldIsAsc == false)

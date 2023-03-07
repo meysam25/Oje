@@ -14,7 +14,7 @@
                 "prop": "id",
                 "modalId": "ProposalFilledFormEditGridModal",
                 "url": "/Signature/ProposalFilledForm/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.rid +'\\', \\'/Signature/ProposalFilledForm/GetById\\', \\'ProposalFilledFormEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/Signature/ProposalFilledForm/GetById\\', \\'ProposalFilledFormEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },

@@ -149,6 +149,9 @@ namespace Oje.ProposalFormService.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
             foundItem.IsDelete = true;
 
             db.SaveChanges();
@@ -394,6 +397,9 @@ namespace Oje.ProposalFormService.Services
 
             if (foundItem.GlobalInqueryId > 0)
                 throw BException.GenerateNewException(BMessages.You_Can_Not_Edit_Company_Of_ProposalFilledForm_With_Inquiry);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             ProposalFilledFormCompanyService.CreateUpdate(input, userId);
 
@@ -733,6 +739,9 @@ namespace Oje.ProposalFormService.Services
             .Where(t => t.Id == input.id)
             .FirstOrDefault();
 
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
             if (foundItem.Status == ProposalFilledFormStatus.NeedSpecialist)
             {
                 if (string.IsNullOrEmpty(input.fullname))
@@ -761,8 +770,8 @@ namespace Oje.ProposalFormService.Services
             if (input.status == ProposalFilledFormStatus.Issuing && !ProposalFilledFormUseService.HasAny(foundItem.Id, ProposalFilledFormUserType.Agent))
                 throw BException.GenerateNewException(BMessages.Please_Select_Agent);
 
-            if (foundItem == null)
-                throw BException.GenerateNewException(BMessages.Not_Found);
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             foundItem.Status = input.status.Value;
             foundItem.FilledSignature();
@@ -817,6 +826,9 @@ namespace Oje.ProposalFormService.Services
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             if (input.mainFile != null && input.mainFile.Length > 0)
                 foundItem.IssueFile = UploadedFileService.UploadNewFile(FileType.IssueProposalForm, input.mainFile, userId, siteSettingId, foundItem.Id, ".jpg,.jpeg,.png,.doc,.docx,.pdf", true);

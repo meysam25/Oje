@@ -27,7 +27,6 @@ namespace Oje.Security
             services.AddScoped<IUserAdminLogConfigService, UserAdminLogConfigService>();
             services.AddScoped<IActionService, ActionService>();
             services.AddScoped<IUserAdminLogService, UserAdminLogService>();
-            services.AddScoped<IErrorService, ErrorService>();
             services.AddScoped<IAdminBlockClientConfigService, AdminBlockClientConfigService>();
             services.AddScoped<IUserLoginLogoutLogService, UserLoginLogoutLogService>();
             services.AddScoped<IBlockLoginUserService, BlockLoginUserService>();
@@ -40,6 +39,7 @@ namespace Oje.Security
             services.AddScoped<IDebugInfoService, DebugInfoService>();
             services.AddScoped<IGoogleBackupArchiveService, GoogleBackupArchiveService>();
             services.AddScoped<IGoogleBackupArchiveLogService, GoogleBackupArchiveLogService>();
+            services.AddScoped<IErrorService, ErrorService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)
@@ -55,6 +55,8 @@ namespace Oje.Security
             services.AddSingleton<IValidRangeIpService, ValidRangeIpService>();
             services.AddSingleton<IInValidRangeIpService, InValidRangeIpService>();
             services.AddSingleton<IIpapiService, IpapiService>();
+            services.AddSingleton<IDebugInfoService, DebugInfoService>();
+            services.AddSingleton<IErrorService, ErrorService>();
         }
     }
 }

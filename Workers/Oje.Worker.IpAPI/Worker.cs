@@ -26,6 +26,8 @@ namespace Oje.Worker.IpAPI
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            SqlDependency.Start(GetDbConnection());
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (isRegister == false)
@@ -41,6 +43,8 @@ namespace Oje.Worker.IpAPI
 
                 await Task.Delay(1000, stoppingToken);
             }
+
+            SqlDependency.Stop(GetDbConnection());
         }
 
         public void registerSelect()
@@ -49,8 +53,6 @@ namespace Oje.Worker.IpAPI
             using (SqlConnection conn = new SqlConnection(GetDbConnection()))
             {
                 conn.Open();
-
-                SqlDependency.Start(GetDbConnection());
 
                 string commandText = "SELECT [LastTryDate] FROM dbo.InValidRangeIps where LastTryDate is null";
 

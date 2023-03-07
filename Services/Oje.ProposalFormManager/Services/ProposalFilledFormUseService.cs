@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
@@ -80,6 +81,8 @@ namespace Oje.ProposalFormService.Services
                 var foundItem = db.ProposalFilledFormUsers.Where(t => t.ProposalFilledFormId == proposalFilledFormId && t.Type == type).FirstOrDefault();
                 if (foundItem != null)
                 {
+                    if (!foundItem.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                     db.Entry(foundItem).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
                     db.SaveChanges();
                     Create(userId, type, fromUserId, proposalFilledFormId, siteSettingId);

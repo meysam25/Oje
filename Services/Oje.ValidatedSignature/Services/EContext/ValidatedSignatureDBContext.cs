@@ -24,6 +24,7 @@ namespace Oje.ValidatedSignature.Services.EContext
         public DbSet<Company> Companies { get; set; }
         public DbSet<ProposalForm> ProposalForms { get; set; }
         public DbSet<SiteSetting> SiteSettings { get; set; }
+        public DbSet<UploadedFile> UploadedFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -50,7 +50,7 @@ namespace Oje.Security.Services
                     Message = cMessages,
                     RefferUrl = refferUrl,
                     Url = curUrl,
-                    Browser = HttpContextAccessor.HttpContext.GetBroswerName(),
+                    Browser = HttpContextAccessor?.HttpContext?.GetBroswerName(),
                     RequestType = HttpContextAccessor?.HttpContext?.Request?.Method
                 };
                 db.Entry(errorModel).State = EntityState.Added;
@@ -63,11 +63,11 @@ namespace Oje.Security.Services
                 if (tempForm != null)
                     createParams(errorModel.Id, tempForm);
 
-                var curHeader = HttpContextAccessor.HttpContext?.Request?.Headers;
+                var curHeader = HttpContextAccessor?.HttpContext?.Request?.Headers;
                 if (!string.IsNullOrEmpty(errorModel.Browser) && errorModel.Browser.IndexOf("Other") > -1 && curHeader != null && curHeader.Keys.Any(t => t == "User-Agent"))
-                    DebugInfoService.Create(HttpContextAccessor.HttpContext?.Request?.Headers["User-Agent"] + "");
+                    DebugInfoService.Create(HttpContextAccessor?.HttpContext?.Request?.Headers["User-Agent"] + "");
                 if (!string.IsNullOrEmpty(errorModel.Message) && errorModel.Message.IndexOf("وی پی ان") > -1 && curHeader != null && curHeader.Keys.Any(t => t == "User-Agent"))
-                    DebugInfoService.Create(HttpContextAccessor.HttpContext?.Request?.Headers["User-Agent"] + "");
+                    DebugInfoService.Create(HttpContextAccessor?.HttpContext?.Request?.Headers["User-Agent"] + "");
             }
         }
 

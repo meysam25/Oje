@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.ValidatedSignature.Models.DB
@@ -10,6 +9,7 @@ namespace Oje.ValidatedSignature.Models.DB
         public SiteSetting()
         {
             ProposalFilledForms = new();
+            UploadedFiles = new();
         }
 
         [Key]
@@ -19,5 +19,7 @@ namespace Oje.ValidatedSignature.Models.DB
 
         [InverseProperty("SiteSetting")]
         public List<ProposalFilledForm> ProposalFilledForms { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<UploadedFile> UploadedFiles { get; set; }
     }
 }
