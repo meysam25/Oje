@@ -76,8 +76,14 @@ namespace Oje.Section.Tender.Services
         {
             var allValues = db.TenderFilledFormsValues.Where(t => t.IsConsultation == true && t.TenderFilledFormId == filledFormId && t.TenderProposalFormJsonConfigId == jsonFormId).ToList();
             if (allValues != null)
+            {
+                foreach (var value in allValues)
+                    if (!value.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                 foreach (var value in allValues)
                     db.Entry(value).State = EntityState.Deleted;
+            }
+                
             db.SaveChanges();
         }
 
@@ -94,31 +100,33 @@ namespace Oje.Section.Tender.Services
         }
 
         private void createUpdateIfNeeded(
-                long tenderFilledForm, long keyId, string currValue, 
+                long tenderFilledForm, long keyId, string currValue,
                 int? tenderProposalFormJsonConfigId, long? loginUserId, bool? isConsultation
             )
         {
             if (isConsultation != true)
             {
-                db.Entry(new TenderFilledFormsValue()
+                var newItem = new TenderFilledFormsValue()
                 {
                     TenderFilledFormId = tenderFilledForm,
                     TenderFilledFormKeyId = keyId,
                     Value = currValue,
                     TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId,
 
-                }).State = EntityState.Added;
-            } 
+                };
+                db.Entry(newItem).State = EntityState.Added;
+                newItem.FilledSignature();
+            }
             else
             {
                 var foundValue = db.TenderFilledFormsValues
-                    .Where(t => t.TenderFilledFormKeyId == keyId && t.IsConsultation == isConsultation && 
+                    .Where(t => t.TenderFilledFormKeyId == keyId && t.IsConsultation == isConsultation &&
                                 t.TenderProposalFormJsonConfigId == tenderProposalFormJsonConfigId && t.TenderFilledFormId == tenderFilledForm
                             )
                     .FirstOrDefault();
                 if (foundValue == null)
                 {
-                    db.Entry(new TenderFilledFormsValue()
+                    var newItem = new TenderFilledFormsValue()
                     {
                         TenderFilledFormId = tenderFilledForm,
                         TenderFilledFormKeyId = keyId,
@@ -127,15 +135,20 @@ namespace Oje.Section.Tender.Services
                         UserId = loginUserId,
                         IsConsultation = isConsultation
 
-                    }).State = EntityState.Added;
-                } 
+                    };
+                    db.Entry(newItem).State = EntityState.Added;
+                    newItem.FilledSignature();
+                }
                 else
                 {
-                    foundValue.UserId = loginUserId;
-                    foundValue.Value = currValue;
+                    if (foundValue.IsSignature())
+                    {
+                        foundValue.UserId = loginUserId;
+                        foundValue.Value = currValue;
+                    }
                 }
             }
-            
+
         }
     }
 }

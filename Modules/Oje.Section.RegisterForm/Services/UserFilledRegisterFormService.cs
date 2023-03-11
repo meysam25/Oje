@@ -106,6 +106,9 @@ namespace Oje.Section.RegisterForm.Services
             if (form.GetStringIfExist("price").ToIntReturnZiro() > 0 && foundPrice == null)
                 throw BException.GenerateNewException(BMessages.Invalid_Price);
 
+            if (foundPrice != null && !foundPrice.IsSignature())
+                throw BException.GenerateNewException(BMessages.Invalid_Price);
+
             var foundRefferCode = ppfObj.GetAllListOf<ctrl>().Where(t => t.name == "refferCode").FirstOrDefault();
             if (foundRefferCode == null && !string.IsNullOrEmpty(form.GetStringIfExist("refferCode")))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -163,8 +166,6 @@ namespace Oje.Section.RegisterForm.Services
 
                     tr.Commit();
                     newFormId = newItem.Id;
-
-                    //UserService.TemproryLogin(userId, siteSettingId, DateTime.Now.AddHours(2));
                 }
                 catch (Exception)
                 {
@@ -255,6 +256,8 @@ namespace Oje.Section.RegisterForm.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
+
+
             if (isUsedDiscount == true && foundDiscountCode != null)
                 UserRegisterFormDiscountCodeService.DiscountUsed(foundDiscountCode.Id, userId, newItem.Id);
 
@@ -265,11 +268,12 @@ namespace Oje.Section.RegisterForm.Services
                 {
                     foreach (var cid in allParts)
                         db.Entry(new UserFilledRegisterFormCompany() { CompanyId = cid, UserFilledRegisterFormId = newItem.Id }).State = EntityState.Added;
-
-                    db.SaveChanges();
                 }
 
             }
+
+            newItem.FilledSignature();
+            db.SaveChanges();
 
             return newItem;
         }
@@ -702,6 +706,24 @@ namespace Oje.Section.RegisterForm.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
+            if (foundItem.UserFilledRegisterFormJsons != null && foundItem.UserFilledRegisterFormJsons.Count > 0)
+                foreach (var item in foundItem.UserFilledRegisterFormJsons)
+                    if (!item.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
+            if (foundItem.UserFilledRegisterFormValues != null && foundItem.UserFilledRegisterFormValues.Count > 0)
+                foreach (var item in foundItem.UserFilledRegisterFormValues)
+                    if (!item.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
+            if (foundItem.UserFilledRegisterFormCompanies != null && foundItem.UserFilledRegisterFormCompanies.Count > 0)
+                foreach (var item in foundItem.UserFilledRegisterFormCompanies)
+                    if (!item.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
             if (foundItem.UserFilledRegisterFormJsons != null && foundItem.UserFilledRegisterFormJsons.Count > 0)
                 foreach (var item in foundItem.UserFilledRegisterFormJsons)
                     db.Entry(item).State = EntityState.Deleted;
@@ -736,6 +758,15 @@ namespace Oje.Section.RegisterForm.Services
                 throw BException.GenerateNewException(BMessages.Not_Found);
             if (foundItem.IsDone == true)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            if (
+                    !foundItem.IsSignature()
+                    ||
+                    (foundItem.UserFilledRegisterFormValues != null && foundItem.UserFilledRegisterFormValues.Count != foundItem.UserFilledRegisterFormValues.Count(t => t.IsSignature() && (t.UserFilledRegisterFormKey == null || t.UserFilledRegisterFormKey.IsSignature())))
+                    ||
+                    (foundItem.UserFilledRegisterFormCompanies != null && foundItem.UserFilledRegisterFormCompanies.Count != foundItem.UserFilledRegisterFormCompanies.Count(t => t.IsSignature()))
+                )
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             var result = UserService.CreateNewUser(foundItem, siteSettingId, parentId, roleIds);
             if (result.isSuccess == true)

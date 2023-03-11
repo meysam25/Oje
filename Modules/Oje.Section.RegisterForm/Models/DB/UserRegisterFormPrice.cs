@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Services;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserRegisterFormPrices")]
-    public class UserRegisterFormPrice
+    public class UserRegisterFormPrice: SignatureEntity
     {
         [Key]
         public int Id { get; set; }

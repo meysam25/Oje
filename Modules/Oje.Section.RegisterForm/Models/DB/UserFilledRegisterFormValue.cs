@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserFilledRegisterFormValues")]
-    public class UserFilledRegisterFormValue
+    public class UserFilledRegisterFormValue: SignatureEntity
     {
         [Key]
         public Guid Id { get; set; }

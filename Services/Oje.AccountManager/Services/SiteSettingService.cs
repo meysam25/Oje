@@ -184,7 +184,7 @@ namespace Oje.AccountService.Services
             result += "'/Modules/Core/js/jquery.min.js.gz?v=" + curVer + "',";
             result += "'/Modules/Core/js/websiteCor.min.js.gz?v=" + curVer + "',";
             result += "'/Modules/Core/js/mainPage.min.js.gz?v=" + curVer + "',";
-            result += "'/Modules/Core/js/registerServices.min.js.gz?v=" + curVer + "',";
+            //result += "'/Modules/Core/js/registerServices.min.js.gz?v=" + curVer + "',";
             result += "'/Modules/Core/js/chart.min.js.gz?v=" + curVer + "',";
             result += "'/Modules/Webfonts/Vazir/Vazir-Regular-FD.woff2',";
             result += "'/Modules/webfonts/fa-light-300.woff2',";

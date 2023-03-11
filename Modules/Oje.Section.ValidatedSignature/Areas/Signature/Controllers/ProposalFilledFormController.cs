@@ -7,7 +7,6 @@ using Oje.Infrastructure.Services;
 using System;
 using Oje.ValidatedSignature.Interfaces;
 using Oje.ValidatedSignature.Models.View;
-using Oje.Security.Services;
 
 namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
 {

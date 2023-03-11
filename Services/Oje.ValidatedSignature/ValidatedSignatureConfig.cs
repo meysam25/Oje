@@ -15,6 +15,7 @@ namespace Oje.ValidatedSignature
 
             services.AddScoped<IProposalFilledFormService, ProposalFilledFormService>();
             services.AddScoped<IUploadedFileService, UploadedFileService>();
+            services.AddScoped<ITenderFilledFormService, TenderFilledFormService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)
@@ -22,8 +23,9 @@ namespace Oje.ValidatedSignature
             services.AddDbContext<ValidatedSignatureDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)), ServiceLifetime.Singleton);
 
             
-            services.AddSingleton<IProposalFilledFormService, ProposalFilledFormService>();
-            services.AddSingleton<IUploadedFileService, UploadedFileService>();
+            //services.AddSingleton<IProposalFilledFormService, ProposalFilledFormService>();
+            //services.AddSingleton<IUploadedFileService, UploadedFileService>();
+            //services.AddSingleton<ITenderFilledFormService, TenderFilledFormService>();
         }
     }
 }

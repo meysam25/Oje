@@ -23,6 +23,9 @@ namespace Oje.Section.Tender.Services
                 db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 db.SaveChanges();
 
+                newItem.FilledSignature();
+                db.SaveChanges();
+
                 return newItem.Id;
             }
 

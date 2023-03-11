@@ -30,6 +30,7 @@ namespace Oje.ValidatedSignature.Services
                 .Include(t => t.ProposalFilledFormDocuments)
                 .Include(t => t.ProposalFilledFormStatusLogs).ThenInclude(t => t.ProposalFilledFormStatusLogFiles)
                 .Include(t => t.ProposalFilledFormSiteSettings)
+                .Include(t => t.GlobalInquery).ThenInclude(t => t.GlobalInquiryItems)
                 .FirstOrDefault();
 
             if (foundItem == null)
@@ -40,6 +41,7 @@ namespace Oje.ValidatedSignature.Services
                 result += "change has been found in ProposalFilledForm" + Environment.NewLine;
                 result += foundItem.GetSignatureChanges();
             }
+
             if (foundItem.ProposalFilledFormValues != null)
             {
                 foreach(var value in foundItem.ProposalFilledFormValues)
@@ -56,6 +58,26 @@ namespace Oje.ValidatedSignature.Services
                     }
                 }
             }
+
+            if (foundItem.GlobalInquery != null)
+            {
+                if (!foundItem.GlobalInquery.IsSignature())
+                {
+                    result += "change has been found in GlobalInquery" + Environment.NewLine;
+                    result += foundItem.GlobalInquery.GetSignatureChanges();
+                }
+                
+                if (foundItem.GlobalInquery.GlobalInquiryItems != null)
+                foreach (var value in foundItem.GlobalInquery.GlobalInquiryItems)
+                {
+                    if (!value.IsSignature())
+                    {
+                        result += "change has been found in GlobalInquiryItems" + Environment.NewLine;
+                        result += value.GetSignatureChanges();
+                    }
+                }
+            }
+
             if (foundItem.ProposalFilledFormUsers != null)
             {
                 foreach(var user in foundItem.ProposalFilledFormUsers)
@@ -152,6 +174,7 @@ namespace Oje.ValidatedSignature.Services
             searchInput = searchInput ?? new ProposalFilledFormMainGrid();
 
             var quiryResult = db.ProposalFilledForms
+                .Include(t => t.GlobalInquery).ThenInclude(t => t.GlobalInquiryItems)
                 .Include(t => t.ProposalFilledFormValues).ThenInclude(t => t.ProposalFilledFormKey)
                 .Include(t => t.ProposalFilledFormUsers)
                 .Include(t => t.ProposalFilledFormCompanies).ThenInclude(t => t.Company)
@@ -269,6 +292,11 @@ namespace Oje.ValidatedSignature.Services
                     (t.ProposalFilledFormUsers == null || t.ProposalFilledFormUsers.Count(tt => tt.IsSignature()) == t.ProposalFilledFormUsers.Count)
                     &&
                     (t.ProposalFilledFormValues == null || t.ProposalFilledFormValues.Count(tt => tt.IsSignature() && (tt.ProposalFilledFormKey == null || tt.ProposalFilledFormKey.IsSignature())) == t.ProposalFilledFormValues.Count)
+                    &&
+                    (t.GlobalInquery == null || t.GlobalInquery.IsSignature())
+                    &&
+                    (t.GlobalInquery == null || t.GlobalInquery.GlobalInquiryItems == null || t.GlobalInquery.GlobalInquiryItems.Count == t.GlobalInquery.GlobalInquiryItems.Count(tt => tt.IsSignature()))
+
                         ?
                         BMessages.Yes.GetEnumDisplayName()
                         :

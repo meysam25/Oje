@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Services;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.Tender.Models.DB
 {
     [Table("TenderFilledFormJsons")]
-    public class TenderFilledFormJson
+    public class TenderFilledFormJson : SignatureEntity
     {
         [Key]
         public long Id { get; set; }

@@ -21,5 +21,7 @@ namespace Oje.ValidatedSignature.Models.DB
         public List<ProposalFilledForm> ProposalFilledForms { get; set; }
         [InverseProperty("SiteSetting")]
         public List<UploadedFile> UploadedFiles { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<TenderFilledForm> TenderFilledForms { get; set; }
     }
 }

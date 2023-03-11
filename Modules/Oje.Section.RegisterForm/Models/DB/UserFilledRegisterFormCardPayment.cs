@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserFilledRegisterFormCardPayments")]
-    public class UserFilledRegisterFormCardPayment: IEntityWithSiteSettingId
+    public class UserFilledRegisterFormCardPayment: SignatureEntity, IEntityWithSiteSettingId
     {
         [Key]
         public long Id { get; set; }

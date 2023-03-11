@@ -16,12 +16,16 @@ namespace Oje.Section.RegisterForm.Services
 
         public void Create(string foundJsonFormStr, long UserFilledRegisterFormId)
         {
-            db.Entry(new UserFilledRegisterFormJson()
+            var newItem = new UserFilledRegisterFormJson()
             {
                 JsonConfig = foundJsonFormStr,
                 UserFilledRegisterFormId = UserFilledRegisterFormId
-            }).State = EntityState.Added;
+            };
+            newItem.FilledSignature();
+
+            db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
+
         }
 
         public string GetBy(long id)

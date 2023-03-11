@@ -67,6 +67,7 @@ namespace Oje.Section.Tender.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
+            newItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 newItem.FileUrl = UploadedFileService.UploadNewFile(FileType.IssueTender, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, newItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
@@ -294,13 +295,15 @@ namespace Oje.Section.Tender.Services
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             foundItem.TenderProposalFormJsonConfigId = input.pfId.Value;
             foundItem.UserId = loginUserId.Value;
             foundItem.Number = input.insuranceNumber;
             foundItem.Description = input.description;
             foundItem.IssueDate = input.issueDate.ToEnDate().Value;
-
+            foundItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 foundItem.FileUrl = UploadedFileService.UploadNewFile(FileType.IssueTender, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, foundItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 

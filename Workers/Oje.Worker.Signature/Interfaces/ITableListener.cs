@@ -4,5 +4,6 @@
     {
         ITableListener Start();
         void Stop();
+        void Run();
     }
 }

@@ -1,11 +1,7 @@
 ﻿using Oje.Section.RegisterForm.Interfaces;
 using Oje.Section.RegisterForm.Models.DB;
 using Oje.Section.RegisterForm.Services.EContext;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Services
 {
@@ -31,6 +27,9 @@ namespace Oje.Section.RegisterForm.Services
 
             var newItem = new UserFilledRegisterFormKey() { Key = name };
             db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            db.SaveChanges();
+
+            newItem.FilledSignature();
             db.SaveChanges();
 
             return newItem.Id;

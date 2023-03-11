@@ -24,6 +24,16 @@ namespace Oje.ValidatedSignature.Services.EContext
         public DbSet<Company> Companies { get; set; }
         public DbSet<ProposalForm> ProposalForms { get; set; }
         public DbSet<SiteSetting> SiteSettings { get; set; }
+
+        public DbSet<TenderFilledForm> TenderFilledForms { get; set; }
+        public DbSet<TenderFilledFormIssue> TenderFilledFormIssues { get; set; }
+        public DbSet<TenderFilledFormJson> TenderFilledFormJsons { get; set; }
+        public DbSet<TenderFilledFormKey> TenderFilledFormKeies { get; set; }
+        public DbSet<TenderFilledFormPF> TenderFilledFormPFs { get; set; }
+        public DbSet<TenderFilledFormPrice> TenderFilledFormPrices { get; set; }
+        public DbSet<TenderFilledFormsValue> TenderFilledFormsValues { get; set; }
+        public DbSet<TenderFilledFormValidCompany> TenderFilledFormValidCompanies { get; set; }
+
         public DbSet<UploadedFile> UploadedFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +41,10 @@ namespace Oje.ValidatedSignature.Services.EContext
             modelBuilder.Entity<ProposalFilledFormCompany>().HasKey(t => new { t.CompanyId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormSiteSetting>().HasKey(t => new { t.SiteSettingId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormUser>().HasKey(t => new { t.ProposalFilledFormId, t.UserId, t.Type });
+
+
+            modelBuilder.Entity<TenderFilledFormPF>().HasKey(t => new { t.TenderProposalFormJsonConfigId, t.TenderFilledFormId });
+            modelBuilder.Entity<TenderFilledFormValidCompany>().HasKey(t => new { t.CompanyId, t.TenderFilledFormId });
 
             base.OnModelCreating(modelBuilder);
         }

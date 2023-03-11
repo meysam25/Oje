@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Oje.Infrastructure.Services;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.Tender.Models.DB
 {
     [Table("TenderFilledFormsValues")]
-    public class TenderFilledFormsValue
+    public class TenderFilledFormsValue : SignatureEntity
     {
         [Key]
         public Guid Id { get; set; }

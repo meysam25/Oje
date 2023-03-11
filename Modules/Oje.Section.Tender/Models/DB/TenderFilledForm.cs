@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.Tender.Models.DB
 {
     [Table("TenderFilledForms")]
-    public class TenderFilledForm: IEntityWithSiteSettingId
+    public class TenderFilledForm : SignatureEntity, IEntityWithSiteSettingId
     {
         public TenderFilledForm()
         {

@@ -8,7 +8,8 @@ namespace Oje.ValidatedSignature.Models.DB
     {
         public User() 
         {
-            UploadedFiles = new ();    
+            UploadedFiles = new ();
+            TenderFilledForms = new();
         }
 
         [Key]
@@ -22,5 +23,7 @@ namespace Oje.ValidatedSignature.Models.DB
 
         [InverseProperty("CreateByUser")]
         public List<UploadedFile> UploadedFiles { get; set; }
+        [InverseProperty("User")]
+        public List<TenderFilledForm> TenderFilledForms { get; set; }
     }
 }

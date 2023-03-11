@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Oje.Infrastructure.Services;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.Tender.Models.DB
 {
     [Table("TenderFilledFormValidCompanies")]
-    public class TenderFilledFormValidCompany
+    public class TenderFilledFormValidCompany : SignatureEntity
     {
         public long TenderFilledFormId { get; set; }
         [ForeignKey("TenderFilledFormId"), InverseProperty("TenderFilledFormValidCompanies")]

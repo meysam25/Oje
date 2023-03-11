@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Exceptions;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
 using Oje.Section.Tender.Services.EContext;
@@ -24,7 +25,12 @@ namespace Oje.Section.Tender.Services
                    .Where(t => t.TenderFilledFormId == tenderFilledFormId && t.TenderProposalFormJsonConfigId == tenderProposalFormJsonConfigId && t.IsConsultation == true)
                    .FirstOrDefault();
                 if (foundItem != null)
+                {
+                    if (!foundItem.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
                     db.Entry(foundItem).State = EntityState.Deleted;
+                }
             } 
             
             var newItem = new TenderFilledFormJson()
@@ -37,12 +43,20 @@ namespace Oje.Section.Tender.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
+            newItem.FilledSignature();
+            db.SaveChanges();
+
             return newItem.Id;
         }
 
         public List<TenderFilledFormJson> GetBy(long tenderFilledFormId)
         {
-            return db.TenderFilledFormJsons.OrderBy(t => t.IsConsultation).ThenByDescending(t => t.Id).Where(t => t.TenderFilledFormId == tenderFilledFormId).AsNoTracking().ToList();
+            return db.TenderFilledFormJsons
+                .Where(t => t.TenderFilledFormId == tenderFilledFormId)
+                .OrderBy(t => t.IsConsultation)
+                .ThenByDescending(t => t.Id)
+                .AsNoTracking()
+                .ToList();
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.Tender.Models.DB
 {
     [Table("TenderFilledFormKeys")]
-    public class TenderFilledFormKey
+    public class TenderFilledFormKey : SignatureEntity
     {
         public TenderFilledFormKey()
         {

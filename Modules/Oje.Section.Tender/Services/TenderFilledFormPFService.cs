@@ -36,7 +36,12 @@ namespace Oje.Section.Tender.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundItem.IsConfirmByAdmin = true;
+            foundItem.FilledSignature();
+
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -44,10 +49,13 @@ namespace Oje.Section.Tender.Services
 
         public void Create(long tenderFilledFormId, int tenderProposalFormJsonConfigId)
         {
-            db.Entry(new TenderFilledFormPF() 
-            { 
-                TenderFilledFormId = tenderFilledFormId, TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId 
-            }).State = EntityState.Added;
+            var newItem = new TenderFilledFormPF()
+            {
+                TenderFilledFormId = tenderFilledFormId,
+                TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId
+            };
+            newItem.FilledSignature();
+            db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
         }
 
@@ -57,8 +65,12 @@ namespace Oje.Section.Tender.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundItem.IsConfirmByAdmin = false;
             foundItem.IsConfirmByUser = false;
+            foundItem.FilledSignature();
             db.SaveChanges();
         }
 
@@ -113,7 +125,11 @@ namespace Oje.Section.Tender.Services
             if (foundItem.IsConfirmByAdmin != true)
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Active_By_Admin_First);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundItem.IsConfirmByUser = true;
+            foundItem.FilledSignature();
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);

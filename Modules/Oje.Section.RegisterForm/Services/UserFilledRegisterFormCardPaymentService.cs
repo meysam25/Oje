@@ -180,6 +180,9 @@ namespace Oje.Section.RegisterForm.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
 

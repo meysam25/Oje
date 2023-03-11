@@ -4,9 +4,6 @@ using Oje.FireInsuranceService.Models.DB;
 using Oje.FireInsuranceService.Services.EContext;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.FireInsuranceService.Services
 {
@@ -32,11 +29,17 @@ namespace Oje.FireInsuranceService.Services
 
                 foreach (var item in result)
                 {
+                    item.FilledSignature();
+                }
+
+                foreach (var item in result)
+                {
                     int order = 0;
                     foreach (var child in item.GlobalInquiryItems)
                     {
                         child.GlobalInquiryId = item.Id;
                         child.Order = ++order;
+                        child.FilledSignature();
                         db.Entry(child).State = EntityState.Added;
                     }
                 }

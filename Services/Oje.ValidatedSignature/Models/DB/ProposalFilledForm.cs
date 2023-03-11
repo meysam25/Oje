@@ -29,6 +29,8 @@ namespace Oje.ValidatedSignature.Models.DB
         [MaxLength(50)]
         public string PaymentTraceCode { get; set; }
         public long? GlobalInqueryId { get; set; }
+        [ForeignKey("GlobalInqueryId"), InverseProperty("ProposalFilledForms")]
+        public GlobalInquery GlobalInquery { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? IssueDate { get; set; }
         [MaxLength(50)]

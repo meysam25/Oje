@@ -26,7 +26,7 @@ namespace Oje.Section.RegisterForm.Services
         {
             createUpdateValidation(input, siteSettingId);
 
-            db.Entry(new UserRegisterFormPrice()
+            var newItem = new UserRegisterFormPrice()
             {
                 GroupPriceTitle = input.gp,
                 GroupPriceTitle2 = input.gp2,
@@ -34,7 +34,12 @@ namespace Oje.Section.RegisterForm.Services
                 Price = input.price.ToLongReturnZiro(),
                 Title = input.title,
                 UserRegisterFormId = input.fid.Value
-            }).State = EntityState.Added;
+            };
+
+            db.Entry(newItem).State = EntityState.Added;
+            db.SaveChanges();
+
+            newItem.FilledSignature();
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -65,6 +70,9 @@ namespace Oje.Section.RegisterForm.Services
             var foundnItem = db.UserRegisterFormPrices.Where(t => t.Id == id && t.UserRegisterForm.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundnItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundnItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
 
             db.Entry(foundnItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -142,6 +150,9 @@ namespace Oje.Section.RegisterForm.Services
             var foundnItem = db.UserRegisterFormPrices.Where(t => t.Id == input.id && t.UserRegisterForm.SiteSettingId == siteSettingId).FirstOrDefault();
             if (foundnItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundnItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             foundnItem.GroupPriceTitle = input.gp;
             foundnItem.IsActive = input.isActive.ToBooleanReturnFalse();

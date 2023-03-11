@@ -90,12 +90,16 @@ namespace Oje.Section.RegisterForm.Services
 
         private void addNewRow(long formId, long keyId, string currValue)
         {
-            db.Entry(new UserFilledRegisterFormValue()
+            var newItem = new UserFilledRegisterFormValue()
             {
                 UserFilledRegisterFormId = formId,
                 UserFilledRegisterFormKeyId = keyId,
                 Value = currValue
-            }).State = EntityState.Added;
+            };
+            db.Entry(newItem).State = EntityState.Added;
+            db.SaveChanges();
+
+            newItem.FilledSignature();
             db.SaveChanges();
         }
     }

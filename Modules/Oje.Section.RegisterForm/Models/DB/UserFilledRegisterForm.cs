@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserFilledRegisterForms")]
-    public class UserFilledRegisterForm: IEntityWithSiteSettingId
+    public class UserFilledRegisterForm : SignatureEntity, IEntityWithSiteSettingId
     {
         public UserFilledRegisterForm()
         {

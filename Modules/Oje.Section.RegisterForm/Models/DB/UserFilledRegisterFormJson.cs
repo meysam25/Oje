@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserFilledRegisterFormJsons")]
-    public class UserFilledRegisterFormJson
+    public class UserFilledRegisterFormJson: SignatureEntity
     {
         [Key]
         public long UserFilledRegisterFormId { get; set; }

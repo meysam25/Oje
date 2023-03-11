@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("GlobalInquiryItems")]
-    public class GlobalInquiryItem
+    public class GlobalInquiryItem: SignatureEntity
     {
 
         public GlobalInquiryItem()

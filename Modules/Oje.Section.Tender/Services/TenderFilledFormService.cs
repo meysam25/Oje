@@ -147,6 +147,9 @@ namespace Oje.Section.Tender.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
+            newItem.FilledSignature();
+            db.SaveChanges();
+
             return newItem;
         }
 
@@ -524,9 +527,13 @@ namespace Oje.Section.Tender.Services
             if (foundItem.IsPublished == true)
                 throw BException.GenerateNewException(BMessages.It_Published_Already);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundItem.AvalibleDate = input.avalibleDate.ToEnDate();
             foundItem.OpenDate = input.openDate.ToEnDate();
             foundItem.PriceExpireDate = input.pExpirDate.ToEnDate();
+            foundItem.FilledSignature();
 
             db.SaveChanges();
 
@@ -679,17 +686,30 @@ namespace Oje.Section.Tender.Services
             if (foundItem.IsPublished == true)
                 throw BException.GenerateNewException(BMessages.It_Published_Already);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             if (foundItem.TenderFilledFormValidCompanies != null)
+            {
+                foreach (var company in foundItem.TenderFilledFormValidCompanies)
+                    if (!company.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                 foreach (var company in foundItem.TenderFilledFormValidCompanies)
                     db.Entry(company).State = EntityState.Deleted;
+            }
+
 
             if (input.cIds != null)
                 foreach (var cid in input.cIds)
-                    db.Entry(new TenderFilledFormValidCompany()
+                {
+                    var newC = new TenderFilledFormValidCompany()
                     {
                         CompanyId = cid,
                         TenderFilledFormId = foundItem.Id
-                    }).State = EntityState.Added;
+                    };
+                    newC.FilledSignature();
+                    db.Entry(newC).State = EntityState.Added;
+                }
 
             db.SaveChanges();
 
@@ -758,7 +778,12 @@ namespace Oje.Section.Tender.Services
             if (foundItem.IsPublished == true)
                 throw BException.GenerateNewException(BMessages.It_Published_Already);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundItem.IsPublished = true;
+            foundItem.FilledSignature();
+
             db.SaveChanges();
 
             UserNotifierService.Notify(loginUserId, UserNotificationType.PublishTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "انتشار مناقصه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
@@ -907,6 +932,8 @@ namespace Oje.Section.Tender.Services
 
                         if (foundItem != null)
                         {
+                            if (!foundItem.IsSignature())
+                                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                             string consulJsonConfig = TenderProposalFormJsonConfigService.GetConsultJsonConfig(pKey, siteSettingId);
                             PageForm tempJSConfig = null;
                             try { tempJSConfig = JsonConvert.DeserializeObject<PageForm>(consulJsonConfig); } catch (Exception) { }
@@ -968,7 +995,11 @@ namespace Oje.Section.Tender.Services
                             .FirstOrDefault();
 
                         if (foundItem != null)
+                        {
+                            if (!foundItem.IsSignature())
+                                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                             return TenderFilledFormPFService.AdminConfirm(filledFormId, jsonFormId);
+                        }
                     }
                 }
 
@@ -994,7 +1025,11 @@ namespace Oje.Section.Tender.Services
                             .FirstOrDefault();
 
                         if (foundItem != null)
+                        {
+                            if (!foundItem.IsSignature())
+                                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
                             return TenderFilledFormPFService.UserConfirm(filledFormId, jsonFormId);
+                        }
                     }
                 }
 
@@ -1032,17 +1067,19 @@ namespace Oje.Section.Tender.Services
             var logUserOBj = HttpContextAccessor?.HttpContext?.GetLoginUser();
             (int? province, int? cityid, List<int> companyIds) = UserService.GetUserCityCompany(loginUserId);
 
-            var foundItemId =
+            var foundItem =
                 db.TenderFilledForms
                 .getSiteSettingQuiry(logUserOBj?.canSeeOtherWebsites, siteSettingId)
                 .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
                 .Where(t => t.Id == id)
-                .Select(t => t.Id)
                 .FirstOrDefault();
-            if (foundItemId <= 0)
+            if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            UploadedFileService.Delete(fileId, siteSettingId, foundItemId, FileType.TenderConsultationFiles);
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
+            UploadedFileService.Delete(fileId, siteSettingId, foundItem.Id, FileType.TenderConsultationFiles);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -1069,12 +1106,14 @@ namespace Oje.Section.Tender.Services
                 .getSiteSettingQuiry(logUserOBj?.canSeeOtherWebsites, siteSettingId)
                 .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
                 .Where(t => t.Id == id)
-                .Select(t => t.Id)
                 .FirstOrDefault();
-            if (foundItemId <= 0)
+            if (foundItemId == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            UploadedFileService.UploadNewFile(FileType.TenderConsultationFiles, mainFile, loginUserId, siteSettingId, foundItemId, validFileExtension, true, null, title);
+            if (!foundItemId.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
+            UploadedFileService.UploadNewFile(FileType.TenderConsultationFiles, mainFile, loginUserId, siteSettingId, foundItemId.Id, validFileExtension, true, null, title);
 
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);

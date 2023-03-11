@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Oje.Infrastructure.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.FireInsuranceService.Models.DB
 {
     [Table("GlobalInqueries")]
-    public class GlobalInquery
+    public class GlobalInquery: SignatureEntity
     {
         public GlobalInquery()
         {

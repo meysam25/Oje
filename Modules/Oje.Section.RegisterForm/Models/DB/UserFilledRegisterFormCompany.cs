@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserFilledRegisterFormCompanies")]
-    public class UserFilledRegisterFormCompany
+    public class UserFilledRegisterFormCompany: SignatureEntity
     {
         public long UserFilledRegisterFormId { get; set; }
         [ForeignKey("UserFilledRegisterFormId"), InverseProperty("UserFilledRegisterFormCompanies")]

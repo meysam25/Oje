@@ -9,7 +9,7 @@ namespace Oje.Worker.Signature
 {
     public class Worker : BackgroundService
     {
-        List<ITableListener> sdList = new();
+        static List<ITableListener> sdList = new();
         readonly ValidatedSignatureDBContext db = null;
         readonly IErrorService ErrorService = null;
         public Worker
@@ -40,6 +40,17 @@ namespace Oje.Worker.Signature
             //UploadedFile
             sdList.Add(new TableListener<UploadedFile>(db, ErrorService).Start());
 
+
+            //TenderFilledForm
+            sdList.Add(new TableListener<TenderFilledForm>(db, ErrorService).Start());
+            sdList.Add(new TableListener<TenderFilledFormIssue>(db, ErrorService).Start());
+            sdList.Add(new TableListener<TenderFilledFormJson>(db, ErrorService).Start());
+            sdList.Add(new TableListener<TenderFilledFormPF>(db, ErrorService).Start());
+            sdList.Add(new TableListener<TenderFilledFormPrice>(db, ErrorService).Start());
+            sdList.Add(new TableListener<TenderFilledFormsValue>(db, ErrorService).Start());
+            sdList.Add(new TableListener<TenderFilledFormKey>(db, ErrorService).Start());
+            sdList.Add(new TableListener<TenderFilledFormValidCompany>(db, ErrorService).Start());
+
             return base.StartAsync(cancellationToken);
         }
 
@@ -54,6 +65,14 @@ namespace Oje.Worker.Signature
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                foreach (var item in sdList)
+                {
+                    try
+                    {
+                        item.Run();
+                    }
+                    catch { }
+                }
                 await Task.Delay(3000, stoppingToken);
             }
         }

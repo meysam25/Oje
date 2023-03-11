@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
@@ -83,11 +84,17 @@ namespace Oje.ProposalFormService.Services
 
                 foreach (var item in inputs)
                 {
+                    item.FilledSignature();
+                }
+
+                foreach (var item in inputs)
+                {
                     int order = 0;
                     foreach (var child in item.GlobalInquiryItems)
                     {
                         child.GlobalInquiryId = item.Id;
                         child.Order = ++order;
+                        child.FilledSignature();
                         db.Entry(child).State = EntityState.Added;
                     }
                 }
@@ -99,7 +106,17 @@ namespace Oje.ProposalFormService.Services
 
         public int GetCompanyId(long id, int? siteSettingId)
         {
-            return db.GlobalInqueries.Where(t => t.Id == id && t.SiteSettingId == siteSettingId).Select(t => t.CompanyId).FirstOrDefault();
+            var foundInquiry = db.GlobalInqueries
+                .Include(t => t.GlobalInquiryItems)
+                .Where(t => t.Id == id && t.SiteSettingId == siteSettingId)
+                .FirstOrDefault();
+            if (
+                    foundInquiry == null || foundInquiry.GlobalInquiryItems == null || !foundInquiry.IsSignature() ||
+                    foundInquiry.GlobalInquiryItems.Count != foundInquiry.GlobalInquiryItems.Count(t => t.IsSignature())
+                )
+                throw BException.GenerateNewException(BMessages.Invalid_Inquiry);
+
+            return foundInquiry.CompanyId;
         }
 
         public GlobalInqueryResultVM GetInquiryDataList(long id, int proposalFormId)

@@ -65,6 +65,7 @@ namespace Oje.Section.Tender.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
+            newItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 newItem.FilledFileUrl =
                     UploadedFileService.UploadNewFile(FileType.TenderPrice, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, newItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
@@ -210,7 +211,7 @@ namespace Oje.Section.Tender.Services
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .selectQuiryFilter(selectStatus, null, null, null, loginUserId)
                 .SelectMany(t => t.TenderFilledFormPrices)
-                .Where(t =>  t.IsPublished == true && t.TenderFilledFormId == searchInput.pKey)
+                .Where(t => t.IsPublished == true && t.TenderFilledFormId == searchInput.pKey)
                 ;
 
             if (!string.IsNullOrEmpty(searchInput.insurance))
@@ -300,11 +301,14 @@ namespace Oje.Section.Tender.Services
             if (foundItem.IsConfirm == true || foundItem.IsPublished == true)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundItem.CompanyId = input.cid.Value;
             foundItem.TenderProposalFormJsonConfigId = input.pfId.Value;
             foundItem.Price = input.price.Value;
             foundItem.Description = input.description;
-
+            foundItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 foundItem.FilledFileUrl =
                     UploadedFileService.UploadNewFile(FileType.TenderPrice, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, foundItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
@@ -333,6 +337,9 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
             if (db.TenderFilledFormIssues.Any(t => t.TenderFilledFormId == foundItem.TenderFilledFormId))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -395,6 +402,10 @@ namespace Oje.Section.Tender.Services
             if (allSelectedPrice == null || allSelectedPrice.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
+            foreach (var t in allSelectedPrice)
+                if (!t.IsSignature())
+                    throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             var curSPrice = allSelectedPrice.Where(t => t.CompanyId == companyId && t.UserId == userId).ToList();
             if (curSPrice == null || curSPrice.Count == 0)
                 throw BException.GenerateNewException(BMessages.Not_Found);
@@ -404,10 +415,16 @@ namespace Oje.Section.Tender.Services
                 throw BException.GenerateNewException(BMessages.User_CanNot_Be_Selected);
 
             foreach (var price in allSelectedPrice)
+            {
                 price.IsConfirm = false;
+                price.FilledSignature();
+            }
 
             foreach (var price in curSPrice)
+            {
                 price.IsConfirm = true;
+                price.FilledSignature();
+            }
 
             db.SaveChanges();
 
@@ -449,7 +466,11 @@ namespace Oje.Section.Tender.Services
             if (db.TenderFilledFormIssues.Any(t => t.TenderFilledFormId == foundPrice.TenderFilledFormId))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
+            if (!foundPrice.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundPrice.IsPublished = true;
+            foundPrice.FilledSignature();
             db.SaveChanges();
 
             UserNotifierService.Notify(loginUserId, UserNotificationType.PublishTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, foundPrice.TenderFilledFormId), ProposalFilledFormUserType.OwnerUser) }, foundPrice.Id, "به روز رسانی تعیین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");

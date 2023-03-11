@@ -10,7 +10,6 @@ using Oje.Section.Tender.Models.View;
 using System;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Enums;
-using Oje.Section.Tender.Services;
 
 namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 {

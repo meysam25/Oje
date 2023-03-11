@@ -2,7 +2,9 @@
 using Oje.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 
 namespace Oje.Infrastructure.Services
 {
@@ -53,19 +55,23 @@ namespace Oje.Infrastructure.Services
             var allProps = GetType().GetProperties();
             foreach (var prop in allProps)
             {
-                var propType = prop.PropertyType;
-                string propName = prop.Name;
-                string propValue = prop.GetValue(this, null) + "";
-                if (
-                    propType == typeof(int?) || propType == typeof(int) ||
-                    propType == typeof(long?) || propType == typeof(long) ||
-                    propType == typeof(string) || propType == typeof(string) ||
-                    propType == typeof(bool?) || propType == typeof(bool) ||
-                    propType.IsEnum
-                    )
+                var hasNotMapped = prop.GetCustomAttributes<NotMappedAttribute>(false).FirstOrDefault();
+                if (hasNotMapped == null) 
                 {
-                    if (propName != "Signature")
-                        result.Add(new KeyValue() { key = propName, value = propValue });
+                    var propType = prop.PropertyType;
+                    string propName = prop.Name;
+                    string propValue = prop.GetValue(this, null) + "";
+                    if (
+                        propType == typeof(int?) || propType == typeof(int) ||
+                        propType == typeof(long?) || propType == typeof(long) ||
+                        propType == typeof(string) || propType == typeof(string) ||
+                        propType == typeof(bool?) || propType == typeof(bool) ||
+                        propType.IsEnum
+                        )
+                    {
+                        if (propName != "Signature")
+                            result.Add(new KeyValue() { key = propName, value = propValue });
+                    }
                 }
             }
 
