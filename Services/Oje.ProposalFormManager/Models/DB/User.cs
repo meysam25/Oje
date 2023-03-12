@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oje.Infrastructure.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.ProposalFormService.Models.DB
 {
     [Table("Users")]
-    public class User
+    public class User: SignatureEntity
     {
         public User()
         {

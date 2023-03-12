@@ -10,6 +10,11 @@ namespace Oje.ValidatedSignature.Models.DB
         {
             ProposalFilledForms = new();
             UploadedFiles = new();
+            UserFilledRegisterForms = new();
+            Roles = new();
+            SiteSettingUsers = new();
+            SmsValidationHistories = new();
+            WalletTransactions = new();
         }
 
         [Key]
@@ -23,5 +28,15 @@ namespace Oje.ValidatedSignature.Models.DB
         public List<UploadedFile> UploadedFiles { get; set; }
         [InverseProperty("SiteSetting")]
         public List<TenderFilledForm> TenderFilledForms { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<UserFilledRegisterForm> UserFilledRegisterForms { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<Role> Roles { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<User> SiteSettingUsers { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<SmsValidationHistory> SmsValidationHistories { get; set; }
+        [InverseProperty("SiteSetting")]
+        public List<WalletTransaction> WalletTransactions { get; set; }
     }
 }

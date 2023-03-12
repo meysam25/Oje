@@ -3,11 +3,8 @@ using Oje.Infrastructure.Services;
 using Oje.ProposalFormService.Interfaces;
 using Oje.ProposalFormService.Models.DB;
 using Oje.ProposalFormService.Services.EContext;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.ProposalFormService.Services
 {
@@ -27,7 +24,9 @@ namespace Oje.ProposalFormService.Services
 
             if(!db.UserRoles.Any(t => t.UserId == userId && t.RoleId == foundRole.Id))
             {
-                db.Entry(new UserRole() { UserId = userId, RoleId = foundRole.Id }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                var newUserRole = new UserRole() { UserId = userId, RoleId = foundRole.Id };
+                newUserRole.FilledSignature();
+                db.Entry(newUserRole).State = Microsoft.EntityFrameworkCore.EntityState.Added;
                 db.SaveChanges();
             }
 

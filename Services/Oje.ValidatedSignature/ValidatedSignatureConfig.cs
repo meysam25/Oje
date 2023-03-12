@@ -16,6 +16,12 @@ namespace Oje.ValidatedSignature
             services.AddScoped<IProposalFilledFormService, ProposalFilledFormService>();
             services.AddScoped<IUploadedFileService, UploadedFileService>();
             services.AddScoped<ITenderFilledFormService, TenderFilledFormService>();
+            services.AddScoped<IUserFilledRegisterFormService, UserFilledRegisterFormService>();
+            services.AddScoped<IUserRegisterFormPriceService, UserRegisterFormPriceService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUpdateAllSignatures, UpdateAllSignatures>();
+            services.AddScoped<ISmsValidationHistoryService, SmsValidationHistoryService>();
+            services.AddScoped<IWalletTransactionService, WalletTransactionService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)

@@ -48,9 +48,10 @@ namespace Oje.AccountService.Services
                 foreach (var formId in input.formIds)
                     db.Entry(new RoleProposalForm() { ProposalFormId = formId, RoleId = newItem.Id }).State = EntityState.Added;
 
-                db.SaveChanges();
             }
 
+            newItem.FilledSignature();
+            db.SaveChanges();
 
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
         }
@@ -134,6 +135,9 @@ namespace Oje.AccountService.Services
             if (countUser > 0)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted, ApiResultErrorCode.ValidationError);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
             if (foundItem.RoleProposalForms != null && foundItem.RoleProposalForms.Count > 0)
                 foreach (var form in foundItem.RoleProposalForms)
                     db.Entry(form).State = EntityState.Deleted;
@@ -168,6 +172,9 @@ namespace Oje.AccountService.Services
             var foundItem = db.Roles.Include(t => t.RoleProposalForms).Where(t => t.Id == input.id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             if (foundItem.RoleProposalForms.Count > 0)
                 foreach (var form in foundItem.RoleProposalForms)
@@ -225,10 +232,10 @@ namespace Oje.AccountService.Services
                 foreach (var formId in input.formIds)
                     db.Entry(new RoleProposalForm() { ProposalFormId = formId, RoleId = newItem.Id }).State = EntityState.Added;
 
-                db.SaveChanges();
             }
 
-
+            newItem.FilledSignature();
+            db.SaveChanges();
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetAttribute<DisplayAttribute>()?.Name };
         }
 
@@ -287,6 +294,9 @@ namespace Oje.AccountService.Services
             if (countUser > 0)
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted, ApiResultErrorCode.ValidationError);
 
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
             if (foundItem.RoleProposalForms != null && foundItem.RoleProposalForms.Count > 0)
                 foreach (var form in foundItem.RoleProposalForms)
                     db.Entry(form).State = EntityState.Deleted;
@@ -329,6 +339,9 @@ namespace Oje.AccountService.Services
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
             if (foundItem.SiteSettingId == null)
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
+            if (!foundItem.IsSignature())
                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             if (foundItem.RoleProposalForms.Count > 0)

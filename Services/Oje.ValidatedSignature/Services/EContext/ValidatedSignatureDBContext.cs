@@ -25,6 +25,7 @@ namespace Oje.ValidatedSignature.Services.EContext
         public DbSet<ProposalForm> ProposalForms { get; set; }
         public DbSet<SiteSetting> SiteSettings { get; set; }
 
+
         public DbSet<TenderFilledForm> TenderFilledForms { get; set; }
         public DbSet<TenderFilledFormIssue> TenderFilledFormIssues { get; set; }
         public DbSet<TenderFilledFormJson> TenderFilledFormJsons { get; set; }
@@ -34,7 +35,28 @@ namespace Oje.ValidatedSignature.Services.EContext
         public DbSet<TenderFilledFormsValue> TenderFilledFormsValues { get; set; }
         public DbSet<TenderFilledFormValidCompany> TenderFilledFormValidCompanies { get; set; }
 
+
+        public DbSet<UserFilledRegisterForm> UserFilledRegisterForms { get; set; }
+        public DbSet<UserFilledRegisterFormCardPayment> UserFilledRegisterFormCardPayments { get; set; }
+        public DbSet<UserFilledRegisterFormCompany> UserFilledRegisterFormCompanies { get; set; }
+        public DbSet<UserFilledRegisterFormJson> UserFilledRegisterFormJsons { get; set; }
+        public DbSet<UserFilledRegisterFormKey> UserFilledRegisterFormKeys { get; set; }
+        public DbSet<UserFilledRegisterFormValue> UserFilledRegisterFormValues { get; set; }
+        public DbSet<UserRegisterFormPrice> UserRegisterFormPrices { get; set; }
+
+
         public DbSet<UploadedFile> UploadedFiles { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
+
+
+        public DbSet<Models.DB.Action> Actions { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RoleAction> RoleActions { get; set; }
+        public DbSet<SmsValidationHistory> SmsValidationHistories { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,9 +64,15 @@ namespace Oje.ValidatedSignature.Services.EContext
             modelBuilder.Entity<ProposalFilledFormSiteSetting>().HasKey(t => new { t.SiteSettingId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormUser>().HasKey(t => new { t.ProposalFilledFormId, t.UserId, t.Type });
 
-
             modelBuilder.Entity<TenderFilledFormPF>().HasKey(t => new { t.TenderProposalFormJsonConfigId, t.TenderFilledFormId });
             modelBuilder.Entity<TenderFilledFormValidCompany>().HasKey(t => new { t.CompanyId, t.TenderFilledFormId });
+
+            modelBuilder.Entity<UserFilledRegisterFormCompany>().HasKey(t => new { t.CompanyId, t.UserFilledRegisterFormId });
+
+            modelBuilder.Entity<User>().Property(e => e.MapLat).HasPrecision(18, 15);
+            modelBuilder.Entity<User>().Property(e => e.MapLon).HasPrecision(18, 15);
+            modelBuilder.Entity<SmsValidationHistory>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate, t.Type });
+
 
             base.OnModelCreating(modelBuilder);
         }

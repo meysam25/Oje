@@ -160,6 +160,7 @@ namespace Oje.Section.RegisterForm.Services
             foundnItem.Title = input.title;
             foundnItem.UserRegisterFormId = input.fid.Value;
             foundnItem.GroupPriceTitle2 = input.gp2;
+            foundnItem.FilledSignature();
 
             db.SaveChanges();
 

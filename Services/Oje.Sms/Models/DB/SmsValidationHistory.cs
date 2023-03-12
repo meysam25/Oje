@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Sms.Models.DB
 {
     [Table("SmsValidationHistories")]
-    public class SmsValidationHistory: IEntityWithSiteSettingId
+    public class SmsValidationHistory: SignatureEntity, IEntityWithSiteSettingId
     {
         public byte Ip1 { get; set; }
         public byte Ip2 { get; set; }

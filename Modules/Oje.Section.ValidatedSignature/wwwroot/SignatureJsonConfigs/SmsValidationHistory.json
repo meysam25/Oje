@@ -1,0 +1,121 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "SmsValidationHistoryMainGrid",
+          "exportToExcelUrl": "/Signature/SmsValidationHistory/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "SmsValidationHistoryEditGridModal",
+                "url": "/Signature/SmsValidationHistory/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/Signature/SmsValidationHistory/GetById\\', \\'SmsValidationHistoryEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Signature/SmsValidationHistory/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "ip",
+              "sort": true,
+              "caption": "ای پی",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "mobile",
+              "sort": true,
+              "caption": "همراه",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "sort": true,
+              "caption": "تاریخ ایجاد",
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "isUsed",
+              "sort": true,
+              "caption": "استفاده شده",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "type",
+              "sort": true,
+              "caption": "نوع",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/SmsValidationHistoryType",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "website",
+              "sort": true,
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isValid",
+              "caption": "مجاز"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "SmsValidationHistoryEditGridModal",
+          "title": "مشاهده",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "متن خطا",
+              "ltr": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

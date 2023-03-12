@@ -1,0 +1,115 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "UserFilledRegisterFormMainGrid",
+          "exportToExcelUrl": "/Signature/UserFilledRegisterForm/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "UserFilledRegisterFormEditGridModal",
+                "url": "/Signature/UserFilledRegisterForm/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/Signature/UserFilledRegisterForm/GetById\\', \\'UserFilledRegisterFormEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Signature/UserFilledRegisterForm/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "id",
+              "caption": "شناسه",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "username",
+              "caption": "نام کاربری",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "firstname",
+              "caption": "نام",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "lastname",
+              "caption": "نام خانوادگی",
+              "sort": true,
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "createDate",
+              "caption": "تاریخ",
+              "sort": true,
+              "search": {
+                "searchType": "persianDateTime"
+              }
+            },
+            {
+              "field": "website",
+              "sort": true,
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isValid",
+              "caption": "مجاز"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "UserFilledRegisterFormEditGridModal",
+          "title": "مشاهده",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "متن خطا",
+              "ltr":  true 
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

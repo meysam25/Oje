@@ -71,7 +71,7 @@ namespace Oje.Section.Core.Areas.Controllers
             var loginUserId = HttpContext.GetLoginUser()?.UserId;
 
             var foundFile = UploadedFileService.GetFile(fn, loginUserId.ToLongReturnZiro());
-            if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false )
+            if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || !foundFile.IsSignature())
                 return Content("File Not Found");
 
             var fi = new FileInfo(foundFile.FileName);

@@ -144,7 +144,7 @@ namespace Oje.Sms.Services
                         isSuccess = t.isSuccess == true ? BMessages.Yes.GetEnumDisplayName() : BMessages.No.GetEnumDisplayName(),
                         ip = t.ip1 + "." + t.ip2 + "." + t.ip3 + "." + t.ip4,
                         t.lastError,
-                        siteTitleMN2 = t.siteTitleMN2
+                        t.siteTitleMN2
                     })
                     .ToList()
             };

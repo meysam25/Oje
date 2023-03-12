@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Oje.Infrastructure.Services;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.RegisterForm.Models.DB
 {
     [Table("UserRegisterFormDiscountCodeUses")]
-    public class UserRegisterFormDiscountCodeUse
+    public class UserRegisterFormDiscountCodeUse: SignatureEntity
     {
         [Key]
         public long Id { get; set; }

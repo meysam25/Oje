@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Services;
@@ -77,7 +78,8 @@ namespace Oje.Worker.Signature.Services
                         if (!entity.IsSignature())
                         {
                             string message = entity.GetTableAttributeName() + " signiture is not valid" + Environment.NewLine;
-                            message += entity.GetSignatureChanges();
+                            message += entity.GetSignatureChanges() + Environment.NewLine;
+                            message += JsonConvert.SerializeObject(entity);
                             ErrorService.Create(null, "GBS", null, null, message, new Infrastructure.Models.IpSections() { Ip1 = 127, Ip2 = 0, Ip3 = 0, Ip4 = 1 }, "no line", "no file", "/", "/");
                         }
                     }
@@ -99,7 +101,8 @@ namespace Oje.Worker.Signature.Services
                         if (!foundItem.IsSignature())
                         {
                             string message = foundItem.GetTableAttributeName() + " signiture is not valid" + Environment.NewLine;
-                            message += foundItem.GetSignatureChanges();
+                            message += foundItem.GetSignatureChanges() + Environment.NewLine;
+                            message += "id=" + idValue.Id;
                             ErrorService.Create(null, "GBS", null, null, message, new Infrastructure.Models.IpSections() { Ip1 = 127, Ip2 = 0, Ip3 = 0, Ip4 = 1 }, "no line", "no file", "/", "/");
                         }
                     }

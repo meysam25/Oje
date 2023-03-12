@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Oje.Infrastructure.Services;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.PaymentService.Models.DB
 {
     [Table("WalletTransactions")]
-    public class WalletTransaction
+    public class WalletTransaction: SignatureEntity
     {
         [Key]
         public long Id { get; set; }

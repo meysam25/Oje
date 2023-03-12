@@ -15,6 +15,7 @@ using Oje.Security.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IOurObjectService = Oje.Section.WebMain.Interfaces.IOurObjectService;
+using IUpdateAllSignatures = Oje.ValidatedSignature.Interfaces.IUpdateAllSignatures;
 
 namespace Oje.Section.WebMain.Areas.WebMain.Controllers
 {
@@ -35,6 +36,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
 
         readonly IUserInquiry UserInquiry = null;
         readonly ICarInquiry CarInquiry = null;
+        readonly IUpdateAllSignatures UpdateAllSignatures = null;
 
         public HomeController
             (
@@ -51,7 +53,8 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 IExternalNotificationServicePushSubscriptionService ExternalNotificationServicePushSubscriptionService,
                 IShortLinkService ShortLinkService,
                 IUserInquiry UserInquiry,
-                ICarInquiry CarInquiry
+                ICarInquiry CarInquiry,
+                IUpdateAllSignatures UpdateAllSignatures
             )
         {
             this.PropertyService = PropertyService;
@@ -68,6 +71,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
             this.ShortLinkService = ShortLinkService;
             this.UserInquiry = UserInquiry;
             this.CarInquiry = CarInquiry;
+            this.UpdateAllSignatures = UpdateAllSignatures;
         }
 
         [Route("[Controller]/[Action]")]
@@ -380,6 +384,14 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
                 logo = GlobalConfig.FileAccessHandlerUrl + foundSetting.Image96,
                 tLogo = GlobalConfig.FileAccessHandlerUrl + foundSetting.ImageText
             } : new { }));
+        }
+
+        [Route("[Controller]/[Action]")]
+        [HttpGet]
+        public ActionResult UpdateTempDeleteMe()
+        {
+            UpdateAllSignatures.Update();
+            return Json(true);
         }
     }
 }

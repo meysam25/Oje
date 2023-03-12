@@ -59,6 +59,9 @@ namespace Oje.ProposalFormService.Services
             db.Entry(newUser).State = EntityState.Added;
             db.SaveChanges();
 
+            newUser.FilledSignature();
+            db.SaveChanges();
+
             RoleService.AddUserToUserRole(newUser.Id);
 
             return newUser.Id;

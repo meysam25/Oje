@@ -37,10 +37,6 @@ namespace Oje.Worker.Signature
             sdList.Add(new TableListener<ProposalFilledFormUser>(db, ErrorService).Start());
             sdList.Add(new TableListener<ProposalFilledFormValue>(db, ErrorService).Start());
 
-            //UploadedFile
-            sdList.Add(new TableListener<UploadedFile>(db, ErrorService).Start());
-
-
             //TenderFilledForm
             sdList.Add(new TableListener<TenderFilledForm>(db, ErrorService).Start());
             sdList.Add(new TableListener<TenderFilledFormIssue>(db, ErrorService).Start());
@@ -50,6 +46,29 @@ namespace Oje.Worker.Signature
             sdList.Add(new TableListener<TenderFilledFormsValue>(db, ErrorService).Start());
             sdList.Add(new TableListener<TenderFilledFormKey>(db, ErrorService).Start());
             sdList.Add(new TableListener<TenderFilledFormValidCompany>(db, ErrorService).Start());
+
+            //ProposalFilledForm
+            sdList.Add(new TableListener<UserFilledRegisterForm>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserFilledRegisterFormCardPayment>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserFilledRegisterFormCompany>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserFilledRegisterFormJson>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserFilledRegisterFormKey>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserFilledRegisterFormValue>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserRegisterFormDiscountCodeUse>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserRegisterFormPrice>(db, ErrorService).Start());
+
+            //Users
+            sdList.Add(new TableListener<ValidatedSignature.Models.DB.Action>(db, ErrorService).Start());
+            sdList.Add(new TableListener<User>(db, ErrorService).Start());
+            sdList.Add(new TableListener<UserRole>(db, ErrorService).Start());
+            sdList.Add(new TableListener<Role>(db, ErrorService).Start());
+            sdList.Add(new TableListener<RoleAction>(db, ErrorService).Start());
+            sdList.Add(new TableListener<SmsValidationHistory>(db, ErrorService).Start());
+
+            sdList.Add(new TableListener<WalletTransaction>(db, ErrorService).Start());
+
+            sdList.Add(new TableListener<UploadedFile>(db, ErrorService).Start());
+
 
             return base.StartAsync(cancellationToken);
         }

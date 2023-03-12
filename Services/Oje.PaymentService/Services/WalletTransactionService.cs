@@ -29,7 +29,7 @@ namespace Oje.PaymentService.Services
         {
             if (price > 0 && siteSettingId.ToIntReturnZiro() > 0 && userId.ToLongReturnZiro() > 0)
             {
-                db.Entry(new WalletTransaction()
+                var newItem = new WalletTransaction()
                 {
                     CreateDate = DateTime.Now,
                     Descrption = description,
@@ -37,7 +37,11 @@ namespace Oje.PaymentService.Services
                     SiteSettingId = siteSettingId.Value,
                     UserId = userId,
                     TraceNo = traceNo
-                }).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                };
+                db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                db.SaveChanges();
+
+                newItem.FilledSignature();
                 db.SaveChanges();
             }
         }
@@ -56,6 +60,9 @@ namespace Oje.PaymentService.Services
                     TraceNo = traceNo
                 };
                 db.Entry(newItem).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+                db.SaveChanges();
+
+                newItem.FilledSignature();
                 db.SaveChanges();
 
                 return newItem.Id;
@@ -157,6 +164,10 @@ namespace Oje.PaymentService.Services
                     var userBalance = db.WalletTransactions.Where(t => t.UserId == userId && t.SiteSettingId == siteSettingId).Select(t => t.Price).Sum();
                     if (userBalance < ppfPrice)
                         throw BException.GenerateNewException(BMessages.Inventory_Is_Not_Enough);
+                    var allTransition = db.WalletTransactions.ToList();
+                    foreach(var t in allTransition)
+                        if (!t.IsSignature())
+                            throw BException.GenerateNewException(BMessages.Inventory_Is_Not_Enough);
                     using (var tr = db.Database.BeginTransaction())
                     {
                         var wtrId = CreateMinusPrice(ppfPrice * -1, siteSettingId, userId.Value, "پرداخت بابت بیمه نامه با شناسه " + input.id, null);

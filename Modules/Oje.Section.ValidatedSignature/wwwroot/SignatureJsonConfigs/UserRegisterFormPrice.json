@@ -1,0 +1,104 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "UserRegisterFormPriceMainGrid",
+          "exportToExcelUrl": "/Signature/UserRegisterFormPrice/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "UserRegisterFormPriceEditGridModal",
+                "url": "/Signature/UserRegisterFormPrice/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/Signature/UserRegisterFormPrice/GetById\\', \\'UserRegisterFormPriceEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Signature/UserRegisterFormPrice/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "id",
+              "caption": "شناسه",
+              "sort": true,
+              "width": "100px",
+              "textAlign": "center",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "title",
+              "sort": true,
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "price",
+              "sort": true,
+              "caption": "مبلغ",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "sort": true,
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "isValid",
+              "caption": "مجاز"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "UserRegisterFormPriceEditGridModal",
+          "title": "مشاهده",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "متن خطا",
+              "ltr": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

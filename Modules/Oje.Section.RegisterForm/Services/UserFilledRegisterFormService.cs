@@ -267,9 +267,12 @@ namespace Oje.Section.RegisterForm.Services
                 if (allParts != null && allParts.Count > 0)
                 {
                     foreach (var cid in allParts)
-                        db.Entry(new UserFilledRegisterFormCompany() { CompanyId = cid, UserFilledRegisterFormId = newItem.Id }).State = EntityState.Added;
+                    {
+                        var newC = new UserFilledRegisterFormCompany() { CompanyId = cid, UserFilledRegisterFormId = newItem.Id };
+                        newC.FilledSignature();
+                        db.Entry(newC).State = EntityState.Added;
+                    }
                 }
-
             }
 
             newItem.FilledSignature();

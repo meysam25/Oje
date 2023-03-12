@@ -29,7 +29,7 @@ namespace Oje.ValidatedSignature.Services
                 .Include(t => t.TenderFilledFormPrices)
                 .Include(t => t.TenderFilledFormsValues).ThenInclude(t => t.TenderFilledFormKey)
                 .Include(t => t.TenderFilledFormValidCompanies)
-                .FirstOrDefault();
+                .FirstOrDefault(t => t.Id == id);
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);

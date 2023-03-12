@@ -40,7 +40,7 @@ namespace Oje.AccountService.Services
                 childs = t.Controllers.Select(tt => new
                 {
                     id = tt.Id,
-                    title = tt.Title + "("+ tt.Name +")",
+                    title = tt.Title + "(" + tt.Name + ")",
                     childs = tt.Actions.Select(ttt => new
                     {
                         id = ttt.Id,
@@ -204,6 +204,10 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
             foreach (var rSection in foundRole.RoleActions)
+                if (!rSection.IsSignature())
+                    throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
+            foreach (var rSection in foundRole.RoleActions)
                 db.Entry(rSection).State = EntityState.Deleted;
 
             if (input.a_3 != null && input.a_3.Count > 0)
@@ -212,7 +216,12 @@ namespace Oje.AccountService.Services
                 foreach (var rId in allSectionIds)
                 {
                     if (rId > 0)
-                        db.Entry(new RoleAction() { RoleId = input.id.Value, ActionId = rId }).State = EntityState.Added;
+                    {
+                        var newRA = new RoleAction() { RoleId = input.id.Value, ActionId = rId };
+                        newRA.FilledSignature();
+                        db.Entry(newRA).State = EntityState.Added;
+
+                    }
                 }
             }
 
@@ -365,8 +374,8 @@ namespace Oje.AccountService.Services
                         if (foundAction.DashboardSections != null)
                             foreach (var temp1 in foundAction.DashboardSections)
                             {
-                                if(temp1.DashboardSectionUserNotificationTypes != null && temp1.DashboardSectionUserNotificationTypes.Any())
-                                    foreach(var temp2 in temp1.DashboardSectionUserNotificationTypes)
+                                if (temp1.DashboardSectionUserNotificationTypes != null && temp1.DashboardSectionUserNotificationTypes.Any())
+                                    foreach (var temp2 in temp1.DashboardSectionUserNotificationTypes)
                                         db.Entry(temp2).State = EntityState.Deleted;
                                 db.Entry(temp1).State = EntityState.Deleted;
                             }
@@ -432,12 +441,28 @@ namespace Oje.AccountService.Services
                 foundAction = new Models.DB.Action() { Name = actionCode, ControllerId = modulSection.Id };
                 db.Entry(foundAction).State = EntityState.Added;
             }
+            else if (!foundAction.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
 
             foundAction.Icon = methodConfigAttribute.Icon;
             foundAction.Title = methodConfigAttribute.Title;
             foundAction.IsMainMenuItem = methodConfigAttribute.IsMainMenuItem;
 
+            bool canSaveAgin = true;
+            if (foundAction.Id > 0)
+            {
+                foundAction.FilledSignature();
+                canSaveAgin = false;
+            }
+
             db.SaveChanges();
+
+            if (canSaveAgin == true)
+            {
+                foundAction.FilledSignature();
+                db.SaveChanges();
+            }
         }
 
         Section createModalByConfigAttribute(AreaConfigAttribute controllerConfigAttribute, AreaAttribute areaAttribute)

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.AccountService.Models.DB
 {
     [Table("Actions")]
-    public class Action
+    public class Action: SignatureEntity
     {
         public Action()
         {

@@ -57,6 +57,11 @@ namespace Oje.Section.RegisterForm.Services
                         newUser = new User();
                         db.Entry(newUser).State = EntityState.Added;
                     }
+                    else
+                    {
+                        if (!newUser.IsSignature())
+                            throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+                    }
 
 
                     newUser.SiteSettingId = siteSettingId;
@@ -103,6 +108,8 @@ namespace Oje.Section.RegisterForm.Services
 
                     db.SaveChanges();
 
+                    newUser.FilledSignature();
+
                     if (userFilledRegisterForm.UserFilledRegisterFormCompanies != null && userFilledRegisterForm.UserFilledRegisterFormCompanies.Count > 0)
                     {
                         foreach (var company in userFilledRegisterForm.UserFilledRegisterFormCompanies)
@@ -122,16 +129,24 @@ namespace Oje.Section.RegisterForm.Services
 
                     if (newUser.UserRoles != null && newUser.UserRoles.Count > 0)
                         foreach (var userrole in newUser.UserRoles)
+                            if (!userrole.IsSignature())
+                                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
+                    if (newUser.UserRoles != null && newUser.UserRoles.Count > 0)
+                        foreach (var userrole in newUser.UserRoles)
                             db.Entry(userrole).State = EntityState.Deleted;
 
                     db.SaveChanges();
 
                     if (roleIds != null && roleIds.Count > 0)
-                    {
                         foreach (var roleId in roleIds)
                             if (newUser.UserRoles == null || !newUser.UserRoles.Any(t => t.RoleId == roleId))
-                                db.Entry(new UserRole() { RoleId = roleId, UserId = newUser.Id }).State = EntityState.Added;
-                    }
+                            {
+                                var newUserRole = new UserRole() { RoleId = roleId, UserId = newUser.Id };
+                                newUserRole.FilledSignature();
+                                db.Entry(newUserRole).State = EntityState.Added;
+
+                            }
                     db.SaveChanges();
 
                     userId = newUser.Id;

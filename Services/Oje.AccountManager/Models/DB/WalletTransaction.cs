@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.AccountService.Models.DB
 {
     [Table("WalletTransactions")]
-    public class WalletTransaction
+    public class WalletTransaction: SignatureEntity
     {
         [Key]
         public long Id { get; set; }

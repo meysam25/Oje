@@ -6,5 +6,6 @@
     <ProjectReference Include="..\..\Services\Oje.Sanab\Oje.Sanab.csproj" />
     <ProjectReference Include="..\..\Services\Oje.Security\Oje.Security.csproj" />
     <ProjectReference Include="..\..\Services\Oje.Sms\Oje.Sms.csproj" />
+    <ProjectReference Include="..\..\Services\Oje.ValidatedSignature\Oje.ValidatedSignature.csproj" />
   </ItemGroup>
 </Project>

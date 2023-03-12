@@ -26,7 +26,7 @@ namespace Oje.Sms.Services
         {
             int result = RandomService.GenerateRandomNumber(5);
 
-            db.Entry(new SmsValidationHistory
+            var newItem = new SmsValidationHistory
             {
                 CreateDate = DateTime.Now,
                 Ip1 = ipSections.Ip1,
@@ -40,7 +40,9 @@ namespace Oje.Sms.Services
                 IsUsed = false,
                 PreUsed = false,
                 Type = type
-            }).State = EntityState.Added;
+            };
+            newItem.FilledSignature();
+            db.Entry(newItem).State = EntityState.Added;
 
             db.SaveChanges();
 
@@ -186,6 +188,8 @@ namespace Oje.Sms.Services
 
                 if (foundItem == null)
                     return false;
+                if (!foundItem.IsSignature())
+                    return false;
 
                 var arrIdParts = codeId.Split(',');
                 var ipPart = arrIdParts[0];
@@ -227,6 +231,8 @@ namespace Oje.Sms.Services
 
             if (foundItem != null)
             {
+                if (!foundItem.IsSignature())
+                    return result;
                 if (foundItem.ConfirmCode == smsCode)
                 {
                     result = true;
@@ -260,6 +266,8 @@ namespace Oje.Sms.Services
 
             if (foundItem != null)
             {
+                if (!foundItem.IsSignature())
+                    return result;
                 if (foundItem.ConfirmCode == smsCode)
                 {
                     result = foundItem.Ip1 + "." + foundItem.Ip2 + "." + foundItem.Ip3 + "." + foundItem.Ip4 + "," + foundItem.CreateDate.Ticks + "," + ((int)foundItem.Type);

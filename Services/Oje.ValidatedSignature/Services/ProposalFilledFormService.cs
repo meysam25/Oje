@@ -31,7 +31,7 @@ namespace Oje.ValidatedSignature.Services
                 .Include(t => t.ProposalFilledFormStatusLogs).ThenInclude(t => t.ProposalFilledFormStatusLogFiles)
                 .Include(t => t.ProposalFilledFormSiteSettings)
                 .Include(t => t.GlobalInquery).ThenInclude(t => t.GlobalInquiryItems)
-                .FirstOrDefault();
+                .FirstOrDefault(t => t.Id == id);
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);

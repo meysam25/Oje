@@ -18,7 +18,6 @@ using System.IO;
 using Newtonsoft.Json;
 using NetTopologySuite.Geometries;
 using Oje.AccountService.Filters;
-using NPOI.POIFS.Properties;
 using Oje.AccountService.Models.SP;
 
 namespace Oje.AccountService.Services
@@ -29,7 +28,6 @@ namespace Oje.AccountService.Services
         readonly IHttpContextAccessor httpContextAccessor = null;
         readonly IUploadedFileService uploadedFileService = null;
         readonly IRoleService RoleService = null;
-        readonly ISiteSettingService SiteSettingService = null;
         readonly IProvinceService ProvinceService = null;
         readonly ICityService CityService = null;
         readonly ICompanyService CompanyService = null;
@@ -37,28 +35,24 @@ namespace Oje.AccountService.Services
         readonly Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService = null;
         readonly Security.Interfaces.IBlockLoginUserService BlockLoginUserService = null;
         readonly IHolydayService HolydayService = null;
-        readonly IHttpContextAccessor HttpContextAccessor = null;
         public UserService(
                 AccountDBContext db,
                 IHttpContextAccessor httpContextAccessor,
                 IUploadedFileService uploadedFileService,
                 IRoleService RoleService,
-                ISiteSettingService SiteSettingService,
                 IProvinceService ProvinceService,
                 ICityService CityService,
                 ICompanyService CompanyService,
                 Security.Interfaces.IUserLoginConfigService UserLoginConfigService,
                 Security.Interfaces.IUserLoginLogoutLogService UserLoginLogoutLogService,
                 Security.Interfaces.IBlockLoginUserService BlockLoginUserService,
-                IHolydayService HolydayService,
-                IHttpContextAccessor HttpContextAccessor
+                IHolydayService HolydayService
             )
         {
             this.db = db;
             this.httpContextAccessor = httpContextAccessor;
             this.uploadedFileService = uploadedFileService;
             this.RoleService = RoleService;
-            this.SiteSettingService = SiteSettingService;
             this.CompanyService = CompanyService;
             this.ProvinceService = ProvinceService;
             this.CityService = CityService;
@@ -66,7 +60,6 @@ namespace Oje.AccountService.Services
             this.UserLoginLogoutLogService = UserLoginLogoutLogService;
             this.BlockLoginUserService = BlockLoginUserService;
             this.HolydayService = HolydayService;
-            this.HttpContextAccessor = HttpContextAccessor;
         }
 
         private void LoginValidation(LoginVM input)
@@ -88,6 +81,9 @@ namespace Oje.AccountService.Services
 
             var foundUser = db.Users.Include(t => t.UserRoles).ThenInclude(t => t.Role).Where(t => t.Username.ToLower() == input.username.ToLower() && t.SiteSettingId == siteSettingId).FirstOrDefault();
 
+            if (foundUser != null && foundUser.SiteSettingId != null)
+                MyValidations.SiteSettingValidation(foundUser.SiteSettingId, siteSettingId);
+
             if (foundUser != null && foundUser.TemproryLockDate != null)
                 if (foundUser.TemproryLockDate > DateTime.Now)
                     throw BException.GenerateNewException(BMessages.Invalid_User_Or_Password, ApiResultErrorCode.InvalidUserOrPassword, foundUser.Id);
@@ -98,8 +94,16 @@ namespace Oje.AccountService.Services
             if (!BlockLoginUserService.IsValidDay(DateTime.Now, siteSettingId))
                 throw BException.GenerateNewException(BMessages.UnknownError);
 
-            if (foundUser != null && foundUser.SiteSettingId != null)
-                MyValidations.SiteSettingValidation(foundUser.SiteSettingId, siteSettingId);
+            if (foundUser != null)
+            {
+                if (!foundUser.IsSignature())
+                    throw BException.GenerateNewException(BMessages.UnknownError);
+                if (foundUser.UserRoles != null)
+                    foreach (var role in foundUser.UserRoles)
+                        if (!role.IsSignature())
+                            throw BException.GenerateNewException(BMessages.UnknownError);
+            }
+           
             if (foundUser == null && !db.Users.Any())
                 return CreateAdminUser(input);
             else if (foundUser != null && (foundUser.IsActive == false || foundUser.IsDelete == true))
@@ -107,7 +111,7 @@ namespace Oje.AccountService.Services
             else if (foundUser != null && foundUser.Password == input.password.GetSha1())
             {
                 setCookieForThisUser(foundUser, input, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
-                UpdateUserSessionFileName(foundUser.Id, foundUser.LastSessionFileName);
+                UpdateUserSessionFileName(foundUser.Id, foundUser.tempLastSession);
 
                 UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPassword, siteSettingId, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
 
@@ -136,6 +140,7 @@ namespace Oje.AccountService.Services
                     foundUser.CountInvalidPass = 0;
                     foundUser.TemproryLockDate = DateTime.Now.AddMinutes((loginConfig != null ? loginConfig.DeactiveMinute : 7));
                 }
+                foundUser.FilledSignature();
                 db.SaveChanges();
             }
 
@@ -159,6 +164,8 @@ namespace Oje.AccountService.Services
                     db.Entry(newUser).State = EntityState.Added;
                     db.SaveChanges();
 
+                    newUser.FilledSignature();
+
                     Role foundRole = db.Roles.Where(t => t.Name == "SysAdmin").FirstOrDefault();
                     if (foundRole == null)
                     {
@@ -168,11 +175,14 @@ namespace Oje.AccountService.Services
                         foundRole.Value = long.MaxValue;
                         db.Entry(foundRole).State = EntityState.Added;
                         db.SaveChanges();
+                        foundRole.FilledSignature();
                     }
 
                     UserRole newUserRole = new UserRole();
                     newUserRole.RoleId = foundRole.Id;
                     newUserRole.UserId = newUser.Id;
+
+                    newUserRole.FilledSignature();
 
                     db.Entry(newUserRole).State = EntityState.Added;
                     db.SaveChanges();
@@ -180,7 +190,9 @@ namespace Oje.AccountService.Services
                     var allMSectionIds = db.Actions.Select(t => t.Id).ToList();
                     foreach (var sId in allMSectionIds)
                     {
-                        db.Entry(new RoleAction() { RoleId = foundRole.Id, ActionId = sId }).State = EntityState.Added;
+                        var newRA = new RoleAction() { RoleId = foundRole.Id, ActionId = sId };
+                        newRA.FilledSignature();
+                        db.Entry(newRA).State = EntityState.Added;
                     }
                     db.SaveChanges();
 
@@ -194,7 +206,7 @@ namespace Oje.AccountService.Services
                     newUser.UserRoles.Add(newUserRole);
 
                     setCookieForThisUser(newUser, input, RoleService.HasAnyAutoRefreshRole(newUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(newUser.Id));
-                    UpdateUserSessionFileName(newUser.Id, newUser.LastSessionFileName);
+                    UpdateUserSessionFileName(newUser.Id, newUser.tempLastSession);
                     return new ApiResult() { isSuccess = true };
                 }
                 catch
@@ -227,7 +239,7 @@ namespace Oje.AccountService.Services
             MySession.Create(sessionFileName);
             if (!string.IsNullOrEmpty(newUser.LastSessionFileName))
                 MySession.Clean(newUser.LastSessionFileName);
-            newUser.LastSessionFileName = sessionFileName;
+            newUser.tempLastSession = sessionFileName;
         }
 
         private void CreateValidation(CreateUpdateUserVM input, long? loginUserId)
@@ -347,10 +359,15 @@ namespace Oje.AccountService.Services
                         newUser.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, newUser.Id, ".png,.jpg,.jpeg", true);
 
                     foreach (var roleId in input.roleIds)
-                        db.Entry(new UserRole() { RoleId = roleId, UserId = newUser.Id }).State = EntityState.Added;
+                    {
+                        var newUserRole = new UserRole() { RoleId = roleId, UserId = newUser.Id };
+                        newUserRole.FilledSignature();
+                        db.Entry(newUserRole).State = EntityState.Added;
+                    }
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = newUser.Id }).State = EntityState.Added;
 
+                    newUser.FilledSignature();
                     db.SaveChanges();
                     tr.Commit();
 
@@ -374,6 +391,12 @@ namespace Oje.AccountService.Services
             {
                 try
                 {
+                    if (!foundItem.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+                    foreach (var ur in foundItem.UserRoles)
+                        if (!ur.IsSignature())
+                            throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
                     foreach (var ur in foundItem.UserRoles)
                         db.Entry(ur).State = EntityState.Deleted;
 
@@ -485,6 +508,11 @@ namespace Oje.AccountService.Services
                     var foundItem = db.Users.Where(t => t.Id == input.id).Include(t => t.UserCompanies).Include(t => t.UserRoles).FirstOrDefault();
                     if (foundItem == null)
                         throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
+                    if (!foundItem.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+                    foreach (var ur in foundItem.UserRoles)
+                        if (!ur.IsSignature())
+                            throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
                     foundItem.Username = input.username;
                     foundItem.Firstname = input.firstname;
@@ -527,7 +555,11 @@ namespace Oje.AccountService.Services
                         db.Entry(uc).State = EntityState.Deleted;
 
                     foreach (var roleId in input.roleIds)
-                        db.Entry(new UserRole() { RoleId = roleId, UserId = foundItem.Id }).State = EntityState.Added;
+                    {
+                        var newUserRole = new UserRole() { RoleId = roleId, UserId = foundItem.Id };
+                        newUserRole.FilledSignature();
+                        db.Entry(newUserRole).State = EntityState.Added;
+                    }
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
 
@@ -714,10 +746,15 @@ namespace Oje.AccountService.Services
                         newUser.UserPic = uploadedFileService.UploadNewFile(FileType.UserProfilePic, input.userPic, loginUserId, null, newUser.Id, ".png,.jpg,.jpeg", true);
 
                     foreach (var roleId in input.roleIds)
-                        db.Entry(new UserRole() { RoleId = roleId, UserId = newUser.Id }).State = EntityState.Added;
+                    {
+                        var newUserRole = new UserRole() { RoleId = roleId, UserId = newUser.Id };
+                        newUserRole.FilledSignature();
+                        db.Entry(newUserRole).State = EntityState.Added;
+                    }
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = newUser.Id }).State = EntityState.Added;
 
+                    newUser.FilledSignature();
                     db.SaveChanges();
                     tr.Commit();
 
@@ -838,6 +875,12 @@ namespace Oje.AccountService.Services
             {
                 try
                 {
+                    if (!foundItem.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+                    foreach (var ur in foundItem.UserRoles)
+                        if (!ur.IsSignature())
+                            throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
+
                     foreach (var ur in foundItem.UserRoles)
                         db.Entry(ur).State = EntityState.Deleted;
 
@@ -973,6 +1016,13 @@ namespace Oje.AccountService.Services
                     if (foundItem == null)
                         throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
+                    if (!foundItem.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
+                    foreach (var ur in foundItem.UserRoles)
+                        if (!ur.IsSignature())
+                            throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
                     foundItem.Username = input.username;
                     foundItem.Firstname = input.firstname;
                     foundItem.Lastname = input.lastname;
@@ -1025,7 +1075,11 @@ namespace Oje.AccountService.Services
                         db.Entry(uc).State = EntityState.Deleted;
 
                     foreach (var roleId in input.roleIds)
-                        db.Entry(new UserRole() { RoleId = roleId, UserId = foundItem.Id }).State = EntityState.Added;
+                    {
+                        var newUserRole = new UserRole() { RoleId = roleId, UserId = foundItem.Id };
+                        newUserRole.FilledSignature();
+                        db.Entry(newUserRole).State = EntityState.Added;
+                    }
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
 
@@ -1137,9 +1191,12 @@ namespace Oje.AccountService.Services
             var foundItem = db.Users.Where(t => t.Id == userId && t.SiteSettingId == siteSettingId).getWhereIdMultiLevelForUserOwnerShip<User, User>(loginUserId, canSeeAllItem).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.User_Not_Found);
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             foundItem.IsDelete = true;
             foundItem.IsActive = false;
+            foundItem.FilledSignature();
             db.SaveChanges();
         }
 
@@ -1383,7 +1440,11 @@ namespace Oje.AccountService.Services
             if (user == null || string.IsNullOrEmpty(password))
                 return;
             var foundUser = db.Users.Where(t => t.Id == user.Id).FirstOrDefault();
+            if (!foundUser.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             foundUser.Password = password.GetSha1();
+            foundUser.FilledSignature();
             db.SaveChanges();
         }
 
@@ -1586,9 +1647,9 @@ namespace Oje.AccountService.Services
                     tell = t.Tell,
                     postalCode = t.PostalCode,
                     address = t.Address,
-                    mapLat = t.mapLat,
-                    mapLon = t.mapLon,
-                    mapZoom = t.mapZoom,
+                    t.mapLat,
+                    t.mapLon,
+                    t.mapZoom,
                     birthDate = t.BirthDate.ToFaDate()
                 })
                 .FirstOrDefault();
@@ -1605,6 +1666,9 @@ namespace Oje.AccountService.Services
 
             if (foundUser == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundUser.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             foundUser.Firstname = input.firstname;
             foundUser.Lastname = input.lastname;
@@ -1623,6 +1687,8 @@ namespace Oje.AccountService.Services
             foundUser.Gender = input.gender;
             foundUser.ShenasnameNo = input.shenasnameNo;
             foundUser.MarrageStatus = input.marrageStatus;
+
+            foundUser.FilledSignature();
 
             db.SaveChanges();
 
@@ -1684,7 +1750,11 @@ namespace Oje.AccountService.Services
             var foundUser = db.Users.Where(t => t.Id == id).FirstOrDefault();
             if (foundUser != null)
             {
+                if (!foundUser.IsSignature())
+                    throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
                 foundUser.LastSessionFileName = lastSessionFileName;
+                foundUser.FilledSignature();
                 db.SaveChanges();
             }
         }
@@ -1698,7 +1768,10 @@ namespace Oje.AccountService.Services
                 string curPassword = "";
                 try { curPassword = user.Password.Decrypt(); } catch { }
                 if (!string.IsNullOrEmpty(curPassword))
+                {
                     user.Password = curPassword.GetSha1();
+                    user.FilledSignature();
+                }
             }
 
             db.SaveChanges();
@@ -1839,12 +1912,17 @@ namespace Oje.AccountService.Services
                         {
 
                             if (!db.RoleActions.Any(t => t.RoleId == userRoles && t.ActionId == actionId))
-                                db.Entry(new RoleAction()
+                            {
+                                var newUserRole = new RoleAction()
                                 {
                                     Id = Guid.NewGuid(),
                                     ActionId = actionId,
                                     RoleId = userRoles
-                                }).State = EntityState.Added;
+                                };
+                                newUserRole.FilledSignature();
+                                db.Entry(newUserRole).State = EntityState.Added;
+                            }
+                                
                             db.Entry(foundItem).State = EntityState.Deleted;
                             db.SaveChanges();
 
@@ -1864,12 +1942,17 @@ namespace Oje.AccountService.Services
             var foundUser = db.Users.Where(t => t.Id == loginUserId).FirstOrDefault();
             if (foundUser != null)
             {
+                if (!foundUser.IsSignature())
+                    throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
                 if (!string.IsNullOrEmpty(firstname) && (string.IsNullOrEmpty(foundUser.Firstname.Trim()) || foundUser.Firstname == " "))
                     foundUser.Firstname = firstname;
                 if (!string.IsNullOrEmpty(lastname) && (string.IsNullOrEmpty(foundUser.Lastname.Trim()) || foundUser.Lastname == " "))
                     foundUser.Lastname = lastname;
                 if (!string.IsNullOrEmpty(nationalCode) && nationalCode.IsCodeMeli() && string.IsNullOrEmpty(foundUser.Nationalcode))
                     foundUser.Nationalcode = nationalCode;
+
+                foundUser.FilledSignature();
 
                 db.SaveChanges();
             }

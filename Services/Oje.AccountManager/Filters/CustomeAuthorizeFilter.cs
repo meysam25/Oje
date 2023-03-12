@@ -118,7 +118,12 @@ namespace Oje.AccountService.Filters
                             fillUserCache(loginUser?.UserId ?? 0, UserService);
                             var foundUserAccess = UserAccessCaches.Where(t => t.UserId == loginUser.UserId).FirstOrDefault();
                             if (foundUserAccess != null)
-                                if (foundUserAccess.Actions.Any(t => t.Name == requestPath))
+                                if (
+                                        foundUserAccess.Actions.Any(t => 
+                                            t.Name == requestPath 
+                                            && t.IsSignature()
+                                            )
+                                   )
                                     isValidUserr = true;
                                 else
                                     noAccess = true;

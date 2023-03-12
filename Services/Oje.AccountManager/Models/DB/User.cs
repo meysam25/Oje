@@ -1,5 +1,6 @@
 ﻿using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.AccountService.Models.DB
 {
     [Table("Users")]
-    public class User : IEntityWithId<User, long>, EntityWithParent<User>, IEntityWithSiteSettingIdNullable
+    public class User : SignatureEntity,  IEntityWithId<User, long>, EntityWithParent<User>, IEntityWithSiteSettingIdNullable
     {
         public User()
         {
@@ -158,6 +159,9 @@ namespace Oje.AccountService.Models.DB
         public List<UserAdminLog> UserAdminLogs { get; set; }
         [InverseProperty("User")]
         public List<UserRequestAction> UserRequestActions { get; set; }
+
+        [NotMapped]
+        public string tempLastSession { get; set; }
 
     }
 }

@@ -261,13 +261,17 @@ namespace Oje.Section.RegisterForm.Services
         {
             if (userRegisterFormDiscountCodeId > 0 && userId > 0 && userFilledRegisterFormId > 0)
             {
-                db.Entry(new UserRegisterFormDiscountCodeUse()
+                var newItem = new UserRegisterFormDiscountCodeUse()
                 {
                     UserFilledRegisterFormId = userFilledRegisterFormId,
                     UserId = userId.Value,
                     CreateDate = DateTime.Now,
                     UserRegisterFormDiscountCodeId = userRegisterFormDiscountCodeId
-                }).State = EntityState.Added;
+                };
+                db.Entry(newItem).State = EntityState.Added;
+                db.SaveChanges();
+
+                newItem.FilledSignature();
                 db.SaveChanges();
             }
         }

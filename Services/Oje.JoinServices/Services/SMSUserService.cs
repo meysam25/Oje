@@ -58,7 +58,13 @@ namespace Oje.JoinServices.Services
 
             var foundUser = UserService.GetBy(input.username, siteSettingId.Value);
             if (foundUser == null || foundUser.IsActive == false || foundUser.IsDelete == true)
-                throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+                throw BException.GenerateNewException(BMessages.UnknownError, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (!foundUser.IsSignature())
+                throw BException.GenerateNewException(BMessages.UnknownError);
+            if (foundUser.UserRoles != null)
+                foreach (var role in foundUser.UserRoles)
+                    if (!role.IsSignature())
+                        throw BException.GenerateNewException(BMessages.UnknownError);
 
             if (string.IsNullOrEmpty(input.codeId))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
@@ -83,7 +89,7 @@ namespace Oje.JoinServices.Services
 
             UserService.UpdatePassword(foundUser, input.password);
             UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
-            UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
+            UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.tempLastSession);
 
             UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithChangePassword, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
 
@@ -129,6 +135,12 @@ namespace Oje.JoinServices.Services
 
             if (foundUser != null)
             {
+                if (!foundUser.IsSignature())
+                    throw BException.GenerateNewException(BMessages.UnknownError);
+                if (foundUser.UserRoles != null)
+                    foreach (var role in foundUser.UserRoles)
+                        if (!role.IsSignature())
+                            throw BException.GenerateNewException(BMessages.UnknownError);
                 if (foundUser != null && (foundUser.IsDelete == true || foundUser.IsActive == false))
                     throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser.Id);
 
@@ -166,8 +178,15 @@ namespace Oje.JoinServices.Services
 
             if (foundUser != null)
             {
+                if (!foundUser.IsSignature())
+                    throw BException.GenerateNewException(BMessages.UnknownError);
+                if (foundUser.UserRoles != null)
+                    foreach (var role in foundUser.UserRoles)
+                        if (!role.IsSignature())
+                            throw BException.GenerateNewException(BMessages.UnknownError);
+
                 UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
-                UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
+                UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.tempLastSession);
                 UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
             }
             else
@@ -194,7 +213,7 @@ namespace Oje.JoinServices.Services
                 if (foundUser == null)
                     throw BException.GenerateNewException(BMessages.UnknownError, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
                 UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
-                UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.LastSessionFileName);
+                UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.tempLastSession);
 
                 List<SmsTemplate> foundTemplate = null;
                 string smsMessage = "کاربر گرامی ثبت نام شما با موفقیت انجام گرفت کلمه عبور شما عبارت است از " + Environment.NewLine + password;
