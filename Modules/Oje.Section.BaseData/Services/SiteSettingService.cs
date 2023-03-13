@@ -75,6 +75,9 @@ namespace Oje.Section.BaseData.Services
                     if (foundTargetUser == null)
                         throw BException.GenerateNewException(BMessages.User_Not_Found, ApiResultErrorCode.ValidationError);
                     foundTargetUser.SiteSettingId = newItem.Id;
+
+                    newItem.FilledSignature();
+
                     db.SaveChanges();
 
                     tr.Commit();
@@ -124,6 +127,9 @@ namespace Oje.Section.BaseData.Services
             var foundItem = db.SiteSettings.Where(t => t.Id == id).FirstOrDefault();
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -213,6 +219,9 @@ namespace Oje.Section.BaseData.Services
             if (editItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found, ApiResultErrorCode.NotFound);
 
+            if (!editItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
             using (var tr = db.Database.BeginTransaction())
             {
                 try
@@ -245,7 +254,13 @@ namespace Oje.Section.BaseData.Services
                     var foundTargetUser = db.Users.Where(t => t.Id == input.userId).FirstOrDefault();
                     if (foundTargetUser == null)
                         throw BException.GenerateNewException(BMessages.User_Not_Found, ApiResultErrorCode.ValidationError);
+                    if (!foundTargetUser.IsSignature())
+                        throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
                     foundTargetUser.SiteSettingId = editItem.Id;
+                    foundTargetUser.UpdateSignature();
+                    editItem.FilledSignature();
+
                     db.SaveChanges();
 
                     tr.Commit();

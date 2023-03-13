@@ -61,6 +61,8 @@ namespace Oje.PaymentService.Services
             var foundAccount = BankAccountSadadService.GetBy(foundFactor.BankAccountId, siteSettingId);
             if (foundAccount == null)
                 throw BException.GenerateNewException(BMessages.Account_Can_Not_Be_Founded);
+            if (!foundAccount.IsSignature())
+                throw BException.GenerateNewException(BMessages.UnknownError);
             var foundLoginUser = UserService.GetBy(loginUserId, siteSettingId);
 
             var tempFactorId = foundFactor.KeyHash;

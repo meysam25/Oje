@@ -26,7 +26,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             this.TenderFilledFormService = TenderFilledFormService;
         }
 
-        [AreaConfig(Title = "مناقصات", Icon = "fa-check-circle", IsMainMenuItem = true)]
+        [AreaConfig(Title = "مناقصات", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

@@ -10,14 +10,31 @@ namespace Oje.Infrastructure.Services
 {
     public abstract class SignatureEntity : ISignatureEntity
     {
-        public string Signature { get; set; }
-        static string equalValue = "%*~#@=$#*)*";
-        static string seperatorValue = "(#~#@,$#*(!";
-        
+        public byte[] Signature { get; set; }
+        static string equalValue = "%*‎#*";
+        static string seperatorValue = "(#‎*(";
+
 
         public void FilledSignature()
         {
             Signature = ConvertToString(GetCurrentValues()).EncryptSignature();
+        }
+
+        public void UpdateSignature()
+        {
+            var curObj = GetCurrentValues();
+            var prevObj = GetCurrentValuesFromSignature();
+
+            foreach (var v in curObj)
+            {
+                var foundInPrevValue = prevObj.Where(t => t.key == v.key).FirstOrDefault();
+                if (foundInPrevValue != null)
+                    foundInPrevValue.value = v.value;
+                else
+                    prevObj.Add(v);
+            }
+
+            Signature = ConvertToString(prevObj).EncryptSignature();
         }
 
         public bool IsSignature()
@@ -25,7 +42,9 @@ namespace Oje.Infrastructure.Services
             var curObj = GetCurrentValues();
             var prevObj = GetCurrentValuesFromSignature();
 
-            return prevObj.Count(t => curObj.Any(tt => tt.key == t.key && tt.value == t.value)) == prevObj.Count;
+            //return prevObj.Count(t => curObj.Any(tt => tt.key == t.key && tt.value == t.value)) == prevObj.Count;
+
+            return curObj.Count(t => prevObj.Any(tt => tt.key == t.key && tt.value == t.value)) == curObj.Count;
         }
 
         public string GetSignatureChanges()
@@ -34,9 +53,9 @@ namespace Oje.Infrastructure.Services
             var curObj = GetCurrentValues();
             var prevObj = GetCurrentValuesFromSignature();
 
-            foreach(var item in prevObj)
+            foreach (var item in curObj)
             {
-                var foundItem = curObj.Where(t => t.key == item.key).FirstOrDefault();
+                var foundItem = prevObj.Where(t => t.key == item.key).FirstOrDefault();
                 if (foundItem != null)
                 {
                     if (foundItem.value != item.value)
@@ -56,7 +75,7 @@ namespace Oje.Infrastructure.Services
             foreach (var prop in allProps)
             {
                 var hasNotMapped = prop.GetCustomAttributes<NotMappedAttribute>(false).FirstOrDefault();
-                if (hasNotMapped == null) 
+                if (hasNotMapped == null)
                 {
                     var propType = prop.PropertyType;
                     string propName = prop.Name;
@@ -82,7 +101,7 @@ namespace Oje.Infrastructure.Services
         {
             List<KeyValue> result = new List<KeyValue>();
 
-            if (!string.IsNullOrEmpty(Signature))
+            if (Signature != null && Signature.Length > 0)
             {
                 string decriptValue = "";
                 try { decriptValue = Signature.DecryptSignature(); } catch { }
@@ -101,7 +120,7 @@ namespace Oje.Infrastructure.Services
 
                 }
             }
-            else 
+            else
                 result.Add(new KeyValue() { key = "entity", value = "no signature" });
 
             return result;
@@ -121,6 +140,7 @@ namespace Oje.Infrastructure.Services
 
             return result;
         }
+
 
     }
 }

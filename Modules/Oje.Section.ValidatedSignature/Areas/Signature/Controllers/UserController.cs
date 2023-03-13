@@ -26,7 +26,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             this.UserService = UserService;
         }
 
-        [AreaConfig(Title = "کاربر", Icon = "fa-check-circle", IsMainMenuItem = true)]
+        [AreaConfig(Title = "کاربر", Icon = "fa-users", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

@@ -95,7 +95,14 @@ namespace Oje.AccountService.Services
             }
             string host = httpContextAccessor.HttpContext?.Request?.Host.Host;
             if (!string.IsNullOrEmpty(host))
-                return SS.Where(t => t.WebsiteUrl == host || t.PanelUrl == host).FirstOrDefault();
+            {
+                var foundItem = SS.Where(t => t.WebsiteUrl == host || t.PanelUrl == host).FirstOrDefault();
+                if (!foundItem.IsSignature())
+                    return null;
+
+
+                return foundItem;
+            }
             return null;
         }
 

@@ -70,13 +70,13 @@ namespace Oje.Section.Payment.Areas.Payment.Controllers
                 switch (foundType)
                 {
                     case BankAccountType.sizpay:
-                        return RedirectToAction("Pay", "Sizpay", new { area = "Payment", factorId = factorId });
+                        return RedirectToAction("Pay", "Sizpay", new { area = "Payment", factorId });
                     case BankAccountType.titec:
-                        return RedirectToAction("Pay", "TITec", new { area = "Payment", factorId = factorId });
+                        return RedirectToAction("Pay", "TITec", new { area = "Payment", factorId });
                     case BankAccountType.sadad:
-                        return RedirectToAction("Pay", "Sadad", new { area = "Payment", factorId = factorId });
+                        return RedirectToAction("Pay", "Sadad", new { area = "Payment", factorId });
                     case BankAccountType.Sep:
-                        return RedirectToAction("Pay", "Sep", new { area = "Payment", factorId = factorId });
+                        return RedirectToAction("Pay", "Sep", new { area = "Payment", factorId });
                     case BankAccountType.unknown:
                     default:
                         break;

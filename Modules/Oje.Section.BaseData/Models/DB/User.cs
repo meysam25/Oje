@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Oje.Infrastructure.Services;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.Section.BaseData.Models.DB
 {
     [Table("Users")]
-    public class User
+    public class User: SignatureEntity
     {
         public User()
         {

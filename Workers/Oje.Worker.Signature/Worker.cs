@@ -24,6 +24,8 @@ namespace Oje.Worker.Signature
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
+            //try
+            //{
             //ProposalFilledForm
             sdList.Add(new TableListener<ProposalFilledFormKey>(db, ErrorService).Start());
             sdList.Add(new TableListener<ProposalFilledForm>(db, ErrorService).Start());
@@ -65,9 +67,28 @@ namespace Oje.Worker.Signature
             sdList.Add(new TableListener<RoleAction>(db, ErrorService).Start());
             sdList.Add(new TableListener<SmsValidationHistory>(db, ErrorService).Start());
 
+            //Financial
+            sdList.Add(new TableListener<BankAccount>(db, ErrorService).Start());
+            sdList.Add(new TableListener<BankAccountSizpay>(db, ErrorService).Start());
+            sdList.Add(new TableListener<BankAccountSadad>(db, ErrorService).Start());
+            sdList.Add(new TableListener<BankAccountSep>(db, ErrorService).Start());
+            sdList.Add(new TableListener<BankAccountFactor>(db, ErrorService).Start());
             sdList.Add(new TableListener<WalletTransaction>(db, ErrorService).Start());
 
+
             sdList.Add(new TableListener<UploadedFile>(db, ErrorService).Start());
+            //}
+            //catch ( Exception ex )
+            //{
+            //    string errorMessage = ex.Message + Environment.NewLine;
+            //    if (ex.InnerException != null)
+            //        errorMessage += ex.InnerException.Message + Environment.NewLine;
+            //    if (ex?.InnerException?.InnerException != null)
+            //        errorMessage += ex?.InnerException?.InnerException?.Message + Environment.NewLine;
+
+            //    File.WriteAllText(@"C:\Publish\tempErr.txt", errorMessage);
+            //}
+
 
 
             return base.StartAsync(cancellationToken);
@@ -94,6 +115,7 @@ namespace Oje.Worker.Signature
                 }
                 await Task.Delay(3000, stoppingToken);
             }
+
         }
 
     }

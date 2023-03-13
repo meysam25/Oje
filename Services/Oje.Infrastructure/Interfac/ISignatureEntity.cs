@@ -2,8 +2,9 @@
 {
     public interface ISignatureEntity
     {
-        string Signature { get; set; }
+        byte[] Signature { get; set; }
         void FilledSignature();
+        void UpdateSignature();
         bool IsSignature();
         string GetSignatureChanges();
     }

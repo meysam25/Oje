@@ -104,6 +104,8 @@ namespace Oje.PaymentService.Services
             var foundAccount = BankAccountSepService.GetBy(foundFactor.BankAccountId, siteSettingId);
             if (foundAccount == null)
                 throw BException.GenerateNewException(BMessages.Account_Can_Not_Be_Founded);
+            if (!foundAccount.IsSignature())
+                throw BException.GenerateNewException(BMessages.UnknownError);
             var foundLoginUser = UserService.GetBy(loginUserId, siteSettingId);
 
             using (var stringContent = new StringContent(JsonConvert.SerializeObject(new
@@ -111,7 +113,7 @@ namespace Oje.PaymentService.Services
                 action = "token",
                 ResNum = factorId,
                 RedirectUrl = HttpContextAccessor.HttpContext.Request.Scheme + "://" + HttpContextAccessor.HttpContext.Request.Host + "/Payment/Sep/Confirm",
-                TerminalId = foundAccount.TerminalId,
+                foundAccount.TerminalId,
                 Amount = foundFactor.Price,
                 CellNumber = !string.IsNullOrEmpty(foundLoginUser.Username) && foundLoginUser.Username.StartsWith("0") ? foundLoginUser.Username.Substring(0, foundLoginUser.Username.Length - 1) : foundLoginUser.Username,
             }, Formatting.Indented), Encoding.UTF8, "application/json"))

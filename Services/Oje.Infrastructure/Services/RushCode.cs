@@ -162,14 +162,58 @@ namespace Oje.Infrastructure.Services
         private static byte[] SignatureVector = {
            142, 122, 164, 10, 1, 2, 191, 36, 82, 7, 171, 9, 14, 63, 25, 16
         };
-        public static string EncryptSignature(this string input)
+        public static byte[] EncryptSignature(this string input)
         {
-            return Convert.ToBase64String((new C_EDSecure(SignatureKey, SignatureVector)).Encrypt(input));
+            return (new C_EDSecure(SignatureKey, SignatureVector)).Encrypt(input);
         }
 
-        public static string DecryptSignature(this string input)
+        public static string DecryptSignature(this byte[] input)
         {
-            return (new C_EDSecure(SignatureKey, SignatureVector)).Decrypt(Convert.FromBase64String(input));
+            return (new C_EDSecure(SignatureKey, SignatureVector)).Decrypt(input);
+        }
+
+        public static byte[] CompressBytes(this byte[] input)
+        {
+            try
+            {
+                using (MemoryStream compressedFileStream = new MemoryStream(input))
+                {
+                    using (GZipStream compressionStream = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                    {
+                        using(MemoryStream outPut = new MemoryStream())
+                        {
+                            compressionStream.CopyTo(outPut);
+                            return outPut.ToArray();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static byte[] DeCompressBytes(this byte[] input)
+        {
+            try
+            {
+                using (MemoryStream compressedFileStream = new MemoryStream(input))
+                {
+                    using (GZipStream compressionStream = new GZipStream(compressedFileStream, CompressionMode.Decompress))
+                    {
+                        using (MemoryStream outPut = new MemoryStream())
+                        {
+                            compressionStream.CopyTo(outPut);
+                            return outPut.ToArray();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static bool IsValidEmail(this string email)

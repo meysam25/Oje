@@ -1,4 +1,5 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Oje.Section.BaseData.Models.DB
 {
     [Table("SiteSettings")]
-    public class SiteSetting
+    public class SiteSetting: SignatureEntity
     {
         public SiteSetting()
         {

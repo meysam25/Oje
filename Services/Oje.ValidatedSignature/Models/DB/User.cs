@@ -18,6 +18,7 @@ namespace Oje.ValidatedSignature.Models.DB
             TenderFilledForms = new();
             UserFilledRegisterForms = new();
             WalletTransactions = new();
+            BankAccounts = new();
         }
 
         [Key]
@@ -123,6 +124,10 @@ namespace Oje.ValidatedSignature.Models.DB
         public List<UserFilledRegisterForm> UserFilledRegisterForms { get; set; }
         [InverseProperty("User")]
         public List<WalletTransaction> WalletTransactions { get; set; }
+        [InverseProperty("User")]
+        public List<BankAccount> BankAccounts { get; set; }
+        [InverseProperty("User")]
+        public List<BankAccountFactor> BankAccountFactors { get; set; }
 
     }
 }

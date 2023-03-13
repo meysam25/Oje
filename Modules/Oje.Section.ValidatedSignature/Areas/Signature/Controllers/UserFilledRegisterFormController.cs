@@ -26,7 +26,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             this.UserFilledRegisterFormService = UserFilledRegisterFormService;
         }
 
-        [AreaConfig(Title = "کاربران ثبت نام کرده", Icon = "fa-check-circle", IsMainMenuItem = true)]
+        [AreaConfig(Title = "کاربران ثبت نام کرده", Icon = "fa-users", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

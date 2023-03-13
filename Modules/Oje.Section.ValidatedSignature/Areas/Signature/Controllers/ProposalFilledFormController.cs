@@ -26,7 +26,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             this.ProposalFilledFormService = ProposalFilledFormService;
         }
 
-        [AreaConfig(Title = "فرم پیشنهاد", Icon = "fa-check-circle", IsMainMenuItem = true)]
+        [AreaConfig(Title = "فرم پیشنهاد", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

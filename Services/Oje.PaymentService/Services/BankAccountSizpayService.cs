@@ -35,8 +35,7 @@ namespace Oje.PaymentService.Services
             if (db.BankAccountSizpaies.Any(t => t.BankAccountId == input.bcId && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Item);
 
-
-            db.Entry(new BankAccountSizpay()
+            var newItem = new BankAccountSizpay()
             {
                 BankAccountId = input.bcId.ToIntReturnZiro(),
                 FirstKey = input.fistKey,
@@ -45,7 +44,11 @@ namespace Oje.PaymentService.Services
                 SignKey = input.sKey,
                 SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 TerminalId = input.terminalId.ToIntReturnZiro()
-            }).State = EntityState.Added;
+            };
+            db.Entry(newItem).State = EntityState.Added;
+            db.SaveChanges();
+
+            newItem.FilledSignature();
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -82,6 +85,9 @@ namespace Oje.PaymentService.Services
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -172,6 +178,9 @@ namespace Oje.PaymentService.Services
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             if (!string.IsNullOrEmpty(input.fistKey))
                 foundItem.FirstKey = input.fistKey;

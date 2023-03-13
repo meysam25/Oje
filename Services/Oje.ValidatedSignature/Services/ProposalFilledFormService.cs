@@ -171,7 +171,7 @@ namespace Oje.ValidatedSignature.Services
 
         public GridResultVM<ProposalFilledFormMainGridResultVM> GetList(ProposalFilledFormMainGrid searchInput)
         {
-            searchInput = searchInput ?? new ProposalFilledFormMainGrid();
+            searchInput = searchInput ?? new ();
 
             var quiryResult = db.ProposalFilledForms
                 .Include(t => t.GlobalInquery).ThenInclude(t => t.GlobalInquiryItems)

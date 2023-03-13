@@ -78,6 +78,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            "asdfasd".Encrypt();
             var curSetting = SiteSettingService.GetSiteSetting();
             if (curSetting == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);

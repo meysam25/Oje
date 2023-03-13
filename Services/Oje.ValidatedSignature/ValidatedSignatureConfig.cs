@@ -22,6 +22,9 @@ namespace Oje.ValidatedSignature
             services.AddScoped<IUpdateAllSignatures, UpdateAllSignatures>();
             services.AddScoped<ISmsValidationHistoryService, SmsValidationHistoryService>();
             services.AddScoped<IWalletTransactionService, WalletTransactionService>();
+            services.AddScoped<IBankAccountService, BankAccountService>();
+            services.AddScoped<IBankAccountFactorService, BankAccountFactorService>();
+            services.AddScoped<ISiteSettingService, SiteSettingService>();
         }
 
         public static void ConfigForWorker(IServiceCollection services)

@@ -17,6 +17,8 @@ namespace Oje.ValidatedSignature.Services
 
         public void Update()
         {
+            new UpdateEntitySignature<GlobalInquery>(db).Update();
+            new UpdateEntitySignature<GlobalInquiryItem>(db).Update();
             new UpdateEntitySignature<Models.DB.Action>(db).Update();
             new UpdateEntitySignature<User>(db).Update();
             new UpdateEntitySignature<UserRole>(db).Update();
@@ -52,6 +54,12 @@ namespace Oje.ValidatedSignature.Services
             new UpdateEntitySignature<UserRegisterFormDiscountCodeUse>(db).Update();
             new UpdateEntitySignature<UserRegisterFormPrice>(db).Update();
             new UpdateEntitySignature<WalletTransaction>(db).Update();
+            new UpdateEntitySignature<BankAccount>(db).Update();
+            new UpdateEntitySignature<BankAccountSizpay>(db).Update();
+            new UpdateEntitySignature<BankAccountSadad>(db).Update();
+            new UpdateEntitySignature<BankAccountSep>(db).Update();
+            new UpdateEntitySignature<BankAccountFactor>(db).Update();
+            new UpdateEntitySignature<SiteSetting>(db).Update();
         }
     }
 }

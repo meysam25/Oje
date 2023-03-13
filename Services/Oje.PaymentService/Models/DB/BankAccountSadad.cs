@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.PaymentService.Models.DB
 {
     [Table("BankAccountSadads")]
-    public class BankAccountSadad: IEntityWithSiteSettingId
+    public class BankAccountSadad: SignatureEntity, IEntityWithSiteSettingId
     {
         [Key]
         public int Id { get; set; }

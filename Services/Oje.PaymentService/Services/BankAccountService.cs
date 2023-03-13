@@ -31,7 +31,7 @@ namespace Oje.PaymentService.Services
             bool? canSetSiteSetting = HttpContextAccessor.HttpContext?.GetLoginUser()?.canSeeOtherWebsites;
             createUpdateValidation(input, siteSettingId, canSetSiteSetting);
 
-            db.Entry(new BankAccount()
+            var newItem = new BankAccount()
             {
                 BankId = input.bankId.ToIntReturnZiro(),
                 CardNo = input.cardNo.ToLongReturnZiro(),
@@ -42,7 +42,11 @@ namespace Oje.PaymentService.Services
                 SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 Title = input.title,
                 UserId = input.userId
-            }).State = EntityState.Added;
+            };
+            db.Entry(newItem).State = EntityState.Added;
+            db.SaveChanges();
+
+            newItem.FilledSignature();
             db.SaveChanges();
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
@@ -83,6 +87,9 @@ namespace Oje.PaymentService.Services
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Deleted);
 
             db.Entry(foundItem).State = EntityState.Deleted;
             db.SaveChanges();
@@ -181,6 +188,9 @@ namespace Oje.PaymentService.Services
 
             if (foundItem == null)
                 throw BException.GenerateNewException(BMessages.Not_Found);
+
+            if (!foundItem.IsSignature())
+                throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
 
             foundItem.BankId = input.bankId.ToIntReturnZiro();
             foundItem.CardNo = input.cardNo.ToLongReturnZiro();

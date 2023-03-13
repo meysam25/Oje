@@ -170,7 +170,7 @@ namespace Oje.Section.Core.Areas.Controllers
                 var pFile = Request.Form.Files[0];
                 if (pFile != null && pFile.Length > 0)
                 {
-                    var tempResult = UploadedFileService.UploadNewFile(FileType.CKEditor, pFile, null, null, null, ".png,.jpg,.jpeg", false);
+                    var tempResult = UploadedFileService.UploadNewFile(FileType.CKEditor, pFile, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, null, ".png,.jpg,.jpeg", false);
                     result = new { fileName = pFile.FileName, uploaded = 1, url = GlobalConfig.FileAccessHandlerUrl + tempResult };
                 }
             }

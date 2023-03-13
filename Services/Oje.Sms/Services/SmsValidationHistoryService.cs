@@ -204,6 +204,7 @@ namespace Oje.Sms.Services
                     return false;
 
                 foundItem.IsUsed = true;
+                foundItem.FilledSignature();
                 db.SaveChanges();
 
                 return foundItem.IsUsed.Value;
@@ -237,6 +238,7 @@ namespace Oje.Sms.Services
                 {
                     result = true;
                     foundItem.IsUsed = true;
+                    foundItem.FilledSignature();
                     db.SaveChanges();
                 }
                 else
@@ -244,6 +246,7 @@ namespace Oje.Sms.Services
                     if (foundItem.InvalidCount == null)
                         foundItem.InvalidCount = 0;
                     foundItem.InvalidCount++;
+                    foundItem.FilledSignature();
                     db.SaveChanges();
                 }
             }
@@ -273,6 +276,7 @@ namespace Oje.Sms.Services
                     result = foundItem.Ip1 + "." + foundItem.Ip2 + "." + foundItem.Ip3 + "." + foundItem.Ip4 + "," + foundItem.CreateDate.Ticks + "," + ((int)foundItem.Type);
                     result = result.Encrypt2();
                     foundItem.PreUsed = true;
+                    foundItem.FilledSignature();
                     db.SaveChanges();
                 }
                 else
@@ -280,6 +284,7 @@ namespace Oje.Sms.Services
                     if (foundItem.InvalidCount == null)
                         foundItem.InvalidCount = 0;
                     foundItem.InvalidCount++;
+                    foundItem.FilledSignature();
                     db.SaveChanges();
                 }
             }

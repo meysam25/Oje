@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Enums;
+using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.PaymentService.Models.DB
 {
     [Table("BankAccountFactors")]
-    public class BankAccountFactor
+    public class BankAccountFactor: SignatureEntity
     {
         public int BankAccountId { get; set; }
         [ForeignKey("BankAccountId"), InverseProperty("BankAccountFactors")]

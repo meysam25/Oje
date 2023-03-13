@@ -1,11 +1,12 @@
 ﻿using Oje.Infrastructure.Interfac;
+using Oje.Infrastructure.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oje.PaymentService.Models.DB
 {
     [Table("BankAccountSizpaies")]
-    public class BankAccountSizpay: IEntityWithSiteSettingId
+    public class BankAccountSizpay: SignatureEntity, IEntityWithSiteSettingId
     {
         [Key]
         public int BankAccountId { get; set; }

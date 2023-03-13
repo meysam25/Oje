@@ -1,0 +1,135 @@
+﻿{
+  "panels": [
+    {
+      "grids": [
+        {
+          "id": "BankAccountMainGrid",
+          "exportToExcelUrl": "/Signature/BankAccount/Export",
+          "showColumnConfigButton": true,
+          "actions": {
+            "cActions": [
+              {
+                "type": "edit",
+                "icon": "fa-pen",
+                "prop": "id",
+                "modalId": "BankAccountEditGridModal",
+                "url": "/Signature/BankAccount/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal(\\''+ curRow.id +'\\', \\'/Signature/BankAccount/GetById\\', \\'BankAccountEditGridModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+              }
+            ]
+          },
+          "key": "id",
+          "url": "/Signature/BankAccount/GetList",
+          "itemPerPage": 10,
+          "schema": {
+            "data": "data",
+            "total": "total"
+          },
+          "columns": [
+            {
+              "field": "row",
+              "caption": "ردیف",
+              "width": "50px",
+              "textAlign": "center"
+            },
+            {
+              "field": "id",
+              "sort": true,
+              "caption": "شناسه",
+              "width": "100px",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "title",
+              "sort": true,
+              "caption": "عنوان",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "cardno",
+              "sort": true,
+              "caption": "شماره کارت",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "shabaNo",
+              "sort": true,
+              "caption": "شبا",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "hesabNo",
+              "sort": true,
+              "caption": "شماره حساب",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "user",
+              "sort": true,
+              "caption": "کاربر",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isActive",
+              "sort": true,
+              "caption": "وضعیت",
+              "search": {
+                "searchType": "dropdown",
+                "url": "/Core/BaseData/Get/IsActive",
+                "textField": "title",
+                "valueField": "id"
+              }
+            },
+            {
+              "field": "website",
+              "sort": true,
+              "caption": "وب سایت",
+              "search": {
+                "searchType": "text"
+              }
+            },
+            {
+              "field": "isValid",
+              "caption": "مجاز"
+            }
+          ]
+        }
+      ],
+      "moduals": [
+        {
+          "class": "modal-xl",
+          "id": "BankAccountEditGridModal",
+          "title": "مشاهده",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "متن خطا",
+              "ltr": true
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

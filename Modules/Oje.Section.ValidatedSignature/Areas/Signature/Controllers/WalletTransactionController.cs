@@ -23,7 +23,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             this.WalletTransactionService = WalletTransactionService;
         }
 
-        [AreaConfig(Title = "کیف پول کاربر", Icon = "fa-check-circle", IsMainMenuItem = true)]
+        [AreaConfig(Title = "کیف پول کاربر", Icon = "fa-wallet", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {

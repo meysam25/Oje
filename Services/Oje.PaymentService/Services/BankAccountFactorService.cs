@@ -65,6 +65,7 @@ namespace Oje.PaymentService.Services
                     BankAccountType = BankAccountDetectorService.GetByType(bankAccountId.ToIntReturnZiro(), siteSettingId),
                     KeyHash = newHashCode
                 };
+                newItem.FilledSignature();
                 db.Entry(newItem).State = EntityState.Added;
                 db.SaveChanges();
 
@@ -183,6 +184,8 @@ namespace Oje.PaymentService.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (string.IsNullOrEmpty(traceNo))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!foundAccount.IsSignature())
+                throw BException.GenerateNewException(BMessages.UnknownError);
 
             var foundItem = db.BankAccountFactors.Where(t => t.BankAccountId == foundAccount.BankAccountId && t.Type == foundAccount.Type && t.ObjectId == foundAccount.ObjectId && t.CreateDate == foundAccount.CreateDate).FirstOrDefault();
             if (foundItem == null)

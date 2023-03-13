@@ -45,10 +45,6 @@ namespace Oje.ValidatedSignature.Services.EContext
         public DbSet<UserRegisterFormPrice> UserRegisterFormPrices { get; set; }
 
 
-        public DbSet<UploadedFile> UploadedFiles { get; set; }
-        public DbSet<WalletTransaction> WalletTransactions { get; set; }
-
-
         public DbSet<Models.DB.Action> Actions { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
@@ -57,21 +53,29 @@ namespace Oje.ValidatedSignature.Services.EContext
         public DbSet<SmsValidationHistory> SmsValidationHistories { get; set; }
 
 
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
+        public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<BankAccountSizpay> BankAccountSizpaies { get; set; }
+        public DbSet<BankAccountSadad> BankAccountSadads { get; set; }
+        public DbSet<BankAccountSep> BankAccountSeps { get; set; }
+        public DbSet<BankAccountFactor> BankAccountFactors { get; set; }
+
+
+        public DbSet<UploadedFile> UploadedFiles { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProposalFilledFormCompany>().HasKey(t => new { t.CompanyId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormSiteSetting>().HasKey(t => new { t.SiteSettingId, t.ProposalFilledFormId });
             modelBuilder.Entity<ProposalFilledFormUser>().HasKey(t => new { t.ProposalFilledFormId, t.UserId, t.Type });
-
             modelBuilder.Entity<TenderFilledFormPF>().HasKey(t => new { t.TenderProposalFormJsonConfigId, t.TenderFilledFormId });
             modelBuilder.Entity<TenderFilledFormValidCompany>().HasKey(t => new { t.CompanyId, t.TenderFilledFormId });
-
             modelBuilder.Entity<UserFilledRegisterFormCompany>().HasKey(t => new { t.CompanyId, t.UserFilledRegisterFormId });
-
             modelBuilder.Entity<User>().Property(e => e.MapLat).HasPrecision(18, 15);
             modelBuilder.Entity<User>().Property(e => e.MapLon).HasPrecision(18, 15);
             modelBuilder.Entity<SmsValidationHistory>().HasKey(t => new { t.Ip1, t.Ip2, t.Ip3, t.Ip4, t.CreateDate, t.Type });
+            modelBuilder.Entity<BankAccountFactor>().HasKey(t => new { t.BankAccountId, t.Type, t.ObjectId, t.CreateDate });
 
 
             base.OnModelCreating(modelBuilder);
