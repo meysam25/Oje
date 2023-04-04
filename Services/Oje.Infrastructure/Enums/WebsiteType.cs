@@ -7,6 +7,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "عادی")]
         Normal = 1,
         [Display(Name = "مناقصه")]
-        Tender = 2
+        Tender = 2,
+        [Display(Name = "درمان")]
+        Treatment = 3
     }
 }

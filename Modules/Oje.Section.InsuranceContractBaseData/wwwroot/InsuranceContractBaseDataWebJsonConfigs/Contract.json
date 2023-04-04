@@ -10,15 +10,16 @@
           "steps": [
             {
               "order": 1,
-              "id": "provinceAndCity",
+              "id": "contractUserStep",
               "title": "لطفا اطلاعات زیر را وارد کنید",
+              "submitUrl": "/Contract/IsValid",
               "hideMoveNextButton": true,
               "panels": [
                 {
                   "ctrls": [
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "mobile",
+                      "name": "username",
                       "type": "text",
                       "label": "شماره همراه(نام کاربری)",
                       "isRequired": true,
@@ -47,29 +48,60 @@
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "birthDate",
-                      "type": "persianDateTime",
-                      "label": "تاریخ تولد",
-                      "isRequired": true,
-                      "nationalCodeValidation": true
+                      "type": "button",
+                      "class": "btn-block btn-primary",
+                      "onClick": "submitThisStep(this)",
+                      "title": "برسی"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "order": 2,
+              "id": "contractConfirmSMS",
+              "title": "کد پیامکی را وارد کنید",
+              "submitUrl": "/Contract/IsValidSMS",
+              "moveBackToStep": "contractUserStep",
+              "panels": [
+                {
+                  "ctrls": [
+                    {
+                      "name": "username",
+                      "type": "hidden"
+                    },
+                    {
+                      "name": "nationalCode",
+                      "type": "hidden"
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
-                      "name": "contractCode",
+                      "name": "code",
                       "type": "text",
-                      "label": "کد تفاهم نامه",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-8 col-sm-6 col-xs-12 col-lg-9",
-                      "type": "empty"
+                      "label": "کد",
+                      "isRequired": true,
+                      "validations": [
+                        {
+                          "reg": "^[0-9]*$",
+                          "msg": "لطفا فقط عدد وارد کنید"
+                        }
+                      ]
                     },
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "type": "button",
-                      "class": "btn-block btn-primary",
-                      "onClick": "openNewLink('ContractSearchPanel', '/Contract/Create', '/Contract/IsValid', true)",
-                      "title": "برسی"
+                      "onClick": "submitThisStep(this)",
+                      "title": "برسی",
+                      "class": "btn-primary btn-block"
+                    },
+                    {
+                      "id": "tryAginButtonCDForContract",
+                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                      "type": "countDownButton",
+                      "startNumber": 120,
+                      "countDownText": "ارسال مجدد کد تا {ph} ثانیه دیگر",
+                      "finishedCountDownText": "ارسال مجدد",
+                      "onClick": "submitThisStep(this, '/Contract/IsValid')"
                     }
                   ]
                 }

@@ -25,6 +25,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "شماره پرداخت کارت به کارت")]
         UserFilledRegisterFormTargetBankCardNo = 10,
         [Display(Name = "افتخارات ما مناقصه")]
-        OurPrideMainPageForTender = 11
+        OurPrideMainPageForTender = 11,
+        [Display(Name = "توضیحات صفحه اصلی درمان")]
+        TreatmentIndexPageDescription = 12
     }
 }

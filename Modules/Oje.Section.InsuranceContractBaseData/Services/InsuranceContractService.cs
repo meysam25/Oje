@@ -15,6 +15,9 @@ using System.Linq;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using Oje.FileService.Interfaces;
 using Microsoft.AspNetCore.Http;
+using ISmsSendingQueueService = Oje.Sms.Interfaces.ISmsSendingQueueService;
+using ISmsValidationHistoryService = Oje.Sms.Interfaces.ISmsValidationHistoryService;
+using Oje.Security.Interfaces;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
@@ -29,6 +32,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractProposalFormService InsuranceContractProposalFormService = null;
         readonly Interfaces.IProposalFormService ProposalFormService = null;
         readonly IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService = null;
+        readonly ISmsSendingQueueService SmsSendingQueueService = null;
+        readonly ISmsValidationHistoryService SmsValidationHistoryService = null;
+        readonly IUserLoginLogoutLogService UserLoginLogoutLogService = null;
+        readonly AccountService.Interfaces.IRoleService RoleService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
         static string accpetFileExtension = ".pdf,.doc,.docx,.xlsx";
 
@@ -43,7 +50,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IInsuranceContractProposalFormService InsuranceContractProposalFormService,
                 Interfaces.IProposalFormService ProposalFormService,
                 IInsuranceContractTypeRequiredDocumentService InsuranceContractTypeRequiredDocumentService,
-                IHttpContextAccessor HttpContextAccessor
+                ISmsValidationHistoryService SmsValidationHistoryService,
+                IHttpContextAccessor HttpContextAccessor,
+                ISmsSendingQueueService SmsSendingQueueService,
+                IUserLoginLogoutLogService UserLoginLogoutLogService,
+                AccountService.Interfaces.IRoleService RoleService
             )
         {
             this.db = db;
@@ -56,6 +67,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.ProposalFormService = ProposalFormService;
             this.InsuranceContractTypeRequiredDocumentService = InsuranceContractTypeRequiredDocumentService;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.SmsSendingQueueService = SmsSendingQueueService;
+            this.SmsValidationHistoryService = SmsValidationHistoryService;
+            this.UserLoginLogoutLogService = UserLoginLogoutLogService;
+            this.RoleService = RoleService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractVM input)
@@ -380,11 +395,20 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             return result;
         }
 
-        public ApiResult IsValid(contractUserInput input, int? siteSettingId)
+        public ApiResult IsValid(contractUserInput input, int? siteSettingId, IpSections curIp)
         {
             isValidValidation(input, siteSettingId);
 
-            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+            if (curIp != null)
+                SmsSendingQueueService.LoginWithSMS(new Sms.Models.View.RegLogSMSVM() { username = input.username }, curIp, siteSettingId, SmsValidationHistoryType.LoginWithSmsForContract);
+
+            return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode, new
+            {
+                data = new { input.username, input.nationalCode },
+                labels = new List<object>() { new { inputName = "code", labelText = "کد  به شماره  " + input.username + " ارسال گردید" } },
+                stepId = "contractConfirmSMS",
+                countDownId = "tryAginButtonCDForContract"
+            });
         }
 
         private void isValidValidation(contractUserInput input, int? siteSettingId)
@@ -393,24 +417,16 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
             if (input == null)
                 throw BException.GenerateNewException(BMessages.Please_Fill_All_Parameters);
-            if (string.IsNullOrEmpty(input.mobile))
+            if (string.IsNullOrEmpty(input.username))
                 throw BException.GenerateNewException(BMessages.Please_Enter_Mobile);
-            if (!input.mobile.IsMobile())
+            if (!input.username.IsMobile())
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
             if (string.IsNullOrEmpty(input.nationalCode))
                 throw BException.GenerateNewException(BMessages.Please_Enter_NationalCode);
             if (!input.nationalCode.IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.Invalid_NationaCode);
-            if (input.contractCode.ToLongReturnZiro() <= 0)
-                throw BException.GenerateNewException(BMessages.Please_Enter_Contract_Code);
-            if (string.IsNullOrEmpty(input.birthDate))
-                throw BException.GenerateNewException(BMessages.Please_Enter_BirthDate);
-            if (input.birthDate.ToEnDate() == null)
-                throw BException.GenerateNewException(BMessages.Invalid_Date);
-            var birthDateEn = input.birthDate.ToEnDate();
-            if (!db.InsuranceContracts.Any(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
-                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
-                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode)))
+            if (!db.InsuranceContracts.Any(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
+                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.IsActive == true && tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode)))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
         }
@@ -418,36 +434,54 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public string GetFormJsonConfig(contractUserInput input, int? siteSettingId)
         {
             isValidValidation(input, siteSettingId);
-            var birthDateEn = input.birthDate.ToEnDate();
 
-            return db.InsuranceContracts.Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
-                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
-                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode)).Select(t => t.InsuranceContractProposalForm.JsonConfig).FirstOrDefault();
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError,  0);
+
+            return db.InsuranceContracts
+                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.SiteSettingId == siteSettingId
+                    && t.InsuranceContractUsers
+                            .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.IsActive == true && tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode))
+                .Select(t => t.InsuranceContractProposalForm.JsonConfig)
+                .FirstOrDefault();
         }
 
-        public InsuranceContract GetByCode(long? code, int? siteSettingId)
+        public InsuranceContract GetByCode(contractUserInput input, int? siteSettingId)
         {
-            return db.InsuranceContracts.Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId && t.Code == code).FirstOrDefault();
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, 0);
+
+            return db.InsuranceContracts
+                .Where(t =>
+                            t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId &&
+                            t.InsuranceContractUsers.Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.IsActive == true && tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode)
+                        )
+                .FirstOrDefault();
         }
 
         public ContractTermsInfo GetTermsInfo(contractUserInput input, int? siteSettingId)
         {
             isValidValidation(input, siteSettingId);
-            var birthDateEn = input.birthDate.ToEnDate();
+
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, 0);
 
             return db.InsuranceContracts
-                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
-                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
-                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode))
+                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.SiteSettingId == siteSettingId && t.InsuranceContractUsers
+                    .Any(tt => tt.Status == InsuranceContractUserStatus.Premanent &&
+                        tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode))
                         .Select(t => new ContractTermsInfo()
                         {
                             termsDescription = t.InsuranceContractProposalForm.TermTemplate,
-                            firstName = t.InsuranceContractUsers.Where(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
-                                                                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode).Select(tt => tt.User.Firstname).FirstOrDefault(),
-                            lastName = t.InsuranceContractUsers.Where(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
-                                                                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode).Select(tt => tt.User.Lastname).FirstOrDefault(),
+                            firstName = t.InsuranceContractUsers.Where(tt => tt.Status == InsuranceContractUserStatus.Premanent &&
+                                                                        tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode).Select(tt => tt.User.Firstname).FirstOrDefault(),
+                            lastName = t.InsuranceContractUsers.Where(tt => tt.Status == InsuranceContractUserStatus.Premanent &&
+                                                                        tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode).Select(tt => tt.User.Lastname).FirstOrDefault(),
                             nationalCode = input.nationalCode,
-                            mobile = input.mobile,
+                            mobile = input.username,
                             contractDocumentUrl = !string.IsNullOrEmpty(t.ContractDocumentUrl) ? (GlobalConfig.FileAccessHandlerUrl + t.ContractDocumentUrl) : ""
                         })
                         .FirstOrDefault();
@@ -457,12 +491,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             isValidValidation(input, siteSettingId);
 
-            var birthDateEn = input.birthDate.ToEnDate();
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, 0);
+
             var contractUserId = db.InsuranceContracts
-                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId)
+                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.SiteSettingId == siteSettingId)
                 .SelectMany(t => t.InsuranceContractUsers)
-                .Where(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.BirthDate != null && tt.User.BirthDate.Value.Year == birthDateEn.Value.Year && tt.User.BirthDate.Value.Month == birthDateEn.Value.Month && tt.User.BirthDate.Value.Day == birthDateEn.Value.Day &&
-                        tt.User.Username == input.mobile && tt.User.Nationalcode == input.nationalCode)
+                .Where(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.IsActive == true && tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode)
                 .Select(t => t.Id)
                 .FirstOrDefault();
 
@@ -486,12 +522,18 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             isValidValidation(input, siteSettingId);
 
-            var birthDateEn = input.birthDate.ToEnDate();
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, 0);
+
             return
                 new List<IdTitle>() { new IdTitle() { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } }
                 .Union(
                     db.InsuranceContracts
-                    .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.Code == input.contractCode && t.SiteSettingId == siteSettingId)
+                    .Where(t =>
+                            t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.InsuranceContractProposalFormId > 0 && t.SiteSettingId == siteSettingId &&
+                            t.InsuranceContractUsers.Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.IsActive == true && tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode)
+                           )
                     .SelectMany(t => t.InsuranceContractInsuranceContractTypes)
                     .Select(t => t.InsuranceContractType)
                     .Select(t => new { t.Id, t.Title })
@@ -504,8 +546,16 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
         public RequiredDocumentVM GetRequiredDocuments(contractUserInput input, int? insuranceContractTypeId, int? siteSettingId)
         {
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, 0);
+
             var foundType = db.InsuranceContracts
-                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId && t.Code == input.contractCode)
+                .Where
+                (
+                    t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId &&
+                         t.InsuranceContractUsers.Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.IsActive == true && tt.User.Username == input.username && tt.User.Nationalcode == input.nationalCode)
+                )
                 .SelectMany(t => t.InsuranceContractInsuranceContractTypes)
                 .Where(t => t.InsuranceContractTypeId == insuranceContractTypeId)
                 .Select(t => new { id = t.InsuranceContractId, tId = t.InsuranceContractTypeId, desc = t.InsuranceContractType.Description })
@@ -518,7 +568,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         public IdTitle GetIdTitleBy(contractUserInput contractInfo, int? siteSettingId)
         {
             return db.InsuranceContracts
-                .Where(t => t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId && t.Code == contractInfo.contractCode)
+                .Where
+                (t =>
+                    t.FromDate <= DateTime.Now && t.ToDate >= DateTime.Now && t.IsActive == true && t.SiteSettingId == siteSettingId &&
+                    t.InsuranceContractUsers.Any(tt => tt.Status == InsuranceContractUserStatus.Premanent && tt.User.IsActive == true && tt.User.Username == contractInfo.username && tt.User.Nationalcode == contractInfo.nationalCode)
+                )
                 .Select(t => new IdTitle { id = t.Id.ToString(), title = t.Title })
                 .FirstOrDefault();
         }
@@ -545,6 +599,49 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 }).ToList());
 
             return result;
+        }
+
+        public object IsValidSMS(contractUserInput input, int? curSiteSettingId, IpSections curIp)
+        {
+            isValidValidation(input, curSiteSettingId);
+
+            var foundUser = UserService.GetBy(input.username, curSiteSettingId);
+
+            if (foundUser != null && (foundUser.IsDelete == true || foundUser.IsActive == false))
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+
+            if (string.IsNullOrEmpty(input.code))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.code.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Please_Just_Use_Number_For_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            if (input.code.Length > 20)
+                throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), curIp, -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
+
+            UserService.setCookieForThisUser(foundUser, new AccountService.Models.View.LoginVM() { rememberMe = true }, RoleService.HasAnyAutoRefreshRole(foundUser.Id), RoleService.HasAnySeeOtherSiteRoleConfig(foundUser.Id));
+            UserService.UpdateUserSessionFileName(foundUser?.Id, foundUser.tempLastSession);
+            UserLoginLogoutLogService.Create(foundUser.Id, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, true, BMessages.Operation_Was_Successfull.GetEnumDisplayName());
+
+
+            return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull, new
+            {
+                stepId = "ContractSearchPanel",
+                postUrl = "/Contract/Create",
+                //userfullname = (!string.IsNullOrEmpty(foundUser.Firstname) ? (foundUser.Firstname + " " + foundUser.Lastname) : foundUser.Username),
+                //isUser = UserService.isWebsiteUser(foundUser.Id)
+            });
+        }
+
+        public object ConfirmSMSForCreate(contractUserInput input, int? curSiteSettingId, IpSections curIp)
+        {
+            isValidValidation(input, curSiteSettingId);
+
+            SmsSendingQueueService.LoginWithSMS(new Sms.Models.View.RegLogSMSVM() { username = input.username }, curIp, curSiteSettingId, SmsValidationHistoryType.SMSForCreateContract);
+
+
+            return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode);
         }
     }
 }

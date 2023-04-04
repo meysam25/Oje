@@ -74,9 +74,34 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
         [HttpPost]
         public IActionResult IsValid([FromForm] contractUserInput input)
         {
-            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractValidationCheck, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            var tempResult = InsuranceContractService.IsValid(input, SiteSettingService.GetSiteSetting()?.Id);
-            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.CreateProposalFilledForm, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
+            var curIp = HttpContext.GetIpAddress();
+            var curSiteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractValidationCheck, BlockAutoIpAction.BeforeExecute, curIp, curSiteSettingId);
+            var tempResult = InsuranceContractService.IsValid(input, curSiteSettingId, curIp);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractValidationCheck, BlockAutoIpAction.AfterExecute, curIp, curSiteSettingId);
+            return Json(tempResult);
+        }
+
+
+        [HttpPost]
+        public IActionResult ConfirmSMS([FromForm] contractUserInput input)
+        {
+            var curIp = HttpContext.GetIpAddress();
+            var curSiteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractCreateConfirmSMS, BlockAutoIpAction.BeforeExecute, curIp, curSiteSettingId);
+            var tempResult = InsuranceContractService.ConfirmSMSForCreate(input, curSiteSettingId, curIp);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractCreateConfirmSMS, BlockAutoIpAction.AfterExecute, curIp, curSiteSettingId);
+            return Json(tempResult);
+        }
+
+        [HttpPost]
+        public IActionResult IsValidSMS([FromForm] contractUserInput input)
+        {
+            var curIp = HttpContext.GetIpAddress();
+            var curSiteSettingId = SiteSettingService.GetSiteSetting()?.Id;
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractValidationSMSCheck, BlockAutoIpAction.BeforeExecute, curIp, curSiteSettingId);
+            var tempResult = InsuranceContractService.IsValidSMS(input, curSiteSettingId, curIp);
+            BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.ContractValidationSMSCheck, BlockAutoIpAction.AfterExecute, curIp, curSiteSettingId);
             return Json(tempResult);
         }
 
@@ -108,9 +133,9 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] contractUserInput input)
         {
-            InsuranceContractService.IsValid(input, SiteSettingService.GetSiteSetting()?.Id);
+            InsuranceContractService.IsValid(input, SiteSettingService.GetSiteSetting()?.Id, null);
 
-            var foundConteract = InsuranceContractService.GetByCode(input.contractCode, SiteSettingService.GetSiteSetting()?.Id);
+            var foundConteract = InsuranceContractService.GetByCode(input, SiteSettingService.GetSiteSetting()?.Id);
 
             GlobalServices.FillSeoInfo(
                 ViewData,

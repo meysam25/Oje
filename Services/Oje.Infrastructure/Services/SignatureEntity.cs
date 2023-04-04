@@ -35,6 +35,9 @@ namespace Oje.Infrastructure.Services
             }
 
             Signature = ConvertToString(prevObj).EncryptSignature();
+
+            curObj?.Clear();
+            prevObj?.Clear();
         }
 
         public bool IsSignature()
@@ -42,9 +45,28 @@ namespace Oje.Infrastructure.Services
             var curObj = GetCurrentValues();
             var prevObj = GetCurrentValuesFromSignature();
 
-            //return prevObj.Count(t => curObj.Any(tt => tt.key == t.key && tt.value == t.value)) == prevObj.Count;
+            if (prevObj == null || prevObj.Count == 0)
+            {
+                curObj?.Clear();
+                prevObj?.Clear();
+                return false;
+            }
+            var tempResult = false;
 
-            return curObj.Count(t => prevObj.Any(tt => tt.key == t.key && tt.value == t.value)) == curObj.Count;
+            if (prevObj.Count < curObj.Count)
+            {
+                tempResult = prevObj.Count(t => curObj.Any(tt => tt.key == t.key && tt.value == t.value)) == prevObj.Count;
+                curObj?.Clear();
+                prevObj?.Clear();
+                return tempResult;
+
+            }
+
+            tempResult = curObj.Count(t => prevObj.Any(tt => tt.key == t.key && tt.value == t.value)) == curObj.Count;
+            curObj?.Clear();
+            prevObj?.Clear();
+
+            return tempResult;
         }
 
         public string GetSignatureChanges()
@@ -64,6 +86,9 @@ namespace Oje.Infrastructure.Services
                 else
                     result += "--- " + item.key + " been change from " + item.value + " to not exist" + Environment.NewLine;
             }
+
+            curObj.Clear();
+            prevObj.Clear();
 
             return result;
         }

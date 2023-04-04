@@ -260,7 +260,7 @@ namespace Oje.Infrastructure.Exceptions
         Dublicate_NationalCode = 126,
         [Display(Name = "لطفا تعداد مورد استفاده را وارد کنید")]
         Please_Enter_CountUsed = 127,
-        [Display(Name = "لطفا نصبت خانوادگی را انتخاب کنید")]
+        [Display(Name = "لطفا نسبت خانوادگی را انتخاب کنید")]
         Please_Select_FamilyRelation = 128,
         [Display(Name = "کد الکترونیکی مجاز نمی باشد")]
         Invalid_Insurance_Electronic_Code = 129,
@@ -608,7 +608,7 @@ namespace Oje.Infrastructure.Exceptions
         Please_Enter_Private_Key = 300,
         [Display(Name = "موجودی کیف پول کافی نمی باشد")]
         Inventory_Is_Not_Enough = 301,
-        [Display(Name = "امکان ویرایش نصبت خانوادگی وجود ندارد")]
+        [Display(Name = "امکان ویرایش نسبت خانوادگی وجود ندارد")]
         FamilyRelation_Can_Not_Be_Edited = 302,
         [Display(Name = "لطفا محل دریافت را انتخاب کنید")]
         Please_Select_Recive_Location = 303,
@@ -720,5 +720,17 @@ namespace Oje.Infrastructure.Exceptions
         Need_To_Be_Active_By_Admin_First = 356,
         [Display(Name = "کلیه فیلد ها معتبر می باشند")]
         Its_All_Valid = 357,
+        [Display(Name = "شهر مجاز نمی باشد")]
+        Invalid_City = 358,
+        [Display(Name = "استان یافت نشد")]
+        Province_Not_Found = 359,
+        [Display(Name = "لطفا جنسیت را انتخاب کنید")]
+        Please_Select_Gender = 360,
+        [Display(Name = "کد الکترونیکی تکراری می باشد")]
+        Dublicate_ECode = 361,
+        [Display(Name = "بیمه پایه مجاز نمی باشد")]
+        Invalid_BaseInsurance = 362,
+        [Display(Name = "زیرگروه مجاز نمی باشد")]
+        Invalid_SubCategory = 363,
     }
 }

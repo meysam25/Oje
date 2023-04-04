@@ -55,5 +55,7 @@ namespace Oje.AccountService.Models.View
         public int? startHour { get; set; }
         public int? endHour { get; set; }
         public bool? isHolydayWork { get; set; }
+        public int? bProvinceId { get; set; }
+        public string cardNO { get; set; }
     }
 }

@@ -30,6 +30,14 @@ namespace Oje.AccountService.Filters
                         values["controller"] = "TenderWeb";
                         values["action"] = "Index";
                         return values;
+                    case WebsiteType.Treatment:
+                        await Task.Delay(0);
+                        if (values == null)
+                            values = new RouteValueDictionary();
+                        values["area"] = null;
+                        values["controller"] = "ContractWeb";
+                        values["action"] = "Index";
+                        return values;
                 }
             }
 

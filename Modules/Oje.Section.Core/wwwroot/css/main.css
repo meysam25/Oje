@@ -511,6 +511,7 @@ input[type=checkbox] + label, input[type=checkbox] {
 
 .countDownCtrl {
     margin-bottom: 15px;
+    line-height:33px;
 }
 
 .makeLabelBGSilver > label {
@@ -1074,4 +1075,11 @@ figure.table > table {
     }
 .addNewRowForMRI {
     padding: 10px;
+}
+.holderDescription {
+    padding-bottom: 15px;
+}
+
+.modal-header button.close span {
+    font-size: 1.7rem;
 }

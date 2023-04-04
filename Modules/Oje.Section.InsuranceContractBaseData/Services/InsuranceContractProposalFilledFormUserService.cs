@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Oje.AccountService.Interfaces;
 using Oje.FileService.Interfaces;
+using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Interfac;
@@ -13,6 +14,7 @@ using Oje.Section.InsuranceContractBaseData.Models.View;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
@@ -49,7 +51,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.HttpContextAccessor = HttpContextAccessor;
         }
 
-        public void Create(List<IdTitle> familyRelations, List<IdTitle> familyCTypes, long insuranceContractProposalFilledFormId, contractUserInput contractInfo, int? siteSettingId, string fileName, IFormCollection form, long? loginUserId)
+        public void Create(List<IdTitle> familyRelations, List<IdTitle> familyCTypes, long insuranceContractProposalFilledFormId, contractUserInput contractInfo, int? siteSettingId, string fileName, IFormCollection form, long? loginUserId, List<string> descriptions)
         {
             for (
                 var i = 0;
@@ -62,7 +64,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     InsuranceContractProposalFilledFormId = insuranceContractProposalFilledFormId,
                     InsuranceContractTypeId = familyCTypes[i].id.ToIntReturnZiro(),
                     InsuranceContractUserId = familyRelations[i].id.ToLongReturnZiro(),
-                    Status = InsuranceContractProposalFilledFormType.New
+                    Status = InsuranceContractProposalFilledFormType.New,
+                    Description = descriptions != null && descriptions.Count >= (i + 1) ? (!string.IsNullOrEmpty(descriptions[i]) && descriptions[i].Length > 4000 ? descriptions[i].Substring(0, 3999) : descriptions[i]) : null
                 };
                 if (db.InsuranceContractProposalFilledFormUsers.Any(t => t.InsuranceContractTypeId == newItem.InsuranceContractTypeId && t.InsuranceContractUserId == newItem.InsuranceContractUserId && t.InsuranceContractProposalFilledFormId == newItem.InsuranceContractProposalFilledFormId))
                     throw BException.GenerateNewException(BMessages.Dublicate_Item);
@@ -278,6 +281,50 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     t.mapLonRecivePlace
                 })
                 .FirstOrDefault();
+        }
+
+        public List<FamilyMember> GetByFormId(long insuranceContractProposalFilledFormId)
+        {
+            List<FamilyMember> result = new();
+            var users = db.InsuranceContractProposalFilledFormUsers
+                .Where(t => t.InsuranceContractProposalFilledFormId == insuranceContractProposalFilledFormId)
+                .Select(t => new
+                {
+                    id = t.Id,
+                    tId = t.InsuranceContractTypeId,
+                    tTitle = t.InsuranceContractType.Title,
+                    firstname = t.InsuranceContractUser.FirstName,
+                    lastname = t.InsuranceContractUser.LastName,
+                    relation = t.InsuranceContractUser.FamilyRelation,
+                    desc = t.Description
+                })
+                .ToList();
+
+            foreach (var user in users)
+            {
+                var allFiles = UploadedFileService.GetFileList(user.id, FileType.InsuranceContractProposalFilledForm);
+                result.Add(new FamilyMember()
+                {
+                    firstName = user.firstname,
+                    lastName = user.lastname,
+                    relation = user.relation.GetEnumDisplayName(),
+                    typeTitle = user.tTitle,
+                    desc = user.desc,
+                    files = allFiles.Select(t => new FamilyMemberFile()
+                    {
+                        title = t.Title,
+                        url = !string.IsNullOrEmpty(t.FileName) && (isImage(Path.GetFileName(t.FileName)) || t.FileName.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.FileName) : "/Modules/Images/unknown.svg"
+                    }).ToList()
+                });
+            }
+
+
+            return result;
+        }
+
+        static bool isImage(string extension)
+        {
+            return !string.IsNullOrEmpty(extension) && (extension.ToLower().IndexOf(".png") > -1 || extension.ToLower().IndexOf(".jpg") > -1 || extension.ToLower().IndexOf(".jpeg") > -1);
         }
     }
 }

@@ -217,14 +217,14 @@ namespace Oje.Sms.Services
 
         }
 
-        public bool ValidateBy(long mobileNumber, int smsCode, IpSections ipSections)
+        public bool ValidateBy(long mobileNumber, int smsCode, IpSections ipSections, int? delay, SmsValidationHistoryType smsType)
         {
             bool result = false;
 
-            var curDT = DateTime.Now.AddSeconds(-300);
+            var curDT = DateTime.Now.AddSeconds(delay != null ? delay.Value : -300);
 
             var foundItem = db.SmsValidationHistories
-                .Where(t => t.CreateDate >= curDT)
+                .Where(t => t.CreateDate >= curDT && t.Type == smsType)
                 .OrderByDescending(t => t.CreateDate)
                 .Where(t => t.Ip1 == ipSections.Ip1 && t.Ip2 == ipSections.Ip2 && t.Ip3 == ipSections.Ip3 && t.Ip4 == ipSections.Ip4)
                 .Where(t => t.MobileNumber == mobileNumber && t.InvalidCount <= 2 && t.IsUsed == false)
@@ -254,14 +254,14 @@ namespace Oje.Sms.Services
             return result;
         }
 
-        public string ValidatePreUsedBy(long mobileNumber, int smsCode, IpSections ipSections)
+        public string ValidatePreUsedBy(long mobileNumber, int smsCode, IpSections ipSections, int? delay, SmsValidationHistoryType smsType)
         {
             string result = null;
 
-            var curDT = DateTime.Now.AddSeconds(-300);
+            var curDT = DateTime.Now.AddSeconds(delay != null ? delay.Value : -300);
 
             var foundItem = db.SmsValidationHistories
-                .Where(t => t.CreateDate >= curDT)
+                .Where(t => t.CreateDate >= curDT && t.Type == smsType)
                 .OrderByDescending(t => t.CreateDate)
                 .Where(t => t.Ip1 == ipSections.Ip1 && t.Ip2 == ipSections.Ip2 && t.Ip3 == ipSections.Ip3 && t.Ip4 == ipSections.Ip4)
                 .Where(t => t.MobileNumber == mobileNumber && t.InvalidCount <= 2 && t.IsUsed == false)

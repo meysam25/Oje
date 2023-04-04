@@ -150,13 +150,15 @@ namespace Oje.Sms.Services
             };
         }
 
-        public object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId)
+        public object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId, SmsValidationHistoryType? smsValidationHistoryType)
         {
             LoginWithSMSValidation(input, ipSections, siteSettingId);
 
+            smsValidationHistoryType = smsValidationHistoryType ?? SmsValidationHistoryType.RegisterLogin;
+
             var foundUser = UserService.GetBy(siteSettingId, input.username);
 
-            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(SmsValidationHistoryType.RegisterLogin, ipSections, siteSettingId);
+            int deffFromLastSendSecound = SmsValidationHistoryService.GetLastSecoundFor(smsValidationHistoryType.Value, ipSections, siteSettingId);
             if (deffFromLastSendSecound < 120)
                 throw BException.GenerateNewException(string.Format(BMessages.Please_W8_X_Secound.GetEnumDisplayName(), (120 - deffFromLastSendSecound)), foundUser?.Id ?? 0);
 
@@ -166,7 +168,7 @@ namespace Oje.Sms.Services
             if (foundUser != null && (foundUser.IsActive == false || foundUser.IsDelete == true))
                 throw BException.GenerateNewException(BMessages.UnknownError, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 
-            var newCode = SmsValidationHistoryService.Create(ipSections, input.username, siteSettingId, SmsValidationHistoryType.RegisterLogin);
+            var newCode = SmsValidationHistoryService.Create(ipSections, input.username, siteSettingId, smsValidationHistoryType.Value);
 
             List<SmsTemplate> foundTemplate = null;
             string smsMessage = "";
@@ -176,7 +178,11 @@ namespace Oje.Sms.Services
 
             if (foundUser != null)
             {
-                curType = UserNotificationType.Login;
+                if (smsValidationHistoryType == SmsValidationHistoryType.LoginWithSmsForContract)
+                    curType = UserNotificationType.ContractUserValidation;
+                else
+                    curType = UserNotificationType.Login;
+
                 smsMessage = "کاربر گرامی " + foundUser.Firstname + " " + foundUser.Lastname + " رمز یک بار مصرف جهت ورود شما عبارت است از " + Environment.NewLine + newCode;
                 foundTemplate = SmsTemplateService.GetBy(curType.Value, siteSettingId);
             }
@@ -203,7 +209,7 @@ namespace Oje.Sms.Services
 
             return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode, new
             {
-                data = new { username = input.username },
+                data = new { input.username },
                 labels = new List<object>() { new { inputName = "code", labelText = "کد  به شماره  " + input.username + " ارسال گردید" } },
                 stepId = "confirmSMS",
                 countDownId = "tryAginButtonCD"
@@ -344,7 +350,7 @@ namespace Oje.Sms.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
-            
+
         }
     }
 }

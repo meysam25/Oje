@@ -144,7 +144,7 @@ namespace Oje.JoinServices.Services
                 if (foundUser != null && (foundUser.IsDelete == true || foundUser.IsActive == false))
                     throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser.Id);
 
-                string codeId = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), ipSections);
+                string codeId = SmsValidationHistoryService.ValidatePreUsedBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), ipSections, null, SmsValidationHistoryType.ForgetPassword);
                 if (string.IsNullOrEmpty(codeId))
                     throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser.Id);
 
@@ -172,7 +172,7 @@ namespace Oje.JoinServices.Services
                 throw BException.GenerateNewException(BMessages.Please_Just_Use_Number_For_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
             if (input.code.Length > 20)
                 throw BException.GenerateNewException(BMessages.Validation_Error, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
-            bool isValid = SmsValidationHistoryService.ValidateBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), ipSections);
+            bool isValid = SmsValidationHistoryService.ValidateBy(input.username.ToLongReturnZiro(), input.code.ToIntReturnZiro(), ipSections, null, SmsValidationHistoryType.RegisterLogin);
             if (!isValid)
                 throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, foundUser?.Id ?? 0);
 

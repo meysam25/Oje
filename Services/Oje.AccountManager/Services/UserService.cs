@@ -270,6 +270,8 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.PostalCode_Is_Not_Valid, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.address) && input.address.Length > 1000)
                 throw BException.GenerateNewException(BMessages.Address_Length_Is_Not_Valid, ApiResultErrorCode.ValidationError);
+            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
+                throw BException.GenerateNewException(BMessages.Invalid_CardNo, ApiResultErrorCode.ValidationError);
 
             if (db.Users.Any(t => t.Username == input.username && t.Id != input.id && t.SiteSettingId == input.sitesettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Username, ApiResultErrorCode.ValidationError);
@@ -287,6 +289,12 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Jsut_One_Role);
             if (!string.IsNullOrEmpty(input.refferCode) && db.Users.Any(t => t.Id != input.id && t.SiteSettingId == input.sitesettingId && t.RefferCode == input.refferCode))
                 throw BException.GenerateNewException(BMessages.Dublicate_User_RefferCode);
+
+
+            if (input.provinceId.ToIntReturnZiro() > 0 && input.cityId.ToIntReturnZiro() > 0 && !db.Cities.Any(t => t.Id == input.cityId && t.ProvinceId == input.provinceId))
+                throw BException.GenerateNewException(BMessages.Invalid_City);
+            if (input.provinceId.ToIntReturnZiro() > 0 && !db.Provinces.Any(t => t.Id == input.provinceId))
+                throw BException.GenerateNewException(BMessages.Province_Not_Found);
         }
 
         private void passwordValidation2(CreateUpdateUserVM input)
@@ -347,6 +355,8 @@ namespace Oje.AccountService.Services
             newUser.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
             newUser.CanSeeOtherSites = input.canSeeOtherSites;
             newUser.ParentId = input.parentId;
+            newUser.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
+            newUser.CardNO = input.cardNO;
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -455,7 +465,9 @@ namespace Oje.AccountService.Services
                     t.LicenceExpireDate,
                     t.CanSeeOtherSites,
                     t.ParentId,
-                    parentFullname = t.ParentId > 0 ? t.Parent.Username + "(" + t.Parent.Firstname + " " + t.Parent.Lastname + ")" : ""
+                    parentFullname = t.ParentId > 0 ? t.Parent.Username + "(" + t.Parent.Firstname + " " + t.Parent.Lastname + ")" : "",
+                    bProvinceId = t.BirthCertificateIssuingPlaceProvinceId,
+                    t.CardNO
                 })
                 .Take(1)
                 .Select(t => new CreateUpdateUserVM
@@ -491,7 +503,9 @@ namespace Oje.AccountService.Services
                     licenceExpireDate = t.LicenceExpireDate.ToFaDate(),
                     canSeeOtherSites = t.CanSeeOtherSites,
                     parentId = t.ParentId,
-                    parentId_Title = t.parentFullname
+                    parentId_Title = t.parentFullname,
+                    bProvinceId = t.bProvinceId,
+                    cardNO = t.CardNO
                 })
                 .FirstOrDefault();
         }
@@ -543,6 +557,8 @@ namespace Oje.AccountService.Services
                     foundItem.LicenceExpireDate = input.licenceExpireDate.ToEnDate();
                     foundItem.CanSeeOtherSites = input.canSeeOtherSites;
                     foundItem.ParentId = input.parentId;
+                    foundItem.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
+                    foundItem.CardNO = input.cardNO;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -563,6 +579,7 @@ namespace Oje.AccountService.Services
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
 
+                    foundItem.FilledSignature();
                     db.SaveChanges();
                     tr.Commit();
 
@@ -727,6 +744,8 @@ namespace Oje.AccountService.Services
             newUser.StartHour = input.startHour;
             newUser.EndHour = input.endHour;
             newUser.WorkingHolyday = input.isHolydayWork;
+            newUser.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
+            newUser.CardNO = input.cardNO;
 
             if (input.mapLon != null && input.mapLon != null)
             {
@@ -822,6 +841,8 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.PostalCode_Is_Not_Valid, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.address) && input.address.Length > 1000)
                 throw BException.GenerateNewException(BMessages.Address_Length_Is_Not_Valid, ApiResultErrorCode.ValidationError);
+            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
+                throw BException.GenerateNewException(BMessages.Invalid_CardNo);
 
             //if (!string.IsNullOrEmpty(input.mobile) && db.Users.Any(t => t.Id != input.id && t.Mobile == input.mobile && t.SiteSettingId == siteSettingId))
             //    throw BException.GenerateNewException(BMessages.Dublicate_Mobile, ApiResultErrorCode.ValidationError);
@@ -860,6 +881,11 @@ namespace Oje.AccountService.Services
 
             if (!string.IsNullOrEmpty(input.refferCode) && db.Users.Any(t => t.Id != input.id && t.SiteSettingId == siteSettingId && t.RefferCode == input.refferCode))
                 throw BException.GenerateNewException(BMessages.Dublicate_User_RefferCode);
+
+            if (input.provinceId.ToIntReturnZiro() > 0 && input.cityId.ToIntReturnZiro() > 0 && !db.Cities.Any(t => t.Id == input.cityId && t.ProvinceId == input.provinceId))
+                throw BException.GenerateNewException(BMessages.Invalid_City);
+            if (input.provinceId.ToIntReturnZiro() > 0 && !db.Provinces.Any(t => t.Id == input.provinceId))
+                throw BException.GenerateNewException(BMessages.Province_Not_Found);
         }
 
         public ApiResult DeleteForUser(long? id, LoginUserVM loginUserVM, int? siteSettingId)
@@ -948,7 +974,9 @@ namespace Oje.AccountService.Services
                     t.LicenceExpireDate,
                     t.StartHour,
                     t.EndHour,
-                    t.WorkingHolyday
+                    t.WorkingHolyday,
+                    t.BirthCertificateIssuingPlaceProvinceId,
+                    t.CardNO
                 })
                 .Take(1)
                 .ToList()
@@ -993,7 +1021,9 @@ namespace Oje.AccountService.Services
                     licenceExpireDate = t.LicenceExpireDate.ToFaDate(),
                     startHour = t.StartHour,
                     endHour = t.EndHour,
-                    isHolydayWork = t.WorkingHolyday
+                    isHolydayWork = t.WorkingHolyday,
+                    bProvinceId = t.BirthCertificateIssuingPlaceProvinceId,
+                    cardNO = t.CardNO
                 })
                 .FirstOrDefault();
         }
@@ -1063,6 +1093,8 @@ namespace Oje.AccountService.Services
                     foundItem.StartHour = input.startHour;
                     foundItem.EndHour = input.endHour;
                     foundItem.WorkingHolyday = input.isHolydayWork;
+                    foundItem.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
+                    foundItem.CardNO = input.cardNO;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -1082,6 +1114,8 @@ namespace Oje.AccountService.Services
                     }
                     foreach (var cid in input.cIds)
                         db.Entry(new UserCompany() { CompanyId = cid, UserId = foundItem.Id }).State = EntityState.Added;
+
+                    foundItem.FilledSignature();
 
                     db.SaveChanges();
                     tr.Commit();
@@ -1164,7 +1198,7 @@ namespace Oje.AccountService.Services
                     lastname = t.Lastname.Trim(),
                     username = t.Username.Trim(),
                     pic = !string.IsNullOrEmpty(t.UserPic) ? GlobalConfig.FileAccessHandlerUrl + t.UserPic : "",
-                    isUser = t.UserRoles.Any(tt => tt.Role.Name.ToLower().EndsWith("user")),
+                    isUser = t.UserRoles.Any(tt => tt.Role.Name.ToLower().EndsWith("user") || tt.Role.Name.ToLower().EndsWith("users")),
                     isSuccess = true,
                     hasAutoRefresh = t.UserRoles.Any(tt => tt.Role.RefreshGrid == true)
                 }).FirstOrDefault();

@@ -5,6 +5,7 @@
     <Folder Include="wwwroot\css\BlogList\" />
     <Folder Include="wwwroot\css\NewPersianDatePicker\" />
     <Folder Include="wwwroot\js\NewPersianDatePicker\" />
+    <Folder Include="wwwroot\Webfonts\YekanBakh\" />
     <Folder Include="wwwroot\Webfonts\Vazir\" />
   </ItemGroup>
   <ItemGroup>

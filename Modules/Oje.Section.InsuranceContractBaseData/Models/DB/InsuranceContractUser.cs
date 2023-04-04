@@ -73,11 +73,22 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public int? InsuranceContractUserSubCategoryId { get; set; }
         [ForeignKey("InsuranceContractUserSubCategoryId"), InverseProperty("InsuranceContractUsers")]
         public InsuranceContractUserSubCategory InsuranceContractUserSubCategory { get; set; }
-        [MaxLength(20)]
-        public string InsuranceMiniBookNumber { get; set; }
         [MaxLength(14)]
         public string Mobile { get; set; }
         public Gender? Gender { get; set; }
+        public int? BirthCertificateIssuingPlaceProvinceId { get; set; }
+        [ForeignKey(nameof(BirthCertificateIssuingPlaceProvinceId)), InverseProperty("BirthCertificateIssuingPlaceInsuranceContractUsers")]
+        public Province BirthCertificateIssuingPlaceProvince { get; set; }
+        [MaxLength(19)]
+        public string CardNO { get; set; }
+        public int? ProvinceId { get; set; }
+        [ForeignKey(nameof(ProvinceId)), InverseProperty("InsuranceContractUsers")]
+        public Province Province { get; set; }
+        public int? CityId { get; set; }
+        [ForeignKey(nameof(CityId)), InverseProperty("InsuranceContractUsers")]
+        public City City { get; set; }
+        [MaxLength(20)]
+        public string BaseInsuranceCode { get; set; }
         public int SiteSettingId { get; set; }
         [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractUsers")]
         public SiteSetting SiteSetting { get; set; }

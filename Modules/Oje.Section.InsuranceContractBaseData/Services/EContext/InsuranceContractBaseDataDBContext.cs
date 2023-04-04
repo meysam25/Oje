@@ -33,6 +33,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services.EContext
         public DbSet<InsuranceContractUserSubCategory> InsuranceContractUserSubCategories { get; set; }
         public DbSet<InsuranceContractUserBaseInsurance> InsuranceContractUserBaseInsurances { get; set; }
         public DbSet<InsuranceContractInsuranceContractTypeMaxPrice> InsuranceContractInsuranceContractTypeMaxPrices { get; set; }
+        public DbSet<Province> Provinces { get; set; }
+        public DbSet<City> Cities { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

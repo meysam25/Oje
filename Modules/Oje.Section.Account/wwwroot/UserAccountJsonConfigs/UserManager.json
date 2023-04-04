@@ -298,6 +298,13 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "cardNO",
+              "type": "text",
+              "label": "شماره کارت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "refferCode",
               "type": "text",
               "label": "کد معرف"
@@ -349,6 +356,15 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "کار در روز های تعطیل"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "bProvinceId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetProvinceList",
+              "label": "محل صدور"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-6 col-sm-12 col-xs-12",
@@ -610,6 +626,13 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "cardNO",
+              "type": "text",
+              "label": "شماره کارت",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
               "name": "refferCode",
               "type": "text",
               "label": "کد معرف"
@@ -661,6 +684,15 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/YesOrNo",
               "label": "کار در روز های تعطیل"
+            },
+            {
+              "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
+              "name": "bProvinceId",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/GetProvinceList",
+              "label": "محل صدور"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-6 col-sm-12 col-xs-12",

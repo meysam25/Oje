@@ -43,7 +43,9 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "عدد")]
         number = 19,
         [Display(Name = "تمپلیت")]
-        template = 20
+        template = 20,
+        [Display(Name = "شمارش معکوس")]
+        countDownButton = 21
 
     }
 }

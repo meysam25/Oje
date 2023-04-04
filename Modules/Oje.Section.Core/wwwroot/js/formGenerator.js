@@ -1017,7 +1017,7 @@ function getCountDownButtonTemplate(ctrl) {
     var result = '';
 
     if (ctrl && ctrl.startNumber && ctrl.countDownText && ctrl.finishedCountDownText) {
-        result += '<label data-onClick="' + ctrl.onClick + '"  id="' + ctrl.id + '" data-finishedCountDownText="' + ctrl.finishedCountDownText + '" data-countDownText="' + ctrl.countDownText + '" data-maxNumber="' + ctrl.startNumber + '" class="countDownCtrl" disabled ></label>';
+        result += '<label data-onClick="' + ctrl.onClick + '" onClick="' + ctrl.onClick + '"  id="' + ctrl.id + '" data-finishedCountDownText="' + ctrl.finishedCountDownText + '" data-countDownText="' + ctrl.countDownText + '" data-maxNumber="' + ctrl.startNumber + '" class="countDownCtrl countDownNumberFinished"  >' + ctrl.finishedCountDownText + '</label>';
         functionsList.push(function () { $('#' + this.id).initCountDown(); }.bind({ id: ctrl.id }));
     }
 
@@ -1246,7 +1246,7 @@ function getTabContentTemplate(ctrl) {
     if (ctrl.url && ctrl.label) {
         if (!ctrl.color)
             ctrl.color = 'orange';
-        result += '<div id="' + ctrl.id + '_holder" class="tabButtonBoxHolder ' + (ctrl.type == 'TabContentHorizontal' ? 'MakeHorizoneTC' : '') +'">';
+        result += '<div id="' + ctrl.id + '_holder" class="tabButtonBoxHolder ' + (ctrl.type == 'TabContentHorizontal' ? 'MakeHorizoneTC' : '') + '">';
         result += '<span  style="' + (ctrl.color ? 'background-color:' + ctrl.color + ';' : '') + '" class="tabButtonIcon fa ' + ctrl.icon + '" ><span style="' + (ctrl.color ? 'border-color:' + ctrl.color + ';' : '') + '" ></span></span>';
         result += '<a ' + getTabButtonNotifyUpdateAttribute(ctrl.nTypes) + ' id="' + ctrl.id + '" style="margin-bottom:15px;position:relative;' + (ctrl.color ? 'border-top:4px solid ' + ctrl.color + ';' : '') + '" class="tabButtonBox" href="' + ctrl.url + '" ><span class="buttonTitle">' + ctrl.label + '</span></a>';
         result += '</div>';
@@ -1349,9 +1349,9 @@ function addNewRowForMultiCtrl(curButton) {
             var addButtonTitle = foundParentButton.parent().find('> div > .addNewRowForMultiRowCtrl').text();
             if (!(foundParentButton.next().length > 0 && foundParentButton.next().hasClass('MultiRowInputRow'))) {
                 if (!foundParentButton.next().hasClass('addNewRowForMRI')) {
-                    foundParentButton.after('<div class="row addNewRowForMRI" ><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="addNewRowForMRCTrl2(this)" class="btn btn-primary btn-block" >' + addButtonTitle +'</button></div><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="moveToNextStepForSW(this)" class="btn btn-primary btn-block" >عدم افزودن و مرحله بعد</button></div></div>');
+                    foundParentButton.after('<div class="row addNewRowForMRI" ><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="addNewRowForMRCTrl2(this)" class="btn btn-primary btn-block" >' + addButtonTitle + '</button></div><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="moveToNextStepForSW(this)" class="btn btn-primary btn-block" >عدم افزودن و مرحله بعد</button></div></div>');
                 }
-            //    foundParentButton.parent().find('.addNewRowForMultiRowCtrl').click();
+                //    foundParentButton.parent().find('.addNewRowForMultiRowCtrl').click();
             }
         }
     }
@@ -1379,8 +1379,7 @@ function getElementIndex(curElement, curClass) {
 
     if (curElement) {
         var parentEleemnt = $(curElement).parent();
-        parentEleemnt.find('.' + curClass).each(function (index)
-        {
+        parentEleemnt.find('.' + curClass).each(function (index) {
             if ($(this)[0] == curElement) {
                 result = index + 1;
             }
@@ -1400,21 +1399,25 @@ function initMoultiRowInputButton(ctrl) {
     if (addNewButtonQuery.length > 0) {
         addNewButtonQuery[0].ctrl = ctrl;
         addNewButtonQuery.click(function () {
-            var ctrlObj = $(this)[0].ctrl;
-            if (ctrlObj.ctrls) {
-                var countExist = $(this).closest('.myCtrl').find('.MultiRowInputRow').length;
-                var newRowHtml = '<div class="MultiRowInputRow row">';
-                for (var i = 0; i < ctrlObj.ctrls.length; i++) {
-                    ctrlObj.ctrls[i].id = uuidv4RemoveDash();
-                    var prevName = ctrlObj.ctrls[i].name;
-                    ctrlObj.ctrls[i].name = ctrlObj.name + '[' + (countExist) + '].' + ctrlObj.ctrls[i].name;
-                    newRowHtml += getInputTemplate(ctrlObj.ctrls[i]);
-                    ctrlObj.ctrls[i].name = prevName;
+            var validationQuirySelect = $(this).closest('.myCtrl ');
+            var isValid = validateForm(validationQuirySelect);
+            if (isValid) {
+                var ctrlObj = $(this)[0].ctrl;
+                if (ctrlObj.ctrls) {
+                    var countExist = $(this).closest('.myCtrl').find('.MultiRowInputRow').length;
+                    var newRowHtml = '<div class="MultiRowInputRow row">';
+                    for (var i = 0; i < ctrlObj.ctrls.length; i++) {
+                        ctrlObj.ctrls[i].id = uuidv4RemoveDash();
+                        var prevName = ctrlObj.ctrls[i].name;
+                        ctrlObj.ctrls[i].name = ctrlObj.name + '[' + (countExist) + '].' + ctrlObj.ctrls[i].name;
+                        newRowHtml += getInputTemplate(ctrlObj.ctrls[i]);
+                        ctrlObj.ctrls[i].name = prevName;
+                    }
+                    newRowHtml += '</div>';
+                    $(this).closest('.myCtrl').find('> div > .MultiRowInputRow:last').after(newRowHtml);
                 }
-                newRowHtml += '</div>';
-                $(this).closest('.myCtrl').find('> div > .MultiRowInputRow:last').after(newRowHtml);
+                executeArrFunctions();
             }
-            executeArrFunctions();
         });
     }
 
@@ -1596,6 +1599,10 @@ function updateDynamicCtrls(curThis) {
     }.bind({ ctrl: curThis.ctrl }));
 }
 
+function cloneObject(input) {
+    return JSON.parse(JSON.stringify(input));
+}
+
 function getDynamicFileUploadDependCtrlTemplate(ctrl) {
     var result = '';
 
@@ -1603,28 +1610,33 @@ function getDynamicFileUploadDependCtrlTemplate(ctrl) {
         result += '<div id="' + ctrl.id + '" data-spec-name="' + ctrl.name + '" class="debitFileUploader row"></div>';
     }
 
-    functionsList.push(function () {
-        if ($('#' + this.ctrl.id).length > 0) {
-            $('#' + this.ctrl.id)[0].addNewRow = function (dataItems) {
+    functionsList.push(function ()
+    {
+        if ($('#' + this.ctrl.id).length > 0)
+        {
+            $('#' + this.ctrl.id)[0].ctrl = cloneObject(this.ctrl);
+            $('#' + this.ctrl.id)[0].addNewRow = function (dataItems)
+            {
+                let ctrl = $(this)[0].ctrl;
                 var arrHtml = '';
                 if (dataItems) {
                     for (var i = 0; i < dataItems.length; i++) {
                         arrHtml += '<div class="col-md-3 col-sm-6 col-xs-12 col-lg-3">';
                         arrHtml += getFileCTRLTemplate({
                             compressImage: true,
-                            label: dataItems[i][this.ctrl.schema.title],
+                            label: dataItems[i][ctrl.schema.title],
                             type: 'file',
-                            name: dataItems[i][this.ctrl.schema.name].replace(/ /g, ''),
-                            acceptEx: this.ctrl.acceptEx,
-                            isRequired: dataItems[i][this.ctrl.schema.isRequired],
-                            sampleUrl: dataItems[i][this.ctrl.schema.sampleUrl]
+                            name: dataItems[i][ctrl.schema.name].replace(/ /g, ''),
+                            acceptEx: ctrl.acceptEx,
+                            isRequired: dataItems[i][ctrl.schema.isRequired],
+                            sampleUrl: dataItems[i][ctrl.schema.sampleUrl]
                         });
                         arrHtml += '</div>';
                     }
                 }
-                $('#' + this.ctrl.id).html(arrHtml);
+                $('#' + ctrl.id).html(arrHtml);
                 executeArrFunctions();
-            }.bind({ ctrl: this.ctrl });
+            };
         }
     }.bind({ ctrl: ctrl }));
 
@@ -2914,20 +2926,34 @@ function submitThisStep(curThis, targetUrl) {
             curUrl = targetUrl;
         if (curUrl) {
             showLoader(quarySelector.find('.myPanel'));
-            postForm(curUrl, getFormData(quarySelector), function (res) {
+            var postFormData = getFormData(quarySelector);
+            if (window['exteraModelParams']) {
+                for (var prop in exteraModelParams)
+                    postFormData.append(prop, exteraModelParams[prop]);
+            }
+            postForm(curUrl, postFormData, function (res) {
+                if (res && res.isSuccess && $(curThis).hasClass('countDownCtrl') && $(curThis)[0].start) {
+                    $(curThis)[0].start();
+                }
                 if (res && res.data) {
                     if (res.data.stepId) {
-                        moveToStepById('stepContent_' + res.data.stepId);
-                        if (res.data.data) {
-                            bindForm(res.data.data, $('#stepContent_' + res.data.stepId))
+                        if ($('#' + 'stepContent_' + res.data.stepId).length > 0) {
+                            moveToStepById('stepContent_' + res.data.stepId);
+                            if (res.data.data) {
+                                bindForm(res.data.data, $('#stepContent_' + res.data.stepId))
+                            }
+                            if (res.data.labels && res.data.labels.length > 0) {
+                                changeInputLabels(res.data.labels, res.data.stepId);
+                            }
+                            if (res.data.countDownId) {
+                                if ($('#' + res.data.countDownId).length > 0)
+                                    $('#' + res.data.countDownId)[0].start();
+                            }
                         }
-                        if (res.data.labels && res.data.labels.length > 0) {
-                            changeInputLabels(res.data.labels, res.data.stepId);
-                        }
-                        if (res.data.countDownId) {
-                            if ($('#' + res.data.countDownId).length > 0)
-                                $('#' + res.data.countDownId)[0].start();
-                        }
+                    }
+                    if (res.data.postUrl) {
+                        var formData = getFormData($('#' + res.data.stepId), true);
+                        postPage(res.data.postUrl, formData);
                     }
                     if (res.data.hideModal) {
                         $(this).closest('.modal').modal('hide');
@@ -3024,9 +3050,21 @@ function refreshMapIfExist(quirySelector) {
     }
 }
 
+function sendSmsCodeIfExist(selectQuiry) {
+    if (selectQuiry && selectQuiry.length > 0) {
+        selectQuiry.find('.countDownCtrl').click();
+    }
+}
+
+function executeAutoFunctionOnNextSW(nextContent) {
+    refreshMapIfExist($(nextContent));
+    sendSmsCodeIfExist($(nextContent));
+}
+
 function initSWFunctions(curId, actionOnLastStep) {
     if ($('#' + curId).length > 0) {
-        $('#' + curId)[0].moveNext = function (ignoreDDChanges) {
+        $('#' + curId)[0].moveNext = function (ignoreDDChanges)
+        {
             if (!validateForm($(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive')))
                 return;
             var nextStep = $(this).find('>.panelSWizardHolderHeader>.panelSWizardHolderHeaderItemActive').next();
@@ -3045,7 +3083,7 @@ function initSWFunctions(curId, actionOnLastStep) {
                 nextContent.addClass('panelSWizardHolderContentItemActive');
                 if (!ignoreDDChanges)
                     $(nextContent).find('select:not([ignoreOnChange])').change();
-                refreshMapIfExist($(nextContent));
+                executeAutoFunctionOnNextSW(nextContent);
                 $([document.documentElement, document.body]).animate({
                     scrollTop: $(nextContent).offset().top - 300
                 }, 500);
@@ -3189,7 +3227,7 @@ function doPageActions(actionOnLastStep) {
                 if (allCurUrl.length > 2)
                     targetUrl = targetUrl.replace('****', allCurUrl[allCurUrl.length - 2]);
             }
-            
+
             var postData = getFormData(formQuery);
             if (window['exteraModelParams']) {
                 for (var prop in exteraModelParams)
@@ -3452,7 +3490,7 @@ function refreshGrid(gridId, currButtonInsideModal) {
 function refreshGridAndShow(gridId, curButton) {
     var sQuiry = $('#' + gridId);
     $(curButton).closest('.myCtrl').find('input[type=hidden]').remove();
-    $(curButton).append('<input type="hidden" name="' + $(curButton).attr('data-button-name') + '" value="' + $(curButton).attr('data-button-value') +'" />')
+    $(curButton).append('<input type="hidden" name="' + $(curButton).attr('data-button-name') + '" value="' + $(curButton).attr('data-button-value') + '" />')
     if (sQuiry.length > 0 && sQuiry[0].refreshData) {
         sQuiry[0].refreshData();
         sQuiry.show();
@@ -3692,12 +3730,11 @@ function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
         if (this.whatToDoAfterFinished) {
             this.whatToDoAfterFinished();
         }
-    }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }), null, function () { hideLoader(this); }.bind(holderQuiry) , null, rType);
+    }.bind({ targetId: targetId, whatToDoAfterFinished: whatToDoAfterFinished }), null, function () { hideLoader(this); }.bind(holderQuiry), null, rType);
 }
 
 function refreshAllGrid() {
-    $('.myGridCTRL').each(function ()
-    {
+    $('.myGridCTRL').each(function () {
         var curElement = $(this)[0];
         if (curElement && curElement.refreshData) {
             curElement.refreshData();

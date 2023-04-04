@@ -172,5 +172,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         {
             return db.InsuranceContractUserBaseInsurances.Where(t => t.SiteSettingId == siteSettingId && t.Code == code).Select(t => t.Id).FirstOrDefault();
         }
+
+        public string GetIdByTitle(int? siteSettingId, string title)
+        {
+            if (!string.IsNullOrEmpty(title))
+                title = title.Trim();
+
+            return db.InsuranceContractUserBaseInsurances.Where(t => t.Title == title && t.SiteSettingId == siteSettingId).Select(t => t.Id).FirstOrDefault() + "";
+        }
     }
 }

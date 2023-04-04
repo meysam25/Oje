@@ -128,6 +128,11 @@ namespace Oje.AccountService.Models.DB
         [ForeignKey("SiteSettingId"), InverseProperty("SiteSettingUsers")]
         public SiteSetting SiteSetting { get; set; }
         public bool? CanSeeOtherSites { get; set; }
+        public int? BirthCertificateIssuingPlaceProvinceId { get; set; }
+        [ForeignKey(nameof(BirthCertificateIssuingPlaceProvinceId)), InverseProperty("BirthCertificateIssuingPlaceUsers")]
+        public Province BirthCertificateIssuingPlaceProvince { get; set; }
+        [MaxLength(19)]
+        public string CardNO { get; set; }
 
         [NotMapped]
         public double distance { get; set; }

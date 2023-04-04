@@ -11,6 +11,7 @@ namespace Oje.AccountService.Models.DB
         {
             Cities = new();
             Users = new();
+            BirthCertificateIssuingPlaceUsers = new();
         }
 
         [Key]
@@ -27,5 +28,7 @@ namespace Oje.AccountService.Models.DB
         public List<City> Cities { get; set; }
         [InverseProperty("Province")]
         public List<User> Users { get; set; }
+        [InverseProperty("BirthCertificateIssuingPlaceProvince")]
+        public List<User> BirthCertificateIssuingPlaceUsers { get; set; }
     }
 }

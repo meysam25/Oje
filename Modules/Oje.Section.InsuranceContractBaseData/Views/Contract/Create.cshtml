@@ -1,8 +1,8 @@
 ﻿@using Oje.Infrastructure
+@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
 @{
-    Layout = "_WebLayout";
+    Layout = SiteSettingService.GetSiteSetting()?.Layout;
 }
-
 <div class="myContainer">
     <section class="globalSection" id="holderContractSection"></section>
 </div>
@@ -30,6 +30,7 @@
         {
             var gQuiry = $('#' + targetId).closest('.MultiRowInputRow');
             var sQuiry = gQuiry.find('.debitFileUploader');
+
             if (sQuiry.length > 0) {
                 for (var i = 0; i < res.items.length; i++) {
                     res.items[i].name = sName + '.' + res.items[i].name;

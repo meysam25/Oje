@@ -19,5 +19,6 @@ namespace Oje.FileService.Interfaces
         object Delete(long? id, int? siteSettingId);
         object GetList(UploadedFileMainGrid searchInput, int? siteSettingId);
         UploadedFile GetFile(string fn);
+        List<UploadedFile> GetFileList(long id, FileType insuranceContractProposalFilledForm);
     }
 }

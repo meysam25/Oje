@@ -1,5 +1,6 @@
-﻿@{
-    Layout = "_WebLayout";
+﻿@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
+@{
+    Layout = SiteSettingService.GetSiteSetting()?.Layout;
 }
 
 @section Styles {

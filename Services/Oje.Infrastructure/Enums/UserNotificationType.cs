@@ -91,6 +91,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "ثبت یاد آوری جدید")]
         ProposalFormReminder = 43,
         [Display(Name = "پرداخت")]
-        Payment = 44
+        Payment = 44,
+        [Display(Name = "اعلام خسارت برسی")]
+        ContractUserValidation = 45
     }
 }

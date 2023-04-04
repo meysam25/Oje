@@ -28,6 +28,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractProposalFilledFormValueService InsuranceContractProposalFilledFormValueService = null;
         readonly IUploadedFileService UploadedFileService = null;
         readonly IUserNotifierService UserNotifierService = null;
+        readonly Sms.Interfaces.ISmsValidationHistoryService SmsValidationHistoryService = null;
         readonly IUserService UserService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
 
@@ -44,7 +45,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IUploadedFileService UploadedFileService,
                 IUserNotifierService UserNotifierService,
                 IUserService UserService,
-                IHttpContextAccessor HttpContextAccessor
+                IHttpContextAccessor HttpContextAccessor,
+                Sms.Interfaces.ISmsValidationHistoryService SmsValidationHistoryService
             )
         {
             this.db = db;
@@ -56,16 +58,16 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.UserNotifierService = UserNotifierService;
             this.UserService = UserService;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.SmsValidationHistoryService = SmsValidationHistoryService;
         }
 
         public ApiResult Create(long? loginUserId, int? siteSettingId, IFormCollection form)
         {
             var contractInfo = new contractUserInput()
             {
-                birthDate = form.GetStringIfExist("birthDate"),
-                contractCode = form.GetStringIfExist("contractCode").ToLongReturnZiro(),
                 nationalCode = form.GetStringIfExist("nationalCode"),
-                mobile = form.GetStringIfExist("mobile")
+                username = form.GetStringIfExist("username"),
+                code = form.GetStringIfExist("code"),
             };
 
             (PageForm ppfObj, List<IdTitle> familyRelations, List<IdTitle> familyCTypes, IdTitle contract, string jsonConfigStr) =
@@ -79,13 +81,17 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 {
                     InsuranceContractProposalFilledForm newForm = createNewProposalFilledForm(siteSettingId, contract.id.ToIntReturnZiro(), loginUserId);
                     InsuranceContractProposalFilledFormJsonService.Create(newForm.Id, jsonConfigStr);
-                    InsuranceContractProposalFilledFormUserService.Create(familyRelations, familyCTypes, newForm.Id, contractInfo, siteSettingId, "coverPersons", form, loginUserId);
+                    InsuranceContractProposalFilledFormUserService.Create(familyRelations, familyCTypes, newForm.Id, contractInfo, siteSettingId, "coverPersons", form, loginUserId, getArrItemsForText(form, "coverPersons", "description"));
                     InsuranceContractProposalFilledFormValueService.CreateByJsonConfig(ppfObj, newForm.Id, form);
                     //createUploadedFiles(siteSettingId, form, loginUserId, newForm.Id);
 
                     tr.Commit();
 
                     newFormId = newForm.Id;
+
+                    SmsValidationHistoryService.ValidateBy(contractInfo.username.ToLongReturnZiro(), contractInfo.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+                    if (form.GetStringIfExist("reConfirmCode").ToIntReturnZiro() > 0)
+                        SmsValidationHistoryService.ValidateBy(contractInfo.username.ToLongReturnZiro(), form.GetStringIfExist("reConfirmCode").ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -600, SmsValidationHistoryType.SMSForCreateContract);
 
                     UserNotifierService.Notify(loginUserId, UserNotificationType.CreateNewDamageClime, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.CreateUser) }, newForm.Id, contract.title, siteSettingId, "/InsuranceContractBaseData/InsuranceContractProposalFilledForm/Detaile?id=" + newForm.Id);
                 }
@@ -132,18 +138,16 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Need_To_Be_Login_First);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
-            if (!form.GetStringIfExist("mobile").IsMobile())
+            if (!form.GetStringIfExist("username").IsMobile())
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
+            if (string.IsNullOrEmpty(form.GetStringIfExist("code")))
+                throw BException.GenerateNewException(BMessages.Invalid_Code);
             if (!form.GetStringIfExist("nationalCode").IsCodeMeli())
                 throw BException.GenerateNewException(BMessages.Invalid_NationaCode);
-            if (string.IsNullOrEmpty(form.GetStringIfExist("birthDate")))
-                throw BException.GenerateNewException(BMessages.Please_Enter_BirthDate);
-            if (form.GetStringIfExist("birthDate").ToEnDate() == null)
-                throw BException.GenerateNewException(BMessages.Invalid_Date);
-            if ((DateTime.Now - form.GetStringIfExist("birthDate").ToEnDate().Value).TotalDays < year18DaysCount)
-                throw BException.GenerateNewException(BMessages.Invalid_Date);
-            if (string.IsNullOrEmpty(form.GetStringIfExist("contractCode")))
-                throw BException.GenerateNewException(BMessages.Invalid_Date);
+
+            string isValid = SmsValidationHistoryService.ValidatePreUsedBy(contractInfo.username.ToLongReturnZiro(), contractInfo.code.ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -3600, SmsValidationHistoryType.LoginWithSmsForContract);
+            if (string.IsNullOrEmpty(isValid))
+                throw BException.GenerateNewException(BMessages.Invalid_Code, ApiResultErrorCode.ValidationError, 0);
 
             string tempJsonconfig = InsuranceContractService.GetFormJsonConfig(contractInfo, siteSettingId);
             if (string.IsNullOrEmpty(tempJsonconfig))
@@ -203,6 +207,13 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             if (contract == null)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
 
+            if (!string.IsNullOrEmpty(form.GetStringIfExist("reConfirmCode")))
+            {
+                string isValidSMS = SmsValidationHistoryService.ValidatePreUsedBy(contractInfo.username.ToLongReturnZiro(), form.GetStringIfExist("reConfirmCode").ToIntReturnZiro(), HttpContextAccessor.GetIpAddress(), -600, SmsValidationHistoryType.SMSForCreateContract);
+                if (string.IsNullOrEmpty(isValidSMS))
+                    throw BException.GenerateNewException(BMessages.Invalid_Code);
+            }
+
             return (ppfObj, inputFamilyRelations, inputFamilyCTypes, contract, tempJsonconfig);
         }
 
@@ -217,6 +228,21 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     !string.IsNullOrEmpty(form.GetStringIfExist(keyPart1 + "[" + i + "]." + keyPart2 + "_Title"))
                     )
                     result.Add(new IdTitle() { id = form.GetStringIfExist(keyPart1 + "[" + i + "]." + keyPart2), title = form.GetStringIfExist(keyPart1 + "[" + i + "]." + keyPart2 + "_Title") });
+            }
+
+            return result;
+        }
+
+        private List<string> getArrItemsForText(IFormCollection form, string keyPart1, string keyPart2)
+        {
+            List<string> result = new List<string>();
+
+            for (var i = 0; i < maxInputUsers; i++)
+            {
+                if (
+                    !string.IsNullOrEmpty(form.GetStringIfExist(keyPart1 + "[" + i + "]." + keyPart2))
+                    )
+                    result.Add(form.GetStringIfExist(keyPart1 + "[" + i + "]." + keyPart2));
             }
 
             return result;
@@ -244,7 +270,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                    values = t.InsuranceContractProposalFilledFormValues.Select(tt => new
                    {
                        tt.Value,
-                       Key = tt.InsuranceContractProposalFilledFormKey.Key
+                       tt.InsuranceContractProposalFilledFormKey.Key
                    }).ToList()
                })
                .FirstOrDefault();
@@ -263,19 +289,44 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             //foundSw.FirstOrDefault().steps = ignoreSteps(foundSw.FirstOrDefault().steps);
             var fFoundSw = foundSw.FirstOrDefault();
-            List<ContractProposalFilledFormPdfGroupVM> listGroup = new();
-
-            listGroup.Add(new ContractProposalFilledFormPdfGroupVM()
+            List<ContractProposalFilledFormPdfGroupVM> listGroup = new()
             {
-                title = "کاربر",
-                ContractProposalFilledFormPdfGroupItems = new List<ContractProposalFilledFormPdfGroupItem>()
+                new ContractProposalFilledFormPdfGroupVM()
                 {
-                    new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "شماره همراه", value = foundItem.mobile },
-                    new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ملی", value = foundItem.nationalcode },
-                    new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "تاریخ تولد", value = foundItem.birthDate.ToFaDate()},
-                    new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام و نام خانوادگی", value = foundItem.firstName + " " + foundItem.lastname }
+                    title = "کاربر",
+                    ContractProposalFilledFormPdfGroupItems = new List<ContractProposalFilledFormPdfGroupItem>()
+                    {
+                        new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "شماره همراه", value = foundItem.mobile },
+                        new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "کد ملی", value = foundItem.nationalcode },
+                        new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "تاریخ تولد", value = foundItem.birthDate.ToFaDate()},
+                        new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام و نام خانوادگی", value = foundItem.firstName + " " + foundItem.lastname }
+                    }
                 }
-            });
+            };
+
+            var allFamilyMembers = InsuranceContractProposalFilledFormUserService.GetByFormId(foundItem.Id);
+
+            if (allFamilyMembers != null && allFamilyMembers.Count > 0)
+            {
+                var ContractProposalFilledFormPdfGroupItems = new List<ContractProposalFilledFormPdfGroupItem>();
+                foreach (var member in allFamilyMembers)
+                {
+                    ContractProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نوع", value = member.typeTitle });
+                    ContractProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = "نام و نام خانوادگی", value = member.firstName + " " + member.lastName });
+                    ContractProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-12 col-xs-12 col-lg-6", title = "نسبت", value = member.relation });
+                    if (member.files != null && member.files.Count > 0)
+                        foreach(var file in member.files)
+                            ContractProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-4 col-sm-6 col-xs-12 col-lg-3", title = file.title, value = file.url, isImage = true });
+                    ContractProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = "col-md-12 col-sm-12 col-xs-12 col-lg-12", title = "توضیحات", value = member.desc });
+                }
+                listGroup.Add(
+                    new ContractProposalFilledFormPdfGroupVM()
+                    {
+                        title = "اطلاعات بیمه شده",
+                        ContractProposalFilledFormPdfGroupItems = ContractProposalFilledFormPdfGroupItems
+                    }
+                    );
+            }
 
             foreach (var step in fFoundSw.steps)
             {
@@ -291,27 +342,27 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                         {
                             if (ctrl.type == ctrlType.checkBox)
                                 title = "";
-                            if (ctrl.type == ctrlType.multiRowInput && ctrl.ctrls != null && ctrl.ctrls.Count > 0)
-                            {
-                                for (var i = 0; i < 20; i++)
-                                {
-                                    bool hasAnyValue = false;
-                                    foreach (var subCtrl in ctrl.ctrls)
-                                    {
-                                        string currKey = ctrl.name + "[" + i + "]." + subCtrl.name;
-                                        string subTitle = !string.IsNullOrEmpty(subCtrl.label) ? subCtrl.label : subCtrl.ph;
-                                        string subValue = foundItem.values.Where(t => t.Key == currKey).Select(t => t.Value).FirstOrDefault();
-                                        if (!string.IsNullOrEmpty(subTitle) && !string.IsNullOrEmpty(subValue))
-                                        {
-                                            hasAnyValue = true;
-                                            ProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = subCtrl.parentCL, title = subTitle, value = subValue });
-                                        }
-                                        else if (hasAnyValue == true && subCtrl.type == ctrlType.empty)
-                                            ProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = subCtrl.parentCL });
-                                    }
-                                }
-                            }
-                            else if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
+                            //if (ctrl.type == ctrlType.multiRowInput && ctrl.ctrls != null && ctrl.ctrls.Count > 0)
+                            //{
+                            //    for (var i = 0; i < 20; i++)
+                            //    {
+                            //        bool hasAnyValue = false;
+                            //        foreach (var subCtrl in ctrl.ctrls)
+                            //        {
+                            //            string currKey = ctrl.name + "[" + i + "]." + subCtrl.name;
+                            //            string subTitle = !string.IsNullOrEmpty(subCtrl.label) ? subCtrl.label : subCtrl.ph;
+                            //            string subValue = foundItem.values.Where(t => t.Key == currKey).Select(t => t.Value).FirstOrDefault();
+                            //            if (!string.IsNullOrEmpty(subTitle) && !string.IsNullOrEmpty(subValue))
+                            //            {
+                            //                hasAnyValue = true;
+                            //                ProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = subCtrl.parentCL, title = subTitle, value = subValue });
+                            //            }
+                            //            else if (hasAnyValue == true && subCtrl.type == ctrlType.empty)
+                            //                ProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = subCtrl.parentCL });
+                            //        }
+                            //    }
+                            //}
+                            if ((!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(value)) || (ctrl.type == ctrlType.checkBox && !string.IsNullOrEmpty(value)))
                                 ProposalFilledFormPdfGroupItems.Add(new ContractProposalFilledFormPdfGroupItem() { cssClass = ctrl.parentCL, title = title, value = value });
                         }
                     }
@@ -323,7 +374,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             result.ProposalFilledFormPdfGroupVMs = listGroup;
             result.ppfTitle = foundItem.contractTitle;
-            result.id = foundItem.SiteSettingId + "/" + foundItem.ProposalFormId + "/" + foundItem.Id;
+            result.id = foundItem.Id + "";
             result.ppfCreateDate = foundItem.createDate.ToFaDate();
             result.createUserFullname = foundItem.firstName + " " + foundItem.lastname;
 
@@ -409,7 +460,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .Where(t => t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Status == status))
                 .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
-                .Where(t => t.Status == status &&  t.Id == input.pKey)
+                .Where(t => t.Status == status && t.Id == input.pKey)
                 .Select(t => t.Id)
                 .FirstOrDefault();
 
@@ -429,11 +480,26 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                .Where(t => t.IsDelete != true && t.InsuranceContractProposalFilledFormUsers.Any(tt => tt.Id == id && tt.Status == status))
                .Any();
-          
+
             if (!foundItem)
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
-            return new { status = status, id = id };
+            return new { status, id };
+        }
+
+        public object GetDescription(long? id, int? siteSettingId, InsuranceContractProposalFilledFormType status)
+        {
+            var foundItem = db.InsuranceContractProposalFilledForms
+               .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+               .Where(t => t.IsDelete != true)
+               .SelectMany(t => t.InsuranceContractProposalFilledFormUsers)
+               .Where(tt => tt.Id == id && tt.Status == status)
+               .FirstOrDefault();
+
+            if (foundItem == null)
+                throw BException.GenerateNewException(BMessages.Not_Found);
+
+            return new { description = foundItem.Description };
         }
     }
 }

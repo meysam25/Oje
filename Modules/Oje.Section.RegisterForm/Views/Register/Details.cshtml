@@ -2,16 +2,13 @@
 @using Oje.Infrastructure.Services
 @inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
 @{
-    Layout = "_WebLayout";
     var curSetting = SiteSettingService.GetSiteSetting();
+    Layout = curSetting?.Layout;
     if (curSetting == null)
     {
         throw new Exception("Not Found");
     }
     var curDomain = "http" + (curSetting.IsHttps ? "s" : "") + "://" + curSetting.WebsiteUrl;
-    if (curSetting.WebsiteType == Oje.Infrastructure.Enums.WebsiteType.Tender) {
-        Layout = "_TenderLayout";
-    }
     ViewBag.Title = Model.ppfTitle;
     if(ViewBag.targetLayout != null)
     {

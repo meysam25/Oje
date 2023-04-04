@@ -82,6 +82,13 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractUserService.CreateFromExcel(input, InsuranceContractUserStatus.Temprory, SiteSettingService.GetSiteSetting()?.Id));
         }
 
+        [AreaConfig(Title = "افزودن بیمه شدگان موقت زیرمجموعه از روی فایل اکسل", Icon = "fa-plus")]
+        [HttpPost]
+        public IActionResult CreateFromXcelChilds([FromForm] GlobalExcelFile input)
+        {
+            return Json(InsuranceContractUserService.CreateFromExcelChild(input, InsuranceContractUserStatus.Temprory, SiteSettingService.GetSiteSetting()?.Id));
+        }
+
         [AreaConfig(Title = "حذف بیمه شدگان موقت", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)

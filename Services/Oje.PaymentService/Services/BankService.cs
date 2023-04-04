@@ -175,5 +175,13 @@ namespace Oje.PaymentService.Services
         {
             return db.Banks.Where(t => t.IsActive == true && t.Id == id).FirstOrDefault();
         }
+
+        public string GetIdByTitle(string title)
+        {
+            if (!string.IsNullOrEmpty(title))
+                title = title.Trim();
+
+            return db.Banks.Where(t => t.Title == title).Select(t => t.Id).FirstOrDefault() + "";
+        }
     }
 }

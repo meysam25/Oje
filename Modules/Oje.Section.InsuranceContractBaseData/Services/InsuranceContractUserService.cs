@@ -17,6 +17,7 @@ using Oje.FileService.Interfaces;
 using Oje.PaymentService.Interfaces;
 using Oje.Infrastructure.Interfac;
 using Microsoft.AspNetCore.Http;
+using IProvinceService = Oje.Section.InsuranceContractBaseData.Interfaces.IProvinceService;
 
 namespace Oje.Section.InsuranceContractBaseData.Services
 {
@@ -31,6 +32,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
         readonly IInsuranceContractUserSubCategoryService InsuranceContractUserSubCategoryService = null;
         readonly IInsuranceContractUserBaseInsuranceService InsuranceContractUserBaseInsuranceService = null;
         readonly IBankService BankService = null;
+        readonly IProvinceService ProvinceService = null;
         readonly IUserNotifierService UserNotifierService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
 
@@ -46,7 +48,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 IInsuranceContractUserBaseInsuranceService InsuranceContractUserBaseInsuranceService,
                 IBankService BankService,
                 IUserNotifierService UserNotifierService,
-                IHttpContextAccessor HttpContextAccessor
+                IHttpContextAccessor HttpContextAccessor,
+                IProvinceService ProvinceService
             )
         {
             this.db = db;
@@ -60,6 +63,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             this.BankService = BankService;
             this.UserNotifierService = UserNotifierService;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.ProvinceService = ProvinceService;
         }
 
         public ApiResult Create(CreateUpdateInsuranceContractUserVM input, InsuranceContractUserStatus status)
@@ -108,7 +112,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                         tell = input.tell,
                         shenasnameNo = input.shenasnameNo,
                         hireDate = input.hireDate,
-                        bankId = (input.bankId == 0 ? null : input.bankId),
+                        bankId = (input.bankId.ToIntReturnZiro() == 0 ? null : input.bankId.ToIntReturnZiro()),
+                        bProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro()),
+                        cardNO = input.cardNO,
+                        provinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null),
+                        cityId = input.cityId,
                     }, loginUserId?.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value).data.ToLongReturnZiro();
             }
             catch (Exception)
@@ -136,15 +144,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 BirthDate = input.birthDate.ToEnDate(),
                 FatherName = input.fatherName,
                 MarrageStatus = input.marrageStatus,
-                InsuranceContractUserBaseInsuranceId = input.baseInsuranceId == 0 ? null : input.baseInsuranceId,
+                InsuranceContractUserBaseInsuranceId = (input.baseInsuranceId.ToIntReturnZiro() == 0 ? null : input.baseInsuranceId.ToIntReturnZiro()),
                 InsuranceContractUserSubCategoryId = input.subCatId == 0 ? null : input.subCatId,
                 NationalCode = input.nationalCode,
                 ShenasnameNo = input.shenasnameNo,
-                InsuranceMiniBookNumber = input.insuranceMiniBookNumber,
                 InsuranceECode = input.eCode,
                 Gender = input.gender,
                 Mobile = input.mobile,
                 Custody = input.custody,
+                CardNO = input.cardNO,
+                BirthCertificateIssuingPlaceProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro()),
+                ProvinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null),
+                CityId = input.cityId,
+                BaseInsuranceCode = input.baseInsuranceCode,
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -218,12 +230,38 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.National_Is_Not_Valid);
             if (!string.IsNullOrEmpty(input.mainPersonECode) && !existByECode(input.id, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.mainPersonECode, input.insuranceContractId, loginUserId))
                 throw BException.GenerateNewException(BMessages.Main_Person_Code_Is_Not_Valid);
-            if (input.baseInsuranceId.ToIntReturnZiro() > 0 && !InsuranceContractUserBaseInsuranceService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.baseInsuranceId))
+            var tempBaseId = input.baseInsuranceId.ToIntReturnZiro();
+            if (tempBaseId > 0 && !InsuranceContractUserBaseInsuranceService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, tempBaseId))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.subCatId.ToIntReturnZiro() > 0 && !InsuranceContractUserSubCategoryService.Exist(canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value, input.subCatId))
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (!string.IsNullOrEmpty(input.password) && input.password.IsWeekPassword())
                 throw BException.GenerateNewException(BMessages.The_Password_Is_Week);
+            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
+                throw BException.GenerateNewException(BMessages.Invalid_CardNo);
+            int tempProvinceId = input.provinceId.ToIntReturnZiro();
+            if (tempProvinceId > 0 && input.cityId.ToIntReturnZiro() > 0 && !db.Cities.Any(t => t.Id == input.cityId && t.ProvinceId == tempProvinceId))
+                throw BException.GenerateNewException(BMessages.Invalid_City);
+            if (tempProvinceId > 0 && !db.Provinces.Any(t => t.Id == tempProvinceId))
+                throw BException.GenerateNewException(BMessages.Province_Not_Found);
+            if (!string.IsNullOrEmpty(input.baseInsuranceCode) && input.baseInsuranceCode.Length > 20)
+                throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (input.gender == null)
+                throw BException.GenerateNewException(BMessages.Please_Select_Gender);
+            if (string.IsNullOrEmpty(input.birthDate))
+                throw BException.GenerateNewException(BMessages.Please_Enter_BirthDate);
+            if (input.birthDate.ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            if (!string.IsNullOrEmpty(input.bProvinceId) && input.bProvinceId.ToIntReturnZiro() <= 0)
+                throw BException.GenerateNewException(BMessages.Province_Not_Found);
+            if (!string.IsNullOrEmpty(input.bankShaba) && input.bankShaba.Length != 24)
+                throw BException.GenerateNewException(BMessages.Invalid_ShabaNo);
+            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
+                throw BException.GenerateNewException(BMessages.Invalid_CardNo);
+            if (!string.IsNullOrEmpty(input.nationalCode) && db.InsuranceContractUsers.Any(t => t.NationalCode == input.nationalCode && t.Id != input.id && t.SiteSettingId == siteSettingId))
+                throw BException.GenerateNewException(BMessages.Dublicate_NationalCode);
+            if (!string.IsNullOrEmpty(input.eCode) && db.InsuranceContractUsers.Any(t => t.InsuranceECode == input.eCode && t.Id != input.id && t.SiteSettingId == siteSettingId))
+                throw BException.GenerateNewException(BMessages.Dublicate_ECode);
         }
 
         private bool existByNationalCode(long? id, int? siteSettingId, long? loginUserId, string nationalCode, int? insuranceContractId)
@@ -313,10 +351,14 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     bankid = t.User != null ? t.User.BankId : null,
                     hireDate = t.User != null ? t.User.HireDate : null,
                     tell = t.User != null ? t.User.Tell : "",
-                    insuranceMiniBookNumber = t.InsuranceMiniBookNumber,
                     custody = t.Custody,
                     cSOWSiteSettingId = t.SiteSettingId,
-                    cSOWSiteSettingId_Title = t.SiteSetting.Title
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title,
+                    bProvinceId = t.BirthCertificateIssuingPlaceProvinceId,
+                    t.CardNO,
+                    t.ProvinceId,
+                    t.CityId,
+                    t.BaseInsuranceCode
                 })
                 .OrderByDescending(t => t.id)
                 .Take(1)
@@ -326,7 +368,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     id = t.id,
                     bankAcount = t.bankAcount,
                     bankShaba = t.bankShaba,
-                    baseInsuranceId = t.baseInsuranceId,
+                    baseInsuranceId = t.baseInsuranceId + "",
                     subCatId = t.subCatId,
                     eCode = t.eCode,
                     email = t.email,
@@ -348,16 +390,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     gender = t.gender,
                     marrageStatus = t.marrageStatus,
                     shenasnameNo = t.shenasnameNo,
-                    bankId = t.bankid,
+                    bankId = t.bankid + "",
                     hireDate = t.hireDate.ToFaDate(),
                     tell = t.tell,
-                    insuranceMiniBookNumber = t.insuranceMiniBookNumber,
                     custody = t.custody,
                     cSOWSiteSettingId = t.cSOWSiteSettingId,
-                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title,
+                    bProvinceId = t.bProvinceId + "",
+                    cardNO = t.CardNO,
+                    provinceId = t.ProvinceId + "",
+                    cityId = t.CityId,
+                    baseInsuranceCode = t.BaseInsuranceCode
                 })
                 .FirstOrDefault();
-
         }
 
         public GridResultVM<InsuranceContractUserMainGridResultVM> GetList(InsuranceContractUserMainGrid searchInput, InsuranceContractUserStatus status)
@@ -484,8 +529,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 foundUser.tell = input.tell;
                 foundUser.hireDate = input.hireDate;
                 foundUser.isActive = input.isActive.ToBooleanReturnFalse();
-                foundUser.bankId = input.bankId;
+                foundUser.bankId = (input.bankId.ToIntReturnZiro() > 0 ? input.bankId.ToIntReturnZiro() : null);
                 foundUser.shenasnameNo = input.shenasnameNo;
+                foundUser.bProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro());
+                foundUser.cardNO = input.cardNO;
+                foundUser.provinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null);
+                foundUser.cityId = input.cityId;
 
                 if (UserService.UpdateForUser(foundUser, loginUserId?.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value).isSuccess == false)
                     throw BException.GenerateNewException(BMessages.UnknownError);
@@ -496,19 +545,23 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.InsuranceContractId = input.insuranceContractId.Value;
             foundItem.MarrageStatus = input.marrageStatus;
             foundItem.ShenasnameNo = input.shenasnameNo;
-            foundItem.InsuranceContractUserBaseInsuranceId = input.baseInsuranceId;
+            foundItem.InsuranceContractUserBaseInsuranceId = (input.baseInsuranceId.ToIntReturnZiro() > 0 ? input.baseInsuranceId.ToIntReturnZiro() : null);
             foundItem.InsuranceContractUserSubCategoryId = input.subCatId;
             foundItem.FirstName = input.firstName;
             foundItem.LastName = input.lastName;
             foundItem.FatherName = input.fatherName;
             foundItem.NationalCode = input.nationalCode;
-            foundItem.InsuranceMiniBookNumber = input.insuranceMiniBookNumber;
             foundItem.BirthDate = input.birthDate.ToEnDate();
             foundItem.InsuranceECode = input.eCode;
             foundItem.Gender = input.gender;
             foundItem.Mobile = input.mobile;
             foundItem.Custody = input.custody;
             foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
+            foundItem.BirthCertificateIssuingPlaceProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro());
+            foundItem.CardNO = input.cardNO;
+            foundItem.ProvinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null);
+            foundItem.CityId = input.cityId;
+            foundItem.BaseInsuranceCode = input.baseInsuranceCode;
 
             if (input.nationalcodeImage != null && input.nationalcodeImage.Length > 0)
                 foundItem.KartMeliFileUrl = uploadedFileService.UploadNewFile(FileType.ContractUserDocuemnt, input.nationalcodeImage, loginUserId?.UserId, null, foundItem.Id, ".jpg,.png,jpeg", true);
@@ -559,6 +612,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 return ApiResult.GenerateNewResult(false, BMessages.Please_Select_File);
 
             List<CreateUpdateInsuranceContractUserVM> models = ExportToExcel.ConvertToModel<CreateUpdateInsuranceContractUserVM>(input?.excelFile);
+            models = models.Where(t => !string.IsNullOrEmpty(t.firstName) && !string.IsNullOrEmpty(t.lastName)).ToList();
+
             if (models != null && models.Count > 0)
             {
                 for (var i = 0; i < models.Count; i++)
@@ -567,23 +622,35 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     try
                     {
                         model.familyRelation = InsuranceContractUserFamilyRelation.Self;
-                        if (model.bankId.ToIntReturnZiro() > 0)
+                        if (!string.IsNullOrEmpty(model.bankId))
                         {
-                            model.bankId = BankService.GetByCode(model.bankId);
-                            if (model.bankId <= 0)
+                            model.bankId = BankService.GetIdByTitle(model.bankId);
+                            if (model.bankId.ToIntReturnZiro() <= 0)
                                 throw BException.GenerateNewException(BMessages.Invalid_Bank);
                         }
-                        if (model.baseInsuranceId.ToIntReturnZiro() > 0)
+                        if (!string.IsNullOrEmpty(model.baseInsuranceId))
                         {
-                            model.baseInsuranceId = InsuranceContractUserBaseInsuranceService.GetByCode(siteSettingId, model.baseInsuranceId.Value.ToString());
-                            if (model.baseInsuranceId <= 0)
-                                throw BException.GenerateNewException(BMessages.Validation_Error);
+                            model.baseInsuranceId = InsuranceContractUserBaseInsuranceService.GetIdByTitle(siteSettingId, model.baseInsuranceId);
+                            if (model.baseInsuranceId.ToIntReturnZiro() <= 0)
+                                throw BException.GenerateNewException(BMessages.Invalid_BaseInsurance);
                         }
                         if (model.subCatId.ToIntReturnZiro() > 0)
                         {
                             model.subCatId = InsuranceContractUserSubCategoryService.GetByCode(siteSettingId, model.subCatId.Value.ToString());
                             if (model.subCatId <= 0)
-                                throw BException.GenerateNewException(BMessages.Validation_Error);
+                                throw BException.GenerateNewException(BMessages.Invalid_SubCategory);
+                        }
+                        if (!string.IsNullOrEmpty(model.bProvinceId))
+                        {
+                            model.bProvinceId = ProvinceService.GetIdByTitle(model.bProvinceId);
+                            if (model.bProvinceId.ToIntReturnZiro() <= 0)
+                                throw BException.GenerateNewException(BMessages.Province_Not_Found);
+                        }
+                        if (!string.IsNullOrEmpty(model.provinceId))
+                        {
+                            model.provinceId = ProvinceService.GetIdByTitle(model.provinceId);
+                            if (model.provinceId.ToIntReturnZiro() <= 0)
+                                throw BException.GenerateNewException(BMessages.Province_Not_Found);
                         }
                         Create(model, status);
 
@@ -621,36 +688,43 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 return ApiResult.GenerateNewResult(false, BMessages.Please_Select_File);
 
             List<CreateUpdateInsuranceContractUserChildVM> models = ExportToExcel.ConvertToModel<CreateUpdateInsuranceContractUserChildVM>(input?.excelFile);
+            models = models.Where(t => !string.IsNullOrEmpty(t.firstName) && !string.IsNullOrEmpty(t.lastName)).ToList();
             if (models != null && models.Count > 0)
             {
                 var tempModels = models.Select(t => new CreateUpdateInsuranceContractUserVM
                 {
-                    insuranceContractId = t.insuranceContractId,
-                    mainPersonECode = t.mainPersonECode,
-                    familyRelation = t.familyRelation,
                     firstName = t.firstName,
                     lastName = t.lastName,
-                    fatherName = t.fatherName,
-                    birthDate = t.birthDate,
-                    shenasnameNo = t.shenasnameNo,
+                    gender = t.gender,
                     nationalCode = t.nationalCode,
+                    birthDate = t.birthDate,
+                    fatherName = t.fatherName,
+                    bProvinceId = t.bProvinceId,
+                    shenasnameNo = t.shenasnameNo,
                     custody = t.custody,
-                    marrageStatus = t.marrageStatus,
-                    baseInsuranceId = t.baseInsuranceId,
-                    insuranceMiniBookNumber = t.insuranceMiniBookNumber
+                    familyRelation = t.familyRelation,
+                    mainPersonNationalCode = t.mainPersonNationalCode,
+                    mainPersonECode = t.mainPersonECode
                 }).ToList();
                 for (var i = 0; i < tempModels.Count; i++)
                 {
                     var model = tempModels[i];
+
+                    model.insuranceContractId = db.InsuranceContractUsers
+                        .Where(t => t.FamilyRelation == InsuranceContractUserFamilyRelation.Self && (t.NationalCode == model.mainPersonNationalCode || t.InsuranceECode == model.mainPersonECode))
+                        .Select(t => t.InsuranceContractId)
+                        .FirstOrDefault();
+
                     try
                     {
+
                         if (model.familyRelation == InsuranceContractUserFamilyRelation.Self)
                             throw BException.GenerateNewException(BMessages.Please_Select_FamilyRelation);
-                        if (model.baseInsuranceId.ToIntReturnZiro() > 0)
+                        if (!string.IsNullOrEmpty(model.bProvinceId))
                         {
-                            model.baseInsuranceId = InsuranceContractUserBaseInsuranceService.GetByCode(siteSettingId, model.baseInsuranceId.Value.ToString());
-                            if (model.baseInsuranceId <= 0)
-                                throw BException.GenerateNewException(BMessages.Validation_Error);
+                            model.bProvinceId = ProvinceService.GetIdByTitle(model.bProvinceId);
+                            if (model.bProvinceId.ToIntReturnZiro() <= 0)
+                                throw BException.GenerateNewException(BMessages.Province_Not_Found);
                         }
 
                         Create(model, status);

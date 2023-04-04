@@ -149,7 +149,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         {
             object tempResult = null;
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginWithSMS, BlockAutoIpAction.BeforeExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
-            try { tempResult = SmsSendingQueueService.LoginWithSMS(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
+            try { tempResult = SmsSendingQueueService.LoginWithSMS(input, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id, null); } catch (BException ex) { UserLoginLogoutLogService.Create(ex.UserId, UserLoginLogoutLogType.LoginWithPhoneNumber, SiteSettingService.GetSiteSetting()?.Id, false, ex.Message); throw; } catch { throw; }
             BlockAutoIpService.CheckIfRequestIsValid(BlockClientConfigType.LoginWithSMS, BlockAutoIpAction.AfterExecute, HttpContext.GetIpAddress(), SiteSettingService.GetSiteSetting()?.Id);
             return Json(tempResult);
         }

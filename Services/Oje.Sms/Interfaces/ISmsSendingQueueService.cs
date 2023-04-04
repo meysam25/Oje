@@ -2,11 +2,6 @@
 using Oje.Infrastructure.Models;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Sms.Interfaces
 {
@@ -16,7 +11,7 @@ namespace Oje.Sms.Interfaces
         void SaveChange();
         void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite);
         Task SendSms();
-        object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId);
+        object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId, SmsValidationHistoryType? smsValidationHistoryType);
         object ActiveCodeForResetPassword(RegLogSMSVM input, IpSections ipSections, int? siteSettingId);
     }
 }

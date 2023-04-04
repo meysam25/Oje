@@ -1,0 +1,31 @@
+﻿@using Oje.Infrastructure
+@{
+    Layout = "_TreatmentLayout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="/Modules/Core/css/treatmentIndex.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+}
+
+
+<div class="page">
+    <div class="container">
+       <div class="row">
+            <div id="holderMainPageDescription" class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+            </div>
+           <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+                <div id="mainPageHolderImage" style="text-align:center;"></div>
+           </div>
+       </div>
+    </div>
+</div>
+
+<script>
+    postForm('/ContractWeb/GetMainDescription', new FormData(), function (res) 
+    {
+        if (res && res.mainImage_address && res.desctpion) {
+            $('#mainPageHolderImage').html('<img style="width:80%" src="' + res.mainImage_address + '"  />');
+            $('#holderMainPageDescription').html(res.desctpion);
+        }
+    }, null, function () { })
+</script>

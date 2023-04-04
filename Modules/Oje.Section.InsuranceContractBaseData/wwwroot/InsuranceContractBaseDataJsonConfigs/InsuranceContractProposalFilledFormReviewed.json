@@ -99,6 +99,9 @@
                         "template": "function bindRow (curRow) { return '<span title=\"تغییر وضعیت\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormReviewed/GetStatus\\', \\'InsuranceContractProposalFilledFormReviewedchangeStatusModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-thumbs-up\" ></i></span>' };bindRow(data)"
                       },
                       {
+                        "template": "function bindRow (curRow) { return '<span title=\"مشاهده توضیحات\" onclick=\"showEditModal('+ curRow.id +', \\'/InsuranceContractBaseData/InsuranceContractProposalFilledFormReviewed/GetDescription\\', \\'InsuranceContractProposalFilledFormReviewedShowDescriptionModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-comment\" ></i></span>' };bindRow(data)"
+                      },
+                      {
                         "type": "edit",
                         "icon": "fa-dollar-sign",
                         "prop": "id",
@@ -154,7 +157,7 @@
 
                     {
                       "field": "relation",
-                      "caption": "نصبت",
+                      "caption": "نسبت",
                       "search": {
                         "searchType": "dropdown",
                         "url": "/Core/BaseData/Get/InsuranceContractUserFamilyRelation",
@@ -338,6 +341,26 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "id": "InsuranceContractProposalFilledFormReviewedShowDescriptionModal",
+          "title": "توضیحات",
+          "class": "",
+          "ctrls": [
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "description",
+              "type": "textarea",
+              "label": "توضیحات"
+            }
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
             }
           ]
         }

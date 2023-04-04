@@ -1,7 +1,7 @@
-﻿@{
-    Layout = "_WebLayout";
+﻿@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
+@{
+    Layout = SiteSettingService.GetSiteSetting()?.Layout;
 }
-
 @model Oje.Section.Blog.Models.View.BlogVM
 @inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService
 

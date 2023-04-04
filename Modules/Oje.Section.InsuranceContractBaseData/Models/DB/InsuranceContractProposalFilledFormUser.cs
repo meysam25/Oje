@@ -28,6 +28,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public InsuranceContractProposalFilledFormType Status { get; set; }
         public long? Price { get; set; }
         public DateTime? ConfirmDate { get; set; }
+        public string Description { get; set; }
 
 
         [InverseProperty("InsuranceContractProposalFilledFormUser")]

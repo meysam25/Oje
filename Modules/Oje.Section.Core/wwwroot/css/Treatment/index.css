@@ -1,0 +1,21 @@
+.mainContent {
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+.page {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    -webkit-align-items: center;
+    align-items: center;
+    display:flex;
+}
+#holderMainPageDescription {
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: center;
+    justify-content: center;
+}

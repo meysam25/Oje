@@ -190,6 +190,7 @@
                       "name": "carValue",
                       "type": "text",
                       "label": "ارزش خودرو شما (ریال)",
+                      "seperator": true,
                       "isRequired": true
                     },
                     {
@@ -197,6 +198,7 @@
                       "name": "exteraValue",
                       "type": "text",
                       "label": "ارزش وسایل اضافه (ریال)",
+                      "seperator": true,
                       "isRequired": true
                     },
                     {

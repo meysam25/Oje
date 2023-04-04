@@ -47,6 +47,8 @@ namespace Oje.AccountService.Models.View
         public int? cityId { get; set; }
         public string licenceExpireDate { get; set; }
         public bool? canSeeOtherSites { get; set; }
+        public int? bProvinceId { get; set; }
+        public string cardNO { get; set; }
 
     }
 }

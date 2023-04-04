@@ -20,7 +20,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
         public string mainPersonNationalcode { get; set; }
         [Display(Name = "تاریخ تولد")]
         public string birthDate { get; set; }
-        [Display(Name = "نصبت")]
+        [Display(Name = "نسبت")]
         public string familyRelation { get; set; }
         [Display(Name = "کاربر ثبت شده")]
         public string createUser { get; set; }

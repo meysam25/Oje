@@ -431,7 +431,22 @@ function compressImageAndAddToFormData(file, img, targetImage) {
     }, 'image/jpeg', 0.9);
 }
 
-function getFormData(selector) {
+function formDataDublicationCheck(ignoreDublicateKey, postFormData, curName) {
+    if (!ignoreDublicateKey)
+        return true;
+
+    if (postFormData && curName) {
+        var fdKeys = postFormData.keys();
+        for (var key of fdKeys) {
+            if (key == curName)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+function getFormData(selector, ignoreDublicateKey) {
     var postData = new FormData();
 
     if ($(selector).closest('.modal').length > 0) {
@@ -442,7 +457,8 @@ function getFormData(selector) {
 
     $(selector).find('textarea').each(function () {
         var curName = $(this).attr('name');
-        if (curName) {
+        
+        if (curName && formDataDublicationCheck(ignoreDublicateKey, postData, curName)) {
             if ($(this)[0].ckEditor) {
                 postData.append(curName, $(this)[0].ckEditor.getData());
             } else {
@@ -460,13 +476,13 @@ function getFormData(selector) {
         var s2Obj = $(this).data('select2');
         if (s2Obj) {
             var curValue = s2Obj.val();
-            if (curName) {
+            if (curName && formDataDublicationCheck(ignoreDublicateKey, postData, curName)) {
                 postData.append(curName, curValue);
             }
         } else {
             var curValue = $(this).find('option:selected').val();
             var curValueText = $(this).find('option:selected').text();
-            if (curName && curValue) {
+            if (curName && curValue && formDataDublicationCheck(ignoreDublicateKey, postData, curName)) {
                 postData.append(curName, curValue);
                 postData.append(curName + '_Title', curValueText);
             }
@@ -482,7 +498,7 @@ function getFormData(selector) {
             type = curCTRLType;
         }
         type = type.toLowerCase();
-        if (name) {
+        if (name && formDataDublicationCheck(ignoreDublicateKey, postData, name)) {
             switch (type) {
                 case 'password':
                 case 'text':
@@ -523,6 +539,8 @@ function getFormData(selector) {
         }
 
     });
+
+    
 
     return postData;
 }

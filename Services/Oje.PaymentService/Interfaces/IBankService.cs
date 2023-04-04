@@ -14,5 +14,6 @@ namespace Oje.PaymentService.Interfaces
         object GetLightList();
         int? GetByCode(int? code);
         Bank GetBy(int id);
+        string GetIdByTitle(string title);
     }
 }

@@ -80,6 +80,13 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(InsuranceContractProposalFilledFormService.GetStatus(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
         }
 
+        [AreaConfig(Title = "مشاهده توضیحات", Icon = "fa-eye")]
+        [HttpPost]
+        public IActionResult GetDescription([FromForm] GlobalLongId input)
+        {
+            return Json(InsuranceContractProposalFilledFormService.GetDescription(input?.id, SiteSettingService.GetSiteSetting()?.Id, status));
+        }
+
         [AreaConfig(Title = "تغییر وضعیت فرم پیشنهاد", Icon = "fa-pencil")]
         [HttpPost]
         public IActionResult UpdateStatus([FromForm] InsuranceContractProposalFilledFormChangeStatusVM input)

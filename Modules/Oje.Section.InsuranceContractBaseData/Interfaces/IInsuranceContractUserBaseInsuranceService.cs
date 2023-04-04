@@ -13,5 +13,6 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         object GetLightList(int? siteSettingId);
         bool Exist(int? siteSettingId, int? id);
         int? GetByCode(int? siteSettingId,string code);
+        string GetIdByTitle(int? siteSettingId, string title);
     }
 }

@@ -87,7 +87,7 @@
 }
 <div class="pdfBody">
     <div class="pdfHeader">
-        <div class="headerItem" >شماره:@(Model.id)</div><div class="headerItem ppfTitle">@(Model.ppfTitle)</div><div class="headerItem" >تاریخ:@(Model.ppfCreateDate)</div>
+        <div class="headerItem" >شماره پیگیری:@(Model.id)</div><div class="headerItem ppfTitle">@(Model.ppfTitle)</div><div class="headerItem" >تاریخ:@(Model.ppfCreateDate)</div>
     </div>
     @{
         if(Model.ProposalFilledFormPdfGroupVMs != null && Model.ProposalFilledFormPdfGroupVMs.Count > 0)
@@ -103,9 +103,18 @@
                                 {
                                     foreach(var gorupItem in group.ContractProposalFilledFormPdfGroupItems )
                                     {
-                                         <div class="printItem @(gorupItem.cssClass)">
-                                            <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
-                                        </div>
+                                        if (!gorupItem.isImage)
+                                        {
+                                            <div class="printItem @(gorupItem.cssClass)">
+                                                <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title + ":":"") <strong>@(gorupItem.value)</strong> </label>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="printItem @(gorupItem.cssClass)">
+                                                <label>@(!string.IsNullOrEmpty(gorupItem.title) ? gorupItem.title :"") <br /><img alt="@(gorupItem.title)" style="width: 100%;" src="@(gorupItem.value)" /></label>
+                                            </div>
+                                        }
                                     }
                                 }
                             }

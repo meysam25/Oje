@@ -467,5 +467,10 @@ namespace Oje.FileService.Services
                .ToList()
                ;
         }
+
+        public List<UploadedFile> GetFileList(long id, FileType ftype)
+        {
+            return db.UploadedFiles.Where(t => t.ObjectId == id && t.FileType == ftype).AsNoTracking().ToList();
+        }
     }
 }

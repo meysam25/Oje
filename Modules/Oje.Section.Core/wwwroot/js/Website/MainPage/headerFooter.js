@@ -91,9 +91,9 @@ $.fn.loadTopMenu = function (url) {
 
         result += '<li>';
         if (l1Item.link)
-            result += '<a title="' + l1Item.title +'" href="' + (l1Item.link ? l1Item.link : '#') + '">' + l1Item.title + (l1Item.childs && l1Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+            result += '<a title="' + l1Item.title + '" href="' + (l1Item.link ? l1Item.link : '#') + '">' + l1Item.title + (l1Item.childs && l1Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
         else
-            result += '<a title="' + l1Item.title +'" href="#">' + l1Item.title + (l1Item.childs && l1Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+            result += '<a title="' + l1Item.title + '" href="#">' + l1Item.title + (l1Item.childs && l1Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
 
         if (l1Item.childs && l1Item.childs.length > 0) {
             result += '<ul>';
@@ -101,9 +101,9 @@ $.fn.loadTopMenu = function (url) {
                 var level2Item = l1Item.childs[j];
                 result += '<li>';
                 if (level2Item.link)
-                    result += '<a title="' + level2Item.title +'" href="' + (level2Item.link ? level2Item.link : '#') + '">' + level2Item.title + (level2Item.childs && level2Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                    result += '<a title="' + level2Item.title + '" href="' + (level2Item.link ? level2Item.link : '#') + '">' + level2Item.title + (level2Item.childs && level2Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
                 else
-                    result += '<a title="' + level2Item.title +'" href="#">' + level2Item.title + (level2Item.childs && level2Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                    result += '<a title="' + level2Item.title + '" href="#">' + level2Item.title + (level2Item.childs && level2Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
 
                 if (level2Item.childs && level2Item.childs.length > 0) {
                     result += '<ul>';
@@ -111,9 +111,9 @@ $.fn.loadTopMenu = function (url) {
                         var level3Item = level2Item.childs[m];
                         result += '<li>';
                         if (level3Item.link)
-                            result += '<a title="' + level3Item.title +'" href="' + (level3Item.link ? level3Item.link : '#') + '">' + level3Item.title + (level3Item.childs && level3Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                            result += '<a title="' + level3Item.title + '" href="' + (level3Item.link ? level3Item.link : '#') + '">' + level3Item.title + (level3Item.childs && level3Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
                         else
-                            result += '<a title="' + level3Item.title +'" href="#">' + level3Item.title + (level3Item.childs && level3Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                            result += '<a title="' + level3Item.title + '" href="#">' + level3Item.title + (level3Item.childs && level3Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
 
                         if (level3Item.childs && level3Item.childs.length > 0) {
                             result += '<ul>';
@@ -121,9 +121,9 @@ $.fn.loadTopMenu = function (url) {
                                 result += '<li>';
                                 var level4Item = level3Item.childs[n];
                                 if (level4Item.link)
-                                    result += '<a title="' + level4Item.title +'" href="' + (level4Item.link ? level4Item.link : '#') + '">' + level4Item.title + (level4Item.childs && level4Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                                    result += '<a title="' + level4Item.title + '" href="' + (level4Item.link ? level4Item.link : '#') + '">' + level4Item.title + (level4Item.childs && level4Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
                                 else
-                                    result += '<a title="' + level4Item.title +'" href="#">' + level4Item.title + (level4Item.childs && level4Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
+                                    result += '<a title="' + level4Item.title + '" href="#">' + level4Item.title + (level4Item.childs && level4Item.childs.length > 0 ? '<i class="fa fa-angle-left moreMenuItems"></i>' : '') + '</a>';
                                 result += '</li>';
                             }
                             result += '</ul>';
@@ -142,7 +142,9 @@ $.fn.loadTopMenu = function (url) {
     }
     return this.each(function () {
         postForm(url, new FormData(), function (res) {
-            var template = '<a title="' + $('#mainSiteLogoIcon').attr('title') + '" href="/"><img class="floatingIcon" width="50" height="50" alt="' + $('#mainSiteLogoIcon').attr('title') + '" src="' + $('#mainSiteLogoIcon').find('img').attr('src') + '" /></a>';
+            var template = ''
+            if ($('#mainSiteLogoIcon').length > 0)
+                template += '<a title="' + $('#mainSiteLogoIcon').attr('title') + '" href="/"><img class="floatingIcon" width="50" height="50" alt="' + $('#mainSiteLogoIcon').attr('title') + '" src="' + $('#mainSiteLogoIcon').find('img').attr('src') + '" /></a>';
             if (res && res.length > 0) {
                 template += '<ul class="topMenuNew">';
                 for (var i = 0; i < res.length; i++) {

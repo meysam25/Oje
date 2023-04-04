@@ -154,6 +154,18 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/js/treatmentMainPage.min.js",
+    "inputFiles": [
+      "wwwroot/js/Website/MainPage/ctrls.js",
+      "wwwroot/js/Website/lazyLoadOnScroll.js",
+      "wwwroot/js/treatment/indexPage.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/js/jquery.min.js",
     "inputFiles": [
       "wwwroot/js/jquery-3.5.1.min.js"
@@ -217,6 +229,26 @@
     }
   },
   {
+    "outputFileName": "wwwroot/Core/css/byFont.css",
+    "inputFiles": [
+      "wwwroot/css/yekan.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/vFont.css",
+    "inputFiles": [
+      "wwwroot/css/adminFont.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/Core/css/core.min.css",
     "inputFiles": [
       "wwwroot/css/bootstrap.min.css",
@@ -231,7 +263,6 @@
       "wwwroot/css/treeView.css",
       "wwwroot/css/main.css",
       "wwwroot/css/makeRTL.css",
-      "wwwroot/css/adminFont.css",
       "wwwroot/css/NewPersianDatePicker/prism.css",
       "wwwroot/css/NewPersianDatePicker/persianDatepicker-default.css",
       "wwwroot/css/stepWizard.css",
@@ -282,6 +313,27 @@
       "wwwroot/css/Website/ctrls.css",
       "wwwroot/css/Website/scrollAnimation.css",
       "wwwroot/css/Website/mySlider.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/treatmentMaster.min.css",
+    "inputFiles": [
+      "wwwroot/css/Website/ctrls.css",
+      "wwwroot/css/Treatment/master.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/Core/css/treatmentIndex.min.css",
+    "inputFiles": [
+      "wwwroot/css/Treatment/index.css"
     ],
     "minify": {
       "enabled": true,

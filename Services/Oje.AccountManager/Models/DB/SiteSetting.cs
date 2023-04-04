@@ -68,5 +68,16 @@ namespace Oje.AccountService.Models.DB
         public List<UserNotificationTriger> UserNotificationTrigers { get; set; }
         [InverseProperty("SiteSetting")]
         public List<User> SiteSettingUsers { get; set; }
+
+        [NotMapped]
+        public string Layout { get 
+            {
+                if (WebsiteType == null || WebsiteType == Infrastructure.Enums.WebsiteType.Normal) return "_WebLayout";
+                else if (WebsiteType == Infrastructure.Enums.WebsiteType.Tender) return "_TenderLayout";
+                else if (WebsiteType == Infrastructure.Enums.WebsiteType.Treatment) return "_TreatmentLayout";
+
+                return "_WebLayout";
+            } 
+        }
     }
 }

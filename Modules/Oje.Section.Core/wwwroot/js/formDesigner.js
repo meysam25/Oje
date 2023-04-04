@@ -890,7 +890,7 @@ function getCurCtrlTemplate(curMouseMove, targetQuiry) {
                     type: "dropDown",
                     textfield: "title",
                     valuefield: "id",
-                    label: "نصبت با بیمه شده",
+                    label: "نسبت با بیمه شده",
                     name: "typeOfRelation",
                     isRequired: true,
                     values: [

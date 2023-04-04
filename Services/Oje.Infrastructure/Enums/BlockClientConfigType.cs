@@ -89,6 +89,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "استعلام بر اساس پلاک و کد ملی ثالث")]
         CarThirdPlaqueInquiry = 44,
         [Display(Name = "ثبت فرم عمومی")]
-        CreateGeneralForms = 45
+        CreateGeneralForms = 45,
+        [Display(Name = "ثبت خسارت اعتبار سنجی کد پیامکی")]
+        ContractValidationSMSCheck = 46,
+        [Display(Name = "کد تایید جهت ایجاد درخواست درمان")]
+        ContractCreateConfirmSMS = 47,
     }
 }
