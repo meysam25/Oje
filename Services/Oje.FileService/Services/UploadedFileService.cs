@@ -52,7 +52,7 @@ namespace Oje.FileService.Services
             db.Entry(newFile).State = EntityState.Added;
             db.SaveChanges();
 
-            
+
 
             var fi = new FileInfo(userPic.FileName);
 
@@ -371,6 +371,7 @@ namespace Oje.FileService.Services
                {
                    t.id,
                    src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg",
+                   dSrc = !string.IsNullOrEmpty(t.src) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : getFileSrcBy(t.src),
                    title = string.IsNullOrEmpty(t.title) ? "" : t.title
 
                })
@@ -471,6 +472,35 @@ namespace Oje.FileService.Services
         public List<UploadedFile> GetFileList(long id, FileType ftype)
         {
             return db.UploadedFiles.Where(t => t.ObjectId == id && t.FileType == ftype).AsNoTracking().ToList();
+        }
+
+        public object GetCountBy(long foundItemId, List<FileType> fStatus, int? siteSettingId)
+        {
+            return db.UploadedFiles.Count(t => t.ObjectId == foundItemId && fStatus.Contains(t.FileType) && t.SiteSettingId == siteSettingId);
+        }
+
+        public object GetListBy(long foundItemId, List<FileType> fStatus, int skip, int take, int? siteSettingId)
+        {
+            return db.UploadedFiles.OrderByDescending(t => t.Id)
+              .Where(t => t.ObjectId == foundItemId && fStatus.Contains(t.FileType) && t.SiteSettingId == siteSettingId)
+              .Skip(skip).Take(take)
+              .Select(t => new
+              {
+                  id = t.Id,
+                  src = t.FileName,
+                  title = t.Title
+              })
+              .ToList()
+              .Select(t => new
+              {
+                  t.id,
+                  src = !string.IsNullOrEmpty(t.src) && (isImage(Path.GetFileName(t.src)) || t.src.ToLower().EndsWith(".webp")) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : "/Modules/Images/unknown.svg",
+                  dSrc = !string.IsNullOrEmpty(t.src) ? GlobalConfig.FileAccessHandlerUrl + "?fn=" + Path.GetFileName(t.src) : getFileSrcBy(t.src),
+                  title = string.IsNullOrEmpty(t.title) ? "" : t.title
+
+              })
+              .ToList()
+              ;
         }
     }
 }

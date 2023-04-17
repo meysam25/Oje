@@ -65,17 +65,18 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult DownloadPdf([FromQuery] GlobalLongId input)
         {
             return File(
-                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("PdfDetailes", "TenderFilledForm", new { area = "TenderAdmin", id = input.id, isPrint = true }), Request.Cookies),
+                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("PdfDetailes", "TenderFilledForm", new { area = "TenderAdmin", input.id, isPrint = true }), Request.Cookies),
                     System.Net.Mime.MediaTypeNames.Application.Pdf, DateTime.Now.ToFaDate("_") + "_" + DateTime.Now.ToString("HH_mm_ss") + ".pdf"
                 );
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [AreaConfig(Title = "جزییات", Icon = "fa-eye")]
-        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
+        public IActionResult PdfDetailes(long id, [FromQuery] bool isPrint = false, [FromQuery] bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
             //ViewBag.newLayoutName = "_WebLayout";
+            ViewBag.ignoreMaster = ignoreMaster;
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId, tenderSelectStatus));
         }
 
@@ -83,7 +84,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         [AreaConfig(Title = "دانلود مدارک", Icon = "fa-download")]
         public IActionResult DownloadDocument([FromQuery] long? id, [FromQuery] int? cId)
         {
-            string tempUrl = (Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("ViewDocument", "TenderFilledForm", new { area = "TenderAdmin", tid = id, cId = cId });
+            string tempUrl = (Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("ViewDocument", "TenderFilledForm", new { area = "TenderAdmin", tid = id, cId });
             return File(
                     HtmlToPdfBlink.Convert(tempUrl, Request.Cookies),
                     System.Net.Mime.MediaTypeNames.Application.Pdf, DateTime.Now.ToFaDate("_") + "_" + DateTime.Now.ToString("HH_mm_ss") + ".pdf"

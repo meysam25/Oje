@@ -251,6 +251,9 @@ footer {
     min-height: 70px;
     -webkit-align-items: center;
     align-items: center;
+    -ms-flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 .holderLicences {
@@ -299,10 +302,25 @@ footer {
     width: 100% !important;
 }
 
+.ContactUsSection  h1 {
+    font-size: 2em;
+    text-align: center;
+}
+.ContactUsSection  h2 {
+    font-size: 1.5em;
+    text-align: center;
+    padding-bottom: 25px;
+}
+
+
 @media (max-width: 990px) {
-    /*.holderMainPageButtons {
-        display:none;
-    }*/
+    .mainTitle {
+        display: none;
+    }
+
+    .mainSubTitle {
+        display: none;
+    }
 }
 
 @media (max-width: 450px) {

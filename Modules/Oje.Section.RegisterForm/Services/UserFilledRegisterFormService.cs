@@ -775,6 +775,7 @@ namespace Oje.Section.RegisterForm.Services
             if (result.isSuccess == true)
             {
                 foundItem.IsDone = true;
+                foundItem.FilledSignature();
                 db.SaveChanges();
                 UserNotifierService.Notify(
                     loginUserId,

@@ -27,6 +27,9 @@ body {
     background-color: #f5f7fa;
     min-height: 100%;
     overflow-x: hidden;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
 }
 
 .wrapper {
@@ -179,9 +182,9 @@ body {
     text-align: center;
     margin: 0px;
     padding: 5px;
-    margin-top: 10px;
+    margin-top: 0px;
     color: #0d296e;
-    font-size:1em;
+    font-size:0.9em;
 }
 
 .holderDocumentLinks {
@@ -220,7 +223,6 @@ body {
     display: flex;
     -webkit-flex-grow: 1;
     flex-grow: 1;
-    padding-bottom: 20px;
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
     flex-direction: column;
@@ -528,10 +530,6 @@ body {
     display: block;
     margin-top: 6px;
     margin-bottom: 6px;
-    -webkit-border-bottom-left-radius: 50px;
-    border-bottom-left-radius: 50px;
-    -webkit-border-top-left-radius: 50px;
-    border-top-left-radius: 50px;
     height: 40px;
     color: white;
     line-height: 38px;
@@ -855,7 +853,7 @@ body {
     margin-bottom:0px;
 }
 .licenceHolderW .holderLicenceDiv {
-    width: 100px;
+    width: 87px;
 }
 .licenceHolderW img {
     width: 100%;
@@ -958,6 +956,16 @@ body {
     .footerCenterSection {
         text-align: center;
     }
+}
+.modal-header .close {
+    padding:0px;
+    margin:0px;
+}
+
+.loginModalHolder {
+    width:0px;
+    height:0px;
+    overflow:hidden;
 }
 
 @media (max-width: 420px) {

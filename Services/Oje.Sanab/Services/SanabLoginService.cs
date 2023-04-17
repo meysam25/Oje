@@ -34,7 +34,7 @@ namespace Oje.Sanab.Services
             if (foundUser == null)
                 throw BException.GenerateNewException(BMessages.No_Config_For_Sanab);
 
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalConfig.Configuration["SanabConfig:baseUrl"] + "/token?grant_type=client_credentials")
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalConfig.Configuration["SanabConfig:baseUrl"] + ":8243/token?grant_type=client_credentials")
             {
                 Headers =
                 {
@@ -42,7 +42,7 @@ namespace Oje.Sanab.Services
                 }
             };
 
-            var httpResponseMessage = await HttpClientFactory.CreateClient().SendAsync(httpRequestMessage);
+            var httpResponseMessage = await HttpClientFactory.CreateClient("unTruset").SendAsync(httpRequestMessage);
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -77,7 +77,7 @@ namespace Oje.Sanab.Services
 
 
 
-            using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalConfig.Configuration["SanabConfig:baseUrl"] + "/cii/test/IIXGetUseAuth/1/api/security/login")
+            using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalConfig.Configuration["SanabConfig:baseUrl"] + ":8243/cii/test/IIXGetUseAuth/1/api/security/login")
             {
                 Headers =
                 {
@@ -91,7 +91,7 @@ namespace Oje.Sanab.Services
                     requestContent.Add(new StringContent(foundUserAndPassword.Password, Encoding.UTF8), "Password");
 
                     httpRequestMessage.Content = requestContent;
-                    using (var client = HttpClientFactory.CreateClient())
+                    var client = HttpClientFactory.CreateClient("unTruset");
                     {
                         client.BaseAddress = new Uri(GlobalConfig.Configuration["SanabConfig:baseUrl"]);
                         HttpResponseMessage clientResult = await client.SendAsync(httpRequestMessage);

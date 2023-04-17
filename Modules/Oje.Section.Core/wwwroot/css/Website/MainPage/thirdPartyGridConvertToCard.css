@@ -7,15 +7,15 @@
         display: none;
     }
 
-    .thirdPartyGridConvertToCard > .myGrid {
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > .myGrid {
         text-align: center !important;
     }
 
-    .thirdPartyGridConvertToCard > table > .myTableBody {
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > .myTableBody {
         text-align: center !important;
     }
 
-    .thirdPartyGridConvertToCard > table > tbody > tr {
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr:not(.holderDetailesGrid) {
         display: inline-block;
         width: 280px;
         border: 1px solid silver;
@@ -31,32 +31,35 @@
         vertical-align: top;
     }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td {
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td {
             display: inline-block !important;
             border: none;
             width: auto !important;
             font-size: 0.8em;
         }
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td > span {
+            font-size:1em;
+        }
 
-            .thirdPartyGridConvertToCard > table > tbody > tr > td > .gridResTitle {
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td > .gridResTitle {
                 display: inline-block !important;
                 width: 140px !important;
                 font-size: 1em;
             }
 
-            .thirdPartyGridConvertToCard > table > tbody > tr > td:first-child {
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:first-child {
                 border: none !important;
                 width: 100% !important;
                 display: none !important;
             }
 
-                .thirdPartyGridConvertToCard > table > tbody > tr > td:first-child > .gridExpandButton {
+                .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:first-child > .gridExpandButton {
                     width: 100%;
                     display: block;
                     text-align: center;
                 }
 
-                    .thirdPartyGridConvertToCard > table > tbody > tr > td:first-child > .gridExpandButton:before {
+                    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:first-child > .gridExpandButton:before {
                         content: 'جزییات';
                         font-size: 1.1em !important;
                         background-color: #005ad3;
@@ -67,92 +70,92 @@
                         border-radius: 10px;
                     }
 
-            .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child {
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:last-child {
                 border: none;
                 display: block !important;
             }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr:last-child {
-            display: none;
+    .thirdPartyGridConvertToCard .gridPager {
+        display: none;
+    }
+
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:last-child > .myGridAction {
+        width: 100%;
+        -moz-border-radius: 15px;
+        -webkit-border-radius: 15px;
+        border-radius: 15px;
+        height: auto;
+        margin-top: 10px;
+    }
+
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:last-child > .myGridAction > a {
+            color: white;
+            font-size: 1.2em;
+            line-height: 30px;
+            height: 35px;
+            -webkit-text-decoration: none;
+            text-decoration: none;
         }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction {
-            width: 100%;
-            -moz-border-radius: 15px;
-            -webkit-border-radius: 15px;
-            border-radius: 15px;
-            height: auto;
-            margin-top: 10px;
-        }
-
-            .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction > a {
-                color: white;
-                font-size: 1.2em;
-                line-height: 30px;
-                height: 35px;
-                -webkit-text-decoration: none;
-                text-decoration: none;
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:last-child > .myGridAction > a:before {
+                content: 'سفارش';
+                line-height: 34px;
             }
 
-                .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction > a:before {
-                    content: 'سفارش';
-                    line-height: 34px;
-                }
-
-                .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction > a > i {
-                    display: none;
-                }
-
-            .thirdPartyGridConvertToCard > table > tbody > tr > td:last-child > .myGridAction:hover {
-                -webkit-box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
-                box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:last-child > .myGridAction > a > i {
+                display: none;
             }
 
-
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(3) {
-            width: calc(100% - 76px) !important;
-            font-weight: bold;
-            border-bottom: 1px solid silver !important;
-            height: 80px;
-            line-height: 64px;
-            font-size: 1.1em;
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:last-child > .myGridAction:hover {
+            -webkit-box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
+            box-shadow: 0 0 6px 1px rgba(0, 0, 0,0.2);
         }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(4) {
-            padding-top: 10px;
-        }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(3) > .gridResTitle {
-            display: none !important;
-        }
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(3) {
+        width: calc(100% - 76px) !important;
+        font-weight: bold;
+        border-bottom: 1px solid silver !important;
+        height: 80px;
+        line-height: 64px;
+        font-size: 1.1em;
+    }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(2) > .gridResTitle {
-            display: none !important;
-        }
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(4) {
+        padding-top: 10px;
+    }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(7) > .gridResTitle {
-            display: none !important;
-        }
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(3) > .gridResTitle {
+        display: none !important;
+    }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(2) {
-            border-bottom: 1px solid silver !important;
-            height: 80px;
-        }
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(2) > .gridResTitle {
+        display: none !important;
+    }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(7) {
-            display: block !important;
-            border-bottom: 1px solid silver !important;
-            padding-bottom: 10px;
-        }
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(7) > .gridResTitle {
+        display: none !important;
+    }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(8) {
-            font-weight: bold;
-            display: block;
-        }
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(2) {
+        border-bottom: 1px solid silver !important;
+        height: 80px;
+    }
 
-            .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(8) .gridResTitle {
-                font-weight: normal;
-            }
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(7) {
+        display: block !important;
+        border-bottom: 1px solid silver !important;
+        padding-bottom: 10px;
+    }
+
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(8) {
+        font-weight: bold;
+        display: block;
+    }
+
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(8) .gridResTitle {
+            font-weight: normal;
+        }
 
 
     /*////////detiles style*/
@@ -177,7 +180,7 @@
         margin: 0px;
     }
 
-    .thirdPartyGridConvertToCard > table > tbody > tr.holderDetailesGrid > td:last-child {
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr.holderDetailesGrid > td:last-child {
         display: flex !important;
         height: 95vh;
     }
@@ -234,9 +237,7 @@
             padding: 10px;
         }
 
-    .thirdPartyGridConvertToCard .myTableBody > tr:last-child {
-        display: none;
-    }
+   
 
     .thirdPartyGridConvertToCard .gridDetailes td {
         border: none !important;
@@ -292,34 +293,48 @@
                     width: calc(100% - 140px) !important;
                 }
 
-    .thirdPartyGridConvertToCard > table > tbody > tr > .myGridExButton {
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > .myGridExButton {
         width: 100%;
     }
 
-    .thirdPartyGridConvertToCard > table > tbody > tr > .myGridExButton > .gridResTitle {
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > .myGridExButton > .gridResTitle {
+            display: none !important;
+        }
+
+.thirdPartyGridConvertToCard .myGridScroll {
+    padding:0px;
+}
+
+@media (max-width: 650px) {
+    .thirdPartyGridConvertToCard .actionTD {
+        border-bottom: none !important;
+    }
+    .thirdPartyGridConvertToCard .gridDetailesHeader {
         display: none !important;
     }
-
-    @media (max-width: 650px) {
-        .thirdPartyGridConvertToCard .gridDetailesHeader {
-        display: none !important;
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(7) > .cellData {
+        width: 100%;
     }
+        .thirdPartyGridConvertToCard .cellData .cellData {
+            width: auto;
+            font-size:0.8rem;
+        }
 
-    .thirdPartyGridConvertToCard .gridDetailes .myGrid {
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
-        max-width: 240px;
-    }
+        .thirdPartyGridConvertToCard .gridDetailes .myGrid {
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            max-width: 240px;
+        }
 
     .thirdPartyGridConvertToCard .floatGridDetiles {
         display: block;
     }
 
-    .thirdPartyGridConvertToCard > table > .myTableBody > tr > td {
-        width: 100% !important;
-        text-align: left !important;
-    }
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > .myTableBody > tr > td {
+            width: 100% !important;
+            text-align: left !important;
+        }
 
     .thirdPartyGridConvertToCard .floatGridDetiles .myGrid tbody > tr > td:first-child {
         width: 130px !important;
@@ -330,33 +345,33 @@
         text-align: left !important
     }
 
-    .thirdPartyGridConvertToCard > table > tbody > tr {
-        margin-right: 2px !important;
-        margin-left: 2px !important;
-        padding: 5px !important;
-    }
-
-        .thirdPartyGridConvertToCard > table > tbody > tr > td > .gridResTitle {
-            float: right;
-            text-align: right !important;
+        .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr {
+            margin-right: 2px !important;
+            margin-left: 2px !important;
+            padding: 5px !important;
         }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(2) {
-            width: 76px !important;
-        }
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td > .gridResTitle {
+                float: right;
+                text-align: right !important;
+            }
 
-        .thirdPartyGridConvertToCard > table > tbody > tr > td:nth-child(3) {
-            width: calc(100% - 76px);
-            text-align: right !important;
-        }
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(2) {
+                width: 76px !important;
+            }
+
+            .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td:nth-child(3) {
+                width: calc(100% - 76px);
+                text-align: right !important;
+            }
 }
 
 @media (max-width: 620px) {
-    .thirdPartyGridConvertToCard > table > tbody > tr {
+    .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr {
         width: 240px;
     }
 
-        .thirdPartyGridConvertToCard .floatGridDetiles .myGrid tbody > tr > td, .thirdPartyGridConvertToCard > table > tbody > tr > td {
+        .thirdPartyGridConvertToCard .floatGridDetiles .myGrid tbody > tr > td, .thirdPartyGridConvertToCard > .holderMyGridScroll > .myGridScroll > table > tbody > tr > td {
             font-size: 0.7em;
         }
 }

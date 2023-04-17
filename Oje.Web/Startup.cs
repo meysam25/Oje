@@ -20,6 +20,7 @@ using Oje.Security.Filters;
 using Microsoft.AspNetCore.Http.Features;
 using Oje.Security.Middlewares;
 using Oje.AccountService.Filters;
+using System.Net.Http;
 
 namespace Oje.Web
 {
@@ -38,6 +39,17 @@ namespace Oje.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient("unTruset").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                }
+            });
+            services.AddHttpClient();
+
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin, UnicodeRanges.Arabic }));
 
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);

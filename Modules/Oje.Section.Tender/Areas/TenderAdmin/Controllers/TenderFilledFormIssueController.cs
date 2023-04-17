@@ -15,7 +15,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 {
     [Area("TenderAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "سامانه مناقصات", Order = 4, Icon = "fa-funnel-dollar", Title = "مناقصات صادره")]
+    [AreaConfig(ModualTitle = "سامانه مناقصات", Order = 4, Icon = "fa-funnel-dollar", Title = "مناقصات صادر شده")]
     [CustomeAuthorizeFilter]
     public class TenderFilledFormIssueController : Controller
     {
@@ -45,16 +45,16 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             this.TenderFilledFormIssueService = TenderFilledFormIssueService;
         }
 
-        [AreaConfig(Title = "مناقصات صادره", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
+        [AreaConfig(Title = "مناقصات صادر شده", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "مناقصات صادره";
+            ViewBag.Title = "مناقصات صادر شده";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "TenderFilledFormIssue", new { area = "TenderAdmin" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست مناقصات صادره", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه مناقصات صادر شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -62,7 +62,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("TenderAdmin", "TenderFilledFormIssue")));
         }
 
-        [AreaConfig(Title = "دانلود پی دی اف فرم مناقصات صادره", Icon = "fa-download")]
+        [AreaConfig(Title = "دانلود پی دی اف فرم مناقصات صادر شده", Icon = "fa-download")]
         [HttpGet]
         public IActionResult DownloadPdf([FromQuery] GlobalLongId input)
         {
@@ -72,11 +72,12 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
                 );
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [AreaConfig(Title = "جزییات", Icon = "fa-eye")]
-        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
+        public IActionResult PdfDetailes(long id, [FromQuery] bool isPrint = false, [FromQuery] bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
+            ViewBag.ignoreMaster = ignoreMaster;
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
 
@@ -100,14 +101,14 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return View();
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدارک مناقصات صادره", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست مدارک مناقصات صادر شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPFormList([FromForm] GlobalGridParentLong searchInput)
         {
             return Json(TenderFilledFormPFService.GetListForWeb(searchInput, searchInput?.pKey, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, SelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مناقصات صادره", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده مناقصات صادر شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] TenderFilledFormMainGrid searchInput)
         {
@@ -135,14 +136,14 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(TenderFilledFormPriceService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست قیمت های مناقصات صادره", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست قیمت های مناقصات صادر شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPriceList([FromForm] TenderFilledFormPriceMainGrid searchInput)
         {
             return Json(TenderFilledFormPriceService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
 
-        [AreaConfig(Title = "خروجی اکسل مبلغ مناقصات صادره", Icon = "fa-file-excel")]
+        [AreaConfig(Title = "خروجی اکسل مبلغ مناقصات صادر شده", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult ExportPrice([FromForm] TenderFilledFormPriceMainGrid searchInput)
         {
@@ -156,14 +157,14 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده یک مناقصات صادره صادر شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک مناقصات صادر شده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetIssueById([FromForm] GlobalLongId input)
         {
             return Json(TenderFilledFormIssueService.GetBy(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست بیمه نامه های صادره", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست بیمه نامه های صادر", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetIssueList([FromForm] GlobalGridParentLong searchInput)
         {
@@ -182,6 +183,13 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult GetInsuranceList([FromForm] GlobalGridParentLong input)
         {
             return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id, SelectStatus));
+        }
+
+        [AreaConfig(Title = "مشاهده مدارک مناقصه", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetFileList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(TenderFilledFormService.GetUploadFiles(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
     }
 }

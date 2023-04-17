@@ -38,6 +38,8 @@
     animation: spin 2s linear infinite;
     flex-shrink: 0;
 }
+.multiSelectImageBodyItemAutoWidth .multiSelectImageBodyItem {
+}
 
 @keyframes spin {
     0% {
@@ -527,6 +529,7 @@ input[type=checkbox] + label, input[type=checkbox] {
 
 .multiSelectImageBody {
     padding: 10px;
+    text-align:center;
 }
 
 .multiSelectImageBodyItem {
@@ -541,6 +544,7 @@ input[type=checkbox] + label, input[type=checkbox] {
     cursor: pointer;
     margin: 4px;
     min-width:192px;
+    text-align:right;
 }
 
     .multiSelectImageBodyItem:hover {
@@ -1023,13 +1027,9 @@ figure.table > table {
     .MakeHorizoneTC .tabButtonExistCount {
         display: inline-block;
         font-size: 18px;
+        margin-right: 15px;
+        margin-left: 15px;
     }
-        .MakeHorizoneTC .tabButtonExistCount:before {
-            content: '(';
-        }
-        .MakeHorizoneTC .tabButtonExistCount:after {
-            content: ')';
-        }
     .MakeHorizoneTC .tabButtonIcon {
         -moz-border-radius: unset;
         -webkit-border-radius: unset;
@@ -1082,4 +1082,147 @@ figure.table > table {
 
 .modal-header button.close span {
     font-size: 1.7rem;
+}
+
+.blackModalTheme .modal-title {
+    color: white;
+    text-align: center;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+}
+
+.blackModalTheme .close {
+    color: white;
+    text-shadow:none;
+    opacity: 1!important;
+}
+    .blackModalTheme .close:hover {
+        color: #009cfc;
+    }
+.blackModalTheme .modal-header {
+    background-color: #42424299;
+    border-bottom: none;
+}
+.blackModalTheme .modal-content {
+    background-color: #1f1f1f7f;
+    backdrop-filter: blur(5px);
+}
+.blackModalTheme .modal-header > button:focus {
+    outline: none;
+    border: none;
+}
+.blackModalTheme .panelSWizardHolderHeaderItem {
+    color: white;
+}
+.blackModalTheme .panelSWizardHolderHeaderItem:empty {
+    display:none;
+}
+.blackModalTheme .panelSWizardHolderHeader {
+    height: auto
+}
+.blackModalTheme .panelSWizard {
+    padding-top:0px;
+}
+.blackModalTheme {
+    width: 389px;
+}
+.normalTextBox label {
+    background-color: transparent !important;
+    padding-right: 15px;
+    padding-left: 5px;
+}
+.normalTextBox {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border: 1px solid #c7c7c7;
+    padding: 0px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+    .normalTextBox > label {
+        white-space: nowrap;
+        color: #b3b3b3;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        line-height:50px;
+        margin-bottom:0px;
+    }
+    .normalTextBox > input {
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+        border: none;
+        outline: none;
+        line-height: 42px;
+    }
+.makeWhiteColor button{
+    color:white;
+}
+.blackModalTheme .modal-footer {
+    border: none;
+    background-color: #42424299;
+    padding: 5px;
+    padding-right: 15px;
+    padding-left: 15px;
+    -webkit-justify-content: right;
+    justify-content: right;
+}
+.whiteButton {
+    color:white;
+}
+.countDownCtrl {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+.countDownNew .normalTextBox {
+    -webkit-border-bottom-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.countDownNew .progress {
+    -webkit-border-top-left-radius: 0px;
+    border-top-left-radius: 0px;
+    -webkit-border-top-right-radius: 0px;
+    border-top-right-radius: 0px;
+    border: 1px solid #c7c7c7;
+    border-top: none;
+}
+.countDownNewHelp {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    font-size:0.8rem;
+}
+.warningSectionCountDownDesc {
+    background-color: #d70c0f;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    padding: 10px;
+    color:white;
+}
+.warningSectionCountDown {
+    display:none;
+}
+.modal-title {
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+@media only screen and (max-width: 580px)  {
+    .blackModalTheme {
+        width: auto !important;
+    }
 }

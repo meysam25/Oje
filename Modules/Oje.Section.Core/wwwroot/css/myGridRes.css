@@ -36,4 +36,24 @@
     .myTableHeader {
         display:none;
     }
+    .cellData, .gridResTitle {
+        position:static;
+        display: inline-block;
+        width: auto;
+    }
+    .gostRowGrid {
+        display:none;
+    }
+    .myTableBody > tr > td {
+        border-bottom: 1px solid silver !important;
+    }
+    .actionTD {
+        white-space: unset;
+    }
+    .myGridStaticActions {
+        display:none;
+    }
+    .cellData, .gridResTitle {
+        white-space:unset;
+    }
 }

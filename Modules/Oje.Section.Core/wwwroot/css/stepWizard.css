@@ -10,11 +10,10 @@
 
 .panelSWizardHolderHeader {
     overflow: hidden;
-    height:35px;
     display:flex;
 }
 .panelSWizardHolderHeaderItem {
-    display: inline-block;
+    display: none;
     text-align: center;
     opacity: 0;
     width: 0px;
@@ -38,6 +37,7 @@
     padding-left: 25px;
     -webkit-flex-grow: 1;
     flex-grow: 1;
+    display:block;
 }
 .panelSWizardHolderContent{
     position:relative;

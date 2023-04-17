@@ -15,7 +15,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
 {
     [Area("RegisterFormAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "مدیریت کاربران", Order = 2, Icon = "fa-users", Title = "کاربران پرداخت کرده انجام شده")]
+    [AreaConfig(ModualTitle = "مدیریت کاربران", Order = 2, Icon = "fa-users", Title = "دسترسی تایید شده")]
     [CustomeAuthorizeFilter]
     public class UserFilledRegisterFormDoneController : Controller
     {
@@ -44,16 +44,16 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             this.UserFilledRegisterFormCardPaymentService = UserFilledRegisterFormCardPaymentService;
         }
 
-        [AreaConfig(Title = "کاربران پرداخت کرده انجام شده", Icon = "fa-user", IsMainMenuItem = true)]
+        [AreaConfig(Title = "دسترسی تایید شده", Icon = "fa-user", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "کاربران پرداخت کرده انجام شده";
+            ViewBag.Title = "دسترسی تایید شده";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "UserFilledRegisterFormDone", new { area = "RegisterFormAdmin" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه کاربران پرداخت کرده انجام شده", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه دسترسی تایید شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -68,14 +68,14 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return Json(UserFilledRegisterFormService.CreateNewUser(pKey, SiteSettingService.GetSiteSetting()?.Id, SiteSettingService.GetSiteSetting()?.UserId, roleIds, HttpContext.GetLoginUser()?.UserId, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده اسناد کاربران پرداخت کرده انجام شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده اسناد دسترسی تایید شده", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetPPFImageList([FromForm] GlobalGridParentLong input)
         {
             return Json(UserFilledRegisterFormService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده یک کاربران پرداخت کرده انجام شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک دسترسی تایید شده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetById([FromForm] GlobalLongId input, [FromQuery] bool? ignoreMaster)
         {
@@ -84,14 +84,14 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return View("~/Views/Register/Details.cshtml", UserFilledRegisterFormService.PdfDetailes(input?.id, SiteSettingService.GetSiteSetting()?.Id, null, false, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "حذف کاربران پرداخت کرده انجام شده", Icon = "fa-trash-o")]
+        [AreaConfig(Title = "حذف دسترسی تایید شده", Icon = "fa-trash-o")]
         [HttpPost]
         public IActionResult Delete([FromForm] GlobalLongId input)
         {
             return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربران پرداخت کرده انجام شده", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست دسترسی تایید شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {

@@ -1,280 +1,321 @@
 ﻿{
   "panels": [
     {
-      "id": "swPanelId",
-      "stepWizards": [
+      "id": "loginPanelTempId",
+      "class": "noPadding",
+      "moduals": [
         {
-          "stepIdForMobile": true,
-          "hideBorder": true,
-          "headerTextalign": "right",
-          "steps": [
+          "class": "blackModalTheme",
+          "id": "loginForgetPasswordModal",
+          "title": "",
+          "titleUrl": "/TenderWeb/GetSiteInfo",
+          "autoShowModalOnFalse": "/Account/Dashboard/IsUserLogin",
+          "autoShowModalOnFalseUrlCondation": [ "/Proposal/Form", "/Register/Users/RegisterInsuranceAgents", "/Contract/Create" ],
+          "panels": [
             {
-              "order": 1,
-              "id": "rigLogStep",
-              "title": "ورود",
-              "submitUrl": "/Account/Dashboard/LoginWithSMS",
-              "panels": [
+              "id": "swPanelId",
+              "stepWizards": [
                 {
-                  "ctrls": [
+                  "stepIdForMobile": true,
+                  "hideBorder": true,
+                  "headerTextalign": "right",
+                  "steps": [
                     {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "name": "username",
-                      "type": "text",
-                      "label": "شماره همراه(نام کاربری)",
-                      "isRequired": true,
-                      "validations": [
+                      "order": 1,
+                      "id": "loginWithPassword",
+                      "title": "",
+                      "submitUrl": "/Account/Dashboard/Login",
+                      "panels": [
                         {
-                          "reg": "^[0-9]*$",
-                          "msg": "لطفا فقط عدد وارد کنید"
-                        },
-                        {
-                          "reg": "^([0-9]){11}$",
-                          "msg": "شماره همراه باید ۱۱ عدد باشد"
-                        },
-                        {
-                          "reg": "^(09)",
-                          "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                          "ctrls": [
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "name": "username",
+                              "type": "text2",
+                              "label": "نام کاربری",
+                              "isRequired": true,
+                              "validations": [
+                                {
+                                  "reg": "^[0-9]*$",
+                                  "msg": "لطفا فقط عدد وارد کنید"
+                                },
+                                {
+                                  "reg": "^([0-9]){11}$",
+                                  "msg": "شماره همراه باید ۱۱ عدد باشد"
+                                },
+                                {
+                                  "reg": "^(09)",
+                                  "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                                }
+                              ]
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "name": "password",
+                              "type": "password2",
+                              "label": "رمز عبور",
+                              "isRequired": true
+                            },
+                            {
+                              "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
+                              "type": "empty"
+                            },
+                            {
+                              "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
+                              "type": "button",
+                              "onClick": "moveToStepById('stepContent_rigLogStep', 'username', 'username', this)",
+                              "title": "ورود با رمز یک بار مصرف",
+                              "class": "btn-primary-label btn-sm",
+                              "showHideClass": "leftTextAlign makeWhiteColor"
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "type": "button",
+                              "onClick": "submitThisStep(this)",
+                              "title": "ورود به سامانه",
+                              "class": "btn-primary btn-block btn-lg"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "button",
-                      "onClick": "submitThisStep(this)",
-                      "title": "ادامه",
-                      "class": "btn-primary btn-block"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 2,
-              "id": "confirmSMS",
-              "title": "کد پیامکی را وارد کنید",
-              "submitUrl": "/Account/Dashboard/LoginRegister",
-              "moveBackToStep": "rigLogStep",
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "name": "username",
-                      "type": "hidden"
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "name": "code",
-                      "type": "text",
-                      "label": "کد",
-                      "isRequired": true,
-                      "validations": [
-                        {
-                          "reg": "^[0-9]*$",
-                          "msg": "لطفا فقط عدد وارد کنید"
-                        }
-                      ]
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "button",
-                      "onClick": "moveToStepById('stepContent_loginWithPassword', 'username', 'username', this)",
-                      "title": "ورود با رمز عبور",
-                      "class": "btn-primary-label btn-sm"
-                    },
-                    {
-                      "id": "tryAginButtonCD",
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "countDownButton",
-                      "startNumber": 120,
-                      "countDownText": "ارسال مجدد کد تا {ph} ثانیه دیگر",
-                      "finishedCountDownText": "ارسال مجدد",
-                      "onClick": "submitThisStep(this, '/Account/Dashboard/LoginWithSMS')"
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "button",
-                      "onClick": "submitThisStep(this)",
-                      "title": "ورود",
-                      "class": "btn-primary btn-block"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 3,
-              "id": "loginWithPassword",
-              "title": "ورود",
-              "submitUrl": "/Account/Dashboard/Login",
-              "moveBackToStep": "confirmSMS",
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "name": "username",
-                      "type": "hidden"
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "name": "password",
-                      "type": "password",
-                      "label": "کلمه عبور",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
-                      "type": "button",
-                      "onClick": "moveToStepById('stepContent_rigLogStep', 'username', 'username', this)",
+                      "order": 2,
+                      "id": "rigLogStep",
                       "title": "ورود با رمز یک بار مصرف",
-                      "class": "btn-primary-label btn-sm"
-                    },
-                    {
-                      "parentCL": "col-md-6 col-sm-6 col-xs-6 col-lg-6",
-                      "showHideClass": "leftTextAlign",
-                      "type": "button",
-                      "onClick": "moveToStepById('stepContent_recoveryPassword', 'username', 'username', this)",
-                      "title": "بازیابی کلمه عبور",
-                      "class": "btn-primary-label btn-sm"
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "button",
-                      "onClick": "submitThisStep(this)",
-                      "title": "ورود",
-                      "class": "btn-primary btn-block"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 4,
-              "id": "recoveryPassword",
-              "title": "درخواست بازیابی رمز عبور",
-              "submitUrl": "/Account/Dashboard/ActiveCodeForResetPassword",
-              "moveBackToStep": "loginWithPassword",
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "name": "username",
-                      "type": "text",
-                      "label": "شماره همراه(نام کاربری)",
-                      "isRequired": true,
-                      "validations": [
+                      "moveBackToStep": "loginWithPassword",
+                      "submitUrl": "/Account/Dashboard/LoginWithSMS",
+                      "panels": [
                         {
-                          "reg": "^[0-9]*$",
-                          "msg": "لطفا فقط عدد وارد کنید"
-                        },
-                        {
-                          "reg": "^([0-9]){11}$",
-                          "msg": "شماره همراه باید ۱۱ عدد باشد"
-                        },
-                        {
-                          "reg": "^(09)",
-                          "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                          "ctrls": [
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "name": "username",
+                              "type": "text2",
+                              "label": "شماره همراه(نام کاربری)",
+                              "isRequired": true,
+                              "validations": [
+                                {
+                                  "reg": "^[0-9]*$",
+                                  "msg": "لطفا فقط عدد وارد کنید"
+                                },
+                                {
+                                  "reg": "^([0-9]){11}$",
+                                  "msg": "شماره همراه باید ۱۱ عدد باشد"
+                                },
+                                {
+                                  "reg": "^(09)",
+                                  "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                                }
+                              ]
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "type": "button",
+                              "onClick": "submitThisStep(this)",
+                              "title": "ادامه",
+                              "class": "btn-primary btn-block btn-lg"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "button",
-                      "onClick": "submitThisStep(this)",
-                      "title": "ادامه",
-                      "class": "btn-primary btn-block"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "order": 5,
-              "id": "recoveryPasswordConfirmSMS",
-              "title": "کد پیامکی را وارد کنید",
-              "submitUrl": "/Account/Dashboard/CheckIfSmsCodeIsValid",
-              "moveBackToStep": "recoveryPassword",
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "name": "username",
-                      "type": "hidden"
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "name": "code",
-                      "type": "text",
-                      "label": "کد",
-                      "isRequired": true,
-                      "validations": [
+                      "order": 3,
+                      "id": "confirmSMS",
+                      "title": "کد پیامکی را وارد کنید",
+                      "submitUrl": "/Account/Dashboard/LoginRegister",
+                      "moveBackToStep": "rigLogStep",
+                      "panels": [
                         {
-                          "reg": "^[0-9]*$",
-                          "msg": "لطفا فقط عدد وارد کنید"
+                          "ctrls": [
+                            {
+                              "name": "username",
+                              "type": "hidden"
+                            },
+                            {
+                              "id": "tryAginButtonCD",
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "label": "کد",
+                              "name": "code",
+                              "isRequired": true,
+                              "type": "countDownButton2",
+                              "startNumber": 120,
+                              "countDownText": "ثانیه {ph}",
+                              "guidIcon": "fa-mobile",
+                              "guidText": "رمز یک بار مصرف 5 رقمی از طریق پیامک برای شما ارسال شده است, لطفا آن را در کادر زیر وارد کنید.",
+                              "guidTextForEnding": "زمان به اتمام رسیده است. لطفا مجددا سعی کنید.",
+                              "guidTextForEndingIcon": "fa-info-circle",
+                              "finishedCountDownText": "دریافت مجدد رمز یکبار مصرف",
+                              "onClick": "submitThisStep(this, '/Account/Dashboard/LoginWithSMS')",
+                              "validations": [
+                                {
+                                  "reg": "^[0-9]*$",
+                                  "msg": "لطفا فقط عدد وارد کنید"
+                                }
+                              ],
+                              "showHideExteraStuff": [ "loginWithSMSButton" ]
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "type": "button",
+                              "onClick": "moveToStepById('stepContent_loginWithPassword', 'username', 'username', this)",
+                              "title": "ورود به سامانه با رمز عبور",
+                              "class": "btn-primary-label btn-sm whiteButton"
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "id": "loginWithSMSButton",
+                              "type": "button",
+                              "onClick": "submitThisStep(this)",
+                              "title": "ورود به سامانه",
+                              "class": "btn-primary btn-block btn-lg"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "id": "tryAginButtonCDRP",
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "countDownButton",
-                      "startNumber": 120,
-                      "countDownText": "ارسال مجدد کد تا {ph} ثانیه دیگر",
-                      "finishedCountDownText": "ارسال مجدد",
-                      "onClick": "submitThisStep(this, '/Account/Dashboard/ActiveCodeForResetPassword')"
+                      "order": 4,
+                      "id": "recoveryPassword",
+                      "title": "درخواست بازیابی رمز عبور",
+                      "submitUrl": "/Account/Dashboard/ActiveCodeForResetPassword",
+                      "moveBackToStep": "loginWithPassword",
+                      "panels": [
+                        {
+                          "ctrls": [
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "name": "username",
+                              "type": "text2",
+                              "label": "شماره همراه(نام کاربری)",
+                              "isRequired": true,
+                              "validations": [
+                                {
+                                  "reg": "^[0-9]*$",
+                                  "msg": "لطفا فقط عدد وارد کنید"
+                                },
+                                {
+                                  "reg": "^([0-9]){11}$",
+                                  "msg": "شماره همراه باید ۱۱ عدد باشد"
+                                },
+                                {
+                                  "reg": "^(09)",
+                                  "msg": "شماره همراه باید با پیش شماره ۰۹ آغاز شود"
+                                }
+                              ]
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "type": "button",
+                              "onClick": "submitThisStep(this)",
+                              "title": "ادامه",
+                              "class": "btn-primary btn-block btn-lg"
+                            }
+                          ]
+                        }
+                      ]
                     },
                     {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "button",
-                      "onClick": "submitThisStep(this)",
-                      "title": "ورود",
-                      "class": "btn-primary btn-block"
+                      "order": 5,
+                      "id": "recoveryPasswordConfirmSMS",
+                      "title": "کد پیامکی را وارد کنید",
+                      "submitUrl": "/Account/Dashboard/CheckIfSmsCodeIsValid",
+                      "moveBackToStep": "recoveryPassword",
+                      "panels": [
+                        {
+                          "ctrls": [
+                            {
+                              "name": "username",
+                              "type": "hidden"
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "name": "code",
+                              "type": "text2",
+                              "label": "کد",
+                              "isRequired": true,
+                              "validations": [
+                                {
+                                  "reg": "^[0-9]*$",
+                                  "msg": "لطفا فقط عدد وارد کنید"
+                                }
+                              ]
+                            },
+                            {
+                              "id": "tryAginButtonCDRP",
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "type": "countDownButton",
+                              "startNumber": 120,
+                              "countDownText": "ارسال مجدد کد تا {ph} ثانیه دیگر",
+                              "finishedCountDownText": "ارسال مجدد",
+                              "onClick": "submitThisStep(this, '/Account/Dashboard/ActiveCodeForResetPassword')"
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "type": "button",
+                              "onClick": "submitThisStep(this)",
+                              "title": "ورود به سامانه",
+                              "class": "btn-primary btn-block btn-lg"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "order": 6,
+                      "id": "recoveryPasswordChangePassword",
+                      "title": "حداقل 10 حرف شامل عدد و حروف و !@#$...",
+                      "submitUrl": "/Account/Dashboard/ChangePasswordAndLogin",
+                      "moveBackToStep": "recoveryPasswordConfirmSMS",
+                      "panels": [
+                        {
+                          "ctrls": [
+                            {
+                              "name": "username",
+                              "type": "hidden"
+                            },
+                            {
+                              "name": "codeId",
+                              "type": "hidden"
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "name": "password",
+                              "type": "password2",
+                              "label": "کلمه عبور",
+                              "isRequired": true
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "name": "confirmPassword",
+                              "type": "password2",
+                              "label": "تکرار کلمه عبور",
+                              "isRequired": true
+                            },
+                            {
+                              "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
+                              "type": "button",
+                              "onClick": "submitThisStep(this)",
+                              "title": "ورود به سامانه",
+                              "class": "btn-primary btn-block btn-lg"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }
               ]
-            },
+            }
+          ],
+          "actions": [
             {
-              "order": 6,
-              "id": "recoveryPasswordChangePassword",
-              "title": "حداقل 10 حرف شامل عدد و حروف و !@#$...",
-              "submitUrl": "/Account/Dashboard/ChangePasswordAndLogin",
-              "moveBackToStep": "recoveryPasswordConfirmSMS",
-              "panels": [
-                {
-                  "ctrls": [
-                    {
-                      "name": "username",
-                      "type": "hidden"
-                    },
-                    {
-                      "name": "codeId",
-                      "type": "hidden"
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "name": "password",
-                      "type": "password",
-                      "label": "کلمه عبور",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "name": "confirmPassword",
-                      "type": "password",
-                      "label": "تکرار کلمه عبور",
-                      "isRequired": true
-                    },
-                    {
-                      "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
-                      "type": "button",
-                      "onClick": "submitThisStep(this)",
-                      "title": "ورود",
-                      "class": "btn-primary btn-block"
-                    }
-                  ]
-                }
-              ]
+              "title": "ثبت نام {{title}}",
+              "icon": "fa-user",
+              "titleUrl": "/TenderWeb/GetSiteInfo",
+              "onClick": "showRegisterButton('loginForgetPasswordModal')",
+              "class": "btn-primary-label btn-sm whiteButton"
             }
           ]
         }

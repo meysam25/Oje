@@ -10,29 +10,29 @@
           "actions": {
             "cActions": [
               {
-                "type": "edit",
-                "icon": "fa-file-powerpoint",
-                "prop": "id",
-                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/TenderAdmin/TenderFilledForm/PdfDetailes?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+                "color": "green",
+                "template": "function bindRow (curRow) { return '<span title=\"نمایش اطلاعات کلی ثبت شده\" onclick=\"showEditModal('+ curRow.id +', \\'/TenderAdmin/TenderFilledForm/PdfDetailes?ignoreMaster=True\\', \\'TenderFilledFormDetailesModal\\' , this, null, null, null, true)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-alt\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
                 "prop": "id",
-                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/TenderAdmin/TenderFilledForm/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
+                "color": "#919791",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود اطلاعات کلی ثبت شده\" href=\"/TenderAdmin/TenderFilledForm/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-print\" ></i></a>' };bindRow(data)"
               },
               {
                 "type": "edit",
-                "icon": "fa-file-archive",
+                "icon": "fa-file-download",
                 "prop": "id",
                 "modalId": "TenderFilledFormDocumentsModal",
-                "template": "function bindRow (curRow) { return '<span title=\"دانلود مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'TenderFilledFormDocumentsModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-archive\" ></i></span>' };bindRow(data)"
+                "color": "#1a70e4",
+                "template": "function bindRow (curRow) { return '<span title=\"دانلود کلیه اسناد و مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'TenderFilledFormDocumentsModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-download\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
-                "icon": "fa-dollar-sign",
+                "icon": "fa-envelope-open-dollar",
                 "prop": "id",
                 "modalId": "TenderFilledFormPriceModal",
-                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'TenderFilledFormPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-dollar-sign\" ></i></span>' };bindRow(data)"
+                "template": "function bindRow (curRow) { return '<span title=\"تعیین قیمت\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'TenderFilledFormPriceModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-envelope-open-dollar\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -136,6 +136,21 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "id": "TenderFilledFormDetailesModal",
+          "title": "جزییات",
+          "class": "modal-xl",
+          "ctrls": [
+
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
             }
           ]
         },

@@ -62,6 +62,12 @@ function getInputTemplate(ctrl) {
             case 'color':
                 result += getTextBoxTemplate(ctrl);
                 break;
+            case 'text2':
+                result += getTextBoxTemplate2(ctrl);
+                break;
+            case 'password2':
+                result += getTextBoxTemplate2(ctrl);
+                break;
             case 'dropDown':
             case 'dropDown2':
                 result += getDropdownCTRLTemplate(ctrl);
@@ -122,6 +128,9 @@ function getInputTemplate(ctrl) {
                 break;
             case 'countDownButton':
                 result += getCountDownButtonTemplate(ctrl);
+                break;
+            case 'countDownButton2':
+                result += getTextBoxProgressTemplate(ctrl);
                 break;
             case 'multiSelectLine':
                 result += getMultiSelectLineTemplate(ctrl);
@@ -496,21 +505,21 @@ function getTreeViewTemplate(treeView) {
 function getModualTemplate(modual) {
     var modalId = (!modual.id) ? uuidv4RemoveDash() : modual.id
     var result =
-        '<div class="modal fade" id="' + modalId + '"  role="dialog"  aria-hidden="true">' +
-        '<div class="modal-dialog modal-dialog-centered  ' + (modual.class ? modual.class : '') + '" role="document">' +
-        '<div class="modal-content">' +
-        '<div class="modal-header">' +
-        '<h5 class="modal-title">' + modual.title + '</h5>' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-        '<span aria-hidden="true">&times;</span>' +
-        '</button>' +
-        '</div>' +
-        '<div class="modal-body">' +
-        (modual.modelBody ? modual.modelBody : getModualTemplateCTRL(modual)) +
-        '</div>' +
-        getModualTemplateActionButton(modual) +
-        '</div>' +
-        '</div>' +
+        '<div class="modal fade " id="' + modalId + '"  role="dialog"  aria-hidden="true">' +
+            '<div class="modal-dialog modal-dialog-centered ' + (modual.class ? modual.class : '') + '" role="document">' +
+                '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                        '<h5 class="modal-title">' + modual.title + '</h5>' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                        (modual.modelBody ? modual.modelBody : getModualTemplateCTRL(modual)) +
+                    '</div>' +
+                     getModualTemplateActionButton(modual) +
+                '</div>' +
+            '</div>' +
         '</div>';
 
     functionsList.push(function () {
@@ -525,7 +534,10 @@ function getModualTemplate(modual) {
                 });
             }
         });
-    }.bind({ modalId: modalId }));
+        if (this.modual.titleUrl) {
+            postForm(this.modual.titleUrl, new FormData(), function (res) { if (res && res.title) { $('#' + this.curModal.id).find('.modal-title').html(res.title); } }.bind({ curModal: this.modual }), null, null);
+        }
+    }.bind({ modalId: modalId, modual: modual }));
     if (modual.autoShowModalOnFalse) {
         functionsList.push(function () {
             var isValid = true;
@@ -1339,21 +1351,24 @@ function initInternalFunctions(ctrl) {
 
 function addNewRowForMultiCtrl(curButton) {
     if (curButton) {
-        var sQuiry = $(curButton).closest('.panelSWizardHolderContentItem');
-        var isStepWizard = sQuiry.length > 0 && sQuiry.parent().closest('.panelSWizardHolderContentItem').length > 0;
-        if (isStepWizard) {
-            closeCurSWRow(curButton);
-        }
         var foundParentButton = $(curButton).closest('.MultiRowInputRow');
         if (foundParentButton.length > 0) {
+            var isValid = validateForm(foundParentButton);
+            if (!isValid)
+                return;
+            var sQuiry = $(curButton).closest('.panelSWizardHolderContentItem');
+            var isStepWizard = sQuiry.length > 0 && sQuiry.parent().closest('.panelSWizardHolderContentItem').length > 0;
+            if (isStepWizard) {
+                closeCurSWRow(curButton);
+            }
             var addButtonTitle = foundParentButton.parent().find('> div > .addNewRowForMultiRowCtrl').text();
             if (!(foundParentButton.next().length > 0 && foundParentButton.next().hasClass('MultiRowInputRow'))) {
                 if (!foundParentButton.next().hasClass('addNewRowForMRI')) {
                     foundParentButton.after('<div class="row addNewRowForMRI" ><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="addNewRowForMRCTrl2(this)" class="btn btn-primary btn-block" >' + addButtonTitle + '</button></div><div class="col-md-4 col-sm-6 col-xs-12 col-lg-3 "><button onclick="moveToNextStepForSW(this)" class="btn btn-primary btn-block" >عدم افزودن و مرحله بعد</button></div></div>');
                 }
-                //    foundParentButton.parent().find('.addNewRowForMultiRowCtrl').click();
             }
         }
+        
     }
 }
 
@@ -1399,12 +1414,12 @@ function initMoultiRowInputButton(ctrl) {
     if (addNewButtonQuery.length > 0) {
         addNewButtonQuery[0].ctrl = ctrl;
         addNewButtonQuery.click(function () {
-            var validationQuirySelect = $(this).closest('.myCtrl ');
+            var validationQuirySelect = $(this).closest('.myCtrl');
             var isValid = validateForm(validationQuirySelect);
             if (isValid) {
                 var ctrlObj = $(this)[0].ctrl;
                 if (ctrlObj.ctrls) {
-                    var countExist = $(this).closest('.myCtrl').find('.MultiRowInputRow').length;
+                    var countExist = $(this).closest('.myCtrl').find('>div').find('> .MultiRowInputRow').length;
                     var newRowHtml = '<div class="MultiRowInputRow row">';
                     for (var i = 0; i < ctrlObj.ctrls.length; i++) {
                         ctrlObj.ctrls[i].id = uuidv4RemoveDash();
@@ -1825,6 +1840,140 @@ function addCtrlToObj(ctrl) {
     }.bind({ ctrl: ctrl }));
 }
 
+function getTextBoxTemplate2(ctrl) {
+    if (!ctrl.id)
+        ctrl.id = uuidv4RemoveDash();
+    var result = '';
+    result += '<div class="myCtrl form-group form-check normalTextBox' + (ctrl.class ? ctrl.class : '') + '">';
+    if (ctrl.label) {
+        result += '<label for="' + ctrl.id + '"  >' + ctrl.label +  '</label>';
+    }
+    result += '<input type="' +( (1 == 2) ? 'number' : (ctrl.type == 'password2' ? 'password' : 'text')) +'"  style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" />';
+    result += '</div>';
+
+    addCtrlToObj(ctrl);
+   
+    return result;
+}
+
+function getTextBoxProgressTemplate(ctrl) {
+    if (!ctrl.id)
+        ctrl.id = uuidv4RemoveDash();
+    var result = '';
+    result += '<div style="padding:0px;" class="myCtrl form-group form-check countDownNew' + (ctrl.class ? ctrl.class : '') + '">';
+
+    result += '<div class="progressSectionCountDown" >';
+    if (ctrl.guidText) {
+        result += '<div class="countDownNewHelp" >';
+        if (ctrl.guidIcon)
+            result += '<i style="margin-left:5px;" class="fa '+ ctrl.guidIcon +'" ></i>';
+        result += ctrl.guidText;
+
+        result += '</div>';
+    }
+
+    result += '<div class="normalTextBox ">';
+    if (ctrl.label) 
+        result += '<label for="' + ctrl.id + '"  >' + ctrl.label + '</label>';
+    result += '<input type="' + ((ctrl.nationalCodeValidation || hasNumberValidation(ctrl.validations)) ? 'number' : (ctrl.type == 'password2' ? 'password' : 'text')) + '"  style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" />';
+    result += '</div>';
+
+    result += '<div style="direction:ltr;" >';
+    result += '<div class="progress">';
+    result += '<div id="' + ctrl.id + '_progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:100%">' + ctrl.countDownText.replace('{ph}', ctrl.startNumber) + '</div>';
+    result += '</div>';
+    result += '</div>';
+
+    result += '</div>';
+
+
+    result += '<div class="warningSectionCountDown">';
+    if (ctrl.guidTextForEnding)
+        result += '<div class="warningSectionCountDownDesc">' + (ctrl.guidTextForEndingIcon ? ('<i style="margin-left:10px;" class="fa ' + ctrl.guidTextForEndingIcon +'" ></i>') : '') + ctrl.guidTextForEnding + '</div>';
+
+    result += '<button onclick="' + ctrl.onClick +';" class="btn btn-success btn-block btn-lg" >' + ctrl.finishedCountDownText +'</button>';
+    result += '</div>';
+
+    result += '</div>';
+
+    addCtrlToObj(ctrl);
+    functionsList.push(function ()
+    {
+        initProgressBar(ctrl);
+    });
+
+    return result;
+}
+
+function initProgressBar(ctrl) {
+    if (ctrl && ctrl.id) {
+        var inputOBj = $('#' + ctrl.id)[0];
+        inputOBj.start = function () {
+            var targetId = this.curCtrl.id + '_progressBar';
+            var selectQuiry = $('#' + targetId);
+            if (selectQuiry.length > 0) {
+                var selectProgressObj = selectQuiry[0];
+                selectQuiry.css('width', '100%');
+                selectQuiry.text(this.curCtrl.countDownText.replace('{ph}', this.curCtrl.startNumber));
+                selectProgressObj.progress = 0;
+                if (!selectProgressObj.progress || selectProgressObj.progress == 0) {
+                    var tempQuiry = selectQuiry.closest('.countDownNew');
+                    tempQuiry.find('.progressSectionCountDown').css('display', 'block');
+                    tempQuiry.find('.warningSectionCountDown').css('display', 'none');
+                    if (this.curCtrl.showHideExteraStuff) {
+                        var allIds = this.curCtrl.showHideExteraStuff;
+                        for (var i = 0; i < allIds.length; i++) {
+                            var visibleQuiry = $('#' + allIds[i]);
+                            if (visibleQuiry.length > 0) {
+                                visibleQuiry.closest('.myCtrl').css('display', 'block');
+                            }
+                        }
+                    }
+                    clearInterval(selectProgressObj.interValPointer);
+                    selectProgressObj.interValPointer = setInterval(function ()
+                    {
+                        var startNumber = this.curCtrl2.startNumber;
+                        var curProgress = this.element.progress;
+                        if (!curProgress)
+                            curProgress = 0;
+                        curProgress = curProgress + 1;
+                        var resultPercent = (curProgress * 100) / startNumber;
+                        if (resultPercent <= 100) {
+                            $(this.element).css('width', (100 - resultPercent) + '%');
+                            this.element.progress = curProgress;
+                            if ((100 - resultPercent) > 10) {
+                                $(this.element).text(this.curCtrl2.countDownText.replace('{ph}', (startNumber - curProgress)));
+                            } else {
+                                $(this.element).text((startNumber - curProgress));
+                            }
+                        } else {
+                            clearInterval(this.element.interValPointer);
+                            showTryAginForProgress(this.curCtrl2);
+                            this.element.progress = 0;
+                        }
+
+                    }.bind({ element: selectProgressObj, curCtrl2: this.curCtrl }), 1000);
+                }
+            }
+        }.bind({ curCtrl: ctrl });
+    }
+}
+
+function showTryAginForProgress(ctrl) {
+    var sQuiry = $('#' + ctrl.id).closest('.myCtrl');
+    sQuiry.find('.progressSectionCountDown').css('display', 'none');
+    sQuiry.find('.warningSectionCountDown').css('display', 'block');
+    if (ctrl.showHideExteraStuff) {
+        var allIds = ctrl.showHideExteraStuff;
+        for (var i = 0; i < allIds.length; i++) {
+            var visibleQuiry = $('#' + allIds[i]);
+            if (visibleQuiry.length > 0) {
+                visibleQuiry.closest('.myCtrl').css('display', 'none');
+            }
+        }
+    }
+}
+
 function getTextBoxTemplate(ctrl) {
     if (!ctrl.id)
         ctrl.id = uuidv4RemoveDash();
@@ -1839,7 +1988,7 @@ function getTextBoxTemplate(ctrl) {
     result += '</div>';
 
     if (ctrl.nationalCodeValidation || hasNumberValidation(ctrl.validations))
-        if (!ctrl.nationalCodeValidation)
+        if (!ctrl.nationalCodeValidation && getOs() != "FireFox")
             ctrl.type = 'number';
 
     addCtrlToObj(ctrl);
@@ -2318,7 +2467,7 @@ function refreshInquiryGrid(curId) {
             var modalContainer = $(curObj).closest('.modal-body');
             if (modalContainer.length > 0) {
                 var foundGrid = modalContainer.find('.myGridCTRL');
-                if (foundGrid.length > 0)
+                if (foundGrid.length > 0 && foundGrid[0].refreshData)
                     foundGrid[0].refreshData();
             }
         }
@@ -2767,7 +2916,28 @@ function getModualTemplateActionButton(modual) {
 }
 
 function getButtonTemplate(action) {
-    return '<button ' + (action.id ? 'id="' + action.id + '"' : '') + ' onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + (action.title ? action.title : action.label) + '</button>';
+    if (!action.id)
+        action.id = uuidv4RemoveDash();
+    var result = '<button ' + (action.id ? 'id="' + action.id + '"' : '') + ' onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + (action.icon ? ('<i style="margin-left:10px;" class="fa '+ action.icon +'" ></i>') : '') +'<span class="buttonTitleSp">' + (action.title ? action.title : action.label) + '</span></button>';
+    if (action.titleUrl) {
+        functionsList.push(function () {
+            postForm(this.button.titleUrl, new FormData(), function (res)
+            {
+                if (res && this.id) {
+                    var buttonQuiry = $('#' + this.id);
+                    if (buttonQuiry.length > 0) {
+                        var curText = buttonQuiry.find('.buttonTitleSp').text();
+                        for (var prop in res) {
+                            curText = curText.replace('{{' + prop + '}}', res[prop]);
+                        }
+                        buttonQuiry.find('.buttonTitleSp').text(curText);
+                    }
+                }
+            }.bind({ id: this.button.id }))
+        }.bind({ button: action }));
+    }
+   
+    return result;
 }
 
 function getStepWizardTemplate(wizard) {
@@ -2824,7 +2994,6 @@ function getStepWizardTemplate(wizard) {
                 if (i > 0) {
                     if (!wizard.moveBackButtonToTop)
                         result += '<button class="btn btn-warning btn-sm stepButton buttonBack"><i class="fa fa-chevron-right"></i>بازگشت</button>';
-
                 }
                 var isLastStep = (i + 1) >= wizard.steps.length;
                 if (!wizard.steps[i].hideMoveNextButton)
@@ -2837,7 +3006,10 @@ function getStepWizardTemplate(wizard) {
         }
 
         result += '</div>';
+        result += '</div>';
     }
+
+    
 
     functionsList.push(function () {
         initSWFunctions(this.wizard.id, this.wizard.actionOnLastStep);
@@ -2934,6 +3106,9 @@ function submitThisStep(curThis, targetUrl) {
             postForm(curUrl, postFormData, function (res) {
                 if (res && res.isSuccess && $(curThis).hasClass('countDownCtrl') && $(curThis)[0].start) {
                     $(curThis)[0].start();
+                }
+                if (res && res.isSuccess && $(curThis).closest('.countDownNew').length > 0) {
+                    $(curThis).closest('.countDownNew').find('input')[0].start();
                 }
                 if (res && res.data) {
                     if (res.data.stepId) {
@@ -3199,9 +3374,13 @@ function doPageActions(actionOnLastStep) {
             showLoader(formQuery);
             postForm(actionOnLastStep.url, postData, function (res) {
                 if (this.actionOnLastStep.detailesUrl && res.isSuccess == true && res.data) {
-                    location.href = (res.data.url ? res.data.url : this.actionOnLastStep.detailesUrl) + "?id=" + res.data.id;
+                    if (this.actionOnLastStep.inlineReplace) {
+                        postForm(this.actionOnLastStep.detailesUrl + "?id=" + res.data.id + '&ignoreMaster=true', new FormData(), function (res2) { this.holoderQuiry.html(res2); if (this.curStepAction.refreshAllGrid) { refreshAllGrid() } }.bind({ holoderQuiry: this.formQuery, curStepAction: this.actionOnLastStep }), null, null, null, null , 'GET')
+                    } else {
+                        location.href = (res.data.url ? res.data.url : this.actionOnLastStep.detailesUrl) + "?id=" + res.data.id;
+                    }
                 }
-            }.bind({ actionOnLastStep: actionOnLastStep }), null, function () { hideLoader(formQuery); });
+            }.bind({ actionOnLastStep: actionOnLastStep, formQuery: formQuery }), null, function () { hideLoader(formQuery); });
         } else if (actionOnLastStep.actionName == 'showModal' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0) {
             $('#' + actionOnLastStep.objectId).modal('show');
         } else if (actionOnLastStep.actionName == 'showPrintPreview' && actionOnLastStep.objectId && $('#' + actionOnLastStep.objectId).length > 0 && actionOnLastStep.modalId && $('#' + actionOnLastStep.modalId).length > 0 && actionOnLastStep.url) {
@@ -3236,7 +3415,7 @@ function doPageActions(actionOnLastStep) {
             showLoader(formQuery);
             postForm(targetUrl, postData, function (res) {
                 if (res.isSuccess == true) {
-                    if (this.actionOnLastStep.gridId) {
+                    if (this.actionOnLastStep.gridId && $('#' + this.actionOnLastStep.gridId).length > 0 && $('#' + this.actionOnLastStep.gridId)[0].refreshData) {
                         $('#' + this.actionOnLastStep.gridId)[0].refreshData();
                     }
                     $('#' + this.actionOnLastStep.objectId).closest('.modal').modal('hide');
@@ -3282,6 +3461,8 @@ function getOs() {
         return "Android";
     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
         return "iOS";
+    if (/Mozilla/i.test(userAgent))
+        return "FireFox";
 
     return "unknown";
 }

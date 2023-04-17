@@ -1,50 +1,53 @@
-﻿
+﻿@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
 @{
-    string marginHolder = "";
-    if(ViewBag.layer != null)
+    Layout = SiteSettingService.GetSiteSetting()?.Layout;
+    if (ViewBag.ignoreMaster == true)
     {
-        marginHolder = "margin:10px;";
-        Layout = ViewBag.layer;
-    }
-    else
-    {
-       Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+        Layout = null;
     }
 }
 
 @{
-    if(Layout == "_WebLayout")
+    if (Layout == "_WebLayout")
     {
         ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");
     }
 }
 
-<div style="@marginHolder" class="MainHolder"></div>
+<div id="holderTenderC" class="MainHolder"></div>
 <script>
     @{
-        if(ViewBag.exteraParameters != null)
+        if (ViewBag.exteraParameters != null)
         {
             ViewContext.Writer.Write("var exteraModelParams = JSON.parse('" + Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.exteraParameters) + "');");
         }
     }
-    loadJsonConfig('@ViewBag.ConfigRoute');
+        loadJsonConfig('@ViewBag.ConfigRoute', $('#holderTenderC'));
 </script>
 
 
 @{
-    if(Layout == "_WebLayout")
+    if (Layout == "_WebLayout")
     {
         ViewContext.Writer.Write("</section></div>");
     }
 }
 
 <script>
-    function loadJsonForPPF(ctrlId) {
-        var curValue = $('#' + ctrlId).find('option:selected').attr('value');
-        if(curValue) {
-            var quirySelector = $('#' + ctrlId).closest('.MultiRowInputRow').find('.holderDynamicSW');
-            if(quirySelector.length > 0) {
-                loadJsonConfig('/Tender/GetPPFJsonConfig?ppfid=' + curValue , quirySelector);
+    function loadJsonForPPF(curId) {
+        if (curId) {
+            var curName = $('#' + curId).attr('name');
+            if (curName && curName.indexOf('[') > -1) {
+                var curIndex = Number.parseInt(curName.split('[')[1].split(']')[0]);
+                var holderQuiry = $('#' + curId).closest('.MultiRowInputRow');
+                if (holderQuiry.length > 0) {
+                    var formDataJson = convertFormDataToJson(getFormData(holderQuiry.closest('.myCtrl')));
+                    console.log(formDataJson);
+                    var quirySelector = holderQuiry.find('.holderDynamicSW');
+                    if (quirySelector.length > 0 && formDataJson && formDataJson.tenderInsurance[curIndex].fid && formDataJson.tenderInsurance[curIndex].needConsultation) {
+                        loadJsonConfig('/Tender/GetPPFJsonConfig?ppfid=' + formDataJson.tenderInsurance[curIndex].fid + '&needConsultation=' + formDataJson.tenderInsurance[curIndex].needConsultation, quirySelector);
+                    }
+                }
             }
         }
     }

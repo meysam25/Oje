@@ -11,7 +11,6 @@ namespace Oje.Sanab
     {
         public static void Config(IServiceCollection services)
         {
-            services.AddHttpClient();
 
             services.AddDbContextPool<SanabDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 

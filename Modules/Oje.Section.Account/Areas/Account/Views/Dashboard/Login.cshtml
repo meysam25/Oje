@@ -43,33 +43,34 @@
     $('.loginBox').keypress(function (e) { if (e.keyCode == 13) $('.loginButton').click(); });
     </script>*@
 @section Styles {
-<link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
-<style>
-    .tempLoginSectionF {
-        display: inline-block;
-        width: 500px;
-        text-align: right;
-    }
-
-    @@media (max-width: 550px) {
+    <link rel="stylesheet" href="/Modules/Core/css/mainPage.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+    <style>
         .tempLoginSectionF {
-            width: 400px;
+            display: inline-block;
+            width: 500px;
+            text-align: right;
         }
-    }
 
-    @@media (max-width: 400px) {
-        .tempLoginSectionF {
-            width: 350px;
+        @@media (max-width: 550px) {
+            .tempLoginSectionF {
+                width: 400px;
+            }
         }
-    }
-    .makeImage100P img {
-        width:100%;
-    }
-</style>
+
+        @@media (max-width: 400px) {
+            .tempLoginSectionF {
+                width: 350px;
+            }
+        }
+
+        .makeImage100P img {
+            width: 100%;
+        }
+    </style>
 }
 
-<a href="/" class="moveToHomeButton" ><i class="fa fa-home" ></i><span>بازگشت به صفحه خانه</span></a>
-<span class="showLoginModal" ><i class="fa fa-user" ></i><span>ورود به سامانه</span></span>
+<a href="/" class="moveToHomeButton"><i class="fa fa-home"></i><span>بازگشت به صفحه خانه</span></a>
+<span class="showLoginModal"><i class="fa fa-user"></i><span>ورود به سامانه</span></span>
 
 <div id="loginBodySeciton" class="myContainer" style="text-align:center;">
     <div class="tempLoginSectionF" style="">
@@ -77,33 +78,31 @@
     </div>
 </div>
 <script>
-    postForm('/Home/GetLoginModalConfig', new FormData(), function(res)
-    {
-        if (res && res.panels && res.panels.length > 0 && res.panels[0].moduals  && res.panels[0].moduals.length > 0 && res.panels[0].moduals[0].panels && res.panels[0].moduals[0].panels.length > 0 ) {
+    postForm('/Account/Dashboard/GetLoginModalConfig', new FormData(), function (res) {
+        if (res && res.panels && res.panels.length > 0 && res.panels[0].moduals && res.panels[0].moduals.length > 0 && res.panels[0].moduals[0].panels && res.panels[0].moduals[0].panels.length > 0) {
             generateForm(res.panels[0].moduals[0], $('#loginBodySeciton div .globalSection'));
             $('.tempLoginSectionF').append('<i class="closeLoginButton fa fa-times" ></i>');
-            $('.tempLoginSectionF').find('.closeLoginButton').click(function() {
+            $('.tempLoginSectionF').find('.closeLoginButton').click(function () {
                 togleLoginPanel();
             });
         }
-    }, null,null,null, 'GET');
-    whatToDoAfterUserLogin.push({curFun: function()
-    {
-        var curReturnURl = new URLSearchParams(window.location.search).get('returnUrl');
-        if(!curReturnURl)
-        {
-             curReturnURl = '/';
+    }, null, null, null, 'GET');
+    whatToDoAfterUserLogin.push({
+        curFun: function () {
+            var curReturnURl = new URLSearchParams(window.location.search).get('returnUrl');
+            if (!curReturnURl) {
+                curReturnURl = '/';
+            }
+            location.href = curReturnURl;
         }
-         location.href = curReturnURl;
-    }});
+    });
 
     var loginDescriptionPostData = new FormData();
 
     loginDescriptionPostData.append('returnUrl', new URLSearchParams(location.search).get('returnUrl'));
 
-    postForm('/Account/Dashboard/GetLoginDescription', loginDescriptionPostData, function(res) 
-    {
-        if(res && res.desc) {
+    postForm('/Account/Dashboard/GetLoginDescription', loginDescriptionPostData, function (res) {
+        if (res && res.desc) {
             var modalHtml = getModualTemplate(
                 {
                     id: 'loginDescriptionModal',
@@ -112,39 +111,37 @@
                     class: "makeImage100P",
                     actions: [
                         {
-                          "title": "متوجه شدم",
-                          "onClick": "closeThisModal(this)",
-                          "class": "btn-secondary"
+                            "title": "متوجه شدم",
+                            "onClick": "closeThisModal(this)",
+                            "class": "btn-secondary"
                         }
                     ]
                 });
 
-                $('body').append(modalHtml);
-                $('#loginDescriptionModal').modal('show');
+            $('body').append(modalHtml);
+            $('#loginDescriptionModal').modal('show');
         }
     });
 
-    postForm('/Account/Dashboard/GetLoginBackgroundImage', new FormData(), function(res) 
-    {
-        if(res && res.src) {
-            $('main').css('background','url("'+ res.src +'") no-repeat').css('background-size','100% 100%');
+    postForm('/Account/Dashboard/GetLoginBackgroundImage', new FormData(), function (res) {
+        if (res && res.src) {
+            $('main').css('background', 'url("' + res.src + '") no-repeat').css('background-size', '100% 100%');
         }
     });
 
-    $('.showLoginModal').click(function() 
-    { 
-        togleLoginPanel();  
+    $('.showLoginModal').click(function () {
+        togleLoginPanel();
     });
 
     var disabledButton = false;
-    function togleLoginPanel(){
-        if(disabledButton == false) {
+    function togleLoginPanel() {
+        if (disabledButton == false) {
             disabledButton = true;
-            if($('main').hasClass('showLogin'))
+            if ($('main').hasClass('showLogin'))
                 $('main').removeClass('showLogin').addClass('showLoginRevert');
             else
                 $('main').removeClass('showLoginRevert').addClass('showLogin');
         }
-        setTimeout(function() { disabledButton = false; }, 1000);
+        setTimeout(function () { disabledButton = false; }, 1000);
     }
 </script>

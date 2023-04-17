@@ -82,23 +82,23 @@ namespace Oje.Sanab.Services
 
             if (foundItem != null)
             {
-                var foundBrandItem = SanabSystemFieldVehicleSystemService.GetSystem(foundItem.SystemField);
-                var foundSpec = SanabTypeFieldVehicleSpecService.GetSpec(foundItem.TypeField);
-                result.Add(new KeyValue() { key = "vehicleTypeId", value = SanabVehicleTypeService.GetTypeIdBy(foundItem.UsageField) + "" });
-                result.Add(new KeyValue() { key = "carTypeId", value = SanabCarTypeService.GetTypeIdBy(foundItem.MapUsageCode) + "" });
+                var foundBrandItem = SanabSystemFieldVehicleSystemService.GetSystem(foundItem.VehicleSystemCode);
+                var foundSpec = SanabTypeFieldVehicleSpecService.GetSpec(foundItem.TypeByCii);
+                result.Add(new KeyValue() { key = "vehicleTypeId", value = SanabVehicleTypeService.GetTypeIdBy(foundItem.CarTypCodeByCii.ToIntReturnZiro()) + "" });
+                result.Add(new KeyValue() { key = "carTypeId", value = SanabCarTypeService.GetTypeIdBy(foundItem.UsgCodByCii.ToIntReturnZiro()) + "" });
                 result.Add(new KeyValue() { key = "brandId", value = foundBrandItem?.Id + "" });
                 result.Add(new KeyValue() { key = "brandId_Title", value = foundBrandItem?.Title + "" });
                 result.Add(new KeyValue() { key = "specId", value = foundSpec?.Id + "" });
                 result.Add(new KeyValue() { key = "specId_Title", value = foundSpec?.Title + "" });
-                result.Add(new KeyValue() { key = "createYear", value = getCreateDate(foundItem.ModelField) + "" });
-                result.Add(new KeyValue() { key = "havePrevInsurance", value = SanabCompanyService.GetCompanyId(foundItem.CompanyCode) + "" });
-                result.Add(new KeyValue() { key = "prevStartDate", value = foundItem.SatrtDate + "" });
+                result.Add(new KeyValue() { key = "createYear", value = foundItem.ModelbyNaja });
+                result.Add(new KeyValue() { key = "havePrevInsurance", value = SanabCompanyService.GetCompanyId(foundItem.CompanyId) + "" });
+                result.Add(new KeyValue() { key = "prevStartDate", value = foundItem.BeginDate + "" });
                 result.Add(new KeyValue() { key = "prevEndDate", value = foundItem.EndDate + "" });
-                result.Add(new KeyValue() { key = "bodyDamageHistoryId", value = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetNotFinancialIdBy(foundItem.PolicyHealthLossCount) });
-                result.Add(new KeyValue() { key = "financialDamageHistoryId", value = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetFinancialIdBy(foundItem.PolicyFinancialLossCount) });
-                result.Add(new KeyValue() { key = "driverDamageHistoryId", value = ThirdPartyDriverHistoryDamagePenaltyService.GetIdBy(foundItem.PolicyPersonLossCount) });
-                result.Add(new KeyValue() { key = "bodyNoDamagePercentId", value = ThirdPartyBodyNoDamageDiscountHistoryService.GetIdBy(foundItem.DisFnYrPrcnt) });
-                result.Add(new KeyValue() { key = "driverNoDamageDiscountHistory", value = ThirdPartyDriverNoDamageDiscountHistoryService.GetIdBy(foundItem.DisPrsnYrPrcnt) });
+                result.Add(new KeyValue() { key = "bodyDamageHistoryId", value = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetNotFinancialIdBy(foundItem.DiscountLifeYearNumber.ToIntReturnZiro()) });
+                result.Add(new KeyValue() { key = "financialDamageHistoryId", value = ThirdPartyFinancialAndBodyHistoryDamagePenaltyService.GetFinancialIdBy(foundItem.DiscountFinancialYearNumber.ToIntReturnZiro()) });
+                result.Add(new KeyValue() { key = "driverDamageHistoryId", value = ThirdPartyDriverHistoryDamagePenaltyService.GetIdBy(foundItem.DiscountPersonYearNumber.ToIntReturnZiro()) });
+                result.Add(new KeyValue() { key = "bodyNoDamagePercentId", value = ThirdPartyBodyNoDamageDiscountHistoryService.GetIdBy(foundItem.DiscountFinancialYearPercent) });
+                result.Add(new KeyValue() { key = "driverNoDamageDiscountHistory", value = ThirdPartyDriverNoDamageDiscountHistoryService.GetIdBy(foundItem.DiscountPersonYearPercent) });
             }
 
             return result;
@@ -124,78 +124,53 @@ namespace Oje.Sanab.Services
             {
                 result = new SanabCarThirdPartyPlaqueInquiry()
                 {
-                    AxelNumberField = tempResult.AxelNumberField,
-                    CapacityField = tempResult.CapacityField,
-                    ChassisNumberField = tempResult.ChassisNumberField,
-                    CompanyCode = tempResult.CompanyCode,
-                    CompanyName = tempResult.CompanyName,
                     CreateDate = DateTime.Now,
-                    CylCnt = tempResult.CylCnt,
-                    CylinderCount = tempResult.CylinderCount,
-                    CylinderNumberField = tempResult.CylinderNumberField,
-                    DiscountPersonPercent = tempResult.DiscountPersonPercent,
-                    DiscountThirdPercent = tempResult.DiscountThirdPercent,
-                    DisFnYrNum = tempResult.DisFnYrNum,
-                    DisFnYrPrcnt = tempResult.DisFnYrPrcnt,
-                    DisLfYrNum = tempResult.DisLfYrNum,
-                    DisPrsnYrNum = tempResult.DisPrsnYrNum,
-                    DisPrsnYrPrcnt = tempResult.DisPrsnYrPrcnt,
                     EndDate = tempResult.EndDate,
-                    EndorseDate = tempResult.EndorseDate,
-                    EndorseText = tempResult.EndorseText,
-                    EngineNumberField = tempResult.EngineNumberField,
-                    FnCvrCptl = tempResult.FnCvrCptl,
-                    HBgnDte = tempResult.HBgnDte,
-                    HEndDte = tempResult.HEndDte,
-                    InstallDateField = tempResult.InstallDateField,
-                    InsuranceFullName = tempResult.InsuranceFullName,
                     Ip1 = ipSections.Ip1,
                     Ip2 = ipSections.Ip2,
                     Ip3 = ipSections.Ip3,
                     Ip4 = ipSections.Ip4,
-                    IssueDate = tempResult.IssueDate,
-                    LastCompanyDocumentNumber = tempResult.LastCompanyDocumentNumber,
-                    LfCvrCptl = tempResult.LfCvrCptl,
-                    LstCmpDocNo = tempResult.LstCmpDocNo,
-                    MainColorField = tempResult.MainColorField,
-                    MapTypNam = tempResult.MapTypNam,
-                    MapUsageCode = tempResult.MapUsageCode,
-                    MapUsageName = tempResult.MapUsageName,
-                    MapUsgCod = tempResult.MapUsgCod,
-                    MapUsgNam = tempResult.MapUsgNam,
-                    MapUsgName = tempResult.MapUsgName,
-                    ModelField = tempResult.ModelField,
-                    MtrNum = tempResult.MtrNum,
                     NationalCode = input.nationalCode,
                     plaque_1 = input.plaque_1.ToIntReturnZiro(),
                     plaque_2 = input.plaque_2.ToIntReturnZiro(),
                     plaque_3 = PlaqueService.ConvertStringToPlaque(input.plaque_3).ToIntReturnZiro(),
                     plaque_4 = input.plaque_4.ToIntReturnZiro(),
-                    plk = tempResult.plk,
-                    Plk1 = tempResult.Plk1,
-                    Plk2 = tempResult.Plk2,
-                    Plk3 = tempResult.Plk3,
-                    PlkSrl = tempResult.PlkSrl,
-                    PolicyFinancialLossCount = tempResult.PolicyFinancialLossCount,
-                    PolicyHealthLossCount = tempResult.PolicyHealthLossCount,
-                    PolicyPersonLossCount = tempResult.PolicyPersonLossCount,
-                    PrintEndorsCompanyDocumentNumber = tempResult.PrintEndorsCompanyDocumentNumber,
-                    PrntPlcyCmpDocNo = tempResult.PrntPlcyCmpDocNo,
-                    PrsnCvrCptl = tempResult.PrsnCvrCptl,
-                    SatrtDate = tempResult.SatrtDate,
-                    SecondColorField = tempResult.SecondColorField,
-                    ShsNum = tempResult.ShsNum,
-                    SystemField = tempResult.SystemField,
-                    ThirdPolicyCode = tempResult.ThirdPolicyCode,
-                    Thrname = tempResult.Thrname,
-                    Tonage = tempResult.Tonage,
-                    TypeField = tempResult.TypeField,
-                    UsageCode = tempResult.UsageCode,
-                    UsageField = tempResult.UsageField,
-                    UsgCod = tempResult.UsgCod,
-                    vin = tempResult.vin,
-                    VinNumberField = tempResult.VinNumberField,
-                    wheelNumberField = tempResult.wheelNumberField
+                    AxelNo = tempResult.AxelNo,
+                    BeginDate = tempResult.BeginDate,
+                    Capacity = tempResult.Capacity,
+                    CarGroupCode = tempResult.CarGroupCode,
+                    CarTypCodeByCii = tempResult.CarTypCodeByCii,
+                    CarTypeNameByCii = tempResult.CarTypeNameByCii,
+                    ChassisNumber = tempResult.ChassisNumber,
+                    CompanyId = tempResult.CompanyId,
+                    CompanyTitle = tempResult.CompanyTitle,
+                    CylinderNo = tempResult.CylinderNo,
+                    DiscountFinancialYearNumber = tempResult.DiscountFinancialYearNumber,
+                    DiscountFinancialYearPercent = tempResult.DiscountFinancialYearPercent,
+                    DiscountLifeYearNumber = tempResult.DiscountLifeYearNumber,
+                    DiscountLifeYearPercent = tempResult.DiscountLifeYearPercent,
+                    DiscountPersonYearNumber = tempResult.DiscountPersonYearNumber,
+                    DiscountPersonYearPercent = tempResult.DiscountPersonYearPercent,
+                    EngineNumber = tempResult.EngineNumber,
+                    MainColor = tempResult.MainColor,
+                    ModelbyNaja = tempResult.ModelbyNaja,
+                    PlateInstallDate = tempResult.PlateInstallDate,
+                    PrintNumber = tempResult.PrintNumber,
+                    SecondColor = tempResult.SecondColor,
+                    SubUsage = tempResult.SubUsage,
+                    SystemByCii = tempResult.SystemByCii,
+                    SystemByNaja = tempResult.SystemByNaja,
+                    TypeByCii = tempResult.TypeByCii,
+                    TypeByNaja = tempResult.TypeByNaja,
+                    TypeCodeByCii = tempResult.TypeCodeByCii,
+                    UniqueCode = tempResult.UniqueCode,
+                    UsageByNaja = tempResult.UsageByNaja,
+                    UsageCodeByCii = tempResult.UsageCodeByCii,
+                    UsageNameByCii = tempResult.UsageNameByCii,
+                    UsgCodByCii = tempResult.UsgCodByCii,
+                    VehicleSystemCode = tempResult.VehicleSystemCode,
+                    Vin = tempResult.Vin,
+                    WheelNo = tempResult.WheelNo
                 };
                 db.Entry(result).State = EntityState.Added;
                 db.SaveChanges();

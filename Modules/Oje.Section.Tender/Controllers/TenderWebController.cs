@@ -11,7 +11,7 @@ using Oje.Section.Tender.Models.View;
 namespace Oje.Section.Tender.Controllers
 {
     [Route("[Controller]/[Action]")]
-    public class TenderWebController: Controller
+    public class TenderWebController : Controller
     {
         readonly ISiteSettingService SiteSettingService = null;
         readonly ITenderConfigService TenderConfigService = null;
@@ -97,6 +97,12 @@ namespace Oje.Section.Tender.Controllers
         {
             Response.ContentType = "application/json; charset=utf-8";
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Tender", "LoginPanelForRegister")));
+        }
+
+        [HttpPost]
+        public IActionResult GetSiteInfo()
+        {
+            return Json(new { title = SiteSettingService.GetSiteSetting()?.Title });
         }
     }
 }

@@ -122,22 +122,21 @@
                         </div>
                     </a>
                     <div class="holderMenus">
+                        <div class="topMenuNewResponsiveButton">
+                            <span class="topMenuNewResponsiveButtonLine"></span>
+                            <span class="topMenuNewResponsiveButtonLine"></span>
+                            <span class="topMenuNewResponsiveButtonLine"></span>
+                        </div>
                         <nav id="headerMenu" class="headerMenu">
-                            <div class="topMenuNewResponsiveButton">
-                                <span class="topMenuNewResponsiveButtonLine"></span>
-                                <span class="topMenuNewResponsiveButtonLine"></span>
-                                <span class="topMenuNewResponsiveButtonLine"></span>
-                            </div>
-                            <div id="topMenuHolderItems">
-                            </div>
-                            <script>
-                                $('#topMenuHolderItems').loadTopMenu('/TopMenu/GetTopMenu');
-                            </script>
+                            <a href="/" class="menuItem">صفحه اصلی</a><a class="menuItem">سامانه ها</a><a class="menuItem">مجوز ها</a><a class="menuItem">درباره ما</a><a class="menuItem">تماس با ما</a>
                         </nav>
+                        <script>
+                            $('.holderMenus').initMenue('/TopMenu/GetTopMenu');
+                        </script>
                     </div>
                     <div class="holderMainPageButtons">
-                        <button type="button" class="btn btn-success">مشاوره رایگان</button>
-                        <button type="button" class="btn btn-secondary">مشاور بیمه شوید</button>
+                        <button type="button" onclick="initOnlineChat()" class="btn btn-success">مشاوره رایگان</button>
+                        <a href="/ContactUs" class="btn btn-secondary">تماس با ما</a>
                     </div>
                 </div>
             </div>
@@ -150,7 +149,7 @@
                
                 <div class="row">
                     <div class="col">
-                        <a href="#" class="footerLoginBox">
+                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user" ></i>
                             </div>
@@ -162,7 +161,7 @@
                         </a>
                     </div>
                     <div class="col">
-                        <a href="#" class="footerLoginBox">
+                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user"></i>
                             </div>
@@ -174,7 +173,7 @@
                         </a>
                     </div>
                     <div class="col">
-                        <a href="#" class="footerLoginBox">
+                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user"></i>
                             </div>
@@ -186,7 +185,7 @@
                         </a>
                     </div>
                     <div class="col">
-                        <a href="#" class="footerLoginBox">
+                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user"></i>
                             </div>
@@ -219,7 +218,7 @@
                                     </div>
                                     <div class="footerSharingIconSection">
                                         <a id="aTelegeram" title="تلگرام" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>
-                                        <a id="aWhatapp" title="واتساپ" href="#"><img width="28" height="28" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
+                                        <a id="aWhatapp" title="واتساپ" href="#"><img width="32" height="32" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
                                         <a id="aInestageram" title="اینستاگرام" href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagramsilver.svg" data-alt-src="/Modules/Assets/MainPage/instagram.svg" /></a>
                                         <a id="aLinkin" title="لینکدین" href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedinsilver.svg" data-alt-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
                                     </div>
@@ -234,5 +233,11 @@
             </div>
         </footer>
     </div>
+    @{
+        if (Context.Request.IsHttps)
+        {
+            ViewContext.Writer.Write("caches.delete('mainServiceName');localStorage.clear();" + Environment.NewLine);
+        }
+    }
 </body>
 </html>

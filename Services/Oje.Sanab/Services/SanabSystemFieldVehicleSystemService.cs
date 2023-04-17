@@ -150,7 +150,7 @@ namespace Oje.Sanab.Services
 
         public VehicleSystem GetSystem(string title)
         {
-            return db.SanabSystemFieldVehicleSystems.Where(t => t.Title == title).Select(t => t.VehicleSystem).FirstOrDefault();
+            return db.SanabSystemFieldVehicleSystems.Where(t => t.Code == title).Select(t => t.VehicleSystem).FirstOrDefault();
         }
     }
 }

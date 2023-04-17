@@ -47,13 +47,18 @@ namespace Oje.Section.Tender.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public void Create(long tenderFilledFormId, int tenderProposalFormJsonConfigId)
+        public void Create(long tenderFilledFormId, int tenderProposalFormJsonConfigId, bool needConsultation)
         {
             var newItem = new TenderFilledFormPF()
             {
                 TenderFilledFormId = tenderFilledFormId,
-                TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId
+                TenderProposalFormJsonConfigId = tenderProposalFormJsonConfigId,
+                NeedConsultation = needConsultation
             };
+
+            if (newItem.NeedConsultation != true)
+                newItem.IsConfirmByAdmin = true;
+
             newItem.FilledSignature();
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();

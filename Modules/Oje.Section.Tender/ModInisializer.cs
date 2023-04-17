@@ -1,12 +1,12 @@
 ﻿using Oje.Infrastructure;
 using Oje.Infrastructure.Interfac;
+using Oje.Section.Tender.Interfaces;
+using Oje.Section.Tender.Services;
+using Oje.Section.Tender.Services.EContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Oje.Section.Tender.Interfaces;
-using Oje.Section.Tender.Services;
-using Oje.Section.Tender.Services.EContext;
 
 namespace Oje.Section.Tender
 {
@@ -34,6 +34,7 @@ namespace Oje.Section.Tender
             services.AddScoped<ITenderFilledFormIssueService, TenderFilledFormIssueService>();
             services.AddScoped<ITenderFileService, TenderFileService>();
             services.AddScoped<IUserRegisterFormService, UserRegisterFormService>();
+            services.AddScoped<ITenderProposalFormJsonConfigFileService, TenderProposalFormJsonConfigFileService>();
             
         }
     }

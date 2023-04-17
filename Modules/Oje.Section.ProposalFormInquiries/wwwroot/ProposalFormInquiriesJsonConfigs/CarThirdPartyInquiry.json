@@ -668,7 +668,7 @@
                 {
                   "class": "thirdPartyGridConvertToCard",
                   "id": "userGrid",
-                  "exteraSearchIds": [ "searchPanel" ],
+                  "exteraSearchIds": [ "searchPanel", "responsePanel" ],
                   "key": "id",
                   "url": "/ProposalFormInquiries/CarThirdPartyInquiry/Inquiry",
                   "itemPerPage": 1000,

@@ -1,10 +1,11 @@
-﻿@{
-    Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
-    if(ViewBag.newLayoutName != null)
-    {
-        Layout = ViewBag.newLayoutName;
-    }
+﻿@inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
+@{
+    Layout = SiteSettingService.GetSiteSetting()?.Layout;
     ViewBag.Title = Model.ppfTitle;
+    if (ViewBag.ignoreMaster == true)
+    {
+        Layout = null;
+    }
 }
 @model Oje.Section.Tender.Models.View.TenderFilledFormPdfVM
 @using Oje.Infrastructure.Services
@@ -159,10 +160,6 @@
     <div class="pdfFooterSection">
         <div>محل امضا @(!string.IsNullOrEmpty(Model.createUserFullname.Trim()) ? "("+ Model.createUserFullname.Trim() +")" : "")</div>
     </div>
-</div>
-
-<div style="text-align:center;">
-    <a class="btn btn-primary" href="/Account/Dashboard/Index" >بازگشت به داشبورد</a>
 </div>
 
 @{

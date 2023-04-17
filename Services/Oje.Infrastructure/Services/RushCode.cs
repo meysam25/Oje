@@ -1064,6 +1064,18 @@ namespace Oje.Infrastructure.Services
             }
         }
 
+        public static bool? ToBooleanReturnFalseNull(this object input)
+        {
+            try
+            {
+                return Convert.ToBoolean(input);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static decimal ToDecimalZiro(this object input)
         {
             try

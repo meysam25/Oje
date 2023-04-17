@@ -1,8 +1,8 @@
 ﻿@{
     Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
-    if(ViewBag.newLayoutName != null)
+    if(ViewBag.ignoreMaster == true)
     {
-        Layout = ViewBag.newLayoutName;
+        Layout = null;
     }
     ViewBag.Title = Model.ppfTitle;
 }

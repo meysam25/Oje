@@ -73,7 +73,7 @@ namespace Oje.AccountService.Models.DB
         public string Layout { get 
             {
                 if (WebsiteType == null || WebsiteType == Infrastructure.Enums.WebsiteType.Normal) return "_WebLayout";
-                else if (WebsiteType == Infrastructure.Enums.WebsiteType.Tender) return "_TenderLayout";
+                else if (WebsiteType == Infrastructure.Enums.WebsiteType.Tender) return "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
                 else if (WebsiteType == Infrastructure.Enums.WebsiteType.Treatment) return "_TreatmentLayout";
 
                 return "_WebLayout";

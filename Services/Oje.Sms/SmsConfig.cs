@@ -11,8 +11,6 @@ namespace Oje.Sms
     {
         public static void Config(IServiceCollection services)
         {
-            services.AddHttpClient();
-
             services.AddDbContextPool<SmsDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 
             services.AddScoped<ISmsConfigService, SmsConfigService>();

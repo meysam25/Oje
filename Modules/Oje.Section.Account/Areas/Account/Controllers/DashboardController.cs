@@ -73,6 +73,13 @@ namespace Oje.Section.Account.Areas.Account.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetLoginModalConfig()
+        {
+            Response.ContentType = "application/json; charset=utf-8";
+            return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Account", "LoginModal")));
+        }
+
+        [HttpGet]
         public IActionResult Login()
         {
             var curSetting = SiteSettingService.GetSiteSetting();

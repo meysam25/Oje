@@ -69,12 +69,12 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
                 );
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [AreaConfig(Title = "جزییات", Icon = "fa-eye")]
-        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
+        public IActionResult PdfDetailes(long id, [FromQuery] bool isPrint = false, [FromQuery] bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
-            //ViewBag.newLayoutName = "_WebLayout";
+            ViewBag.ignoreMaster = ignoreMaster;
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId, tenderSelectStatus));
         }
 
@@ -160,6 +160,13 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult GetInsuranceList([FromForm] GlobalGridParentLong input)
         {
             return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id, tenderSelectStatus));
+        }
+
+        [AreaConfig(Title = "مشاهده مدارک مناقصه", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetFileList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(TenderFilledFormService.GetUploadFiles(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
     }
 }

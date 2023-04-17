@@ -32,7 +32,6 @@ namespace Oje.Sms.Services.EContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SanabCarThirdPartyPlaqueInquiry>().Property(e => e.Tonage).HasPrecision(8, 2);
             base.OnModelCreating(modelBuilder);
         }
     }

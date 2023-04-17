@@ -732,5 +732,7 @@ namespace Oje.Infrastructure.Exceptions
         Invalid_BaseInsurance = 362,
         [Display(Name = "زیرگروه مجاز نمی باشد")]
         Invalid_SubCategory = 363,
+        [Display(Name = "لطفا نیاز به مشاوره را انتخاب کنید")]
+        Please_Select_Need_To_Consultation = 364,
     }
 }

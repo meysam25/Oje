@@ -41,15 +41,14 @@ namespace Oje.Sanab.Services
 
             using (var stringContent = new StringContent(JsonConvert.SerializeObject(new 
             { 
-                NationalCode = NationalCode, 
+                NationalCode, 
                 plk1 = Plk1, 
                 plk2 = Plk2, 
                 plk3 = Plk3, 
-                plkSrl = PlkSrl,
-                queryType = 0
+                plkSrl = PlkSrl
             }, Formatting.Indented), Encoding.UTF8, "application/json"))
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalConfig.Configuration["SanabConfig:baseUrl"] + "/cii/test/SPIn/2/api/SanhabPolicyInquiry/GetSanhabPolicyInquiry")
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, GlobalConfig.Configuration["SanabConfig:baseUrl"] + ":8243/cii/pro/CAD/1/api/CarAndDiscountInquiry/IIXGetCarAndDiscountInquiry")
                 {
                     Headers =
                     {
@@ -58,12 +57,14 @@ namespace Oje.Sanab.Services
                     },
                     Content = stringContent
                 };
-                var httpResponseMessage = await HttpClientFactory.CreateClient().SendAsync(httpRequestMessage);
+                var httpClient = HttpClientFactory.CreateClient("unTruset");
+                
+                var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
                     result = JsonConvert.DeserializeObject<CarDiscountResultVM>(contentStream);
-                    if (result != null && string.IsNullOrEmpty(result.SystemField))
+                    if (result != null && string.IsNullOrEmpty(result.Vin))
                         result = null;
                 }
 

@@ -1,10 +1,10 @@
 ﻿@{
     Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
-    if(ViewBag.newLayoutName != null)
-    {
-        Layout = ViewBag.newLayoutName;
-    }
     ViewBag.Title = Model.ppfTitle;
+    if (ViewBag.ignoreMaster == true)
+    {
+        Layout = null;
+    }
 }
 @model Oje.Section.Tender.Models.View.TenderFilledFormPdfVM
 @using Oje.Infrastructure.Services
@@ -94,7 +94,7 @@
 </script>
 
 @{
-    if (Context.Request.IsMobile()) {
+    if (Context.Request.IsMobile() || ViewBag.ignoreMaster == true) {
         Layout = null;
     }
     if(Layout == "_WebLayout")

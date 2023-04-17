@@ -223,9 +223,11 @@ function addTopLeftIcons(title, imgSrc, des, isVisibleAllways) {
 
 function initStartButton() {
     $('.startButton').click(function () {
-        $('.mainContentBodyScroll').html('<div class="fgSection"></div>');
-        $('.fgSection').loadLoginPanel('/TenderWeb/GetLoginConfig', addRegisterButton);
-        $('.mySlider').parent().hide();
+        $('.loginModalHolder').remove();
+        var newId = uuidv4RemoveDash();
+        $('body').append('<div class="loginModalHolder" id="' + newId + '" ></div>');
+        showLoader($('body'));
+        loadJsonConfig('/TenderWeb/GetLoginConfig', newId, function () { $('#loginForgetPasswordModal').modal('show'); initWhatToDoLogin(); hideLoader($('body')); })
     });
 }
 
@@ -334,14 +336,16 @@ function loadOurPrice() {
 
 $.fn.loadAndBindOurPride = function (url) {
 
-    function getOurPrideItem(imgSrc, title) {
+    function getOurPrideItem(imgSrc, title, showImageOnRight) {
         var result = '';
 
         if (title && title.trim()) {
             result += '<div class="ourPrideSectionItem">';
-            if (imgSrc)
+            if (imgSrc && !showImageOnRight)
                 result += '<img width="80" alt="' + title.replace('{', '').replace('}', '') + '" height="80" data-src="' + imgSrc + '" />';
             result += ' <div >';
+            if (imgSrc && showImageOnRight)
+                result += '<img width="45" alt="' + title.replace('{', '').replace('}', '') + '" height="45" data-src="' + imgSrc + '" />';
             result += getOurPrideItemTemplate(title);
             result += '</div>';
             result += '</div>';
@@ -380,10 +384,10 @@ $.fn.loadAndBindOurPride = function (url) {
         postForm(url, new FormData(), function (res) {
             var template = '';
             if (res) {
-                template += getOurPrideItem(res.image1_address, res.title1);
-                template += getOurPrideItem(res.image2_address, res.title2);
-                template += getOurPrideItem(res.image3_address, res.title3);
-                template += getOurPrideItem(res.image4_address, res.title4);
+                template += getOurPrideItem(res.image1_address, res.title1, res.isActive);
+                template += getOurPrideItem(res.image2_address, res.title2, res.isActive);
+                template += getOurPrideItem(res.image3_address, res.title3, res.isActive);
+                template += getOurPrideItem(res.image4_address, res.title4, res.isActive);
                 $(this.curThis).find('.ourPrideSectionTitle span').html(res.title);
                 $(this.curThis).find('.ourPrideDescription').html(res.desc);
                 if (res.readMoreLink) {
@@ -458,18 +462,27 @@ function showRegisterButtons() {
             $('.fgSection').append(getMainButtonTemplate(registerConfig[i]));
         }
 
-    addMoveToMainStepButton();
+    //addMoveToMainStepButton();
 
     $('.iconButtonNewBody').click(function () {
         if (!isUserLogin) {
-            $('.fgSection').loadLoginPanel('/TenderWeb/GetLoginForRegConfig');
+            showLoginModalForRegister($(this).find('.iconButtonNewBodyTitleSection').text());
+            /*$('.fgSection').loadLoginPanel('/TenderWeb/GetLoginForRegConfig');*/
             setNavigationTitle('ثبت نام در سامانه');
             registerWhatToDoNextForReg($(this).attr('data-id'));
-            addMoveToMainStepButton();
+            //addMoveToMainStepButton();
         } else {
             showRegisterForm($(this).attr('data-id'));
         }
     });
+}
+
+function showLoginModalForRegister(modalTitle) {
+    var newId = uuidv4RemoveDash();
+    $('.loginModalHolder').remove();
+    $('body').append('<div class="loginModalHolder" id="' + newId + '" ></div>');
+    showLoader($('body'));
+    loadJsonConfig('/TenderWeb/GetLoginForRegConfig', newId, function () { $('#loginForgetPasswordModal').modal('show'); hideLoader($('body')); $('#loginForgetPasswordModal').find('.modal-title').text(modalTitle); })
 }
 
 
@@ -580,6 +593,14 @@ function addRegisterButton() {
     });
 }
 
+function showRegisterButton(modalId) {
+    $('.fgSection').html('<div id="holderLoginPanel" class="customePanel" ></div>');
+    showRegisterButtons();
+    hideShowNavTitle(true);
+    setNavigationTitle('ثبت نام در سامانه');
+    $('#' + modalId).modal('hide');
+}
+
 function setNavigationTitle(title) {
     $('.currentSectionTitle').text(title);
 }
@@ -594,12 +615,26 @@ function hideShowNavTitle(isShow) {
     }
 }
 
+function getUserInfoText(res) {
+    var result = '';
+
+    result = res.firstname + ' ' + res.lastname;
+    if (!result || !result.trim())
+        result = res.username;
+
+    return result;
+}
+
 function detectIfUserIsLogin() {
     postForm('/Account/Dashboard/GetLoginUserInfo', new FormData(), function (res) {
         if (res && res.isSuccess) {
+            $('.dashbaordButton').find('span').html(('داشبورد | ' + getUserInfoText(res)));
+            $('.dashbaordButton').css('display', 'block');
             isUserLogin = true;
             if (!res.isUser)
                 isUserNeedToGoToDashboard = true;
+        } else {
+            $('.startButton').css('display', 'block');
         }
     });
 }

@@ -142,9 +142,9 @@ namespace Oje.Sanab.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public int? GetTypeIdBy(string title)
+        public int? GetTypeIdBy(int code)
         {
-            return db.SanabVehicleTypes.Where(t => t.Title == title).Select(t => t.VehicleTypeId).FirstOrDefault();
+            return db.SanabVehicleTypes.Where(t => t.Code == code).Select(t => t.VehicleTypeId).FirstOrDefault();
         }
     }
 }

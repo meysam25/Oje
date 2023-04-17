@@ -3,34 +3,34 @@
     {
       "grids": [
         {
-          "id": "TenderAdminTenderFileGrid",
+          "id": "TenderSuperAdminTenderProposalFormJsonConfigFileGrid",
           "topActions": [
             {
               "title": "افزودن",
-              "onClick": "showModal('TenderAdminTenderFileAddGridModal', this)",
+              "onClick": "showModal('TenderSuperAdminTenderProposalFormJsonConfigFileAddGridModal', this)",
               "type": "add",
-              "modalId": "TenderAdminTenderFileAddGridModal"
+              "modalId": "TenderSuperAdminTenderProposalFormJsonConfigFileAddGridModal"
             }
           ],
-          "exportToExcelUrl": "/TenderAdmin/TenderFile/Export",
+          "exportToExcelUrl": "/TenderSuperAdmin/TenderProposalFormJsonConfigFile/Export",
           "showColumnConfigButton": true,
           "actions": {
             "delete": {
-              "url": "/TenderAdmin/TenderFile/Delete"
+              "url": "/TenderSuperAdmin/TenderProposalFormJsonConfigFile/Delete"
             },
             "cActions": [
               {
                 "type": "edit",
                 "icon": "fa-pen",
                 "prop": "id",
-                "modalId": "TenderAdminTenderFileEditModal",
-                "url": "/TenderAdmin/TenderFile/GetById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/TenderAdmin/TenderFile/GetById\\', \\'TenderAdminTenderFileEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
+                "modalId": "TenderSuperAdminTenderProposalFormJsonConfigFileEditModal",
+                "url": "/TenderSuperAdmin/TenderProposalFormJsonConfigFile/GetById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/TenderSuperAdmin/TenderProposalFormJsonConfigFile/GetById\\', \\'TenderSuperAdminTenderProposalFormJsonConfigFileEditModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-pen\" ></i></span>' };bindRow(data)"
               }
             ]
           },
           "key": "id",
-          "url": "/TenderAdmin/TenderFile/GetList",
+          "url": "/TenderSuperAdmin/TenderProposalFormJsonConfigFile/GetList",
           "itemPerPage": 10,
           "schema": {
             "data": "data",
@@ -42,6 +42,13 @@
               "caption": "ردیف",
               "width": "50px",
               "textAlign": "center"
+            },
+            {
+              "field": "fid",
+              "caption": "فرم",
+              "search": {
+                "searchType": "text"
+              }
             },
             {
               "field": "title",
@@ -66,7 +73,7 @@
       "moduals": [
         {
           "class": "",
-          "id": "TenderAdminTenderFileAddGridModal",
+          "id": "TenderSuperAdminTenderProposalFormJsonConfigFileAddGridModal",
           "title": "افزودن",
           "ctrls": [
             {
@@ -82,12 +89,28 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "formId",
+              "name": "name",
+              "type": "text",
+              "label": "Name",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/TenderAdmin/TenderFile/GetFormList",
+              "dataurl": "/TenderSuperAdmin/TenderProposalFormJsonConfigFile/GetFormList",
               "label": "فرم"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isRequired",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "اجباری"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -97,14 +120,6 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "mainFile",
-              "type": "file",
-              "label": "فایل",
-              "acceptEx": ".jpg,.png,.jpeg,.pdf",
-              "hideImagePreview": true
             }
           ],
           "actions": [
@@ -115,14 +130,14 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'TenderAdminTenderFileGrid', '/TenderAdmin/TenderFile/Create')",
+              "onClick": "postModalData(this, 'TenderSuperAdminTenderProposalFormJsonConfigFileGrid', '/TenderSuperAdmin/TenderProposalFormJsonConfigFile/Create')",
               "class": "btn-primary"
             }
           ]
         },
         {
           "class": "",
-          "id": "TenderAdminTenderFileEditModal",
+          "id": "TenderSuperAdminTenderProposalFormJsonConfigFileEditModal",
           "title": "ویرایش",
           "ctrls": [
             {
@@ -138,12 +153,28 @@
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "formId",
+              "name": "name",
+              "type": "text",
+              "label": "Name",
+              "isRequired": true
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "fid",
               "type": "dropDown",
               "textfield": "title",
               "valuefield": "id",
-              "dataurl": "/TenderAdmin/TenderFile/GetFormList",
+              "dataurl": "/TenderSuperAdmin/TenderProposalFormJsonConfigFile/GetFormList",
               "label": "فرم"
+            },
+            {
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "name": "isRequired",
+              "type": "dropDown",
+              "textfield": "title",
+              "valuefield": "id",
+              "dataurl": "/Core/BaseData/Get/IsActive",
+              "label": "اجباری"
             },
             {
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
@@ -153,14 +184,6 @@
               "valuefield": "id",
               "dataurl": "/Core/BaseData/Get/IsActive",
               "label": "وضعیت"
-            },
-            {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
-              "name": "mainFile",
-              "type": "file",
-              "label": "فایل",
-              "acceptEx": ".jpg,.png,.jpeg,.pdf",
-              "hideImagePreview": true
             }
           ],
           "actions": [
@@ -171,7 +194,7 @@
             },
             {
               "title": "ذخیره",
-              "onClick": "postModalData(this, 'TenderAdminTenderFileGrid', '/TenderAdmin/TenderFile/Update')",
+              "onClick": "postModalData(this, 'TenderSuperAdminTenderProposalFormJsonConfigFileGrid', '/TenderSuperAdmin/TenderProposalFormJsonConfigFile/Update')",
               "class": "btn-primary"
             }
           ]

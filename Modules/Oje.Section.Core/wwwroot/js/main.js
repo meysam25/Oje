@@ -100,6 +100,18 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
             $(this)[0].addNewRowIfNeeded(foundIndex + 1);
         })
     }
+    $(selector).find('div[data-name="' + key + '"]').each(function ()
+    {
+        if (value && value.length > 0) {
+            for (var i = 0; i < value.length; i++) {
+                var curValueElement = $(this).find('div[data-id="' + value[i] + '"]');
+                if (curValueElement.length > 0) {
+                    curValueElement.addClass('multiSelectImageBodyItemActive');
+                    curValueElement.append('<input name="' + key +'" value="'+ value[i] +'" type="hidden" />');
+                }
+            }
+        }
+    });
 
     $(selector).find('video[name="' + key + '"]').each(function () {
         $(this).find('source').attr('src', value);
@@ -745,6 +757,7 @@ function clearForm(selector) {
         }
     });
     $(selector).find('img[data-name]').attr('src', '/Modules/Images/unknown.svg');
+    $(selector).find('.multiSelectImageBody').find('.multiSelectImageBodyItem').each(function () { $(this).removeClass('multiSelectImageBodyItemActive'); $(this).find('input').remove(); });
     $(selector).find('input[type="text"]').not('[data-no-clear]').val('');
     $(selector).find('input[type="number"]').not('[data-no-clear]').val('');
     $(selector).find('input[type="hidden"]').not('[data-no-clear]').val('');
@@ -906,6 +919,17 @@ function postPage(link, formData) {
     $('#' + formId).submit();
 }
 
+function moveSWToFirstStep(curThis) {
+    var swQuiry = $(curThis).find('.panelSWizard');
+    if (swQuiry.length > 0) {
+        swQuiry.find('.panelSWizardHolderHeader').find('.panelSWizardHolderHeaderItemActive').removeClass('panelSWizardHolderHeaderItemActive');
+        swQuiry.find('.panelSWizardHolderContent').find('.panelSWizardHolderContentItemActive').removeClass('panelSWizardHolderContentItemActive');
+
+        swQuiry.find('.panelSWizardHolderHeaderItem:eq(0)').addClass('panelSWizardHolderHeaderItemActive');
+        swQuiry.find('.panelSWizardHolderContentItem:eq(0)').addClass('panelSWizardHolderContentItemActive');
+    }
+}
+
 var modalZIndex = 1006;
 
 $.fn.modal = function (action) {
@@ -953,6 +977,7 @@ $.fn.modal = function (action) {
         } else {
             openModal(curThis);
             bindCloseButton(curThis);
+            moveSWToFirstStep(curThis);
         }
     });
 };

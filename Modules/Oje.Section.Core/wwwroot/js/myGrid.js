@@ -85,11 +85,11 @@ $.fn.initMyGrid = function (option) {
 
                 }
                 if (this.hasAction(option)) {
-                    var actionHeaderTemplate = '#';
+                    var actionHeaderTemplate = 'انتخاب عملیات';
                     if (option.showAddButton == true) {
                         actionHeaderTemplate = '<span class="gridAddButton icon-android-add-circle"></span>';
                     }
-                    result += '<td style="text-align:center;" >' + actionHeaderTemplate + '</td>';
+                    result += '<td style="font-weight:bold;text-align:center;" >' + actionHeaderTemplate + '</td>';
                 }
             }
 
@@ -112,7 +112,7 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridHeaderSearchTemplate: function (option, addActions, isUpdate, data) {
+        getGridHeaderSearchTemplate: function (option, addActions, isUpdate, data, isShowSearch) {
             var result = '';
             var doseHaveSearchFilter = false;
             var allColumns = templateFunctions.getAllColumns(option, data);
@@ -128,7 +128,7 @@ $.fn.initMyGrid = function (option) {
             }
 
             if (doseHaveSearchFilter == true) {
-                result += '<tr>'
+                result += '<tr class="searchRow ' + (isShowSearch ? 'showSearchRow' : '') + '">'
                 if (option.selectable == true) {
                     result += '<td style="text-align:center;width:30px;" ></td>';
                 }
@@ -152,6 +152,7 @@ $.fn.initMyGrid = function (option) {
                         result += '<span data-url="' + (isUpdate ? option.actions.update.url : option.actions.addNew.url) + '" title="ذخیره" class="myGridAction saveButton"><i class="icon-save"></i></span>';
                         result += '<span  title="انصراف" class="myGridAction myGridWarning cancelButton"><i class="icon-cancel-circle"></i></span>';
                     }
+                    result += '<span class="myGridSearchButton"><i class="fa fa-search" ></i></span>';
                     result += '</td>';
                 }
                 result += '</tr>'
@@ -159,8 +160,8 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridHeaderTemplate: function (option, data) {
-            var searchTemplate = this.getGridHeaderSearchTemplate(option, null, null, data);
+        getGridHeaderTemplate: function (option, data, isShowSearch) {
+            var searchTemplate = this.getGridHeaderSearchTemplate(option, null, null, data, isShowSearch);
             return `
                         <thead class="myTableHeader">
                             <tr >
@@ -213,14 +214,14 @@ $.fn.initMyGrid = function (option) {
                         if (option.actions.cActions[i].ignoreParentButton == true)
                             result += '<span style="display:inline-block" data-index="' + i + '" >' + option.actions.cActions[i].template(data) + '</span>';
                         else
-                            result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + option.actions.cActions[i].template(data) + '</span>';
+                            result += '<span style="' + (option.actions.cActions[i].color ? ('background-color:' + option.actions.cActions[i].color + ';') : '') + '" class="myGridAction myGridCAction" data-index="' + i + '" >' + option.actions.cActions[i].template(data) + '</span>';
                     } else if (option.actions.cActions[i].template && typeof (option.actions.cActions[i].template) == 'string') {
                         var compileStr = 'var data =' + JSON.stringify(data) + ';' + option.actions.cActions[i].template;
                         var compileStrResult = eval(compileStr)
                         if (compileStrResult && option.actions.cActions[i].ignoreParentButton == true)
                             result += '<span style="display:inline-block" data-index="' + i + '" >' + compileStrResult + '</span>';
                         else if (compileStrResult)
-                            result += '<span class="myGridAction myGridCAction" data-index="' + i + '" >' + compileStrResult + '</span>';
+                            result += '<span style="' + (option.actions.cActions[i].color ? ('background-color:' + option.actions.cActions[i].color + ';') : '') + '" class="myGridAction myGridCAction" data-index="' + i + '" >' + compileStrResult + '</span>';
                     }
                 }
             }
@@ -249,7 +250,7 @@ $.fn.initMyGrid = function (option) {
                         else
                             curCellData = option.formatters[allColumns[i].formatter](null, data);
                     }
-                    result += '<td class="' + (allColumns[i].class ? allColumns[i].class : '') + '" style="' + this.getGridHeaderCellTemplateStyle(allColumns[i]) + '" ><span  class="gridResTitle">' + allColumns[i].caption + ': </span>' + curCellData + '</td>';
+                    result += '<td class="' + (allColumns[i].class ? allColumns[i].class : '') + '" style="' + this.getGridHeaderCellTemplateStyle(allColumns[i]) + '" ><span  class="gridResTitle">' + allColumns[i].caption + ': </span><span title="' + data[allColumns[i].field] + '" class="cellData" >' + curCellData + '</span></td>';
                 }
             }
             if (this.hasAction(option)) {
@@ -305,7 +306,7 @@ $.fn.initMyGrid = function (option) {
 
             return result;
         },
-        getGridTemplate: function (option, data) {
+        getGridTemplate: function (option, data, isShowSearch) {
             var doseHaveAnyHeaderAction = false;
 
             var columnConfigButton = '<div class="topGridAction">';
@@ -330,7 +331,7 @@ $.fn.initMyGrid = function (option) {
                 doseHaveAnyHeaderAction = true;
             }
             if (this.hasAnyFilter(option, data)) {
-                columnConfigButton += '<span class="myGridSearchButton"><i class="fa fa-search" ></i></span>';
+                columnConfigButton += '<span class="myGridSearchButtonShow"><i class="fa fa-search" ></i></span>';
                 doseHaveAnyHeaderAction = true;
             }
             columnConfigButton += '<div style="clear:both;" ></div></div>';
@@ -339,14 +340,18 @@ $.fn.initMyGrid = function (option) {
             }
             return `
                         `+ (option.headerTemplate ? option.headerTemplate : '') + columnConfigButton + `
-                        <table class="myGrid" >
-                            ` + this.getGridHeaderTemplate(option, data) + `
-                            ` + this.getGridBodyTemplateLoading(option, data) + `
-                        </table>
+                        <div class="holderMyGridScroll">
+                            <div class="myGridScroll ` + (option.class ? 'ignoreRoute' : '') + `">
+                                <table class="myGrid" >
+                                    ` + this.getGridHeaderTemplate(option, data, isShowSearch) + `
+                                    ` + this.getGridBodyTemplateLoading(option, data) + `
+                                </table>
+                            </div>
+                        </div>
                     `;
         },
         getFooterTemplate: function (totalNumber, option, currentPage, itemPerPage, data) {
-            var result = '<tr><td colspan="' + this.getGridColumnCount(option, data) + '"><div class="row">';
+            var result = '<div class="gridPager"><div class="row">';
 
             var pages = Number.parseInt(Math.ceil(totalNumber / itemPerPage));
             if (!pages)
@@ -406,7 +411,7 @@ $.fn.initMyGrid = function (option) {
             result += '<span ' + (itemPerPage == 10 ? 'class="activeItemPerPage"' : '') + ' >10</span><span ' + (itemPerPage == 20 ? 'class="activeItemPerPage"' : '') + '>20</span><span ' + (itemPerPage == 50 ? 'class="activeItemPerPage"' : '') + '>50</span><span ' + (itemPerPage == 100 ? 'class="activeItemPerPage"' : '') + '>100</span>';
             result += '</div></div>';
 
-            result += '</div></td></tr>'
+            result += '</div></div>'
 
             return result;
         }
@@ -533,7 +538,7 @@ $.fn.initMyGrid = function (option) {
             var theader = $(this).find('.myTableHeader');
             var option = $(this)[0].option;
             if (theader.length > 0) {
-                var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true, null, curElement.lastData);
+                var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true, null, curElement.lastData, true);
                 theader.append(rowTemplate);
                 $(this)[0].isAddNewShow = true;
                 $(theader).find('.saveButton').click(function () {
@@ -561,7 +566,7 @@ $.fn.initMyGrid = function (option) {
 
         curElement.showEditStyle = function (curObj) {
             var crTR = $(curObj).closest('tr');
-            var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true, true, curElement.lastData);
+            var rowTemplate = templateFunctions.getGridHeaderSearchTemplate(option, true, true, curElement.lastData, true);
             crTR.html($(rowTemplate).html());
             $(crTR).closest('.myGridCTRL')[0].initCTRL(crTR);
             var jsData = JSON.parse($(crTR).attr('data-row-json'));
@@ -608,8 +613,7 @@ $.fn.initMyGrid = function (option) {
                                 if (this.pKey)
                                     postData.append('pKey', this.pKey);
                                 showLoader($(this.curThis).closest('.myGridCTRL'))
-                                postForm(this.url, postData, function () { $(this).closest('.myGridCTRL')[0].refreshData(); updateDashboardGridCountIfExist(); }.bind(this.curThis), null, function ()
-                                {
+                                postForm(this.url, postData, function () { $(this).closest('.myGridCTRL')[0].refreshData(); updateDashboardGridCountIfExist(); }.bind(this.curThis), null, function () {
                                     hideLoader($(this).closest('.myGridCTRL'));
                                     if (hasUpdateAllGrid) {
                                         refreshAllGrid();
@@ -668,7 +672,7 @@ $.fn.initMyGrid = function (option) {
             var holderItems = $(this).find('.myTableBody');
             var resultRows = '';
             var cElement = $(this)[0];
-            var headerTemplate = templateFunctions.getGridHeaderTemplate(option, res);
+            var headerTemplate = templateFunctions.getGridHeaderTemplate(option, res, cElement.isShowSearch);
             tHead.html($(headerTemplate).html());
             cElement.initCTRL(tHead);
             cElement.initTopCB();
@@ -697,7 +701,9 @@ $.fn.initMyGrid = function (option) {
                 holderItems.html(templateFunctions.getNoDataTemplate(option, res));
             }
 
-            $(this).find('tbody').append(templateFunctions.getFooterTemplate(totalItems, option, cElement.currentPage, cElement.itemPerPage, res));
+            $(this).find('>.gridPager').remove();
+            $(this).append(templateFunctions.getFooterTemplate(totalItems, option, cElement.currentPage, cElement.itemPerPage, res));
+
 
             $(this).find('.myItemPerPage span').click(function () {
                 var gridCTRL = $(this).closest('.myGridCTRL');
@@ -764,8 +770,8 @@ $.fn.initMyGrid = function (option) {
             //$(this).find('.myTableHeader input[type="text"], .myTableHeader select').change(function() {
             //    $(this).closest('.myGridCTRL')[0].refreshData();
             //});
-            $(this).find('.myGridSearchButton').unbind('click').click(function () { $(this).closest('.myGridCTRL')[0].refreshData(); });
-
+            $(this).find('.myGridSearchButton').unbind('click').click(function (e) { $(this).closest('.myGridCTRL')[0].refreshData(); e.preventDefault(); e.stopPropagation(); });
+            $(this).find('.myGridSearchButtonShow').unbind('click').click(function (e) { var sQuiry = $(this).closest('.myGridCTRL').find('> .holderMyGridScroll').find('> .myGridScroll').find('>.myGrid').find('>thead').find('>.searchRow'); sQuiry.toggleClass('showSearchRow'); e.preventDefault(); e.stopPropagation(); $(this).closest('.myGridCTRL')[0].isShowSearch = sQuiry.hasClass('showSearchRow'); $(this).closest('.myGridCTRL')[0].moveActionsOutScroll(); });
             $(this).find('.gridAddButton').click(function () {
                 $(this).closest('.myGridCTRL')[0].addNewRow();
             });
@@ -881,26 +887,74 @@ $.fn.initMyGrid = function (option) {
                 }
                 if (url) {
                     showLoader($(this));
-                    postForm(url, postData,
-                        function (res) {
-                            if (res.isSuccess != false) {
-                                $(this)[0].bindData(res);
-                                $(this)[0].lastData = res;
-                            }
-                        }.bind(this), function () {
-                        }.bind(this), function () {
-                            hideLoader($(this));
-                        }.bind(this));
+                    postForm(url, postData, function (res) {
+                        if (res.isSuccess != false) {
+                            $(this)[0].bindData(res);
+                            $(this)[0].lastData = res;
+                        }
+                        setTimeout(function ()
+                        {
+                            this.moveActionsOutScroll();
+                        }.bind(this), 5);
+                    }.bind(this), function () {
+                    }.bind(this), function () {
+                        hideLoader($(this));
+                    }.bind(this));
                 }
             } else {
                 var postData = getFormData($(this));
                 $(this)[0].filtersValue = postData;
                 $(this)[0].bindData(setFiltersAndSorts(option.ds, option, postData));
             }
-
+        };
+        curElement.moveActionsOutScroll = function () {
+            if (this.option.detailes || this.option.nlevel)
+                return;
+            if (this.option.actions && (this.option.actions.delete || this.option.actions.cActions) && !this.option.class) {
+                var actionQuiry = $(this).find('> .holderMyGridScroll').find('> .myGridScroll').find('> .myGrid').find('> .myTableBody').find('> tr').find('> .actionTD');
+                var headerActionQuiry = $(this).find('> .holderMyGridScroll').find('> .myGridScroll').find('> .myGrid').find('> .myTableHeader').find('> tr').find('> td');
+                var searchQuiry = $(this).find('> .holderMyGridScroll').find('> .myGridScroll').find('> .myGrid').find('> .myTableHeader').find('> tr.showSearchRow').find('> td');
+                //var scrollObj = $(this).find('> .holderMyGridScroll > .myGridScroll').length > 0 ? $(this).find('> .holderMyGridScroll > .myGridScroll')[0] : null;
+                //var isScrollVisible = scrollObj != null && scrollObj.scrollWidth > scrollObj.offsetWidth ? true : false;
+                var hasAnyAction = actionQuiry.length > 0;
+                if (hasAnyAction) {
+                    var curWidth = actionQuiry[0].offsetWidth;
+                    var curHeight = actionQuiry[0].offsetHeight;
+                    curWidth = curWidth + 6;
+                    var headerHeight = headerActionQuiry[0].offsetHeight;
+                    if (curWidth && curHeight) {
+                        var holderGA = $(this).find('> .holderMyGridScroll');
+                        if (holderGA.length > 0) {
+                            var actionTemplate = '';
+                            actionTemplate += '<div class="floatActionHeader" style="font-weight:bold;height:' + headerHeight + 'px; width:' + curWidth + 'px;line-height:' + (headerHeight) + 'px" >انتخاب عملیات</div>';
+                            if (searchQuiry.length > 0) {
+                                actionTemplate += '<div class="floatActionHeader" style="height:' + searchQuiry[0].offsetHeight + 'px; width:' + curWidth + 'px;" ><span class="myGridSearchButton"><i class="fa fa-search" ></i></span></div>';
+                            }
+                            actionQuiry.each(function (index) {
+                                var isLast = $(this)[0] == actionQuiry[actionQuiry.length - 1];
+                                console.log(isLast);
+                                actionTemplate += '<div class="floatActionCell actionTD ' + (index % 2 == 0 ?  'floatActionCellAlterColor' : '') +'" style="height:' + ($(this)[0].offsetHeight + (isLast ? 1 : 0)) + 'px;width:' + (curWidth) + 'px;" >' + $(this).html() + '</div>';
+                            });
+                            if (holderGA.find('> .myGridStaticActions').length > 0) {
+                                holderGA.find('> .myGridStaticActions').html(actionTemplate)
+                            } else {
+                                holderGA.append('<div class="myGridStaticActions" >' + actionTemplate + '</div>')
+                            }
+                            this.bindActions(holderGA.find('> .myGridStaticActions'));
+                            holderGA.find('> .myGridStaticActions').find('.myGridSearchButton').unbind('click').click(function (e) { $(this).closest('.myGridCTRL')[0].refreshData(); });
+                        }
+                    }
+                } else {
+                    $(this).find('> .holderMyGridScroll > .myGridStaticActions').remove();
+                }
+            }
         };
 
         curElement.refreshData();
+
+        window.addEventListener('resize', function (event) {
+            this.moveActionsOutScroll();
+        }.bind(curElement), true);
     });
 }
 

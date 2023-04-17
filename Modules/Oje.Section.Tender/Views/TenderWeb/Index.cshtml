@@ -8,10 +8,11 @@
 <div class="splitMainbody">
     <div class="rightNavigation">
         <div class="holderRightButton" >
+            <span class="showLoginModal startButton" style="display:none;"><i class="fa fa-sign-in-alt flippingElement"></i><span>ثبت نام | ورود</span></span>
+            <a href="/Account/Dashboard/Index" class="showLoginModal dashbaordButton" style="display:none;"><i class="fa fa-sign-in-alt flippingElement"></i><span>داشبورد</span></a>
             <a  href="/" class="showLoginModal moveToHome"><i class="fa fa-home"></i><span >صفحه اصلی</span></a>
-            <span class="showLoginModal startButton"><i class="fa fa-sign-in-alt flippingElement"></i><span>ثبت نام | ورود</span></span>
             <span data-url="@(ViewBag.tenderConfig != null ? ViewBag.tenderConfig.aboutUsLink : "")" class="showLoginModal aboutUsButton"><i class="fa fa-question flippingElement"></i><span>درباره ما</span></span>
-            <span class="showLoginModal licenceButton"><i class="fa fa-file-certificate"></i><span>مجوز ها</span></span>
+            @*<span class="showLoginModal licenceButton"><i class="fa fa-file-certificate"></i><span>مجوز ها</span></span>*@
             <span class="showLoginModal contactUsButton"><i class="fa fa-map-signs"></i><span>تماس با ما</span></span>
             <span class="showLoginModal reminderButton"><i class="fa fa-bells"></i><span>یادآوری</span></span>
         </div>
@@ -42,7 +43,7 @@
 <script>
     initStartButton();
     initContactUsButton();
-    initLicenceButton();
+    //initLicenceButton();
     initAboutUsButton();
     loadAllRegistersConfig();
     detectIfUserIsLogin();

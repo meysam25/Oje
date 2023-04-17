@@ -20,5 +20,7 @@ namespace Oje.FileService.Interfaces
         object GetList(UploadedFileMainGrid searchInput, int? siteSettingId);
         UploadedFile GetFile(string fn);
         List<UploadedFile> GetFileList(long id, FileType insuranceContractProposalFilledForm);
+        object GetCountBy(long foundItemId, List<FileType> fStatus, int? siteSettingId);
+        object GetListBy(long foundItemId, List<FileType> fStatus, int skip, int take, int? siteSettingId);
     }
 }

@@ -9,7 +9,6 @@ using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Models.PageForms;
-using Oje.Infrastructure.Models.Pdf.ProposalFilledForm;
 using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Models.DB;
@@ -34,6 +33,8 @@ namespace Oje.Section.Tender.Services
         readonly IHttpContextAccessor HttpContextAccessor = null;
         readonly ICityService CityService = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly ITenderProposalFormJsonConfigFileService TenderProposalFormJsonConfigFileService = null;
+        static string validUploadExtensionFiles = ".jpg,.jpeg,.png,.pdf,.zip";
 
         public TenderFilledFormService
             (
@@ -46,7 +47,8 @@ namespace Oje.Section.Tender.Services
                 IUserNotifierService UserNotifierService,
                 IHttpContextAccessor HttpContextAccessor,
                 ICityService CityService,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                ITenderProposalFormJsonConfigFileService TenderProposalFormJsonConfigFileService
             )
         {
             this.db = db;
@@ -59,6 +61,7 @@ namespace Oje.Section.Tender.Services
             this.HttpContextAccessor = HttpContextAccessor;
             this.CityService = CityService;
             this.UploadedFileService = UploadedFileService;
+            this.TenderProposalFormJsonConfigFileService = TenderProposalFormJsonConfigFileService;
         }
 
         public ApiResult Create(int? siteSettingId, IFormCollection form, long? loginUserId)
@@ -70,7 +73,7 @@ namespace Oje.Section.Tender.Services
 
             createValidation(siteSettingId, form, ppfObj, loginUserId);
 
-            List<int> TenderProposalFormJsonConfigIds = new List<int>();
+            List<UserInputPPF> TenderProposalFormJsonConfigIds = new List<UserInputPPF>();
             fillPPFIds(TenderProposalFormJsonConfigIds, form);
 
             if (TenderProposalFormJsonConfigIds.Count == 0)
@@ -81,11 +84,21 @@ namespace Oje.Section.Tender.Services
 
             foreach (var config in configs)
             {
-                PageForm tempJSConfig = null;
-                try { tempJSConfig = JsonConvert.DeserializeObject<PageForm>(config.JsonConfig); } catch (Exception) { }
-                createValidation(siteSettingId, form, tempJSConfig, loginUserId);
-                config.PageForm = tempJSConfig;
+                var foundCurItem = TenderProposalFormJsonConfigIds.Where(t => t.fid == config.Id).FirstOrDefault();
+                if (foundCurItem != null)
+                {
+                    PageForm tempJSConfig = null;
+                    try { tempJSConfig = JsonConvert.DeserializeObject<PageForm>(config.JsonConfig); } catch (Exception) { }
+                    if (foundCurItem.needConsultation == true)
+                        createValidation(siteSettingId, form, tempJSConfig, loginUserId);
+                    else
+                        config.Files = consultationFileValidation(siteSettingId, form, foundCurItem.fid);
+
+                    config.PageForm = tempJSConfig;
+                }
             }
+
+            validateAllFiles(form);
 
 
             using (var tr = db.Database.BeginTransaction())
@@ -99,15 +112,23 @@ namespace Oje.Section.Tender.Services
 
                     foreach (var config in configs)
                     {
-                        TenderFilledFormPFService.Create(newForm.Id, config.Id);
-                        TenderFilledFormJsonService.Create(newForm.Id, config.JsonConfig, config.Id);
-                        TenderFilledFormsValueService.CreateByForm(newForm.Id, form, config.PageForm, config.Id);
+                        var foundCurItem = TenderProposalFormJsonConfigIds.Where(t => t.fid == config.Id).FirstOrDefault();
+                        if (foundCurItem != null)
+                        {
+                            TenderFilledFormPFService.Create(newForm.Id, config.Id, foundCurItem.needConsultation);
+                            TenderFilledFormJsonService.Create(newForm.Id, config.JsonConfig, config.Id);
+                            if (foundCurItem.needConsultation == true)
+                                TenderFilledFormsValueService.CreateByForm(newForm.Id, form, config.PageForm, config.Id);
+                            else
+                                savePPFDocuments(config, siteSettingId, loginUserId, newForm.Id, form);
+                        }
                     }
+
+                    
 
                     tr.Commit();
 
                     newFormId = newForm.Id;
-
                 }
                 catch (Exception)
                 {
@@ -119,14 +140,65 @@ namespace Oje.Section.Tender.Services
             return new ApiResult() { isSuccess = true, message = BMessages.Operation_Was_Successfull.GetEnumDisplayName(), data = new { id = newFormId } };
         }
 
-        private void fillPPFIds(List<int> tenderProposalFormJsonConfigIds, IFormCollection form)
+        private void savePPFDocuments(TenderProposalFormJsonConfig config, int? siteSettingId, long? loginUserId, long id, IFormCollection form)
+        {
+            if (config != null && config.Files != null && config.Files.Count > 0)
+            {
+                foreach (var file in config.Files)
+                {
+                    var curName = file.Name + "_" + file.Id;
+                    var foundFile = form.Files.Where(t => t.Name == curName).FirstOrDefault();
+                    if (foundFile != null && foundFile.Length > 0)
+                        UploadedFileService.UploadNewFile(FileType.TenderPPFFiles, foundFile, loginUserId, siteSettingId, id, validUploadExtensionFiles, true, id + "_" + file.TenderProposalFormJsonConfigId, file.Title);
+                }
+            }
+        }
+
+        private void validateAllFiles(IFormCollection form)
+        {
+            if (form.Files != null)
+            {
+                foreach (var file in form.Files)
+                {
+                    if (file.Length > 0 && !file.IsValidExtension(validUploadExtensionFiles))
+                        throw BException.GenerateNewException(BMessages.Invalid_File);
+                }
+            }
+        }
+
+        private List<TenderProposalFormJsonConfigFile> consultationFileValidation(int? siteSettingId, IFormCollection form, int fid)
+        {
+            var fileList = TenderProposalFormJsonConfigFileService.GetFilesBy(siteSettingId, fid);
+            foreach (var file in fileList)
+            {
+                string curName = file.Name + "_" + file.Id;
+
+                if (file.IsRequired == true)
+                {
+                    if (!form.Files.Any(t => t.Name == curName))
+                        throw BException.GenerateNewException("لطفا " + file.Title + " را انتخاب کنید");
+                }
+                var foundFile = form.Files.Where(t => t.Name == curName).FirstOrDefault();
+                if (foundFile.Length > 0 && !foundFile.IsValidExtension(validUploadExtensionFiles))
+                    throw BException.GenerateNewException(BMessages.Invalid_File);
+
+            }
+            return fileList;
+        }
+
+        private void fillPPFIds(List<UserInputPPF> tenderProposalFormJsonConfigIds, IFormCollection form)
         {
             if (tenderProposalFormJsonConfigIds != null && form != null)
                 for (var i = 0; i < 50; i++)
                 {
                     string curKey = "tenderInsurance[" + i + "].fid";
+                    string curKey2 = "tenderInsurance[" + i + "].needConsultation";
                     if (form.ContainsKey(curKey) && form.GetStringIfExist(curKey).ToIntReturnZiro() > 0)
-                        tenderProposalFormJsonConfigIds.Add(form.GetStringIfExist(curKey).ToIntReturnZiro());
+                    {
+                        if (!form.ContainsKey(curKey2) || form.GetStringIfExist(curKey2).ToBooleanReturnFalseNull() == null)
+                            throw BException.GenerateNewException(BMessages.Please_Select_Need_To_Consultation);
+                        tenderProposalFormJsonConfigIds.Add(new UserInputPPF() { fid = form.GetStringIfExist(curKey).ToIntReturnZiro(), needConsultation = form.GetStringIfExist(curKey2).ToBooleanReturnFalse() });
+                    }
                 }
         }
 
@@ -180,7 +252,6 @@ namespace Oje.Section.Tender.Services
                     ctrl.validateAndUpdateMultiRowInputCtrl(ctrl, form, ppfObj);
                     ctrl.validateMinAndMaxDayForDateInput(ctrl, form);
                     ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form);
-
                 }
             }
         }
@@ -251,6 +322,8 @@ namespace Oje.Section.Tender.Services
                     {
                         foreach (var ctrl in allCtrls)
                         {
+                            if (ctrl.hideOnPrint == true)
+                                continue;
                             string title = !string.IsNullOrEmpty(ctrl.label) ? ctrl.label : ctrl.ph;
                             string value = foundItem.values.Where(t => t.Key == ctrl.name).Select(t => t.Value).FirstOrDefault();
                             if (foundJson.IsConsultation == true && ownerStatus == 0)
@@ -786,7 +859,7 @@ namespace Oje.Section.Tender.Services
 
             db.SaveChanges();
 
-            UserNotifierService.Notify(loginUserId, UserNotificationType.PublishTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "انتشار مناقصه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
+            UserNotifierService.Notify(loginUserId, UserNotificationType.PublishTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "انتشار مناقصه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index", new { avalibleDate = foundItem.AvalibleDate.Value.AddDays(-1).ToFaDate() });
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -1055,10 +1128,12 @@ namespace Oje.Section.Tender.Services
             if (foundItemId <= 0)
                 foundItemId = -1;
 
+            List<FileType> fStatus = new() { FileType.TenderConsultationFiles, FileType.TenderPPFFiles };
+
             return new
             {
-                total = UploadedFileService.GetCountBy(foundItemId, FileType.TenderConsultationFiles),
-                data = UploadedFileService.GetListBy(foundItemId, FileType.TenderConsultationFiles, input.skip, input.take)
+                total = UploadedFileService.GetCountBy(foundItemId, fStatus, siteSettingId),
+                data = UploadedFileService.GetListBy(foundItemId, fStatus, input.skip, input.take, siteSettingId)
             };
         }
 

@@ -16,6 +16,7 @@ namespace Oje.Section.Tender.Models.DB
             TenderFilledFormsValues = new();
             TenderFilledFormPrices = new();
             TenderFilledFormIssues = new();
+            TenderProposalFormJsonConfigFiles = new();
         }
 
         [Key]
@@ -43,11 +44,15 @@ namespace Oje.Section.Tender.Models.DB
         public List<TenderFilledFormPrice> TenderFilledFormPrices { get; set; }
         [InverseProperty("TenderProposalFormJsonConfig")]
         public List<TenderFilledFormIssue> TenderFilledFormIssues { get; set; }
+        [InverseProperty("TenderProposalFormJsonConfig")]
+        public List<TenderProposalFormJsonConfigFile> TenderProposalFormJsonConfigFiles { get; set; }
 
 
 
         [NotMapped]
         public PageForm PageForm { get; set; }
+        [NotMapped]
+        public List<TenderProposalFormJsonConfigFile> Files { get; set; }
 
     }
 }

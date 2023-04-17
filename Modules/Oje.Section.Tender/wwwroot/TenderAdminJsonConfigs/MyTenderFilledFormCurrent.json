@@ -10,12 +10,22 @@
           "actions": {
             "cActions": [
               {
+                "color": "green",
+                "template": "function bindRow (curRow) { return '<span title=\"نمایش اطلاعات کلی ثبت شده\" onclick=\"showEditModal('+ curRow.id +', \\'/TenderAdmin/MyTenderFilledFormCurrent/PdfDetailes?ignoreMaster=True\\', \\'MyTenderFilledFormCurrentDetailesModal\\' , this, null, null, null, true)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-alt\" ></i></span>' };bindRow(data)"
+              },
+              {
                 "type": "edit",
-                "icon": "fa-calendar-alt",
                 "prop": "id",
-                "modalId": "MyTenderFilledFormCurrentEditDateModal",
-                "url": "/TenderAdmin/MyTenderFilledFormCurrent/GetDatesById",
-                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/TenderAdmin/MyTenderFilledFormCurrent/GetDatesById\\', \\'MyTenderFilledFormCurrentEditDateModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-calendar-alt\" ></i></span>' };bindRow(data)"
+                "color": "#919791",
+                "template": "function bindRow (curRow) { return '<a title=\"دانلود اطلاعات کلی ثبت شده\" href=\"/TenderAdmin/MyTenderFilledFormCurrent/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-print\" ></i></a>' };bindRow(data)"
+              },
+              {
+                "type": "edit",
+                "icon": "fa-file-download",
+                "prop": "id",
+                "modalId": "MyTenderFilledFormCurrentDocumentsModal",
+                "color": "#1a70e4",
+                "template": "function bindRow (curRow) { return '<span title=\"دانلود کلیه اسناد و مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyTenderFilledFormCurrentDocumentsModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-download\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -27,21 +37,18 @@
               },
               {
                 "type": "edit",
-                "icon": "fa-file-powerpoint",
+                "icon": "fa-calendar-alt",
                 "prop": "id",
-                "template": "function bindRow (curRow) { return '<a title=\"مشاهده جزییات\" href=\"/TenderAdmin/MyTenderFilledFormCurrent/PdfDetailes?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-powerpoint\" ></i></a>' };bindRow(data)"
+                "modalId": "MyTenderFilledFormCurrentEditDateModal",
+                "url": "/TenderAdmin/MyTenderFilledFormCurrent/GetDatesById",
+                "template": "function bindRow (curRow) { return '<span onclick=\"showEditModal('+ curRow.id +', \\'/TenderAdmin/MyTenderFilledFormCurrent/GetDatesById\\', \\'MyTenderFilledFormCurrentEditDateModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-calendar-alt\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
+                "icon": "fa-files-medical",
                 "prop": "id",
-                "template": "function bindRow (curRow) { return '<a title=\"دانلود پی دی اف\" href=\"/TenderAdmin/MyTenderFilledFormCurrent/DownloadPdf?id='+ curRow.id +'\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-pdf\" ></i></a>' };bindRow(data)"
-              },
-              {
-                "type": "edit",
-                "icon": "fa-file-archive",
-                "prop": "id",
-                "modalId": "MyTenderFilledFormCurrentDocumentsModal",
-                "template": "function bindRow (curRow) { return '<span title=\"دانلود مدارک\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyTenderFilledFormCurrentDocumentsModal\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-file-archive\" ></i></span>' };bindRow(data)"
+                "modalId": "MyTenderFilledFormCurrentviewPPfImages",
+                "template": "function bindRow (curRow) { return '<span title=\"دانلود کلیه مدارک به انضمام اسناد پیوست\" onclick=\"showEditModal('+ curRow.id +', \\'\\', \\'MyTenderFilledFormCurrentviewPPfImages\\' , this)\" style=\"display:block;\" ><i style=\"color:white!important;\" class=\"fa fa-files-medical\" ></i></span>' };bindRow(data)"
               },
               {
                 "type": "edit",
@@ -108,7 +115,7 @@
               "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
               "name": "pExpirDate",
               "type": "persianDateTime",
-              "label": "تاریخ اعتبار تائین قیمت",
+              "label": "تاریخ اعتبار تعیین قیمت",
               "isRequired": true
             }
           ],
@@ -126,7 +133,56 @@
           ]
         },
         {
+          "id": "MyTenderFilledFormCurrentviewPPfImages",
+          "title": "مدارک",
+          "class": "modal-xl",
+          "panels": [
+            {
+              "grids": [
+                {
+                  "id": "MyTenderFilledFormCurrentimageGrid",
+                  "class": "imageGallery",
+                  "formatters": {
+                    "imageFormater": "function bindRow (dataRow) { return '<div class=\"holderImageGalleryItem\" ><div class=\"hidderImage\"><img src=\"'+ dataRow.src +'\" /></div><div style=\"margin-bottom:5px;\" >'+ dataRow.title +'</div><div style=\"display:block;\"><span class=\"myGridAction myGridCAction\"><a title=\"دانلود\" href=\"'+ dataRow.dSrc +'\" ><i style=\"color:white!important;\" class=\"fa fa-download\"></i></a></span><span title=\"حذف\" data-id=\"'+ dataRow.id +'\" data-url=\"/TenderAdmin/MyTenderFilledFormCurrent/DeleteFile\" class=\"myGridAction myGridActionDelete\"><i class=\"fa fa-trash\"></i></span></div></div>'; } bindRow(data);"
+                  },
+                  "key": "id",
+                  "url": "/TenderAdmin/MyTenderFilledFormCurrent/GetFileList",
+                  "itemPerPage": 10,
+                  "schema": {
+                    "data": "data",
+                    "total": "total"
+                  },
+                  "columns": [
+
+                    {
+                      "formatter": "imageFormater",
+                      "field": "src",
+                      "caption": "تصویر"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MyTenderFilledFormCurrentDetailesModal",
+          "title": "جزییات",
+          "class": "modal-xl",
+          "ctrls": [
+
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
+          ]
+        },
+        {
           "id": "MyTenderFilledFormCurrentEditAgentAccessModal",
+          "class": "modal-lg",
           "title": "مشخصات",
           "ctrls": [
             {
@@ -134,11 +190,12 @@
               "type": "hidden"
             },
             {
-              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12",
+              "parentCL": "col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 ",
               "name": "cIds",
-              "type": "tokenBox",
+              "type": "multiSelectImg",
               "textfield": "title",
               "valuefield": "id",
+              "imgfield": "src",
               "dataurl": "/TenderAdmin/MyTenderFilledFormCurrent/GetCompanyList",
               "label": "شرکت"
             }
@@ -200,7 +257,7 @@
             }
           ]
         }
-        
+
       ]
     }
   ]

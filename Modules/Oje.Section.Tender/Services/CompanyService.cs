@@ -1,4 +1,5 @@
-﻿using Oje.Infrastructure.Exceptions;
+﻿using Oje.Infrastructure;
+using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Section.Tender.Services.EContext;
@@ -22,7 +23,7 @@ namespace Oje.Section.Tender.Services
             result.AddRange
                 (
                     db.Companies
-                    .Where(t => t.UserCompanies.Any(t => t.UserId == userId))
+                    .Where(t => t.IsActive == true && t.UserCompanies.Any(t => t.UserId == userId))
                     .Select(t => new 
                     { 
                         id = t.Id, 
@@ -35,16 +36,17 @@ namespace Oje.Section.Tender.Services
 
         public object GetLightList()
         {
-            List<object> result = new List<object>() { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+            List<object> result = new ();
 
             result.AddRange
                 (
                     db.Companies
-                    .Where(t => t.Id > 0)
+                    .Where(t => t.IsActive == true && t.Id > 0)
                     .Select(t => new
                     {
                         id = t.Id,
-                        title = t.Title
+                        title = t.Title,
+                        src = GlobalConfig.FileAccessHandlerUrl + t.Pic64
                     }).ToList()
                 );
 
@@ -58,7 +60,7 @@ namespace Oje.Section.Tender.Services
             result.AddRange
                (
                    db.Companies
-                   .Where(t => t.Id > 0)
+                   .Where(t => t.IsActive == true && t.Id > 0)
                    .Select(t => new
                    {
                        id = t.Title,

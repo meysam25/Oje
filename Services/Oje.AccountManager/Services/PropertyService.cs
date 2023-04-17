@@ -43,7 +43,7 @@ namespace Oje.AccountService.Services
                     if (propValue != null)
                     {
                         string value = "";
-                        if (propValue.GetType() == typeof(string) || propValue.GetType() == typeof(MyHtmlString))
+                        if (propValue.GetType() == typeof(string) || propValue.GetType() == typeof(MyHtmlString) || propValue.GetType() == typeof(bool) || propValue.GetType() == typeof(bool?))
                             value = propValue.ToString();
                         else if ((propValue as IFormFile) != null)
                         {
@@ -111,7 +111,9 @@ namespace Oje.AccountService.Services
                     {
                         if (foundProp.PropertyType == typeof(MyHtmlString))
                             foundProp.SetValue(result, (MyHtmlString)foundItems[i].Value);
-                        else
+                        else if (foundProp.PropertyType == typeof(bool) || foundProp.PropertyType == typeof(bool?))
+                            foundProp.SetValue(result, foundItems[i].Value.ToBooleanReturnFalse());
+                        else 
                             foundProp.SetValue(result, foundItems[i].Value);
                     }
             }

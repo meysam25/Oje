@@ -286,7 +286,7 @@
                         </div>
                         <div class="footerSharingIconSection">
                             <a id="aTelegeram" title="تلگرام" href="#"><img width="32" height="32" alt="تلگرام" data-src="/Modules/Assets/MainPage/telegramsilver.svg" data-alt-src="/Modules/Assets/MainPage/telegram.svg" /></a>
-                            <a id="aWhatapp" title="واتساپ" href="#"><img width="28" height="28" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
+                            <a id="aWhatapp" title="واتساپ" href="#"><img width="32" height="32" alt="واتساپ" data-src="/Modules/Assets/MainPage/whatsappsilver.svg" data-alt-src="/Modules/Assets/MainPage/whatsapp.svg" /></a>
                             <a id="aInestageram" title="اینستاگرام" href="#"><img width="32" height="32" alt="انستاگرام" data-src="/Modules/Assets/MainPage/instagramsilver.svg" data-alt-src="/Modules/Assets/MainPage/instagram.svg" /></a>
                             <a id="aLinkin" title="لینکدین" href="#"><img width="32" height="32" alt="لینک این" data-src="/Modules/Assets/MainPage/linkedinsilver.svg" data-alt-src="/Modules/Assets/MainPage/linkedin.svg" /></a>
                         </div>
@@ -321,7 +321,7 @@
         @{
             if (Context.Request.IsHttps)
             {
-                ViewContext.Writer.Write("caches.delete('mainServiceName');localStorage.clear();" + Environment.NewLine);
+                //ViewContext.Writer.Write("caches.delete('mainServiceName');localStorage.clear();" + Environment.NewLine);
             }
         }
     </script>

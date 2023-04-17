@@ -14,5 +14,6 @@ namespace Oje.Section.Tender.Models.DB
         public TenderProposalFormJsonConfig TenderProposalFormJsonConfig { get; set; }
         public bool? IsConfirmByAdmin { get; set; }
         public bool? IsConfirmByUser { get; set; }
+        public bool? NeedConsultation { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace Oje.Sanab.Interfaces
         object GetById(int? id);
         ApiResult Update(SanabVehicleTypeCreateUpdateVM input);
         GridResultVM<SanabVehicleTypeMainGridResultVM> GetList(SanabVehicleTypeMainGrid searchInput);
-        int? GetTypeIdBy(string title);
+        int? GetTypeIdBy(int code);
     }
 }

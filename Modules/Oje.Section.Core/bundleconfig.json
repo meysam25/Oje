@@ -158,7 +158,8 @@
     "inputFiles": [
       "wwwroot/js/Website/MainPage/ctrls.js",
       "wwwroot/js/Website/lazyLoadOnScroll.js",
-      "wwwroot/js/treatment/indexPage.js"
+      "wwwroot/js/treatment/indexPage.js",
+      "wwwroot/js/treatment/menue.js"
     ],
     "minify": {
       "enabled": true,
@@ -271,7 +272,8 @@
       "wwwroot/css/cImage.css",
       "wwwroot/css/Website/MainPage/thirdPartyGridConvertToCard.css",
       "wwwroot/css/Website/MainPage/inquirySection.css",
-      "wwwroot/css/Website/onlineChat.css"
+      "wwwroot/css/Website/onlineChat.css",
+      "wwwroot/css/adminFont.css"
     ],
     "minify": {
       "enabled": true,
@@ -323,7 +325,8 @@
     "outputFileName": "wwwroot/Core/css/treatmentMaster.min.css",
     "inputFiles": [
       "wwwroot/css/Website/ctrls.css",
-      "wwwroot/css/Treatment/master.css"
+      "wwwroot/css/Treatment/master.css",
+      "wwwroot/css/Treatment/menue.css"
     ],
     "minify": {
       "enabled": true,

@@ -51,16 +51,16 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             this.ProposalFormService = ProposalFormService;
         }
 
-        [AreaConfig(Title = "لیست بیمه نامه های من (صادر شده)", Icon = "fa-file-certificate", IsMainMenuItem = true)]
+        [AreaConfig(Title = "بیمه نامه های من (صادر شده)", Icon = "fa-file-certificate", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "لیست بیمه نامه های من (صادر شده)";
+            ViewBag.Title = "بیمه نامه های من (صادر شده)";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyIssueProposalFilledForm", new { area = "ProposalFilledForm" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست بیمه نامه های من (صادر شده)", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه بیمه نامه های من (صادر شده)", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -87,7 +87,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return View("PdfDetailes", ProposalFilledFormAdminService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, null, validStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست بیمه نامه های من (صادر شده)", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده بیمه نامه های من (صادر شده)", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyProposalFilledFormMainGrid searchInput)
         {
@@ -101,28 +101,28 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
             return Json(ProposalFilledFormAdminService.GetUploadImages(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, null, validStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدارک مالی بیمه نامه های من (صادر شده)", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده مدارک مالی بیمه نامه های من (صادر شده)", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetDocumentList([FromForm] ProposalFilledFormDocumentMainGrid searchInput)
         {
             return Json(ProposalFilledFormDocumentService.GetList(new ProposalFilledFormDocumentMainGrid() { skip = searchInput.skip, take = searchInput.take }, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, null, validStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تاریخچه وضعیت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده تاریخچه وضعیت فرم پیشنهاد تایید شده", Icon = "fa-eye")]
         [HttpPost]
         public ActionResult GetStatusLogList([FromForm] ProposalFilledFormLogMainGrid searchInput)
         {
             return Json(ProposalFilledFormStatusLogService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, validStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی فرم پیشنهاد", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده گروه بندی فرم پیشنهاد", Icon = "fa-eye")]
         [HttpGet]
         public ActionResult GetProposalFormCategoryList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(ProposalFormCategoryService.GetSelect2List(searchInput));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? ppfCatId, [FromQuery] int? cSOWSiteSettingId)
         {

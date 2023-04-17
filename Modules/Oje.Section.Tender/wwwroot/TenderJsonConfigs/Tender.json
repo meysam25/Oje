@@ -16,7 +16,9 @@
               "actionName": "submitPage",
               "objectId": "ppfPanel",
               "detailesUrl": "/Tender/PdfDetailes",
-              "url": "/Tender/Create"
+              "url": "/Tender/Create",
+              "inlineReplace": true,
+              "refreshAllGrid": true
             }
           ],
           "steps": [
@@ -288,6 +290,7 @@
                       "class": "damageBox hasPrevInsurance",
                       "type": "multiRowInput",
                       "addTitle": "افزودن بیمه نامه جدید",
+                      "hideOnPrint": true,
                       "hideAddButton": true,
                       "name": "tenderInsurance",
                       "ctrls": [
@@ -313,6 +316,17 @@
                           "isRequired": true,
                           "ignoreOnChange": true,
                           "onChange": "loadJsonForPPF(\"{{currentIdHolder}}\")"
+                        },
+                        {
+                          "parentCL": "col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12",
+                          "name": "needConsultation",
+                          "type": "dropDown",
+                          "textfield": "title",
+                          "valuefield": "id",
+                          "dataurl": "/Core/BaseData/Get/YesOrNo",
+                          "label": "نیاز به مشاوره",
+                          "onChange": "loadJsonForPPF(\"{{currentIdHolder}}\")",
+                          "isRequired": true
                         },
                         {
                           "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12 holderDynamicSW",

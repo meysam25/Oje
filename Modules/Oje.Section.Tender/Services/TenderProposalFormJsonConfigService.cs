@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Oje.Infrastructure.Exceptions;
 using Oje.Infrastructure.Models;
@@ -18,17 +17,20 @@ namespace Oje.Section.Tender.Services
         readonly TenderDBContext db = null;
         readonly IProposalFormService ProposalFormService = null;
         readonly IHttpContextAccessor HttpContextAccessor = null;
+        readonly ITenderProposalFormJsonConfigFileService TenderProposalFormJsonConfigFileService = null;
 
         public TenderProposalFormJsonConfigService
             (
                 TenderDBContext db,
                 IProposalFormService ProposalFormService,
-                IHttpContextAccessor HttpContextAccessor
+                IHttpContextAccessor HttpContextAccessor,
+                ITenderProposalFormJsonConfigFileService TenderProposalFormJsonConfigFileService
             )
         {
             this.db = db;
             this.ProposalFormService = ProposalFormService;
             this.HttpContextAccessor = HttpContextAccessor;
+            this.TenderProposalFormJsonConfigFileService = TenderProposalFormJsonConfigFileService;
         }
 
         public ApiResult Create(TenderProposalFormJsonConfigCreateUpdateVM input, int? siteSettingId)
@@ -185,9 +187,9 @@ namespace Oje.Section.Tender.Services
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
 
-        public string GetJsonConfigBy(int? proposalFormId)
+        public string GetJsonConfigBy(int? proposalFormId, int? siteSettingId)
         {
-            string tempResult = db.TenderProposalFormJsonConfigs.Where(t => t.IsActive == true && t.Id == proposalFormId).Select(t => t.JsonConfig).FirstOrDefault();
+            string tempResult = db.TenderProposalFormJsonConfigs.Where(t => t.IsActive == true && t.Id == proposalFormId && t.SiteSettingId == siteSettingId).Select(t => t.JsonConfig).FirstOrDefault();
             if (string.IsNullOrEmpty(tempResult))
                 tempResult = "{}";
             return tempResult;
@@ -222,9 +224,10 @@ namespace Oje.Section.Tender.Services
             return new { results = result, pagination = new { more = hasPagination } };
         }
 
-        public List<TenderProposalFormJsonConfig> Validate(int? siteSettingId, List<int> tenderProposalFormJsonConfigIds)
+        public List<TenderProposalFormJsonConfig> Validate(int? siteSettingId, List<UserInputPPF> tenderProposalFormJsonConfigIds)
         {
-            var result = db.TenderProposalFormJsonConfigs.Where(t => t.IsActive == true && t.SiteSettingId == siteSettingId && tenderProposalFormJsonConfigIds.Contains(t.Id)).ToList();
+            var allIds = tenderProposalFormJsonConfigIds.Select(t => t.fid).ToList();
+            var result = db.TenderProposalFormJsonConfigs.Where(t => t.IsActive == true && t.SiteSettingId == siteSettingId && allIds.Contains(t.Id)).ToList();
             if (tenderProposalFormJsonConfigIds == null ||
                 tenderProposalFormJsonConfigIds.Count != result.Count)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
@@ -250,6 +253,25 @@ namespace Oje.Section.Tender.Services
                 }
             }
             return "{}";
+        }
+
+        public object GetLightList(int? siteSettingId)
+        {
+            List<object> result = new () { new { id = "", title = BMessages.Please_Select_One_Item.GetEnumDisplayName() } };
+
+            result.AddRange(
+                    db.TenderProposalFormJsonConfigs
+                    .Where(t => t.SiteSettingId == siteSettingId)
+                    .Select(t => new { id = t.Id, title = t.ProposalForm.Title })
+                    .ToList()
+                );
+
+            return result;
+        }
+
+        public bool Exist(int? siteSettingId, int? id)
+        {
+            return db.TenderProposalFormJsonConfigs.Any(t => t.SiteSettingId == siteSettingId && t.Id == id);
         }
     }
 }

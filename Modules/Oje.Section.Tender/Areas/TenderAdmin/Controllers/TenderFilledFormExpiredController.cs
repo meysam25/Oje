@@ -15,7 +15,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 {
     [Area("TenderAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "سامانه مناقصات", Order = 4, Icon = "fa-funnel-dollar", Title = "مناقصات منقضی")]
+    [AreaConfig(ModualTitle = "سامانه مناقصات", Order = 4, Icon = "fa-funnel-dollar", Title = "مناقصات منقضی شده")]
     [CustomeAuthorizeFilter]
     public class TenderFilledFormExpiredController : Controller
     {
@@ -45,16 +45,16 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             this.TenderFilledFormIssueService = TenderFilledFormIssueService;
         }
 
-        [AreaConfig(Title = "مناقصات منقضی", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
+        [AreaConfig(Title = "مناقصات منقضی شده", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title = "مناقصات منقضی";
+            ViewBag.Title = "مناقصات منقضی شده";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "TenderFilledFormExpired", new { area = "TenderAdmin" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست مناقصات منقضی", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه مناقصات منقضی شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -62,21 +62,23 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("TenderAdmin", "TenderFilledFormExpired")));
         }
 
-        [AreaConfig(Title = "دانلود پی دی اف فرم مناقصات منقضی", Icon = "fa-download")]
+        [AreaConfig(Title = "دانلود پی دی اف فرم مناقصات منقضی شده", Icon = "fa-download")]
         [HttpGet]
         public IActionResult DownloadPdf([FromQuery] GlobalLongId input)
         {
             return File(
-                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("PdfDetailes", "TenderFilledFormExpired", new { area = "TenderAdmin", id = input.id, isPrint = true }), Request.Cookies),
+                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("PdfDetailes", "TenderFilledFormExpired", new { area = "TenderAdmin", input.id, isPrint = true }), Request.Cookies),
                     System.Net.Mime.MediaTypeNames.Application.Pdf, DateTime.Now.ToFaDate("_") + "_" + DateTime.Now.ToString("HH_mm_ss") + ".pdf"
                 );
         }
 
         [HttpGet]
+        [HttpPost]
         [AreaConfig(Title = "جزییات", Icon = "fa-eye")]
-        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
+        public IActionResult PdfDetailes(long id, [FromQuery] bool isPrint = false, [FromQuery] bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
+            ViewBag.ignoreMaster = ignoreMaster;
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
 
@@ -100,14 +102,14 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return View();
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدارک مناقصات منقضی", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست مدارک مناقصات منقضی شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPFormList([FromForm] GlobalGridParentLong searchInput)
         {
             return Json(TenderFilledFormPFService.GetListForWeb(searchInput, searchInput?.pKey, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, SelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مناقصات منقضی", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده مناقصات منقضی شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] TenderFilledFormMainGrid searchInput)
         {
@@ -135,14 +137,14 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(TenderFilledFormPriceService.GetById(input?.id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست قیمت های مناقصات منقضی", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده لیست قیمت های مناقصات منقضی شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPriceList([FromForm] TenderFilledFormPriceMainGrid searchInput)
         {
             return Json(TenderFilledFormPriceService.GetList(searchInput, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
 
-        [AreaConfig(Title = "خروجی اکسل مبلغ مناقصات منقضی", Icon = "fa-file-excel")]
+        [AreaConfig(Title = "خروجی اکسل مبلغ مناقصات منقضی شده", Icon = "fa-file-excel")]
         [HttpPost]
         public ActionResult ExportPrice([FromForm] TenderFilledFormPriceMainGrid searchInput)
         {
@@ -156,7 +158,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده یک مناقصات منقضی صادر شده", Icon = "fa-eye")]
+        [AreaConfig(Title = "مشاهده یک مناقصات منقضی شده صادر شده", Icon = "fa-eye")]
         [HttpPost]
         public IActionResult GetIssueById([FromForm] GlobalLongId input)
         {
@@ -182,6 +184,13 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult GetInsuranceList([FromForm] GlobalGridParentLong input)
         {
             return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id, SelectStatus));
+        }
+
+        [AreaConfig(Title = "مشاهده مدارک مناقصه", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetFileList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(TenderFilledFormService.GetUploadFiles(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست مناقصات اعلام نرخ شده", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه مناقصات اعلام نرخ شده", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -69,12 +69,13 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
                 );
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [AreaConfig(Title = "جزییات", Icon = "fa-eye")]
-        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
+        public IActionResult PdfDetailes(long id, [FromQuery] bool isPrint = false, [FromQuery] bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
             //ViewBag.newLayoutName = "_WebLayout";
+            ViewBag.ignoreMaster = ignoreMaster;
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId, tenderSelectStatus));
         }
 
@@ -105,7 +106,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(TenderFilledFormPFService.GetListForWeb(searchInput, searchInput?.pKey, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id, tenderSelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مناقصات اعلام نرخ شده", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده مناقصات اعلام نرخ شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] TenderFilledFormMainGrid searchInput)
         {
@@ -167,6 +168,13 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult GetInsuranceList([FromForm] GlobalGridParentLong input)
         {
             return Json(TenderFilledFormService.GetInsuranceList(input?.pKey, SiteSettingService.GetSiteSetting()?.Id, tenderSelectStatus));
+        }
+
+        [AreaConfig(Title = "مشاهده مدارک مناقصه", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetFileList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(TenderFilledFormService.GetUploadFiles(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, tenderSelectStatus));
         }
     }
 }

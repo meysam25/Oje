@@ -99,6 +99,8 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "مدارک فرم عمومی", Prompt = "GeneralFilledForm", Description = "~1000*1000", AutoGenerateFilter = true)]
         GeneralFilledForm = 47,
         [Display(Name = "مدارک مشاوره مناقصه", Prompt = "TenderConsultationFiles", Description = "~1000*1000", AutoGenerateFilter = true)]
-        TenderConsultationFiles = 48
+        TenderConsultationFiles = 48,
+        [Display(Name = "مدارک فرم پیشنهاد مناقصه", Prompt = "TenderPPFFiles")]
+        TenderPPFFiles = 49
     }
 }

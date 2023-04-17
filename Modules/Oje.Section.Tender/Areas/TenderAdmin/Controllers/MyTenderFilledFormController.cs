@@ -15,7 +15,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
 {
     [Area("TenderAdmin")]
     [Route("[Area]/[Controller]/[Action]")]
-    [AreaConfig(ModualTitle = "سامانه مناقصات", Order = 4, Icon = "fa-funnel-dollar", Title = "مناقصات جدید")]
+    [AreaConfig(ModualTitle = "سامانه مناقصات", Order = 4, Icon = "fa-funnel-dollar", Title = "درخواست برگزاری مناقصه")]
     [CustomeAuthorizeFilter]
     public class MyTenderFilledFormController : Controller
     {
@@ -48,17 +48,17 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             this.TenderProposalFormJsonConfigService = TenderProposalFormJsonConfigService;
         }
 
-        [AreaConfig(Title = "مناقصات جدید", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
+        [AreaConfig(Title = "درخواست برگزاری مناقصه", Icon = "fa-file-powerpoint", IsMainMenuItem = true)]
         [HttpGet]
         public IActionResult Index()
         {
             //ViewBag.layer = "_WebLayout";
-            ViewBag.Title = "مناقصات جدید";
+            ViewBag.Title = "درخواست برگزاری مناقصه";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyTenderFilledForm", new { area = "TenderAdmin" });
             return View();
         }
 
-        [AreaConfig(Title = "تنظیمات صفحه لیست مناقصات جدید", Icon = "fa-cog")]
+        [AreaConfig(Title = "تنظیمات صفحه  درخواست برگزاری مناقصه", Icon = "fa-cog")]
         [HttpPost]
         public IActionResult GetJsonConfig()
         {
@@ -76,12 +76,12 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
                 );
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [AreaConfig(Title = "جزییات", Icon = "fa-eye")]
-        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
+        public IActionResult PdfDetailes(long id, [FromQuery] bool isPrint = false, [FromQuery] bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
-            ViewBag.newLayoutName = "_TenderLayout";
+            ViewBag.ignoreMaster = ignoreMaster;
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(isPrint)?.UserId, SelectStatus));
         }
 
@@ -106,7 +106,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return View();
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدارک مناقصات جدید", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده  مدارک درخواست برگزاری مناقصه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPFormList([FromForm] GlobalGridParentLong searchInput)
         {
@@ -142,7 +142,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
             return Json(TenderFilledFormService.ConfirmPfsForUser(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, id, SelectStatus));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مناقصات جدید", Icon = "fa-list-alt")]
+        [AreaConfig(Title = "مشاهده  درخواست برگزاری مناقصه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyTenderFilledFormMainGrid searchInput)
         {
@@ -161,6 +161,13 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
                 throw BException.GenerateNewException(BMessages.Not_Found);
 
             return Json(Convert.ToBase64String(byteResult));
+        }
+
+        [AreaConfig(Title = "مشاهده مدارک مناقصه", Icon = "fa-eye")]
+        [HttpPost]
+        public ActionResult GetFileList([FromForm] GlobalGridParentLong input)
+        {
+            return Json(TenderFilledFormService.GetUploadFiles(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, SelectStatus));
         }
     }
 }

@@ -104,7 +104,7 @@ namespace Oje.Infrastructure.Services
                 {
                     var propType = prop.PropertyType;
                     string propName = prop.Name;
-                    string propValue = prop.GetValue(this, null) + "";
+                    object propValue = prop.GetValue(this, null);
                     if (
                         propType == typeof(int?) || propType == typeof(int) ||
                         propType == typeof(long?) || propType == typeof(long) ||
@@ -114,7 +114,13 @@ namespace Oje.Infrastructure.Services
                         )
                     {
                         if (propName != "Signature")
-                            result.Add(new KeyValue() { key = propName, value = propValue });
+                        {
+                            string curValue = propValue + "";
+                            if (propType.IsEnum && propValue != null)
+                                curValue = ((int)propValue) + "";
+                            result.Add(new KeyValue() { key = propName, value = curValue });
+
+                        }
                     }
                 }
             }

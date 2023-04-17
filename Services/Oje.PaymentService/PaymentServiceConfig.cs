@@ -11,7 +11,6 @@ namespace Oje.PaymentService
     {
         public static void Config(IServiceCollection services)
         {
-            services.AddHttpClient();
             services.AddDbContextPool<PaymentDBContext>(options => options.UseSqlServer(GlobalConfig.Configuration["ConnectionStrings:DefaultConnection"], b => b.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)) );
 
             services.AddScoped<IBankService, BankService>();

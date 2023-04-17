@@ -18,6 +18,9 @@ namespace Oje.Section.Tender.Models.DB
         public int Id { get; set; }
         [Required, MaxLength(100)]
         public string Title { get; set; }
+        [MaxLength(100)]
+        public string Pic64 { get; set; }
+        public bool IsActive { get; set; }
 
         [InverseProperty("Company")]
         public List<TenderFilledFormValidCompany> TenderFilledFormValidCompanies { get; set; }

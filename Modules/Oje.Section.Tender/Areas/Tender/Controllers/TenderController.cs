@@ -27,6 +27,7 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
         readonly IBlockAutoIpService BlockAutoIpService = null;
         readonly ITenderFilledFormService TenderFilledFormService = null;
         readonly ICompanyService CompanyService = null;
+        readonly ITenderProposalFormJsonConfigFileService TenderProposalFormJsonConfigFileService = null;
 
         public TenderController
             (
@@ -36,7 +37,8 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
                 ITenderProposalFormJsonConfigService TenderProposalFormJsonConfigService,
                 IBlockAutoIpService BlockAutoIpService,
                 ITenderFilledFormService TenderFilledFormService,
-                ICompanyService CompanyService
+                ICompanyService CompanyService,
+                ITenderProposalFormJsonConfigFileService TenderProposalFormJsonConfigFileService
             )
         {
             this.TenderConfigService = TenderConfigService;
@@ -46,18 +48,15 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
             this.BlockAutoIpService = BlockAutoIpService;
             this.TenderFilledFormService = TenderFilledFormService;
             this.CompanyService = CompanyService;
+            this.TenderProposalFormJsonConfigFileService = TenderProposalFormJsonConfigFileService;
         }
 
         [AreaConfig(Title = "ثبت مناقصه", Icon = "fa-file-plus")]
-        [HttpGet]
-        public IActionResult Index()
+        [HttpGet, HttpPost]
+        public IActionResult Index([FromQuery] bool? ignoreMaster)
         {
-            var curSetting = SiteSettingService.GetSiteSetting();
             ViewBag.Title = "ثبت مناقصه";
-            if (curSetting?.WebsiteType == WebsiteType.Tender)
-                ViewBag.layer = "_TenderLayout";
-            else
-                ViewBag.layer = "_WebLayout";
+            ViewBag.ignoreMaster = ignoreMaster;
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "Tender");
 
             return View();
@@ -73,10 +72,17 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
 
         [AreaConfig(Title = "تنظیمات صفحه ثبت مناقصه بر اساس بیمه نامه", Icon = "fa-cog")]
         [HttpPost]
-        public IActionResult GetPPFJsonConfig([FromQuery] int? ppfid)
+        public IActionResult GetPPFJsonConfig([FromQuery] int? ppfid, [FromQuery] bool? needConsultation)
         {
             Response.ContentType = "application/json; charset=utf-8";
-            return Content(TenderProposalFormJsonConfigService.GetJsonConfigBy(ppfid));
+
+            if (needConsultation == null)
+                return Content("{}");
+
+            if (needConsultation == true)
+                return Content(TenderProposalFormJsonConfigService.GetJsonConfigBy(ppfid, SiteSettingService.GetSiteSetting()?.Id));
+
+            return Content(TenderProposalFormJsonConfigFileService.GetJsonConfigBy(ppfid, SiteSettingService.GetSiteSetting()?.Id));
         }
 
 
@@ -90,13 +96,12 @@ namespace Oje.Section.Tender.Areas.Tender.Controllers
             return Json(tempResult);
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [AreaConfig(Title = "جزییات", Icon = "fa-pen")]
-        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false)
+        public IActionResult PdfDetailes([FromQuery] long id, [FromQuery] bool isPrint = false, [FromQuery] bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
-            var curSetting = SiteSettingService.GetSiteSetting();
-            ViewBag.newLayoutName = curSetting?.WebsiteType == WebsiteType.Tender ? "_TenderLayout" : "_WebLayout";
+            ViewBag.ignoreMaster = ignoreMaster;
             return View(TenderFilledFormService.PdfDetailes(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, TenderSelectStatus.NewTenderUser));
         }
 

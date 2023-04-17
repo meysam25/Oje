@@ -32,6 +32,9 @@ namespace Oje.Section.Tender.Models.View
         [Display(Name = "زیرعنوان لوگوی 4")]
         public string title4 { get; set; }
 
+        [Display(Name = "نمایش لوگو ها در سمت راست")]
+        public bool? isActive { get; set; }
+
         [Display(Name = "توضیحات")]
         [IgnoreStringEncode]
         public MyHtmlString desc { get; set; }
