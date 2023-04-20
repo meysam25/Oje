@@ -33,11 +33,12 @@
 .panelSWizardHolderHeaderItemActive {
     opacity: 1;
     /*width: calc(100% - 25px);*/
-    padding-right: 25px;
+    padding-right: 35px;
     padding-left: 25px;
     -webkit-flex-grow: 1;
     flex-grow: 1;
     display:block;
+    font-size: 0.9rem;
 }
 .panelSWizardHolderContent{
     position:relative;

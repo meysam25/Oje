@@ -1158,6 +1158,7 @@ figure.table > table {
         border: none;
         outline: none;
         line-height: 42px;
+        text-align:center;
     }
 .makeWhiteColor button{
     color:white;
@@ -1221,7 +1222,14 @@ figure.table > table {
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
 }
-@media only screen and (max-width: 580px)  {
+.moveActionToRightColumn {
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: start;
+    align-items: start;
+}
+@media only screen and (max-width: 580px) {
     .blackModalTheme {
         width: auto !important;
     }

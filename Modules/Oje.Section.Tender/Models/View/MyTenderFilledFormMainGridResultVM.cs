@@ -19,5 +19,9 @@ namespace Oje.Section.Tender.Models.View
         public bool isPub { get; set; }
         [Display(Name = "وضعیت")]
         public string status { get; set; }
+        [Display(Name = "صادر کننده")]
+        public string iu { get; set; }
+        [Display(Name = "شرکت صادر کننده")]
+        public string iuc { get; set; }
     }
 }

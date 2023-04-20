@@ -53,6 +53,7 @@ namespace Oje.Infrastructure.Models.PageForms
         public List<string> callChangeEvents { get; set; }
         public List<string> multiPlay { get; set; }
         public List<cTemplateMaps> fieldMaps { get; set; }
+        public List<string> calcDate { get; set; }
 
         [JsonIgnore]
         public string defV { get; set; }
@@ -290,6 +291,51 @@ namespace Oje.Infrastructure.Models.PageForms
                     var curDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     if (enDate.Value >= curDate.AddDays(ctrl.maxDateValidation.Value).AddDays(1))
                         throw BException.GenerateNewException(ctrl.label + " مجاز نمی باشد");
+                }
+            }
+        }
+
+        public void validateSumDate(ctrl ctrl, List<ctrl> allCtrls, IFormCollection form)
+        {
+            if (ctrl != null && allCtrls != null && allCtrls.Count > 0 && form != null && ctrl.calcDate != null && ctrl.calcDate.Count > 0)
+            {
+                var tempStr = form.GetStringIfExist(ctrl.name);
+                if (!string.IsNullOrEmpty(tempStr))
+                {
+                    var curValue = tempStr.ToEnDate();
+                    if (curValue == null)
+                        throw BException.GenerateNewException(BMessages.Invalid_Date);
+
+                    long sumMS = 0;
+                    foreach(var ctrlId in ctrl.calcDate)
+                    {
+                        var foundCurCtrl = allCtrls.Where(t => t.id == ctrlId).FirstOrDefault();
+                        if (foundCurCtrl == null)
+                            throw BException.GenerateNewException(BMessages.Validation_Error);
+
+                        if (foundCurCtrl.type != ctrlType.persianDateTime)
+                        {
+                            var targetValue = form.GetStringIfExist(foundCurCtrl.name).ToIntReturnZiro();
+                            if (targetValue > 0)
+                                sumMS += (targetValue * 864000000000);
+                        } else
+                        {
+                            var targetDate = form.GetStringIfExist(foundCurCtrl.name).ToEnDate();
+                            if (targetDate != null)
+                            {
+                                sumMS += targetDate.Value.Ticks;
+                            }
+                            
+                        }
+                    }
+                    if (sumMS > 0)
+                    {
+                        var newDate = new DateTime(sumMS);
+                        if (newDate.ToString("yyyy/MM/dd") != curValue.Value.ToString("yyyy/MM/dd"))
+                            throw BException.GenerateNewException(BMessages.Invalid_Date);
+
+                        ctrl.defV = newDate.ToFaDate();
+                    }
                 }
             }
         }

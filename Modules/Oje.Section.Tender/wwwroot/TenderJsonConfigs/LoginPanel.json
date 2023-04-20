@@ -32,7 +32,7 @@
                               "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
                               "name": "username",
                               "type": "text2",
-                              "label": "نام کاربری",
+                              "label": "شماره همراه",
                               "isRequired": true,
                               "validations": [
                                 {
@@ -92,7 +92,7 @@
                               "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
                               "name": "username",
                               "type": "text2",
-                              "label": "شماره همراه(نام کاربری)",
+                              "label": "شماره همراه",
                               "isRequired": true,
                               "validations": [
                                 {
@@ -188,7 +188,7 @@
                               "parentCL": "col-md-12 col-sm-12 col-xs-12 col-lg-12",
                               "name": "username",
                               "type": "text2",
-                              "label": "شماره همراه(نام کاربری)",
+                              "label": "شماره همراه",
                               "isRequired": true,
                               "validations": [
                                 {
@@ -309,9 +309,15 @@
               ]
             }
           ],
+          "changeFooterActionDirection": true,
           "actions": [
             {
-              "title": "ثبت نام {{title}}",
+              "title": "حساب کاربری ندارید؟",
+              "class": "btn-primary-label btn-sm whiteButton",
+              "onClick": "showRegisterButton('loginForgetPasswordModal')"
+            },
+            {
+              "title": "ثبت نام در {{title}}",
               "icon": "fa-user",
               "titleUrl": "/TenderWeb/GetSiteInfo",
               "onClick": "showRegisterButton('loginForgetPasswordModal')",

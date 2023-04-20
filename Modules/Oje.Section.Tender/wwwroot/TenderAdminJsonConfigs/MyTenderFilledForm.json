@@ -183,6 +183,13 @@
           "title": "مناقصه جدید",
           "class": "modal-xl",
           "ctrls": [
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
+            }
           ]
         },
         {

@@ -106,6 +106,7 @@ namespace Oje.Section.Tender.Services
                     insurance = t.TenderProposalFormJsonConfigId > 0 ? t.TenderProposalFormJsonConfig.ProposalForm.Title : "",
                     t.IsConfirmByAdmin,
                     t.IsConfirmByUser
+                   
                 })
                 .ToList()
                 .Select(t => new 

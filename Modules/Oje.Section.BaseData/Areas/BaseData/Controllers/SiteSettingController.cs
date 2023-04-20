@@ -4,9 +4,9 @@ using Oje.Infrastructure.Filters;
 using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.BaseData.Models.View;
+using Oje.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using Oje.Infrastructure.Exceptions;
 
 namespace Oje.Section.BaseData.Areas.BaseData.Controllers
 {

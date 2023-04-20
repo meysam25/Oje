@@ -93,6 +93,10 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "پرداخت")]
         Payment = 44,
         [Display(Name = "اعلام خسارت برسی")]
-        ContractUserValidation = 45
+        ContractUserValidation = 45,
+        [Display(Name = "ثبت مناقصه جدید")]
+        NewTender = 46,
+        [Display(Name = "تایید مشاوره مناقصه (ادمین)")]
+        ConfirmTenderPPF = 46
     }
 }

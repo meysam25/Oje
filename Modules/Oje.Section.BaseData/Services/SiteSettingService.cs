@@ -75,6 +75,7 @@ namespace Oje.Section.BaseData.Services
                     if (foundTargetUser == null)
                         throw BException.GenerateNewException(BMessages.User_Not_Found, ApiResultErrorCode.ValidationError);
                     foundTargetUser.SiteSettingId = newItem.Id;
+                    foundTargetUser.UpdateSignature();
 
                     newItem.FilledSignature();
 

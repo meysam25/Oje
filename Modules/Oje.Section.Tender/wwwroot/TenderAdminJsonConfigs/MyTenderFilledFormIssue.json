@@ -68,6 +68,14 @@
             {
               "field": "status",
               "caption": "وضعیت"
+            },
+            {
+              "field": "iu",
+              "caption": "صادر کننده"
+            },
+            {
+              "field": "iuc",
+              "caption": "شرکت صادر کننده"
             }
           ]
         }

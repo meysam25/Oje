@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Oje.AccountService.Filters;
+﻿using Oje.AccountService.Filters;
 using Oje.AccountService.Interfaces;
 using Oje.Infrastructure;
 using Oje.Infrastructure.Enums;
@@ -8,9 +7,11 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Services;
 using Oje.Section.Tender.Interfaces;
 using Oje.Security.Interfaces;
-using System;
 using Oje.Infrastructure.Exceptions;
 using ICompanyService = Oje.Section.Tender.Interfaces.ICompanyService;
+using Microsoft.AspNetCore.Mvc;
+using System;
+
 
 namespace Oje.Section.Tender.Areas.Tender.Controllers
 {

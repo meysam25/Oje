@@ -932,7 +932,6 @@ $.fn.initMyGrid = function (option) {
                             }
                             actionQuiry.each(function (index) {
                                 var isLast = $(this)[0] == actionQuiry[actionQuiry.length - 1];
-                                console.log(isLast);
                                 actionTemplate += '<div class="floatActionCell actionTD ' + (index % 2 == 0 ?  'floatActionCellAlterColor' : '') +'" style="height:' + ($(this)[0].offsetHeight + (isLast ? 1 : 0)) + 'px;width:' + (curWidth) + 'px;" >' + $(this).html() + '</div>';
                             });
                             if (holderGA.find('> .myGridStaticActions').length > 0) {

@@ -124,9 +124,9 @@ namespace Oje.Section.Tender.Services
                         }
                     }
 
-                    
-
                     tr.Commit();
+
+                    UserNotifierService.Notify(loginUserId, UserNotificationType.NewTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, newFormId, "ثبت مناقصه جدید", siteSettingId, null);
 
                     newFormId = newForm.Id;
                 }
@@ -252,6 +252,7 @@ namespace Oje.Section.Tender.Services
                     ctrl.validateAndUpdateMultiRowInputCtrl(ctrl, form, ppfObj);
                     ctrl.validateMinAndMaxDayForDateInput(ctrl, form);
                     ctrl.dublicateMapValueIfNeeded(ctrl, ppfObj, form);
+                    ctrl.validateSumDate(ctrl, allCtrls, form);
                 }
             }
         }
@@ -448,7 +449,9 @@ namespace Oje.Section.Tender.Services
                     confirmByAdminCount = t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByAdmin == true),
                     confirmByUserCount = t.TenderFilledFormPFs.Count(tt => tt.IsConfirmByUser == true),
                     userPublishedPrice = t.TenderFilledFormPrices.Where(tt => tt.IsPublished == true).Select(tt => tt.UserId).ToList(),
-                    countIssued = t.TenderFilledFormIssues.Count()
+                    countIssued = t.TenderFilledFormIssues.Count(),
+                    issueUsername = t.TenderFilledFormIssues.Select(tt => tt.User.Firstname + " " + tt.User.Lastname).FirstOrDefault(),
+                    company = t.TenderFilledFormPrices.Select(tt => tt.Company.Title).FirstOrDefault()
                 })
                 .ToList()
                 .Select(t => new MyTenderFilledFormMainGridResultVM
@@ -459,6 +462,8 @@ namespace Oje.Section.Tender.Services
                     createDate = t.createDate.ToFaDate() + " " + t.createDate.ToString("hh:mm"),
                     isPub = t.IsPublished == true ? true : false,
                     status = getStatus(t.countIssued, t.OpenDate, t.pCount, t.psCount, t.issPublished, t.confirmByAdminCount, t.confirmByUserCount, t.insurances, t.userPublishedPrice),
+                    iu = t.issueUsername,
+                    iuc = t.company
                 })
                 .ToList()
             };
@@ -1071,6 +1076,8 @@ namespace Oje.Section.Tender.Services
                         {
                             if (!foundItem.IsSignature())
                                 throw BException.GenerateNewException(BMessages.Can_Not_Be_Edited);
+
+                            UserNotifierService.Notify(loginUserId, UserNotificationType.ConfirmTenderPPF, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(loginUserId, ProposalFilledFormUserType.OwnerUser) }, jsonFormId, "تایید مشاوره مناقصه", siteSettingId, null);
                             return TenderFilledFormPFService.AdminConfirm(filledFormId, jsonFormId);
                         }
                     }

@@ -104,7 +104,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         public IActionResult DownloadPdf([FromQuery] GlobalLongId input)
         {
             return File(
-                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("PdfDetailes", "MyTenderFilledFormIssue", new { area = "TenderAdmin", id = input.id, isPrint = true }), Request.Cookies),
+                    HtmlToPdfBlink.Convert((Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("PdfDetailes", "MyTenderFilledFormIssue", new { area = "TenderAdmin", input.id, isPrint = true }), Request.Cookies),
                     System.Net.Mime.MediaTypeNames.Application.Pdf, DateTime.Now.ToFaDate("_") + "_" + DateTime.Now.ToString("HH_mm_ss") + ".pdf"
                 );
         }
@@ -123,7 +123,7 @@ namespace Oje.Section.Tender.Areas.TenderAdmin.Controllers
         [AreaConfig(Title = "دانلود مدارک", Icon = "fa-download")]
         public IActionResult DownloadDocument([FromQuery] long? id, [FromQuery] int? cId)
         {
-            string tempUrl = (Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("ViewDocument", "MyTenderFilledFormIssue", new { area = "TenderAdmin", tid = id, cId = cId });
+            string tempUrl = (Request.IsHttps ? "https" : "http") + "://" + Request.Host + Url.Action("ViewDocument", "MyTenderFilledFormIssue", new { area = "TenderAdmin", tid = id, cId });
             return File(
                     HtmlToPdfBlink.Convert(tempUrl, Request.Cookies),
                     System.Net.Mime.MediaTypeNames.Application.Pdf, DateTime.Now.ToFaDate("_") + "_" + DateTime.Now.ToString("HH_mm_ss") + ".pdf"

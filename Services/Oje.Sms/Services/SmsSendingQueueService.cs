@@ -210,7 +210,7 @@ namespace Oje.Sms.Services
             return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode, new
             {
                 data = new { input.username },
-                labels = new List<object>() { new { inputName = "code", labelText = "کد  به شماره  " + input.username + " ارسال گردید" } },
+                labels = new List<object>() { new { inputName = "code", labelText = "ارسال به " + input.username } },
                 stepId = "confirmSMS",
                 countDownId = "tryAginButtonCD"
             });

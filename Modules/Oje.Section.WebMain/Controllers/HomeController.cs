@@ -78,7 +78,7 @@ namespace Oje.Section.WebMain.Areas.WebMain.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            
+            var foundUser = UserService.GetBy("09904561385", 3);
 
             var curSetting = SiteSettingService.GetSiteSetting();
             if (curSetting == null)

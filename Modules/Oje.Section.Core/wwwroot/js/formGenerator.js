@@ -197,7 +197,7 @@ function getDesignerTemplate(ctrl) {
 
 function getLableTemplate(ctrl) {
     var result = '';
-    result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + '">';
+    result += '<div class="myCtrl form-group ' + (ctrl.class ? ctrl.class : '') + ' form-check">';
     if (ctrl.label)
         result += '<label ' + (ctrl.ltr ? 'dir:ltr' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="position: relative;font-weight:bold;cursor:default;color:' + (ctrl.color ? ctrl.color : 'black') + ';" >' + ctrl.label + '</label>';
     result += '</div>';
@@ -506,20 +506,20 @@ function getModualTemplate(modual) {
     var modalId = (!modual.id) ? uuidv4RemoveDash() : modual.id
     var result =
         '<div class="modal fade " id="' + modalId + '"  role="dialog"  aria-hidden="true">' +
-            '<div class="modal-dialog modal-dialog-centered ' + (modual.class ? modual.class : '') + '" role="document">' +
-                '<div class="modal-content">' +
-                    '<div class="modal-header">' +
-                        '<h5 class="modal-title">' + modual.title + '</h5>' +
-                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                        '</button>' +
-                    '</div>' +
-                    '<div class="modal-body">' +
-                        (modual.modelBody ? modual.modelBody : getModualTemplateCTRL(modual)) +
-                    '</div>' +
-                     getModualTemplateActionButton(modual) +
-                '</div>' +
-            '</div>' +
+        '<div class="modal-dialog modal-dialog-centered ' + (modual.class ? modual.class : '') + '" role="document">' +
+        '<div class="modal-content">' +
+        '<div class="modal-header">' +
+        '<h5 class="modal-title">' + modual.title + '</h5>' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+        '<span aria-hidden="true">&times;</span>' +
+        '</button>' +
+        '</div>' +
+        '<div class="modal-body">' +
+        (modual.modelBody ? modual.modelBody : getModualTemplateCTRL(modual)) +
+        '</div>' +
+        getModualTemplateActionButton(modual) +
+        '</div>' +
+        '</div>' +
         '</div>';
 
     functionsList.push(function () {
@@ -1368,7 +1368,7 @@ function addNewRowForMultiCtrl(curButton) {
                 }
             }
         }
-        
+
     }
 }
 
@@ -1625,13 +1625,10 @@ function getDynamicFileUploadDependCtrlTemplate(ctrl) {
         result += '<div id="' + ctrl.id + '" data-spec-name="' + ctrl.name + '" class="debitFileUploader row"></div>';
     }
 
-    functionsList.push(function ()
-    {
-        if ($('#' + this.ctrl.id).length > 0)
-        {
+    functionsList.push(function () {
+        if ($('#' + this.ctrl.id).length > 0) {
             $('#' + this.ctrl.id)[0].ctrl = cloneObject(this.ctrl);
-            $('#' + this.ctrl.id)[0].addNewRow = function (dataItems)
-            {
+            $('#' + this.ctrl.id)[0].addNewRow = function (dataItems) {
                 let ctrl = $(this)[0].ctrl;
                 var arrHtml = '';
                 if (dataItems) {
@@ -1846,13 +1843,13 @@ function getTextBoxTemplate2(ctrl) {
     var result = '';
     result += '<div class="myCtrl form-group form-check normalTextBox' + (ctrl.class ? ctrl.class : '') + '">';
     if (ctrl.label) {
-        result += '<label for="' + ctrl.id + '"  >' + ctrl.label +  '</label>';
+        result += '<label for="' + ctrl.id + '"  >' + ctrl.label + '</label>';
     }
-    result += '<input type="' +( (1 == 2) ? 'number' : (ctrl.type == 'password2' ? 'password' : 'text')) +'"  style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" />';
+    result += '<input type="' + ((1 == 2) ? 'number' : (ctrl.type == 'password2' ? 'password' : 'text')) + '"  style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" />';
     result += '</div>';
 
     addCtrlToObj(ctrl);
-   
+
     return result;
 }
 
@@ -1866,14 +1863,14 @@ function getTextBoxProgressTemplate(ctrl) {
     if (ctrl.guidText) {
         result += '<div class="countDownNewHelp" >';
         if (ctrl.guidIcon)
-            result += '<i style="margin-left:5px;" class="fa '+ ctrl.guidIcon +'" ></i>';
+            result += '<i style="margin-left:5px;" class="fa ' + ctrl.guidIcon + '" ></i>';
         result += ctrl.guidText;
 
         result += '</div>';
     }
 
     result += '<div class="normalTextBox ">';
-    if (ctrl.label) 
+    if (ctrl.label)
         result += '<label for="' + ctrl.id + '"  >' + ctrl.label + '</label>';
     result += '<input type="' + ((ctrl.nationalCodeValidation || hasNumberValidation(ctrl.validations)) ? 'number' : (ctrl.type == 'password2' ? 'password' : 'text')) + '"  style="' + (ctrl.fontSize ? ('font-size:' + ctrl.fontSize) : '') + '" ' + (getOs() == 'iOS' ? '' : 'onfocus="this.removeAttribute(\'readonly\');" readonly="readonly"') + '' + (ctrl.ltr ? 'dir="ltr"' : '') + ' ' + getDateTimeMinMaxValueValidation(ctrl) + ' autocomplete="off" ' + (ctrl.maxLengh ? 'maxlength="' + ctrl.maxLengh + '"' : '') + ' ' + (ctrl.type == "persianDateTime" ? 'data-jdp ' : ' ') + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.disabled ? 'disabled="disabled"' : '') + ' ' + (ctrl.ph ? 'placeholder="' + ctrl.ph + '"' : '') + ' ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + '" ' + (ctrl.dfaultValue ? 'value="' + ctrl.dfaultValue + '"' : ctrl.yearFromKnow !== undefined ? 'value="' + getLastYearFromToday(ctrl.yearFromKnow) + '"' : '') + ' name="' + ctrl.name + '" />';
     result += '</div>';
@@ -1889,16 +1886,15 @@ function getTextBoxProgressTemplate(ctrl) {
 
     result += '<div class="warningSectionCountDown">';
     if (ctrl.guidTextForEnding)
-        result += '<div class="warningSectionCountDownDesc">' + (ctrl.guidTextForEndingIcon ? ('<i style="margin-left:10px;" class="fa ' + ctrl.guidTextForEndingIcon +'" ></i>') : '') + ctrl.guidTextForEnding + '</div>';
+        result += '<div class="warningSectionCountDownDesc">' + (ctrl.guidTextForEndingIcon ? ('<i style="margin-left:10px;" class="fa ' + ctrl.guidTextForEndingIcon + '" ></i>') : '') + ctrl.guidTextForEnding + '</div>';
 
-    result += '<button onclick="' + ctrl.onClick +';" class="btn btn-success btn-block btn-lg" >' + ctrl.finishedCountDownText +'</button>';
+    result += '<button onclick="' + ctrl.onClick + ';" class="btn btn-success btn-block btn-lg" >' + ctrl.finishedCountDownText + '</button>';
     result += '</div>';
 
     result += '</div>';
 
     addCtrlToObj(ctrl);
-    functionsList.push(function ()
-    {
+    functionsList.push(function () {
         initProgressBar(ctrl);
     });
 
@@ -1930,8 +1926,7 @@ function initProgressBar(ctrl) {
                         }
                     }
                     clearInterval(selectProgressObj.interValPointer);
-                    selectProgressObj.interValPointer = setInterval(function ()
-                    {
+                    selectProgressObj.interValPointer = setInterval(function () {
                         var startNumber = this.curCtrl2.startNumber;
                         var curProgress = this.element.progress;
                         if (!curProgress)
@@ -1974,6 +1969,50 @@ function showTryAginForProgress(ctrl) {
     }
 }
 
+function convertToEnNumber(input) {
+    var
+        persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
+        arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g],
+        fixNumbers = function (str) {
+            if (typeof str === 'string') {
+                for (var i = 0; i < 10; i++) {
+                    str = str.replace(persianNumbers[i], i).replace(arabicNumbers[i], i);
+                }
+            }
+            return str;
+        };
+    return fixNumbers(input);
+}
+
+function calcResultDate(ctrl) {
+    var resultValue = '';
+
+    if (ctrl.calcDate && ctrl.calcDate.length > 0) {
+        var sumNumbers = 0;
+        for (var i = 0; i < ctrl.calcDate.length; i++) {
+            var selectQuiry = $('#' + ctrl.calcDate[i]);
+            if (selectQuiry.length > 0) {
+                if (selectQuiry.attr('data-gdate')) {
+                    var fDate = new Date(selectQuiry.attr('data-gdate'))
+                    var fNumber = fDate.getTime();
+                    sumNumbers += fNumber;
+                } else {
+                    var fNumber = Number(selectQuiry.val());
+                    if (!isNaN(fNumber))
+                        sumNumbers += (fNumber * 86400000);
+                }
+            }
+        }
+        if (sumNumbers > 0) {
+            var resultDate = new Date(sumNumbers);
+            resultValue = resultDate.toLocaleDateString('fa-IR');
+            resultValue = convertToEnNumber(resultValue);
+        }
+    }
+
+    $('#' + ctrl.id).val(resultValue);
+}
+
 function getTextBoxTemplate(ctrl) {
     if (!ctrl.id)
         ctrl.id = uuidv4RemoveDash();
@@ -2009,6 +2048,14 @@ function getTextBoxTemplate(ctrl) {
         inputNewLabelEventHandler(this.id);
 
     }.bind({ id: ctrl.id, type: ctrl.type, toUpperCase: ctrl.toUpperCase }));
+
+    if (ctrl.calcDate && ctrl.calcDate.length > 0) {
+        functionsList.push(function () {
+            for (var i = 0; i < this.ctrl.calcDate.length; i++) {
+                $('#' + this.ctrl.calcDate[i]).change(function () { if (this.curCtrl.calcDate && this.curCtrl.calcDate.length > 0) { setTimeout(function () { calcResultDate(this.curCtrl2) }.bind({curCtrl2: this.curCtrl}), 300) } }.bind({ curCtrl: this.ctrl }));
+            }
+        }.bind({ ctrl: ctrl }));
+    }
 
     if (ctrl.mask) {
         functionsList.push(function () {
@@ -2905,7 +2952,7 @@ function getModualTemplateActionButton(modual) {
     var result = '';
 
     if (modual && modual.actions && modual.actions.length > 0) {
-        result += '<div class="modal-footer">';
+        result += '<div class="modal-footer ' + (modual.changeFooterActionDirection ? 'moveActionToRightColumn' : '') +' ">';
         for (var i = 0; i < modual.actions.length; i++) {
             result += getButtonTemplate(modual.actions[i]);
         }
@@ -2918,11 +2965,10 @@ function getModualTemplateActionButton(modual) {
 function getButtonTemplate(action) {
     if (!action.id)
         action.id = uuidv4RemoveDash();
-    var result = '<button ' + (action.id ? 'id="' + action.id + '"' : '') + ' onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + (action.icon ? ('<i style="margin-left:10px;" class="fa '+ action.icon +'" ></i>') : '') +'<span class="buttonTitleSp">' + (action.title ? action.title : action.label) + '</span></button>';
+    var result = '<button ' + (action.id ? 'id="' + action.id + '"' : '') + ' onclick="' + action.onClick + '" type="button" class="btn ' + action.class + '" >' + (action.icon ? ('<i style="margin-left:10px;" class="fa ' + action.icon + '" ></i>') : '') + '<span class="buttonTitleSp">' + (action.title ? action.title : action.label) + '</span></button>';
     if (action.titleUrl) {
         functionsList.push(function () {
-            postForm(this.button.titleUrl, new FormData(), function (res)
-            {
+            postForm(this.button.titleUrl, new FormData(), function (res) {
                 if (res && this.id) {
                     var buttonQuiry = $('#' + this.id);
                     if (buttonQuiry.length > 0) {
@@ -2936,7 +2982,7 @@ function getButtonTemplate(action) {
             }.bind({ id: this.button.id }))
         }.bind({ button: action }));
     }
-   
+
     return result;
 }
 
@@ -3009,7 +3055,7 @@ function getStepWizardTemplate(wizard) {
         result += '</div>';
     }
 
-    
+
 
     functionsList.push(function () {
         initSWFunctions(this.wizard.id, this.wizard.actionOnLastStep);
@@ -3238,8 +3284,7 @@ function executeAutoFunctionOnNextSW(nextContent) {
 
 function initSWFunctions(curId, actionOnLastStep) {
     if ($('#' + curId).length > 0) {
-        $('#' + curId)[0].moveNext = function (ignoreDDChanges)
-        {
+        $('#' + curId)[0].moveNext = function (ignoreDDChanges) {
             if (!validateForm($(this).find('>.panelSWizardHolderContent>.panelSWizardHolderContentItemActive')))
                 return;
             var nextStep = $(this).find('>.panelSWizardHolderHeader>.panelSWizardHolderHeaderItemActive').next();
@@ -3375,7 +3420,7 @@ function doPageActions(actionOnLastStep) {
             postForm(actionOnLastStep.url, postData, function (res) {
                 if (this.actionOnLastStep.detailesUrl && res.isSuccess == true && res.data) {
                     if (this.actionOnLastStep.inlineReplace) {
-                        postForm(this.actionOnLastStep.detailesUrl + "?id=" + res.data.id + '&ignoreMaster=true', new FormData(), function (res2) { this.holoderQuiry.html(res2); if (this.curStepAction.refreshAllGrid) { refreshAllGrid() } }.bind({ holoderQuiry: this.formQuery, curStepAction: this.actionOnLastStep }), null, null, null, null , 'GET')
+                        postForm(this.actionOnLastStep.detailesUrl + "?id=" + res.data.id + '&ignoreMaster=true', new FormData(), function (res2) { this.holoderQuiry.html(res2); if (this.curStepAction.refreshAllGrid) { refreshAllGrid() } }.bind({ holoderQuiry: this.formQuery, curStepAction: this.actionOnLastStep }), null, null, null, null, 'GET')
                     } else {
                         location.href = (res.data.url ? res.data.url : this.actionOnLastStep.detailesUrl) + "?id=" + res.data.id;
                     }

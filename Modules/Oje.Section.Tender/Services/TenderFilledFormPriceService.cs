@@ -65,11 +65,11 @@ namespace Oje.Section.Tender.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
-            newItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 newItem.FilledFileUrl =
                     UploadedFileService.UploadNewFile(FileType.TenderPrice, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, newItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
+            newItem.FilledSignature();
             UserNotifierService.Notify(loginUserId, UserNotificationType.AddTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, newItem.Id, "تعیین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
 
             db.SaveChanges();
@@ -135,7 +135,7 @@ namespace Oje.Section.Tender.Services
                 .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
                 .selectQuiryFilter(selectStatus, province, cityid, companyIds, loginUserId)
                 .SelectMany(t => t.TenderFilledFormPrices)
-                .Where(t => t.TenderFilledFormId == searchInput.pKey)
+                .Where(t => t.TenderFilledFormId == searchInput.pKey && t.UserId == loginUserId)
                 ;
 
             if (selectStatus == null)
@@ -191,7 +191,7 @@ namespace Oje.Section.Tender.Services
                     createDate = t.createDate.ToFaDate(),
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     user = t.user,
-                    insurance = String.Join(',', t.insurance),
+                    insurance = t.insurance,
                     price = t.price.ToString("###,###"),
                     fid = t.fid,
                     downloadFileUrl = GlobalConfig.FileAccessHandlerUrl + t.FilledFileUrl,
@@ -242,7 +242,7 @@ namespace Oje.Section.Tender.Services
                 .Select(t => new
                 {
                     id = t.Id,
-                    insurance = t.TenderFilledForm.TenderFilledFormPFs.Select(tt => tt.TenderProposalFormJsonConfig.ProposalForm.Title).ToList(),
+                    insurance = t.TenderProposalFormJsonConfig.ProposalForm.Title,
                     createDate = t.CreateDate,
                     company = t.Company.Title,
                     user = t.User.Firstname + " " + t.User.Lastname,
@@ -261,7 +261,7 @@ namespace Oje.Section.Tender.Services
                     createDate = t.createDate.ToFaDate(),
                     isActive = t.isActive == true ? BMessages.Active.GetEnumDisplayName() : BMessages.InActive.GetEnumDisplayName(),
                     user = t.user,
-                    insurance = String.Join(',', t.insurance),
+                    insurance = t.insurance,
                     price = t.price.ToString("###,###"),
                     fid = t.fid,
                     desc = !string.IsNullOrEmpty(t.desciption) ? t.desciption : "",
@@ -308,11 +308,11 @@ namespace Oje.Section.Tender.Services
             foundItem.TenderProposalFormJsonConfigId = input.pfId.Value;
             foundItem.Price = input.price.Value;
             foundItem.Description = input.description;
-            foundItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 foundItem.FilledFileUrl =
                     UploadedFileService.UploadNewFile(FileType.TenderPrice, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, foundItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
+            foundItem.FilledSignature();
             db.SaveChanges();
 
             UserNotifierService.Notify(loginUserId, UserNotificationType.UpdateTenderPrice, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "به روز رسانی تعیین قیمت توسط نماینده", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");

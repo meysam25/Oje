@@ -57,8 +57,9 @@
     <main>
         <header>
             <span class="fa fa-bars headerTopMenuButton"></span>
-            <a title="بازگشت" style="float:left; margin: 10px;font-size:20px;color:#007bff;cursor:pointer;" onclick="history.back()"><i class="fa  fa-chevron-left"></i></a>
             <a title="خانه" style="float:left; margin: 10px;font-size:20px;color:#007bff;cursor:pointer;" href="/"><i class="fa fa-home"></i></a>
+            <a title="بازگشت" style="float:left; margin: 10px;font-size:20px;color:#007bff;cursor:pointer;" onclick="history.back()"><i class="fa  fa-chevron-left"></i></a>
+
             <span class="loginUserSecitonHeader">
                 <span class="loginUserName"><a href="/UserAccount/UserNotification/Index" class="notificationCount">@(UserNotificationService.GetUserUnreadNotificationCount(Context.GetLoginUser()?.UserId))</a> @(!string.IsNullOrEmpty(Context.GetLoginUser()?.Fullname.Trim()) ? Context.GetLoginUser()?.Fullname : Context.GetLoginUser()?.Username)</span><i class="loginArrowMenu fa fa-sort-down"></i>
                 <span class="loginUserMenu">
