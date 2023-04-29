@@ -2,13 +2,27 @@
 @inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
 @{
     Layout = SiteSettingService.GetSiteSetting()?.Layout;
+
+    if (ViewBag.ignoreMaster == true)
+    {
+        Layout = null;
+    }
 }
 
 
+@{
+    if (Layout == "_WebLayout")
+    {
+        <div class="myContainer">
+            <section class="globalSection" id="holderContractSection"></section>
+        </div>
+    } else
+    {
+        <div  id="holderContractSection"></div>
+    }
+}
 
-<div class="myContainer">
-    <section class="globalSection" id="holderContractSection"></section>
-</div>
+
 
 <script>
     loadJsonConfig('@(ViewBag.jsonConfigUrl)', 'holderContractSection');

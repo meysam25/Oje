@@ -77,7 +77,7 @@ namespace Oje.Infrastructure.Services
         {
             List<T> result = new List<T>();
 
-            if (file != null && file.Length > 0 && file.IsValidExtension(".xlsx") == true)
+            if (file != null && file.Length > 0 && (file.IsValidExtension(".xlsx") == true))
             {
                 try
                 {

@@ -25,6 +25,8 @@ namespace Oje.AccountService.Models.DB
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
+        [MaxLength(100)]
+        public string SubTitle { get; set; }
         [Required]
         [MaxLength(100)]
         public string WebsiteUrl { get; set; }
@@ -74,7 +76,7 @@ namespace Oje.AccountService.Models.DB
             {
                 if (WebsiteType == null || WebsiteType == Infrastructure.Enums.WebsiteType.Normal) return "_WebLayout";
                 else if (WebsiteType == Infrastructure.Enums.WebsiteType.Tender) return "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
-                else if (WebsiteType == Infrastructure.Enums.WebsiteType.Treatment) return "_TreatmentLayout";
+                else if (WebsiteType == Infrastructure.Enums.WebsiteType.Treatment) return "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
 
                 return "_WebLayout";
             } 

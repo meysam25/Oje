@@ -80,8 +80,6 @@ namespace Oje.ValidatedSignature.Models.DB
         public long? AgentCode { get; set; }
         [MaxLength(100)]
         public string CompanyTitle { get; set; }
-        [MaxLength(20)]
-        public string BankAccount { get; set; }
         [MaxLength(40)]
         public string BankShaba { get; set; }
         public DateTime? BirthDate { get; set; }
@@ -113,6 +111,7 @@ namespace Oje.ValidatedSignature.Models.DB
         [ForeignKey("SiteSettingId"), InverseProperty("SiteSettingUsers")]
         public SiteSetting SiteSetting { get; set; }
         public bool? CanSeeOtherSites { get; set; }
+        public string AccountCardNo { get; set; }
 
         [InverseProperty("User")]
         public List<UserRole> UserRoles { get; set; }

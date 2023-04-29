@@ -7,6 +7,7 @@ namespace Oje.Section.BaseData.Models.View
     {
         public int? id { get; set; }
         public string title { get; set; }
+        public string subTitle { get; set; }
         public string websiteUrl { get; set; }
         public string panelUrl { get; set; }
         public long? userId { get; set; }

@@ -90,7 +90,7 @@
                     {
                       "parentCL": "col-md-4 col-sm-6 col-xs-12 col-lg-3",
                       "type": "button",
-                      "onClick": "submitThisStep(this)",
+                      "onClick": "submitThisStep(this, null, true)",
                       "title": "برسی",
                       "class": "btn-primary btn-block"
                     },

@@ -89,12 +89,18 @@ function loadLicenceF(sQuiry) {
 
     }
 }
-
+function initWhatToDoLogin() {
+    whatToDoAfterUserLogin = [];
+    whatToDoAfterUserLogin.push({
+        curFun: function () {
+            showLoader($('body'));
+            location.href = '/Account/Dashboard/Index';
+        }
+    });
+}
 function addTopLeftIcons(title, imgSrc, des, isVisibleAllways) {
     return '<div class="holderLicenceDiv"><img ' + (des ? 'style="cursor:pointer"' : '') + '  class="' + (isVisibleAllways ? 'mainHeaderIranLogo' : 'mainHeaderElectronDevelopLogo') + '" title="' + title + '" src="' + imgSrc + '"  ' + (des ? 'data-des=\'' + des + '\'' : '') + ' /></div>';
 }
-
-
 
 function openModal(linkUrl, title) {
     if (linkUrl) {
@@ -249,6 +255,7 @@ $.fn.loadImageOnScroll = function () {
 function bindFooterPhoneAndAddress() {
     postForm('/Home/GetFooterInfor', new FormData(), function (res) {
         $('#supportPhone').html(res && res.tell ? res.tell : '');
+        $('#supportPhone').attr('href', (res && res.tell ? ('tel:' + res.tell.replace(/ /g, '').replace('-', '')) : ''));
     }, null, null, null, 'GET');
 }
 
@@ -287,6 +294,27 @@ function bindFooterIcons() {
             $('#aLinkin').css('display', 'none');
         }
     }, null, null, null, 'GET');
+}
+
+function bindloginButton() {
+    $('.footerLoginBox').click(function () {
+        var newId = 'holderLoginModal';
+        var modalId = 'loginForgetPasswordModal';
+        var url = '/ContractWeb/GetLoginConfig';
+        var showModal = true;
+        if ($('#' + newId).length == 0) {
+            $(this).closest('.container').append('<div id="' + newId + '" ></div>');
+            showLoader($('body'));
+            loadJsonConfig(url, newId, function () {
+                hideLoader($('body'));
+                if (this.showModal) {
+                    $('#' + this.modalId).modal('show');
+                }
+            }.bind({ modalId: modalId, showModal: showModal }), 'GET');
+        } else {
+            $('#' + modalId).modal('show');
+        }
+    });
 }
 
 $(document).ready(function () {

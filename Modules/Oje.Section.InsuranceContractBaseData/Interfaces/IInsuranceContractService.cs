@@ -27,5 +27,6 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         object GetLightList(int? siteSettingId);
         object IsValidSMS(contractUserInput input, int? curSiteSettingId, IpSections curIp);
         object ConfirmSMSForCreate(contractUserInput input, int? curSiteSettingId, IpSections curIp);
+        int? GetIdByCode2(int? code, int? siteSettingId);
     }
 }

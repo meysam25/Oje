@@ -11,8 +11,8 @@ namespace Oje.Infrastructure.Services
     public abstract class SignatureEntity : ISignatureEntity
     {
         public byte[] Signature { get; set; }
-        static string equalValue = "%*‎#*";
-        static string seperatorValue = "(#‎*(";
+        static readonly string equalValue = "%*‎#*";
+        static readonly string seperatorValue = "(#‎*(";
 
 
         public void FilledSignature()

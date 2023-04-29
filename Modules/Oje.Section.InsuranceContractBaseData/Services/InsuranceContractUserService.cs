@@ -99,7 +99,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                         birthDate = input.birthDate,
                         email = input.email,
                         mobile = input.mobile,
-                        bankAccount = input.bankAcount,
+                        accountCardNo = input.accountCardNo,
                         bankShaba = input.bankShaba,
                         username = input.mobile,
                         password = newPassword,
@@ -114,7 +114,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                         hireDate = input.hireDate,
                         bankId = (input.bankId.ToIntReturnZiro() == 0 ? null : input.bankId.ToIntReturnZiro()),
                         bProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro()),
-                        cardNO = input.cardNO,
                         provinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null),
                         cityId = input.cityId,
                     }, loginUserId?.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value).data.ToLongReturnZiro();
@@ -152,11 +151,11 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 Gender = input.gender,
                 Mobile = input.mobile,
                 Custody = input.custody,
-                CardNO = input.cardNO,
                 BirthCertificateIssuingPlaceProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro()),
                 ProvinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null),
                 CityId = input.cityId,
                 BaseInsuranceCode = input.baseInsuranceCode,
+                HireExpiredDate = input.hireExpiredDate.ToEnDate()
             };
 
             db.Entry(newItem).State = EntityState.Added;
@@ -237,8 +236,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (!string.IsNullOrEmpty(input.password) && input.password.IsWeekPassword())
                 throw BException.GenerateNewException(BMessages.The_Password_Is_Week);
-            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
-                throw BException.GenerateNewException(BMessages.Invalid_CardNo);
             int tempProvinceId = input.provinceId.ToIntReturnZiro();
             if (tempProvinceId > 0 && input.cityId.ToIntReturnZiro() > 0 && !db.Cities.Any(t => t.Id == input.cityId && t.ProvinceId == tempProvinceId))
                 throw BException.GenerateNewException(BMessages.Invalid_City);
@@ -256,12 +253,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 throw BException.GenerateNewException(BMessages.Province_Not_Found);
             if (!string.IsNullOrEmpty(input.bankShaba) && input.bankShaba.Length != 24)
                 throw BException.GenerateNewException(BMessages.Invalid_ShabaNo);
-            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
-                throw BException.GenerateNewException(BMessages.Invalid_CardNo);
             if (!string.IsNullOrEmpty(input.nationalCode) && db.InsuranceContractUsers.Any(t => t.NationalCode == input.nationalCode && t.Id != input.id && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_NationalCode);
             if (!string.IsNullOrEmpty(input.eCode) && db.InsuranceContractUsers.Any(t => t.InsuranceECode == input.eCode && t.Id != input.id && t.SiteSettingId == siteSettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_ECode);
+            if (!string.IsNullOrEmpty(input.hireExpiredDate) && input.hireExpiredDate.ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
         }
 
         private bool existByNationalCode(long? id, int? siteSettingId, long? loginUserId, string nationalCode, int? insuranceContractId)
@@ -324,7 +321,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .Select(t => new
                 {
                     id = t.Id,
-                    bankAcount = t.User != null ? t.User.BankAccount : "",
                     bankShaba = t.User != null ? t.User.BankShaba : "",
                     eCode = t.InsuranceECode,
                     email = t.User != null ? t.User.Email : "",
@@ -355,10 +351,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     cSOWSiteSettingId = t.SiteSettingId,
                     cSOWSiteSettingId_Title = t.SiteSetting.Title,
                     bProvinceId = t.BirthCertificateIssuingPlaceProvinceId,
-                    t.CardNO,
                     t.ProvinceId,
                     t.CityId,
-                    t.BaseInsuranceCode
+                    t.BaseInsuranceCode,
+                    accountCardNo = t.User != null ? t.User.AccountCardNo : ""
                 })
                 .OrderByDescending(t => t.id)
                 .Take(1)
@@ -366,9 +362,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 .Select(t => new CreateUpdateInsuranceContractUserVM
                 {
                     id = t.id,
-                    bankAcount = t.bankAcount,
                     bankShaba = t.bankShaba,
-                    baseInsuranceId = t.baseInsuranceId + "",
+                    baseInsuranceId = t.baseInsuranceId ,
                     subCatId = t.subCatId,
                     eCode = t.eCode,
                     email = t.email,
@@ -390,17 +385,17 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     gender = t.gender,
                     marrageStatus = t.marrageStatus,
                     shenasnameNo = t.shenasnameNo,
-                    bankId = t.bankid + "",
+                    bankId = t.bankid,
                     hireDate = t.hireDate.ToFaDate(),
                     tell = t.tell,
                     custody = t.custody,
                     cSOWSiteSettingId = t.cSOWSiteSettingId,
                     cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title,
                     bProvinceId = t.bProvinceId + "",
-                    cardNO = t.CardNO,
                     provinceId = t.ProvinceId + "",
                     cityId = t.CityId,
-                    baseInsuranceCode = t.BaseInsuranceCode
+                    baseInsuranceCode = t.BaseInsuranceCode,
+                    accountCardNo = t.accountCardNo
                 })
                 .FirstOrDefault();
         }
@@ -520,7 +515,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 foundUser.lastname = input.lastName;
                 foundUser.nationalCode = input.nationalCode;
                 foundUser.birthDate = input.birthDate;
-                foundUser.bankAccount = input.bankAcount;
                 foundUser.bankShaba = input.bankShaba;
                 foundUser.insuranceECode = input.eCode;
                 foundUser.mobile = input.mobile;
@@ -532,9 +526,9 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 foundUser.bankId = (input.bankId.ToIntReturnZiro() > 0 ? input.bankId.ToIntReturnZiro() : null);
                 foundUser.shenasnameNo = input.shenasnameNo;
                 foundUser.bProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro());
-                foundUser.cardNO = input.cardNO;
                 foundUser.provinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null);
                 foundUser.cityId = input.cityId;
+                foundUser.accountCardNo = input.accountCardNo;
 
                 if (UserService.UpdateForUser(foundUser, loginUserId?.UserId, loginUserId, canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value).isSuccess == false)
                     throw BException.GenerateNewException(BMessages.UnknownError);
@@ -558,7 +552,6 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             foundItem.Custody = input.custody;
             foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
             foundItem.BirthCertificateIssuingPlaceProvinceId = (input.bProvinceId.ToIntReturnZiro() == 0 ? null : input.bProvinceId.ToIntReturnZiro());
-            foundItem.CardNO = input.cardNO;
             foundItem.ProvinceId = (input.provinceId.ToIntReturnZiro() > 0 ? input.provinceId.ToIntReturnZiro() : null);
             foundItem.CityId = input.cityId;
             foundItem.BaseInsuranceCode = input.baseInsuranceCode;
@@ -622,15 +615,15 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     try
                     {
                         model.familyRelation = InsuranceContractUserFamilyRelation.Self;
-                        if (!string.IsNullOrEmpty(model.bankId))
+                        if (model.bankId.ToIntReturnZiro() > 0)
                         {
-                            model.bankId = BankService.GetIdByTitle(model.bankId);
+                            model.bankId = BankService.GetByCode(model.bankId);
                             if (model.bankId.ToIntReturnZiro() <= 0)
                                 throw BException.GenerateNewException(BMessages.Invalid_Bank);
                         }
-                        if (!string.IsNullOrEmpty(model.baseInsuranceId))
+                        if (model.baseInsuranceId.ToIntReturnZiro() > 0)
                         {
-                            model.baseInsuranceId = InsuranceContractUserBaseInsuranceService.GetIdByTitle(siteSettingId, model.baseInsuranceId);
+                            model.baseInsuranceId = InsuranceContractUserBaseInsuranceService.GetByCode(siteSettingId, model.baseInsuranceId + "");
                             if (model.baseInsuranceId.ToIntReturnZiro() <= 0)
                                 throw BException.GenerateNewException(BMessages.Invalid_BaseInsurance);
                         }
@@ -652,6 +645,12 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                             if (model.provinceId.ToIntReturnZiro() <= 0)
                                 throw BException.GenerateNewException(BMessages.Province_Not_Found);
                         }
+                        if (model.insuranceContractId.ToIntReturnZiro() > 0)
+                        {
+                            model.insuranceContractId = InsuranceContractService.GetIdByCode2(model.insuranceContractId, siteSettingId);
+                            if (model.insuranceContractId.ToIntReturnZiro() <= 0)
+                                throw BException.GenerateNewException(BMessages.Invalid_Code);
+                        }
                         Create(model, status);
 
                     }
@@ -666,9 +665,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 }
             }
             else
-            {
                 return ApiResult.GenerateNewResult(false, BMessages.No_Row_Detected);
-            }
 
             return ApiResult.GenerateNewResult(
                     true,
@@ -693,18 +690,22 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             {
                 var tempModels = models.Select(t => new CreateUpdateInsuranceContractUserVM
                 {
+                    mainPersonECode = t.mainPersonECode,
+                    familyRelation = t.familyRelation,
                     firstName = t.firstName,
                     lastName = t.lastName,
-                    gender = t.gender,
-                    nationalCode = t.nationalCode,
-                    birthDate = t.birthDate,
                     fatherName = t.fatherName,
-                    bProvinceId = t.bProvinceId,
+                    birthDate = t.birthDate,
                     shenasnameNo = t.shenasnameNo,
+                    nationalCode = t.nationalCode,
                     custody = t.custody,
-                    familyRelation = t.familyRelation,
+                    marrageStatus = t.marrageStatus,
+                    baseInsuranceId = t.baseInsuranceId,
+                    baseInsuranceCode = t.baseInsuranceCode,
+                    hireExpiredDate = t.hireExpiredDate,
+                    gender = t.gender,
+                    bProvinceId = t.bProvinceId,
                     mainPersonNationalCode = t.mainPersonNationalCode,
-                    mainPersonECode = t.mainPersonECode
                 }).ToList();
                 for (var i = 0; i < tempModels.Count; i++)
                 {
@@ -714,6 +715,19 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                         .Where(t => t.FamilyRelation == InsuranceContractUserFamilyRelation.Self && (t.NationalCode == model.mainPersonNationalCode || t.InsuranceECode == model.mainPersonECode))
                         .Select(t => t.InsuranceContractId)
                         .FirstOrDefault();
+
+                    if (model.baseInsuranceId.ToIntReturnZiro() > 0)
+                    {
+                        model.baseInsuranceId = InsuranceContractUserBaseInsuranceService.GetByCode(siteSettingId, model.baseInsuranceId + "");
+                        if (model.baseInsuranceId.ToIntReturnZiro() <= 0)
+                            throw BException.GenerateNewException(BMessages.Invalid_BaseInsurance);
+                    }
+                    if (model.subCatId.ToIntReturnZiro() > 0)
+                    {
+                        model.subCatId = InsuranceContractUserSubCategoryService.GetByCode(siteSettingId, model.subCatId.Value.ToString());
+                        if (model.subCatId <= 0)
+                            throw BException.GenerateNewException(BMessages.Invalid_SubCategory);
+                    }
 
                     try
                     {
@@ -734,7 +748,7 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                     {
                         resultText += "ردیف " + (i + 1) + " " + be.Message + Environment.NewLine;
                     }
-                    catch (Exception)
+                    catch (Exception )
                     {
                         resultText += "ردیف " + (i + 1) + " " + "خطای نامشخص " + Environment.NewLine;
                     }

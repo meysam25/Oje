@@ -159,6 +159,7 @@
       "wwwroot/js/Website/MainPage/ctrls.js",
       "wwwroot/js/Website/lazyLoadOnScroll.js",
       "wwwroot/js/treatment/indexPage.js",
+      "wwwroot/js/Website/mySlider.js",
       "wwwroot/js/treatment/menue.js"
     ],
     "minify": {
@@ -326,7 +327,8 @@
     "inputFiles": [
       "wwwroot/css/Website/ctrls.css",
       "wwwroot/css/Treatment/master.css",
-      "wwwroot/css/Treatment/menue.css"
+      "wwwroot/css/Treatment/menue.css",
+      "wwwroot/css/Website/mySlider.css"
     ],
     "minify": {
       "enabled": true,

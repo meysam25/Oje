@@ -643,5 +643,10 @@ namespace Oje.Section.InsuranceContractBaseData.Services
 
             return ApiResult.GenerateNewResult(true, BMessages.Please_Enter_SMSCode);
         }
+
+        public int? GetIdByCode2(int? code, int? siteSettingId)
+        {
+            return db.InsuranceContracts.Where(t => t.Code == code && t.SiteSettingId == siteSettingId).Select(t => t.Id).FirstOrDefault();
+        }
     }
 }

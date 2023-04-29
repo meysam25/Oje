@@ -30,6 +30,7 @@ namespace Oje.Infrastructure.Services
             { ".docx", new byte[] {  80, 75, 3, 4 }  },
             { ".pdf", new byte[] { 37, 80, 68, 70 }  },
             { ".xlsx", new byte[] { 80, 75, 3, 4 }  },
+            { ".xls", new byte[] { 208, 207, 17, 224 }  },
             { ".svg", new byte[] { 60, 115, 118, 103 }  },
             { ".mp4", new byte[] { 0, 0, 0, 32, 102, 116, 121, 112 }  },
             { ".webm", new byte[] { 26, 69, 223, 163, 159 }  }

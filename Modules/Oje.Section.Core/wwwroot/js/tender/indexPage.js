@@ -753,6 +753,7 @@ function bindFooterPhoneAndAddress() {
         //$('#footerTell2').html(res && res.mob ? res.mob : '');
         //$('#footerEmail').html(res && res.email ? res.email : '');
         $('#supportPhone').html(res && res.tell ? res.tell : '');
+        $('#supportPhone').attr('href', (res && res.tell ? ('tel:' + res.tell.replace(/ /g, '').replace('-', '')) : ''));
     }, null, null, null, 'GET');
 }
 

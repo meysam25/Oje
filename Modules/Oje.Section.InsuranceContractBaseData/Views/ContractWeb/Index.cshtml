@@ -5,12 +5,17 @@
 
 @section Styles {
     <link rel="stylesheet" href="/Modules/Core/css/treatmentIndex.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
+    <style>
+        .mySliderItem > img {
+            width:100%;
+        }
+    </style>
 }
 
 
 <div class="page">
-    <div class="container">
-       <div class="row">
+    <div id="mainHolder" class="container">
+       <div class="row reverseOnMobile">
             <div id="holderMainPageDescription" class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
             </div>
            <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
@@ -18,14 +23,32 @@
            </div>
        </div>
     </div>
+    <div id="mySlider" style="width:100%;" class="mySlider"></div>
 </div>
 
 <script>
-    postForm('/ContractWeb/GetMainDescription', new FormData(), function (res) 
-    {
-        if (res && res.mainImage_address && res.desctpion) {
-            $('#mainPageHolderImage').html('<img style="width:80%" src="' + res.mainImage_address + '"  />');
-            $('#holderMainPageDescription').html(res.desctpion);
+    postForm('/ContractWeb/GetSlider', new FormData(), function (res) {
+        if (res && res.length > 0) {
+            $('#mainHolder').css('display', 'none');
+            $('#mySlider').initSlider({
+                showArrowButton: true,
+                bigCount: 1,
+                normalCount: 1,
+                smallCount: 1,
+                autoStart: 3000,
+                data: res,
+                dontShowTitle: true
+            });
         }
-    }, null, function () { })
+        else {
+            $('#mySlider').css('display', 'none');
+            postForm('/ContractWeb/GetMainDescription', new FormData(), function (res) {
+                if (res && res.mainImage_address && res.desctpion) {
+                    $('#mainPageHolderImage').html('<img style="width:80%" src="' + res.mainImage_address + '"  />');
+                    $('#holderMainPageDescription').html(res.desctpion);
+                }
+            }, null, function () { })
+        }
+    }, function () { $('#ourCustomers').css('display', 'none') }, null, null, 'GET');
+   
 </script>

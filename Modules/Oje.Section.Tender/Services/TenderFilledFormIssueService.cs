@@ -67,10 +67,10 @@ namespace Oje.Section.Tender.Services
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
-            newItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 newItem.FileUrl = UploadedFileService.UploadNewFile(FileType.IssueTender, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, newItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
+            newItem.FilledSignature();
             db.SaveChanges();
 
             UserNotifierService.Notify(loginUserId, UserNotificationType.IssueTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, newItem.Id, "صدور بیمه نامه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");
@@ -206,7 +206,7 @@ namespace Oje.Section.Tender.Services
                 .Select(t => new
                 {
                     row = ++row,
-                    id = t.id,
+                    t.id,
                     issueNumber = t.Number,
                     userfullname = t.fullName,
                     issueDate = t.CreateDate.ToFaDate(),
@@ -303,10 +303,10 @@ namespace Oje.Section.Tender.Services
             foundItem.Number = input.insuranceNumber;
             foundItem.Description = input.description;
             foundItem.IssueDate = input.issueDate.ToEnDate().Value;
-            foundItem.FilledSignature();
             if (input.minPic != null && input.minPic.Length > 0)
                 foundItem.FileUrl = UploadedFileService.UploadNewFile(FileType.IssueTender, input.minPic, TenderFilledFormService.GetUserId(siteSettingId, input.pKey), siteSettingId, foundItem.Id, ".jpg,.png,.jpeg,.doc,.docx,.pdf", true);
 
+            foundItem.FilledSignature();
             db.SaveChanges();
 
             UserNotifierService.Notify(loginUserId, UserNotificationType.UpdateIssueTender, new List<PPFUserTypes>() { UserService.GetUserTypePPFInfo(TenderFilledFormService.GetUserId(siteSettingId, input.pKey), ProposalFilledFormUserType.OwnerUser) }, foundItem.Id, "به روز رسانی صدور بیمه نامه", siteSettingId, "/TenderAdmin/TenderFilledForm/Index");

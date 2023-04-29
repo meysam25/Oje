@@ -92,7 +92,7 @@
     <link rel="stylesheet" href="/Modules/Core/css/byFont.css.gz" />
     <link rel="stylesheet" href="/Modules/Core/css/websiteCore.min.css.gz?v=@(GlobalConfig.GetAppVersion())" />
     @RenderSection("Styles", required: false)
-    <link rel="preload" as="font" href="/YekanBakh/Yekan/Yekan.woff2" type="font/woff2" crossorigin="anonymous">
+    @*<link rel="preload" as="font" href="/Modules/webfonts/YekanBakh/YekanBakhRegular.ttf" type="application/x-font-ttf" crossorigin="anonymous">*@
     <link rel="preload" as="font" href="/Modules/webfonts/fa-light-300.woff2" type="font/woff2" crossorigin="anonymous">
     <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image96)" sizes="32x32">
     <script>
@@ -115,10 +115,10 @@
             <div class="container">
                 <div class="holderHeaderStuff">
                     <a href="/" class="holderMainPageIcon">
-                        <img class="mainLogo" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image192)" width="45" height="45" alt="@curSetting.Title" />
+                        <img class="mainLogo" src="@(GlobalConfig.FileAccessHandlerUrl + curSetting.Image192)" width="50" height="50" alt="@curSetting.Title" />
                         <div class="holderMainTitle">
                             <h1 class="mainTitle">@curSetting.Title</h1>
-                            <h2 class="mainSubTitle">@curSetting.CopyRightTitle</h2>
+                            <h2 class="mainSubTitle">@curSetting.SubTitle</h2>
                         </div>
                     </a>
                     <div class="holderMenus">
@@ -128,7 +128,6 @@
                             <span class="topMenuNewResponsiveButtonLine"></span>
                         </div>
                         <nav id="headerMenu" class="headerMenu">
-                            <a href="/" class="menuItem">صفحه اصلی</a><a class="menuItem">سامانه ها</a><a class="menuItem">مجوز ها</a><a class="menuItem">درباره ما</a><a class="menuItem">تماس با ما</a>
                         </nav>
                         <script>
                             $('.holderMenus').initMenue('/TopMenu/GetTopMenu');
@@ -136,7 +135,7 @@
                     </div>
                     <div class="holderMainPageButtons">
                         <button type="button" onclick="initOnlineChat()" class="btn btn-success">مشاوره رایگان</button>
-                        <a href="/ContactUs" class="btn btn-secondary">تماس با ما</a>
+                        <a href="/Contract/Index" title="ثبت خسارت" class="btn btn-secondary">ثبت خسارت</a>
                     </div>
                 </div>
             </div>
@@ -145,11 +144,19 @@
             @RenderBody()
         </content>
         <footer>
-            <div class="container">
-               
+            <div style="margin-top:0px;" class="changeFooterBG">
+                <div class="container">
+                    <div class="row hideOnMobile">
+                        <div class="col">
+                            <div style="padding:10px;" class="licenceHolderW"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding-top:25px;" class="container">
                 <div class="row">
                     <div class="col">
-                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
+                        <div  class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user" ></i>
                             </div>
@@ -158,10 +165,10 @@
                                 <div class="footerLoginBoxDescSubTitle">ارسال مدارک , اطلاع رسانی و ارشیو اسناد</div>
                             </div>
                             <div class="footerLoginBoxLoginLabelHolder"><span class="footerLoginBoxLoginLabelHolderTitle">ورود</span><span class="footerLoginBoxLoginLabelHolderArrow">></span></div>
-                        </a>
+                        </div>
                     </div>
                     <div class="col">
-                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
+                        <div class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user"></i>
                             </div>
@@ -170,10 +177,10 @@
                                 <div class="footerLoginBoxDescSubTitle">لیست بیمه شدگان , الحاقیه و گزارش مدیریتی</div>
                             </div>
                             <div class="footerLoginBoxLoginLabelHolder"><span class="footerLoginBoxLoginLabelHolderTitle">ورود</span><span class="footerLoginBoxLoginLabelHolderArrow">></span></div>
-                        </a>
+                        </div>
                     </div>
                     <div class="col">
-                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
+                        <div class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user"></i>
                             </div>
@@ -182,10 +189,10 @@
                                 <div class="footerLoginBoxDescSubTitle">دسترسی به اسناد ارسال شده جهت برسی</div>
                             </div>
                             <div class="footerLoginBoxLoginLabelHolder"><span class="footerLoginBoxLoginLabelHolderTitle">ورود</span><span class="footerLoginBoxLoginLabelHolderArrow">></span></div>
-                        </a>
+                        </div>
                     </div>
                     <div class="col">
-                        <a href="/Account/Dashboard/Login?returnUrl=%2FAccount%2FDashboard%2FIndex" class="footerLoginBox">
+                        <div class="footerLoginBox">
                             <div class="footerLoginBoxIcon">
                                 <i class="fa fa-user"></i>
                             </div>
@@ -194,17 +201,16 @@
                                 <div class="footerLoginBoxDescSubTitle">پرتال مدیریتی و نظارت کارگزاری</div>
                             </div>
                             <div class="footerLoginBoxLoginLabelHolder"><span class="footerLoginBoxLoginLabelHolderTitle">ورود</span><span class="footerLoginBoxLoginLabelHolderArrow">></span></div>
-                        </a>
+                        </div>
                     </div>
                 </div>
             </div>
+            <script>
+                initWhatToDoLogin();
+                bindloginButton();
+            </script>
             <div class="changeFooterBG">
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <div class="licenceHolderW"></div>
-                        </div>
-                    </div>
+                <div class="container reverseForDescktop">
                     <div class="row">
                         <div class="col">
                             <div class="copyRight">
@@ -213,7 +219,7 @@
                                         کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق به @(!string.IsNullOrEmpty(curSetting.CopyRightTitle) ? curSetting.CopyRightTitle : curSetting.Title) می‌باشد.
                                     </div>
                                     <div style="display:block;" class="footerCenterSection">
-                                        مرکز تماس:
+                                        مرکز تماس : 
                                         <a style="display:inline-block;direction:ltr;font-weight:bold;font-size:15px;" id="supportPhone"></a>
                                     </div>
                                     <div class="footerSharingIconSection">
@@ -229,15 +235,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row showJustOnMobile">
+                        <div class="col">
+                            <div class="licenceHolderW"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </footer>
     </div>
-    @{
-        if (Context.Request.IsHttps)
-        {
-            ViewContext.Writer.Write("caches.delete('mainServiceName');localStorage.clear();" + Environment.NewLine);
+    <script>
+        @{
+            if (Context.Request.IsHttps)
+            {
+                ViewContext.Writer.Write("caches.delete('mainServiceName');localStorage.clear();" + Environment.NewLine);
+            }
         }
-    }
+    </script>
 </body>
 </html>

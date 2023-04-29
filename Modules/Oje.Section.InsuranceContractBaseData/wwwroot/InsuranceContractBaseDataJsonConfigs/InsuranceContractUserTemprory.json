@@ -267,21 +267,15 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "bankAcount",
-              "type": "text",
-              "label": "شماره حساب"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "bankShaba",
               "type": "text",
               "label": "شماره شبا"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-              "name": "cardNO",
+              "name": "accountCardNo",
               "type": "text",
-              "label": "شماره کارت"
+              "label": "شماره حساب شتاب/کارت"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
@@ -562,21 +556,15 @@
             },
             {
               "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
-              "name": "bankAcount",
-              "type": "text",
-              "label": "شماره حساب"
-            },
-            {
-              "parentCL": "col-xl-3 col-lg-3 col-md-4 col-sm-4 col-xs-12",
               "name": "bankShaba",
               "type": "text",
               "label": "شماره شبا"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",
-              "name": "cardNO",
+              "name": "accountCardNo",
               "type": "text",
-              "label": "شماره کارت"
+              "label": "شماره حساب شتاب/کارت"
             },
             {
               "parentCL": "col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12",

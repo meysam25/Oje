@@ -20,6 +20,8 @@ namespace Oje.Section.BaseData.Models.DB
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
+        [MaxLength(100)]
+        public string SubTitle { get; set; }
         [Required]
         [MaxLength(100)]
         public string WebsiteUrl { get; set; }

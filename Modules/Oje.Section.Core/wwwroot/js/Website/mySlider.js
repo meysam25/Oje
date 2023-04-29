@@ -1,8 +1,8 @@
 
 $.fn.initSlider = function (options) {
 
-    function getLeftRightButtonTemplate() {
-        return '<div style="display:none" class="mySliderItemArrowLeft"></div><div style="display:none" class="mySliderItemArrowRight"></div>';
+    function getLeftRightButtonTemplate(showButton) {
+        return '<div style="' + (showButton ? '' : 'display:none') + '" class="mySliderItemArrowLeft"></div><div style="' + (showButton ? '' : 'display:none') +'" class="mySliderItemArrowRight"></div>';
     }
 
     function getImageWidth(options, curWindowWidth) {
@@ -47,6 +47,7 @@ $.fn.initSlider = function (options) {
             return;
         var holderQuery = $(this).find('.mySliderItemsInner');
         var eachItemWidth = getImageWidth(curElement.options, $(this).width());
+        $(this).find('a').css('width', eachItemWidth+ 'px');
         var curWidth = eachItemWidth * curElement.options.data.length;
         var holderInnerItemsMargin = holderQuery.css('margin-right');
         if (holderInnerItemsMargin)
@@ -76,6 +77,7 @@ $.fn.initSlider = function (options) {
             return;
         var holderQuery = $(this).find('.mySliderItemsInner');
         var eachItemWidth = getImageWidth(curElement.options, $(this).width());
+        $(this).find('a').css('width', eachItemWidth + 'px');
         var curWidth = eachItemWidth * curElement.options.data.length;
         var previewWidth = $(this).find('.mySliderItems').width();
         var holderInnerItemsMargin = holderQuery.css('margin-right');
@@ -126,7 +128,7 @@ $.fn.initSlider = function (options) {
         }
         template += '</div></div>';
 
-        template += getLeftRightButtonTemplate();
+        template += getLeftRightButtonTemplate(options.showArrowButton ? true : false);
 
         if (options.data && options.data.length > 0)
             $(this).html(template);

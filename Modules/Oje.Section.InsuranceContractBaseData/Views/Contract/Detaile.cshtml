@@ -80,6 +80,10 @@
     if(Context.Request.IsMobile()) {
         Layout = null;
     }
+    if (ViewBag.ignoreMaster == true)
+    {
+        Layout = null;
+    }
     if(Layout == "_WebLayout")
     {
         ViewContext.Writer.Write("<div class='myContainer' ><section class='globalSection'>");

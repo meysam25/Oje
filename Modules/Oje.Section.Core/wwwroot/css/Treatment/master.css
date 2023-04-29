@@ -25,13 +25,20 @@ body {
 }
 
 header {
-    height: 90px;
+    height: 75px;
     display: flex !important;
     box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.14);
     -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.14);
     -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.14);
     -webkit-align-items: center;
     align-items: center;
+}
+
+.reverseForDescktop {
+    display: flex;
+    -ms-flex-direction: column-reverse;
+    -webkit-flex-direction: column-reverse;
+    flex-direction: column-reverse;
 }
 
 .topMenuNew > li a {
@@ -44,12 +51,15 @@ header {
     -ms-flex-direction: row;
     -webkit-flex-direction: row;
     flex-direction: row;
+    -webkit-align-items: center;
+    align-items: center;
 }
 
 .holderMenus {
     -webkit-flex-grow: 1;
     flex-grow: 1;
     position: relative;
+    height: 40px;
 }
 
 .headerMenu {
@@ -68,6 +78,8 @@ header {
     -ms-flex-direction: row;
     -webkit-flex-direction: row;
     flex-direction: row;
+    -webkit-align-items: center;
+    align-items: center;
 }
 
     .holderMainPageIcon:hover {
@@ -81,7 +93,7 @@ header {
 }
 
 .mainTitle {
-    font-size: 10pt;
+    font-size: 13pt;
     font-weight: bold;
     color: #555555;
 }
@@ -94,8 +106,8 @@ header {
 }
 
 .mainLogo {
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
 }
 
 .holderMainTitle {
@@ -130,6 +142,7 @@ footer {
     overflow: hidden;
     -webkit-text-decoration: none;
     text-decoration: none;
+    cursor:pointer;
 }
 
 
@@ -205,6 +218,7 @@ footer {
     color: white;
     display: inline-block;
     margin-top: 1px;
+    line-height:31px;
 }
 
 .footerLoginBoxLoginLabelHolderArrow {
@@ -282,7 +296,6 @@ footer {
     width: 200px;
     -webkit-flex-grow: 0;
     flex-grow: 0;
-    padding: 10px;
 }
 
     .holderLicenceDiv * {
@@ -311,7 +324,61 @@ footer {
     text-align: center;
     padding-bottom: 25px;
 }
+#supportPhone {
+    color: #212529
+}
+.mainContent {
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
 
+.page {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    -webkit-align-items: center;
+    align-items: center;
+    display: flex;
+}
+
+#holderMainPageDescription {
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+#mainPageHolderImage {
+    padding: 10px;
+}
+
+.showJustOnMobile {
+    display: none;
+}
+
+footer {
+    padding-top: 0px;
+}
+
+
+@media (max-width: 500px) {
+    .reverseOnMobile {
+        -ms-flex-direction: column-reverse;
+        -webkit-flex-direction: column-reverse;
+        flex-direction: column-reverse;
+    }
+
+    .showJustOnMobile {
+        display: flex;
+    }
+
+    .hideOnMobile {
+        display: none;
+    }
+}
 
 @media (max-width: 990px) {
     .mainTitle {
@@ -320,6 +387,25 @@ footer {
 
     .mainSubTitle {
         display: none;
+    }
+    .footerSharingAndCopyRightSection {
+        min-height: 40px;
+        padding-top: 10px;
+    }
+}
+
+@media (max-width: 500px){
+    .footerCopyRightSection {
+        display: none;
+    }
+    .footerCenterSection {
+        width:100%;
+        text-align:center;
+    }
+    .reverseForDescktop {
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
     }
 }
 

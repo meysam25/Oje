@@ -35,8 +35,8 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
             this.InsuranceContractProposalFilledFormService = InsuranceContractProposalFilledFormService;
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        [HttpGet, HttpPost]
+        public IActionResult Index([FromQuery]bool? ignoreMaster)
         {
             GlobalServices.FillSeoInfo(
                  ViewData,
@@ -50,6 +50,7 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
                   );
 
             ViewBag.jsonConfigUrl = "/Contract/GetStep1Config";
+            ViewBag.ignoreMaster = ignoreMaster;
 
             if (Request.IsMobile())
                 return Json(new { configUrl = ViewBag.jsonConfigUrl });
@@ -131,8 +132,9 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromForm] contractUserInput input)
+        public IActionResult Create([FromForm] contractUserInput input, [FromQuery] bool? ignoreMaster)
         {
+            ViewBag.ignoreMaster = ignoreMaster;
             InsuranceContractService.IsValid(input, SiteSettingService.GetSiteSetting()?.Id, null);
 
             var foundConteract = InsuranceContractService.GetByCode(input, SiteSettingService.GetSiteSetting()?.Id);
@@ -161,11 +163,12 @@ namespace Oje.Section.InsuranceContractBaseData.Controllers
             return Json(tempVar);
         }
 
-        [HttpGet]
-        public IActionResult Detaile([FromQuery] long? id, [FromQuery] bool isPrint = false)
+        [HttpGet, HttpPost]
+        public IActionResult Detaile([FromQuery] long? id, [FromQuery] bool isPrint = false, bool? ignoreMaster = null)
         {
             ViewBag.isPrint = isPrint;
-            ViewBag.newLayoutName = "_WebLayout";
+            ViewBag.newLayoutName = SiteSettingService.GetSiteSetting()?.Layout;
+            ViewBag.ignoreMaster = ignoreMaster;
 
             return View(InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser()?.UserId, SiteSettingService.GetSiteSetting()?.Id));
         }

@@ -47,8 +47,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public string InsuranceECode { get; set; }
         [MaxLength(12)]
         public string Nationalcode { get; set; }
-        [MaxLength(20)]
-        public string BankAccount { get; set; }
         [MaxLength(40)]
         public string BankShaba { get; set; }
         public DateTime? BirthDate { get; set; }
@@ -61,6 +59,8 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public DateTime? HireDate { get; set; }
         [MaxLength(50)]
         public string Tell { get; set; }
+        [MaxLength(20)]
+        public string AccountCardNo { get; set; }
 
 
         [InverseProperty("Parent")]

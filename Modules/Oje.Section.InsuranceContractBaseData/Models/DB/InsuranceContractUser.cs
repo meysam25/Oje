@@ -79,8 +79,6 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public int? BirthCertificateIssuingPlaceProvinceId { get; set; }
         [ForeignKey(nameof(BirthCertificateIssuingPlaceProvinceId)), InverseProperty("BirthCertificateIssuingPlaceInsuranceContractUsers")]
         public Province BirthCertificateIssuingPlaceProvince { get; set; }
-        [MaxLength(19)]
-        public string CardNO { get; set; }
         public int? ProvinceId { get; set; }
         [ForeignKey(nameof(ProvinceId)), InverseProperty("InsuranceContractUsers")]
         public Province Province { get; set; }
@@ -89,6 +87,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.DB
         public City City { get; set; }
         [MaxLength(20)]
         public string BaseInsuranceCode { get; set; }
+        public DateTime? HireExpiredDate { get; set; }
         public int SiteSettingId { get; set; }
         [ForeignKey("SiteSettingId"), InverseProperty("InsuranceContractUsers")]
         public SiteSetting SiteSetting { get; set; }

@@ -42,6 +42,8 @@ namespace Oje.Section.InsuranceContractBaseData
             services.AddScoped<IInsuranceContractUserBaseInsuranceService, InsuranceContractUserBaseInsuranceService>();
             services.AddScoped<IInsuranceContractInsuranceContractTypeMaxPriceService, InsuranceContractInsuranceContractTypeMaxPriceService>();
             services.AddScoped<IProvinceService, ProvinceService>();
+            services.AddScoped<ITreatmentMainSliderService, TreatmentMainSliderService>();
+
         }
     }
 }

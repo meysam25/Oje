@@ -36,7 +36,6 @@ namespace Oje.AccountService.Models.View
         public string userPic_address { get; set; }
         public long? agentCode { get; set; }
         public string companyTitle { get; set; }
-        public string bankAccount { get; set; }
         public string bankShaba { get; set; }
         public string birthDate { get; set; }
         public string insuranceECode { get; set; }
@@ -48,7 +47,7 @@ namespace Oje.AccountService.Models.View
         public string licenceExpireDate { get; set; }
         public bool? canSeeOtherSites { get; set; }
         public int? bProvinceId { get; set; }
-        public string cardNO { get; set; }
+        public string accountCardNo { get; set; }
 
     }
 }

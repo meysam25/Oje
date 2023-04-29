@@ -5,6 +5,12 @@
         {
           "notificationTriger": [ "CreateNewDamageClime", "DamageClimeStatusChange", "DamageClimeSetPrice" ],
           "id": "MyFilledContractGrid",
+          "topActions": [
+            {
+              "title": "جدید",
+              "onClick": "showEditModal(-1, '/Contract/Index?ignoreMaster=True', 'MyFilledContractModal' , this, null, null, null, true)"
+            }
+          ],
           "actions": {
             "cActions": [
               {
@@ -108,6 +114,20 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "id": "MyFilledContractModal",
+          "title": "جدید",
+          "class": "modal-xl",
+          "ctrls": [
+          ],
+          "actions": [
+            {
+              "title": "بستن",
+              "onClick": "closeThisModal(this)",
+              "class": "btn-secondary"
             }
           ]
         },

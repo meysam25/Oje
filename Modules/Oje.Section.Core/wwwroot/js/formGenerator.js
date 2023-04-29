@@ -1148,6 +1148,10 @@ function getShortcutButtonTemplate(ctrl) {
 }
 
 function createHolderIfNotExist(curObj) {
+    var curDivHolder = $(curObj).closest('.col-xs-12');
+    if (curDivHolder.length == 0)
+        return;
+
     if ($(window).width() <= 600) {
         var foundRow = $(curObj).closest('.col-xs-12');
         if (foundRow.length == 0)
@@ -1165,15 +1169,39 @@ function createHolderIfNotExist(curObj) {
     }
     else {
         var foundRow = $(curObj).closest('.row');
+        foundRow.find('.holderTabContentDiv').remove();
+
         if (foundRow.length == 0)
             return '';
 
+        var curWidth = foundRow.width();
+        var realTarget = null;
+        var ptWidth = 0;
+        var isFoundCurElement = false;
+        foundRow.find('>*').each(function ()
+        {
+            ptWidth += $(this).outerWidth();
+            if ($(this)[0] == curDivHolder[0])
+                isFoundCurElement = true;
+
+            if ((ptWidth + 1) >= curWidth) {
+                if (isFoundCurElement == true) {
+                    realTarget = $(this);
+                    return false;
+                }
+                ptWidth = 0;
+            } else {
+                console.log(curWidth - ptWidth);
+            }
+        });
+
         var id = uuidv4RemoveDash();
 
-        if (foundRow.find('.holderTabContentDiv').length == 0) {
+        if (realTarget != null) {
+            realTarget.after('<div id="' + id + '" class="col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12 holderTabContentDiv" ></div>');
+        } 
+        else {
             foundRow.append('<div id="' + id + '" class="col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12 holderTabContentDiv" ></div>');
-        } else {
-            id = foundRow.find('.holderTabContentDiv').attr('id');
         }
 
         return id;
@@ -3014,7 +3042,7 @@ function getStepWizardTemplate(wizard) {
                 result += '<div class="swMoveBackToStepButton" onclick="moveToStepById(\'stepContent_' + wizard.steps[i].moveBackToStep + '\')" ><i class="fa fa-arrow-right" ></i></div>';
             }
             result += wizard.steps[i].title;
-            if (i > 0 && wizard.moveBackButtonToTop)
+            if (i > 0 && wizard.moveBackButtonToTop && !wizard.steps[i].moveBackToStep)
                 result += '<button class="btn btn-warning btn-sm stepButton buttonBack moveToTopSW"><i class="fa fa-chevron-right"></i>بازگشت</button>';
             result += '</span>';
         }
@@ -3136,7 +3164,7 @@ function getLastDayFromToday(dayCount) {
     return convertToPerisanDate(date);
 }
 
-function submitThisStep(curThis, targetUrl) {
+function submitThisStep(curThis, targetUrl, dontChangeLocationInModal) {
     var quarySelector = $(curThis).closest('.panelSWizardHolderContentItem');
     if (quarySelector.length > 0) {
         var curUrl = quarySelector.attr('data-submit-url');
@@ -3174,7 +3202,23 @@ function submitThisStep(curThis, targetUrl) {
                     }
                     if (res.data.postUrl) {
                         var formData = getFormData($('#' + res.data.stepId), true);
-                        postPage(res.data.postUrl, formData);
+                        var formDataJson = convertFormDataToJson(formData);
+                        var isInsideModal = $(curThis).closest('.modal').length > 0;
+                        if (isInsideModal && dontChangeLocationInModal) {
+                            var holderModalBody = $(curThis).closest('.modal-body');
+                            postForm(res.data.postUrl + '?ignoreMaster=True', formData, function (res)
+                            {
+                                holderModalBody.html(res);
+                                if (window['exteraModelParams'] && formDataJson) {
+                                    for (prop in formDataJson) {
+                                        exteraModelParams[prop] = formDataJson[prop];
+                                    }
+                                }
+                            });
+                        } else {
+                            postPage(res.data.postUrl, formData);
+
+                        }
                     }
                     if (res.data.hideModal) {
                         $(this).closest('.modal').modal('hide');

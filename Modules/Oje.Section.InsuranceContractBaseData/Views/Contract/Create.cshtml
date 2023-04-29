@@ -2,10 +2,24 @@
 @inject Oje.AccountService.Interfaces.ISiteSettingService SiteSettingService;
 @{
     Layout = SiteSettingService.GetSiteSetting()?.Layout;
+
+    if (ViewBag.ignoreMaster == true)
+    {
+        Layout = null;
+    }
 }
-<div class="myContainer">
-    <section class="globalSection" id="holderContractSection"></section>
-</div>
+@{
+    if (Layout != null)
+    {
+        <div class="myContainer">
+            <section class="globalSection" id="holderContractSection"></section>
+        </div>
+    } else
+    {
+        <div  id="holderContractSection"></div>
+    }
+}
+
 
 <script>
     @{

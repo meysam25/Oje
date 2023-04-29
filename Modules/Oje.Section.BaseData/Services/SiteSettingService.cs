@@ -43,6 +43,7 @@ namespace Oje.Section.BaseData.Services
                     SiteSetting newItem = new SiteSetting()
                     {
                         Title = input.title,
+                        SubTitle = input.subTitle,
                         WebsiteUrl = input.websiteUrl,
                         PanelUrl = input.panelUrl,
                         UserId = input.userId.Value,
@@ -155,7 +156,8 @@ namespace Oje.Section.BaseData.Services
                 textPic_address = !string.IsNullOrEmpty(t.ImageText) ? GlobalConfig.FileAccessHandlerUrl + t.ImageText : "",
                 minPicInvert_address = !string.IsNullOrEmpty(t.Image512Invert) ? GlobalConfig.FileAccessHandlerUrl + t.Image512Invert : "",
                 websiteType = t.WebsiteType == null ? WebsiteType.Normal : t.WebsiteType.Value,
-                copyRightTitle = t.CopyRightTitle
+                copyRightTitle = t.CopyRightTitle,
+                subTitle = t.SubTitle
             }).FirstOrDefault();
         }
 
@@ -228,6 +230,7 @@ namespace Oje.Section.BaseData.Services
                 try
                 {
                     editItem.Title = input.title;
+                    editItem.SubTitle = input.subTitle;
                     editItem.WebsiteUrl = input.websiteUrl;
                     editItem.PanelUrl = input.panelUrl;
                     editItem.UserId = input.userId.Value;

@@ -90,8 +90,6 @@ namespace Oje.AccountService.Models.DB
         public long? AgentCode { get; set; }
         [MaxLength(100)]
         public string CompanyTitle { get; set; }
-        [MaxLength(20)]
-        public string BankAccount { get; set; }
         [MaxLength(40)]
         public string BankShaba { get; set; }
         public DateTime? BirthDate { get; set; }
@@ -131,8 +129,8 @@ namespace Oje.AccountService.Models.DB
         public int? BirthCertificateIssuingPlaceProvinceId { get; set; }
         [ForeignKey(nameof(BirthCertificateIssuingPlaceProvinceId)), InverseProperty("BirthCertificateIssuingPlaceUsers")]
         public Province BirthCertificateIssuingPlaceProvince { get; set; }
-        [MaxLength(19)]
-        public string CardNO { get; set; }
+        [MaxLength(20)]
+        public string AccountCardNo { get; set; }
 
         [NotMapped]
         public double distance { get; set; }

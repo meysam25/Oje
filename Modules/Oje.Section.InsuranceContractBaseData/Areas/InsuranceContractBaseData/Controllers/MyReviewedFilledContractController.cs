@@ -50,7 +50,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         {
             ViewBag.Title = "خسارت های رفع نقص شده برای بازبینی";
             ViewBag.ConfigRoute = Url.Action("GetJsonConfig", "MyReviewedFilledContract", new { area = "InsuranceContractBaseData" });
-            ViewBag.layer = "_WebLayout";
+            ViewBag.layer = SiteSettingService.GetSiteSetting()?.Layout;
 
             return View();
         }
@@ -68,7 +68,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         public IActionResult Detaile([FromQuery] long? id, [FromQuery] bool isPrint = false)
         {
             ViewBag.isPrint = isPrint;
-            ViewBag.newLayoutName = "_WebLayout";
+            ViewBag.newLayoutName = SiteSettingService.GetSiteSetting()?.Layout;
 
             return View("~/Views/Contract/Detaile.cshtml", InsuranceContractProposalFilledFormService.Detaile(id, HttpContext.GetLoginUser(isPrint)?.UserId, SiteSettingService.GetSiteSetting()?.Id, false, validStatus));
         }

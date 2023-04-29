@@ -270,9 +270,9 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.PostalCode_Is_Not_Valid, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.address) && input.address.Length > 1000)
                 throw BException.GenerateNewException(BMessages.Address_Length_Is_Not_Valid, ApiResultErrorCode.ValidationError);
-            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
-                throw BException.GenerateNewException(BMessages.Invalid_CardNo, ApiResultErrorCode.ValidationError);
 
+            if (!string.IsNullOrEmpty(input.accountCardNo) && input.accountCardNo.Length > 20)
+                throw BException.GenerateNewException(BMessages.BankAcount_Can_Not_Be_More_Then_20);
             if (db.Users.Any(t => t.Username == input.username && t.Id != input.id && t.SiteSettingId == input.sitesettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Username, ApiResultErrorCode.ValidationError);
             //if (!string.IsNullOrEmpty(input.mobile) && db.Users.Any(t => t.Id != input.id && t.Mobile == input.mobile && t.SiteSettingId == input.sitesettingId))
@@ -281,8 +281,6 @@ namespace Oje.AccountService.Services
             //    throw BException.GenerateNewException(BMessages.Dublicate_Email, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.insuranceECode) && db.Users.Any(t => t.Id != input.id && t.InsuranceECode == input.insuranceECode && t.SiteSettingId == input.sitesettingId))
                 throw BException.GenerateNewException(BMessages.Dublicate_Electronic_Code, ApiResultErrorCode.ValidationError);
-            if (!string.IsNullOrEmpty(input.bankAccount) && input.bankAccount.Length > 20)
-                throw BException.GenerateNewException(BMessages.BankAcount_Can_Not_Be_More_Then_20);
             if (!string.IsNullOrEmpty(input.bankShaba) && input.bankShaba.Length > 40)
                 throw BException.GenerateNewException(BMessages.BankShaba_Can_Not_Be_More_Then_40);
             if (input.roleIds.Count > 1)
@@ -343,7 +341,6 @@ namespace Oje.AccountService.Services
             newUser.Address = input.address;
             newUser.AgentCode = input.agentCode;
             newUser.CompanyTitle = input.companyTitle;
-            newUser.BankAccount = input.bankAccount;
             newUser.BankShaba = input.bankShaba;
             newUser.BirthDate = input.birthDate.ConvertPersianNumberToEnglishNumber().ToEnDate();
             newUser.InsuranceECode = input.insuranceECode;
@@ -356,7 +353,7 @@ namespace Oje.AccountService.Services
             newUser.CanSeeOtherSites = input.canSeeOtherSites;
             newUser.ParentId = input.parentId;
             newUser.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
-            newUser.CardNO = input.cardNO;
+            newUser.AccountCardNo = input.accountCardNo;
 
             using (var tr = db.Database.BeginTransaction())
             {
@@ -454,7 +451,6 @@ namespace Oje.AccountService.Services
                     companyTitle = t.CompanyTitle,
                     agentCode = t.AgentCode,
                     cIds = t.UserCompanies.Select(tt => tt.CompanyId).ToList(),
-                    bankAccount = t.BankAccount,
                     bankShaba = t.BankShaba,
                     birthDate = t.BirthDate,
                     insuranceECode = t.InsuranceECode,
@@ -467,7 +463,7 @@ namespace Oje.AccountService.Services
                     t.ParentId,
                     parentFullname = t.ParentId > 0 ? t.Parent.Username + "(" + t.Parent.Firstname + " " + t.Parent.Lastname + ")" : "",
                     bProvinceId = t.BirthCertificateIssuingPlaceProvinceId,
-                    t.CardNO
+                    t.AccountCardNo
                 })
                 .Take(1)
                 .Select(t => new CreateUpdateUserVM
@@ -492,7 +488,7 @@ namespace Oje.AccountService.Services
                     companyTitle = t.companyTitle,
                     agentCode = t.agentCode,
                     cIds = t.cIds,
-                    bankAccount = t.bankAccount,
+                    accountCardNo = t.AccountCardNo,
                     bankShaba = t.bankShaba,
                     birthDate = t.birthDate.ToFaDate(),
                     insuranceECode = t.insuranceECode,
@@ -505,7 +501,6 @@ namespace Oje.AccountService.Services
                     parentId = t.ParentId,
                     parentId_Title = t.parentFullname,
                     bProvinceId = t.bProvinceId,
-                    cardNO = t.CardNO
                 })
                 .FirstOrDefault();
         }
@@ -546,7 +541,7 @@ namespace Oje.AccountService.Services
                     foundItem.AgentCode = input.agentCode;
                     foundItem.CompanyTitle = input.companyTitle;
                     foundItem.SiteSettingId = input.sitesettingId;
-                    foundItem.BankAccount = input.bankAccount;
+                    foundItem.AccountCardNo = input.accountCardNo;
                     foundItem.BankShaba = input.bankShaba;
                     foundItem.BirthDate = input.birthDate.ConvertPersianNumberToEnglishNumber().ToEnDate();
                     foundItem.InsuranceECode = input.insuranceECode;
@@ -558,7 +553,6 @@ namespace Oje.AccountService.Services
                     foundItem.CanSeeOtherSites = input.canSeeOtherSites;
                     foundItem.ParentId = input.parentId;
                     foundItem.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
-                    foundItem.CardNO = input.cardNO;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
@@ -723,7 +717,6 @@ namespace Oje.AccountService.Services
             newUser.AgentCode = input.agentCode;
             newUser.CompanyTitle = input.companyTitle;
             newUser.SiteSettingId = siteSettingId.Value;
-            newUser.BankAccount = input.bankAccount;
             newUser.BankShaba = input.bankShaba;
             newUser.BirthDate = input.birthDate.ConvertPersianNumberToEnglishNumber().ToEnDate();
             newUser.InsuranceECode = input.insuranceECode;
@@ -745,7 +738,7 @@ namespace Oje.AccountService.Services
             newUser.EndHour = input.endHour;
             newUser.WorkingHolyday = input.isHolydayWork;
             newUser.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
-            newUser.CardNO = input.cardNO;
+            newUser.AccountCardNo = input.accountCardNo;
 
             if (input.mapLon != null && input.mapLon != null)
             {
@@ -841,8 +834,6 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.PostalCode_Is_Not_Valid, ApiResultErrorCode.ValidationError);
             if (!string.IsNullOrEmpty(input.address) && input.address.Length > 1000)
                 throw BException.GenerateNewException(BMessages.Address_Length_Is_Not_Valid, ApiResultErrorCode.ValidationError);
-            if (!string.IsNullOrEmpty(input.cardNO) && input.cardNO.Length != 16)
-                throw BException.GenerateNewException(BMessages.Invalid_CardNo);
 
             //if (!string.IsNullOrEmpty(input.mobile) && db.Users.Any(t => t.Id != input.id && t.Mobile == input.mobile && t.SiteSettingId == siteSettingId))
             //    throw BException.GenerateNewException(BMessages.Dublicate_Mobile, ApiResultErrorCode.ValidationError);
@@ -870,6 +861,8 @@ namespace Oje.AccountService.Services
                 throw BException.GenerateNewException(BMessages.Validation_Error);
             if (input.startHour != null && input.endHour != null && input.startHour.Value > input.endHour.Value)
                 throw BException.GenerateNewException(BMessages.Validation_Error);
+            if (!string.IsNullOrEmpty(input.accountCardNo) && input.accountCardNo.Length > 20)
+                throw BException.GenerateNewException(BMessages.BankAcount_Can_Not_Be_More_Then_20);
 
             var loginUserMaxRoleValue = RoleService.GetRoleValueByUserId(loginUserVM.UserId, siteSettingId);
             foreach (var rid in input.roleIds)
@@ -953,7 +946,7 @@ namespace Oje.AccountService.Services
                     companyTitle = t.CompanyTitle,
                     agentCode = t.AgentCode,
                     cIds = t.UserCompanies.Select(tt => tt.CompanyId).ToList(),
-                    bankAccount = t.BankAccount,
+                    accountCardNo = t.AccountCardNo,
                     bankShaba = t.BankShaba,
                     birthDate = t.BirthDate,
                     insuranceECode = t.InsuranceECode,
@@ -976,7 +969,6 @@ namespace Oje.AccountService.Services
                     t.EndHour,
                     t.WorkingHolyday,
                     t.BirthCertificateIssuingPlaceProvinceId,
-                    t.CardNO
                 })
                 .Take(1)
                 .ToList()
@@ -1001,7 +993,7 @@ namespace Oje.AccountService.Services
                     companyTitle = t.companyTitle,
                     agentCode = t.agentCode,
                     cIds = t.cIds,
-                    bankAccount = t.bankAccount,
+                    accountCardNo = t.accountCardNo,
                     bankShaba = t.bankShaba,
                     birthDate = t.birthDate.ToFaDate(),
                     insuranceECode = t.insuranceECode,
@@ -1023,7 +1015,6 @@ namespace Oje.AccountService.Services
                     endHour = t.EndHour,
                     isHolydayWork = t.WorkingHolyday,
                     bProvinceId = t.BirthCertificateIssuingPlaceProvinceId,
-                    cardNO = t.CardNO
                 })
                 .FirstOrDefault();
         }
@@ -1070,7 +1061,7 @@ namespace Oje.AccountService.Services
                     foundItem.Address = input.address;
                     foundItem.AgentCode = input.agentCode;
                     foundItem.CompanyTitle = input.companyTitle;
-                    foundItem.BankAccount = input.bankAccount;
+                    foundItem.AccountCardNo = input.accountCardNo;
                     foundItem.BankShaba = input.bankShaba;
                     foundItem.BirthDate = input.birthDate.ConvertPersianNumberToEnglishNumber().ToEnDate();
                     foundItem.InsuranceECode = input.insuranceECode;
@@ -1094,7 +1085,6 @@ namespace Oje.AccountService.Services
                     foundItem.EndHour = input.endHour;
                     foundItem.WorkingHolyday = input.isHolydayWork;
                     foundItem.BirthCertificateIssuingPlaceProvinceId = input.bProvinceId;
-                    foundItem.CardNO = input.cardNO;
 
                     if (!string.IsNullOrEmpty(input.password))
                         foundItem.Password = input.password.GetSha1();
