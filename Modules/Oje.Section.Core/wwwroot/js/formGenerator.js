@@ -1,5 +1,6 @@
 ﻿
 var functionsList = [];
+var exteraModelParams = {};
 
 function generateForm(res, targetId, canBeAppened, url) {
     var result = '';
@@ -3603,7 +3604,13 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, s
         var gridSelector = $(curElement).closest('.myGridCTRL');
         showLoader(gridSelector);
         var postData = new FormData();
-        postData.append('id', key);
+        if (key && key.constructor == Object) {
+            for (var prop in key) {
+                postData.append(prop, key[prop]);
+            }
+        } else {
+            postData.append('id', key);
+        }
         if (parentKey)
             postData.append('pKey', parentKey);
         var gridId = gridSelector.attr('id');
@@ -3612,7 +3619,7 @@ function showEditModal(key, url, modalId, curElement, parentKey, ignoreChange, s
             $('#' + modalId)[0].pKey = parentKey;
 
         postForm(url, postData, function (res) {
-            if (res) {
+            if (res && res.isSuccess == undefined) {
                 var holderForm = $('#' + this.modalId);
                 if (itsHtml) {
                     holderForm.find('.modal-body').html(res);
@@ -3974,6 +3981,33 @@ function needToBeLoginFirst(curButton) {
     return true;
 }
 
+function fillExteraParameter(url, whatToDoOnSuccess) {
+    if (url && whatToDoOnSuccess) {
+        showLoader($('body'));
+        postForm(url, new FormData(), function (res)
+        {
+            if (res && res.isSuccess == undefined) {
+                if (window['exteraModelParams']) {
+                    for (var prop in res) {
+                        exteraModelParams[prop] = res[prop];
+                    }
+                    if (whatToDoOnSuccess)
+                        whatToDoOnSuccess(res);
+                }
+            }
+        }, null, function () { hideLoader($('body')); });
+    }
+}
+
+function closeAdminLoader() {
+    if ($('.mainLoaderForAdminArea').length > 0) {
+        $('.mainLoaderForAdminArea').addClass('mainLoaderForAdminAreaClose');
+        setTimeout(function () {
+            $('.mainLoaderForAdminArea').css('display', 'none');
+        }, 200);
+    }
+}
+
 function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
     if (!rType)
         rType = 'POST';
@@ -3990,13 +4024,7 @@ function loadJsonConfig(jsonUrl, targetId, whatToDoAfterFinished, rType) {
     showLoader(holderQuiry);
     postForm(jsonUrl, postData, function (res) {
         generateForm(res, this.targetId, null, jsonUrl);
-        if (!this.targetId) {
-            $('.mainLoaderForAdminArea').addClass('mainLoaderForAdminAreaClose');
-            setTimeout(function () {
-                $('.mainLoaderForAdminArea').css('display', 'none');
-            }, 200);
-        }
-
+        closeAdminLoader()
         if (this.whatToDoAfterFinished) {
             this.whatToDoAfterFinished();
         }

@@ -180,7 +180,7 @@ namespace Oje.Infrastructure.Services
                 {
                     using (GZipStream compressionStream = new GZipStream(compressedFileStream, CompressionMode.Compress))
                     {
-                        using(MemoryStream outPut = new MemoryStream())
+                        using (MemoryStream outPut = new MemoryStream())
                         {
                             compressionStream.CopyTo(outPut);
                             return outPut.ToArray();
@@ -320,7 +320,7 @@ namespace Oje.Infrastructure.Services
 
             return input.GetType()
                             ?.GetCustomAttribute<TAttribute>();
-                            
+
         }
 
         public static void CopyTo(Stream src, Stream dest)
@@ -1257,6 +1257,8 @@ namespace Oje.Infrastructure.Services
                 result.browserName = dycriptTextArr[7];
                 result.hasAutoRefres = dycriptTextArr[8].ToBooleanReturnFalse();
                 result.canSeeOtherWebsites = dycriptTextArr[9].ToBooleanReturnFalse();
+                if (dycriptTextArr.Length >= 11)
+                    result.nationalCode = dycriptTextArr[10];
 
                 return result;
             }

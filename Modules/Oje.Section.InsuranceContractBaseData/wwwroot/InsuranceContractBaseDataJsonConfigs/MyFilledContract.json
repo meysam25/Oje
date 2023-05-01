@@ -8,7 +8,7 @@
           "topActions": [
             {
               "title": "جدید",
-              "onClick": "showEditModal(-1, '/Contract/Index?ignoreMaster=True', 'MyFilledContractModal' , this, null, null, null, true)"
+              "onClick": "fillExteraParameter('/InsuranceContractBaseData/MyFilledContract/CreateNewToken', function(res){ showEditModal(res, '/Contract/Create?ignoreMaster=True', 'MyFilledContractModal' , this, null, null, null, true) }.bind(this))"
             }
           ],
           "actions": {

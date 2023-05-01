@@ -25,8 +25,10 @@
     <link rel="icon" type="image/png" href="@(GlobalConfig.FileAccessHandlerUrl + currSiteSetting.Image96)">
     <script>
         @{
-            ViewContext.Writer.Write("var isUserLogin = " + (Context.GetLoginUser()?.UserId != null ? "true" : "false") + ";");
-            ViewContext.Writer.Write("var cSOW = " + (Context.GetLoginUser()?.canSeeOtherWebsites == true ? "true" : "false") + ";");
+            var loginUser = Context.GetLoginUser();
+            ViewContext.Writer.Write("var isUserLogin = " + (loginUser?.UserId != null ? "true" : "false") + ";");
+            ViewContext.Writer.Write("var cSOW = " + (loginUser?.canSeeOtherWebsites == true ? "true" : "false") + ";");
+            //ViewContext.Writer.Write("var loginUser = " + Newtonsoft.Json.JsonConvert.SerializeObject(new { username = loginUser?.Username, nationalcode = loginUser?.nationalCode }) + ";");
         }
     </script>
 </head>

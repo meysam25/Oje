@@ -134,12 +134,13 @@
                         </script>
                     </div>
                     <div class="holderMainPageButtons">
-                        <button type="button" onclick="initOnlineChat()" class="btn btn-success">مشاوره رایگان</button>
-                        <a href="/Contract/Index" title="ثبت خسارت" class="btn btn-secondary">ثبت خسارت</a>
+                        <button title="تماس با پشتیبانی به صورت آنلاین چت" type="button" onclick="initOnlineChat()" class="btn btn-success">مشاوره رایگان</button>
+                        <span style="cursor:pointer;" id="registerNewDamageClime" title="ثبت خسارت" class="btn btn-secondary">ثبت خسارت</span>
                     </div>
                 </div>
             </div>
         </header>
+      
         <content class="mainContent">
             @RenderBody()
         </content>
@@ -244,6 +245,9 @@
             </div>
         </footer>
     </div>
+    <div id="modalHolder" style="padding:30px;">
+
+    </div>
     <script>
         @{
             if (Context.Request.IsHttps)
@@ -251,6 +255,33 @@
                 ViewContext.Writer.Write("caches.delete('mainServiceName');localStorage.clear();" + Environment.NewLine);
             }
         }
+    </script>
+    <script>
+        $('#registerNewDamageClime').click(function () {
+            showEditModal(-1, '/Contract/Index?ignoreMaster=True', 'newDamageClimeModal', this, null, null, null, true)
+        });
+        generateForm({
+            panels: [
+                {
+                    moduals: [
+                        {
+                            "id": "newDamageClimeModal",
+                            "title": "خسارت جدید",
+                            "class": "modal-xl",
+                            "ctrls": [
+                            ],
+                            "actions": [
+                                {
+                                    "title": "بستن",
+                                    "onClick": "closeThisModal(this)",
+                                    "class": "btn-secondary"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }, $('#modalHolder'));
     </script>
 </body>
 </html>

@@ -9,6 +9,7 @@ using Oje.Sms.Interfaces;
 using Oje.Sms.Models.DB;
 using Oje.Sms.Models.View;
 using Oje.Sms.Services.EContext;
+using System;
 
 namespace Oje.Sms.Services
 {
@@ -148,6 +149,19 @@ namespace Oje.Sms.Services
                     })
                     .ToList()
             };
+        }
+
+
+
+        public string CreateFilledSendedCode(RegLogSMSVM regLogSMSVM, IpSections ipSections, int? siteSettingId, SmsValidationHistoryType loginWithSmsForContract)
+        {
+            string result = "";
+
+            LoginWithSMSValidation(regLogSMSVM, ipSections, siteSettingId);
+            result = SmsValidationHistoryService.Create(ipSections, regLogSMSVM.username, siteSettingId, loginWithSmsForContract) + "";
+            SmsValidationHistoryService.ValidatePreUsedBy(regLogSMSVM.username.ToLongReturnZiro(), result.ToIntReturnZiro(), ipSections, -3600, loginWithSmsForContract);
+
+            return result;
         }
 
         public object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId, SmsValidationHistoryType? smsValidationHistoryType)

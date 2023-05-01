@@ -225,7 +225,7 @@ namespace Oje.AccountService.Services
                 userRoles = string.Join("-", newUser.UserRoles.Where(t => t.Role != null).Select(t => t.Role.Name).ToList());
             string cookiValue =
                 newUser.Id + "," + newUser.Username + "," + newUser.Firstname + " " + newUser.Lastname + "," + httpContextAccessor.GetIpAddress() + "," +
-                newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName() + "," + hasAutoRefres + "," + (hasSeeOtherSiteRoleConfig == true || newUser.CanSeeOtherSites == true);
+                newUser.SiteSettingId + "," + sessionFileName + "," + userRoles + "," + httpContextAccessor.HttpContext.GetBroswerName() + "," + hasAutoRefres + "," + (hasSeeOtherSiteRoleConfig == true || newUser.CanSeeOtherSites == true) + "," + newUser.Nationalcode;
             var cOption = new CookieOptions() { HttpOnly = true };
             if (input.rememberMe == true)
                 cOption.Expires = DateTime.Now.AddDays(2);

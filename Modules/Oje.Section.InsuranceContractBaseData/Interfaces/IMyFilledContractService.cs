@@ -13,5 +13,6 @@ namespace Oje.Section.InsuranceContractBaseData.Interfaces
         object UploadImage(long? insuranceContractProposalFilledFormId, IFormFile mainFile, int? siteSettingId, long? loginUserId, List<InsuranceContractProposalFilledFormType> status);
         object GetAddress(long? id, int? siteSettingId, long? userId, List<InsuranceContractProposalFilledFormType> validStatus);
         object UpdateAddress(MyFilledContractAddressVM input, long? userId, int? siteSettingId, List<InsuranceContractProposalFilledFormType> validStatus);
+        object CreateNewToken(int? siteSettingId, LoginUserVM loginUser, IpSections ipSections);
     }
 }

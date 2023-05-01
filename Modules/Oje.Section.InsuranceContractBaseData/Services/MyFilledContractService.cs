@@ -8,6 +8,7 @@ using Oje.Infrastructure.Services;
 using Oje.Section.InsuranceContractBaseData.Interfaces;
 using Oje.Section.InsuranceContractBaseData.Models.View;
 using Oje.Section.InsuranceContractBaseData.Services.EContext;
+using Oje.Sms.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +19,18 @@ namespace Oje.Section.InsuranceContractBaseData.Services
     {
         readonly InsuranceContractBaseDataDBContext db = null;
         readonly IUploadedFileService UploadedFileService = null;
+        readonly ISmsSendingQueueService SmsSendingQueueService = null;
 
         public MyFilledContractService
             (
                 InsuranceContractBaseDataDBContext db,
-                IUploadedFileService UploadedFileService
+                IUploadedFileService UploadedFileService,
+                ISmsSendingQueueService SmsSendingQueueService
             )
         {
             this.db = db;
             this.UploadedFileService = UploadedFileService;
+            this.SmsSendingQueueService = SmsSendingQueueService;
         }
 
         public object GetAddress(long? id, int? siteSettingId, long? userId, List<InsuranceContractProposalFilledFormType> validStatus)
@@ -220,6 +224,25 @@ namespace Oje.Section.InsuranceContractBaseData.Services
             UploadedFileService.UploadNewFile(FileType.InsuranceContractProposalFilledForm, mainFile, loginUserId, siteSettingId, foundItemId, ".jpg,.png,.jpeg,.pdf,.doc,.docx", true);
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
+        }
+
+        public object CreateNewToken(int? siteSettingId, LoginUserVM loginUser, IpSections ipSections)
+        {
+            if (
+                    siteSettingId.ToIntReturnZiro() > 0 && loginUser != null && 
+                    !string.IsNullOrEmpty(loginUser.Username)  && loginUser.Username.Length == 11 && 
+                    !string.IsNullOrEmpty(loginUser.nationalCode) && loginUser.nationalCode.IsCodeMeli()
+                )
+            {
+                return new 
+                {
+                    loginUser.nationalCode,
+                    username = loginUser.Username,
+                    code = SmsSendingQueueService.CreateFilledSendedCode(new Sms.Models.View.RegLogSMSVM() { username = loginUser.Username }, ipSections, siteSettingId, SmsValidationHistoryType.LoginWithSmsForContract)
+            };
+            }
+
+            return null;
         }
     }
 }

@@ -13,5 +13,6 @@ namespace Oje.Sms.Interfaces
         Task SendSms();
         object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId, SmsValidationHistoryType? smsValidationHistoryType);
         object ActiveCodeForResetPassword(RegLogSMSVM input, IpSections ipSections, int? siteSettingId);
+        string CreateFilledSendedCode(RegLogSMSVM regLogSMSVM, IpSections ipSections, int? siteSettingId, SmsValidationHistoryType loginWithSmsForContract);
     }
 }

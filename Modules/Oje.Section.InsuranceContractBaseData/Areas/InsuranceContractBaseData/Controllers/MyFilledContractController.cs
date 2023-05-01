@@ -97,6 +97,13 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
             return Json(MyFilledContractService.GetPPFImageList(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId, validStatus));
         }
 
+        [AreaConfig(Title = "ساخت تکن برای ثبت خسارت جدید", Icon = "fa-plus")]
+        [HttpPost]
+        public ActionResult CreateNewToken()
+        {
+            return Json(MyFilledContractService.CreateNewToken(SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser(), HttpContext.GetIpAddress()));
+        }
+
         [AreaConfig(Title = "مشاهده لیست تاریخچه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetStatusLogList([FromForm] InsuranceContractProposalFilledFormStatusLogGrid searchInput)
