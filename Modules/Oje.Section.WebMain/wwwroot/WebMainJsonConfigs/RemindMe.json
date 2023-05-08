@@ -26,12 +26,28 @@
         },
         {
           "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "startDate",
+          "type": "persianDateTime",
+          "label": "تاریخ شروع",
+          "isRequired": true,
+          "minDateValidation": -400,
+          "maxDateValidation": 1
+        },
+        {
+          "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
           "name": "targetDate",
           "type": "persianDateTime",
-          "label": "تاریخ یادآوری",
+          "label": "تاریخ پایان",
           "isRequired": true,
           "minDateValidation": 1,
-          "maxDateValidation": 90
+          "maxDateValidation": 400
+        },
+        {
+          "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
+          "name": "fullname",
+          "type": "text",
+          "label": "نام و نام خانوادگی / شرکت",
+          "isRequired": true
         },
         {
           "parentCL": "col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12",
@@ -59,7 +75,7 @@
           "name": "insuranceImage",
           "type": "file",
           "label": "تصویر بیمه نامه (اختیاری)",
-          "acceptEx": ".jpg,.png,.jpeg",
+          "acceptEx": ".jpg,.png,.jpeg,.pdf",
           "hideImagePreview": true,
           "compressImage": true
         },

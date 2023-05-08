@@ -838,6 +838,8 @@ namespace Oje.ProposalFormService.Services
             foundItem.InsuranceNumber = input.insuranceNumber;
             foundItem.Status = ProposalFilledFormStatus.Issuing;
 
+            foundItem.FilledSignature();
+
             db.SaveChanges();
 
             ProposalFilledFormStatusLogService.Create(foundItem.Id, ProposalFilledFormStatus.Issuing, DateTime.Now, userId, input.description, null, null, siteSettingId);

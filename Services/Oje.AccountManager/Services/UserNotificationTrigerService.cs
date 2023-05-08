@@ -121,21 +121,24 @@ namespace Oje.AccountService.Services
                     {
                         foreach (var foundTargetUser in foundTargetUsers)
                         {
-                            string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname, exteraParameter);
-                            string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname, exteraParameter);
-                            UserNotificationService.Create(new UserNotification()
+                            if (foundTargetUser.userId.ToLongReturnZiro() > 0)
                             {
-                                CreateDate = DateTime.Now,
-                                Description = description.Replace("{{toUser}}", foundTargetUser.fullUserName),
-                                Subject = subject.Replace("{{toUser}}", foundTargetUser.fullUserName),
-                                FromUserId = userId,
-                                ObjectId = objectId,
-                                SiteSettingId = siteSettingId.Value,
-                                Type = type,
-                                UserId = foundTargetUser.userId,
-                                TargetPageLink = openLink,
-                                IsModal = isModal
-                            }, siteSettingId);
+                                string subject = GlobalServices.replaceKeyword(foundTemplate.Subject, objectId, title, userFullname, exteraParameter);
+                                string description = GlobalServices.replaceKeyword(foundTemplate.Description, objectId, title, userFullname, exteraParameter);
+                                UserNotificationService.Create(new UserNotification()
+                                {
+                                    CreateDate = DateTime.Now,
+                                    Description = description.Replace("{{toUser}}", foundTargetUser.fullUserName),
+                                    Subject = subject.Replace("{{toUser}}", foundTargetUser.fullUserName),
+                                    FromUserId = userId,
+                                    ObjectId = objectId,
+                                    SiteSettingId = siteSettingId.Value,
+                                    Type = type,
+                                    UserId = foundTargetUser.userId.Value,
+                                    TargetPageLink = openLink,
+                                    IsModal = isModal
+                                }, siteSettingId);
+                            }
                         }
                     }
                 }

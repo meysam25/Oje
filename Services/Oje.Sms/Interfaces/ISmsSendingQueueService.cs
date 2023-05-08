@@ -9,7 +9,7 @@ namespace Oje.Sms.Interfaces
     {
         object GetList(SmsSendingQueueMainGrid searchInput, int? siteSettingId);
         void SaveChange();
-        void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite);
+        void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite, bool? ignoreIp = null);
         Task SendSms();
         object LoginWithSMS(RegLogSMSVM input, IpSections ipSections, int? siteSettingId, SmsValidationHistoryType? smsValidationHistoryType);
         object ActiveCodeForResetPassword(RegLogSMSVM input, IpSections ipSections, int? siteSettingId);

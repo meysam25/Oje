@@ -1,7 +1,7 @@
-﻿using Oje.Infrastructure.Interfac;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Oje.Infrastructure.Interfac;
 
 namespace Oje.ProposalFormService.Models.DB
 {
@@ -10,6 +10,8 @@ namespace Oje.ProposalFormService.Models.DB
     {
         [Key]
         public long Id { get; set; }
+        [MaxLength(200)]
+        public string Fullname { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime CreateDate { get; set; }
         public byte Ip1 { get; set; }
@@ -20,6 +22,8 @@ namespace Oje.ProposalFormService.Models.DB
         [ForeignKey("ProposalFormId"), InverseProperty("ProposalFormReminders")]
         public ProposalForm ProposalForm { get; set; }
         public long Mobile { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? StartDate { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime TargetDate { get; set; }
         [MaxLength(4000)]

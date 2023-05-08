@@ -2414,7 +2414,9 @@ function getFileCTRLTemplate(ctrl) {
     result += '<div class="myCtrl form-group myFileUpload">';
 
     result += '<div ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="' + (ctrl.hideImagePreview ? 'display:none;' : '') + '" class="holderUploadImage">';
+    result += '<a data-name="' + ctrl.name + '_address_download" style="display:inline-block" class="downloadLink" >';
     result += '<img data-name="' + ctrl.name + '_address" id="img_' + ctrl.id + '" src="' + (ctrl.sampleUrl ? ctrl.sampleUrl : '/Modules/Images/unknown.svg') + '" />';
+    result += '</a>';
     result += '</div>';
 
     if (ctrl.label) {

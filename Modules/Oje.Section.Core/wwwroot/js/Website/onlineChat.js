@@ -360,7 +360,7 @@ function initOnlineChantUserLogin(onlineChatObj) {
                 generateForm(res.panels[0].moduals[0], $(onlineChatObj).find('.onlineChatMessages'), true);
                 onlineChatObj.moveScrollToBottom();
             }
-        });
+        }, null, null, null, 'GET');
 
     }
 }

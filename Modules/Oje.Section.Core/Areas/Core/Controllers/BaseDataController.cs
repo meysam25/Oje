@@ -10,6 +10,7 @@ using Oje.Infrastructure.Models;
 using Oje.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Linq;
+using Microsoft.Extensions.FileProviders;
 
 namespace Oje.Section.Core.Areas.Controllers
 {
@@ -63,9 +64,13 @@ namespace Oje.Section.Core.Areas.Controllers
         //}
 
         [HttpGet]
-        public IActionResult GetFile(string fn)
+        public IActionResult GetFile(string fn, bool? preview)
         {
             if (string.IsNullOrEmpty(fn))
+                return Content("File Not Found");
+
+            var curSetting = SiteSettingService.GetSiteSetting();
+            if (curSetting == null)
                 return Content("File Not Found");
 
             var loginUserId = HttpContext.GetLoginUser()?.UserId;
@@ -88,6 +93,18 @@ namespace Oje.Section.Core.Areas.Controllers
 
             if (foundFile.FileContentType != " " && foundFile.FileContentType != null && rFileContentType != foundFile.FileContentType)
                 return Content("File Not Found");
+
+            if (preview == true)
+            {
+                if (!string.IsNullOrEmpty(fi.Extension) && fi.Extension.ToLower().EndsWith(".pdf"))
+                {
+                    if (!System.IO.File.Exists(foundFile.FileNameOnServerPreview))
+                        PdfToImageConvert.Convert(foundFile.FileNameOnServer, foundFile.FileNameOnServerPreview);
+
+                    if (System.IO.File.Exists(foundFile.FileNameOnServerPreview))
+                        return File(System.IO.File.ReadAllBytes(foundFile.FileNameOnServerPreview), rFileContentType, fi.Name + ".jpg");
+                }
+            }
 
             return File(System.IO.File.ReadAllBytes(foundFile.FileNameOnServer), rFileContentType, fi.Name);
         }

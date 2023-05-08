@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Syncfusion.Pdf;
+﻿using Syncfusion.Pdf;
 using Syncfusion.HtmlConverter;
 using System.IO;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace Oje.Infrastructure.Services
@@ -35,7 +29,6 @@ namespace Oje.Infrastructure.Services
 
             //Assign Blink settings to HTML converter
             htmlConverter.ConverterSettings = settings;
-           
 
             //Convert URL to PDF
             using (PdfDocument document = htmlConverter.Convert(Url))

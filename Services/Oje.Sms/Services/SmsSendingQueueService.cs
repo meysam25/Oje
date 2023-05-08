@@ -44,13 +44,16 @@ namespace Oje.Sms.Services
             this.BlockLoginUserService = BlockLoginUserService;
         }
 
-        public void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite)
+        public void Create(SmsSendingQueue smsSendingQueue, int? siteSettingId, List<SmsLimit> smsLimits, bool? isWebsite, bool? ignoreIp = null)
         {
-            var foundIp = HttpContextAccessor.GetIpAddress();
-            if (foundIp == null)
+            var foundIp = ignoreIp == true ? null : HttpContextAccessor.GetIpAddress();
+            if (foundIp == null && ignoreIp != true)
                 throw BException.GenerateNewException(BMessages.Ip_Format_Is_Not_Valid);
             if (siteSettingId.ToIntReturnZiro() <= 0)
                 throw BException.GenerateNewException(BMessages.SiteSetting_Can_Not_Be_Founded);
+
+            if (foundIp == null)
+                foundIp = new IpSections() { Ip1 = 127, Ip2 = 0, Ip3 = 0, Ip4 = 1 };
 
             smsSendingQueue.Ip1 = foundIp.Ip1;
             smsSendingQueue.Ip2 = foundIp.Ip2;
@@ -58,7 +61,7 @@ namespace Oje.Sms.Services
             smsSendingQueue.Ip4 = foundIp.Ip4;
             smsSendingQueue.SiteSettingId = siteSettingId.Value;
 
-            if (smsLimits != null)
+            if (smsLimits != null && ignoreIp != true)
             {
                 var foundLimit = smsLimits.Where(t => t.type == smsSendingQueue.Type && t.isWebsite == isWebsite).FirstOrDefault();
                 if (foundLimit != null)

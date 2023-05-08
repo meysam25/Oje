@@ -78,7 +78,7 @@ namespace Oje.Section.ProposalFilledForm.Areas.ProposalFilledForm.Controllers
         [HttpPost]
         public IActionResult Update([FromForm] ReminderCreateVM input)
         {
-            return Json(ProposalFormReminderService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
+            return Json(ProposalFormReminderService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
         [AreaConfig(Title = "مشاهده لیست یادآوری", Icon = "fa-list-alt")]

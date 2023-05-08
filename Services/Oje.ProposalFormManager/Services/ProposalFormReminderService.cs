@@ -54,29 +54,32 @@ namespace Oje.ProposalFormService.Services
                 ProposalFormId = input.fid.ToIntReturnZiro(),
                 SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value,
                 TargetDate = input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value,
-                LoginUserId = loginUserId
+                LoginUserId = loginUserId,
+                Fullname = input.fullname,
+                StartDate = input.startDate.ToEnDate().Value
             };
 
             db.Entry(newItem).State = EntityState.Added;
             db.SaveChanges();
 
             if (input.nationalCard != null && input.nationalCard.Length > 0)
-                newItem.NationalCardImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.nationalCard, loginUserId, siteSettingId, null, ".png,.jpg,.jpeg", true);
+                newItem.NationalCardImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.nationalCard, loginUserId, siteSettingId, newItem.Id, ".png,.jpg,.jpeg", true);
 
             if (input.insuranceImage != null && input.insuranceImage.Length > 0)
-                newItem.PrevInsuranceImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.insuranceImage, loginUserId, siteSettingId, null, ".png,.jpg,.jpeg", true);
+                newItem.PrevInsuranceImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.insuranceImage, loginUserId, siteSettingId, newItem.Id, ".png,.jpg,.jpeg,.pdf", true);
 
             db.SaveChanges();
 
-            UserNotifierService.Notify
-                       (
-                           loginUserId,
-                           UserNotificationType.ProposalFormReminder,
-                           new System.Collections.Generic.List<PPFUserTypes>(),
-                           null,
-                           "ثبت یادآوری جدید",
-                           siteSettingId, "/ProposalFilledForm/ProposalFormReminder/Index"
-                       );
+            if (loginUserId.ToLongReturnZiro() > 0)
+                UserNotifierService.Notify
+                           (
+                               loginUserId,
+                               UserNotificationType.ProposalFormReminder,
+                               new System.Collections.Generic.List<PPFUserTypes>() { new PPFUserTypes() { fullUserName = newItem.Fullname, mobile = "0" + newItem.Mobile, ProposalFilledFormUserType = ProposalFilledFormUserType.OwnerUser } },
+                               null,
+                               "ثبت یادآوری جدید",
+                               siteSettingId, "/ProposalFilledForm/ProposalFormReminder/Index"
+                           );
 
             return ApiResult.GenerateNewResult(true, BMessages.Operation_Was_Successfull);
         }
@@ -121,10 +124,12 @@ namespace Oje.ProposalFormService.Services
                     t.PrevInsuranceImage,
                     t.Id,
                     cSOWSiteSettingId = t.SiteSettingId,
-                    cSOWSiteSettingId_Title = t.SiteSetting.Title
+                    cSOWSiteSettingId_Title = t.SiteSetting.Title,
+                    t.StartDate,
+                    t.Fullname
                 })
                 .ToList()
-                .Select(t => new
+                .Select(t => new ProposalFormReminderVM
                 {
                     id = t.Id,
                     appfCatId = t.catId,
@@ -134,10 +139,13 @@ namespace Oje.ProposalFormService.Services
                     targetDate = t.TargetDate.ToFaDate(),
                     mobile = "0" + t.Mobile,
                     summery = t.Description,
-                    insuranceImage_address = !string.IsNullOrEmpty(t.PrevInsuranceImage) ? (GlobalConfig.FileAccessHandlerUrl + t.PrevInsuranceImage) : "",
+                    insuranceImage_address_download = !string.IsNullOrEmpty(t.PrevInsuranceImage) ? (GlobalConfig.FileAccessHandlerUrl + t.PrevInsuranceImage) : "",
+                    insuranceImage_address = !string.IsNullOrEmpty(t.PrevInsuranceImage) ? (GlobalConfig.FileAccessHandlerUrl + t.PrevInsuranceImage + "&preview=True") : "",
                     nationalCard_address = !string.IsNullOrEmpty(t.NationalCardImage) ? (GlobalConfig.FileAccessHandlerUrl + t.NationalCardImage) : "",
-                    t.cSOWSiteSettingId,
-                    t.cSOWSiteSettingId_Title
+                    cSOWSiteSettingId = t.cSOWSiteSettingId,
+                    cSOWSiteSettingId_Title = t.cSOWSiteSettingId_Title,
+                    startDate = t.StartDate.ToFaDate(),
+                    fullname = t.Fullname
                 })
                 .FirstOrDefault();
         }
@@ -151,7 +159,8 @@ namespace Oje.ProposalFormService.Services
             var feacherDT = curDate.AddYears(300);
 
             var qureResult = db.ProposalFormReminders.OrderBy(t => t.TargetDate >= curDate ? t.TargetDate : feacherDT)
-                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId);
+                .getSiteSettingQuiry(HttpContextAccessor?.HttpContext?.GetLoginUser()?.canSeeOtherWebsites, siteSettingId)
+                .Where(t => (userId == null || t.LoginUserId == userId));
 
             if (userId.ToLongReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.LoginUserId == userId);
@@ -167,6 +176,13 @@ namespace Oje.ProposalFormService.Services
             }
             if (!string.IsNullOrEmpty(searchInput.siteTitleMN2))
                 qureResult = qureResult.Where(t => t.SiteSetting.Title.Contains(searchInput.siteTitleMN2));
+            if (!string.IsNullOrEmpty(searchInput.fn))
+                qureResult = qureResult.Where(t => !string.IsNullOrEmpty(t.Fullname) && t.Fullname.Contains(searchInput.fn));
+            if (!string.IsNullOrEmpty(searchInput.sd) && searchInput.sd.ToEnDate() != null)
+            {
+                var tdOb = searchInput.sd.ToEnDate().Value;
+                qureResult = qureResult.Where(t => t.StartDate != null && t.StartDate.Value.Year == tdOb.Year && t.StartDate.Value.Month == tdOb.Month && t.StartDate.Value.Day == tdOb.Day);
+            }
 
             int row = searchInput.skip;
 
@@ -187,7 +203,9 @@ namespace Oje.ProposalFormService.Services
                     mobile = t.Mobile,
                     td = t.TargetDate,
                     t.Id,
-                    siteTitleMN2 = t.SiteSetting.Title
+                    siteTitleMN2 = t.SiteSetting.Title,
+                    startDate = t.StartDate,
+                    fullname = t.Fullname
                 })
                 .ToList()
                 .Select(t => new ProposalFormReminderMainGridResultVM
@@ -197,10 +215,11 @@ namespace Oje.ProposalFormService.Services
                     mobile = "0" + t.mobile,
                     ppfTitle = t.ppfTitle,
                     td = t.td.ToFaDate(),
-                    siteTitleMN2 = t.siteTitleMN2
+                    siteTitleMN2 = t.siteTitleMN2,
+                    sd = t.startDate.ToFaDate(),
+                    fn = t.fullname
                 })
                 .ToList()
-
             };
         }
 
@@ -223,12 +242,14 @@ namespace Oje.ProposalFormService.Services
             foundItem.TargetDate = input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate().Value;
             foundItem.LoginUserId = userId;
             foundItem.SiteSettingId = canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId.Value : siteSettingId.Value;
+            foundItem.Fullname = input.fullname;
+            foundItem.StartDate = input.startDate.ToEnDate().Value;
 
             if (input.nationalCard != null && input.nationalCard.Length > 0)
                 foundItem.NationalCardImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.nationalCard, userId, siteSettingId, null, ".png,.jpg,.jpeg", true);
 
             if (input.insuranceImage != null && input.insuranceImage.Length > 0)
-                foundItem.PrevInsuranceImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.insuranceImage, userId, siteSettingId, null, ".png,.jpg,.jpeg", true);
+                foundItem.PrevInsuranceImage = UploadedFileService.UploadNewFile(FileType.ProposalFilledFormReminder, input.insuranceImage, userId, siteSettingId, null, ".png,.jpg,.jpeg,.pdf", true);
 
             db.SaveChanges();
 
@@ -257,6 +278,18 @@ namespace Oje.ProposalFormService.Services
                 throw BException.GenerateNewException(BMessages.Invalid_Mobile_Number);
             if (input.targetDate.ConvertPersianNumberToEnglishNumber().ToEnDate() <= DateTime.Now)
                 throw BException.GenerateNewException(BMessages.Date_Should_Be_From_Tomarow);
+            if (string.IsNullOrEmpty(input.fullname))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Name);
+            if (string.IsNullOrEmpty(input.startDate))
+                throw BException.GenerateNewException(BMessages.Please_Enter_Start_Date);
+            if (input.startDate.ToEnDate() == null)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            if (input.startDate.ToEnDate().Value > DateTime.Now)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            if (input.targetDate.ToEnDate().Value < DateTime.Now)
+                throw BException.GenerateNewException(BMessages.Invalid_Date);
+            if (input.startDate.ToEnDate().Value > input.targetDate.ToEnDate().Value)
+                throw BException.GenerateNewException(BMessages.StartDate_Should_Be_Less_Then_EndDate);
             if (!db.ProposalForms.Any(t => t.Id == input.fid && (t.SiteSettingId == null || t.SiteSettingId == (canSetSiteSetting == true && input.cSOWSiteSettingId.ToIntReturnZiro() > 0 ? input.cSOWSiteSettingId : siteSettingId))))
                 throw BException.GenerateNewException(BMessages.Please_Select_ProposalForm);
         }

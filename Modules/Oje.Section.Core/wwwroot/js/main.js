@@ -133,9 +133,9 @@ function bindingForm(selector, key, value, ignoreChanges, res) {
 
     $(selector).find('a[data-name="' + key + '"]').each(function () {
         if (value)
-            $(this).html('(دانلود فایل)').attr('href', value);
+            $(this).attr('href', value);
         else
-            $(this).html('').attr('href', '');
+            $(this).attr('href', '');
     });
 
     $(selector).find('.tokenBox[name="' + key + '"]').each(function () {
@@ -767,7 +767,7 @@ function clearForm(selector) {
     $(selector).find('input[type="file"]').not('[data-no-clear]').val(null);
     $(selector).find('input[type="file"]').not('[data-no-clear]').change();
     $(selector).find('select').val('');
-    $(selector).find('a[data-name]').html('').removeAttr('href');
+    $(selector).find('a[data-name]').removeAttr('href');
     $(selector).find('select').each(function () {
         $(this)[0].bindValue = null;
     });

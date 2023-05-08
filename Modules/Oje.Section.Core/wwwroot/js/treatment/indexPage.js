@@ -336,3 +336,5 @@ $(document).ready(function () {
     bindFooterPhoneAndAddress();
     loadLicenceF($('.licenceHolderW'));
 })
+
+bindIfUserAreadyLogin();

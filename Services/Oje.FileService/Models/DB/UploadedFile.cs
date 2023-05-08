@@ -45,6 +45,16 @@ namespace Oje.FileService.Models.DB
             }
         }
 
+        [NotMapped]
+        public string FileNameOnServerPreview
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(FileName))
+                    return GlobalConfig.WebHostEnvironment.ContentRootPath + FileName.Replace("/", "\\") + ".jpg";
 
+                return null;
+            }
+        }
     }
 }

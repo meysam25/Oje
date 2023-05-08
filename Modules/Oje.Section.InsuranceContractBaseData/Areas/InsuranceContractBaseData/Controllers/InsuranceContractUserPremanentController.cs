@@ -28,7 +28,8 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
         readonly ISiteSettingService SiteSettingService = null;
 
 
-        public InsuranceContractUserPremanentController(
+        public InsuranceContractUserPremanentController
+            (
                 IInsuranceContractUserService InsuranceContractUserService,
                 IInsuranceContractService InsuranceContractService,
                 IBankService BankService,
