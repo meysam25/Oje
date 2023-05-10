@@ -1,7 +1,5 @@
-
 using Microsoft.Data.SqlClient;
 using Oje.Infrastructure;
-using Oje.Sms;
 using Oje.Sms.Interfaces;
 
 namespace Oje.Worker.Sms

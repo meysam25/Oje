@@ -1,9 +1,4 @@
 ﻿using Oje.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Oje.Section.InsuranceContractBaseData.Models.View
 {
@@ -11,7 +6,7 @@ namespace Oje.Section.InsuranceContractBaseData.Models.View
     {
         public string title { get; set; }
         public int? cid { get; set; }
-        public int? ctId { get; set; }
+        public string ctId { get; set; }
         public bool? isRequired { get; set; }
         public bool? isActive { get; set; }
     }

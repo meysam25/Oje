@@ -143,8 +143,8 @@ namespace Oje.Section.InsuranceContractBaseData.Services
                 qureResult = qureResult.Where(t => t.Title.Contains(searchInput.title));
             if (searchInput.cid.ToIntReturnZiro() > 0)
                 qureResult = qureResult.Where(t => t.InsuranceContractId == searchInput.cid);
-            if (searchInput.ctId.ToIntReturnZiro() > 0)
-                qureResult = qureResult.Where(t => t.InsuranceContractTypeId == searchInput.ctId);
+            if (!string.IsNullOrEmpty(searchInput.ctId))
+                qureResult = qureResult.Where(t => t.InsuranceContractType.Title.Contains(searchInput.ctId));
             if (searchInput.isRequired != null)
                 qureResult = qureResult.Where(t => t.IsRequired == searchInput.isRequired);
             if (searchInput.isActive != null)

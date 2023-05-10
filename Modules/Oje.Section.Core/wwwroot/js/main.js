@@ -765,6 +765,7 @@ function clearForm(selector) {
     $(selector).find('input[type="radio"]').prop('checked', false);
     $(selector).find('input[type="checkbox"]').prop('checked', false);
     $(selector).find('input[type="file"]').not('[data-no-clear]').val(null);
+    $(selector).find('input[data-showThamnailOnImage]').closest('.myCtrl').find('.holderUploadImage').css('display', 'none');
     $(selector).find('input[type="file"]').not('[data-no-clear]').change();
     $(selector).find('select').val('');
     $(selector).find('a[data-name]').removeAttr('href');

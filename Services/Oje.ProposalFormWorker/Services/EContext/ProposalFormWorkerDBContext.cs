@@ -12,5 +12,6 @@ namespace Oje.ProposalFormWorker.Services.EContext
         }
 
         public DbSet<ProposalFormReminder> ProposalFormReminders { get; set; }
+        public DbSet<ProposalForm> ProposalForms { get; set; }
     }
 }

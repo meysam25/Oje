@@ -351,6 +351,11 @@
     display: block;
     text-align: center;
 }
+.imageGallery .gridResTitle {
+    display: none !important;
+}
+
+
 
 .gridDetailes {
     padding-right: 30px;
@@ -557,4 +562,20 @@
 
 .floatActionCellAlterColor {
     background-color: #f5f5f5;
+}
+
+@media (max-width: 650px) {
+    .imageGallery .myItemPerPage {
+        text-align:center !important;
+    }
+    .imageGallery .myGridPagaer {
+        text-align: center !important;
+    }
+    .imageGallery .myTableBody > tr {
+        display: block !important;
+    }
+    .makeRTL .imageGallery .myTableBody > tr > td {
+        border-bottom: none !important;
+        text-align: center !important;
+    }
 }

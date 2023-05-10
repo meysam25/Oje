@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Oje.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62465;http://localhost:62467"
+    }
+  }
+}

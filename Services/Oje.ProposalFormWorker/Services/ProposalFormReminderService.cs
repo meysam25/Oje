@@ -1,4 +1,5 @@
-﻿using NPOI.HSSF.Record.Chart;
+﻿using Microsoft.EntityFrameworkCore;
+using NPOI.HSSF.Record.Chart;
 using Oje.Infrastructure.Enums;
 using Oje.Infrastructure.Interfac;
 using Oje.Infrastructure.Models;
@@ -34,6 +35,7 @@ namespace Oje.ProposalFormWorker.Services
                 {
                     var targetDate = DateTime.Now.AddDays(day);
                     var expiredReminder = db.ProposalFormReminders
+                        .Include(t => t.ProposalForm)
                         .Where(t => t.TargetDate.Year == targetDate.Year && t.TargetDate.Month == targetDate.Month && t.TargetDate.Day == targetDate.Day)
                         .Where(t => !t.ProposalFormReminderNotifies.Any(tt => tt.CreateDate.Year == targetDate.Year && tt.CreateDate.Month == targetDate.Month && tt.CreateDate.Day == targetDate.Day))
                         .ToList();
@@ -46,9 +48,9 @@ namespace Oje.ProposalFormWorker.Services
                                 UserNotificationType.ReminderExpireing,
                                 new List<PPFUserTypes>() { new PPFUserTypes() { fullUserName = reminder.Fullname, mobile = "0" + reminder.Mobile, ProposalFilledFormUserType = ProposalFilledFormUserType.OwnerUser } },
                                 null,
-                                "یادآوری",
+                                reminder.ProposalForm?.Title,
                                 reminder.SiteSettingId,
-                                null,
+                                new { expireDay = day + "" },
                                 true
                             );
 

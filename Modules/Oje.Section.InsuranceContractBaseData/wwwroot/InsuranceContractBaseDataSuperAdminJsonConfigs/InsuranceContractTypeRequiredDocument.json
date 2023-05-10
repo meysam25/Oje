@@ -62,10 +62,7 @@
               "field": "ctId",
               "caption": "نوع قرارداد",
               "search": {
-                "searchType": "dropdown",
-                "url": "/InsuranceContractBaseDataSuperAdmin/InsuranceContractTypeRequiredDocument/GetContractTypeList",
-                "textField": "title",
-                "valueField": "id"
+                "searchType": "text"
               }
             },
             {

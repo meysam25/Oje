@@ -2414,15 +2414,15 @@ function getFileCTRLTemplate(ctrl) {
     result += '<div class="myCtrl form-group myFileUpload">';
 
     result += '<div ' + (ctrl.id ? 'id="' + ctrl.id + '"' : '') + ' style="' + (ctrl.hideImagePreview ? 'display:none;' : '') + '" class="holderUploadImage">';
-    result += '<a data-name="' + ctrl.name + '_address_download" style="display:inline-block" class="downloadLink" >';
-    result += '<img data-name="' + ctrl.name + '_address" id="img_' + ctrl.id + '" src="' + (ctrl.sampleUrl ? ctrl.sampleUrl : '/Modules/Images/unknown.svg') + '" />';
+    result += '<a data-name="' + ctrl.name + '_address_download" style="display:inline-block;width:100%;" class="downloadLink" >';
+    result += '<img data-name="' + ctrl.name + '_address" id="img_' + ctrl.id + '" src="' + (ctrl.sampleUrl ? ctrl.sampleUrl : '/Modules/Images/unknown.svg') + '" style="width:100%;" />';
     result += '</a>';
     result += '</div>';
 
     if (ctrl.label) {
         result += '<label class="btn btn-secondary btn-block" style="margin-bottom:0px;text-align:center;" for="file_' + ctrl.id + '" >' + ctrl.label + (ctrl.isRequired ? '<span style="color:red" >*</span>' : '') + '</label>';
     }
-    result += '<input ' + (ctrl.compressImage ? 'data-compressImage="true"' : '') + ' id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
+    result += '<input ' + (ctrl.showThamnailOnImage ? 'data-showThamnailOnImage="true"' : '') +' ' + (ctrl.compressImage ? 'data-compressImage="true"' : '') + ' id="file_' + ctrl.id + '" ' + getCtrlValidationAttribute(ctrl) + ' ' + (ctrl.acceptEx ? 'accept="' + ctrl.acceptEx + '"' : '') + ' type="' + ctrl.type + '" name="' + ctrl.name + '" class="form-control" />';
     result += '</div>';
 
     addCtrlToObj(ctrl);
@@ -2450,8 +2450,9 @@ function getFileCTRLTemplate(ctrl) {
         if ($('#' + imgId).length == 0 || $('#' + fileId).length == 0)
             return;
 
+        var showThamnailOnImage = this.ctrl.showThamnailOnImage;
         $('#' + fileId).change(function () {
-            readFileFromInput(this, imgId);
+            readFileFromInput(this, imgId, showThamnailOnImage);
         });
         var allCButtons = [];
         if (this.ctrl.cropper)
@@ -2466,7 +2467,7 @@ function getFileCTRLTemplate(ctrl) {
     return result;
 }
 
-function readFileFromInput(fileInput, imgId) {
+function readFileFromInput(fileInput, imgId, showThamnailOnImage) {
     if (fileInput.files && fileInput.files[0] && (/image/i).test(fileInput.files[0].type)) {
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -2478,6 +2479,9 @@ function readFileFromInput(fileInput, imgId) {
             }
         }
         reader.readAsDataURL(fileInput.files[0]);
+        if (showThamnailOnImage) {
+            $('#' + imgId).closest('div').css('display', 'block');
+        }
     }
 }
 

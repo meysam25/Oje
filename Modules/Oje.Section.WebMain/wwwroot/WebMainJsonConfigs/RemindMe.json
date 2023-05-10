@@ -77,6 +77,7 @@
           "label": "تصویر بیمه نامه (اختیاری)",
           "acceptEx": ".jpg,.png,.jpeg,.pdf",
           "hideImagePreview": true,
+          "showThamnailOnImage": true,
           "compressImage": true
         },
         {
@@ -86,6 +87,7 @@
           "label": "تصویر کارت ملی(اختیاری)",
           "acceptEx": ".jpg,.png,.jpeg",
           "hideImagePreview": true,
+          "showThamnailOnImage": true,
           "compressImage": true
         },
         {

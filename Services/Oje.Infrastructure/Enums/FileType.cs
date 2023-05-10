@@ -70,7 +70,7 @@ namespace Oje.Infrastructure.Enums
         OurObject = 32,
         [Display(Name = "مدارک نمونه فایل های انتخابی ثبت فرم تفاهم نامه", Prompt = "ContractUploadFileSample")]
         ContractUploadFileSample = 33,
-        [Display(Name = "مدارک فرم پیشنهاد قرارداد", Prompt = "InsuranceContractProposalFilledForm", Description = "~1000*1000")]
+        [Display(Name = "مدارک فرم پیشنهاد قرارداد (درمان)", Prompt = "InsuranceContractProposalFilledForm", Description = "~1000*1000")]
         InsuranceContractProposalFilledForm = 34,
         [Display(Name = "مدارک تیکت", Prompt = "TicketUser")]
         TicketUser = 35,

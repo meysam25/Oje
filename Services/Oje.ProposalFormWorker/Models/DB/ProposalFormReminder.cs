@@ -7,7 +7,7 @@ using Oje.Infrastructure.Interfac;
 namespace Oje.ProposalFormWorker.Models.DB
 {
     [Table("ProposalFormReminders")]
-    public class ProposalFormReminder: IEntityWithSiteSettingId
+    public class ProposalFormReminder : IEntityWithSiteSettingId
     {
         public ProposalFormReminder()
         {
@@ -25,6 +25,8 @@ namespace Oje.ProposalFormWorker.Models.DB
         public byte Ip3 { get; set; }
         public byte Ip4 { get; set; }
         public int ProposalFormId { get; set; }
+        [ForeignKey(nameof(ProposalFormId)), InverseProperty("ProposalFormReminders")]
+        public ProposalForm ProposalForm { get; set; }
         public long Mobile { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? StartDate { get; set; }
