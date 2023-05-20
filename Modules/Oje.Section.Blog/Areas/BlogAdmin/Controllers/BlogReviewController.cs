@@ -66,7 +66,7 @@ namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
             return Json(BlogReviewService.Confirm(id, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نظرات بلاگ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نظرات بلاگ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] BlogReviewMainGrid searchInput)
         {

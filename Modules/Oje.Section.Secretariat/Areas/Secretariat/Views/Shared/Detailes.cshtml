@@ -1,0 +1,254 @@
+﻿@{
+    Layout = "~/Areas/Account/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = Model.subject;
+    var pageHeight = 1436;
+}
+@model Oje.Section.Secretariat.Models.View.SecretariatLetterVM
+@using Oje.Infrastructure.Services
+<style>
+    p {
+        padding:0px !important;
+        margin:0px !important;
+    }
+    .detailePage {
+        width: 1015px;
+        margin-left: auto;
+        margin-right: auto;
+        direction: rtl;
+        text-align: right;
+        background-color: white;
+        position:relative;
+        @{
+            ViewContext.Writer.Write("height: "+ pageHeight +"px" );
+        }
+    }
+    .mainPdfBody {
+        padding: 60px;
+        padding-top:0px;
+        padding-bottom: 0px;
+    }
+    .headerImage {
+        width: 100%;
+        top:0px;
+    }
+    .footerImage {
+        position:absolute;
+        top: unset;
+        bottom:0px;
+        height: 112px;
+        width: 100%;
+    }
+    .pageFirstHeader {
+        height: 100px;
+        text-align: center;
+        position:relative;
+        padding-top: 10px;
+    }
+    .pageFirstHeaderInfo {
+        position:absolute;
+        left:10px;
+        top : 10px;
+        text-align: right;
+        font-weight:bold;
+    }
+    .pageFooter *{
+    }
+    .pageSecoundHeader *, .pageThirdHeader *{
+        font-weight: bold;
+        line-height: 35px;
+    }
+    .detailePageBody * {
+        text-align: justify;
+    }
+    .userSignature {
+        width: 300px;
+        float:left;
+        position:relative;
+        margin-left:70px;
+    }
+    .userSignature img {
+        position:absolute;
+        left:0px;
+        top: 0px;
+        z-index: 1;
+    }
+    .userSignature div {
+        position:relative;
+        z-index: 2;
+        text-align: center;
+    }
+    .hideInside {
+        width:0px;
+        height:0px;
+        overflow: hidden;
+    }
+    .detailePageBody img{
+        max-width: 100%;
+    }
+    .holderPagination {
+        position:absolute;
+        left:50px;
+        bottom: 110px;
+        font-size: 8pt;
+    }
+
+    @{
+        if(ViewBag.isPrint == true)
+        {
+            ViewContext.Writer.Write("  body{background-color:white;}" + Environment.NewLine );
+            ViewContext.Writer.Write("  main { margin-right:0px !important;padding:0px !important; }" + Environment.NewLine);
+            ViewContext.Writer.Write("  aside{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}"  + Environment.NewLine);
+            ViewContext.Writer.Write("  header{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  footer{display:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  main{background:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{-webkit-box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  section{box-shadow:none!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  .mainContent{padding:0px!important;}" + Environment.NewLine);
+            ViewContext.Writer.Write("  .mainContent{padding:0px!important;}" + Environment.NewLine);
+        }
+    }
+</style>
+<script>
+    if(window["$"]) {
+    $('.mainLoaderForAdminArea').css('display', 'none');
+    }
+</script>
+
+ <div class="holderPages">
+
+ </div>
+
+<div class="hideInside">
+   <div class="detailePage">
+        <img class="headerImage" src="@ViewBag.baseUrl@Model.header" />
+        <div class="mainPdfBody">
+             <div class="pageFirstHeader">
+                بسمه تعالی
+                <div class="pageFirstHeaderInfo">
+                    <div class="tempXXD">تاریخ: @Model.createDate.ToFaDate()</div>
+                    <div>شماره: @Model.number</div>
+                    <div>پیوست: @(Model.hasLink == true ? "دارد" : "ندارد")</div>
+                </div>
+            </div>
+            <div class="pageSecoundHeader">
+                <div>@Model.title</div>
+                <div>@Model.subTitle</div>
+                <div>موضوع: @Model.subject</div>
+            </div>
+            <div class="pageThirdHeader">
+                @{
+                    ViewContext.Writer.Write(Model.headerDescription);
+                }
+            </div>
+             <div class="detailePageBody">
+                @{
+                    ViewContext.Writer.Write(Model.description);
+                }
+            </div>
+            <div class="pageFooter">
+                @{
+                    ViewContext.Writer.Write(Model.footerDescription);
+                }
+            </div>
+        </div>
+        <div class="userSignature">
+            <img src="@ViewBag.baseUrl@Model.sUserSignature" width="300" />
+            <div>@Model.sUserTitle</div>
+            <div>@Model.sUserFirstname @Model.sUserLastname</div>
+            <div>@Model.sUserRole</div>
+        </div>
+        <img class="footerImage" src="@ViewBag.baseUrl@Model.footer" />
+        <div class="holderPagination" ><span> صفحه </span><span class="fromPage"></span> از <span class="toPage" ></span></div>
+ </div>
+</div>
+<script>
+    var bottomPadding = 30;
+    $(document).ready(function() {
+        setTimeout(function() {
+            var curHeight = $('.hideInside .mainPdfBody').height();
+            var eachPage = @pageHeight;
+            var headerHeight = $('.hideInside .headerImage').height();
+            var footerHeight = $('.hideInside .footerImage').height();
+            eachPage = eachPage - headerHeight - footerHeight;
+        
+            var pageCount = 1;
+            if (curHeight > eachPage) {
+                pageCount = Math.ceil( curHeight / eachPage);
+            }
+            for (var i = 0; i < pageCount; i++) {
+                $('.holderPages').append(newPage());
+                if (i == 0) {
+                    addNewHeader();
+                }
+                addAsMachAsCan(eachPage);
+            }
+            var isSuccess = addFooter(eachPage);
+            if (isSuccess == false) {
+                $('.holderPages').append(newPage());
+                addFooter(eachPage);
+            }
+            addSignature();
+
+            var sQuiry = $('.holderPages .detailePage');
+            var maxPage = sQuiry.length;
+            if (maxPage > 0) {
+                sQuiry.each(function(index) {
+                    $(this).find('.fromPage').text((index+ 1));
+                    $(this).find('.toPage').text(maxPage);
+                });
+            }
+        }, 10);
+        
+    });
+    function addFooter(maxHeight) {
+        var curSelector = $('.holderPages').find('.detailePage').last().find('.mainPdfBody');
+         var tempX1 = $("<div />").append($('.hideInside').clone().find('.pageFooter').clone()).html();
+         curSelector.append(tempX1);
+         if ((curSelector.height() + bottomPadding) >= maxHeight) {
+             curSelector.find('>').last().remove();
+             return false;
+         }
+         return true;
+    }
+    function newPage() {
+        var tempHtml = $('.hideInside').clone().html();
+        var innerItems = $(tempHtml).find('.mainPdfBody').html();
+        var signature = $(tempHtml).find('.userSignature').html();
+        tempHtml = tempHtml.replace(innerItems, '');
+        tempHtml = tempHtml.replace(signature, '');
+        return tempHtml;
+    }
+    function addNewHeader() {
+        var curSelector = $('.holderPages').find('.detailePage').last().find('.mainPdfBody');
+        var tempX1 = $("<div />").append($('.hideInside').clone().find('.pageFirstHeader').clone()).html();
+        var tempX2 = $("<div />").append($('.hideInside').clone().find('.pageSecoundHeader').clone()).html();
+        var tempX3 = $("<div />").append($('.hideInside').clone().find('.pageThirdHeader').clone()).html();
+        curSelector.append(tempX1).append(tempX2).append(tempX3);
+    }
+    function addSignature() {
+        var curSelector = $('.holderPages').find('.detailePage').last();
+        curSelector.find('.userSignature').html($('.hideInside').clone().find('.userSignature').clone().html());
+    }
+    function addAsMachAsCan(maxHeight) {
+        var curSelector = $('.holderPages').find('.detailePage').last().find('.mainPdfBody');
+        curSelector.append('<div class="detailePageBody"></div>');
+        var curSelectorAppend = curSelector.find('.detailePageBody');
+        var qSelector = $('.hideInside').find('.mainPdfBody').find('.detailePageBody').find('>');
+        if (qSelector.length > 0) {
+            qSelector.each(function() {
+                curSelectorAppend.append($(this).clone());
+                var tempX = $(this).text().trim();
+                //if (tempX == 'تست') {
+                //    $('.tempXXD').html((curSelector.height() + bottomPadding));
+                //}
+                if ((curSelector.height() + bottomPadding) >= maxHeight)
+                {
+                    curSelectorAppend.find('>').last().remove();
+                    return false;
+                }
+                $(this).remove();
+            });
+        }
+    }
+</script>

@@ -492,6 +492,7 @@
     <ProjectReference Include="..\Modules\Oje.Section.Question\Oje.Section.Question.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.RegisterForm\Oje.Section.RegisterForm.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.Sanab\Oje.Section.Sanab.csproj" />
+    <ProjectReference Include="..\Modules\Oje.Section.Secretariat\Oje.Section.Secretariat.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.Security\Oje.Section.Security.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.Account\Oje.Section.Account.csproj" />
     <ProjectReference Include="..\Modules\Oje.Section.BaseData\Oje.Section.BaseData.csproj" />

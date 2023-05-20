@@ -71,7 +71,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseDataS
             return Json(InsuranceContractProposalFormService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد تفاهم نامه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد تفاهم نامه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractProposalFormMainGrid searchInput)
         {

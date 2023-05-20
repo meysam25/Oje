@@ -80,7 +80,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(InsuranceContractDiscountService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تخفیفات تفاهم نامه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تخفیفات تفاهم نامه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractDiscountMainGrid searchInput)
         {
@@ -101,14 +101,14 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست قرارداد ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست قرارداد ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetContractList([FromQuery] int? cSOWSiteSettingId)
         {

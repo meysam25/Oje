@@ -76,7 +76,7 @@ namespace Oje.Section.WebMain.Areas.WebMainAdmin.Controllers
             return Json(OurObjectService.Update(input, SiteSettingService.GetSiteSetting()?.Id, OurObjectType.OurContractCompanies));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت های طرف قرارداد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت های طرف قرارداد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] OurCustomerMainGrid searchInput)
         {

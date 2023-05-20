@@ -70,7 +70,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(VehicleUsageService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربری خودرو محاسباتی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربری خودرو محاسباتی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] VehicleUsageMainGrid searchInput)
         {
@@ -91,7 +91,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarTypeList()
         {

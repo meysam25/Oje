@@ -86,7 +86,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(RoleService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نقش", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نقش", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] RoleGridFilters searchInput)
         {

@@ -47,7 +47,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             return Json(WalletTransactionService.GetBy(id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کیف پول کاربر", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کیف پول کاربر", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] WalletTransactionMainGrid searchInput)
         {

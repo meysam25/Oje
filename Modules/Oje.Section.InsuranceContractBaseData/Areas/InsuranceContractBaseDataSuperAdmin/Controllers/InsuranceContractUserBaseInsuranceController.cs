@@ -75,7 +75,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseDataS
             return Json(InsuranceContractUserBaseInsuranceService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست بیمه پایه بیمه شدگان", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست بیمه پایه بیمه شدگان", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractUserBaseInsuranceMainGrid searchInput)
         {

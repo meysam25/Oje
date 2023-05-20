@@ -73,7 +73,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             return Json(UserNotificationTemplateService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تمپلیت نوتیفیکیشن", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تمپلیت نوتیفیکیشن", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserNotificationTemplateMainGrid searchInput)
         {

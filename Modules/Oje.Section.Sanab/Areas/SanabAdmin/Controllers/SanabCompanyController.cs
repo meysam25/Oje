@@ -75,7 +75,7 @@ namespace Oje.Section.Sanab.Areas.SanabAdmin.Controllers
             return Json(SanabCompanyService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت بیمه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت بیمه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] SanabCompanyMainGrid searchInput)
         {

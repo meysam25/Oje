@@ -86,7 +86,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(UserAdminLogConfigService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تنظیمات لاگ بخش ادمین", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تنظیمات لاگ بخش ادمین", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserAdminLogConfigMainGrid searchInput)
         {

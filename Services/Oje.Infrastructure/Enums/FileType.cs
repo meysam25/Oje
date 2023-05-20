@@ -103,6 +103,14 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "مدارک فرم پیشنهاد مناقصه", Prompt = "TenderPPFFiles")]
         TenderPPFFiles = 49,
         [Display(Name = "بنر اصلی درمان", Prompt = "TreadmentMainBanner", Description = "~2000*2000")]
-        TreadmentMainBanner = 50
+        TreadmentMainBanner = 50,
+        [Display(Name = "هدر و فوتر نامه دبیر خانه", Prompt = "SecretariatHeaderFooter", Description = "~2000*2000")]
+        SecretariatHeaderFooter = 51,
+        [Display(Name = "امضای کاربر", Prompt = "SecretariatUserDigitalSignature", Description = "~2000*2000")]
+        SecretariatUserDigitalSignature = 52,
+        [Display(Name = "فایل های ضمیمه دبیرخانه", Prompt = "SecretariatAttachments", Description = "~2000*2000")]
+        SecretariatAttachments = 53,
+        [Display(Name = "فایل های ضمیمه نامه های دریافتی", Prompt = "SecretariatReciveAttachments", Description = "~2000*2000")]
+        SecretariatReciveAttachments = 54
     }
 }

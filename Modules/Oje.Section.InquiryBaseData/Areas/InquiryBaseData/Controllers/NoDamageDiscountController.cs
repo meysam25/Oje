@@ -80,7 +80,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(NoDamageDiscountService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تخفیف عدم خسارت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تخفیف عدم خسارت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] NoDamageDiscountMainGrid searchInput)
         {
@@ -101,14 +101,14 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetPPFList(Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {

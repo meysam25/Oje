@@ -70,7 +70,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(IpLimitationBlackListService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست ای پی غیر مجاز", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست ای پی غیر مجاز", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] IpLimitationBlackListMainGrid searchInput)
         {

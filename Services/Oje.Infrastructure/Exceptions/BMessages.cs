@@ -726,7 +726,7 @@ namespace Oje.Infrastructure.Exceptions
         Province_Not_Found = 359,
         [Display(Name = "لطفا جنسیت را انتخاب کنید")]
         Please_Select_Gender = 360,
-        [Display(Name = "کد الکترونیکی تکراری می باشد")]
+        [Display(Name = "کد تکراری می باشد")]
         Dublicate_ECode = 361,
         [Display(Name = "بیمه پایه مجاز نمی باشد")]
         Invalid_BaseInsurance = 362,
@@ -734,5 +734,17 @@ namespace Oje.Infrastructure.Exceptions
         Invalid_SubCategory = 363,
         [Display(Name = "لطفا نیاز به مشاوره را انتخاب کنید")]
         Please_Select_Need_To_Consultation = 364,
+        [Display(Name = "لطفا نقش را وارد کنید")]
+        Please_Enter_Role = 365,
+        [Display(Name = "لطفا هدر فوتر را انتخاب کنید")]
+        Please_Select_HeaderFooter = 366,
+        [Display(Name = "لطفا توضیحات هدر فوتر را انتخاب کنید")]
+        Please_Select_HeaderFooterDescription = 367,
+        [Display(Name = "لطفا زیر عنوان را وارد کنید")]
+        Please_Enter_SubTitle = 368,
+        [Display(Name = "لطفا موضوع را وارد کنید")]
+        Please_Enter_Subject = 369,
+        [Display(Name = "لطفا امضا کننده را انتخاب کنید")]
+        Please_Select_Signer = 370,
     }
 }

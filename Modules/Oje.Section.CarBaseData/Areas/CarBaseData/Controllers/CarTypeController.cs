@@ -68,7 +68,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(CarTypeService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarTypeMainGrid searchInput)
         {

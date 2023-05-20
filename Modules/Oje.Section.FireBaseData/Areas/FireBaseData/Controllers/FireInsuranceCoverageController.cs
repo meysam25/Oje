@@ -79,7 +79,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(FireInsuranceCoverageService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نرخ پوشش", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نرخ پوشش", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceCoverageMainGrid searchInput)
         {
@@ -100,21 +100,21 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(ProposalFormService.GetSelect2List(searchInput));
         }
 
-        [AreaConfig(Title = "مشاهده لیست پوشش ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست پوشش ها", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCoverTitleList([FromQuery] Select2SearchVM searchInput)
         {

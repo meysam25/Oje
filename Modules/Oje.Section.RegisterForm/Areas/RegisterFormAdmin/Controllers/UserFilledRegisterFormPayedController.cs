@@ -91,7 +91,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده لیست ثبت نام با حق اشتراک", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست ثبت نام با حق اشتراک", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {

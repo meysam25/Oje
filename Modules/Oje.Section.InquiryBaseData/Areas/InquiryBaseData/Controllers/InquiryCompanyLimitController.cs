@@ -70,7 +70,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(InquiryCompanyLimitService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت های استعلام", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت های استعلام", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InquiryCompanyLimitMainGrid searchInput)
         {
@@ -91,7 +91,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {

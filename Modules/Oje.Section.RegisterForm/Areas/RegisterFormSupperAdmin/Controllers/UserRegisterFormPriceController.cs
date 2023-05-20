@@ -79,7 +79,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormSupperAdmin.Controllers
             return Json(UserRegisterFormPriceService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مبلغ فرم ثبت نام", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست مبلغ فرم ثبت نام", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserRegisterFormPriceMainGrid searchInput)
         {

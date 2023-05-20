@@ -73,7 +73,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(FileAccessRoleService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست دسترسی فایل", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست دسترسی فایل", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FileAccessRoleMainGrid searchInput)
         {
@@ -94,7 +94,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetRoleList()
         {

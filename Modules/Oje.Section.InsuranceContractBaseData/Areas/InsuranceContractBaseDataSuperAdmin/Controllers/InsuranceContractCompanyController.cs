@@ -68,7 +68,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseDataS
             return Json(InsuranceContractCompanyService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه گذار حقوقی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت های بیمه گذار حقوقی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractCompanyMainGrid searchInput)
         {

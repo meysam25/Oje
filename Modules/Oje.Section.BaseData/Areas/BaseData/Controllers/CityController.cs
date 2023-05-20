@@ -70,7 +70,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(CityService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شهر", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شهر", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CityMainGrid searchInput)
         {
@@ -91,7 +91,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست استان", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست استان", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetProvinceList()
         {

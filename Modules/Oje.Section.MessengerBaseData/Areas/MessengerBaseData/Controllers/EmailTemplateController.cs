@@ -71,7 +71,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             return Json(EmailTemplateService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تمپلیت ایمیل", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تمپلیت ایمیل", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] EmailTemplateMainGrid searchInput)
         {

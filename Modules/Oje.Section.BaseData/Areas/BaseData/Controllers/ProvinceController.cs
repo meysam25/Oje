@@ -70,7 +70,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(ProvinceService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست استان", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست استان", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProvinceMainGrid searchInput)
         {

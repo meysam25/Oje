@@ -68,7 +68,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(DashboardSectionCategoryService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی اطلاعات داشبورد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی اطلاعات داشبورد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] DashboardSectionCategoryServiceMainGrid searchInput)
         {

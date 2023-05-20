@@ -79,7 +79,7 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
             return Json(BankAccountSadadService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست لیست سداد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست لیست سداد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] BankAccountSadadMainGrid searchInput)
         {
@@ -100,7 +100,7 @@ namespace Oje.Section.FinancialBaseData.Areas.FinancialBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست حساب", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست حساب", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetBankAccounts([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {

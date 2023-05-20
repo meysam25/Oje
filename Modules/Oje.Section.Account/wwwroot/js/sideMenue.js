@@ -18,12 +18,14 @@ $.fn.initSideMenu = function () {
                 $(this).removeClass('sideSumMenuItemShow');
                 $(this).find('> .sideMenuItemInner > .sideSumMenuItems').slideUp();
                 $(this).find('> .sideMenuItemInner > .sideMenuSubIcon').removeClass('fa-chevron-down').addClass('fa-chevron-left');
-                $(this).closest('.sideMenuHolder')[0].openSideMenu();
+                if ($(this).closest('.sideMenuHolder')[0].openSideMenu)
+                    $(this).closest('.sideMenuHolder')[0].openSideMenu();
             } else {
                 $(this).addClass('sideSumMenuItemShow');
                 $(this).find('> .sideMenuItemInner > .sideSumMenuItems').slideDown();
                 $(this).find('> .sideMenuItemInner > .sideMenuSubIcon').removeClass('fa-chevron-left').addClass('fa-chevron-down');
-                $(this).closest('.sideMenuHolder')[0].openSideMenu();
+                if ($(this).closest('.sideMenuHolder')[0].openSideMenu)
+                    $(this).closest('.sideMenuHolder')[0].openSideMenu();
 
 
             }

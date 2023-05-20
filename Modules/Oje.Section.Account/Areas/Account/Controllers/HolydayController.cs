@@ -71,7 +71,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(HolydayService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست روز های تعطیل", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست روز های تعطیل", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] HolydayMainGrid searchInput)
         {

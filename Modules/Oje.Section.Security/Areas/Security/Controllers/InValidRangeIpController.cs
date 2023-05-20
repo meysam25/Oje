@@ -57,7 +57,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(ErrorFirewallManualAddService.Block(id, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست لیست ای پی های محدود شده", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست لیست ای پی های محدود شده", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InValidRangeIpMainGrid searchInput)
         {

@@ -75,7 +75,7 @@ namespace Oje.Section.Question.Areas.QuestionAdmin.Controllers
             return Json(YourQuestionService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست سوالات شما", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست سوالات شما", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] YourQuestionMainGrid searchInput)
         {

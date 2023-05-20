@@ -24,14 +24,12 @@ namespace Oje.Section.Core.Areas.Controllers
         readonly ICityService CityService = null;
         readonly ICompanyService CompanyService = null;
         readonly ISiteSettingService SiteSettingService = null;
-        //readonly IUserService UserService = null;
         public BaseDataController(
                 IUploadedFileService UploadedFileService,
                 IProvinceService ProvinceService,
                 ICityService CityService,
                 ICompanyService CompanyService,
-                ISiteSettingService SiteSettingService//,
-                                                      //IUserService UserService
+                ISiteSettingService SiteSettingService
             )
         {
             this.UploadedFileService = UploadedFileService;
@@ -39,13 +37,11 @@ namespace Oje.Section.Core.Areas.Controllers
             this.CityService = CityService;
             this.CompanyService = CompanyService;
             this.SiteSettingService = SiteSettingService;
-            //this.UserService = UserService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            //var m = "test".Encrypt();
             ManageModalResource.Copy();
             return Json(true);
         }
@@ -55,13 +51,6 @@ namespace Oje.Section.Core.Areas.Controllers
         {
             return Json(SiteSettingService.GetightList(HttpContext.GetLoginUser()?.canSeeOtherWebsites, searchInput));
         }
-
-        //[HttpGet]
-        //public IActionResult HashPassword()
-        //{
-        //    UserService.UpdateHashPassword();
-        //    return Json(true);
-        //}
 
         [HttpGet]
         public IActionResult GetFile(string fn, bool? preview)
@@ -73,7 +62,7 @@ namespace Oje.Section.Core.Areas.Controllers
             if (curSetting == null)
                 return Content("File Not Found");
 
-            var loginUserId = HttpContext.GetLoginUser()?.UserId;
+            var loginUserId = HttpContext.GetLoginUser(true)?.UserId;
 
             var foundFile = UploadedFileService.GetFile(fn, loginUserId.ToLongReturnZiro());
             if (foundFile == null || string.IsNullOrEmpty(foundFile.FileNameOnServer) || System.IO.File.Exists(foundFile.FileNameOnServer) == false || !foundFile.IsSignature())

@@ -50,7 +50,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             return Json(TenderFilledFormService.GetBy(id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مناقصات", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست مناقصات", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] TenderFilledFormMainGrid searchInput)
         {

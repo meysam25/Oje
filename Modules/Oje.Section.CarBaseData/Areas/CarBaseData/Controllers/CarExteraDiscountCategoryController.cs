@@ -68,7 +68,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(CarExteraDiscountCategoryService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی تخفیف اضافه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی تخفیف اضافه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CarExteraDiscountCategoryMainGrid searchInput)
         {

@@ -91,7 +91,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return Json(UserFilledRegisterFormService.Delete(input?.id, SiteSettingService.GetSiteSetting()?.Id, isPayed, isDone));
         }
 
-        [AreaConfig(Title = "مشاهده لیست دسترسی موقت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست دسترسی موقت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserFilledRegisterFormMainGrid searchInput)
         {
@@ -112,14 +112,14 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormAdmin.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نقش ها", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetRoleList([FromQuery] Select2SearchVM searchInput)
         {
             return Json(RoleService.GetList(SiteSettingService.GetSiteSetting()?.Id, searchInput));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetFormList()
         {

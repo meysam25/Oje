@@ -85,7 +85,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseDataS
             return Json(InsuranceContractValidUserForFullDebitService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فروش از دم قسط", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فروش از دم قسط", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractValidUserForFullDebitMainGrid searchInput)
         {
@@ -107,7 +107,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseDataS
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده قرارداد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده قرارداد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetContractList([FromQuery] int? cSOWSiteSettingId)
         {

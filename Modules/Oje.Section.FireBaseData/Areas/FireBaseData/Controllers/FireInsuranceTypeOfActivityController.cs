@@ -68,7 +68,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(FireInsuranceTypeOfActivityService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نوع فعالیت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نوع فعالیت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceTypeOfActivityMainGrid searchInput)
         {

@@ -68,7 +68,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(ProposalFormCategoryService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی فرم پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormCategoryMainGrid searchInput)
         {

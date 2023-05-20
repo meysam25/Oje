@@ -72,7 +72,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             return Json(SmsConfigService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تنظیمات پیامک", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تنظیمات پیامک", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] SmsConfigMainGrid searchInput)
         {

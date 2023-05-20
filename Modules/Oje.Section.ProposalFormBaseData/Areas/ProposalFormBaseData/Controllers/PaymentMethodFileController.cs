@@ -70,7 +70,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(PaymentMethodFileService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فایل های شرایط پرداخت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فایل های شرایط پرداخت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] PaymentMethodFileMainGrid searchInput)
         {
@@ -91,7 +91,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetPayMethodList()
         {

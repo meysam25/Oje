@@ -75,7 +75,7 @@ namespace Oje.Section.WebMain.Areas.WebMainAdmin.Controllers
             return Json(TopMenuService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست منوی بالا", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست منوی بالا", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] TopMenuMainGrid searchInput)
         {

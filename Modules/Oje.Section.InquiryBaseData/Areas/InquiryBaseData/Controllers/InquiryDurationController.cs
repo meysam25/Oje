@@ -80,7 +80,7 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(InquiryDurationService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدت زمان بیمه نامه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست مدت زمان بیمه نامه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InquiryDurationMainGrid searchInput)
         {
@@ -101,14 +101,14 @@ namespace Oje.Section.InquiryBaseData.Areas.InquiryBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetProposalFormList([FromQuery] Select2SearchVM searchInput, [FromQuery] int? cSOWSiteSettingId)
         {

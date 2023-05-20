@@ -68,7 +68,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(FireInsuranceBuildingAgeService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست سن بنا", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست سن بنا", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceBuildingAgeMainGrid searchInput)
         {

@@ -76,7 +76,7 @@ namespace Oje.Section.WebMain.Areas.WebMainAdmin.Controllers
             return Json(AutoAnswerOnlineChatMessageService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست پاسخ های خودکار", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست پاسخ های خودکار", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] AutoAnswerOnlineChatMessageMainGrid searchInput)
         {

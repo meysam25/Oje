@@ -42,7 +42,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("MessengerBaseData", "EmailSendingQueue")));
         }
 
-        [AreaConfig(Title = "مشاهده لیست صف ارسال ایمیل", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست صف ارسال ایمیل", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] EmailSendingQueueMainGrid searchInput)
         {

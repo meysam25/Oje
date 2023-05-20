@@ -72,7 +72,7 @@ namespace Oje.Section.MessengerBaseData.Areas.MessengerBaseData.Controllers
             return Json(EmailConfigService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تنظیمات ایمیل", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تنظیمات ایمیل", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] EmailConfigMainGrid searchInput)
         {

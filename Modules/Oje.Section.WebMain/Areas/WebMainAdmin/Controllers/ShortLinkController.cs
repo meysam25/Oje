@@ -75,7 +75,7 @@ namespace Oje.Section.WebMain.Areas.WebMainAdmin.Controllers
             return Json(ShortLinkService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست لینک کوتاه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست لینک کوتاه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ShortLinkMainGrid searchInput)
         {

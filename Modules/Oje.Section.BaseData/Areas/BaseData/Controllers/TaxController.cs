@@ -70,7 +70,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(TaxService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مالیات", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست مالیات", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] TaxMainGrid searchInput)
         {

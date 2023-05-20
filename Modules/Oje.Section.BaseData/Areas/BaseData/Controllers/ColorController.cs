@@ -70,7 +70,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(ColorService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست رنگ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست رنگ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ColorMainGrid searchInput)
         {

@@ -82,7 +82,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormSupperAdmin.Controllers
             return Json(UserRegisterFormCompanyService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت های ثبت نام", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت های ثبت نام", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserRegisterFormCompanyMainGrid searchInput)
         {

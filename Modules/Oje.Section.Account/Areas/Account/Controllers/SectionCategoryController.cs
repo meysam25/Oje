@@ -70,7 +70,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(SectionCategoryService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی بخش منو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی بخش منو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] SectionCategoryMainGrid searchInput)
         {

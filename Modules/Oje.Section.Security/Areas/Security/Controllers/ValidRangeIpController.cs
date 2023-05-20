@@ -79,7 +79,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(ValidRangeIpService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست رنج ای پی مجاز", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست رنج ای پی مجاز", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ValidRangeIpMainGrid searchInput)
         {

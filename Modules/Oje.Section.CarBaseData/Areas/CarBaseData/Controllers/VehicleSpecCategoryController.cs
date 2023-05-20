@@ -70,7 +70,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(VehicleSpecCategoryService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی خصوصیت خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی خصوصیت خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] VehicleSpecCategoryMainGrid searchInput)
         {

@@ -69,7 +69,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(JobDangerLevelService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه خطر مشاغل", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه خطر مشاغل", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] JobDangerLevelMainGrid searchInput)
         {

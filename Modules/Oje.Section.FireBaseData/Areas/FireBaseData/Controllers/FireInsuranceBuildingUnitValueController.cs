@@ -68,7 +68,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(FireInsuranceBuildingUnitValueService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست ارزش ساخت هر متر مربع", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست ارزش ساخت هر متر مربع", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceBuildingUnitValueMainGrid searchInput)
         {

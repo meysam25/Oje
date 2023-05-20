@@ -68,7 +68,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(CompanyService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت بیمه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت بیمه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] CompanyMainGrid searchInput)
         {

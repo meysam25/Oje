@@ -77,7 +77,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormSupperAdmin.Controllers
             return Json(UserRegisterFormPrintDescrptionService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست توضیحات پرینت فرم پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست توضیحات پرینت فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserRegisterFormPrintDescrptionMainGrid searchInput)
         {
@@ -98,7 +98,7 @@ namespace Oje.Section.RegisterForm.Areas.RegisterFormSupperAdmin.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فرم های پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetProposalFormList([FromQuery] int? cSOWSiteSettingId)
         {

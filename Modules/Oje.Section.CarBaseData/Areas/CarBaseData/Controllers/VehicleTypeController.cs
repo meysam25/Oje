@@ -77,7 +77,7 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(VehicleTypeService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نوع خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] VehicleTypeMainGrid searchInput)
         {
@@ -98,14 +98,14 @@ namespace Oje.Section.CarBaseData.Areas.CarBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی خصوصیات خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی خصوصیات خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarSpecCategoryList()
         {
             return Json(CarSpecificationCategoryService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کاربری خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCarCarTypeList()
         {

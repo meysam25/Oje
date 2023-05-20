@@ -75,7 +75,7 @@ namespace Oje.Section.Sanab.Areas.SanabAdmin.Controllers
             return Json(SanabSystemFieldVehicleSystemService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست برند خودرو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] SanabSystemFieldVehicleSystemMainGrid searchInput)
         {

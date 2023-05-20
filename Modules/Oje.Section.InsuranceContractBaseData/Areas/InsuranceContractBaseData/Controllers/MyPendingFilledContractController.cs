@@ -83,7 +83,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت های در دست برسی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت های در دست برسی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {

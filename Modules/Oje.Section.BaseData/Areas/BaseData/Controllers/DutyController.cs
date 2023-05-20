@@ -70,7 +70,7 @@ namespace Oje.Section.BaseData.Areas.BaseData.Controllers
             return Json(DutyService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست عوارض", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست عوارض", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] DutyMainGrid searchInput)
         {

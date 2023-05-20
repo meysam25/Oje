@@ -78,7 +78,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(AgentRefferService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست کد معرف", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست کد معرف", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] AgentRefferMainGrid searchInput)
         {
@@ -99,7 +99,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {

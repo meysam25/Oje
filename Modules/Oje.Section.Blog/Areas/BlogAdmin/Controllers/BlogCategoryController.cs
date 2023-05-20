@@ -75,7 +75,7 @@ namespace Oje.Section.Blog.Areas.BlogAdmin.Controllers
             return Json(BlogCategoryService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] BlogCategoryMainGrid searchInput)
         {

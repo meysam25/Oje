@@ -75,7 +75,7 @@ namespace Oje.Section.WebMain.Areas.WebMainAdmin.Controllers
             return Json(LoginBackgroundImageService.Update(input, SiteSettingService.GetSiteSetting()?.Id, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست تصویر پس زمینه ورود", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست تصویر پس زمینه ورود", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] LoginBackgroundImageMainGrid searchInput)
         {

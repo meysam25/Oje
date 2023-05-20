@@ -47,7 +47,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Content(System.IO.File.ReadAllText(GlobalConfig.GetJsonConfigFile("Security", "UserLoginLogoutLog")));
         }
 
-        [AreaConfig(Title = "مشاهده لیست لاگ ورود/خروج کاربر", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست لاگ ورود/خروج کاربر", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserLoginLogoutLogMainGrid searchInput)
         {

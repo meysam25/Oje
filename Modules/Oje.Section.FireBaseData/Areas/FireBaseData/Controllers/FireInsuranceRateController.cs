@@ -80,7 +80,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(FireInsuranceRateService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نرخ", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نرخ", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceRateMainGrid searchInput)
         {
@@ -101,21 +101,21 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست شرکت", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست شرکت", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetCompanyList()
         {
             return Json(CompanyService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده نوع ساختمان", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده نوع ساختمان", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetBuildingTypeList()
         {
             return Json(FireInsuranceBuildingTypeService.GetLightList());
         }
 
-        [AreaConfig(Title = "مشاهده لیست اسکلت ساختمان", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست اسکلت ساختمان", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetBuildingBodyList()
         {

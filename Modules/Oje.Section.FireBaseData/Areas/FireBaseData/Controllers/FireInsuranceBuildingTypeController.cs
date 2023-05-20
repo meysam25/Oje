@@ -70,7 +70,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(FireInsuranceBuildingTypeService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نوع ساختمان", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نوع ساختمان", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceBuildingTypeMainGrid searchInput)
         {

@@ -73,7 +73,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(ProposalFormRequiredDocumentService.Update(input, HttpContext.GetLoginUser()?.UserId));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ProposalFormRequiredDocumentMainGrid searchInput)
         {
@@ -94,7 +94,7 @@ namespace Oje.Section.ProposalFormBaseData.Areas.ProposalFormBaseData.Controller
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "لیست نوع فرم پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "لیست نوع فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetTypeList([FromQuery] Select2SearchVM searchInput)
         {

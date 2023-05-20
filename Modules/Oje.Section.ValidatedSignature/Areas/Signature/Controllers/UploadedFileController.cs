@@ -50,7 +50,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             return Json(UploadedFileService.GetBy(id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست فایل", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست فایل", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UploadedFileMainGrid searchInput)
         {

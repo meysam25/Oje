@@ -73,7 +73,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(FireInsuranceCoverageCityDangerLevelService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نرخ پوشش های شهر ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نرخ پوشش های شهر ها", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] FireInsuranceCoverageCityDangerLevelMainGrid searchInput)
         {
@@ -94,7 +94,7 @@ namespace Oje.Section.FireBaseData.Areas.FireBaseData.Controllers
             return Json(Convert.ToBase64String(byteResult));
         }
 
-        [AreaConfig(Title = "مشاهده لیست پوشش ها", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست پوشش ها", Icon = "fa-list-alt")]
         [HttpGet]
         public ActionResult GetCoverTitleList([FromQuery] Select2SearchVM searchInput)
         {

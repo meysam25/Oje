@@ -57,7 +57,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(ErrorService.GetBy(id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست لاگ فعالیت ادمین", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست لاگ فعالیت ادمین", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] UserAdminLogMainGrid searchInput)
         {

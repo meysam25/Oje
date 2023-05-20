@@ -50,7 +50,7 @@ namespace Oje.Section.ValidatedSignature.Areas.Signature.Controllers
             return Json(BankAccountService.GetBy(id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست حساب های بانکی", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست حساب های بانکی", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] BankAccountMainGrid searchInput)
         {

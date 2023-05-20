@@ -74,7 +74,7 @@ namespace Oje.Section.Account.Areas.Account.Controllers
             return Json(ControllerCategoryService.Update(input));
         }
 
-        [AreaConfig(Title = "مشاهده لیست گروه بندی کنترولر منو", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست گروه بندی کنترولر منو", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] ControllerCategoryMainGrid searchInput)
         {

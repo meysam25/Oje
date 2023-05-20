@@ -79,7 +79,7 @@ namespace Oje.Section.WebMain.Areas.WebMainAdmin.Controllers
             return Json(PageManifestService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست معرفی صفحه", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست معرفی صفحه", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] PageManifestMainGrid searchInput)
         {

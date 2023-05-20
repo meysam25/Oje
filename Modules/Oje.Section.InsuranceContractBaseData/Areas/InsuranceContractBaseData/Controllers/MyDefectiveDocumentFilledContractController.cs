@@ -87,7 +87,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseData.
                 );
         }
 
-        [AreaConfig(Title = "مشاهده لیست خسارت دارای نقص مدرک", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست خسارت دارای نقص مدرک", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] MyFilledContractMainGrid searchInput)
         {

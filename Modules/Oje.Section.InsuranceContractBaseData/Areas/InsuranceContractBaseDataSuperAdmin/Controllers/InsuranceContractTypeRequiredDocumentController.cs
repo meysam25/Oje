@@ -81,7 +81,7 @@ namespace Oje.Section.InsuranceContractBaseData.Areas.InsuranceContractBaseDataS
             return Json(InsuranceContractTypeRequiredDocumentService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست مدارک مورد نیاز فرم پیشنهاد", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] InsuranceContractTypeRequiredDocumentMainGrid searchInput)
         {

@@ -80,7 +80,7 @@ namespace Oje.Section.Account.Areas.UserAccount.Controllers
             return Json(RoleService.UpdateUser(input, UserService.GetLoginUser(), SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست نقش", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست نقش", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] RoleUserGridFilters searchInput)
         {

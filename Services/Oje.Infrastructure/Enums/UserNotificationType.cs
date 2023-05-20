@@ -99,6 +99,12 @@ namespace Oje.Infrastructure.Enums
         [Display(Name = "تایید مشاوره مناقصه (ادمین)")]
         ConfirmTenderPPF = 46,
         [Display(Name = "انقضای یادآوری")]
-        ReminderExpireing = 47
+        ReminderExpireing = 47,
+        [Display(Name = "دبیر خانه تایید نامه")]
+        ConfirmSecretariatLetter = 48,
+        [Display(Name = "ارجا جدید برای نامه دبیر خانه")]
+        NewRefferForSecretariatLetter = 49,
+        [Display(Name = "نامه جدید دبیر خانه")]
+        NewSecretariatLetter = 50,
     }
 }

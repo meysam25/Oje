@@ -78,7 +78,7 @@ namespace Oje.Section.Security.Areas.Security.Controllers
             return Json(AdminBlockClientConfigService.Update(input, SiteSettingService.GetSiteSetting()?.Id));
         }
 
-        [AreaConfig(Title = "مشاهده لیست قوانین محدود کردن کاربر ادمین", Icon = "fa-list-alt ")]
+        [AreaConfig(Title = "مشاهده لیست قوانین محدود کردن کاربر ادمین", Icon = "fa-list-alt")]
         [HttpPost]
         public ActionResult GetList([FromForm] AdminBlockClientConfigMainGrid searchInput)
         {
