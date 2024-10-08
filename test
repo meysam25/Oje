@@ -1,0 +1,47 @@
+denaadmin
+Abcd/1234
+
+
+ng g component sadf
+ng g service globalEvents
+
+https://modir.denaru.ir/
+denaadmin
+Abcd/1234
+
+https://app.denaru.ir/?token=NzBFRUJBRDc3M0FDQkFFREMyODc5NDhFQTE4ODcyM0RBNUJBN0FEMjQ2MTcyRUNEQjlGMDBDQTQ3MkFFMTY5RA%3D%3D
+
+
+
+MerchantId:2115014011358233
+terminalId(Ipg) :150000000001
+terminalId(wallet) :150000000002
+systemcode : "084"
+subsystemcode : "81"
+bankcode(Ipg):0
+bankcode(wallet):100
+
+https://srv162-apigateway.tehran.ir/ApiContainer.PelicanPay.RCL1/swagger/index.html
+
+
+
+ossPayment
+client_id: VfU4sp7dQDrZxeh8PunG8G1-ReIq0pamVMYW1vHzczA.apigateway.tehran.ir
+client_secret: 27ktltlxtZTl7ZjkYKAIDYB9HbXLlNIPSl1ktpLPVxM
+
+Service Address: https://srv162-apigateway.tehran.ir/ApiContainer.sso.RCL1/connect/token
+
+
+sso
+client_id: VfU4sp7dQDrZxeh8PunG8G1-ReIq0pamVMYW1vHzczA.apigateway.tehran.ir
+client_secret: 27ktltlxtZTl7ZjkYKAIDYB9HbXLlNIPSl1ktpLPVxM
+
+Service Address: https://srv162-apigateway.tehran.ir/ApiContainer.sso.RCL1/connect/token
+Service Address: https://srv162-apigateway.tehran.ir/ApiContainer.sso.RCL1/connect/token
+
+
+
+IR390610000004001004201725
+
+
+"HRMSConnection": "Server=46.245.87.71;Database=Denaro;TrustServerCertificate=True;User Id=denaruuUsr;Password=ijnuhb$$00nvvvjdjd;MultipleActiveResultSets=true"
